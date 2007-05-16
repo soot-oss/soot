@@ -29,7 +29,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInvokeInst
 {

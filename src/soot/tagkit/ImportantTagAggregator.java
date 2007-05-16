@@ -29,7 +29,6 @@ package soot.tagkit;
 
 
 import soot.*;
-import java.util.*;
 import soot.baf.*;
 
 /** A tag aggregator that associates a tag with the <b>most important</b>

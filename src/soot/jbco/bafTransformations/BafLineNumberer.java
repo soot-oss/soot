@@ -24,9 +24,6 @@ import java.util.*;
 import soot.tagkit.*;
 import soot.*;
 import soot.baf.*;
-import soot.jbco.util.*;
-import soot.util.*;
-import soot.jimple.Stmt;
 
 public class BafLineNumberer extends BodyTransformer implements IJbcoTransform {
   public void outputSummary() {}

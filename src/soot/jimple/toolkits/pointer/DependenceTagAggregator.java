@@ -22,8 +22,6 @@ package soot.jimple.toolkits.pointer;
 
 import soot.*;
 
-import java.util.*;
-import soot.baf.*;
 import soot.tagkit.*;
 
 public class DependenceTagAggregator extends ImportantTagAggregator

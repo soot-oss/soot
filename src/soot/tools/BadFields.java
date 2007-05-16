@@ -19,7 +19,6 @@
 
 package soot.tools;
 import soot.*;
-import java.io.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -114,7 +113,7 @@ public class BadFields extends SceneTransformer {
                     }
                 }
                 if( !s.containsInvokeExpr() ) continue;
-                InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
+                InvokeExpr ie = s.getInvokeExpr();
                 SootMethod target = ie.getMethod();
                 calls( target );
             }

@@ -22,13 +22,9 @@ import java.util.*;
 
 import soot.*;
 import soot.jimple.*;
-import soot.jimple.spark.*;
 import soot.jimple.spark.builder.*;
-import soot.jimple.spark.internal.*;
 import soot.util.*;
 import soot.util.queue.*;
-import soot.toolkits.scalar.Pair;
-import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 
 
 /** Part of a pointer assignment graph for a single method.
@@ -44,7 +40,7 @@ public final class MethodPAG {
         this.nodeFactory = new MethodNodeFactory( pag, this );
     }
 
-    private Set addedContexts;
+    private Set<Context> addedContexts;
 
     /** Adds this method to the main PAG, with all VarNodes parameterized by
      * varNodeParameter. */
@@ -54,7 +50,7 @@ public final class MethodPAG {
             if( hasBeenAdded ) return;
             hasBeenAdded = true;
         } else {
-            if( addedContexts == null ) addedContexts = new HashSet();
+            if( addedContexts == null ) addedContexts = new HashSet<Context>();
             if( !addedContexts.add( varNodeParameter ) ) return;
         }
         QueueReader reader = (QueueReader) internalReader.clone();
@@ -104,12 +100,12 @@ public final class MethodPAG {
             pag.addEdge(src, dst);
         }        
     }
-    private ChunkedQueue internalEdges = new ChunkedQueue();
-    private ChunkedQueue inEdges = new ChunkedQueue();
-    private ChunkedQueue outEdges = new ChunkedQueue();
-    private QueueReader internalReader = internalEdges.reader();
-    private QueueReader inReader = inEdges.reader();
-    private QueueReader outReader = outEdges.reader();
+    private final ChunkedQueue internalEdges = new ChunkedQueue();
+    private final ChunkedQueue inEdges = new ChunkedQueue();
+    private final ChunkedQueue outEdges = new ChunkedQueue();
+    private final QueueReader internalReader = internalEdges.reader();
+    private final QueueReader inReader = inEdges.reader();
+    private final QueueReader outReader = outEdges.reader();
 
     SootMethod method;
     public SootMethod getMethod() { return method; }
@@ -117,7 +113,7 @@ public final class MethodPAG {
     public MethodNodeFactory nodeFactory() { return nodeFactory; }
 
     public static MethodPAG v( PAG pag, SootMethod m ) {
-        MethodPAG ret = (MethodPAG) G.v().MethodPAG_methodToPag.get( m );
+        MethodPAG ret = G.v().MethodPAG_methodToPag.get( m );
         if( ret == null ) { 
             ret = new MethodPAG( pag, m );
             G.v().MethodPAG_methodToPag.put( m, ret );
@@ -244,15 +240,12 @@ public final class MethodPAG {
         }
 
         boolean isImplicit = false;
-        for (Iterator implicitMethodIt = EntryPoints.v().implicit().iterator(); implicitMethodIt
-                .hasNext();) {
-            final SootMethod implicitMethod = (SootMethod) implicitMethodIt
-                    .next();
-            if (implicitMethod.getNumberedSubSignature().equals(
-                    method.getNumberedSubSignature())) {
-                isImplicit = true;
-            }
-        }
+        for (SootMethod implicitMethod : EntryPoints.v().implicit()) {
+         if (implicitMethod.getNumberedSubSignature().equals(
+		    method.getNumberedSubSignature())) {
+		isImplicit = true;
+         }
+      }
         if (isImplicit) {
             SootClass c = method.getDeclaringClass();
             outer: do {

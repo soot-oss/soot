@@ -25,9 +25,7 @@
 
 
 package soot.util;
-import soot.jimple.toolkits.graph.*;
 import soot.toolkits.graph.*;
-import soot.jimple.*;
 import soot.*;
 import java.util.*;
 
@@ -35,7 +33,7 @@ import java.util.*;
  * Maps each unit to the result of <code>mapTo</code>.
  */
 public abstract class UnitMap implements Map {
-  private Hashtable unitToResult;
+  private Hashtable<Object, Object> unitToResult;
 
   /**
    * maps each unit of this body to the result of <code>mapTo</code>.<br>
@@ -45,7 +43,7 @@ public abstract class UnitMap implements Map {
    * @param b a Body
    */
   public UnitMap(Body b) {
-    unitToResult = new Hashtable();
+    unitToResult = new Hashtable<Object, Object>();
     map(b);
   }
 
@@ -69,7 +67,7 @@ public abstract class UnitMap implements Map {
    * @param initialCapacity the initialCapacity of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity) {
-    unitToResult = new Hashtable(initialCapacity);
+    unitToResult = new Hashtable<Object, Object>(initialCapacity);
     map(b);
   }
 
@@ -96,7 +94,7 @@ public abstract class UnitMap implements Map {
    * @param loadFactor the loadFactor of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity, float loadFactor) {
-    unitToResult = new Hashtable(initialCapacity);
+    unitToResult = new Hashtable<Object, Object>(initialCapacity);
     init();
     map(b);
   }
@@ -178,7 +176,7 @@ public abstract class UnitMap implements Map {
     return unitToResult.isEmpty();
   }
 
-  public Set keySet() {
+  public Set<Object> keySet() {
     return unitToResult.keySet();
   }
 
@@ -198,7 +196,7 @@ public abstract class UnitMap implements Map {
     return unitToResult.size();
   }
 
-  public Collection values() {
+  public Collection<Object> values() {
     return unitToResult.values();
   }
 }

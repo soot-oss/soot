@@ -33,9 +33,7 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 import soot.baf.*;
-import soot.jimple.*;
 
 public class JRemExpr extends AbstractJimpleFloatBinopExpr implements RemExpr
 {

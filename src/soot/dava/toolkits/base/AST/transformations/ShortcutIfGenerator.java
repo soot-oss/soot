@@ -29,8 +29,8 @@ public class ShortcutIfGenerator extends DepthFirstAdapter {
 	}
 	
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-		List stmts = node.getStatements();
-		Iterator stmtIt = stmts.iterator();
+		List<Object> stmts = node.getStatements();
+		Iterator<Object> stmtIt = stmts.iterator();
 		while(stmtIt.hasNext()){
 			AugmentedStmt as = (AugmentedStmt)stmtIt.next();
 			Stmt s = as.get_Stmt();

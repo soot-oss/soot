@@ -20,6 +20,7 @@
 package soot.dava.internal.asg;
 
 import soot.*;
+
 import java.util.*;
 import soot.util.*;
 import soot.dava.*;
@@ -194,14 +195,14 @@ public class AugmentedStmtGraph implements DirectedGraph
 	if (source == null)
 	    return;
 
-	LinkedList worklist = new LinkedList();
-	HashSet touchSet = new HashSet();
+	LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
+	HashSet<AugmentedStmt> touchSet = new HashSet<AugmentedStmt>();
 	
 	worklist.addLast( source);
 	touchSet.add( source);
 	
 	while (worklist.isEmpty() == false) {
-	    AugmentedStmt as = (AugmentedStmt) worklist.removeFirst();
+	    AugmentedStmt as = worklist.removeFirst();
 	    
 	    Iterator sit = as.csuccs.iterator();
 	    while (sit.hasNext()) {
@@ -523,7 +524,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	while (it.hasNext()) 
 	    add_AugmentedStmt( (AugmentedStmt) it.next());
 
-	HashMap so2n = new HashMap();
+	HashMap<Stmt, Stmt> so2n = new HashMap<Stmt, Stmt>();
 
 	it = oldBody.iterator();
 	while (it.hasNext()) {
@@ -549,7 +550,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 		    target = ((IfStmt) os).getTarget(),
 		    newTgt = null;
 
-		if ((newTgt = (Unit) so2n.get( target)) != null)
+		if ((newTgt = so2n.get( target)) != null)
 		    ((IfStmt) ns).setTarget( newTgt);
 		else
 		    ((IfStmt) ns).setTarget( target);
@@ -564,19 +565,19 @@ public class AugmentedStmtGraph implements DirectedGraph
 		    target = otss.getDefaultTarget(),
 		    newTgt = null;
 
-		if ((newTgt = (Unit) so2n.get( target)) != null)
+		if ((newTgt = so2n.get( target)) != null)
 		    ntss.setDefaultTarget( newTgt);
 		else
 		    ntss.setDefaultTarget( target);
 		
-		LinkedList new_target_list = new LinkedList();
+		LinkedList<Unit> new_target_list = new LinkedList<Unit>();
 		
 		int target_count = otss.getHighIndex() - otss.getLowIndex() + 1;
 		for (int i=0; i<target_count; i++) {
 		    target = otss.getTarget(i);
 		    newTgt = null;
 
-		    if ((newTgt = (Unit) so2n.get( target)) != null)
+		    if ((newTgt = so2n.get( target)) != null)
 			new_target_list.add( newTgt);
 		    else
 			new_target_list.add( target);
@@ -593,7 +594,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 		    target = olss.getDefaultTarget(),
 		    newTgt = null;
 
-		if ((newTgt = (Unit) so2n.get( target)) != null)
+		if ((newTgt = so2n.get( target)) != null)
 		    nlss.setDefaultTarget( newTgt);
 		else
 		    nlss.setDefaultTarget( target);
@@ -604,7 +605,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 		    target = olss.getTarget(i);
 		    newTgt = null;
 
-		    if ((newTgt = (Unit) so2n.get( target)) != null)
+		    if ((newTgt = so2n.get( target)) != null)
 			new_target_list[i] = newTgt;
 		    else
 			new_target_list[i] = target;

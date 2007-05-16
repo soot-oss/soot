@@ -30,10 +30,6 @@
 
 package soot.grimp;
 
-import soot.util.*;
-import java.util.*;
-import soot.*;
-
 public interface Precedence
 {
     public abstract int getPrecedence();

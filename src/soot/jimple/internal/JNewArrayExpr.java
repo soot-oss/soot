@@ -32,8 +32,6 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
 
 public class JNewArrayExpr extends AbstractNewArrayExpr
 {

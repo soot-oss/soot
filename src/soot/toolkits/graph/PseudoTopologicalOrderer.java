@@ -25,7 +25,6 @@
 
 package soot.toolkits.graph;
 
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,7 +42,7 @@ public class PseudoTopologicalOrderer implements Orderer {
 
 	public PseudoTopologicalOrderer() {}
 
-	private Map stmtToColor;
+	private Map<Object, Object> stmtToColor;
 
 	private static final Object GRAY = new Object();
 
@@ -75,7 +74,7 @@ public class PseudoTopologicalOrderer implements Orderer {
 	 * @return an ordered list of the graph's nodes.
 	 */
 	protected List computeOrder(DirectedGraph g) {
-		stmtToColor = new IdentityHashMap((3 * g.size()) / 2);//new HashMap((3 * g.size()) / 2, 0.7f);
+		stmtToColor = new IdentityHashMap<Object, Object>((3 * g.size()) / 2);//new HashMap((3 * g.size()) / 2, 0.7f);
 		indexStack = new int[g.size()];
 		stmtStack = new Object[g.size()];
 		order = new LinkedList();

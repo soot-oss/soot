@@ -23,7 +23,6 @@ import java.util.*;
 
 import soot.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
 import soot.jbco.jimpleTransformations.*;
@@ -64,7 +63,7 @@ public class UpdateConstantsToFields extends BodyTransformer  implements IJbcoTr
     while (iter.hasNext()) {
       Unit u = (Unit)iter.next();
       if (u instanceof PushInst) {
-        SootField f = (SootField)CollectConstants.constantsToFields.get(((PushInst)u).getConstant());
+        SootField f = CollectConstants.constantsToFields.get(((PushInst)u).getConstant());
         if (f!=null && Rand.getInt(10) <= weight) {
             Unit get = Baf.v().newStaticGetInst(f.makeRef());
             units.insertBefore(get, u);

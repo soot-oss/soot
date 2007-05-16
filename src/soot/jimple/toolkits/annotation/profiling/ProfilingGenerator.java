@@ -27,10 +27,7 @@ package soot.jimple.toolkits.annotation.profiling;
 
 import soot.*;
 import soot.jimple.*;
-import soot.toolkits.graph.*;
 import soot.util.*;
-
-import soot.tagkit.*;
 
 import java.util.*;
 import soot.options.ProfilingOptions;
@@ -74,8 +71,7 @@ public class ProfilingGenerator extends BodyTransformer
 
 		if (stmt instanceof InvokeStmt)
 		{
-		    InvokeExpr iexpr = (InvokeExpr)
-		      ((InvokeStmt)stmt).getInvokeExpr() ;
+		    InvokeExpr iexpr = ((InvokeStmt)stmt).getInvokeExpr() ;
 		
 		    if (iexpr instanceof StaticInvokeExpr)
 		    {

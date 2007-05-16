@@ -20,16 +20,16 @@
 package soot.jimple.toolkits.pointer;
 
 import soot.*;
+
 import java.util.*;
 
 public class MemoryEfficientRasUnion extends Union {
-	HashSet subsets;
+	HashSet<PointsToSet> subsets;
 
 	public boolean isEmpty() {
 		if (subsets == null)
 			return true;
-		for (Iterator subsetIt = subsets.iterator(); subsetIt.hasNext();) {
-			final PointsToSet subset = (PointsToSet) subsetIt.next();
+		for (PointsToSet subset : subsets) {
 			if (!subset.isEmpty())
 				return false;
 		}
@@ -39,8 +39,7 @@ public class MemoryEfficientRasUnion extends Union {
 	public boolean hasNonEmptyIntersection(PointsToSet other) {
 		if (subsets == null)
 			return true;
-		for (Iterator subsetIt = subsets.iterator(); subsetIt.hasNext();) {
-			final PointsToSet subset = (PointsToSet) subsetIt.next();
+		for (PointsToSet subset : subsets) {
 			if (other instanceof Union) {
 				if (other.hasNonEmptyIntersection(subset))
 					return true;
@@ -56,7 +55,7 @@ public class MemoryEfficientRasUnion extends Union {
 		boolean result;
 		
 		if (subsets == null)
-			subsets = new HashSet();
+			subsets = new HashSet<PointsToSet>();
 		if (s instanceof MemoryEfficientRasUnion) {
 			MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
 			if (meru.subsets == null || subsets.containsAll(meru.subsets)) {
@@ -81,8 +80,7 @@ public class MemoryEfficientRasUnion extends Union {
 			return Collections.EMPTY_SET;
 		}
 		HashSet ret = new HashSet();
-		for (Iterator subsetIt = subsets.iterator(); subsetIt.hasNext();) {
-			final PointsToSet subset = (PointsToSet) subsetIt.next();
+		for (PointsToSet subset : subsets) {
 			ret.addAll(subset.possibleTypes());
 		}
 		return ret;

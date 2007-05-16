@@ -27,7 +27,6 @@ import soot.util.Chain;
 import soot.dava.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
-import soot.dava.toolkits.base.AST.analysis.*;
 
 
 public class VoidReturnRemover{
@@ -62,7 +61,7 @@ public class VoidReturnRemover{
 		ASTMethodNode node = (ASTMethodNode)AST;
 
 		//check there is only 1 subBody		
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size()!=1)
 	    	return;
 	    
@@ -80,7 +79,7 @@ public class VoidReturnRemover{
 	    	
 	    	
 	    //get last statement
-	    List stmts = ((ASTStatementSequenceNode)last).getStatements();
+	    List<Object> stmts = ((ASTStatementSequenceNode)last).getStatements();
 	    if(stmts.size()==0){
 	    	//no stmts inside statement sequence node
 	    	subBody.remove(subBody.size()-1);

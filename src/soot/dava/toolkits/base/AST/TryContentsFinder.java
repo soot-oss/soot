@@ -31,7 +31,7 @@ public class TryContentsFinder extends ASTAnalysis
     public static TryContentsFinder v() { return G.v().soot_dava_toolkits_base_AST_TryContentsFinder(); }
 
     private IterableSet curExceptionSet = new IterableSet();
-    private HashMap node2ExceptionSet = new HashMap();
+    private final HashMap<Object, IterableSet> node2ExceptionSet = new HashMap<Object, IterableSet>();
     
     public int getAnalysisDepth()
     {
@@ -54,7 +54,7 @@ public class TryContentsFinder extends ASTAnalysis
     
     public void analyseThrowStmt( ThrowStmt s)
     {
-	Value op = ((ThrowStmt) s).getOp();
+	Value op = (s).getOp();
 	
 	if (op instanceof Local) 
 	    add_ThrownType( ((Local) op).getType());
@@ -84,17 +84,17 @@ public class TryContentsFinder extends ASTAnalysis
 
 	    ASTTryNode tryNode = (ASTTryNode) n;
 	    
-	    ArrayList toRemove = new ArrayList();
-	    IterableSet tryExceptionSet = (IterableSet) node2ExceptionSet.get( tryNode.get_TryBodyContainer());
+	    ArrayList<Object> toRemove = new ArrayList<Object>();
+	    IterableSet tryExceptionSet = node2ExceptionSet.get( tryNode.get_TryBodyContainer());
 	    if (tryExceptionSet == null) {
 		tryExceptionSet = new IterableSet();
 		node2ExceptionSet.put( tryNode.get_TryBodyContainer(), tryExceptionSet);
 	    }
 	    
-	    List catchBodies = tryNode.get_CatchList();
-	    List subBodies = tryNode.get_SubBodies();
+	    List<Object> catchBodies = tryNode.get_CatchList();
+	    List<Object> subBodies = tryNode.get_SubBodies();
 	    
-	    Iterator cit = catchBodies.iterator();
+	    Iterator<Object> cit = catchBodies.iterator();
 	    while (cit.hasNext()) {
 		Object catchBody = cit.next();
 		SootClass exception = (SootClass) tryNode.get_ExceptionMap().get( catchBody);
@@ -103,7 +103,7 @@ public class TryContentsFinder extends ASTAnalysis
 		    toRemove.add( catchBody);
 	    }
 	    
-	    Iterator trit = toRemove.iterator();
+	    Iterator<Object> trit = toRemove.iterator();
 	    while (trit.hasNext()) {
 		Object catchBody = trit.next();
 		
@@ -124,7 +124,7 @@ public class TryContentsFinder extends ASTAnalysis
 	}
 
 	else {
-	    Iterator sbit = n.get_SubBodies().iterator();
+	    Iterator<Object> sbit = n.get_SubBodies().iterator();
 	    while (sbit.hasNext()) {
 		Iterator it = ((List) sbit.next()).iterator();
 		while (it.hasNext())
@@ -138,7 +138,7 @@ public class TryContentsFinder extends ASTAnalysis
 
     public IterableSet get_ExceptionSet( Object node)
     {
-	IterableSet fullSet = (IterableSet) node2ExceptionSet.get( node);
+	IterableSet fullSet = node2ExceptionSet.get( node);
 	if (fullSet == null) {
 	    fullSet = new IterableSet();
 	    node2ExceptionSet.put( node, fullSet);
@@ -149,7 +149,7 @@ public class TryContentsFinder extends ASTAnalysis
 
     public void add_ExceptionSet( Object node, IterableSet s)
     {
-	IterableSet fullSet = (IterableSet) node2ExceptionSet.get( node);
+	IterableSet fullSet = node2ExceptionSet.get( node);
 	if (fullSet == null) {
 	    fullSet = new IterableSet();
 	    node2ExceptionSet.put( node, fullSet);

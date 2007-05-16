@@ -50,9 +50,8 @@ public class StringTools
        if (lineSeparator.length() == 2)
            lf = lineSeparator.charAt(1);
 
-       for (int i = 0; i < fromStringArray.length; i++)
-       {
-           ch = (int) fromStringArray[i];
+       for (char element : fromStringArray) {
+           ch = element;
            if (((ch >= 32 && ch <= 126) || ch == cr || ch == lf) && ch != '\\')
            {
                whole.append((char) ch);
@@ -89,9 +88,7 @@ public class StringTools
 
         toStringBuffer.append("\"");
 
-        for (int i = 0; i < fromStringArray.length; i++)
-        {
-            char ch = fromStringArray[i];
+        for (char ch : fromStringArray) {
             {
               if (ch == '\\')
                 { toStringBuffer.append("\\\\"); continue; }
@@ -109,7 +106,7 @@ public class StringTools
               /* 10.04.2006 Nomait A Naeem  added handling of \f, as compilers throw error if unicode */
               if(ch == '\f')
               { toStringBuffer.append("\\f"); continue; }
-              else if((int) ch >= 32 && (int) ch <= 126)
+              else if(ch >= 32 && ch <= 126)
                 {toStringBuffer.append(ch); continue;}
             }
             
@@ -124,7 +121,7 @@ public class StringTools
      * representation for <code>ch</code>. */
     public static String getUnicodeStringFromChar(char ch)
     {
-        String s = Integer.toHexString((int) ch);
+        String s = Integer.toHexString(ch);
         String padding = null;
         
         switch(s.length()) {

@@ -27,8 +27,6 @@
 package soot.baf;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
 
 
 public interface Dup1_x2Inst extends DupInst

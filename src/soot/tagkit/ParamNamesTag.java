@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 import java.util.*;
 
 /** Represents a tag that just has a string to be printed with the code.
@@ -32,10 +31,8 @@ import java.util.*;
 
 public class ParamNamesTag implements  Tag
 {
-    ArrayList names;
-    private String analysisType = "Unknown";
-
-    public ParamNamesTag(ArrayList list){
+    ArrayList<String> names;
+    public ParamNamesTag(ArrayList<String> list){
         names = list;
     }
     
@@ -43,7 +40,7 @@ public class ParamNamesTag implements  Tag
         return names.toString();
     }
 
-    public ArrayList getNames(){
+    public ArrayList<String> getNames(){
         return names;
     }
 
@@ -53,7 +50,7 @@ public class ParamNamesTag implements  Tag
         return "ParamNamesTag";
     }
 
-    public ArrayList getInfo(){
+    public ArrayList<String> getInfo(){
         return names;
     }
     

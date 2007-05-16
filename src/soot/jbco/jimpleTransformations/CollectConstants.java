@@ -22,9 +22,7 @@ package soot.jbco.jimpleTransformations;
 import java.util.*;
 
 import soot.*;
-import soot.baf.*;
 import soot.jbco.IJbcoTransform;
-import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
 import soot.jimple.*;
 import soot.util.*;
@@ -56,8 +54,8 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     return name;
   }
   
-  public static HashMap constantsToFields = new HashMap();
-  public static HashMap typesToValues = new HashMap();
+  public static HashMap<Constant, SootField> constantsToFields = new HashMap<Constant, SootField>();
+  public static HashMap<Type,List<Constant>> typesToValues = new HashMap<Type,List<Constant>>();
 
   public static SootField field = null;  
   
@@ -75,8 +73,8 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     while (it.hasNext()) {
       SootClass cl = (SootClass)it.next();
       Object meths[] = cl.getMethods().toArray();
-      for (int i = 0; i < meths.length; i++) {
-        SootMethod m = (SootMethod)meths[i];
+      for (Object element : meths) {
+        SootMethod m = (SootMethod)element;
         if (!m.hasActiveBody() || m.getName().indexOf("<clinit>")>=0)
           continue;
         Body body = m.getActiveBody();
@@ -86,16 +84,16 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
           if (v instanceof Constant) {
             Constant c = (Constant) v;
             Type t = c.getType();
-            ArrayList values = (ArrayList) typesToValues.get(t);
+            List<Constant> values = typesToValues.get(t);
             if (values == null) {
-              values = new ArrayList();
+              values = new ArrayList<Constant>();
               typesToValues.put(t, values);
             }
             
             boolean found = false;
-            Iterator vit = values.iterator();
+            Iterator<Constant> vit = values.iterator();
             while (vit.hasNext()) {
-              if (((Constant) vit.next()).equals(c)) {
+              if (vit.next().equals(c)) {
                 found = true;
                 break;
               }
@@ -117,7 +115,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     while (it.hasNext()) {
       Type t = (Type) it.next();
       if (t instanceof NullType)  continue; //t = RefType.v("java.lang.Object");
-      Iterator cit = ((ArrayList) typesToValues.get(t)).iterator();
+      Iterator cit = typesToValues.get(t).iterator();
       while (cit.hasNext()) {
         Constant c = (Constant) cit.next();
         

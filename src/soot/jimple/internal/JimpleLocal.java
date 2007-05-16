@@ -132,7 +132,7 @@ public class JimpleLocal implements Local, ConvertToBaf
         ((JimpleValueSwitch) sw).caseLocal(this);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
 	Unit u = Baf.v().newLoadInst(getType(),context.getBafLocalOfJimpleLocal(this));
         out.add(u);

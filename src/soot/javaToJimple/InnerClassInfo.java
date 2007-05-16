@@ -19,8 +19,6 @@
 
 package soot.javaToJimple;
 
-import soot.*;
-
 public class InnerClassInfo {
     
     public static final int NESTED = 0;

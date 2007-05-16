@@ -2,7 +2,6 @@ package soot.dava.internal.javaRep;
 
 import soot.Type;
 import soot.UnitPrinter;
-import soot.ValueBox;
 
 public class DShortcutAssignStmt extends DAssignStmt {
 	Type type;

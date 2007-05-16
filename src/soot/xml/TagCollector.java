@@ -26,12 +26,12 @@ import java.io.*;
 
 public class TagCollector {
 
-    private ArrayList attributes;
-    private ArrayList keys;
+    private final ArrayList<Attribute> attributes;
+    private final ArrayList<Key> keys;
     
     public TagCollector(){
-        attributes = new ArrayList();
-        keys = new ArrayList();
+        attributes = new ArrayList<Attribute>();
+        keys = new ArrayList<Key>();
     }
 
     public void collectTags(SootClass sc){
@@ -70,9 +70,9 @@ public class TagCollector {
     }
 
     public void printKeys(PrintWriter writerOut){
-        Iterator it = keys.iterator();
+        Iterator<Key> it = keys.iterator();
         while (it.hasNext()){
-            Key k = (Key)it.next();
+            Key k = it.next();
             k.print(writerOut);
         }
     }
@@ -148,9 +148,9 @@ public class TagCollector {
     
     public void printTags(PrintWriter writerOut){
         
-        Iterator it = attributes.iterator();
+        Iterator<Attribute> it = attributes.iterator();
         while (it.hasNext()){
-            Attribute a = (Attribute)it.next();
+            Attribute a = it.next();
             //System.out.println("will print attr: "+a);
             a.print(writerOut);
         }

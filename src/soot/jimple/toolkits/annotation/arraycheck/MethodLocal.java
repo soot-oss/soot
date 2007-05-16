@@ -26,12 +26,11 @@
 package soot.jimple.toolkits.annotation.arraycheck;
 
 import soot.*;
-import soot.jimple.*;
 
 class MethodLocal
 {
-    private SootMethod m;
-    private Local l;
+    private final SootMethod m;
+    private final Local l;
 
     public MethodLocal(SootMethod method, Local local)
     {

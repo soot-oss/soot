@@ -32,6 +32,7 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
 import soot.*;
 import soot.dava.*;
 import java.util.*;
+
 import soot.jimple.*;
 //import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
@@ -68,7 +69,7 @@ import soot.dava.internal.AST.*;
 
 
 public class MustMayInitialize extends StructuredAnalysis{
-    HashMap mapping;
+    HashMap<Object, List> mapping;
     DavaFlowSet finalResult;
     
     public static final int MUST=0;
@@ -78,7 +79,7 @@ public class MustMayInitialize extends StructuredAnalysis{
 
     public MustMayInitialize(Object analyze,int MUSTorMAY){
 	super();
-	mapping = new HashMap();
+	mapping = new HashMap<Object, List>();
 	MUSTMAY=MUSTorMAY;
 	
 	//System.out.println("MustOrMay value is"+MUSTorMAY);
@@ -204,14 +205,14 @@ public class MustMayInitialize extends StructuredAnalysis{
 		 * Gather more information just in case someone might need the def points
 		 */
 		Object temp = mapping.get(leftOp);
-		List defs;
+		List<Stmt> defs;
 
 		if(temp == null){
 		    //first definition
-		    defs = new ArrayList();
+		    defs = new ArrayList<Stmt>();
 		}
 		else{
-		    defs = (ArrayList)temp;
+		    defs = (ArrayList<Stmt>)temp;
 		}
 		defs.add(s);
 		mapping.put(leftOp,defs);
@@ -225,14 +226,14 @@ public class MustMayInitialize extends StructuredAnalysis{
 		 * Gather more information just in case someone might need the def points
 		 */
 		Object temp = mapping.get(field);
-		List defs;
+		List<Stmt> defs;
 		
 		if(temp == null){
 		    //first definition
-		    defs = new ArrayList();
+		    defs = new ArrayList<Stmt>();
 		}
 		else{
-		    defs = (ArrayList)temp;
+		    defs = (ArrayList<Stmt>)temp;
 		}
 		defs.add(s);
 

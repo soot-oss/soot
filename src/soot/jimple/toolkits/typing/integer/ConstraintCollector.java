@@ -28,8 +28,6 @@ package soot.jimple.toolkits.typing.integer;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
 
 class ConstraintCollector extends AbstractStmtSwitch
 {
@@ -151,7 +149,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 
   public void caseInvokeStmt(InvokeStmt stmt)
   {
-    handleInvokeExpr((InvokeExpr) stmt.getInvokeExpr());
+    handleInvokeExpr(stmt.getInvokeExpr());
   }
 
   public void caseAssignStmt(AssignStmt stmt)
@@ -567,8 +565,6 @@ class ConstraintCollector extends AbstractStmtSwitch
       }
     else if(r instanceof InstanceOfExpr)
       {
-	InstanceOfExpr ioe = (InstanceOfExpr) r;
-	
 	right = resolver.BOOLEAN;
       }
     else if(r instanceof InvokeExpr)
@@ -618,8 +614,6 @@ class ConstraintCollector extends AbstractStmtSwitch
       }
     else if(r instanceof LengthExpr)
       {
-	LengthExpr le = (LengthExpr) r;
-	
 	right = resolver.INT;
       }
     else if(r instanceof NegExpr)
@@ -768,7 +762,7 @@ class ConstraintCollector extends AbstractStmtSwitch
       {
 	ConditionExpr cond = (ConditionExpr) stmt.getCondition();
 	
-	BinopExpr expr = (BinopExpr) cond;
+	BinopExpr expr = cond;
 	Value lv = expr.getOp1();
 	Value rv = expr.getOp2();
 	

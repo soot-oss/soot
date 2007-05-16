@@ -20,8 +20,6 @@
 package soot.shimple.toolkits.graph;
 
 import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 import soot.shimple.*;
 import soot.toolkits.graph.*;
 import java.util.*;
@@ -31,8 +29,8 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
 {
     protected BlockGraph cfg;
     protected ValueGraph vg;
-    protected Set partitions;
-    protected Map nodeToPartition;
+    protected Set<Partition> partitions;
+    protected Map<Node, Partition> nodeToPartition;
 
     protected int currentPartitionNumber;
     
@@ -40,8 +38,8 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
     {
         this.cfg = cfg;
         vg = new ValueGraph(cfg);
-        partitions = new HashSet(); // not deterministic
-        nodeToPartition = new HashMap();
+        partitions = new HashSet<Partition>(); // not deterministic
+        nodeToPartition = new HashMap<Node, Partition>();
         currentPartitionNumber = 0;
         
         initPartition();
@@ -66,7 +64,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
     public int getGlobalValueNumber(Local local)
     {
         Node node = vg.getNode(local);
-        return ((Partition)nodeToPartition.get(node)).getPartitionNumber();
+        return nodeToPartition.get(node).getPartitionNumber();
     }
     
     public boolean areEqual(Local local1, Local local2)
@@ -79,14 +77,14 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
     
     protected void initPartition()
     {
-        Map labelToPartition = new HashMap();
+        Map<String, Partition> labelToPartition = new HashMap<String, Partition>();
         
-        Iterator topNodesIt = vg.getTopNodes().iterator();
+        Iterator<Node> topNodesIt = vg.getTopNodes().iterator();
         while(topNodesIt.hasNext()){
-            Node node = (Node) topNodesIt.next();
+            Node node = topNodesIt.next();
             String label = node.getLabel();
             
-            Partition partition = (Partition) labelToPartition.get(label);
+            Partition partition = labelToPartition.get(label);
             if(partition == null){
                 partition = new Partition();
                 partitions.add(partition);
@@ -98,15 +96,15 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
         }
     }
 
-    protected List newPartitions;
+    protected List<Partition> newPartitions;
     
     protected void iterPartition()
     {
-        newPartitions = new ArrayList();
+        newPartitions = new ArrayList<Partition>();
 
-        Iterator partitionsIt = partitions.iterator();
+        Iterator<Partition> partitionsIt = partitions.iterator();
         while(partitionsIt.hasNext()){
-            Partition partition = (Partition) partitionsIt.next();
+            Partition partition = partitionsIt.next();
             processPartition(partition);
         }
 
@@ -147,8 +145,8 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
         if(ordered != node2.isOrdered())
             throw new RuntimeException("Assertion failed.");
 
-        List children1 = node1.getChildren();
-        List children2 = node2.getChildren();
+        List<Node> children1 = node1.getChildren();
+        List<Node> children2 = node2.getChildren();
 
         int numberOfChildren = children1.size();
         if(children2.size() != numberOfChildren)
@@ -156,17 +154,17 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
         
         if(ordered){
             for(int i = 0; i < numberOfChildren; i++){
-                Node child1 = (Node) children1.get(i);
-                Node child2 = (Node) children2.get(i);
+                Node child1 = children1.get(i);
+                Node child2 = children2.get(i);
                 if(nodeToPartition.get(child1) != nodeToPartition.get(child2))
                     return false;
             }
         }
         else{
             for(int i = 0; i < numberOfChildren; i++){
-                Node child1 = (Node) children1.get(i);
+                Node child1 = children1.get(i);
                 for(int j = i; j < numberOfChildren; j++){
-                    Node child2 = (Node) children2.get(j);
+                    Node child2 = children2.get(j);
 
                     if(nodeToPartition.get(child1) ==
                        nodeToPartition.get(child2)){

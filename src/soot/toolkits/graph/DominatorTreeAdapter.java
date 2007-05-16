@@ -19,13 +19,7 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.jimple.*;
-import soot.options.*;
 import java.util.*;
-import soot.util.*;
 
 /**
  * This adapter provides a DirectedGraph interface to DominatorTree.

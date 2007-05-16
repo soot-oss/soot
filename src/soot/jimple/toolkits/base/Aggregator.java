@@ -57,7 +57,7 @@ public class Aggregator extends BodyTransformer
             Timers.v().aggregationTimer.start();
          boolean changed = false;
 
-        Map boxToZone = new HashMap(body.getUnits().size() * 2 + 1, 0.7f);
+        Map<ValueBox, Zone> boxToZone = new HashMap<ValueBox, Zone>(body.getUnits().size() * 2 + 1, 0.7f);
 
         // Determine the zone of every box
         {
@@ -68,7 +68,7 @@ public class Aggregator extends BodyTransformer
             while(unitIt.hasNext())
             {
                 Unit u = (Unit) unitIt.next();
-                Zone zone = (Zone) zonation.getZoneOf(u);
+                Zone zone = zonation.getZoneOf(u);
                 
                 Iterator boxIt = u.getUseBoxes().iterator();
                 while(boxIt.hasNext())
@@ -102,7 +102,7 @@ public class Aggregator extends BodyTransformer
             
     }
   
-  private static boolean internalAggregate(StmtBody body, Map boxToZone, boolean onlyStackVars)
+  private static boolean internalAggregate(StmtBody body, Map<ValueBox, Zone> boxToZone, boolean onlyStackVars)
     {
       Iterator stmtIt;
       LocalUses localUses;
@@ -131,7 +131,7 @@ public class Aggregator extends BodyTransformer
           if(onlyStackVars && !((Local) lhs).getName().startsWith("$"))
             continue;
             
-          List lu = localUses.getUsesOf((AssignStmt)s);
+          List lu = localUses.getUsesOf(s);
           if (lu.size() != 1)
             continue;
             
@@ -139,7 +139,7 @@ public class Aggregator extends BodyTransformer
           Unit use = usepair.unit;
           ValueBox useBox = usepair.valueBox;
               
-          List ld = localDefs.getDefsOfAt((Local)lhs, use);
+          List<Unit> ld = localDefs.getDefsOfAt((Local)lhs, use);
           if (ld.size() != 1)
             continue;
    
@@ -161,9 +161,9 @@ public class Aggregator extends BodyTransformer
           boolean propagatingInvokeExpr = false;
           boolean propagatingFieldRef = false;
           boolean propagatingArrayRef = false;
-          ArrayList fieldRefList = new ArrayList();
+          ArrayList<Value> fieldRefList = new ArrayList<Value>();
       
-          LinkedList localsUsed = new LinkedList();
+          LinkedList<Value> localsUsed = new LinkedList<Value>();
           for (Iterator useIt = (s.getUseBoxes()).iterator();
                useIt.hasNext(); )
             {
@@ -184,12 +184,12 @@ public class Aggregator extends BodyTransformer
           // look for a path from s to use in graph.
           // only look in an extended basic block, though.
 
-          List path = graph.getExtendedBasicBlockPathBetween(s, use);
+          List<Unit> path = graph.getExtendedBasicBlockPathBetween(s, use);
       
           if (path == null)
             continue;
 
-          Iterator pathIt = path.iterator();
+          Iterator<Unit> pathIt = path.iterator();
 
           // skip s.
           if (pathIt.hasNext())
@@ -227,7 +227,7 @@ public class Aggregator extends BodyTransformer
                                   // Can't aggregate a field access if passing a definition of a field 
                                   // with the same name, because they might be aliased
 
-                                  Iterator frIt = fieldRefList.iterator();
+                                  Iterator<Value> frIt = fieldRefList.iterator();
                                   while (frIt.hasNext())
                                   {
                                       FieldRef fieldRef = (FieldRef) frIt.next();

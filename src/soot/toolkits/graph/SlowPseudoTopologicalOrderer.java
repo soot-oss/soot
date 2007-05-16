@@ -58,7 +58,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 		mIsReversed = isReversed;
 	}
 
-	private Map stmtToColor;
+	private Map<Object,Integer> stmtToColor;
 
 	private static final int WHITE = 0, GRAY = 1, BLACK = 2;
 
@@ -68,9 +68,9 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 
 	private DirectedGraph graph;
 
-	private List reverseOrder;
+	private List<Object> reverseOrder;
 
-	private HashMap succsMap = new HashMap();
+	private final HashMap<Object,List> succsMap = new HashMap<Object,List>();
 
 	/**
 	 * {@inheritDoc}
@@ -115,7 +115,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 			while (stmtIt.hasNext()) {
 				Object s = stmtIt.next();
 
-				if (((Integer) stmtToColor.get(s)).intValue() == WHITE)
+				if (stmtToColor.get(s).intValue() == WHITE)
 					visitNode(s);
 			}
 		}
@@ -132,7 +132,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 
 	private void visitNode(Object startStmt) {
 		LinkedList stmtStack = new LinkedList();
-		LinkedList indexStack = new LinkedList();
+		LinkedList<Integer> indexStack = new LinkedList<Integer>();
 
 		stmtToColor.put(startStmt, new Integer(GRAY));
 
@@ -140,7 +140,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 		indexStack.addLast(new Integer(-1));
 
 		while (!stmtStack.isEmpty()) {
-			int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
+			int toVisitIndex = indexStack.removeLast().intValue();
 			Object toVisitNode = stmtStack.getLast();
 
 			toVisitIndex++;
@@ -160,9 +160,9 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 				stmtStack.removeLast();
 				indexStack.removeLast();
 			} else {
-				List orderedSuccs = (List) succsMap.get(toVisitNode);
+				List<Object> orderedSuccs = succsMap.get(toVisitNode);
 				if (orderedSuccs == null) {
-					orderedSuccs = new LinkedList();
+					orderedSuccs = new LinkedList<Object>();
 					succsMap.put(toVisitNode, orderedSuccs);
 					/* make ordered succs */
 
@@ -190,7 +190,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 				Object childNode = orderedSuccs.get(toVisitIndex);
 
 				// Visit this child next if not already visited (or on stack)
-				if (((Integer) stmtToColor.get(childNode)).intValue() == WHITE) {
+				if (stmtToColor.get(childNode).intValue() == WHITE) {
 					stmtToColor.put(childNode, new Integer(GRAY));
 
 					stmtStack.addLast(childNode);
@@ -201,13 +201,13 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 	}
 
 	private class PseudoTopologicalReverseOrderer {
-		private Map stmtToColor;
+		private Map<Object, Integer> stmtToColor;
 
 		private static final int WHITE = 0, GRAY = 1, BLACK = 2;
 
-		private LinkedList order;
+		private LinkedList<Object> order;
 
-		private boolean mIsReversed = false;
+		private final boolean mIsReversed = false;
 
 		private DirectedGraph graph;
 
@@ -216,7 +216,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 		 *            a DirectedGraph instance whose nodes we which to order.
 		 * @return a pseudo-topologically ordered list of the graph's nodes.
 		 */
-		List newList(DirectedGraph g) {
+		List<Object> newList(DirectedGraph g) {
 			return computeOrder(g);
 		}
 
@@ -227,10 +227,10 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 		 *            a DirectedGraph instance we want to order the nodes for.
 		 * @return an ordered list of the graph's nodes.
 		 */
-		LinkedList computeOrder(DirectedGraph g) {
-			stmtToColor = new HashMap();
+		LinkedList<Object> computeOrder(DirectedGraph g) {
+			stmtToColor = new HashMap<Object, Integer>();
 
-			order = new LinkedList();
+			order = new LinkedList<Object>();
 			graph = g;
 
 			// Color all nodes white
@@ -250,7 +250,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 				while (stmtIt.hasNext()) {
 					Object s = stmtIt.next();
 
-					if (((Integer) stmtToColor.get(s)).intValue() == WHITE)
+					if (stmtToColor.get(s).intValue() == WHITE)
 						visitNode(s);
 				}
 			}
@@ -259,8 +259,8 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 		}
 
 		private void visitNode(Object startStmt) {
-			LinkedList stmtStack = new LinkedList();
-			LinkedList indexStack = new LinkedList();
+			LinkedList<Object> stmtStack = new LinkedList<Object>();
+			LinkedList<Integer> indexStack = new LinkedList<Integer>();
 
 			stmtToColor.put(startStmt, new Integer(GRAY));
 
@@ -268,7 +268,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 			indexStack.addLast(new Integer(-1));
 
 			while (!stmtStack.isEmpty()) {
-				int toVisitIndex = ((Integer) indexStack.removeLast())
+				int toVisitIndex = indexStack.removeLast()
 						.intValue();
 				Object toVisitNode = stmtStack.getLast();
 
@@ -294,7 +294,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 
 					// Visit this child next if not already visited (or on
 					// stack)
-					if (((Integer) stmtToColor.get(childNode)).intValue() == WHITE) {
+					if (stmtToColor.get(childNode).intValue() == WHITE) {
 						stmtToColor.put(childNode, new Integer(GRAY));
 
 						stmtStack.addLast(childNode);

@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.sets;
+import soot.jimple.ClassConstant;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.*;
 import soot.util.BitVector;
@@ -126,7 +127,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
     }
 
     public Set possibleStringConstants() { 
-        final HashSet ret = new HashSet();
+        final HashSet<String> ret = new HashSet<String>();
         return this.forall( new P2SetVisitor() {
         public final void visit( Node n ) {
             if( n instanceof StringConstantNode ) {
@@ -137,7 +138,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
         }} ) ? null : ret;
     }
     public Set possibleClassConstants() { 
-        final HashSet ret = new HashSet();
+        final HashSet<ClassConstant> ret = new HashSet<ClassConstant>();
         return this.forall( new P2SetVisitor() {
         public final void visit( Node n ) {
             if( n instanceof ClassConstantNode ) {
@@ -165,7 +166,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
 		//Code ripped from BitPointsToSet
 
     	BitVector mask = null;
-    	TypeManager typeManager = (TypeManager) pag.getTypeManager();
+    	TypeManager typeManager = pag.getTypeManager();
     	if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
     		mask = typeManager.get( this.getType() );
     	}

@@ -20,17 +20,12 @@
 package soot.shimple.internal;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
-import soot.shimple.toolkits.scalar.*;
-import soot.shimple.toolkits.graph.*;
 import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 import soot.jimple.toolkits.base.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
@@ -70,7 +65,7 @@ public class ShimpleBodyBuilder
     /**
      * A fixed list of all original Locals.
      **/
-    protected List origLocals;
+    protected List<Local> origLocals;
 
     public PhiNodeManager phi;
     public PiNodeManager pi;
@@ -96,7 +91,7 @@ public class ShimpleBodyBuilder
     {
         cfg = sf.getBlockGraph();
         dt = sf.getDominatorTree();
-        origLocals = new ArrayList(body.getLocals());
+        origLocals = new ArrayList<Local>(body.getLocals());
     }
 
     public void transform()
@@ -170,12 +165,12 @@ public class ShimpleBodyBuilder
     /**
      * Maps new name Strings to Locals.
      **/
-    protected Map newLocals;
+    protected Map<String, Local> newLocals;
 
     /**
      * Maps renamed Locals to original Locals.
      **/
-    protected Map newLocalsToOldLocal;
+    protected Map<Local,Local> newLocalsToOldLocal;
 
     protected int[] assignmentCounters;
     protected Stack[] namingStacks;
@@ -188,8 +183,8 @@ public class ShimpleBodyBuilder
     public void renameLocals()
     {
         update();
-        newLocals = new HashMap();
-        newLocalsToOldLocal = new HashMap();
+        newLocals = new HashMap<String, Local>();
+        newLocalsToOldLocal = new HashMap<Local, Local>();
 
         assignmentCounters = new int[origLocals.size()];
         namingStacks = new Stack[origLocals.size()];
@@ -215,7 +210,7 @@ public class ShimpleBodyBuilder
     public void renameLocalsSearch(Block block)
     {
         // accumulated in Step 1 to be re-processed in Step 4
-        List lhsLocals = new ArrayList();
+        List<Local> lhsLocals = new ArrayList<Local>();
         
         // Step 1 of 4 -- Rename block's uses (ordinary) and defs
         {
@@ -349,10 +344,10 @@ public class ShimpleBodyBuilder
 
         // Step 4 of 4 -- Tricky name stack updates.
         {
-            Iterator lhsLocalsIt = lhsLocals.iterator();
+            Iterator<Local> lhsLocalsIt = lhsLocals.iterator();
 
             while(lhsLocalsIt.hasNext()){
-                Local lhsLocal = (Local) lhsLocalsIt.next();
+                Local lhsLocal = lhsLocalsIt.next();
 
                 int lhsLocalIndex = indexOfLocal(lhsLocal);
                 if(lhsLocalIndex == -1)
@@ -374,7 +369,7 @@ public class ShimpleBodyBuilder
         Local oldLocal = local;
         
         if(!origLocals.contains(local))
-            oldLocal = (Local) newLocalsToOldLocal.get(local);
+            oldLocal = newLocalsToOldLocal.get(local);
         
         if(subscript.intValue() == 0)
             return oldLocal;
@@ -383,7 +378,7 @@ public class ShimpleBodyBuilder
         // take care of it.
         String name = oldLocal.getName() + "_" + subscript;
 
-        Local newLocal = (Local) newLocals.get(name);
+        Local newLocal = newLocals.get(name);
 
         if(newLocal == null){
             newLocal = new JimpleLocal(name, oldLocal.getType());
@@ -408,7 +403,7 @@ public class ShimpleBodyBuilder
 
         if(localIndex == -1){
             // might be null
-            Local oldLocal = (Local) newLocalsToOldLocal.get(local);
+            Local oldLocal = newLocalsToOldLocal.get(local);
 
             localIndex = origLocals.indexOf(oldLocal);
         }
@@ -427,7 +422,7 @@ public class ShimpleBodyBuilder
             return;
         }
 
-        Set localNames = new HashSet();
+        Set<String> localNames = new HashSet<String>();
         Iterator localsIt = body.getLocals().iterator();
 
         while(localsIt.hasNext()){
@@ -448,7 +443,7 @@ public class ShimpleBodyBuilder
      * Given a set of Strings, return a new name for dupName that is
      * not currently in the set.
      **/
-    public String makeUniqueLocalName(String dupName, Set localNames)
+    public String makeUniqueLocalName(String dupName, Set<String> localNames)
     {
         int counter = 1;
         String newName = dupName;

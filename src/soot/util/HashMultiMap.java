@@ -26,7 +26,7 @@ import java.util.*;
  */
 
 public class HashMultiMap implements MultiMap {
-    Map m = new HashMap(0);
+    Map<Object,Set> m = new HashMap<Object,Set>(0);
 
     public HashMultiMap() {}
     public HashMultiMap( MultiMap m ) {
@@ -49,9 +49,9 @@ public class HashMultiMap implements MultiMap {
 	return m.containsKey( key );
     }
     public boolean containsValue( Object value ) {
-	Iterator it = m.values().iterator();
+	Iterator<Set> it = m.values().iterator();
 	while( it.hasNext() ) {
-	    Set s = (Set) it.next();
+	    Set s = it.next();
 	    if( s.contains( value ) ) return true;
 	}
 	return false;
@@ -60,7 +60,7 @@ public class HashMultiMap implements MultiMap {
 	return new HashSet(4);
     }
     private Set findSet( Object key ) {
-	Set s = (Set) m.get( key );
+	Set s = m.get( key );
 	if( s == null ) {
 	    s = newSet();
 	    m.put( key, s );
@@ -75,7 +75,7 @@ public class HashMultiMap implements MultiMap {
 	return findSet( key ).addAll( values );
     }
     public boolean remove( Object key, Object value ) {
-	Set s = (Set) m.get( key );
+	Set s = m.get( key );
 	if( s == null ) return false;
 	boolean ret = s.remove( value );
 	if( s.isEmpty() ) {
@@ -87,7 +87,7 @@ public class HashMultiMap implements MultiMap {
 	return null != m.remove( key );
     }
     public boolean removeAll( Object key, Set values ) {
-        Set s = (Set) m.get( key );
+        Set s = m.get( key );
         if( s == null ) return false;
         boolean ret = s.removeAll( values );
         if( s.isEmpty() ) {
@@ -96,7 +96,7 @@ public class HashMultiMap implements MultiMap {
         return ret;
     }
     public Set get( Object o ) {
-	Set ret = (Set) m.get( o );
+	Set ret = m.get( o );
 	if( ret == null ) return Collections.EMPTY_SET;
 	return Collections.unmodifiableSet(ret);
     }
@@ -105,9 +105,9 @@ public class HashMultiMap implements MultiMap {
     }
     public Set values() {
 	Set ret = new HashSet(0);
-	Iterator it = m.values().iterator();
+	Iterator<Set> it = m.values().iterator();
 	while( it.hasNext() ) {
-	    Set s = (Set) it.next();
+	    Set s = it.next();
 	    ret.addAll( s );
 	}
 	return ret;

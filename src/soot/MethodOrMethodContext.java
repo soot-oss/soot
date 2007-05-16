@@ -18,7 +18,6 @@
  */
 
 package soot;
-import soot.jimple.*;
 
 /** A common interface for either just a method, or a method with context.
  * @author Ondrej Lhotak

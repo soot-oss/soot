@@ -29,9 +29,6 @@
 
 package soot;
 
-import soot.tagkit.*;
-import soot.*;
-import soot.util.*;
 import java.util.*;
 
 public class AbstractUnitAllMapTo extends AbstractMap

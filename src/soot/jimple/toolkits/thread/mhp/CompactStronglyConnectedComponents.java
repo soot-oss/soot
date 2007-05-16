@@ -1,14 +1,9 @@
 package soot.jimple.toolkits.thread.mhp;
 
 
-import soot.jimple.*;
-import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.toolkits.scalar.*;
-//import soot.jimple.internal.*;
-import soot.toolkits.graph.*;
 import soot.util.*;
-import soot.tagkit.*;
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -42,11 +37,11 @@ public class CompactStronglyConnectedComponents{
 //		testCan(speg.getMainPegChain(), canNotBeCompacted);	
 //		SCC scc = new SCC(chain, peg);
 		SCC scc = new SCC(chain.iterator(), peg);
-		List sccList = scc.getSccList();	
+		List<List<Object>> sccList = scc.getSccList();	
 		//testSCC(sccList);
-		Iterator sccListIt = sccList.iterator();
+		Iterator<List<Object>> sccListIt = sccList.iterator();
 		while (sccListIt.hasNext()){
-			List s = (List)sccListIt.next();
+			List s = sccListIt.next();
 			if (s.size()>1){
 				//printSCC(s);
 				if (!checkIfContainsElemsCanNotBeCompacted(s, canNotBeCompacted)){
@@ -74,23 +69,6 @@ public class CompactStronglyConnectedComponents{
 		}
 		
 	}
-	private void testCan(Chain mainPegChain, Set canNotBeCompacted){
-		Iterator it = mainPegChain.iterator();
-		while (it.hasNext()){
-			JPegStmt s = (JPegStmt)it.next();
-			if (canNotBeCompacted.contains(s)) System.out.println("**contains "+s);
-		}
-	}
-	private void testListSucc(PegGraph pg){
-		Iterator it = pg.iterator();
-		while (it.hasNext()){
-			Object o = it.next();
-			if (o instanceof List){
-				System.out.println("find list in unitToSuccs: "+o);
-				System.out.println("succs are: "+pg.getSuccsOf(o));
-			}
-		}
-	}
 	private boolean checkIfContainsElemsCanNotBeCompacted(List list, 
 			Set canNotBeCompacted ){
 		Iterator sccIt = list.iterator();
@@ -113,8 +91,8 @@ public class CompactStronglyConnectedComponents{
 		FlowSet allNodes = peg.getAllNodes();
 		HashMap unitToSuccs = peg.getUnitToSuccs();
 		HashMap unitToPreds = peg.getUnitToPreds();
-		List newPreds = new ArrayList();
-		List newSuccs = new ArrayList();
+		List<Object> newPreds = new ArrayList<Object>();
+		List<Object> newSuccs = new ArrayList<Object>();
 		
 		while (it.hasNext()){
 			JPegStmt s = (JPegStmt)it.next();
@@ -198,70 +176,5 @@ public class CompactStronglyConnectedComponents{
 			
 		}
 		//System.out.println("=======update monitor==end====");		     
-	}
-	
-	private void testSCC(List list){
-		System.out.println("=========test SCC=======");
-		Iterator sccListIt = list.iterator();
-		while (sccListIt.hasNext()){
-			List scc =(List)sccListIt.next();
-			Iterator sccit = scc.iterator();
-			//	    System.out.println(scc);
-			System.out.println("scc list: ");
-			while (sccit.hasNext()){
-				JPegStmt s  = (JPegStmt)sccit.next();
-				
-				
-				Tag tag = (Tag)((JPegStmt)s).getTags().get(0);
-				System.out.println(tag + " " + s );
-			}
-			
-			
-			
-			
-		}
-		System.out.println("======end==test SCC=======");
-	}
-	private void testList(List list){
-		Iterator it = list.iterator();
-		while (it.hasNext()){
-			Object o = it.next();
-			if (o instanceof JPegStmt){
-				JPegStmt  unit = (JPegStmt)o;
-				
-				Tag tag = (Tag)unit.getTags().get(0);
-				System.out.println(tag+" "+unit);
-				
-			}
-			
-			
-			else{
-				System.out.println("---list---");
-				Iterator listIt = ((List)o).iterator();
-				while (listIt.hasNext()){
-					Object oo = listIt.next();
-					if (oo instanceof JPegStmt){
-						JPegStmt  unit = (JPegStmt)oo;
-						Tag tag = (Tag)unit.getTags().get(0);
-						System.out.println(tag+" "+unit);
-					}
-					else
-						System.out.println(oo);
-				}
-				System.out.println("---list--end-");
-			}
-		}
-	}
-	private void printSCC(List list){
-		Iterator sccIt = list.iterator();
-		System.out.println("scc list with tag:");
-		while (sccIt.hasNext()){
-			Object o = sccIt.next();
-			
-			if (o instanceof JPegStmt){
-				Tag tag = (Tag)((JPegStmt)o).getTags().get(0);
-				System.out.println(tag + " " + o );
-			}
-		}
 	}
 }

@@ -46,11 +46,9 @@ import soot.baf.*;
 public class Block
 {
     private Unit mHead, mTail;
-    private Body mBody;
+    private final Body mBody;
     private List mPreds, mSuccessors;
-    private int mPredCount = 0, mBlockLength = 0, mIndexInMethod = 0;
-    private BlockGraph mBlockGraph;
-
+    private int mBlockLength = 0, mIndexInMethod = 0;
     /**
      *   Constructs a Block in the context of a BlockGraph, and enclosing Body instances.
      *  
@@ -76,7 +74,6 @@ public class Block
         mBody = aBody;
         mIndexInMethod = aIndexInMethod;
         mBlockLength = aBlockLength;
-        mBlockGraph = aBlockGraph;
     }
 
 
@@ -296,19 +293,6 @@ public class Block
 
 
 
-    private Map buildMapForBlock() 
-    {
-        Map m = new HashMap();
-        List basicBlocks = mBlockGraph.getBlocks();
-        Iterator it = basicBlocks.iterator();
-        while(it.hasNext()) {
-            Block currentBlock = (Block) it.next();
-            m.put(currentBlock.getHead(),  "block" + (new Integer(currentBlock.getIndexInMethod()).toString()));
-        }        
-        return m;
-    }
-
-
     Map allMapToUnnamed = new AllMapTo("???");
 
     class AllMapTo extends AbstractMap
@@ -345,7 +329,6 @@ public class Block
 
         strBuf.append("Block " + mIndexInMethod + ":" + System.getProperty("line.separator"));
         strBuf.append("[preds: ");
-        int count = 0;
         if(mPreds != null) {
             Iterator it = mPreds.iterator();
             while(it.hasNext()) {

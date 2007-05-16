@@ -27,13 +27,10 @@
 
 package soot.jimple.toolkits.annotation.purity;
 import java.util.*;
-import java.io.*;
 import soot.*;
-import soot.util.*;
 import soot.util.dot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.options.PurityOptions;
 import soot.tagkit.*;
@@ -215,21 +212,21 @@ public class PurityInterproceduralAnalysis
 	    String c = method.getDeclaringClass().toString();
 	    String m = method.getName();
 	    String[][] o = PurityInterproceduralAnalysis.pureMethods;
-	    for (int i=0;i<o.length;i++)
-		if (m.equals(o[i][1]) && c.startsWith(o[i][0])) return false;
+	    for (String[] element : o)
+			if (m.equals(element[1]) && c.startsWith(element[0])) return false;
 	    o = PurityInterproceduralAnalysis.impureMethods;
-	    for (int i=0;i<o.length;i++)
-		if (m.equals(o[i][1]) && c.startsWith(o[i][0])) return false;
+	    for (String[] element : o)
+			if (m.equals(element[1]) && c.startsWith(element[0])) return false;
 	    o = PurityInterproceduralAnalysis.alterMethods;
-	    for (int i=0;i<o.length;i++)
-		if (m.equals(o[i][1]) && c.startsWith(o[i][0])) return false;
+	    for (String[] element : o)
+			if (m.equals(element[1]) && c.startsWith(element[0])) return false;
 	    return true;
 	}
     }
     
     /** The constructor does it all! */
     PurityInterproceduralAnalysis(CallGraph        cg,
-				  Iterator         heads,
+				  Iterator<SootMethod>         heads,
 				  PurityOptions    opts)
     {
 	super(cg,new Filter(),heads, opts.dump_cg());
@@ -382,13 +379,13 @@ public class PurityInterproceduralAnalysis
 	b.g = PurityGraph.conservativeGraph(method,true);
 
 	String[][] o = PurityInterproceduralAnalysis.pureMethods;
-	for (int i=0;i<o.length;i++)
-	    if (m.equals(o[i][1]) && c.startsWith(o[i][0]))
+	for (String[] element : o)
+		if (m.equals(element[1]) && c.startsWith(element[0]))
 		b.g = PurityGraph.freshGraph(method);
 
 	o = PurityInterproceduralAnalysis.alterMethods;
-	for (int i=0;i<o.length;i++)
-	    if (m.equals(o[i][1]) && c.startsWith(o[i][0]))
+	for (String[] element : o)
+		if (m.equals(element[1]) && c.startsWith(element[0]))
 		b.g = PurityGraph.conservativeGraph(method,false);
 
 	return b;

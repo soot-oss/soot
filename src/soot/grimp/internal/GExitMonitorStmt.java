@@ -30,20 +30,15 @@
 
 package soot.grimp.internal;
 
-import soot.util.*;
-import java.util.*;
-import soot.jimple.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
 
 public class GExitMonitorStmt extends JExitMonitorStmt
 {
     public GExitMonitorStmt(Value op)
     {
-        super(((Grimp)(Grimp.v())).newExprBox(op));
+        super(((Grimp.v())).newExprBox(op));
     }
     
     public Object clone() 

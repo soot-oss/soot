@@ -27,6 +27,7 @@ package soot.dava.toolkits.base.finders;
 
 import soot.*;
 import java.util.*;
+
 import soot.dava.*;
 import soot.util.*;
 import soot.jimple.*;
@@ -35,7 +36,6 @@ import soot.toolkits.graph.*;
 import soot.jimple.internal.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
-import soot.dava.internal.AST.*;
 import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.misc.*;
 
@@ -49,7 +49,7 @@ public class CycleFinder implements FactFinder
 	Dava.v().log("CycleFinder::find()");
 
         AugmentedStmtGraph wasg = (AugmentedStmtGraph) asg.clone();
-        List component_list = build_component_list( wasg);        
+        List<List> component_list = build_component_list( wasg);        
 
         // loop through all nestings
         while (component_list.isEmpty() == false) {
@@ -57,11 +57,11 @@ public class CycleFinder implements FactFinder
             IterableSet node_list = new IterableSet();
             
             // loop through all the strongly connected components
-            Iterator cit = component_list.iterator();
+            Iterator<List> cit = component_list.iterator();
             while (cit.hasNext()) {
                 
                 node_list.clear();
-                node_list.addAll( (List) cit.next());
+                node_list.addAll( cit.next());
                 //node_list contains all the nodes belonging to this SCC
 
                 IterableSet entry_points = get_EntryPoint( node_list);
@@ -69,7 +69,7 @@ public class CycleFinder implements FactFinder
 		//if more than one entry points found
 		if (entry_points.size() > 1) {
 		    
-		    LinkedList asgEntryPoints = new LinkedList();
+		    LinkedList<AugmentedStmt> asgEntryPoints = new LinkedList<AugmentedStmt>();
 		    Iterator it = entry_points.iterator();
 		    while (it.hasNext())
 			asgEntryPoints.addLast( asg.get_AugStmt( ((AugmentedStmt) it.next()).get_Stmt()));
@@ -214,8 +214,8 @@ public class CycleFinder implements FactFinder
     }
 
 
-    private List build_component_list( AugmentedStmtGraph asg){
-        List c_list = new LinkedList();
+    private List<List> build_component_list( AugmentedStmtGraph asg){
+        List<List> c_list = new LinkedList<List>();
 
         StronglyConnectedComponents scc = new StronglyConnectedComponents( asg);
 
@@ -226,9 +226,9 @@ public class CycleFinder implements FactFinder
 	  Adding code to check for self loop (a stmt is a self loop if its pred and succ
 	  contain the stmt itself
 	*/
-        Iterator scomit = scc.getComponents().iterator();
+        Iterator<List> scomit = scc.getComponents().iterator();
 	while (scomit.hasNext()) {
-	    List wcomp = (List) scomit.next();
+	    List wcomp = scomit.next();
 	    if (wcomp.size() > 1) 
 		c_list.add( wcomp);
 	    else if (wcomp.size()==1){
@@ -239,7 +239,7 @@ public class CycleFinder implements FactFinder
 		if(as.cpreds.contains(as) && (as.csuccs.contains(as))){
 		    //"as" has a predecssor and successor which is as i.e. it is a self loop
 	  
-		    List currentComponent = null;
+		    List<AugmentedStmt> currentComponent = null;
 		    currentComponent = new StationaryArrayList();
 		    currentComponent.add(as);
 		    //System.out.println("Special add of"+as);
@@ -349,8 +349,8 @@ public class CycleFinder implements FactFinder
 	
 	// Find a single source shortest path from the entry point to any of the remaining candidates.
 
-	HashSet touchSet = new HashSet();
-	LinkedList worklist = new LinkedList();
+	HashSet<Object> touchSet = new HashSet<Object>();
+	LinkedList<Object> worklist = new LinkedList<Object>();
 	worklist.addLast( entry_point);
 	touchSet.add( entry_point);
 	
@@ -377,14 +377,14 @@ public class CycleFinder implements FactFinder
     private IterableSet get_CycleBody( AugmentedStmt entry_point, AugmentedStmt boundary_stmt, AugmentedStmtGraph asg, AugmentedStmtGraph wasg)
     {
 	IterableSet cycle_body = new IterableSet();
-	LinkedList worklist = new LinkedList();
+	LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
 	AugmentedStmt asg_ep = asg.get_AugStmt( entry_point.get_Stmt());
 
 	worklist.add( entry_point);
 	cycle_body.add( asg_ep);
 
 	while (worklist.isEmpty() == false) {
-	    AugmentedStmt as = (AugmentedStmt) worklist.removeFirst();
+	    AugmentedStmt as = worklist.removeFirst();
 
 	    Iterator sit = as.csuccs.iterator();
 	    while (sit.hasNext()) {
@@ -429,12 +429,12 @@ public class CycleFinder implements FactFinder
     }
 
 
-    private void fix_MultiEntryPoint( DavaBody body, AugmentedStmtGraph asg, LinkedList entry_points, IterableSet scc)
+    private void fix_MultiEntryPoint( DavaBody body, AugmentedStmtGraph asg, LinkedList<AugmentedStmt> entry_points, IterableSet scc)
     {
 	AugmentedStmt naturalEntryPoint = get_NaturalEntryPoint( entry_points, scc);
 	Local controlLocal = body.get_ControlLocal();
 	
-	Unit defaultTarget = (Unit) naturalEntryPoint.get_Stmt();
+	Unit defaultTarget = naturalEntryPoint.get_Stmt();
 	LinkedList targets = new LinkedList();
 	
 	/*
@@ -460,9 +460,9 @@ public class CycleFinder implements FactFinder
 	    directionStmtSet   = new IterableSet();
 	
 	int count = 0;
-	Iterator epit = entry_points.iterator();
+	Iterator<AugmentedStmt> epit = entry_points.iterator();
 	while (epit.hasNext()) {
-	    AugmentedStmt entryPoint = (AugmentedStmt) epit.next();
+	    AugmentedStmt entryPoint = epit.next();
 	
 	    GotoStmt gotoStmt = new JGotoStmt( entryPoint.get_Stmt());
 	    AugmentedStmt indirectionStmt = new AugmentedStmt( gotoStmt);
@@ -554,17 +554,17 @@ public class CycleFinder implements FactFinder
 	}
     }
 
-    private AugmentedStmt get_NaturalEntryPoint( LinkedList entry_points, IterableSet scc)
+    private AugmentedStmt get_NaturalEntryPoint( LinkedList<AugmentedStmt> entry_points, IterableSet scc)
     {
 	AugmentedStmt best_candidate = null;
 	int minScore = 0;
 
-	Iterator epit = entry_points.iterator();
+	Iterator<AugmentedStmt> epit = entry_points.iterator();
 	while (epit.hasNext()) {
-	    AugmentedStmt entryPoint = (AugmentedStmt) epit.next();
-	    HashSet 
-		touchSet = new HashSet(),
-		backTargets = new HashSet();
+	    AugmentedStmt entryPoint = epit.next();
+	    HashSet<AugmentedStmt> 
+		touchSet = new HashSet<AugmentedStmt>(),
+		backTargets = new HashSet<AugmentedStmt>();
 
 	    touchSet.add( entryPoint);
 	    DFS( entryPoint, touchSet, backTargets, scc);
@@ -578,7 +578,7 @@ public class CycleFinder implements FactFinder
 	return best_candidate;
     }
     
-    private void DFS( AugmentedStmt as, HashSet touchSet, HashSet backTargets, IterableSet scc)
+    private void DFS( AugmentedStmt as, HashSet<AugmentedStmt> touchSet, HashSet<AugmentedStmt> backTargets, IterableSet scc)
     {
 	Iterator sit = as.csuccs.iterator();
 	while (sit.hasNext()) {

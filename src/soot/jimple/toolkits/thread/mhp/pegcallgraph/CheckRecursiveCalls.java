@@ -1,8 +1,6 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
 import soot.jimple.toolkits.thread.mhp.SCC;
-import soot.toolkits.graph.*;
-import soot.util.*;
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -17,12 +15,12 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class CheckRecursiveCalls{
-	List newSccList = null;
-	public CheckRecursiveCalls(PegCallGraph pcg, Set methodNeedExtent){
+	List<List> newSccList = null;
+	public CheckRecursiveCalls(PegCallGraph pcg, Set<Object> methodNeedExtent){
 		Iterator it = pcg.iterator();
 		//PegCallGraphToDot pcgtd = new PegCallGraphToDot(pcg, false, "pegcallgraph");
 		SCC scc = new SCC(it, pcg);
-		List sccList = (List)scc.getSccList();
+		List<List<Object>> sccList = scc.getSccList();
 		//printSCC(sccList);
 		newSccList = updateScc(sccList, pcg);
 		
@@ -30,15 +28,15 @@ public class CheckRecursiveCalls{
 		//printSCC(newSccList);
 		check(newSccList, methodNeedExtent);
 	}
-	private List updateScc(List sccList, PegCallGraph pcg){
-		List newList = new ArrayList();    
-		Iterator listIt = sccList.iterator();
+	private List<List> updateScc(List<List<Object>> sccList, PegCallGraph pcg){
+		List<List> newList = new ArrayList<List>();    
+		Iterator<List<Object>> listIt = sccList.iterator();
 		while (listIt.hasNext()){
-			List s = (List)listIt.next();
+			List s = listIt.next();
 			if (s.size() == 1){
 				Object o = s.get(0);
 				
-				if (((List)pcg.getSuccsOf(o)).contains(o) || ((List)pcg.getPredsOf(o)).contains(o)){
+				if ((pcg.getSuccsOf(o)).contains(o) || (pcg.getPredsOf(o)).contains(o)){
 					//sccList.remove(s);	 
 					newList.add(s);
 				}
@@ -46,12 +44,12 @@ public class CheckRecursiveCalls{
 			else
 				newList.add(s);
 		}
-		return 	(List)newList;
+		return 	newList;
 	}
-	private void check(List sccList, Set methodNeedExtent){
-		Iterator listIt = sccList.iterator(); 	    
+	private void check(List<List> sccList, Set<Object> methodNeedExtent){
+		Iterator<List> listIt = sccList.iterator(); 	    
 		while (listIt.hasNext()){
-			List s = (List)listIt.next();
+			List s = listIt.next();
 			//printSCC(s);
 			if (s.size()>0){
 				Iterator it = s.iterator();
@@ -66,23 +64,6 @@ public class CheckRecursiveCalls{
 					}
 				}
 			}
-		}
-	}
-	private void printSCC(List list){
-		System.out.println("size of scclist: "+list.size());
-		Iterator it = list.iterator();
-		while (it.hasNext()){
-			Object o = it.next();
-			
-			if (o instanceof List){
-				Iterator sccIt = ((List)o).iterator();
-				System.out.println("***scc List:*****");
-				while (sccIt.hasNext()){
-					System.out.println(sccIt.next());
-				}
-			}
-			
-			
 		}
 	}
 }

@@ -23,9 +23,9 @@ import java.util.*;
 
 public class CallData {
 
-    private HashMap map = new HashMap();
-    private ArrayList children = new ArrayList();
-    private ArrayList outputs = new ArrayList();
+    private final HashMap<Object, CallData> map = new HashMap<Object, CallData>();
+    private final ArrayList<CallData> children = new ArrayList<CallData>();
+    private final ArrayList<CallData> outputs = new ArrayList<CallData>();
     private String data;
 
     public String toString(){
@@ -57,11 +57,11 @@ public class CallData {
         return data;
     }
 
-    public ArrayList getChildren(){
+    public ArrayList<CallData> getChildren(){
         return children;
     }
 
-    public ArrayList getOutputs(){
+    public ArrayList<CallData> getOutputs(){
         return outputs;
     }
 
@@ -69,7 +69,7 @@ public class CallData {
         map.put(key, val);
     }
 
-    public HashMap getMap(){
+    public HashMap<Object, CallData> getMap(){
         return map;
     }
 

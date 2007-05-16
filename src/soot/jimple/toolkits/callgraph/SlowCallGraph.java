@@ -30,13 +30,12 @@ import java.util.*;
  */
 public class SlowCallGraph extends CallGraph
 { 
-    private Set edges = new HashSet();
-    private MultiMap srcMap = new HashMultiMap();
-    private MultiMap unitMap = new HashMultiMap();
-    private MultiMap tgtMap = new HashMultiMap();
-    private ChunkedQueue stream = new ChunkedQueue();
-    private QueueReader reader = stream.reader();
-    private Edge dummy = new Edge( null, null, null, Kind.INVALID );
+    private final Set<Edge> edges = new HashSet<Edge>();
+    private final MultiMap srcMap = new HashMultiMap();
+    private final MultiMap unitMap = new HashMultiMap();
+    private final MultiMap tgtMap = new HashMultiMap();
+    private final ChunkedQueue stream = new ChunkedQueue();
+    private final QueueReader reader = stream.reader();
 
     /** Used to add an edge to the call graph. Returns true iff the edge was
      * not already present. */

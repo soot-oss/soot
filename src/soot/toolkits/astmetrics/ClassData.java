@@ -19,7 +19,6 @@
 
 package soot.toolkits.astmetrics;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -31,11 +30,11 @@ import java.util.Iterator;
  */
 public class ClassData {
 	String className;   //the name of the class whose data is being stored
-	ArrayList metricData;  //each element should be a MetricData
+	ArrayList<MetricData> metricData;  //each element should be a MetricData
 	
 	public ClassData(String name){
 		className=name;
-		metricData = new ArrayList();
+		metricData = new ArrayList<MetricData>();
 	}
 
 	public String getClassName(){
@@ -56,9 +55,9 @@ public class ClassData {
 	 * Else dont add
 	 */
 	public void addMetric(MetricData data){
-		Iterator it = metricData.iterator();
+		Iterator<MetricData> it = metricData.iterator();
 		while(it.hasNext()){
-			MetricData temp = (MetricData)it.next();
+			MetricData temp = it.next();
 			if(temp.metricName.equals(data.metricName)){
 				//System.out.println("Not adding same metric again......"+temp.metricName);
 				return;
@@ -72,9 +71,9 @@ public class ClassData {
 		StringBuffer b = new StringBuffer();
 		b.append("<Class>\n");
 		b.append("<ClassName>" + className + "</ClassName>\n");
-		Iterator it = metricData.iterator();
+		Iterator<MetricData> it = metricData.iterator();
 		while(it.hasNext()){
-			b.append(((MetricData)it.next()).toString());
+			b.append(it.next().toString());
 		}
 		b.append("</Class>");
 		return b.toString();

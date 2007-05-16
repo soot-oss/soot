@@ -20,35 +20,38 @@
 package soot.javaToJimple;
 import java.util.*;
 
+import polyglot.ast.Node;
+import polyglot.util.IdentityKey;
+
 public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
 
-    private ArrayList inners;
-    private ArrayList finalLocals;
-    private HashMap typeToLocalsUsed;
-    private ArrayList ccallList;
+    private final ArrayList<IdentityKey> inners;
+    private final ArrayList<IdentityKey> finalLocals;
+    private final HashMap<IdentityKey, ArrayList<IdentityKey>> typeToLocalsUsed;
+    private final ArrayList<Node> ccallList;
     
-    public HashMap typeToLocalsUsed(){
+    public HashMap<IdentityKey, ArrayList<IdentityKey>> typeToLocalsUsed(){
         return typeToLocalsUsed;
     }
     
-    public ArrayList finalLocals(){
+    public ArrayList<IdentityKey> finalLocals(){
         return finalLocals;
     }
     
-    public ArrayList inners(){
+    public ArrayList<IdentityKey> inners(){
         return inners;
     }
     
-    public ArrayList ccallList(){
+    public ArrayList<Node> ccallList(){
         return ccallList;
     }
     
     
     public MethodFinalsChecker(){
-        finalLocals = new ArrayList();
-        inners = new ArrayList();
-        ccallList = new ArrayList();
-        typeToLocalsUsed = new HashMap();
+        finalLocals = new ArrayList<IdentityKey>();
+        inners = new ArrayList<IdentityKey>();
+        ccallList = new ArrayList<Node>();
+        typeToLocalsUsed = new HashMap<IdentityKey, ArrayList<IdentityKey>>();
     }
 
     public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n){

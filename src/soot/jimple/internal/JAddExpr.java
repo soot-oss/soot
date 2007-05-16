@@ -33,9 +33,7 @@ package soot.jimple.internal;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.*;
-import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 
 public class JAddExpr extends AbstractJimpleFloatBinopExpr implements AddExpr
 {

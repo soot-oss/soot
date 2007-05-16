@@ -1,13 +1,8 @@
 package soot.jimple.toolkits.thread.mhp;
 
 
-import soot.jimple.*;
-import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.toolkits.scalar.*;
-import soot.jimple.internal.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
 import soot.tagkit.*;
 import java.util.*;
 

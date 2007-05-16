@@ -2,18 +2,8 @@
 package soot.jimple.toolkits.thread;
 
 import soot.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.invoke.*;
-import soot.jimple.spark.*;
-import soot.jimple.spark.pag.*;
-import soot.options.SparkOptions;
-import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 /** AbstractRuntimeThread written by Richard L. Halpert 2007-03-04
  *  Acts as a container for the thread information collected by 
@@ -29,8 +19,8 @@ public class AbstractRuntimeThread
 	Stmt joinStmt;
 	
 	// What methods are in the thread
-	List methods;
-	List runMethods; // meant to be a subset of methods
+	List<Object> methods;
+	List<Object> runMethods; // meant to be a subset of methods
 
 	// What kind of parallelism
 	boolean runsMany;
@@ -52,8 +42,8 @@ public class AbstractRuntimeThread
 	{
 		startStmt = null;
 		startStmtMethod = null;
-		methods = new ArrayList();
-		runMethods = new ArrayList();
+		methods = new ArrayList<Object>();
+		runMethods = new ArrayList<Object>();
 
 		// What kind of parallelism - this is set unsafely, so analysis MUST set it correctly
 		runsMany = false;
@@ -105,7 +95,7 @@ public class AbstractRuntimeThread
 		runMethods.add(method);
 	}
 	
-	public List getRunMethods()
+	public List<Object> getRunMethods()
 	{
 		return runMethods;
 	}

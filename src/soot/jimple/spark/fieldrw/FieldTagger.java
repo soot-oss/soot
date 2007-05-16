@@ -18,23 +18,20 @@
  */
 
 package soot.jimple.spark.fieldrw;
-import soot.tagkit.*;
 import soot.*;
 import soot.util.*;
 import java.util.*;
-import soot.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
-import java.io.*;
 
 public class FieldTagger extends BodyTransformer
 { 
     public FieldTagger( Singletons.Global g ) {}
     public static FieldTagger v() { return G.v().soot_jimple_spark_fieldrw_FieldTagger(); }
 
-    private HashSet processedMethods = new HashSet();
-    private HashMultiMap methodToWrite = new HashMultiMap();
-    private HashMultiMap methodToRead = new HashMultiMap();
+    private final HashSet<SootMethod> processedMethods = new HashSet<SootMethod>();
+    private final HashMultiMap methodToWrite = new HashMultiMap();
+    private final HashMultiMap methodToRead = new HashMultiMap();
 
     protected void ensureProcessed( SootMethod m ) {
         if( processedMethods.contains(m) ) return;
@@ -67,7 +64,7 @@ public class FieldTagger extends BodyTransformer
 statement: for( Iterator sIt = body.getUnits().iterator(); sIt.hasNext(); ) {     final Stmt s = (Stmt) sIt.next();
             HashSet read = new HashSet();
             HashSet write = new HashSet();
-            Iterator it = tt.iterator( s );
+            Iterator<MethodOrMethodContext> it = tt.iterator( s );
             while( it.hasNext() ) {
                 SootMethod target = (SootMethod) it.next();
                 ensureProcessed( target );

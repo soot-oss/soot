@@ -24,7 +24,6 @@ import java.util.*;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import soot.toolkits.exceptions.ThrowableSet;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
 /**

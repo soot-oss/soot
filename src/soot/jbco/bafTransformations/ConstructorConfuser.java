@@ -99,7 +99,7 @@ public class ConstructorConfuser extends BodyTransformer implements
         !BodyBuilder.isExceptionCaughtAt(units, sii, b.getTraps().iterator())) {
         
         Local bl = ((LoadInst)prev).getLocal();
-        HashMap locals = (HashMap)soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
+        HashMap locals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
         if (locals != null && locals.containsKey(bl)) {
           Type t = ((Local)locals.get(bl)).getType();
           if (t instanceof RefType && ((RefType)t).getSootClass().getName().equals(origClass.getName())) {
@@ -111,7 +111,7 @@ public class ConstructorConfuser extends BodyTransformer implements
           
             Unit pop = Baf.v().newPopInst(RefType.v());
             units.add(pop);
-            units.add((Unit)prev.clone());
+            units.add(prev.clone());
             b.getTraps().add(Baf.v().newTrap(ThrowSet.getRandomThrowable(), ifinst, sii, pop));
             if (Rand.getInt() % 2 == 0) {
               pop = (Unit)pop.clone();

@@ -26,8 +26,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
 
 /** 
@@ -44,13 +42,13 @@ import java.util.*;
  * </pre>
  */
 public abstract class AbstractFlowSet implements FlowSet {
-  public abstract Object clone();
+  public abstract AbstractFlowSet clone();
 
   /**
    * implemented, but inefficient.
    */
   public Object emptySet() {
-    FlowSet t = (FlowSet)clone();
+    FlowSet t = clone();
     t.clear();
     return t;
   }

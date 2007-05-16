@@ -25,11 +25,8 @@
 
 
 package soot.jimple.toolkits.scalar.pre;
-import soot.jimple.toolkits.graph.*;
-import soot.toolkits.graph.*;
 import soot.jimple.*;
 import soot.*;
-import java.util.*;
 
 /**
  * Allows easy filtering/wrapping of Soot objects. Operations that are done

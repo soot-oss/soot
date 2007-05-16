@@ -54,10 +54,10 @@ public class ConstructorFolder extends BodyTransformer
                 "] Folding constructors...");
 
       Chain units = body.getUnits();
-      List stmtList = new ArrayList();
+      List<Unit> stmtList = new ArrayList<Unit>();
       stmtList.addAll(units);
 
-      Iterator it = stmtList.iterator();
+      Iterator<Unit> it = stmtList.iterator();
 
       ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
               
@@ -90,7 +90,7 @@ public class ConstructorFolder extends BodyTransformer
              Also, do note that any new's (object creation) without
              corresponding constructors must be dead. */
            
-          List lu = localUses.getUsesOf((DefinitionStmt)s);
+          List lu = localUses.getUsesOf(s);
           Iterator luIter = lu.iterator();
           boolean MadeNewInvokeExpr = false;
            

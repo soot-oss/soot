@@ -18,12 +18,6 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.*;
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.internal.*;
-import soot.*;
-import java.util.*;
 
 /** Abstract base class for a propagator that propagates points-to sets
  * along pointer assignment graph.

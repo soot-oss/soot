@@ -32,7 +32,6 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 abstract public class AbstractUnopExpr implements UnopExpr
@@ -45,7 +44,7 @@ abstract public class AbstractUnopExpr implements UnopExpr
     
     public Value getOp()
     {
-        return (Value) opBox.getValue();
+        return opBox.getValue();
     }
 
     public void setOp(Value op)

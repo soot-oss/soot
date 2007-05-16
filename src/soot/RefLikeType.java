@@ -20,9 +20,6 @@
 
 package soot;
 
-import soot.util.*;
-import java.util.*;
-
 /** Abstract class for Soot classes that model subtypes of java.lang.Object
  * (ie. object references and arrays)
  * @author Ondrej Lhotak

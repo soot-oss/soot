@@ -43,7 +43,6 @@ import soot.*;
 import java.util.*;
 
 import soot.jimple.*;
-import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.analysis.*;
@@ -145,8 +144,8 @@ public class CopyPropagation extends DepthFirstAdapter {
 	}
 
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
-		List statements = node.getStatements();
-		Iterator it = statements.iterator();
+		List<Object> statements = node.getStatements();
+		Iterator<Object> it = statements.iterator();
 
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
@@ -280,9 +279,9 @@ public class CopyPropagation extends DepthFirstAdapter {
 		}
 		ASTStatementSequenceNode parentNode = (ASTStatementSequenceNode) parent;
 
-		ArrayList newSequence = new ArrayList();
+		ArrayList<Object> newSequence = new ArrayList<Object>();
 
-		Iterator it = parentNode.getStatements().iterator();
+		Iterator<Object> it = parentNode.getStatements().iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
 			Stmt s = as.get_Stmt();
@@ -405,7 +404,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 		else if (use instanceof ASTNode) {
 			if (use instanceof ASTSwitchNode) {
 				ASTSwitchNode temp = (ASTSwitchNode) use;
-				Value val = (Value) temp.get_Key();
+				Value val = temp.get_Key();
 				if (val instanceof Local) {
 					if (((Local) val).getName().compareTo(from.getName()) == 0) {
 						//replace the name with the one in "to"
@@ -454,8 +453,8 @@ public class CopyPropagation extends DepthFirstAdapter {
 				ASTForLoopNode temp = (ASTForLoopNode) use;
 
 				//init
-				List init = temp.getInit();
-				Iterator it = init.iterator();
+				List<Object> init = temp.getInit();
+				Iterator<Object> it = init.iterator();
 				while (it.hasNext()) {
 					AugmentedStmt as = (AugmentedStmt) it.next();
 					Stmt s = as.get_Stmt();
@@ -463,7 +462,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 				}
 
 				//update	
-				List update = temp.getUpdate();
+				List<Object> update = temp.getUpdate();
 				it = update.iterator();
 				while (it.hasNext()) {
 					AugmentedStmt as = (AugmentedStmt) it.next();

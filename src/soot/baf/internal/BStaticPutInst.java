@@ -32,9 +32,7 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BStaticPutInst extends AbstractInst implements StaticPutInst
 {
@@ -63,7 +61,7 @@ public class BStaticPutInst extends AbstractInst implements StaticPutInst
 
   public int getInMachineCount()
   {
-    return JasminClass.sizeOfType(fieldRef.type());
+    return AbstractJasminClass.sizeOfType(fieldRef.type());
   }
     
     public int getOutCount()

@@ -58,8 +58,8 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     
     int trapCount = 0;
     PatchingChain units = b.getUnits();
-    ArrayList headList = new ArrayList();
-    ArrayList trapList = new ArrayList();
+    ArrayList<Unit> headList = new ArrayList<Unit>();
+    ArrayList<Trap> trapList = new ArrayList<Trap>();
     Iterator traps = b.getTraps().iterator();
 
     // build list of heads and corresponding traps
@@ -84,7 +84,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
         if (i == j)
           continue;
         if (headList.get(i) == headList.get(j)) {
-          Trap t = (Trap) trapList.get(i);
+          Trap t = trapList.get(i);
           Unit nop = Baf.v().newNopInst();
           units.insertBeforeNoRedirect(nop, headList.get(i));
           headList.set(i, nop);
@@ -110,7 +110,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     
     Chain locs = b.getLocals();
     HashMap stackHeightsBefore = null;
-    HashMap bafToJLocals = (HashMap)soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
+    HashMap bafToJLocals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
     int varCount = trapCount + 1;
     traps = b.getTraps().snapshotIterator();
     while (traps.hasNext()) {

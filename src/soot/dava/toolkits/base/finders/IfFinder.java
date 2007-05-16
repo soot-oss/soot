@@ -26,8 +26,6 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
-import soot.dava.internal.AST.*;
-import soot.dava.toolkits.base.misc.*;
 
 public class IfFinder implements FactFinder
 {
@@ -108,11 +106,11 @@ public class IfFinder implements FactFinder
 	if (targetBranch.get_Reachers().contains( otherBranch))
 	    return body;
 
-	LinkedList worklist = new LinkedList();
+	LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
 	worklist.addLast( targetBranch);
 
 	while (worklist.isEmpty() == false) {
-	    AugmentedStmt as = (AugmentedStmt) worklist.removeFirst();
+	    AugmentedStmt as = worklist.removeFirst();
 
 	    if (body.contains( as) == false) {
 		body.add( as);

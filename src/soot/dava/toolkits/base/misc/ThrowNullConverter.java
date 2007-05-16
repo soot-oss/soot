@@ -20,12 +20,9 @@
 package soot.dava.toolkits.base.misc;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.dava.*;
 import soot.jimple.*;
-import soot.grimp.internal.*;
-import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
 
 public class ThrowNullConverter
@@ -33,7 +30,7 @@ public class ThrowNullConverter
     public ThrowNullConverter( Singletons.Global g ) {}
     public static ThrowNullConverter v() { return G.v().soot_dava_toolkits_base_misc_ThrowNullConverter(); }
 
-    private RefType npeRef = RefType.v( Scene.v().loadClassAndSupport( "java.lang.NullPointerException"));
+    private final RefType npeRef = RefType.v( Scene.v().loadClassAndSupport( "java.lang.NullPointerException"));
 
     public void convert( DavaBody body)
     {

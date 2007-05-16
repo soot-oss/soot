@@ -20,15 +20,12 @@
 package soot.toolkits.exceptions;
 
 import soot.AnySubType;
-import soot.G;
 import soot.RefType;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.NullType;
 import soot.Value;
-import soot.Singletons;
-import soot.toolkits.exceptions.*;
 import soot.baf.ThrowInst;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.ThrowStmt;

@@ -21,10 +21,8 @@ package soot.dava.internal.AST;
 
 import java.util.*;
 import soot.*;
-import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.asg.*;
-import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 /*
@@ -55,13 +53,13 @@ import soot.dava.toolkits.base.AST.analysis.*;
 */
 public class ASTForLoopNode extends ASTControlFlowNode
 {
-    private List init; //list of values
+    private List<Object> init; //list of values
     //notice B is an ASTCondition and is stored in the parent
-    private List update; //list of values
+    private List<Object> update; //list of values
 
-    private List body;
+    private List<Object> body;
 
-    public ASTForLoopNode( SETNodeLabel label, List init, ASTCondition condition, List update, List body)
+    public ASTForLoopNode( SETNodeLabel label, List<Object> init, ASTCondition condition, List<Object> update, List<Object> body)
     {
 	super( label, condition);
 	this.body = body;
@@ -71,17 +69,17 @@ public class ASTForLoopNode extends ASTControlFlowNode
 	subBodies.add( body);
     }
 
-    public List getInit(){
+    public List<Object> getInit(){
 	return init;
     }
 
-    public List getUpdate(){
+    public List<Object> getUpdate(){
 	return update;
     }
 
-    public void replaceBody(List body){
+    public void replaceBody(List<Object> body){
 	this.body=body;
-	subBodies=new ArrayList();
+	subBodies=new ArrayList<Object>();
 	subBodies.add(body);
     }
 
@@ -97,7 +95,7 @@ public class ASTForLoopNode extends ASTControlFlowNode
 	up.literal( " " );
 	up.literal( "(" );
 	
-	Iterator it = init.iterator();
+	Iterator<Object> it = init.iterator();
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();
             Unit u = as.get_Stmt();
@@ -145,7 +143,7 @@ public class ASTForLoopNode extends ASTControlFlowNode
 	b.append( label_toString( ));
 	b.append( "for (");
 
-	Iterator it = init.iterator();
+	Iterator<Object> it = init.iterator();
 	while(it.hasNext()){
 	    b.append( ((Unit) ((AugmentedStmt) it.next()).get_Stmt()).toString());
 	    if(it.hasNext()){

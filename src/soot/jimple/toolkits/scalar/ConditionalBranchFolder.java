@@ -31,7 +31,6 @@ import soot.options.*;
 import soot.util.*;
 import soot.*;
 import soot.jimple.*;
-import java.io.*;
 import java.util.*;
 
 
@@ -51,9 +50,9 @@ public class ConditionalBranchFolder  extends BodyTransformer
                                "] Folding conditional branches...");
 
         Chain units = stmtBody.getUnits();
-        ArrayList unitList = new ArrayList(); unitList.addAll(units);
+        ArrayList<Unit> unitList = new ArrayList<Unit>(); unitList.addAll(units);
 
-        Iterator stmtIt = unitList.iterator();
+        Iterator<Unit> stmtIt = unitList.iterator();
         while (stmtIt.hasNext()) {
             Stmt stmt = (Stmt)stmtIt.next();
             if (stmt instanceof IfStmt) {

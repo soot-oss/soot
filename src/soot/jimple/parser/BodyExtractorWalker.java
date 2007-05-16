@@ -26,16 +26,10 @@
 package soot.jimple.parser;
 import soot.options.*;
 
-import soot.baf.*;
 import soot.*;
 import soot.jimple.*;
 
-import soot.jimple.parser.parser.*;
-import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
-import soot.jimple.parser.analysis.*;
-
-import java.io.*;
 import java.util.*;
 
 
@@ -51,11 +45,11 @@ import java.util.*;
    
 public class BodyExtractorWalker extends Walker
 {
-    Map methodToParsedBodyMap;
+    Map<SootMethod, JimpleBody> methodToParsedBodyMap;
 
     /** Constructs a walker, and attaches it to the given SootClass, sending bodies to
      * the given methodToParsedBodyMap. */
-    public BodyExtractorWalker(SootClass sc, SootResolver resolver, Map methodToParsedBodyMap) 
+    public BodyExtractorWalker(SootClass sc, SootResolver resolver, Map<SootMethod, JimpleBody> methodToParsedBodyMap) 
     {
         super(sc, resolver);
         this.methodToParsedBodyMap = methodToParsedBodyMap;
@@ -70,9 +64,8 @@ public class BodyExtractorWalker extends Walker
         inAFile(node);
         {
             Object temp[] = node.getModifier().toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                ((PModifier) temp[i]).apply(this);
+            for (Object element : temp) {
+                ((PModifier) element).apply(this);
             }
         }
         if(node.getFileType() != null)
@@ -129,7 +122,6 @@ public class BodyExtractorWalker extends Walker
 
     public void outAMethodMember(AMethodMember node)
     {
-        int modifier = 0;
         Type type;
         String name;
         List parameterList = new ArrayList();

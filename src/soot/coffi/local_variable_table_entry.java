@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** An entry in a local variable table.
  * @see LocalVariableTable_attribute
  * @author Clark Verbrugge

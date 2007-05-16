@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 import java.util.*;
 
 /** Represents the visibility of an annotation attribute attatched 
@@ -37,7 +36,7 @@ public class VisibilityAnnotationTag implements  Tag
 {
     
     private int visibility;
-    private ArrayList annotations;
+    private ArrayList<AnnotationTag> annotations;
     
     public VisibilityAnnotationTag(int vis){
         this.visibility = vis;
@@ -47,10 +46,10 @@ public class VisibilityAnnotationTag implements  Tag
     public String toString() {
         StringBuffer sb = new StringBuffer("Visibility Annotation: level: "+(visibility == AnnotationConstants.RUNTIME_VISIBLE ? " runtime visible" : " runtime invisible") +"\n Annotations: ");
         if (annotations != null){
-            Iterator it = annotations.iterator();
+            Iterator<AnnotationTag> it = annotations.iterator();
             while (it.hasNext()){
                 sb.append("\n");
-                sb.append(((AnnotationTag)it.next()).toString());
+                sb.append(it.next().toString());
             }
         }
         sb.append("\n");
@@ -77,12 +76,12 @@ public class VisibilityAnnotationTag implements  Tag
 
     public void addAnnotation(AnnotationTag a){
         if (annotations == null){
-            annotations = new ArrayList();
+            annotations = new ArrayList<AnnotationTag>();
         }
         annotations.add(a);
     }
 
-    public ArrayList getAnnotations(){
+    public ArrayList<AnnotationTag> getAnnotations(){
         return annotations;
     }
 

@@ -43,9 +43,9 @@ public class Debugger {
     it = b.getUnits().iterator();
     while (it.hasNext()) {
       Object o = it.next();
-      System.out.println(((Integer)index.get(o)).toString() 
+      System.out.println(index.get(o).toString() 
           + " " + o + " " + (o instanceof TargetArgInst ? 
-              		((Integer)index.get(((TargetArgInst)o).getTarget())).toString() 
+              		index.get(((TargetArgInst)o).getTarget()).toString() 
               		: ""));
     }
     System.out.println("\n");
@@ -53,9 +53,9 @@ public class Debugger {
   
   public static void printUnits(Body b, String msg) {
     int i = 0;
-    HashMap numbers = new HashMap();
+    HashMap<Unit,Integer> numbers = new HashMap<Unit,Integer>();
     PatchingChain u = b.getUnits();
-    Iterator it = u.snapshotIterator();
+    Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext())
       numbers.put(it.next(),new Integer(i++));
     
@@ -64,7 +64,7 @@ public class Debugger {
     Iterator udit = u.snapshotIterator();
     while (udit.hasNext()) {
       Unit unit = (Unit)udit.next();
-      Integer numb = (Integer)numbers.get(unit);
+      Integer numb = numbers.get(unit);
       
       if (numb.intValue() == 149) 
         System.out.println("hi");
@@ -101,8 +101,8 @@ public class Debugger {
   
   public static void printUnits(PatchingChain u, String msg) {
   int i = 0;
-  HashMap numbers = new HashMap();
-  Iterator it = u.snapshotIterator();
+  HashMap<Unit,Integer> numbers = new HashMap<Unit,Integer>();
+  Iterator<Unit> it = u.snapshotIterator();
   while (it.hasNext())
     numbers.put(it.next(),new Integer(i++));
   
@@ -111,7 +111,7 @@ public class Debugger {
   Iterator udit = u.snapshotIterator();
   while (udit.hasNext()) {
     Unit unit = (Unit)udit.next();
-    Integer numb = (Integer)numbers.get(unit);
+    Integer numb = numbers.get(unit);
     
     if (numb.intValue() == 149) 
       System.out.println("hi");

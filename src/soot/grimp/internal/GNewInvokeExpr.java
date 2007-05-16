@@ -34,9 +34,6 @@ package soot.grimp.internal;
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
-import soot.jimple.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
@@ -124,10 +121,9 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
     {
         List list = new ArrayList();
 
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            list.addAll(argBoxes[i].getValue().getUseBoxes());
-            list.add(argBoxes[i]);
+        for (ValueBox element : argBoxes) {
+            list.addAll(element.getValue().getUseBoxes());
+            list.add(element);
         }
         
         return list;
@@ -157,8 +153,8 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
             if (!(getMethod().equals(ie.getMethod()) && 
                   argBoxes.length == ie.argBoxes.length))
                 return false;
-            for (int i = 0; i < argBoxes.length; i++)
-                if (!(argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())))
+            for (ValueBox element : argBoxes)
+				if (!(element.getValue().equivTo(element.getValue())))
                     return false;
             if( !type.equals(ie.type) ) return false;
             return true;

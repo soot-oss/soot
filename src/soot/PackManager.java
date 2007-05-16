@@ -276,8 +276,8 @@ public class PackManager {
         return G.v().soot_PackManager();
     }
 
-    private Map packNameToPack = new HashMap();
-    private List packList = new LinkedList();
+    private final Map<String, Pack> packNameToPack = new HashMap<String, Pack>();
+    private final List<Pack> packList = new LinkedList<Pack>();
 
     private void addPack( Pack p ) {
         if( packNameToPack.containsKey( p.getPhaseName() ) )
@@ -291,7 +291,7 @@ public class PackManager {
     }
 
     public Pack getPack(String phaseName) {
-        Pack p = (Pack) packNameToPack.get(phaseName);
+        Pack p = packNameToPack.get(phaseName);
         return p;
     }
 
@@ -312,7 +312,7 @@ public class PackManager {
     }
 
 
-    public Collection allPacks() {
+    public Collection<Pack> allPacks() {
         return Collections.unmodifiableList( packList );
     }
 
@@ -351,10 +351,10 @@ public class PackManager {
     public void coffiMetrics() {
       int tV = 0, tE = 0, hM = 0;
       double aM = 0;
-      HashMap hashVem = soot.coffi.CFG.methodsToVEM;
-      Iterator it = hashVem.keySet().iterator();
+      HashMap<SootMethod, int[]> hashVem = soot.coffi.CFG.methodsToVEM;
+      Iterator<SootMethod> it = hashVem.keySet().iterator();
       while (it.hasNext()) {
-        int vem[] = (int[])hashVem.get(it.next());
+        int vem[] = hashVem.get(it.next());
         tV+= vem[0];
         tE+= vem[1];
         aM+= vem[2];
@@ -597,7 +597,7 @@ public class PackManager {
           * Generate decompiled code
           */   
     	String pathForBuild=null;
-    	ArrayList decompiledClasses = new ArrayList();
+    	ArrayList<String> decompiledClasses = new ArrayList<String>();
         Iterator classIt = appClasses.iterator();
         while (classIt.hasNext()) {
             SootClass s = (SootClass) classIt.next();

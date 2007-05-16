@@ -28,13 +28,11 @@ package soot.jimple.toolkits.typing;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 import java.io.*;
 
 class ConstraintCheckerBV extends AbstractStmtSwitch
 {
-  private final TypeResolverBV resolver;
   private final ClassHierarchy hierarchy;
   private final boolean fix;  // if true, fix constraint violations
   
@@ -42,7 +40,6 @@ class ConstraintCheckerBV extends AbstractStmtSwitch
 
   public ConstraintCheckerBV(TypeResolverBV resolver, boolean fix)
   {
-    this.resolver = resolver;
     this.fix = fix;
 
     hierarchy = resolver.hierarchy();
@@ -259,7 +256,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch
 
   public void caseInvokeStmt(InvokeStmt stmt)
   {
-    handleInvokeExpr((InvokeExpr) stmt.getInvokeExpr(), stmt);
+    handleInvokeExpr(stmt.getInvokeExpr(), stmt);
   }
 
   public void caseAssignStmt(AssignStmt stmt)
@@ -873,7 +870,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch
   {
     ConditionExpr cond = (ConditionExpr) stmt.getCondition();
     
-    BinopExpr expr = (BinopExpr) cond;
+    BinopExpr expr = cond;
     Value lv = expr.getOp1();
     Value rv = expr.getOp2();
     

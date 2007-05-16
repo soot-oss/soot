@@ -20,6 +20,7 @@
 package soot.jimple.toolkits.annotation;
 
 import soot.*;
+
 import java.util.*;
 import soot.jimple.*;
 import soot.tagkit.*;
@@ -35,7 +36,7 @@ public class LineNumberAdder extends SceneTransformer {
         while (it.hasNext()){
             SootClass sc = (SootClass)it.next();
             // make map of first line to each method
-            HashMap lineToMeth = new HashMap();
+            HashMap<Integer, SootMethod> lineToMeth = new HashMap<Integer, SootMethod>();
             Iterator methIt = sc.getMethods().iterator();
             while (methIt.hasNext()){
                 SootMethod meth = (SootMethod)methIt.next();

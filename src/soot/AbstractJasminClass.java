@@ -33,10 +33,8 @@
 package soot;
 import soot.options.*;
 import soot.tagkit.*;
-import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
-import soot.util.*;
 import java.util.*;
 import java.io.*;
 import soot.baf.*;
@@ -44,10 +42,10 @@ import soot.baf.*;
 public abstract class AbstractJasminClass
 {
     protected Map unitToLabel;
-    protected Map localToSlot;
-    protected Map subroutineToReturnAddressSlot;
+    protected Map<Local, Integer> localToSlot;
+    protected Map<Unit, Integer> subroutineToReturnAddressSlot;
 
-    protected List code;
+    protected List<String> code;
 
     protected boolean isEmittingMethodCode;
     protected int labelCount;
@@ -57,13 +55,13 @@ public abstract class AbstractJasminClass
     protected int currentStackHeight = 0;
     protected int maxStackHeight = 0;
 
-    protected Map localToGroup;
-    protected Map groupToColorCount;
-    protected Map localToColor; 
+    protected Map<Local, Object> localToGroup;
+    protected Map<Object, Integer> groupToColorCount;
+    protected Map<Local, Integer> localToColor; 
 
 
-    protected Map blockToStackHeight = new HashMap(); // maps a block to the stack height upon entering it
-    protected Map blockToLogicalStackHeight = new HashMap(); // maps a block to the logical stack height upon entering it
+    protected Map<Block, Integer> blockToStackHeight = new HashMap<Block, Integer>(); // maps a block to the stack height upon entering it
+    protected Map<Block, Integer> blockToLogicalStackHeight = new HashMap<Block, Integer>(); // maps a block to the logical stack height upon entering it
     
 
     public static String slashify(String s)
@@ -219,9 +217,9 @@ public abstract class AbstractJasminClass
             sb.append(".runtime_invisible_annotation\n");
         }
         if (tag.hasAnnotations()){
-            Iterator it = tag.getAnnotations().iterator();
+            Iterator<AnnotationTag> it = tag.getAnnotations().iterator();
             while (it.hasNext()){
-                AnnotationTag annot = (AnnotationTag)it.next();
+                AnnotationTag annot = it.next();
                 sb.append(".annotation ");
                 sb.append(soot.util.StringTools.getQuotedStringOf(annot.getType())+"\n");
                 for (int i = 0; i < annot.getNumElems(); i++){
@@ -244,11 +242,11 @@ public abstract class AbstractJasminClass
         else {
             sb.append(".runtime_invisible_annotation\n");
         }
-        ArrayList vis_list = tag.getVisibilityAnnotations();
+        ArrayList<VisibilityAnnotationTag> vis_list = tag.getVisibilityAnnotations();
         if (vis_list != null){
-            Iterator it = vis_list.iterator();
+            Iterator<VisibilityAnnotationTag> it = vis_list.iterator();
             while (it.hasNext()){
-                sb.append(getVisibilityAnnotationAttr((VisibilityAnnotationTag)it.next()));
+                sb.append(getVisibilityAnnotationAttr(it.next()));
             }
         }
         sb.append(".end .param\n");
@@ -377,7 +375,7 @@ public abstract class AbstractJasminClass
         if(Options.v().verbose())
             G.v().out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
 
-        code = new LinkedList();
+        code = new LinkedList<String>();
 
         // Emit the header
         {
@@ -450,7 +448,7 @@ public abstract class AbstractJasminClass
     if (sootClass.hasTag("InnerClassAttribute")){
         if (!Options.v().no_output_inner_classes_attribute()){
             emit(".inner_class_attr ");
-            Iterator innersIt = ((InnerClassAttribute)sootClass.getTag("InnerClassAttribute")).getSpecs().iterator();
+            Iterator<Tag> innersIt = ((InnerClassAttribute)sootClass.getTag("InnerClassAttribute")).getSpecs().iterator();
             while (innersIt.hasNext()){
                 InnerClassTag ict = (InnerClassTag)innersIt.next();
                 //System.out.println("inner class tag: "+ict);
@@ -582,9 +580,9 @@ public abstract class AbstractJasminClass
         if(Options.v().time())
             Timers.v().packTimer.start();
 
-        localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        localToGroup = new HashMap<Local, Object>(body.getLocalCount() * 2 + 1, 0.7f);
+        groupToColorCount = new HashMap<Object, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+        localToColor = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
         
         // Assign each local to a group, and set that group's color count to 0.
         {
@@ -623,7 +621,7 @@ public abstract class AbstractJasminClass
                     Local l = (Local) ((IdentityStmt) s).getLeftOp();
                     
                     Object group = localToGroup.get(l);
-                    int count = ((Integer) groupToColorCount.get(group)).intValue();
+                    int count = groupToColorCount.get(group).intValue();
                     
                     localToColor.put(l, new Integer(count));
                     
@@ -645,9 +643,9 @@ public abstract class AbstractJasminClass
             emit(".method " + Modifier.toString(method.getModifiers()) + " " +
                  method.getName() + jasminDescriptorOf(method.makeRef()));
 
-            Iterator throwsIt = method.getExceptions().iterator();
+            Iterator<SootClass> throwsIt = method.getExceptions().iterator();
             while (throwsIt.hasNext()){
-                SootClass exceptClass = (SootClass)throwsIt.next();
+                SootClass exceptClass = throwsIt.next();
                 emit(".throws "+exceptClass.getName());
             }
             if (method.hasTag("SyntheticTag")){
@@ -703,7 +701,7 @@ public abstract class AbstractJasminClass
 
     public void print(PrintWriter out)
     {
-        Iterator it = code.iterator();
+        Iterator<String> it = code.iterator();
 
         while(it.hasNext())
             out.println(it.next());

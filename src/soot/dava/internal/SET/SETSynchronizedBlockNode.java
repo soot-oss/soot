@@ -42,25 +42,25 @@ public class SETSynchronizedBlockNode extends SETNode
 
     public IterableSet get_NaturalExits()
     {
-	return ((SETNode) ((IterableSet) body2childChain.get( subBodies.get(0))).getLast()).get_NaturalExits();
+	return ((SETNode) body2childChain.get( subBodies.get(0)).getLast()).get_NaturalExits();
     }
 
     public ASTNode emit_AST()
     {
-        return new ASTSynchronizedBlockNode( get_Label(), emit_ASTBody( (IterableSet) body2childChain.get( subBodies.get(0))), local);
+        return new ASTSynchronizedBlockNode( get_Label(), emit_ASTBody( body2childChain.get( subBodies.get(0))), local);
     }
 
     public AugmentedStmt get_EntryStmt()
     {
-	return ((SETNode) ((IterableSet) body2childChain.get( subBodies.get(0))).getFirst()).get_EntryStmt();
+	return ((SETNode) body2childChain.get( subBodies.get(0)).getFirst()).get_EntryStmt();
     }
 
     protected boolean resolve( SETNode parent)
     {
-	Iterator sbit = parent.get_SubBodies().iterator();
+	Iterator<IterableSet> sbit = parent.get_SubBodies().iterator();
 
 	while (sbit.hasNext()) {
-	    IterableSet subBody = (IterableSet) sbit.next();
+	    IterableSet subBody = sbit.next();
 	    
 	    if (subBody.intersects( get_Body()))
 		return subBody.isSupersetOf( get_Body());

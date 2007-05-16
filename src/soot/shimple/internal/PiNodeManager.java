@@ -23,17 +23,9 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
-import soot.shimple.toolkits.scalar.*;
-import soot.shimple.toolkits.graph.*;
-import soot.options.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.base.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 
 /**
  * This class does the real high-level work.  It takes a Jimple body
@@ -119,7 +111,7 @@ public class PiNodeManager
         int[] hasAlreadyFlags = new int[cfg.size()];
         
         int iterCount = 0;
-        Stack workList = new Stack();
+        Stack<Block> workList = new Stack<Block>();
 
         /* Main Cytron algorithm. */
         
@@ -142,7 +134,7 @@ public class PiNodeManager
                 }
 
                 while(!workList.empty()){
-                    Block block = (Block) workList.pop();
+                    Block block = workList.pop();
                     DominatorNode node = dt.getDode(block);
                     Iterator frontierNodes = df.getDominanceFrontierOf(node).iterator();
 
@@ -245,7 +237,7 @@ public class PiNodeManager
 
     public void piHandleSwitchStmt(Local local, Unit u)
     {
-        List targetBoxes = new ArrayList();
+        List<UnitBox> targetBoxes = new ArrayList<UnitBox>();
         List targetKeys = new ArrayList();
 
         if(u instanceof LookupSwitchStmt){
@@ -273,7 +265,7 @@ public class PiNodeManager
         }
             
         for(int count = 0; count < targetBoxes.size(); count++){
-            UnitBox targetBox = (UnitBox) targetBoxes.get(count);
+            UnitBox targetBox = targetBoxes.get(count);
             Unit target = targetBox.getUnit();
             Object targetKey = targetKeys.get(count);
             
@@ -315,7 +307,7 @@ public class PiNodeManager
     public void eliminatePiNodes(boolean smart)
     {
         if(smart){
-            Map newToOld = new HashMap();
+            Map<Local, Value> newToOld = new HashMap<Local, Value>();
             List boxes = new ArrayList();
             
             for(Iterator unitsIt = body.getUnits().iterator(); unitsIt.hasNext();){
@@ -333,7 +325,7 @@ public class PiNodeManager
             for(Iterator boxesIt = boxes.iterator(); boxesIt.hasNext();){
                 ValueBox box = (ValueBox) boxesIt.next();
                 Value value = box.getValue();
-                Value old = (Value) newToOld.get(value);
+                Value old = newToOld.get(value);
                 if(old != null)
                     box.setValue(old);
             }

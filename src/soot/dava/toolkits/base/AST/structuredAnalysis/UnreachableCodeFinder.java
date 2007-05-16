@@ -50,7 +50,6 @@ import soot.dava.internal.AST.ASTUnaryBinaryCondition;
 import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.internal.SET.SETNodeLabel;
-import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
 import soot.jimple.RetStmt;
 import soot.jimple.ReturnStmt;
@@ -78,7 +77,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 	public static boolean DEBUG=false;
 	public class UnreachableCodeFlowSet extends DavaFlowSet{
 		
-		public Object clone(){
+		public UnreachableCodeFlowSet clone(){
 			if(this.size() != 1)
 				throw new DecompilationException("unreachableCodeFlow set size should always be 1");
 			Boolean temp = (Boolean)this.elements[0];
@@ -126,8 +125,8 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 			else{
 				workingSet.add((new Boolean(true)));
 			}
-			((UnreachableCodeFlowSet)workingSet).copyInternalDataFrom(this);
-			((UnreachableCodeFlowSet)workingSet).copyInternalDataFrom(otherFlow);
+			(workingSet).copyInternalDataFrom(this);
+			(workingSet).copyInternalDataFrom(otherFlow);
 			
 			
 			
@@ -458,18 +457,18 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     		return input;
     	}
     	//if reachable
-    	List indexList = node.getIndexList();
-    	Map index2BodyList = node.getIndex2BodyList();
+    	List<Object> indexList = node.getIndexList();
+    	Map<Object, List<Object>> index2BodyList = node.getIndex2BodyList();
 
     	Object initialIn = cloneFlowSet(input);
     	Object out = null;
     	Object defaultOut = null;
-    	List toMergeBreaks = new ArrayList();
+    	List<Object> toMergeBreaks = new ArrayList<Object>();
     	
-    	Iterator it = indexList.iterator();
+    	Iterator<Object> it = indexList.iterator();
     	while (it.hasNext()) {//going through all the cases of the switch statement
     		Object currentIndex = it.next();
-    		List body = (List) index2BodyList.get( currentIndex);
+    		List body = index2BodyList.get( currentIndex);
 
     		if(body == null)
     			continue;
@@ -498,7 +497,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     	//handle break
     	String label = getLabel(node);
     	//have to handleBreaks for all the different cases
-    	List outList = new ArrayList();
+    	List<Object> outList = new ArrayList<Object>();
     	//handling breakLists of each of the toMergeBreaks
     	it = toMergeBreaks.iterator();
     	while(it.hasNext()){
@@ -527,15 +526,15 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     	}
     	
     	//if reachable
-    	List tryBody = node.get_TryBody();
+    	List<Object> tryBody = node.get_TryBody();
     	Object tryBodyOutput = process(tryBody,input);
 
     	//catch is always reachable if try is reachable
     	Object inputCatch = newInitialFlow();
 
-       	List catchList = node.get_CatchList();
-       	Iterator it = catchList.iterator();
-       	List catchOutput = new ArrayList();
+       	List<Object> catchList = node.get_CatchList();
+       	Iterator<Object> it = catchList.iterator();
+       	List<Object> catchOutput = new ArrayList<Object>();
 
        	while (it.hasNext()) {
        		ASTTryNode.container catchBody = (ASTTryNode.container)it.next();
@@ -554,7 +553,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 
 
 
-       	List outList = new ArrayList();	
+       	List<Object> outList = new ArrayList<Object>();	
        	//handle breaks out of tryBodyOutput
        	outList.add(handleBreak(label,tryBodyOutput,node));
 	

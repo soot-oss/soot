@@ -19,7 +19,6 @@
 
 package soot.jimple.spark.pag;
 import java.util.*;
-import soot.jimple.spark.*;
 import soot.*;
 import soot.util.*;
 import soot.jimple.spark.sets.*;
@@ -94,15 +93,15 @@ public class PAG2HTML {
 
         out.println( "<hr>Outgoing edges:" );
         Node[] succs = pag.simpleLookup( v );
-        for( int i = 0; i < succs.length; i++ ) {
-            VarNode succ = (VarNode) succs[i];
+        for (Node element : succs) {
+            VarNode succ = (VarNode) element;
             out.println( varNodeReps( succ ) );
         }
         
         out.println( "<hr>Incoming edges: " );
         succs = pag.simpleInvLookup( v );
-        for( int i = 0; i < succs.length; i++ ) {
-            VarNode succ = (VarNode) succs[i];
+        for (Node element : succs) {
+            VarNode succ = (VarNode) element;
             out.println( varNodeReps( succ ) );
         }
 

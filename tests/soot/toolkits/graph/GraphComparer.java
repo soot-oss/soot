@@ -5,7 +5,6 @@
 
 package soot.toolkits.graph;
 
-import java.lang.Class;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,18 +13,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import soot.Body;
 import soot.BriefUnitPrinter;
 import soot.CompilationDeathException;
 import soot.G;
 import soot.LabeledUnitPrinter;
-import soot.SootMethod;
 import soot.Trap;
 import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
-import soot.util.ArraySet;
 import soot.util.Chain;
 
 public class GraphComparer {
@@ -169,7 +166,7 @@ public class GraphComparer {
 	    List result = new ArrayList();
 	    try {
 		Method iterMethod = blockClass.getMethod("iterator", emptyParams);
-		for (Iterator it = (Iterator) iterMethod.invoke(block, emptyParams); 
+		for (Iterator it = (Iterator) iterMethod.invoke(block, new Object[0]); 
 		     it.hasNext(); ) {
 		    Unit unit = (Unit) it.next();
 		    result.add(unit);
@@ -218,13 +215,8 @@ public class GraphComparer {
 	    boolean omitExceptingUnitEdges;
 
 	    ClassicCompleteUnitGraph classicCompleteUnitGraph = null;
-	    DirectedGraph altCompleteUnitGraph = null;
 	    TrapUnitGraph trapUnitGraph = null;
-	    DirectedGraph altTrapUnitGraph = null;
-	    BriefUnitGraph briefUnitGraph = null;
-	    DirectedGraph altBriefUnitGraph = null;
 	    BriefBlockGraph briefBlockGraph = null;
-	    ExceptionalBlockGraph exceptionalBlockGraph = null;
 	    ClassicCompleteBlockGraph classicCompleteBlockGraph = null;
 	    DirectedGraph altCompleteBlockGraph = null;
 	    DirectedGraph altBriefBlockGraph = null;
@@ -261,17 +253,12 @@ public class GraphComparer {
 		} else if (g instanceof ClassicCompleteUnitGraph) {
 		    classicCompleteUnitGraph = (ClassicCompleteUnitGraph) g;
 		} else if (g.getClass().getName().endsWith(".CompleteUnitGraph")) {
-		    altCompleteUnitGraph = g;
 		} else if (g instanceof TrapUnitGraph) {
 		    trapUnitGraph = (TrapUnitGraph) g;
 		} else if (g.getClass().getName().endsWith(".TrapUnitGraph")) {
-		    altTrapUnitGraph = g;
 		} else if (g instanceof BriefUnitGraph) {
-		    briefUnitGraph = (BriefUnitGraph) g;
 		} else if (g.getClass().getName().endsWith(".BriefUnitGraph")) {
-		    altBriefUnitGraph = g;
 		} else if (g instanceof ExceptionalBlockGraph) {
-		    exceptionalBlockGraph = (ExceptionalBlockGraph) g;
 		} else if (g instanceof ClassicCompleteBlockGraph) {
 		    classicCompleteBlockGraph = (ClassicCompleteBlockGraph) g;
 		} else if (g.getClass().getName().endsWith(".CompleteBlockGraph")) {
@@ -1017,9 +1004,6 @@ public class GraphComparer {
 	return false;
     }
 	    
-    private final static String diffMarker = " ***";
-
-
     /**
      * Utility method to return the {@link Body} associated with a 
      * {@link DirectedGraph}, if there is one.
@@ -1038,27 +1022,6 @@ public class GraphComparer {
 	    result = ((BlockGraph) g).getBody();
 	}
 	return result;
-    }
-
-
-    /**
-     * Utility method to return a short string label identifying a graph.
-     *
-     * @param g the graph for which to return a label.
-     *
-     * @return the method signature associated with <tt>g</tt>, if <tt>g</tt>
-     * is a control flow graph, or an arbitrary identifying string if 
-     * <tt>g</tt> is not a control flow graph.
-     */
-    private static String graphToStringLabel(DirectedGraph g) {
-	StringBuffer result = new StringBuffer(g.getClass().getName());
-	Body b = getGraphsBody(g);
-	if (b != null) {
-	    result.append('(');
-	    result.append(b.getMethod().getSignature());
-	    result.append(')');
-	}
-	return b.toString();
     }
 
 
@@ -1106,7 +1069,6 @@ public class GraphComparer {
 	    ((Unit) node).toString(printer);
 	    result = printer.toString();
 	} else if (node instanceof Block) {
-	    Block b = (Block) node;
 	    StringBuffer buffer = new StringBuffer();
 	    Iterator units = ((Block) node).iterator();
 	    while (units.hasNext()) {

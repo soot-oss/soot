@@ -24,14 +24,12 @@ import java.lang.reflect.InvocationTargetException;
 import soot.G;
 import soot.Body;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.toolkits.graph.ClassicCompleteBlockGraph;
 import soot.toolkits.graph.ClassicCompleteUnitGraph;
-import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.BriefBlockGraph;
 import soot.toolkits.graph.ExceptionalBlockGraph;
 import soot.toolkits.graph.CompleteBlockGraph;
@@ -127,7 +125,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       }
 
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((BriefUnitGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 
@@ -157,7 +155,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new TrapUnitGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((TrapUnitGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 
@@ -167,7 +165,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new ClassicCompleteUnitGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((ClassicCompleteUnitGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 
@@ -177,7 +175,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new BriefBlockGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((BriefBlockGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 
@@ -197,7 +195,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new CompleteBlockGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((CompleteBlockGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 
@@ -207,7 +205,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new ClassicCompleteBlockGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((ClassicCompleteBlockGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 
@@ -217,7 +215,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new ArrayRefBlockGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((ArrayRefBlockGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 
@@ -227,7 +225,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new ZonedBlockGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((ZonedBlockGraph) g, b);
+      return drawer.drawCFG(g, b);
     }
   };
 

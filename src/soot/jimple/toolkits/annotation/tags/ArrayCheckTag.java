@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.annotation.tags;
 
-import soot.*;
-
-import java.util.*;
-import java.io.*;
-
 /** Implementation of the Tag interface for array bounds checks.
  */
 public class ArrayCheckTag implements OneByteCodeTag

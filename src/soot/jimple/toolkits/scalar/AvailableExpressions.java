@@ -26,9 +26,6 @@
 
 package soot.jimple.toolkits.scalar;
 import soot.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 

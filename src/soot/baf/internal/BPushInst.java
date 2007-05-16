@@ -33,7 +33,6 @@ import soot.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 
 public class BPushInst extends AbstractInst implements PushInst
 {

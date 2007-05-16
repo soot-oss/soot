@@ -27,7 +27,6 @@ import soot.util.*;
 import soot.jimple.*;
 import soot.BodyTransformer;
 import soot.jbco.util.*;
-import soot.jimple.internal.*;
 
 
 /**
@@ -110,7 +109,7 @@ public class ArithmeticTransformer extends BodyTransformer implements
               if (shft_rem[0] != null
                   && ((Integer) shft_rem[0]).intValue() < max
                   && Rand.getInt(10) <= weight) {
-                List unitsBuilt = new ArrayList();
+                List<Unit> unitsBuilt = new ArrayList<Unit>();
                 int rand = Rand.getInt(16);
                 int shift = ((Integer) shft_rem[0]).intValue();
                 boolean neg = ((Boolean) shft_rem[2]).booleanValue();
@@ -212,9 +211,9 @@ public class ArithmeticTransformer extends BodyTransformer implements
 
                 if (output) {
                   System.out.println(" after as: ");
-                  Iterator ait = unitsBuilt.iterator();
+                  Iterator<Unit> ait = unitsBuilt.iterator();
                   while (ait.hasNext()) {
-                    Unit uu = (Unit) ait.next();
+                    Unit uu = ait.next();
                     System.out.println("\t"
                         + uu
                         + "\ttype : "
@@ -243,7 +242,7 @@ public class ArithmeticTransformer extends BodyTransformer implements
                 if (shft_rem[0] != null
                     && ((Integer) shft_rem[0]).intValue() < max
                     && Rand.getInt(10) <= weight) {
-                  List unitsBuilt = new ArrayList();
+                  List<Unit> unitsBuilt = new ArrayList<Unit>();
                   int rand = Rand.getInt(16);
                   int shift = ((Integer) shft_rem[0]).intValue();
                   boolean neg = ((Boolean) shft_rem[2]).booleanValue();
@@ -281,9 +280,9 @@ public class ArithmeticTransformer extends BodyTransformer implements
 
                   if (output) {
                     System.out.println(" after as: ");
-                    Iterator ait = unitsBuilt.iterator();
+                    Iterator<Unit> ait = unitsBuilt.iterator();
                     while (ait.hasNext()) {
-                      Unit uu = (Unit) ait.next();
+                      Unit uu = ait.next();
                       System.out.println("\t"
                           + uu
                           + "\ttype : "

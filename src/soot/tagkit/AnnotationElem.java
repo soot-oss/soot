@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 
 
 /** 

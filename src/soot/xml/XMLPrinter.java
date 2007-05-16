@@ -136,12 +136,12 @@ public class XMLPrinter {
         long labelID = 0;
 
         // lists
-        Vector useList = new Vector();
-        Vector useDataList = new Vector();
-        Vector defList = new Vector();
-        Vector defDataList = new Vector();
-        Vector paramData = new Vector();
-        Vector xmlLabelsList = new Vector();
+        Vector<String> useList = new Vector<String>();
+        Vector<Vector<Long>> useDataList = new Vector<Vector<Long>>();
+        Vector<String> defList = new Vector<String>();
+        Vector<Vector<Long>> defDataList = new Vector<Vector<Long>>();
+        Vector<Vector<String>> paramData = new Vector<Vector<String>>();
+        Vector<XMLLabel> xmlLabelsList = new Vector<XMLLabel>();
         long maxStmtCount = 0;
 
         /*
@@ -280,7 +280,7 @@ public class XMLPrinter {
                         new String[] { j + "", local, cleanMethodName });
                     j++;
 
-                    Vector tempVector = null;
+                    Vector<Long> tempVector = null;
                     int useIndex = useList.indexOf(local);
                     if (useIndex == -1) {
                         useDataList.addElement(tempVector);
@@ -289,9 +289,9 @@ public class XMLPrinter {
                     }
 
                     if (useDataList.size() > useIndex) {
-                        tempVector = (Vector) useDataList.elementAt(useIndex);
+                        tempVector = useDataList.elementAt(useIndex);
                         if (tempVector == null) {
-                            tempVector = new Vector();
+                            tempVector = new Vector<Long>();
                         }
                         tempVector.addElement(new Long(statementCount));
                         useDataList.setElementAt(tempVector, useIndex);
@@ -313,7 +313,7 @@ public class XMLPrinter {
                         new String[] { j + "", local, cleanMethodName });
                     j++;
 
-                    Vector tempVector = null;
+                    Vector<Long> tempVector = null;
                     int defIndex = defList.indexOf(local);
                     if (defIndex == -1) {
                         defDataList.addElement(tempVector);
@@ -322,9 +322,9 @@ public class XMLPrinter {
                     }
 
                     if (defDataList.size() > defIndex) {
-                        tempVector = (Vector) defDataList.elementAt(defIndex);
+                        tempVector = defDataList.elementAt(defIndex);
                         if (tempVector == null) {
-                            tempVector = new Vector();
+                            tempVector = new Vector<Long>();
                         }
                         tempVector.addElement(new Long(statementCount));
                         defDataList.setElementAt(tempVector, defIndex);
@@ -425,7 +425,7 @@ public class XMLPrinter {
             for (int i = 0;
                 i < body.getMethod().getParameterTypes().size();
                 i++) {
-                Vector tempVec = new Vector();
+                Vector<String> tempVec = new Vector<String>();
                 paramData.addElement(tempVec);
             }
 
@@ -442,7 +442,7 @@ public class XMLPrinter {
                 if (tempStr.indexOf(" ") != -1)
                     tempStr = tempStr.substring(0, tempStr.indexOf(" ")).trim();
                 int paramIndex = new Integer(tempStr).intValue();
-                Vector tempVec = (Vector) paramData.elementAt(paramIndex);
+                Vector<String> tempVec = paramData.elementAt(paramIndex);
                 if (tempVec != null)
                     tempVec.addElement(Long.toString(statementCount));
                 paramData.setElementAt(tempVec, paramIndex);
@@ -479,7 +479,7 @@ public class XMLPrinter {
                         "_parameter" + i });
             XMLNode sootparamNode = paramNode.addChild("soot_parameter");
 
-            Vector tempVec = (Vector) paramData.elementAt(i);
+            Vector tempVec = paramData.elementAt(i);
             for (int k = 0; k < tempVec.size(); k++) {
                 sootparamNode.addChild(
                     "use",
@@ -515,9 +515,9 @@ public class XMLPrinter {
         // print out locals
         Chain locals = body.getLocals();
         Iterator localsIterator = locals.iterator();
-        Vector localTypes = new Vector();
-        Vector typedLocals = new Vector();
-        Vector typeCounts = new Vector();
+        Vector<String> localTypes = new Vector<String>();
+        Vector<Vector<XMLNode>> typedLocals = new Vector<Vector<XMLNode>>();
+        Vector<Integer> typeCounts = new Vector<Integer>();
         int j = 0;
         int currentType = 0;
 
@@ -531,7 +531,7 @@ public class XMLPrinter {
             // collect the local types			
             if (!localTypes.contains(localType)) {
                 localTypes.addElement(localType);
-                typedLocals.addElement(new Vector());
+                typedLocals.addElement(new Vector<XMLNode>());
                 typeCounts.addElement(new Integer(0));
             }
 
@@ -547,11 +547,11 @@ public class XMLPrinter {
 
             for (int k = 0; k < localTypes.size(); k++) {
                 if (localType
-                    .equalsIgnoreCase((String) localTypes.elementAt(k))) {
+                    .equalsIgnoreCase(localTypes.elementAt(k))) {
                     currentType = k;
                     Integer tempInt =
                         new Integer(
-                            ((Integer) typeCounts.elementAt(k)).intValue() + 1);
+                            typeCounts.elementAt(k).intValue() + 1);
                     typeCounts.setElementAt(tempInt, k);
                     break;
                 }
@@ -559,10 +559,10 @@ public class XMLPrinter {
 
             // add all uses to this local			
             for (int k = 0; k < useList.size(); k++) {
-                String query = (String) useList.elementAt(k);
+                String query = useList.elementAt(k);
                 if (query.equalsIgnoreCase(local)) {
                     Vector tempVector =
-                        (Vector) useDataList.elementAt(useList.indexOf(local));
+                        useDataList.elementAt(useList.indexOf(local));
 
                     for (int i = 0; i < tempVector.size(); i++) {
                         sootlocalNode.addChild(
@@ -580,10 +580,10 @@ public class XMLPrinter {
 
             // add all definitions to this local
             for (int k = 0; k < defList.size(); k++) {
-                String query = (String) (defList.elementAt(k));
+                String query = (defList.elementAt(k));
                 if (query.equalsIgnoreCase(local)) {
                     Vector tempVector =
-                        (Vector) defDataList.elementAt(defList.indexOf(local));
+                        defDataList.elementAt(defList.indexOf(local));
 
                     for (int i = 0; i < tempVector.size(); i++) {
                         sootlocalNode.addChild(
@@ -604,7 +604,7 @@ public class XMLPrinter {
             sootlocalNode.addAttribute("defines", defineCount + "");
 
             //create a list of locals sorted by type
-            Vector list = (Vector) typedLocals.elementAt(currentType);
+            Vector<XMLNode> list = typedLocals.elementAt(currentType);
             list.addElement(localNode);
             typedLocals.setElementAt(list, currentType);
 
@@ -625,7 +625,7 @@ public class XMLPrinter {
                 new String[] { localTypes.size() + "" });
 
         for (int i = 0; i < localTypes.size(); i++) {
-            String type = (String) localTypes.elementAt(i);
+            String type = localTypes.elementAt(i);
             XMLNode typeNode =
                 typesNode.addChild(
                     "type",
@@ -633,9 +633,9 @@ public class XMLPrinter {
                     new String[] {
                         i + "",
                         type,
-                        (Integer) typeCounts.elementAt(i) + "" });
+                        typeCounts.elementAt(i) + "" });
 
-            Vector list = (Vector) typedLocals.elementAt(i);
+            Vector list = typedLocals.elementAt(i);
             for (j = 0; j < list.size(); j++) {
                 typeNode.addChild((XMLNode) list.elementAt(j));
             }
@@ -645,7 +645,7 @@ public class XMLPrinter {
         labelsNode.addAttribute("count", labelCount + "");
         XMLNode current = labelsNode.child;
         for (int i = 0; i < xmlLabelsList.size(); i++) {
-            XMLLabel tempLabel = (XMLLabel) xmlLabelsList.elementAt(i);
+            XMLLabel tempLabel = xmlLabelsList.elementAt(i);
             tempLabel.stmtPercentage =
                 new Float(
                     (new Float(tempLabel.stmtPercentage).floatValue()
@@ -758,8 +758,8 @@ public class XMLPrinter {
             // add history node
             // TODO: grab the software version and command line
             String cmdlineStr = "";
-            for (int i = 0; i < Main.v().cmdLineArgs.length; i++) {
-                cmdlineStr += Main.v().cmdLineArgs[i] + " ";
+            for (String element : Main.v().cmdLineArgs) {
+                cmdlineStr += element + " ";
             }
             String dateStr = new Date().toString();
             xmlHistoryNode = xmlRootNode.addChild("history");

@@ -27,7 +27,6 @@
 package soot;
 
 import soot.util.*;
-import java.util.*;
 import java.io.*;
 
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */

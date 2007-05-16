@@ -26,10 +26,10 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
 import soot.toolkits.graph.*;
-import soot.util.*;
 import java.util.*;
+
+import soot.jimple.Stmt;
 import soot.options.*;
 import soot.toolkits.graph.interaction.*;
 
@@ -40,10 +40,10 @@ import soot.toolkits.graph.interaction.*;
 public abstract class AbstractFlowAnalysis
 {
     /** Maps graph nodes to IN sets. */
-    protected Map unitToBeforeFlow;
+    protected Map<Object, Object> unitToBeforeFlow;
 
     /** Filtered: Maps graph nodes to IN sets. */
-    protected Map filterUnitToBeforeFlow;
+    protected Map<Stmt, HashMap> filterUnitToBeforeFlow;
 
     /** The graph being analysed. */
     protected DirectedGraph graph;
@@ -51,7 +51,7 @@ public abstract class AbstractFlowAnalysis
     /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
     public AbstractFlowAnalysis(DirectedGraph graph)
     {
-        unitToBeforeFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
+        unitToBeforeFlow = new HashMap<Object, Object>(graph.size() * 2 + 1, 0.7f);
         this.graph = graph;
         if (Options.v().interactive_mode()){
             InteractionHandler.v().handleCfgEvent(graph);

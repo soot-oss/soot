@@ -25,7 +25,6 @@
 
 
 package soot.tagkit;
-import soot.*;
 
 public class LineNumberTag implements Tag
 {

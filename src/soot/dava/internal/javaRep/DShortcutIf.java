@@ -5,7 +5,6 @@ import java.util.List;
 
 import soot.Type;
 import soot.UnitPrinter;
-import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Expr;
 import soot.util.Switch;

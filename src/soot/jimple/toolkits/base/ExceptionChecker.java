@@ -23,7 +23,6 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
-import soot.jimple.toolkits.scalar.*;
 import soot.tagkit.*;
 
 public class ExceptionChecker extends BodyTransformer{
@@ -79,9 +78,9 @@ public class ExceptionChecker extends BodyTransformer{
         if (b.getMethod().throwsException(throwClass)) return true;
 
         // handles case when a super type of the exception is thrown
-        Iterator it = b.getMethod().getExceptions().iterator();
+        Iterator<SootClass> it = b.getMethod().getExceptions().iterator();
         while (it.hasNext()){
-            SootClass nextEx = (SootClass)it.next();
+            SootClass nextEx = it.next();
             if (hierarchy.isSubclass(throwClass, nextEx)) return true;
         }
         return false;
@@ -101,7 +100,7 @@ public class ExceptionChecker extends BodyTransformer{
         Iterator it = b.getTraps().iterator();
         while (it.hasNext()){
             Trap trap = (Trap)it.next();
-            if (trap.getException().getType().equals(throwType) || hierarchy.isSubclass(throwType.getSootClass(), ((RefType)trap.getException().getType()).getSootClass())){
+            if (trap.getException().getType().equals(throwType) || hierarchy.isSubclass(throwType.getSootClass(), (trap.getException().getType()).getSootClass())){
                 if (isThrowInStmtRange(b, (Stmt)trap.getBeginUnit(), (Stmt)trap.getEndUnit(), s)) return true;
             }
         }
@@ -127,15 +126,15 @@ public class ExceptionChecker extends BodyTransformer{
     // the maximal set of exceptions that could be declared to be thrown if the
     // interface had declared the method. Returns null if no supertype declares
     // the method.
-    private List getExceptionSpec(SootClass intrface,NumberedString sig) {
+    private List<SootClass> getExceptionSpec(SootClass intrface,NumberedString sig) {
         if(intrface.declaresMethod(sig)) return intrface.getMethod(sig).getExceptions();
-        List result=null;
+        List<SootClass> result=null;
         SootClass obj=Scene.v().getSootClass("java.lang.Object");
-        if(obj.declaresMethod(sig)) result=new Vector(obj.getMethod(sig).getExceptions());
+        if(obj.declaresMethod(sig)) result=new Vector<SootClass>(obj.getMethod(sig).getExceptions());
         Iterator intrfacesit=intrface.getInterfaces().iterator();
         while(intrfacesit.hasNext()) {
             SootClass suprintr=(SootClass) intrfacesit.next();
-            List other=getExceptionSpec(suprintr,sig);
+            List<SootClass> other=getExceptionSpec(suprintr,sig);
             if(other!=null)
                 if(result==null) result=other;
                 else result.retainAll(other);

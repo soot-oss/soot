@@ -19,11 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.options.*;
-import soot.jimple.*;
-import java.util.*;
-import soot.util.*;
-import soot.util.queue.*;
 
 /** Interface for context managers, which decide how edges should be added to
  * a context-sensitive call graph.

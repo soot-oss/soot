@@ -35,7 +35,6 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import soot.baf.*;
-import soot.jimple.*;
 import java.util.*;
 
 public class JThrowStmt extends AbstractStmt implements ThrowStmt
@@ -78,7 +77,7 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().THROW);
+        up.literal(Jimple.THROW);
         up.literal(" ");
         opBox.toString(up);
     }
@@ -99,7 +98,7 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
     }    
 
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf)getOp()).convertToBaf(context, out);
 

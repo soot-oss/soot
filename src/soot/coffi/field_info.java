@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** Represents a single field_info object.
  * @see ClassFile
  * @author Clark Verbrugge
@@ -72,9 +70,7 @@ public class field_info {
     * @return the prototype (access + type + name) of this field.
     */
    public String prototype(cp_info constant_pool[]) {
-      ConstantValue_attribute cva;
       CONSTANT_Utf8_info cm,dm;
-      int i,j;
       String s;
 
       cm = (CONSTANT_Utf8_info)(constant_pool[name_index]);
@@ -89,7 +85,6 @@ public class field_info {
      * @see ConstantValue_attribute
      */
    public ConstantValue_attribute findConstantValue_attribute() {
-      ConstantValue_attribute ca;
       int i;
       for (i=0;i<attributes_count;i++) {
          if ((attributes[i]) instanceof ConstantValue_attribute)

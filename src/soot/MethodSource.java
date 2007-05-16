@@ -26,8 +26,6 @@
 
 package soot;
 
-import java.util.*;
-
 
 /** A class which knows how to produce Body's for SootMethods. */
 public interface MethodSource

@@ -29,8 +29,6 @@
 package soot.jimple.toolkits.annotation.purity;
 import java.util.*;
 import soot.*;
-import soot.util.*;
-import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.options.PurityOptions;
 
@@ -66,7 +64,7 @@ public class PurityAnalysis extends SceneTransformer
 	CallGraph cg = Scene.v().getCallGraph();
 
 	// Find main methods
-	List heads = new LinkedList();
+	List<SootMethod> heads = new LinkedList<SootMethod>();
 	Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
 	while (getClassesIt.hasNext()) {
 	    SootClass appClass = (SootClass)getClassesIt.next();

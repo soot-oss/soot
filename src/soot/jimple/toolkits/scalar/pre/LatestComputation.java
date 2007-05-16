@@ -28,10 +28,7 @@ package soot.jimple.toolkits.scalar.pre;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 
 /** 
  * Performs a Latest-Computation on the given graph.
@@ -43,7 +40,7 @@ import soot.util.*;
  * computation to one of the succesors.
  */
 public class LatestComputation {
-  private Map unitToLatest;
+  private Map<Unit, FlowSet> unitToLatest;
 
 
   /**
@@ -79,7 +76,7 @@ public class LatestComputation {
    */
   public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
                            Map equivRhsMap, BoundedFlowSet set) {
-    unitToLatest = new HashMap(unitGraph.size() + 1, 0.7f);
+    unitToLatest = new HashMap<Unit, FlowSet>(unitGraph.size() + 1, 0.7f);
 
     Iterator unitIt = unitGraph.iterator();
     while (unitIt.hasNext()) {

@@ -27,7 +27,7 @@ public class SETBasicBlock implements Comparable
 {
     
     private SETNode entryNode, exitNode;
-    private IterableSet predecessors, successors, body;
+    private final IterableSet predecessors, successors, body;
     private int priority;
 
     
@@ -120,7 +120,7 @@ public class SETBasicBlock implements Comparable
     
     public static SETBasicBlock get_SETBasicBlock( SETNode o)
     {
-	return (SETBasicBlock) G.v().SETBasicBlock_binding.get( o);
+	return G.v().SETBasicBlock_binding.get( o);
     }
 
 

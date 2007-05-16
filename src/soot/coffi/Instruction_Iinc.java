@@ -30,7 +30,6 @@
 
 
 package soot.coffi;
-import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>
@@ -77,8 +76,8 @@ class Instruction_Iinc extends Instruction_bytevar {
         return index+1;
       }
       else {
-        int constbyte1 = ((int) bc[index]) & 0xff;
-        int constbyte2 = ((int) bc[index+1]) & 0xff;
+        int constbyte1 = (bc[index]) & 0xff;
+        int constbyte2 = (bc[index+1]) & 0xff;
 
         arg_c = (short) ((constbyte1 << 8) | constbyte2);
 

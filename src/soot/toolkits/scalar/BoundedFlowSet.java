@@ -26,10 +26,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-
 /** 
  * Represents bounded information for flow analysis.  
  * Just like FlowSet, but also provides complementation.

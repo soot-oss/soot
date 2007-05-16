@@ -3,6 +3,7 @@ package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import soot.jimple.toolkits.callgraph.*;
+
 import java.util.*;
 
 /** CallChain written by Richard L. Halpert 2007-03-07
@@ -25,9 +26,9 @@ public class CallChain
 	}
 	
 	// reconstructs the whole chain
-	public List getEdges()
+	public List<Edge> getEdges()
 	{
-		List ret = new LinkedList();
+		List<Edge> ret = new LinkedList<Edge>();
 		if(edge != null)
 			ret.add(edge);
 		CallChain current = next;
@@ -44,7 +45,7 @@ public class CallChain
 		return 1 + (next == null ? 0 : next.size());
 	}
 	
-	public Iterator iterator()
+	public Iterator<Edge> iterator()
 	{
 		return getEdges().iterator();
 	}

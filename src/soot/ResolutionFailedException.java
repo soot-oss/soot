@@ -18,8 +18,6 @@
  */
 
 package soot;
-import java.util.*;
-import soot.util.*;
 
 /** Exception thrown when resolving a method or field reference fails.
  */

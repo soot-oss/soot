@@ -26,14 +26,13 @@
 
 package soot.jimple.parser;
 
+import soot.jimple.JimpleBody;
 import soot.jimple.parser.parser.*;
 import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
-import soot.jimple.parser.analysis.*;
 import java.io.*;
 import java.util.*;
 
-import soot.util.*;
 import soot.*;
 
 /** 
@@ -43,7 +42,7 @@ import soot.*;
 public class JimpleAST
 {
     private Start mTree = null;
-    private HashMap methodToParsedBodyMap = null;
+    private HashMap<SootMethod, JimpleBody> methodToParsedBodyMap = null;
 
     /** Constructs a JimpleAST and generates its parse tree from the given InputStream.
      *
@@ -98,7 +97,7 @@ public class JimpleAST
     {
         if (methodToParsedBodyMap == null)
             stashBodiesForClass(m.getDeclaringClass());
-        return (Body)methodToParsedBodyMap.get(m);
+        return methodToParsedBodyMap.get(m);
     } 
 
 
@@ -123,7 +122,7 @@ public class JimpleAST
      */
     private void stashBodiesForClass(SootClass sc) 
     {          
-        methodToParsedBodyMap = new HashMap();
+        methodToParsedBodyMap = new HashMap<SootMethod, JimpleBody>();
 
         Walker w = new BodyExtractorWalker(sc, SootResolver.v(), methodToParsedBodyMap);
 

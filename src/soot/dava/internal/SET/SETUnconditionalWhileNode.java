@@ -19,7 +19,6 @@
 
 package soot.dava.internal.SET;
 
-import java.util.*;
 import soot.util.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
@@ -39,7 +38,7 @@ public class SETUnconditionalWhileNode extends SETCycleNode
 
     public ASTNode emit_AST()
     {
-	return new ASTUnconditionalLoopNode( get_Label(), emit_ASTBody( (IterableSet) body2childChain.get( subBodies.get(0))));
+	return new ASTUnconditionalLoopNode( get_Label(), emit_ASTBody( body2childChain.get( subBodies.get(0))));
     }
 
     public AugmentedStmt get_EntryStmt()

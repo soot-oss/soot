@@ -20,7 +20,6 @@
 
 package soot.dava.internal.javaRep;
 
-import java.util.*;
 import soot.jimple.internal.*;
 import soot.dava.internal.SET.*;
 import soot.*;

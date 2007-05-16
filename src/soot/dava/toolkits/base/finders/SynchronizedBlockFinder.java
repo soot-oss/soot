@@ -23,7 +23,9 @@ package soot.dava.toolkits.base.finders;
 import soot.*;
 import soot.dava.*;
 import soot.util.*;
+
 import java.util.*;
+
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.dava.internal.asg.*;
@@ -34,7 +36,7 @@ public class SynchronizedBlockFinder implements FactFinder
     public SynchronizedBlockFinder( Singletons.Global g ) {}
     public static SynchronizedBlockFinder v() { return G.v().soot_dava_toolkits_base_finders_SynchronizedBlockFinder(); }
 
-    private HashMap as2ml;
+    private HashMap<AugmentedStmt,Map<Value,Integer>> as2ml;
     private DavaBody davaBody;
 
     /*
@@ -44,14 +46,14 @@ public class SynchronizedBlockFinder implements FactFinder
     */
     private IterableSet monitorLocalSet, monitorEnterSet;
 
-    private Integer WHITE = new Integer(0);//never visited in DFS
-    private Integer GRAY = new Integer(1);//visited but not finished
-    private Integer BLACK = new Integer(2);//finished
+    private final Integer WHITE = new Integer(0);//never visited in DFS
+    private final Integer GRAY = new Integer(1);//visited but not finished
+    private final Integer BLACK = new Integer(2);//finished
 
-    private int UNKNOWN = -100000; // Note there are at most 65536 monitor exits in a method.
-    private Integer VARIABLE_INCR = new Integer(UNKNOWN);
+    private final int UNKNOWN = -100000; // Note there are at most 65536 monitor exits in a method.
+    private final Integer VARIABLE_INCR = new Integer(UNKNOWN);
 
-    private String THROWABLE = "java.lang.Throwable";
+    private final String THROWABLE = "java.lang.Throwable";
 
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
@@ -66,7 +68,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	set_MonitorLevels( asg);
 
-	Map as2synchSet = build_SynchSets();
+	Map<AugmentedStmt, IterableSet> as2synchSet = build_SynchSets();
 
 	IterableSet usedMonitors = new IterableSet();
 
@@ -80,7 +82,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    if (as.get_Stmt() instanceof EnterMonitorStmt) {
 		//for each monitor enter stmt found
 
-		IterableSet synchSet = (IterableSet) as2synchSet.get( as);
+		IterableSet synchSet = as2synchSet.get( as);
 		if (synchSet != null) {
 		    IterableSet synchBody = get_BodyApproximation( as, synchSet);		    
 		    Value local = ((EnterMonitorStmt) as.get_Stmt()).getOp();
@@ -107,7 +109,7 @@ public class SynchronizedBlockFinder implements FactFinder
 		    }
 
 
-		    Integer level = (Integer) ((HashMap) as2ml.get( as)).get( local);
+		    Integer level = as2ml.get( as).get( local);
 		    Iterator enit = body.get_ExceptionFacts().iterator();
 
 		    //going through all exception nodes in the DavaBody
@@ -136,7 +138,7 @@ public class SynchronizedBlockFinder implements FactFinder
 				    */
 				    if (sss instanceof MonitorStmt){
 					if( (((MonitorStmt) sss).getOp() == local) && 
-					    (((Integer) ((HashMap) as2ml.get( ssas)).get( local)).equals( level)) &&
+					    ((as2ml.get( ssas).get( local)).equals( level)) &&
 					    (usedMonitors.contains( ssas) == false) ){
 					
 					    usedMonitors.add( ssas);
@@ -195,7 +197,7 @@ public class SynchronizedBlockFinder implements FactFinder
      */
 
     private void find_VariableIncreasing( AugmentedStmtGraph asg, HashMap local2level_template, 
-					  LinkedList viAugStmts, HashMap as2locals) {
+					  LinkedList<AugmentedStmt> viAugStmts, HashMap<AugmentedStmt, LinkedList<Value>> as2locals) {
     	StronglyConnectedComponents scc = new StronglyConnectedComponents(asg);
 	IterableSet viSeeds = new IterableSet();
 	HashMap 
@@ -210,10 +212,10 @@ public class SynchronizedBlockFinder implements FactFinder
 
 
 	// loop through all the strongly connected components in the graph
-	Iterator sccit = scc.getComponents().iterator();
+	Iterator<List> sccit = scc.getComponents().iterator();
 	while (sccit.hasNext()) {
 	    //componentList contains augmentedstmts belonging to a particular scc
-	    List componentList = (List) sccit.next();
+	    List componentList = sccit.next();
 
 	    // skip trivial strongly connected components
 	    if (componentList.size() < 2)
@@ -255,7 +257,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    Iterator sit = as.csuccs.iterator();
 	    while (sit.hasNext()) {
 		AugmentedStmt sas = (AugmentedStmt) sit.next();
-		HashMap slocal2level = (HashMap) as2rml.get( sas);
+		HashMap<Value, Integer> slocal2level = (HashMap<Value, Integer>) as2rml.get( sas);
 
 		Iterator mlsit = monitorLocalSet.iterator();
 		while (mlsit.hasNext()) {
@@ -305,10 +307,10 @@ public class SynchronizedBlockFinder implements FactFinder
 			viAugStmts.addLast(as);
 		    }
 
-		    LinkedList locals = null;
+		    LinkedList<Value> locals = null;
 
-		    if ((locals = (LinkedList) as2locals.get( as)) == null) {
-			locals = new LinkedList();
+		    if ((locals = as2locals.get( as)) == null) {
+			locals = new LinkedList<Value>();
 			as2locals.put( as, locals);
 		    }
 		    
@@ -344,16 +346,16 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	Stmt s = as.get_Stmt();
 	//get local to level mapping of the augmented stmt
-	HashMap local2level = (HashMap) as2rml.get( as);
+	HashMap<Value, Integer> local2level = (HashMap<Value, Integer>) as2rml.get( as);
 	
 	if (s instanceof MonitorStmt ) {
 	    Value local = ((MonitorStmt) s).getOp();
 	    
 	    if (s instanceof EnterMonitorStmt){//its an enter hence increase level for this local
-		local2level.put( local, new Integer( ((Integer) local2level.get( local)).intValue() + 1));
+		local2level.put( local, new Integer( local2level.get( local).intValue() + 1));
 	    }
 	    else{//its an exit stmt hence reduce level
-		local2level.put( local, new Integer( ((Integer) local2level.get( local)).intValue() - 1));
+		local2level.put( local, new Integer( local2level.get( local).intValue() - 1));
 	    }
 	}
 	    
@@ -367,7 +369,7 @@ public class SynchronizedBlockFinder implements FactFinder
 		continue;
 
 	    //get the local2Level hashmap for the successor
-	    HashMap slocal2level = (HashMap) as2rml.get( sas);
+	    HashMap<Value, Integer> slocal2level = (HashMap<Value, Integer>) as2rml.get( sas);
 	    //get the color for the sucessor
 	    Integer scolor = (Integer) as2color.get( sas);
 
@@ -395,7 +397,7 @@ public class SynchronizedBlockFinder implements FactFinder
 		while (mlsit.hasNext()) {
 		    Value local = (Value) mlsit.next();
 
-		    if (((Integer) slocal2level.get( local)).intValue() < ((Integer) local2level.get( local)).intValue()) {
+		    if (slocal2level.get( local).intValue() < local2level.get( local).intValue()) {
 			//if the sucessors value for the level of a local is less than that of the level of the seed
 			//make the level for this local to be unknown--> VARIABLE_INCR
 			slocal2level.put( local, VARIABLE_INCR);
@@ -420,8 +422,8 @@ public class SynchronizedBlockFinder implements FactFinder
      * The synch set contains all sucessors of the monitor enter stmt which is dominated by the enter stmt
      * and the level is greater or equal to that of the enter stmt
      */
-    private Map build_SynchSets(){
-	HashMap as2synchSet = new HashMap();
+    private Map<AugmentedStmt, IterableSet> build_SynchSets(){
+	HashMap<AugmentedStmt, IterableSet> as2synchSet = new HashMap<AugmentedStmt, IterableSet>();
 
 	Iterator mesit = monitorEnterSet.iterator();
 	monitorEnterLoop:
@@ -432,7 +434,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    IterableSet synchSet = new IterableSet();
 
 	    //get the monitor level for the local uses in the enter stmt
-	    int monitorLevel = ((Integer) ((HashMap) as2ml.get( headAs)).get( local)).intValue();
+	    int monitorLevel = (as2ml.get( headAs).get( local)).intValue();
 	    IterableSet worklist = new IterableSet();
 	    worklist.add( headAs);
 
@@ -450,7 +452,7 @@ public class SynchronizedBlockFinder implements FactFinder
 		while (sit.hasNext()) {
 		    AugmentedStmt sas = (AugmentedStmt) sit.next();
 		    //get the sucessors monitor level
-		    int sml = ((Integer) ((HashMap) as2ml.get( sas)).get( local)).intValue();
+		    int sml = (as2ml.get( sas).get( local)).intValue();
 
 		    /* if the sucessor is dominated by the head stmt and the level is greater or equal to that
 		       of the head and is not waiting to be analysed and is not in the synchSet.. then add it to worklist
@@ -484,9 +486,9 @@ public class SynchronizedBlockFinder implements FactFinder
 	monitorEnterSet = new IterableSet();
 
 	// Identify the locals that are used in monitor statements, and all the monitor enters.
-	Iterator asgit = asg.iterator();
+	Iterator<AugmentedStmt> asgit = asg.iterator();
 	while (asgit.hasNext()) {
-	    AugmentedStmt as = (AugmentedStmt) asgit.next();
+	    AugmentedStmt as = asgit.next();
 	    Stmt s = as.get_Stmt();
 	    
 	    if (s instanceof MonitorStmt) {
@@ -514,12 +516,12 @@ public class SynchronizedBlockFinder implements FactFinder
 	asgit = asg.iterator();
 	while (asgit.hasNext()){
 	    //the augmented stmt is key and the whole hashMap with all the local-->value mapping is the key
-	    as2ml.put( asgit.next(), local2level_template.clone());
+	    as2ml.put( asgit.next(), (Map<Value,Integer>) local2level_template.clone());
 	}
 
 
-	LinkedList viAugStmts = new LinkedList();
-	HashMap incrAs2locals = new HashMap();
+	LinkedList<AugmentedStmt> viAugStmts = new LinkedList<AugmentedStmt>();
+	HashMap<AugmentedStmt, LinkedList<Value>> incrAs2locals = new HashMap<AugmentedStmt, LinkedList<Value>>();
 	
 	// setup the variable increasing monitor levels
 	find_VariableIncreasing( asg, local2level_template, viAugStmts, incrAs2locals);	
@@ -531,13 +533,13 @@ public class SynchronizedBlockFinder implements FactFinder
 
 
 	//going through all augmented stmts with some local with unknown level
-	Iterator viasit = viAugStmts.iterator();
+	Iterator<AugmentedStmt> viasit = viAugStmts.iterator();
 	while (viasit.hasNext()) {
-	    AugmentedStmt vias = (AugmentedStmt) viasit.next();
-	    HashMap local2level = (HashMap) as2ml.get( vias);
+	    AugmentedStmt vias = viasit.next();
+	    Map local2level = as2ml.get( vias);
 
 	    //getting the list of locals with unknown level for this augmented stmt
-	    Iterator lit = ((LinkedList) incrAs2locals.get( vias)).iterator();
+	    Iterator lit = incrAs2locals.get( vias).iterator();
 	    while (lit.hasNext()){
 		//marking the level for this local as unknown
 		local2level.put( lit.next(), VARIABLE_INCR);
@@ -553,7 +555,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    AugmentedStmt as = (AugmentedStmt) worklist.getFirst();
 	    worklist.removeFirst();
 
-	    HashMap cur_local2level = (HashMap) as2ml.get( as);
+	    Map<Value, Integer> cur_local2level = as2ml.get( as);
 
 	    Iterator pit = as.cpreds.iterator();
 	    while (pit.hasNext()) {
@@ -561,7 +563,7 @@ public class SynchronizedBlockFinder implements FactFinder
 		AugmentedStmt pas = (AugmentedStmt) pit.next();
 		Stmt s = as.get_Stmt();
 
-		HashMap pred_local2level = (HashMap) as2ml.get( pas);
+		Map pred_local2level = as2ml.get( pas);
 
 		mlsit = monitorLocalSet.iterator();
 		while (mlsit.hasNext()) {
@@ -595,7 +597,7 @@ public class SynchronizedBlockFinder implements FactFinder
 			    predLevel++;
 		    }
 
-		    int curLevel  = ((Integer) cur_local2level.get( local)).intValue();
+		    int curLevel  = cur_local2level.get( local).intValue();
 
 		    /*
 		      if the pred level is greater than the current level update current level
@@ -844,7 +846,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	boolean unChanged=false;
 	while(!unChanged){
 	    unChanged=true;
-	    List toRemove = new ArrayList();
+	    List<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
 	    synchIt = synchBody.iterator();
 	    while(synchIt.hasNext()){
 		AugmentedStmt synchAs = (AugmentedStmt)synchIt.next();
@@ -1168,7 +1170,7 @@ public class SynchronizedBlockFinder implements FactFinder
     private IterableSet get_BodyApproximation( AugmentedStmt head, IterableSet synchSet) {
 	IterableSet body = (IterableSet) synchSet.clone();
 	Value local = ((EnterMonitorStmt) head.get_Stmt()).getOp();
-	Integer level = (Integer) ((HashMap) as2ml.get( head)).get( local);
+	Integer level = as2ml.get( head).get( local);
 
 
 	//System.out.println("BODY"+body);
@@ -1180,7 +1182,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    Stmt s = as.get_Stmt();
 	    
 	    if ((s instanceof ExitMonitorStmt) && (((ExitMonitorStmt) s).getOp() == local) && 
-		(((Integer) ((HashMap) as2ml.get( as)).get( local)).equals( level))) {
+		((as2ml.get( as).get( local)).equals( level))) {
 
 		Iterator sit = as.csuccs.iterator();
 		while (sit.hasNext()) {

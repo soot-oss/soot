@@ -31,10 +31,7 @@ package soot.baf;
 
 import soot.*;
 
-import soot.util.*;
 import soot.baf.internal.*;
-import java.util.*;
-import java.io.*;
 
 public class PlaceholderInst extends AbstractInst
 {

@@ -19,7 +19,6 @@
 
 package soot.jbco.bafTransformations;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -64,8 +63,8 @@ public class Jimple2BafLocalBuilder extends BodyTransformer implements IJbcoTran
     }
       
     Chain bLocals = b.getLocals();
-    HashMap bafToJLocals = new HashMap();
-    Iterator jlocIt = ((ArrayList) soot.jbco.Main.methods2JLocals.get(b.getMethod())).iterator();
+    HashMap<Local, Local> bafToJLocals = new HashMap<Local, Local>();
+    Iterator jlocIt = soot.jbco.Main.methods2JLocals.get(b.getMethod()).iterator();
     while (jlocIt.hasNext()) {
       Local jl = (Local) jlocIt.next();
       Iterator blocIt = bLocals.iterator();

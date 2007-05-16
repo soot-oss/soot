@@ -27,7 +27,6 @@
 package soot.tagkit;
 
 import java.io.UnsupportedEncodingException;
-import soot.*;
 
 public class SourceFileTag implements Tag
 {

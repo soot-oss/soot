@@ -18,9 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
 import soot.*;
-import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 
 /** Represents a simple of field ref node (Green or Red) in the pointer
  * assignment graph.

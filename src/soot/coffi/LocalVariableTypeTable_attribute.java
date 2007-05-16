@@ -32,8 +32,6 @@
 package soot.coffi;
 import soot.*;
 
-import java.io.*;
-
 /** A debugging attribute, this gives the types of local variables
  * within blocks of bytecode. - for java 1.5
  * @see attribute_info
@@ -65,7 +63,6 @@ class LocalVariableTypeTable_attribute extends attribute_info {
     */
    public String getLocalVariableType(cp_info constant_pool[],int idx,int code) {
       local_variable_type_table_entry e;
-      CONSTANT_Utf8_info cu;
       int i;
 
       // G.v().out.println("searching for type of local: " + idx + "at: " + code);

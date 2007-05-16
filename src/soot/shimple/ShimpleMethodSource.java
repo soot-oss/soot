@@ -20,7 +20,6 @@
 package soot.shimple;
 
 import soot.*;
-import soot.jimple.*;
 
 public class ShimpleMethodSource implements MethodSource
 {

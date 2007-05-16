@@ -26,7 +26,7 @@ package soot.jbco.util;
  */
 public class Rand {
 
-  private static java.util.Random r = new java.util.Random(1);//System.currentTimeMillis());
+  private static final java.util.Random r = new java.util.Random(1);//System.currentTimeMillis());
   
   public static int getInt(int n) {
     return r.nextInt(n);

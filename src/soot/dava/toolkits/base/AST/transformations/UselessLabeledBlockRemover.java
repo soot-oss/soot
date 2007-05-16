@@ -152,18 +152,18 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
     public static void removeLabeledBlock(ASTNode node, ASTLabeledBlockNode labelBlock, int subBodyNumber, int nodeNumber){
 	if(!(node instanceof ASTIfElseNode)){
 	    //these are the nodes which always have one subBody
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size()!=1){
 		//there is something wrong
 		throw new RuntimeException("Please report this benchmark to the programmer");
 	    }
-	    List onlySubBody = (List)subBodies.get(0);
+	    List<Object> onlySubBody = (List<Object>)subBodies.get(0);
 
 	    /*
 	      The onlySubBody contains the labeledBlockNode to be removed
 	      at location given by the nodeNumber variable
 	    */
-	    List newBody = createNewSubBody(onlySubBody,nodeNumber,labelBlock);
+	    List<Object> newBody = createNewSubBody(onlySubBody,nodeNumber,labelBlock);
 	    if(newBody==null){
 		//something went wrong
 		return;
@@ -215,19 +215,19 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
 		//System.out.println("Error-------not modifying AST");
 		return;
 	    }
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size()!=2){
 		//there is something wrong
 		throw new RuntimeException("Please report this benchmark to the programmer");
 	    }
 
-	    List toModifySubBody = (List)subBodies.get(subBodyNumber);
+	    List<Object> toModifySubBody = (List<Object>)subBodies.get(subBodyNumber);
 
 	    /*
 	      The toModifySubBody contains the labeledBlockNode to be removed
 	      at location given by the nodeNumber variable
 	    */
-	    List newBody = createNewSubBody(toModifySubBody,nodeNumber,labelBlock);
+	    List<Object> newBody = createNewSubBody(toModifySubBody,nodeNumber,labelBlock);
 	    if(newBody==null){
 		//something went wrong
 		return;
@@ -236,13 +236,13 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
 		//the if body was modified
 		//System.out.println("REMOVED LABEL");
 		G.v().ASTTransformations_modified = true;
-		((ASTIfElseNode)node).replaceBody(newBody,(List)subBodies.get(1));
+		((ASTIfElseNode)node).replaceBody(newBody,(List<Object>)subBodies.get(1));
 	    }
 	    else if(subBodyNumber==1){
 		//else body was modified
 		//System.out.println("REMOVED LABEL");
 		G.v().ASTTransformations_modified = true;
-		((ASTIfElseNode)node).replaceBody((List)subBodies.get(0),newBody);
+		((ASTIfElseNode)node).replaceBody((List<Object>)subBodies.get(0),newBody);
 	    }
 	    else{//realllly shouldnt come here
 		//something bad is happening dont do nothin
@@ -257,12 +257,12 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
 
 
 
-    public static List createNewSubBody(List oldSubBody,int nodeNumber,ASTLabeledBlockNode labelBlock){
+    public static List<Object> createNewSubBody(List<Object> oldSubBody,int nodeNumber,ASTLabeledBlockNode labelBlock){
 	//create a new SubBody
-	List newSubBody = new ArrayList();
+	List<Object> newSubBody = new ArrayList<Object>();
 	
 	//this is an iterator of ASTNodes
-	Iterator it = oldSubBody.iterator();
+	Iterator<Object> it = oldSubBody.iterator();
 	
 	//copy to newSubBody all nodes until you get to nodeNumber
 	int index=0;
@@ -293,7 +293,7 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
 	    
 	    //so this is the label to remove
 	    //removing a label means bringing all its bodies one step up the hierarchy
-	    List blocksSubBodies = toRemoveNode.get_SubBodies();
+	    List<Object> blocksSubBodies = toRemoveNode.get_SubBodies();
 	    //we know this is a labeledBlock so it has only one subBody
 	    List onlySubBodyOfLabeledBlock = (List)blocksSubBodies.get(0);
 	    

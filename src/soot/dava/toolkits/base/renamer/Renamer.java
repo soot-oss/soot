@@ -45,15 +45,15 @@ public class Renamer {
 	ASTMethodNode methodNode;
 	List forLoopNames;
 
-	HashMap changedOrNot;//keeps track of which local was changed previously
+	HashMap<Local, Boolean> changedOrNot;//keeps track of which local was changed previously
 	
 	public Renamer(heuristicSet info, ASTMethodNode node) {
 		heuristics = info;
 		locals = null;
 		methodNode = node;
 		
-		changedOrNot = new HashMap();
-		Iterator localIt = info.getLocalsIterator();
+		changedOrNot = new HashMap<Local, Boolean>();
+		Iterator<Local> localIt = info.getLocalsIterator();
 		while(localIt.hasNext())
 			changedOrNot.put(localIt.next(),new Boolean(false));
 		
@@ -108,9 +108,9 @@ public class Renamer {
 	 * if there is an array int[] x. then if no other heuristic matches give it the name intArray 
 	 */
 	private void arraysGetTypeArray(){
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			if(alreadyChanged(tempLocal)){
 				continue;
 			}
@@ -157,9 +157,9 @@ public class Renamer {
 	 * the name of the class type it belongs to
 	 */
 	private void objectsGetClassName(){
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			if(alreadyChanged(tempLocal)){
 				continue;
 			}
@@ -208,17 +208,17 @@ public class Renamer {
 	private void castedObject(){
 		debug("castedObject","");
 		
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			if(!alreadyChanged(tempLocal)){
 				debug("castedObject","checking "+tempLocal);
-				List classes = heuristics.getCastStrings(tempLocal);
+				List<String> classes = heuristics.getCastStrings(tempLocal);
 				
-				Iterator itClass = classes.iterator();
+				Iterator<String> itClass = classes.iterator();
 				String classNameToUse = null;
 				while(itClass.hasNext()){
-					String tempClassName = (String)itClass.next();
+					String tempClassName = itClass.next();
 					if(tempClassName.indexOf('.')!= -1){
 						//contains a dot have to remove that
 						tempClassName=tempClassName.substring(tempClassName.lastIndexOf('.')+1);
@@ -262,16 +262,16 @@ public class Renamer {
 		debug("newClassName","");
 		//check if CLASSNAME is set
 		//that would mean there was new className invocation
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			if(!alreadyChanged(tempLocal)){
 				debug("newClassName","checking "+tempLocal);
-				List classes = heuristics.getObjectClassName(tempLocal);
-				Iterator itClass = classes.iterator();
+				List<String> classes = heuristics.getObjectClassName(tempLocal);
+				Iterator<String> itClass = classes.iterator();
 				String classNameToUse = null;
 				while(itClass.hasNext()){
-					String tempClassName = (String)itClass.next();
+					String tempClassName = itClass.next();
 					if(tempClassName.indexOf('.')!= -1){
 						//contains a dot have to remove that
 						tempClassName=tempClassName.substring(tempClassName.lastIndexOf('.')+1);
@@ -316,19 +316,19 @@ public class Renamer {
 	 * 
 	 */
 	private void assignedFromAField(){
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			if(!alreadyChanged(tempLocal)){
 				debug("assignedFromField","checking "+tempLocal);
-				List fieldNames = heuristics.getFieldName(tempLocal);
+				List<String> fieldNames = heuristics.getFieldName(tempLocal);
 				if(fieldNames.size()>1){
 					//more than one fields were assigned to this var
 					continue;
 				}
 				else if(fieldNames.size()==1){
 					//only one field was used
-					String fieldName = (String)fieldNames.get(0);
+					String fieldName = fieldNames.get(0);
 					
 					//okkay to use the name of the field if its not in scope
 					//eg it was some other classes field
@@ -357,9 +357,9 @@ public class Renamer {
 	 * If we cant come up with any better name atleast we should remove the $ signs
 	 */
 	private void removeDollarSigns(){
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			String currentName = tempLocal.getName();
 			int dollarIndex = currentName.indexOf('$'); 
 			if(dollarIndex == 0){
@@ -382,9 +382,9 @@ public class Renamer {
 	 * 
 	 */
 	private void exceptionNaming(){
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			Type localType = tempLocal.getType();
 			String typeString = localType.toString();
 			if(typeString.indexOf("Exception")>=0){
@@ -424,9 +424,9 @@ public class Renamer {
 	 * for loop indexes are often i j k l
 	 */
 	private void forLoopIndexing(){
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			debug("foeLoopIndexing","Checking local"+tempLocal.getName());
 			if (heuristics.getHeuristic(tempLocal,
 					infoGatheringAnalysis.FORLOOPUPDATE)) {
@@ -458,9 +458,9 @@ public class Renamer {
 	 * A simple heuristic which sets the mainMethodArgument's name to args
 	 */
 	private void mainMethodArgument() {
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		while (it.hasNext()) {
-			Local tempLocal = (Local) it.next();
+			Local tempLocal = it.next();
 			if (heuristics.getHeuristic(tempLocal,
 					infoGatheringAnalysis.MAINARG)) {
 
@@ -600,11 +600,11 @@ public class Renamer {
 	 * all the locals defined in this method
 	 */
 	private Iterator getScopedLocals() {
-		Iterator it = heuristics.getLocalsIterator();
+		Iterator<Local> it = heuristics.getLocalsIterator();
 		
 		locals = new ArrayList();
 		while(it.hasNext())
-			locals.add((Local) it.next());
+			locals.add(it.next());
 
 		return locals.iterator();
 

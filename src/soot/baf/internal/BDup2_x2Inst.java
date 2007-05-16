@@ -36,10 +36,10 @@ import java.util.*;
 
 public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst
 {
-    private Type mOp1Type;
-    private Type mOp2Type;
-    private Type mUnder1Type;
-    private Type mUnder2Type;
+    private final Type mOp1Type;
+    private final Type mOp2Type;
+    private final Type mUnder1Type;
+    private final Type mUnder2Type;
 
     public BDup2_x2Inst(Type aOp1Type, Type aOp2Type,
                         Type aUnder1Type, Type aUnder2Type)
@@ -70,9 +70,9 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst
         return mUnder2Type;
     }
 
-    public List getOpTypes()
+    public List<Type> getOpTypes()
     {
-        List res =  new ArrayList();
+        List<Type> res =  new ArrayList<Type>();
         res.add(mOp1Type);
         
         // 07-20-2006 Michael Batchelder
@@ -82,9 +82,9 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst
         return res;
     }
     
-    public List getUnderTypes()
+    public List<Type> getUnderTypes()
     {
-        List res =  new ArrayList();
+        List<Type> res =  new ArrayList<Type>();
         res.add(mUnder1Type);
         
         // 07-20-2006 Michael Batchelder
@@ -121,12 +121,6 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst
       
       return "dup2_x2." + optypes + "_" + undertypes;
       // END 07-20-2006 Michael Batchelder
-    }
-    
-    private boolean isDwordType(Type t)
-    {
-        return t instanceof LongType || t instanceof DoubleType
-            || t instanceof DoubleWordType;
     }
 }
 

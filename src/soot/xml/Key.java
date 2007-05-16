@@ -23,10 +23,10 @@ import java.io.*;
 
 public class Key {
 
-    private int red;
-    private int green;
-    private int blue;
-    private String key;
+    private final int red;
+    private final int green;
+    private final int blue;
+    private final String key;
     private String aType;
     
     public Key(int r, int g, int b, String k){

@@ -18,13 +18,10 @@
  */
 
 package soot.jimple.toolkits.pointer;
-import soot.tagkit.*;
 import soot.*;
 import java.util.*;
-import soot.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
-import java.io.*;
 
 public class FieldRWTagger extends BodyTransformer
 { 
@@ -42,24 +39,22 @@ public class FieldRWTagger extends BodyTransformer
     private CallGraph cg;
 
     protected class UniqueRWSets {
-	protected ArrayList l = new ArrayList();
+	protected ArrayList<RWSet> l = new ArrayList<RWSet>();
 	RWSet getUnique( RWSet s ) {
 	    if( s == null ) return s;
-	    for( Iterator retIt = l.iterator(); retIt.hasNext(); ) {
-	        final RWSet ret = (RWSet) retIt.next();
-		if( ret.isEquivTo( s ) ) return ret;
+	    for (RWSet ret : l) {
+	        if( ret.isEquivTo( s ) ) return ret;
 	    }
 	    l.add( s );
 	    return s;
 	}
-	Iterator iterator() {
+	Iterator<RWSet> iterator() {
 	    return l.iterator();
 	}
 	short indexOf( RWSet s ) {
 	    short i = 0;
-	    for( Iterator retIt = l.iterator(); retIt.hasNext(); ) {
-	        final RWSet ret = (RWSet) retIt.next();
-		if( ret.isEquivTo( s ) ) return i;
+	    for (RWSet ret : l) {
+	        if( ret.isEquivTo( s ) ) return i;
 		i++;
 	    }
 	    return -1;
@@ -99,8 +94,8 @@ public class FieldRWTagger extends BodyTransformer
 	SideEffectAnalysis sea = new SideEffectAnalysis( 
                 DumbPointerAnalysis.v(), Scene.v().getCallGraph() );
         sea.findNTRWSets( body.getMethod() );
-	HashMap stmtToReadSet = new HashMap();
-	HashMap stmtToWriteSet = new HashMap();
+	HashMap<Object, RWSet> stmtToReadSet = new HashMap<Object, RWSet>();
+	HashMap<Object, RWSet> stmtToWriteSet = new HashMap<Object, RWSet>();
 	UniqueRWSets sets = new UniqueRWSets();
 	optionDontTag = PhaseOptions.getBoolean( options, "dont-tag" );
 	boolean justDoTotallyConservativeThing = 

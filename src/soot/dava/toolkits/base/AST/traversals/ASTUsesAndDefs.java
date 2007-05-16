@@ -32,7 +32,9 @@
 package soot.dava.toolkits.base.AST.traversals;
 
 import soot.*;
+
 import java.util.*;
+
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
@@ -60,20 +62,20 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 */
 public class ASTUsesAndDefs extends DepthFirstAdapter{
 	public static boolean DEBUG=false;
-    HashMap uD; //mapping a use to all possible definitions
-    HashMap dU; //mapping a def to all possible uses
+    HashMap<Object, List<DefinitionStmt>> uD; //mapping a use to all possible definitions
+    HashMap<Object, List> dU; //mapping a def to all possible uses
     ReachingDefs reaching;  //using structural analysis information 
 
     public ASTUsesAndDefs(ASTNode AST){
-	uD = new HashMap();
-	dU = new HashMap();
+	uD = new HashMap<Object, List<DefinitionStmt>>();
+	dU = new HashMap<Object, List>();
 	reaching = new ReachingDefs(AST);
     }
 
     public ASTUsesAndDefs(boolean verbose,ASTNode AST){
 	super(verbose);
-	uD = new HashMap();
-	dU = new HashMap();
+	uD = new HashMap<Object, List<DefinitionStmt>>();
+	dU = new HashMap<Object, List>();
 	reaching = new ReachingDefs(AST);
     }
 
@@ -85,8 +87,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
      * Method is used to strip away boxes from the actual values
      * only those are returned which are locals
      */
-    private List getUsesFromBoxes(List useBoxes){
-	ArrayList toReturn = new ArrayList();
+    private List<Value> getUsesFromBoxes(List useBoxes){
+	ArrayList<Value> toReturn = new ArrayList<Value>();
 	Iterator it = useBoxes.iterator();
 	while(it.hasNext()){
 	    Value val =((ValueBox)it.next()).getValue();
@@ -104,10 +106,10 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
     public void checkStatementUses(Stmt s,Object useNodeOrStatement){
 	List useBoxes = s.getUseBoxes();
 	//System.out.println("Uses in this statement:"+useBoxes);
-	List uses= getUsesFromBoxes(useBoxes);
+	List<Value> uses= getUsesFromBoxes(useBoxes);
 	//System.out.println("Local Uses in this statement:"+uses);
 
-	Iterator it = uses.iterator();
+	Iterator<Value> it = uses.iterator();
 	while(it.hasNext()){
 	    Local local = (Local)it.next();
 	    createUDDUChain(local,useNodeOrStatement);
@@ -144,14 +146,14 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	//System.out.println("Local is:"+local);
 	//System.out.println("useNodeOrStatement is"+useNodeOrStatement);
 
-	List reachingDefs = reaching.getReachingDefs(local,useNodeOrStatement);
+	List<DefinitionStmt> reachingDefs = reaching.getReachingDefs(local,useNodeOrStatement);
 	if(DEBUG)
 		System.out.println("Reaching def for:"+local+" are:"+reachingDefs);
 	
 	//add the reaching defs into the use def chain
 	Object tempObj = uD.get(useNodeOrStatement);
 	if(tempObj != null){
-	    List tempList = (List)tempObj;
+	    List<DefinitionStmt> tempList = (List<DefinitionStmt>)tempObj;
 	    tempList.addAll(reachingDefs);
 	    uD.put(useNodeOrStatement,tempList);
 	}
@@ -159,18 +161,18 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	    uD.put(useNodeOrStatement,reachingDefs);
 	
 	//add the use into the def use chain
-	Iterator defIt = reachingDefs.iterator();
+	Iterator<DefinitionStmt> defIt = reachingDefs.iterator();
 	while(defIt.hasNext()){
 	    //for each reaching def
 	    Object defStmt = defIt.next();
 	    
 	    //get the dU Chain
 	    Object useObj = dU.get(defStmt);
-	    List uses=null;
+	    List<Object> uses=null;
 	    if(useObj==null)
-		uses = new ArrayList();
+		uses = new ArrayList<Object>();
 	    else
-		uses = (List)useObj;
+		uses = (List<Object>)useObj;
 	    
 	    //add the new local use to this list (we add the node since thats where the local is used
 	    uses.add(useNodeOrStatement);
@@ -194,8 +196,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
      * Given a unary/binary or aggregated condition this method is used
      * to find the locals used in the condition
      */
-    public List getUseList(ASTCondition cond){
-	ArrayList useList = new ArrayList();
+    public List<Value> getUseList(ASTCondition cond){
+	ArrayList<Value> useList = new ArrayList<Value>();
 	if(cond instanceof ASTAggregatedCondition){
 	    useList.addAll(getUseList(((ASTAggregatedCondition)cond).getLeftOp()));
 	    useList.addAll(getUseList(((ASTAggregatedCondition)cond).getRightOp()));
@@ -203,7 +205,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	}
 	else if(cond instanceof ASTUnaryCondition){
 	    //get uses from unary condition
-	    List uses = new ArrayList();
+	    List<Value> uses = new ArrayList<Value>();
 
 	    Value val = ((ASTUnaryCondition)cond).getValue();
 	    if(val instanceof Local){
@@ -244,12 +246,12 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
      * Then it invokes the createUDDUChain for each local
      */
     public void checkConditionalUses(ASTCondition cond,ASTNode node){
-	List useList = getUseList(cond);
+	List<Value> useList = getUseList(cond);
 
 	//System.out.println("FOR NODE with condition:"+cond+"USE list is:"+useList);
 
 	//FOR EACH USE
-	Iterator it = useList.iterator();
+	Iterator<Value> it = useList.iterator();
 	while(it.hasNext()){
 	    Local local = (Local)it.next();
 	    //System.out.println("creating uddu for "+local);
@@ -288,8 +290,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
       Hence the some what indirect approach
     */
     public void inASTSwitchNode(ASTSwitchNode node){
-	Value val = (Value)node.get_Key();
-	List uses = new ArrayList();
+	Value val = node.get_Key();
+	List<Value> uses = new ArrayList<Value>();
 	if(val instanceof Local){
 	    uses.add(val);
 	}
@@ -298,7 +300,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	    uses= getUsesFromBoxes(useBoxes);
 	}
 
-	Iterator it = uses.iterator();
+	Iterator<Value> it = uses.iterator();
 	//System.out.println("SWITCH uses start:");
 	while(it.hasNext()){
 	    Local local = (Local)it.next();
@@ -378,8 +380,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
     public void inASTForLoopNode(ASTForLoopNode node){
 
 	//checking uses in init
-	List init = node.getInit();
-	Iterator it = init.iterator();
+	List<Object> init = node.getInit();
+	Iterator<Object> it = init.iterator();
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();
 	    Stmt s = as.get_Stmt();
@@ -392,7 +394,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 
 	
 	//checking uses in update
-	List update = node.getUpdate();
+	List<Object> update = node.getUpdate();
 	it = update.iterator();
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();
@@ -404,8 +406,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 
 
     public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-	List statements = node.getStatements();
-	Iterator it = statements.iterator();
+	List<Object> statements = node.getStatements();
+	Iterator<Object> it = statements.iterator();
 	
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();
@@ -425,7 +427,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
      * dont know whether it actually makes sense for the nodes but it definetly makes sense for the statements
      */
     public List getUDChain(Object node){
-	return (List)uD.get(node);
+	return uD.get(node);
     }
 
 
@@ -434,10 +436,10 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
      * a use is either a statement or a node(condition, synch, switch , for etc)
      */
     public List getDUChain(Object node){
-	return (List)dU.get(node);
+	return dU.get(node);
     }
 
-    public HashMap getDUHashMap(){
+    public HashMap<Object, List> getDUHashMap(){
 	return dU;
     }
 
@@ -448,7 +450,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 
     public void print(){
 	System.out.println("\n\n\nPRINTING uD dU CHAINS ______________________________");
-	Iterator it = dU.keySet().iterator();
+	Iterator<Object> it = dU.keySet().iterator();
 	while(it.hasNext()){
 	    DefinitionStmt s = (DefinitionStmt)it.next();
 	    System.out.println("*****The def  "+s+" has following uses:");

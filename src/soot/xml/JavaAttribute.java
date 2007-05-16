@@ -19,19 +19,17 @@
 
 package soot.xml;
 
-import soot.*;
-import soot.jimple.toolkits.annotation.tags.*;
-import soot.jimple.toolkits.pointer.*;
 import soot.util.*;
 import soot.tagkit.*;
+
 import java.util.*;
 import java.io.*;
 
 public class JavaAttribute {
 
     private int startLn;
-    private ArrayList tags;
-    private ArrayList vbAttrs;
+    private ArrayList<Tag> tags;
+    private ArrayList<PosColorAttribute> vbAttrs;
     public PrintWriter writerOut;
     
     public JavaAttribute(){
@@ -47,40 +45,40 @@ public class JavaAttribute {
     }
 
 
-    public ArrayList tags(){
+    public ArrayList<Tag> tags(){
         return tags;
     }
 
-    public ArrayList vbAttrs(){
+    public ArrayList<PosColorAttribute> vbAttrs(){
         return vbAttrs;
     }
     
     public void addTag(Tag t){
         if (tags == null){
-            tags = new ArrayList();
+            tags = new ArrayList<Tag>();
         }
         tags.add(t);
     }
 
     public void addVbAttr(PosColorAttribute vbAttr){
         if (vbAttrs == null) {
-            vbAttrs = new ArrayList();
+            vbAttrs = new ArrayList<PosColorAttribute>();
         }
         vbAttrs.add(vbAttr);
     }
 
     public boolean hasColorTag(){
         if (tags != null){
-            Iterator it = tags.iterator();
+            Iterator<Tag> it = tags.iterator();
             while (it.hasNext()){
-                Tag t = (Tag)it.next();
+                Tag t = it.next();
                 if (t instanceof ColorTag) return true;
             }
         }
         if (vbAttrs != null){
-            Iterator vbIt = vbAttrs.iterator();
+            Iterator<PosColorAttribute> vbIt = vbAttrs.iterator();
             while (vbIt.hasNext()){
-                PosColorAttribute t = (PosColorAttribute)vbIt.next();
+                PosColorAttribute t = vbIt.next();
                 if (t.hasColor()) return true;
             }
         }
@@ -184,15 +182,15 @@ public class JavaAttribute {
 	public void printAllTags(PrintWriter writer){
         this.writerOut = writer;
         if (tags != null) {
-            Iterator it = tags.iterator();
+            Iterator<Tag> it = tags.iterator();
             while (it.hasNext()){
-                printAttributeTag((Tag)it.next());
+                printAttributeTag(it.next());
             }
         }
         if (vbAttrs != null) {
-            Iterator vbIt = vbAttrs.iterator();
+            Iterator<PosColorAttribute> vbIt = vbAttrs.iterator();
             while (vbIt.hasNext()){
-                PosColorAttribute attr = (PosColorAttribute)vbIt.next();
+                PosColorAttribute attr = vbIt.next();
                 if (attr.hasColor()){
                     startPrintValBoxAttr();
                     printSourcePositionAttr(attr.javaStartPos(), attr.javaEndPos());
@@ -207,9 +205,9 @@ public class JavaAttribute {
     // prints only tags related to strings and links (no pos tags)
     public void printInfoTags(PrintWriter writer){
         this.writerOut = writer;
-        Iterator it = tags.iterator();
+        Iterator<Tag> it = tags.iterator();
         while (it.hasNext()){
-            printAttributeTag((Tag)it.next());
+            printAttributeTag(it.next());
         }
     }
     

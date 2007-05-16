@@ -27,6 +27,7 @@
 
 package soot.jimple.toolkits.annotation.purity;
 import soot.jimple.*;
+
 import java.util.*;
 
 /**
@@ -45,7 +46,7 @@ public class PurityStmtNode implements PurityNode
     private boolean inside;
 
     /** gives a unique id, for pretty-printing purposes */
-    private static Map nMap = new HashMap();
+    private static final Map<Stmt, Integer> nMap = new HashMap<Stmt, Integer>();
     private static int n = 0;
 
     PurityStmtNode(Stmt id, boolean inside)

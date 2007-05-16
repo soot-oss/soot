@@ -1,17 +1,11 @@
 package soot.jimple.toolkits.scalar;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
+
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
 
 // EqualUsesAnalysis written by Richard L. Halpert, 2006-12-04
 // Determines if a set of uses of locals all use the same value
@@ -23,14 +17,14 @@ import soot.toolkits.scalar.*;
 public class EqualUsesAnalysis extends ForwardFlowAnalysis
 {
 	// Provided by client
-	Map stmtToLocal;
-	Set useStmts;
-	Collection useLocals;
+	Map<Stmt, Local> stmtToLocal;
+	Set<Stmt> useStmts;
+	Collection<Local> useLocals;
 	List boundaryStmts;
 
 	// Calculated by flow analysis
-	List redefStmts;
-	Map firstUseToAliasSet;
+	List<Stmt> redefStmts;
+	Map<Stmt, List> firstUseToAliasSet;
 	
 	EqualLocalsAnalysis el;
 	
@@ -52,7 +46,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 
 	public boolean areEqualUses(Stmt firstStmt, Local firstLocal, Stmt secondStmt, Local secondLocal)
 	{
-		Map stmtToLocal = new HashMap();
+		Map<Stmt, Local> stmtToLocal = new HashMap<Stmt, Local>();
 		stmtToLocal.put(firstStmt, firstLocal);
 		stmtToLocal.put(secondStmt, secondLocal);
 		return areEqualUses(stmtToLocal, new ArrayList());
@@ -60,40 +54,40 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 	
 	public boolean areEqualUses(Stmt firstStmt, Local firstLocal, Stmt secondStmt, Local secondLocal, List boundaryStmts)
 	{
-		Map stmtToLocal = new HashMap();
+		Map<Stmt, Local> stmtToLocal = new HashMap<Stmt, Local>();
 		stmtToLocal.put(firstStmt, firstLocal);
 		stmtToLocal.put(secondStmt, secondLocal);
 		return areEqualUses(stmtToLocal, boundaryStmts);
 	}
 	
-	public boolean areEqualUses(Map stmtToLocal)
+	public boolean areEqualUses(Map<Stmt, Local> stmtToLocal)
 	{
 		return areEqualUses(stmtToLocal, new ArrayList());
 	}
 	
-	public boolean areEqualUses(Map stmtToLocal, List boundaryStmts)
+	public boolean areEqualUses(Map<Stmt, Local> stmtToLocal, List boundaryStmts)
 	{// You may optionally specify start and end statements... for if you're interested only in a certain part of the method
 		this.stmtToLocal = stmtToLocal;
 		this.useStmts = stmtToLocal.keySet();
 		this.useLocals = stmtToLocal.values();
 		this.boundaryStmts = boundaryStmts;
-		this.redefStmts = new ArrayList();
-		this.firstUseToAliasSet = new HashMap();
+		this.redefStmts = new ArrayList<Stmt>();
+		this.firstUseToAliasSet = new HashMap<Stmt, List>();
 
 //		G.v().out.println("Checking for Locals " + useLocals + " in these statements: " + useStmts);
 
 		doAnalysis();
 
 		// If any redefinition reaches any use statement, return false
-		Iterator useIt = useStmts.iterator();
+		Iterator<Stmt> useIt = useStmts.iterator();
 		while(useIt.hasNext())
 		{
-			Unit u = (Unit) useIt.next();
+			Unit u = useIt.next();
 			FlowSet fs = (FlowSet) getFlowBefore(u);
-			Iterator redefIt = redefStmts.iterator();
+			Iterator<Stmt> redefIt = redefStmts.iterator();
 			while(redefIt.hasNext())
 			{
-				if(fs.contains((Stmt) redefIt.next()))
+				if(fs.contains(redefIt.next()))
 				{
 //					G.v().out.print("LIF = false ");
 					return false;
@@ -107,7 +101,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 				if( o instanceof List )
 					aliases = (List) o;
 			}
-			if( aliases != null && !aliases.contains(new EquivalentValue((Value) stmtToLocal.get(u))) )
+			if( aliases != null && !aliases.contains(new EquivalentValue(stmtToLocal.get(u))) )
 			{
 //				G.v().out.print("LIF = false ");
 				return false;
@@ -117,7 +111,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 		return true;
 	}
 	
-	public Map getFirstUseToAliasSet()
+	public Map<Stmt, List> getFirstUseToAliasSet()
 	{
 		return firstUseToAliasSet;
 	}
@@ -175,10 +169,10 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 		}
 		
 		// check if any locals of interest were redefined here
-		Iterator useLocalsIt = useLocals.iterator();
+		Iterator<Local> useLocalsIt = useLocals.iterator();
 		while(useLocalsIt.hasNext())
 		{
-			Local useLocal = (Local) useLocalsIt.next();
+			Local useLocal = useLocalsIt.next();
 			if( newDefs.contains(useLocal) ) // if a relevant local was (re)def'd here
 			{
 				Iterator outIt = out.iterator();
@@ -227,7 +221,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 			if(out.size() == 0)
 			{
 				// Add a list of aliases to the used value
-				Local l = (Local) stmtToLocal.get(stmt);
+				Local l = stmtToLocal.get(stmt);
 				List aliasList = el.getCopiesOfAt(l, stmt);
 				if(aliasList.size() == 0)
 					aliasList.add(l); // covers the case of this or a parameter, where getCopiesOfAt doesn't seem to work right now
@@ -243,13 +237,13 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 		// update the alias list if this is a definition statement
 		if( stmt instanceof DefinitionStmt )
 		{
-			List aliases = null;
+			List<EquivalentValue> aliases = null;
 			Iterator outIt = out.iterator();
 			while(outIt.hasNext())
 			{
 				Object o = outIt.next();
 				if( o instanceof List )
-					aliases = (List) o;
+					aliases = (List<EquivalentValue>) o;
 			}
 			if( aliases != null )
 			{

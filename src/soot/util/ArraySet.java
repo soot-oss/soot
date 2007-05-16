@@ -64,8 +64,8 @@ public class ArraySet extends AbstractSet
     {
         this();
 
-        for(int i = 0; i < elements.length; i++)
-            add(elements[i]);
+        for (Object element : elements)
+			add(element);
     }
 
     final public void clear()
@@ -117,8 +117,8 @@ public class ArraySet extends AbstractSet
         boolean ret = false;
         if( !(s instanceof ArraySet) ) return super.addAll(s);
         ArraySet as = (ArraySet) s;
-        for( int i = 0; i < as.elements.length; i++ )
-            ret = add( as.elements[i] ) | ret;
+        for (Object element : as.elements)
+			ret = add( element ) | ret;
         return ret;
     }
 

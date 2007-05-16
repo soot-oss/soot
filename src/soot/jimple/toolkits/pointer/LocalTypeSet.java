@@ -19,17 +19,16 @@
 
 package soot.jimple.toolkits.pointer;
 import soot.*;
-import soot.util.*;
 import java.util.*;
 
 /** Represents a set of (local,type) pairs using a bit-vector. */
 class LocalTypeSet extends java.util.BitSet {
-    protected List locals;
-    protected List types;
+    protected List<Local> locals;
+    protected List<Type> types;
 
     /** Constructs a new empty set given a list of all locals and types that may
      * ever be in the set. */
-    public LocalTypeSet( List locals, List types ) {
+    public LocalTypeSet( List<Local> locals, List<Type> types ) {
 	super( locals.size() * types.size() );
 	this.locals = locals;
 	this.types = types;
@@ -78,8 +77,8 @@ class LocalTypeSet extends java.util.BitSet {
     /** Adds to the set all pairs (l,type) where type is any supertype of t. */
     public void localMustBeSubtypeOf( Local l, RefType t ) {
 	FastHierarchy fh = Scene.v().getFastHierarchy();
-	for( Iterator it = types.iterator(); it.hasNext(); ) {
-	    RefType supertype = (RefType) it.next();
+	for (Type type : types) {
+	    RefType supertype = (RefType) type;
 	    if( fh.canStoreType( t, supertype ) ) {
 		set( indexOf( l, supertype ) );
 	    }
@@ -88,10 +87,10 @@ class LocalTypeSet extends java.util.BitSet {
 
     public String toString(){
         StringBuffer sb = new StringBuffer();
-        Iterator localsIt = locals.iterator();
+        Iterator<Local> localsIt = locals.iterator();
         while (localsIt.hasNext()){
-            Local l = (Local)localsIt.next();
-            Iterator typesIt = types.iterator();
+            Local l = localsIt.next();
+            Iterator<Type> typesIt = types.iterator();
             while (typesIt.hasNext()){
                 RefType t = (RefType)typesIt.next();
                 int index = indexOf(l, t);

@@ -27,37 +27,32 @@
 package soot.jimple.toolkits.typing.integer;
 
 import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 class StronglyConnectedComponents
 {
-  List variables;
-  Set black;
-  LinkedList finished;
+  List<TypeVariable> variables;
+  Set<TypeVariable> black;
+  LinkedList<TypeVariable> finished;
   
-  LinkedList forest = new LinkedList();
-  LinkedList current_tree;
+  LinkedList<LinkedList<TypeVariable>> forest = new LinkedList<LinkedList<TypeVariable>>();
+  LinkedList<TypeVariable> current_tree;
   
   private static final boolean DEBUG = false;
   
-  public static void merge(List typeVariableList) throws TypeException
+  public static void merge(List<TypeVariable> typeVariableList) throws TypeException
   {
     new StronglyConnectedComponents(typeVariableList);
   }
 
-  private StronglyConnectedComponents(List typeVariableList) throws TypeException
+  private StronglyConnectedComponents(List<TypeVariable> typeVariableList) throws TypeException
   {
     variables = typeVariableList;
     
-    black = new TreeSet();
-    finished = new LinkedList();
+    black = new TreeSet<TypeVariable>();
+    finished = new LinkedList<TypeVariable>();
     
-    for(Iterator i = variables.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
-
+    for (TypeVariable var : variables) {
 	if(!black.contains(var))
 	  {
 	    black.add(var);
@@ -65,24 +60,21 @@ class StronglyConnectedComponents
 	  }
       }
     
-    black = new TreeSet();
+    black = new TreeSet<TypeVariable>();
     
-    for(Iterator i = finished.iterator(); i.hasNext(); )
-      {
-	TypeVariable var = (TypeVariable) i.next();
-	
+    for (TypeVariable var : finished) {
 	if(!black.contains(var))
 	  {
-	    current_tree = new LinkedList();
+	    current_tree = new LinkedList<TypeVariable>();
 	    forest.add(current_tree);
 	    black.add(var);
 	    dfsgt_visit(var);
 	  }
       }
     
-    for(Iterator i = forest.iterator(); i.hasNext();)
+    for(Iterator<LinkedList<TypeVariable>> i = forest.iterator(); i.hasNext();)
       {
-	LinkedList list = (LinkedList) i.next();
+	LinkedList list = i.next();
 	TypeVariable previous = null;
 	StringBuffer s = null;
 	if(DEBUG)
@@ -124,12 +116,9 @@ class StronglyConnectedComponents
   
   private void dfsg_visit(TypeVariable var)
   {
-    List parents = var.parents();
+    List<TypeVariable> parents = var.parents();
     
-    for(Iterator i = parents.iterator(); i.hasNext(); )
-      {
-	TypeVariable parent = (TypeVariable) i.next();
-
+    for (TypeVariable parent : parents) {
 	if(!black.contains(parent))
 	  {
 	    black.add(parent);
@@ -144,12 +133,9 @@ class StronglyConnectedComponents
   {
     current_tree.add(var);
     
-    List children = var.children();
+    List<TypeVariable> children = var.children();
     
-    for(Iterator i = children.iterator(); i.hasNext(); )
-      {
-	TypeVariable child = (TypeVariable) i.next();
-
+    for (TypeVariable child : children) {
 	if(!black.contains(child))
 	  {
 	    black.add(child);

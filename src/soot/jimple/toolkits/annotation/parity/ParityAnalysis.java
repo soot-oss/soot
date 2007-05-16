@@ -22,6 +22,7 @@ package soot.jimple.toolkits.annotation.parity;
 import soot.*;
 import soot.util.*;
 import java.util.*;
+
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
@@ -55,10 +56,10 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 
         this.filter = filter;
         
-        filterUnitToBeforeFlow = new HashMap();
+        filterUnitToBeforeFlow = new HashMap<Stmt, HashMap>();
         buildBeforeFilterMap();
         
-        filterUnitToAfterFlow = new HashMap();
+        filterUnitToAfterFlow = new HashMap<Stmt, HashMap>();
         
         doAnalysis();
         
@@ -109,7 +110,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     {
 	HashMap inMap1 = (HashMap) in1;
 	HashMap inMap2 = (HashMap) in2;
-	HashMap outMap = (HashMap) out;
+	HashMap<Object, String> outMap = (HashMap<Object, String>) out;
 
 	Set keys = inMap1.keySet();
 	Iterator it = keys.iterator();
@@ -173,7 +174,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     // 			constants are tested mod 2
     //
 
-    private String getParity(HashMap in, Value val) {
+    private String getParity(HashMap<Value, String> in, Value val) {
         //System.out.println("get Parity in: "+in);
         if ((val instanceof AddExpr) | (val instanceof SubExpr)) {
         	String resVal1 = getParity(in, ((BinopExpr)val).getOp1());
@@ -226,7 +227,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	        }
         }
         else if (in.containsKey(val)) {
-      	    return (String)in.get(val);
+      	    return in.get(val);
         }
         else {
             return TOP;
@@ -239,7 +240,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
             Object outValue)
     {
         HashMap in  = (HashMap) inValue;
-        HashMap out = (HashMap) outValue;
+        HashMap<Value, String> out = (HashMap<Value, String>) outValue;
         Stmt    s   = (Stmt)    unit;
 
 	    // copy in to out 
@@ -269,7 +270,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
             Value val = ((ValueBox)next).getValue();
             //System.out.println("val: "+val.getClass());
             if (val instanceof ArithmeticConstant){
-                out.put(val, getParity(out, (ArithmeticConstant)val));
+                out.put(val, getParity(out, val));
                 //System.out.println("out map: "+out);
             }
         }
@@ -316,12 +317,12 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 
     private void updateBeforeFilterMap(){
     
-        Iterator filterIt = filterUnitToBeforeFlow.keySet().iterator();
+        Iterator<Stmt> filterIt = filterUnitToBeforeFlow.keySet().iterator();
         while (filterIt.hasNext()){
-            Stmt s = (Stmt)filterIt.next();
+            Stmt s = filterIt.next();
             HashMap allData = (HashMap)unitToBeforeFlow.get(s);
             
-            HashMap filterData = (HashMap)filterUnitToBeforeFlow.get(s);
+            HashMap filterData = filterUnitToBeforeFlow.get(s);
 
             filterUnitToBeforeFlow.put(s, updateFilter(allData, filterData));
             
@@ -332,7 +333,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     
         HashMap allData = (HashMap)unitToAfterFlow.get(s);
             
-        HashMap filterData = (HashMap)filterUnitToAfterFlow.get(s);
+        HashMap filterData = filterUnitToAfterFlow.get(s);
 
         filterUnitToAfterFlow.put(s, updateFilter(allData, filterData));
             
@@ -341,10 +342,10 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     private HashMap updateFilter(HashMap allData, HashMap filterData){
 
         if (allData == null) return filterData;
-        Iterator filterVarsIt = filterData.keySet().iterator();
-        ArrayList toRemove = new ArrayList();
+        Iterator<Value> filterVarsIt = filterData.keySet().iterator();
+        ArrayList<Value> toRemove = new ArrayList<Value>();
         while (filterVarsIt.hasNext()){
-            Value v = (Value)filterVarsIt.next();
+            Value v = filterVarsIt.next();
             if (allData.get(v) == null){
                 toRemove.add(v);
                 //filterData.put(v, new HashMap());
@@ -353,7 +354,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
                 filterData.put(v, allData.get(v));
             }
         }
-        Iterator removeIt = toRemove.iterator();
+        Iterator<Value> removeIt = toRemove.iterator();
         while (removeIt.hasNext()){
             filterData.remove(removeIt.next());
         }
@@ -363,7 +364,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 
     protected Object newInitialFlow()
     {
-	    HashMap initMap = new HashMap();
+	    HashMap<Value, String> initMap = new HashMap<Value, String>();
 	
 	    Chain locals = g.getBody().getLocals();
 	    Iterator it = locals.iterator();

@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** There should be at most one RuntimeVisibleAnnotations attribute in 
  * every method, field and class
  * indicating the list of annotations.

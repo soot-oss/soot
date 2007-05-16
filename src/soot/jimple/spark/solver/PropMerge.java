@@ -18,13 +18,10 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
-import soot.jimple.spark.internal.*;
 import soot.*;
 import java.util.*;
-import soot.options.SparkOptions;
 
 /** Propagates points-to sets along pointer assignment graph using a merging
  * of field reference (Red) nodes to improve scalability.
@@ -32,14 +29,14 @@ import soot.options.SparkOptions;
  */
 
 public final class PropMerge extends Propagator {
-    protected final Set varNodeWorkList = new TreeSet();
+    protected final Set<Node> varNodeWorkList = new TreeSet<Node>();
 
     public PropMerge( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public final void propagate() {
         new TopoSorter( pag, false ).sort();
-	for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-	    handleAllocNode( (AllocNode) it.next() );
+	for (Object object : pag.allocSources()) {
+	    handleAllocNode( (AllocNode) object );
 	}
 
         boolean verbose = pag.getOpts().verbose();
@@ -65,22 +62,22 @@ public final class PropMerge extends Propagator {
             if( verbose ) {
                 G.v().out.println( "Now handling field references" );
             }
-            for( Iterator srcIt = pag.storeSources().iterator(); srcIt.hasNext(); ) {
-                final VarNode src = (VarNode) srcIt.next();
+            for (Object object : pag.storeSources()) {
+                final VarNode src = (VarNode) object;
                 Node[] storeTargets = pag.storeLookup( src );
-                for( int i = 0; i < storeTargets.length; i++ ) {
-                    final FieldRefNode fr = (FieldRefNode) storeTargets[i];
+                for (Node element0 : storeTargets) {
+                    final FieldRefNode fr = (FieldRefNode) element0;
                     fr.makeP2Set().addAll( src.getP2Set(), null );
                 }
             }
-            for( Iterator srcIt = pag.loadSources().iterator(); srcIt.hasNext(); ) {
-                final FieldRefNode src = (FieldRefNode) srcIt.next();
+            for (Object object : pag.loadSources()) {
+                final FieldRefNode src = (FieldRefNode) object;
                 if( src != src.getReplacement() ) {
                     throw new RuntimeException( "shouldn't happen" );
                 }
                 Node[] targets = pag.loadLookup( src );
-                for( int i = 0; i < targets.length; i++ ) {
-                    VarNode target = (VarNode) targets[i];
+                for (Node element0 : targets) {
+                    VarNode target = (VarNode) element0;
                     if( target.makeP2Set().addAll(
                                 src.getP2Set(), null ) ) {
                         varNodeWorkList.add( target );
@@ -98,9 +95,9 @@ public final class PropMerge extends Propagator {
     protected final boolean handleAllocNode( AllocNode src ) {
 	boolean ret = false;
 	Node[] targets = pag.allocLookup( src );
-	for( int i = 0; i < targets.length; i++ ) {
-	    if( targets[i].makeP2Set().add( src ) ) {
-                varNodeWorkList.add( targets[i] );
+	for (Node element : targets) {
+	    if( element.makeP2Set().add( src ) ) {
+                varNodeWorkList.add( element );
                 ret = true;
             }
 	}
@@ -121,16 +118,16 @@ public final class PropMerge extends Propagator {
 	if( newP2Set.isEmpty() ) return false;
 
 	Node[] simpleTargets = pag.simpleLookup( src );
-	for( int i = 0; i < simpleTargets.length; i++ ) {
-	    if( simpleTargets[i].makeP2Set().addAll( newP2Set, null ) ) {
-                varNodeWorkList.add( simpleTargets[i] );
+	for (Node element : simpleTargets) {
+	    if( element.makeP2Set().addAll( newP2Set, null ) ) {
+                varNodeWorkList.add( element );
                 ret = true;
             }
 	}
 
         Node[] storeTargets = pag.storeLookup( src );
-        for( int i = 0; i < storeTargets.length; i++ ) {
-            final FieldRefNode fr = (FieldRefNode) storeTargets[i];
+        for (Node element : storeTargets) {
+            final FieldRefNode fr = (FieldRefNode) element;
             if( fr.makeP2Set().addAll( newP2Set, null ) ) {
                 ret = true;
             }

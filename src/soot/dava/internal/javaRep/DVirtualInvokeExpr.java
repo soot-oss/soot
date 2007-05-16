@@ -27,9 +27,9 @@ import soot.grimp.internal.*;
 
 public class DVirtualInvokeExpr extends GVirtualInvokeExpr
 {
-    private HashSet thisLocals;
+    private HashSet<Object> thisLocals;
 
-    public DVirtualInvokeExpr( Value base, SootMethodRef methodRef, java.util.List args, HashSet thisLocals) 
+    public DVirtualInvokeExpr( Value base, SootMethodRef methodRef, java.util.List args, HashSet<Object> thisLocals) 
     {
 	super( base, methodRef, args);
 

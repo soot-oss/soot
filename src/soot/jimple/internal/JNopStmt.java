@@ -35,7 +35,6 @@ import soot.baf.*;
 import soot.tagkit.*;
 import soot.jimple.*;
 import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -54,11 +53,11 @@ public class JNopStmt extends AbstractStmt implements NopStmt
 
     public String toString()
     {
-        return Jimple.v().NOP;
+        return Jimple.NOP;
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().NOP);
+        up.literal(Jimple.NOP);
     }
     
     public void apply(Switch sw)
@@ -66,7 +65,7 @@ public class JNopStmt extends AbstractStmt implements NopStmt
         ((StmtSwitch) sw).caseNopStmt(this);
     }    
     
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
 	Unit u;
         out.add(u = Baf.v().newNopInst());

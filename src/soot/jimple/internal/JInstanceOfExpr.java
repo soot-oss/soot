@@ -34,8 +34,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 public class JInstanceOfExpr extends AbstractInstanceOfExpr
@@ -47,7 +45,7 @@ public class JInstanceOfExpr extends AbstractInstanceOfExpr
     }
 
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf)(getOp())).convertToBaf(context, out);
 	Unit u;

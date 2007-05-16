@@ -30,7 +30,7 @@ import java.util.*;
 
 public class IterableMap implements Map
 {
-    private HashMap content_map, back_map;
+    private HashMap<Object, Object> content_map, back_map;
     private HashChain key_chain, value_chain;
 
     public IterableMap()
@@ -45,8 +45,8 @@ public class IterableMap implements Map
 
     public IterableMap( int initialCapacity, float loadFactor)
     {
-	content_map = new HashMap( initialCapacity, loadFactor);
-	back_map    = new HashMap( initialCapacity, loadFactor);
+	content_map = new HashMap<Object, Object>( initialCapacity, loadFactor);
+	back_map    = new HashMap<Object, Object>( initialCapacity, loadFactor);
 	key_chain   = new HashChain();
 	value_chain = new HashChain();
     }
@@ -125,11 +125,11 @@ public class IterableMap implements Map
 	return key_chain.isEmpty();
     }
 
-    private transient Set keySet = null;
-    private transient Set valueSet = null;
-    private transient Collection values = null;
+    private transient Set<Object> keySet = null;
+    private transient Set<Object> valueSet = null;
+    private transient Collection<Object> values = null;
     
-    public Set keySet()
+    public Set<Object> keySet()
     {
         if (keySet == null) {
             keySet = new AbstractSet() {
@@ -162,7 +162,7 @@ public class IterableMap implements Map
         return keySet;
     }
 
-    public Set valueSet()
+    public Set<Object> valueSet()
     {
         if (valueSet == null) {
             valueSet = new AbstractSet() {
@@ -279,7 +279,7 @@ public class IterableMap implements Map
 	return key_chain.size();
     }
 
-    public Collection values()
+    public Collection<Object> values()
     {
         if (values==null) {
             values = new AbstractCollection() {
@@ -302,10 +302,10 @@ public class IterableMap implements Map
 
     public class Mapping_Iterator implements Iterator
     {
-	private Iterator it;
-	private HashMap m;
+	private final Iterator it;
+	private HashMap<Object, Object> m;
 
-	public Mapping_Iterator( HashChain c, HashMap m)
+	public Mapping_Iterator( HashChain c, HashMap<Object, Object> m)
 	{
 	    it = c.iterator();
 	    this.m = m;

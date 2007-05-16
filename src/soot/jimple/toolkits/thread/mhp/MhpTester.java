@@ -3,6 +3,7 @@ package soot.jimple.toolkits.thread.mhp;
 import java.util.*;
 
 import soot.*;
+import soot.jimple.toolkits.thread.AbstractRuntimeThread;
 
 /** MhpTester written by Richard L. Halpert 2007-03-15
  *  An interface for any object that can provide May-Happen-in-Parallel info and
@@ -17,5 +18,5 @@ public interface MhpTester
 
 	public void printMhpSummary();
 	
-	public List getThreads();
+	public List<AbstractRuntimeThread> getThreads();
 }

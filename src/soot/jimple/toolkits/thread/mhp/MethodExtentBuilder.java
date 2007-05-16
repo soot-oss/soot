@@ -6,7 +6,6 @@ import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.CheckRecursiveCalls;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
-import soot.jimple.spark.*;
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -24,7 +23,7 @@ public class MethodExtentBuilder {
 	
 	
 	//private List inlineSites = new ArrayList(); 
-	private Set methodsNeedingInlining = new HashSet();	  
+	private final Set<Object> methodsNeedingInlining = new HashSet<Object>();	  
 	
 	public MethodExtentBuilder(Body unitBody, PegCallGraph pcg, CallGraph cg){
 		//testCallGraph(cg);
@@ -37,17 +36,8 @@ public class MethodExtentBuilder {
 //		checkMethodNeedExtent();
 	}
 	
-	private void testMap(){
-		System.out.println("methodsNeedingInlining set:");
-//		Set keySet = methodsNeedingInlining.keySet();
-//		Iterator it = keySet.iterator();
-		Iterator it = methodsNeedingInlining.iterator();
-		while (it.hasNext()){
-			System.out.println(it.next());
-		}
-	}
-	public Set getMethodsNeedingInlining(){
-		return (Set)methodsNeedingInlining;
+	public Set<Object> getMethodsNeedingInlining(){
+		return methodsNeedingInlining;
 	}
 	
 	private void build(PegCallGraph pcg, CallGraph cg){
@@ -83,7 +73,7 @@ public class MethodExtentBuilder {
 			else {
 				if (stmt.containsInvokeExpr()){
 					//System.out.println("stmt is: "+stmt);
-					Value invokeExpr =(Value)((Stmt)stmt).getInvokeExpr();
+					Value invokeExpr =(stmt).getInvokeExpr();
 					
 					SootMethod method = ((InvokeExpr)invokeExpr).getMethod();
 					
@@ -102,9 +92,9 @@ public class MethodExtentBuilder {
 						if (method.isConcrete() && !method.getDeclaringClass().isLibraryClass()){
 							Iterator it = cg.edgesOutOf(stmt);
 							TargetMethodsFinder tmd = new TargetMethodsFinder();
-							Iterator  targetIt = ((List)tmd.find(stmt, cg, true, false)).iterator();
+							Iterator<SootMethod>  targetIt = (tmd.find(stmt, cg, true, false)).iterator();
 							while (targetIt.hasNext()){
-								SootMethod target = (SootMethod)targetIt.next();     
+								SootMethod target = targetIt.next();     
 								if (target.isSynchronized()){
 									//System.out.println("method is synchronized: "+method);    
 									methodsNeedingInlining.add(targetMethod);
@@ -128,7 +118,7 @@ public class MethodExtentBuilder {
 		 * use DFS to find out if it's parents need inlining.
 		 * If so, add it to methodsNeedingInlining
 		 */
-		Set gray = new HashSet();
+		Set<Object> gray = new HashSet<Object>();
 		Iterator it = cg.iterator();
 		
 		while (it.hasNext()){
@@ -151,10 +141,10 @@ public class MethodExtentBuilder {
 	
 	
 	
-	private boolean visitNode(Object o, Set gray, PegCallGraph cg){
+	private boolean visitNode(Object o, Set<Object> gray, PegCallGraph cg){
 		//System.out.println("visit(in visit): "+o);
 		gray.add(o);
-		Iterator childIt = ((List)cg.getSuccsOf(o)).iterator();
+		Iterator childIt = (cg.getSuccsOf(o)).iterator();
 		while(childIt.hasNext()){
 			Object child = childIt.next();
 			if (methodsNeedingInlining.contains(child)) {
@@ -178,52 +168,5 @@ public class MethodExtentBuilder {
 		}
 		return false;
 	}
-	
-	private void checkMethodsNeedingInlining(){
-		System.out.println("===========methodsNeedingInlining===========");
-		Iterator it = methodsNeedingInlining.iterator();
-		while (it.hasNext()){
-			System.out.println(it.next());
-		}
-		System.out.println("==end===methodsNeedingInlining========");
-	}
-	/*
-	 private void checkSccList(List sccList, CallGraph cg){
-	 Iterator sccListIt = sccList.iterator();
-	 while (sccListIt.hasNext()){
-	 List scc = (List)sccListIt.next();
-	 Iterator it = scc.iterator();
-	 while (it.hasNext()){
-	 SootMethod sm = (SootMethod)it.next();
-	 if (sm.isConcrete() && !sm.getDeclaringClass().isLibraryClass()){
-	 if (methodsNeedingInlining.containsKey(sm) ){
-	 if (sm.getName().equals("main")) continue;
-	 else{
-	 //  System.out.println(sm.getName());
-	  throw new RuntimeException("methodsNeedingInlining does not contains key: "+sm);
-	  }
-	  }
-	  else{
-	  
-	  Iterator cgit = cg.sourceMethods();
-	  while (cgit.hasNext()){
-	  SootMethod m = (SootMethod)it.next();
-	  if (sm.equals(m)){
-	  System.out.println("**ha, find method: "+sm +"in sourcesMethod");
-	  }
-	  }
-	  System.out.println("find key of method: "+sm);
-	  if (((Boolean)methodsNeedingInlining.get(sm)).booleanValue() == true){
-	  System.err.println("System exit because interested methods relate to recursive calls!");
-	  System.exit(1);
-	  }
-	  }
-	  }
-	  }
-	  }
-	  }
-	  
-	  
-	  */
 	
 }

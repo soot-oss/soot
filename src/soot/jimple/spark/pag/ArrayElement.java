@@ -19,8 +19,6 @@
 
 package soot.jimple.spark.pag;
 import soot.*;
-import soot.Type;
-import java.util.*;
 
 /** Represents an array element.
  * @author Ondrej Lhotak

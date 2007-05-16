@@ -20,8 +20,6 @@
 package soot.shimple;
 
 import soot.*;
-import soot.util.*;
-import soot.jimple.*;
 import soot.toolkits.scalar.*;
 
 /**

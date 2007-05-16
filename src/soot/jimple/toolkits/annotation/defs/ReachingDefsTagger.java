@@ -47,7 +47,7 @@ public class ReachingDefsTagger extends BodyTransformer {
                 if (vbox.getValue() instanceof Local) {
                     Local l = (Local)vbox.getValue();
                     //System.out.println("local: "+l);
-                    Iterator rDefsIt = sld.getDefsOfAt(l, s).iterator();
+                    Iterator<Unit> rDefsIt = sld.getDefsOfAt(l, s).iterator();
                     while (rDefsIt.hasNext()){
                         Stmt next = (Stmt)rDefsIt.next();
                         String info = l+" has reaching def: "+next.toString();

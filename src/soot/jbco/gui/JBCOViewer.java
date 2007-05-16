@@ -2,12 +2,7 @@ package soot.jbco.gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -37,14 +32,9 @@ public class JBCOViewer extends javax.swing.JFrame {
 	}
 
 
-  private JMenuItem helpMenuItem;
-  private JMenu jMenu5;
-  private JMenuItem deleteMenuItem;
   private JMenuItem speedMenuItem;
   private JMenuItem sizeMenuItem;
   private JMenuItem protMenuItem;
-  private JSeparator jSeparator1;
-  private JMenuItem pasteMenuItem;
   private JLabel LabelMainClass;
   private JRadioButton RadioSummary;
   private JRadioButton RadioVerbose;
@@ -52,11 +42,7 @@ public class JBCOViewer extends javax.swing.JFrame {
   private JPanel PanelTransforms;
   private JPanel PanelBasicOptions;
   private JTabbedPane TabbedPane;
-  private JMenuItem copyMenuItem;
-  private JMenuItem cutMenuItem;
-  private JMenu jMenu4;
   private JMenuItem exitMenuItem;
-  private JSeparator jSeparator2;
   private JTextField TextFieldConstraint;
   private JTextPane PaneExplain;
   private JList AvoidList;
@@ -64,14 +50,10 @@ public class JBCOViewer extends javax.swing.JFrame {
   private JTextField ClasspathTextField;
   private JLabel LabelClassPath;
   private JTextField TextFieldMain;
-  private JMenuItem closeFileMenuItem;
-  private JMenuItem saveAsMenuItem;
-  private JMenuItem saveMenuItem;
   public JMenuItem openFileMenuItem;
   public JMenuItem newFileMenuItem;
   private JMenu jMenu3;
   private JMenuBar jMenuBar1;
-  private ActionListener AvoidButtonListener;
   private JTextPane jTextPane1;
   private JRadioButton DebugRadio;
   private JTextField WorkingDirTextField;
@@ -94,7 +76,6 @@ public class JBCOViewer extends javax.swing.JFrame {
   private JTextField TextFieldMaxMem;
   private JLabel LabelMaxMem;
   private JLabel LabelMinMem;
-  private JDialog jDialog1;
   private JTextField TextFieldOutputFolder;
   private JButton ButtonSaveOutput;
   private JButton ButtonRemove;
@@ -614,7 +595,7 @@ public class JBCOViewer extends javax.swing.JFrame {
                   max = null;
                 }
                 
-                Vector tmp = new Vector();
+                Vector<String> tmp = new Vector<String>();
                 String args = TextFieldJVMArgs.getText();
                 StringTokenizer st = new StringTokenizer(args,",");
                 while (st.hasMoreTokens())
@@ -623,7 +604,7 @@ public class JBCOViewer extends javax.swing.JFrame {
                 boolean customclasspath = false;
                 String vmargs[] = new String[tmp.size() + (min == null ? 0 : 1) + + (max == null ? 0 : 1)];
                 for (int i = 0; i < tmp.size(); i++) {
-                  vmargs[i] = (String)tmp.get(i);
+                  vmargs[i] = tmp.get(i);
                   if (vmargs[i].startsWith("-cp") || vmargs[i].startsWith("-classpath"))
                     customclasspath = true;
                 }
@@ -700,8 +681,8 @@ public class JBCOViewer extends javax.swing.JFrame {
                 System.arraycopy(transforms, 0, cmdarray, vmargs.length + index, transforms.length); 
 
                 String output = "";
-                for (int i = 0; i < cmdarray.length; i++)
-                  output += cmdarray[i] + " ";
+                for (String element : cmdarray)
+					output += element + " ";
                 output += "\n";
 
                 TextAreaOutput.setText(output);

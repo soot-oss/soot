@@ -22,16 +22,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import soot.SootClass;
-import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
 import soot.dava.internal.javaRep.DNewInvokeExpr;
 import soot.dava.internal.javaRep.DVirtualInvokeExpr;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.grimp.internal.GAddExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
 
 /*
  * Matches the output pattern

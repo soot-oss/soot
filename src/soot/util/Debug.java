@@ -25,25 +25,12 @@
 
 
 package soot.util;
-import soot.*;
-
-import java.io.*;
 
 /** Provides utility methods for debugging, including assertions. */
 public class Debug
 {
     private Debug()
     {
-    }
-
-    private static String getStackTrace()
-    {
-        Throwable t = new Throwable();
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        
-        PrintStream ps = new PrintStream(os);
-        t.printStackTrace(ps);
-        return os.toString();
     }
 
     /** Asserts that condition is true; otherwise, abort. */

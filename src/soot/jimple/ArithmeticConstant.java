@@ -25,10 +25,6 @@
 
 package soot.jimple;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-
 public abstract class ArithmeticConstant extends NumericConstant
 {
     // PTC 1999/06/28

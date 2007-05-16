@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 
 
 /** Represents the signature attribute used by fields, methods and classes 

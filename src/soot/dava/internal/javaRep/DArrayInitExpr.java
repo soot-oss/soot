@@ -3,12 +3,10 @@ package soot.dava.internal.javaRep;
 import java.util.ArrayList;
 import java.util.List;
 
-import soot.AbstractValueBox;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
-import soot.grimp.Grimp;
 import soot.util.Switch;
 /*
  * TODO: Starting with a 1D array in mind will try to refactor for multi D arrays
@@ -34,9 +32,9 @@ public class DArrayInitExpr implements Value {
 		// TODO Auto-generated method stub
         List list = new ArrayList();
 
-        for(int i=0;i<elements.length;i++){
-        	list.addAll(elements[i].getValue().getUseBoxes());
-        	list.add(elements[i]);
+        for (ValueBox element : elements) {
+        	list.addAll(element.getValue().getUseBoxes());
+        	list.add(element);
         }
         return list;
 	}
@@ -88,8 +86,8 @@ public class DArrayInitExpr implements Value {
 
 	public int equivHashCode() {
 		int toReturn =0;
-		for(int i=0;i<elements.length;i++)
-			toReturn += elements[i].getValue().equivHashCode();
+		for (ValueBox element : elements)
+			toReturn += element.getValue().equivHashCode();
 		
 		return toReturn;
 	}

@@ -26,7 +26,6 @@ import soot.shimple.internal.*;
 import soot.util.*;
 import soot.toolkits.scalar.ValueUnitPair;
 import java.util.*;
-import java.io.*;
 
 /**
  * Contains the constructors for the components of the SSA Shimple
@@ -120,7 +119,7 @@ public class Shimple
      * Blocks.  Instead of a list of predecessor blocks, you may
      * provide a list of the tail Units from the corresponding blocks.
      **/
-    public PhiExpr newPhiExpr(List args, List preds)
+    public PhiExpr newPhiExpr(List<Value> args, List<Unit> preds)
     {
         return new SPhiExpr(args, preds);
     }
@@ -253,8 +252,8 @@ public class Shimple
 
         /* Ok, continuing... */
             
-        Set preds = new HashSet();
-        Set phis  = new HashSet();
+        Set<Unit> preds = new HashSet<Unit>();
+        Set<PhiExpr> phis  = new HashSet<PhiExpr>();
         
         // find fall-through pred
         if(!remove.equals(units.getFirst())){
@@ -314,9 +313,9 @@ public class Shimple
         /* At this point we have found all the preds and relevant Phi's */
 
         /* Each Phi needs an argument for each pred. */
-        Iterator phiIt = phis.iterator();
+        Iterator<PhiExpr> phiIt = phis.iterator();
         while(phiIt.hasNext()){
-            PhiExpr phiExpr = (PhiExpr) phiIt.next();
+            PhiExpr phiExpr = phiIt.next();
             ValueUnitPair argBox = phiExpr.getArgBox(remove);
 
             if(argBox == null)
@@ -327,9 +326,9 @@ public class Shimple
             phiExpr.removeArg(argBox);
 
             // add new arguments to Phi
-            Iterator predsIt = preds.iterator();
+            Iterator<Unit> predsIt = preds.iterator();
             while(predsIt.hasNext()){
-                Unit pred = (Unit) predsIt.next();
+                Unit pred = predsIt.next();
                 phiExpr.addArg(arg, pred);
             }
         }
@@ -349,8 +348,8 @@ public class Shimple
         // important to change this to an array to have a static copy
         Object[] boxes = boxesPointing.toArray();
 
-        for(int i = 0; i < boxes.length; i++){
-            UnitBox box = (UnitBox) boxes[i];
+        for (Object element : boxes) {
+            UnitBox box = (UnitBox) element;
 
             if(box.getUnit() != oldLocation)
                 throw new RuntimeException("Something weird's happening");

@@ -27,7 +27,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.util.*;
 import java.util.*;
 
 
@@ -55,7 +54,7 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
     ArrayPackedSet(ObjectIntMapper map, int[] bits)
     {
         this.map = map;
-        this.bits = (int[]) bits.clone();
+        this.bits = bits.clone();
     }
 
     /** Returns true if flowSet is the same type of flow set as this. */
@@ -65,7 +64,7 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
                 ((ArrayPackedSet)flowSet).map == map);
     }
 
-    public Object clone()
+    public ArrayPackedSet clone()
     {
         return new ArrayPackedSet(map, bits);
     }
@@ -79,10 +78,7 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
     {
         int count = 0;
 
-        for(int i = 0; i < bits.length; i++)
-        {
-            int word = bits[i];
-
+        for (int word : bits) {
             for(int j = 0; j < 32; j++)
                 if((word & (1 << j)) != 0)
                     count++;
@@ -93,8 +89,8 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
 
     public boolean isEmpty()
     {
-        for(int i = 0; i < bits.length; i++)
-            if(bits[i] != 0)
+        for (int element : bits)
+			if(element != 0)
                 return false;
 
         return true;
@@ -285,10 +281,8 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
     public boolean equals(Object otherFlow)
     {
       if (sameType(otherFlow)) {
-        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
-
-        for(int i = 0; i < bits.length; i++)
-            if(this.bits[i] != other.bits[i])
+        for (int element : bits)
+			if(element != element)
                 return false;
 
         return true;

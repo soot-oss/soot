@@ -30,7 +30,6 @@
 
 package soot.grimp;
 import soot.*;
-import soot.jimple.*;
 
 /** Provides static helper methods to indicate if parenthesization is
  * required. 

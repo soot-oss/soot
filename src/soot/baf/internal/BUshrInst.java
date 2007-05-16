@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BUshrInst extends AbstractOpTypeInst implements UshrInst
 {
@@ -53,7 +52,7 @@ public class BUshrInst extends AbstractOpTypeInst implements UshrInst
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(getOpType()) + 1;
+        return AbstractJasminClass.sizeOfType(getOpType()) + 1;
     }
     
     public int getOutCount()
@@ -63,7 +62,7 @@ public class BUshrInst extends AbstractOpTypeInst implements UshrInst
 
     public int getOutMachineCount()
     {
-        return 1 * JasminClass.sizeOfType(getOpType());
+        return 1 * AbstractJasminClass.sizeOfType(getOpType());
     }
     
     public final String getName() { return "ushr"; }

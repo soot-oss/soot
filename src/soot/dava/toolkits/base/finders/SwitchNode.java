@@ -25,13 +25,13 @@ import soot.dava.internal.asg.*;
 
 public class SwitchNode implements Comparable
 {
-    private LinkedList preds, succs;
+    private final LinkedList preds, succs;
     private AugmentedStmt as;
     private int score;
-    private TreeSet indexSet;
+    private TreeSet<Object> indexSet;
     private IterableSet body;
 
-    public SwitchNode( AugmentedStmt as, TreeSet indexSet, IterableSet body)
+    public SwitchNode( AugmentedStmt as, TreeSet<Object> indexSet, IterableSet body)
     {
 	this.as = as;
 	this.indexSet = indexSet;
@@ -81,9 +81,9 @@ public class SwitchNode implements Comparable
 	return as;
     }
 
-    public TreeSet get_IndexSet()
+    public TreeSet<Object> get_IndexSet()
     {
-	return indexSet;
+	return new TreeSet<Object>(indexSet);
     }
 
     public IterableSet get_Body()
@@ -99,11 +99,11 @@ public class SwitchNode implements Comparable
 	return this;
     }
 
-    public void setup_Graph( HashMap binding)
+    public void setup_Graph( HashMap<AugmentedStmt,SwitchNode> binding)
     {
 	Iterator rit = ((AugmentedStmt) as.bsuccs.get(0)).get_Reachers().iterator();
 	while (rit.hasNext()) {
-	    SwitchNode pred = (SwitchNode) binding.get( rit.next());
+	    SwitchNode pred = binding.get( rit.next());
 	    
 	    if (pred != null) {
 		if (preds.contains( pred) == false)

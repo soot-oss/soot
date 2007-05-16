@@ -31,8 +31,6 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.util.*;
-import java.util.*;
 
 public abstract class AbstractOpTypeInst extends AbstractInst
 {
@@ -78,7 +76,7 @@ public abstract class AbstractOpTypeInst extends AbstractInst
   
   public int getOutMachineCount()
   {
-    return JasminClass.sizeOfType(getOpType());
+    return AbstractJasminClass.sizeOfType(getOpType());
   } 
 
 }

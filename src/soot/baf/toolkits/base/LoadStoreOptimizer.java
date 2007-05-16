@@ -33,7 +33,6 @@ import soot.*;
 import soot.baf.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.baf.internal.*;
 
 public class LoadStoreOptimizer extends BodyTransformer
 {
@@ -86,7 +85,7 @@ class Instance {
     private ExceptionalUnitGraph mExceptionalUnitGraph;
     private LocalDefs mLocalDefs;
     private LocalUses mLocalUses;
-    private Map mUnitToBlockMap;     // maps a unit it's containing block
+    private Map<Unit, Block> mUnitToBlockMap;     // maps a unit it's containing block
     private boolean mPass2 = false;
 
 
@@ -131,7 +130,7 @@ class Instance {
         }
        
         List blocks = blockGraph.getBlocks();
-        mUnitToBlockMap = new HashMap();
+        mUnitToBlockMap = new HashMap<Unit, Block>();
         
         Iterator blockIt = blocks.iterator();
         while(blockIt.hasNext() ) {
@@ -148,10 +147,10 @@ class Instance {
     
     // computes a list of all the stores in mUnits in order of their occurence therein.
   
-    private  List  buildStoreList()
+    private  List<Unit>  buildStoreList()
     {
         Iterator it = mUnits.iterator();
-        List storeList = new ArrayList();
+        List<Unit> storeList = new ArrayList<Unit>();
         
         while(it.hasNext()) {
             Unit unit = (Unit) it.next();
@@ -177,9 +176,7 @@ class Instance {
     // main optimizing method
     private void optimizeLoadStores() 
     {
-        //if(mBody.getMethod().getName().equals("aM")) {
-        Chain units  = mUnits;
-        List storeList;
+        List<Unit> storeList;
         
         
         // build a list of all store units in mUnits
@@ -198,11 +195,11 @@ class Instance {
 
 
                 // Iterate over the storeList 
-                Iterator unitIt = storeList.iterator();
+                Iterator<Unit> unitIt = storeList.iterator();
                 
             nextUnit:
                 while(unitIt.hasNext()){
-                    Unit unit = (Unit) unitIt.next();                
+                    Unit unit = unitIt.next();                
                     List uses = mLocalUses.getUsesOf(unit);
                   
 
@@ -211,7 +208,6 @@ class Instance {
                         
                         // check that all uses have only the current store as their definition
                         {
-                            boolean invalidStore = false;
                             Iterator useIt = uses.iterator();
                             while(useIt.hasNext()) {
                                 UnitValueBoxPair pair = (UnitValueBoxPair) useIt.next();
@@ -219,7 +215,7 @@ class Instance {
                                 if(!(loadUnit instanceof LoadInst))
                                     continue nextUnit;
                             
-                                List defs = mLocalDefs.getDefsOfAt((Local) pair.getValueBox().getValue(), loadUnit);
+                                List<Unit> defs = mLocalDefs.getDefsOfAt((Local) pair.getValueBox().getValue(), loadUnit);
                                 if(defs.size() > 1) {
                                     continue nextUnit;
                                 }
@@ -231,12 +227,12 @@ class Instance {
                         
                         // Check that all loads are in the same bb as the store
                         {
-                            Block storeBlock = (Block) mUnitToBlockMap.get(unit);
+                            Block storeBlock = mUnitToBlockMap.get(unit);
 
                             Iterator useIt = uses.iterator();
                             while(useIt.hasNext()) {
                                 UnitValueBoxPair pair = (UnitValueBoxPair) useIt.next();
-                                Block useBlock = (Block) mUnitToBlockMap.get(pair.getUnit());
+                                Block useBlock = mUnitToBlockMap.get(pair.getUnit());
                                 if(useBlock != storeBlock) 
                                     continue nextUnit;
                             }                            
@@ -261,7 +257,7 @@ class Instance {
                                     if(!mPass2 || PhaseOptions.getBoolean(gOptions, "sl2")) {
                                 // try to eliminate store/load pair
                                         Unit loadUnit = ((UnitValueBoxPair)uses.get(0)).getUnit();
-                                        block =  (Block) mUnitToBlockMap.get(unit);
+                                        block =  mUnitToBlockMap.get(unit);
                                         int test = stackIndependent(unit, loadUnit , block, STORE_LOAD_ELIMINATION);
                                 
                                 //xxx 
@@ -292,7 +288,7 @@ class Instance {
                                 // try to replace store/load/load trio by a flavor of the dup unit
                                         Unit firstLoad = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                         Unit secondLoad = ((UnitValueBoxPair)uses.get(1)).getUnit();
-                                        block = (Block) mUnitToBlockMap.get(unit);
+                                        block = mUnitToBlockMap.get(unit);
 
 
                                 
@@ -409,16 +405,16 @@ class Instance {
     
     private int pushStoreToLoad(Unit from , Unit to, Block block)
     {
-        Unit storePred =  (Unit) block.getPredOf(from);
+        Unit storePred =  block.getPredOf(from);
         if(storePred != null) {
             if(((Inst)storePred).getOutCount() == 1){
-                Set unitsToMove = new HashSet();
+                Set<Unit> unitsToMove = new HashSet<Unit>();
                 unitsToMove.add(storePred);
                 unitsToMove.add(from);
                 int h = ((Inst)storePred).getInCount();
                 Unit currentUnit = storePred;
                 if(h != 0) {           
-                    currentUnit = (Unit)block.getPredOf(storePred);
+                    currentUnit = block.getPredOf(storePred);
                     while(currentUnit != null) {
                         
                         h-= ((Inst)currentUnit).getOutCount();
@@ -430,7 +426,7 @@ class Instance {
                         unitsToMove.add(currentUnit);
                         if(h == 0)
                             break;
-                        currentUnit  = (Unit) block.getPredOf(currentUnit);
+                        currentUnit  = block.getPredOf(currentUnit);
                     }
                 }
                 if(currentUnit == null) {
@@ -440,12 +436,12 @@ class Instance {
                 
                 Unit uu = from;
                 for(;;) {
-                    uu = (Unit) block.getSuccOf(uu);
+                    uu = block.getSuccOf(uu);
                     if(uu == to)
                         break;
-                    Iterator it2 = unitsToMove.iterator();
+                    Iterator<Unit> it2 = unitsToMove.iterator();
                     while(it2.hasNext()) {
-                        Unit nu = (Unit) it2.next();
+                        Unit nu = it2.next();
                         if(debug) { G.v().out.println("xxxspecial;success pushing forward stuff.");}
                         
                         
@@ -460,7 +456,7 @@ class Instance {
                 // if we get here it means we can move all the units in the set pass the units in between [to, from]
                 Unit unitToMove = currentUnit; 
                 while(unitToMove != from) {        
-                    Unit succ = (Unit) block.getSuccOf(unitToMove);
+                    Unit succ = block.getSuccOf(unitToMove);
                     if(debug) { G.v().out.println("moving " + unitToMove);}
                     block.remove(unitToMove);
                     block.insertBefore(unitToMove, to);                            
@@ -606,7 +602,7 @@ class Instance {
                     if(u instanceof LoadInst || u instanceof PushInst || u instanceof NewInst || u instanceof StaticGetInst || u instanceof Dup1Inst) {
                         
                         // verify that unitToMove is not required by following units (until the 'to' unit)
-                        if(!isRequiredByFollowingUnits(u, (LoadInst) to)) {
+                        if(!isRequiredByFollowingUnits(u, to)) {
                             unitToMove = u;
                         }
                         
@@ -643,7 +639,7 @@ class Instance {
             }
         }
 
-        if(isCommutativeBinOp((Unit) block.getSuccOf(to))) {
+        if(isCommutativeBinOp(block.getSuccOf(to))) {
             if(aContext == STORE_LOAD_ELIMINATION && stackHeight == 1 && minStackHeightAttained == 0) {
                 if(debug) { G.v().out.println("xxx: commutative ");}
                 return SPECIAL_SUCCESS;
@@ -815,7 +811,7 @@ class Instance {
             
             
             if(h == 0 && reachedStore == true) {
-                if(!isRequiredByFollowingUnits(unitToMove, (LoadInst) to)) {
+                if(!isRequiredByFollowingUnits(unitToMove, to)) {
                     if(debug) { G.v().out.println("10077:(LoadStoreOptimizer@stackIndependent): reordering bytecode move: " + unitToMove + "before: " + current);}
                     block.remove(unitToMove);
                     block.insertBefore(unitToMove, current);
@@ -850,7 +846,7 @@ class Instance {
      */
     private void replaceUnit(Unit aToReplace1, Unit aToReplace2,  Unit aReplacement) 
     {
-        Block block = (Block) mUnitToBlockMap.get(aToReplace1);
+        Block block = mUnitToBlockMap.get(aToReplace1);
                  
         if(aToReplace2 != null) {
             block.insertAfter(aReplacement, aToReplace2);
@@ -873,36 +869,6 @@ class Instance {
 
 
     
-    /**
-     *  Returns the type of the stack item produced by certain Unit objects.
-     */
-    private Type type(Unit aUnit)
-    {
-        if(aUnit instanceof InstanceCastInst || aUnit instanceof NewInst) {
-            return  RefType.v();        
-        } else if(aUnit instanceof LoadInst) {
-            return ((LoadInst)aUnit).getOpType();
-        } else  if (aUnit instanceof FieldGetInst)
-            return ((FieldGetInst)aUnit).getField().getType();
-        else if (aUnit instanceof Dup1Inst)
-            return ((Dup1Inst)aUnit).getOp1Type();
-        else if(aUnit instanceof StaticGetInst)
-            return ((StaticGetInst) aUnit).getField().getType();
-        else if(aUnit instanceof OpTypeArgInst)
-            return ((OpTypeArgInst)aUnit).getOpType();
-        else if(aUnit instanceof PushInst)
-            return ((PushInst)aUnit).getConstant().getType();
-        else if (aUnit instanceof MethodArgInst)
-            return ((MethodArgInst) aUnit).getMethod().getReturnType();
-        else if(aUnit instanceof Dup1_x1Inst)
-            return ((Dup1_x1Inst) aUnit).getOp1Type();
-        else if(aUnit instanceof Dup1Inst)
-            return ((Dup1Inst) aUnit).getOp1Type();
-        else
-            return null;
-    }
-
-    
     /* 
      * @param some block
      * @return true if the block is an exception handler.
@@ -919,40 +885,6 @@ class Instance {
         return false;
     }
 
-    private Unit getStackItemAt2(Unit aUnit, Block aBlock, int aDeltaHeight) 
-    {
-        int h = 0;
-        Unit currentUnit  = aUnit;
-        Unit candidate = null;
-        
-        while(currentUnit != null) {
-            currentUnit  = (Unit) aBlock.getPredOf(currentUnit);
-            if(currentUnit == null) {
-                if(debug) { G.v().out.println(aBlock);}
-                G.v().out.println("xxxxxxxxxxxx " + h);
-                if(isExceptionHandlerBlock(aBlock) ) {
-                    return new BLoadInst( RefType.v("dummy") , ((StoreInst) aUnit).getLocal());                     // we have a ref type. 
-                }
-
-                aBlock = (Block) aBlock.getPreds().get(0);
-                currentUnit = (Unit) aBlock.getTail();
-
-            }
-            
-            
-            h -= ((Inst)currentUnit).getOutCount();
-            if(h <= aDeltaHeight) {
-                candidate = currentUnit;
-                break;
-            }            
-            h += ((Inst)currentUnit).getInCount();            
-        }        
-        return candidate;
-    }
-    
-
-
-    
     // not a save function :: goes over block boundries
     private int getDeltaStackHeightFromTo(Unit aFrom, Unit aTo) 
     {
@@ -981,32 +913,32 @@ class Instance {
         while(hasChanged) {
             hasChanged = false;
             
-            List tempList = new ArrayList();
+            List<Unit> tempList = new ArrayList<Unit>();
             tempList.addAll(mUnits);
-            Iterator it = tempList.iterator();        
+            Iterator<Unit> it = tempList.iterator();        
             while(it.hasNext()) {
-                Unit u = (Unit) it.next();
+                Unit u = it.next();
                 
                 if(u instanceof LoadInst) {
                     if(debug) { G.v().out.println("inter trying: " + u);}
-                    Block loadBlock = (Block) mUnitToBlockMap.get(u);
-                    List defs = mLocalDefs.getDefsOfAt(((LoadInst)u).getLocal(), u);
+                    Block loadBlock = mUnitToBlockMap.get(u);
+                    List<Unit> defs = mLocalDefs.getDefsOfAt(((LoadInst)u).getLocal(), u);
 
                     // first optimization 
                     if(defs.size() ==  1) {
-                        Block defBlock =(Block)  mUnitToBlockMap.get(defs.get(0));
+                        Block defBlock =mUnitToBlockMap.get(defs.get(0));
                         if(defBlock != loadBlock && !(isExceptionHandlerBlock(loadBlock))) {
-                            Unit storeUnit = (Unit) defs.get(0);
+                            Unit storeUnit = defs.get(0);
                             if(storeUnit instanceof StoreInst) {
                                 List uses = mLocalUses.getUsesOf(storeUnit);
                                 if(uses.size() == 1){
                                     if(allSuccesorsOfAreThePredecessorsOf(defBlock, loadBlock)) {
-                                        if(getDeltaStackHeightFromTo((Unit) defBlock.getSuccOf(storeUnit), (Unit)defBlock.getTail()) == 0) {
+                                        if(getDeltaStackHeightFromTo(defBlock.getSuccOf(storeUnit), defBlock.getTail()) == 0) {
                                             Iterator it2 = defBlock.getSuccs().iterator();
                                             boolean res = true;
                                             while(it2.hasNext()) {
                                                 Block b = (Block) it2.next();
-                                                if(getDeltaStackHeightFromTo((Unit) b.getHead(), (Unit) b.getTail()) != 0) {
+                                                if(getDeltaStackHeightFromTo(b.getHead(), b.getTail()) != 0) {
                                                     res = false;
                                                     break;
                                                 }
@@ -1034,11 +966,11 @@ class Instance {
                     // second optimization
                     else if(defs.size() == 2) {
                         
-                        Unit def0 = (Unit) defs.get(0);
-                        Unit def1 = (Unit) defs.get(1);
+                        Unit def0 = defs.get(0);
+                        Unit def1 = defs.get(1);
                             
-                        Block defBlock0 = (Block)  mUnitToBlockMap.get(def0);
-                        Block defBlock1 = (Block)  mUnitToBlockMap.get(def1);
+                        Block defBlock0 = mUnitToBlockMap.get(def0);
+                        Block defBlock1 = mUnitToBlockMap.get(def1);
                         if(defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1
                            && !(isExceptionHandlerBlock(loadBlock))) {                                
                             if(mLocalUses.getUsesOf(def0).size() == 1  && mLocalUses.getUsesOf(def1).size() == 1) {
@@ -1048,9 +980,9 @@ class Instance {
                                     if(def0Succs.get(0) == loadBlock && def1Succs.get(0)== loadBlock) {                                         
                                         if(loadBlock.getPreds().size() == 2) {
                                             if( (def0 == defBlock0.getTail()|| 
-                                                 getDeltaStackHeightFromTo((Unit)defBlock0.getSuccOf(def0),(Unit) defBlock0.getTail())  == 0) && 
+                                                 getDeltaStackHeightFromTo(defBlock0.getSuccOf(def0),defBlock0.getTail())  == 0) && 
                                                 (def1 == defBlock1.getTail() ||
-                                                 getDeltaStackHeightFromTo((Unit)defBlock1.getSuccOf(def1), (Unit) defBlock1.getTail()) == 0)) {
+                                                 getDeltaStackHeightFromTo(defBlock1.getSuccOf(def1), defBlock1.getTail()) == 0)) {
                                                 defBlock0.remove(def0);                            
                                                 defBlock1.remove(def1);
                                                 loadBlock.insertBefore(def0, loadBlock.getHead());
@@ -1114,107 +1046,25 @@ class Instance {
             return false;
     }
 
-    /*
-     *  @param aInst 
-     */
-    private boolean propagateLoadForward(Unit aInst) 
-    {
-        Unit currentUnit;
-        Block block  = (Block) mUnitToBlockMap.get(aInst);
-        boolean res = false;
-        int h = 0;
-        Unit candidate = null;
-        
-        if(aInst == block.getTail())
-            return false;
-        
-        currentUnit = (Unit) block.getSuccOf(aInst);
-       
-        while( currentUnit != block.getTail()) {
-            
-            if(!canMoveUnitOver(aInst,  currentUnit)){ if(debug) { G.v().out.println("can't go over: " + currentUnit);}
-            break;}
-            
-
-            h -= ((Inst)currentUnit).getInCount();                
-            if(h < 0){
-                if(!(aInst instanceof Dup1Inst && currentUnit instanceof Dup1Inst)) {
-                    if(debug) { G.v().out.println("breaking at: " + currentUnit);}                
-                    break;
-                }
-            }            
-            
-            h += ((Inst)currentUnit).getOutCount();
-            
-            if(h == 0){
-                candidate = currentUnit; // don't stop now; try to go still forward.
-            }
-            
-            currentUnit = (Unit) block.getSuccOf(currentUnit);            
-        }        
-        if(candidate != null) {
-            if(debug) { G.v().out.println("successfull propagation "  + candidate + block.getTail());}
-            block.remove(aInst);
-            if(block.getTail() == mUnitToBlockMap.get(candidate)){
-                
-                block.insertAfter(aInst, candidate);
-                if(block.getTail() != aInst)
-                    throw new RuntimeException();
-            }
-            block.insertAfter(aInst, candidate);            
-            return true;
-        }
-        
-        return false;
-    }
-
-
-
-    /* 
-     * 
-     */
-    private void propagateLoadsForward()
-    { 
-        boolean hasChanged = true;
-
-        while(hasChanged) {
-            hasChanged = false;
-            List tempList = new ArrayList();
-            tempList.addAll(mUnits);
-            Iterator it = tempList.iterator();
-            
-            while(it.hasNext()) {
-                Unit u = (Unit) it.next();
-                if( u instanceof LoadInst || u instanceof Dup1Inst) {
-                    if(debug) { G.v().out.println("trying to push:"  + u);}
-                    boolean res =propagateLoadForward(u);
-                    if(!hasChanged)
-                        hasChanged = res;
-                }
-            }
-        }
-    }
-    
-
     void propagateBackwardsIndependentHunk() 
     {
         
-        List tempList = new ArrayList();
+        List<Unit> tempList = new ArrayList<Unit>();
         tempList.addAll(mUnits);
-        Iterator it = tempList.iterator();
+        Iterator<Unit> it = tempList.iterator();
         
         while(it.hasNext()) {
-            Unit u = (Unit) it.next();
+            Unit u = it.next();
             
             if( u instanceof NewInst) {
-                Block block  = (Block) mUnitToBlockMap.get(u);
-                Unit succ = (Unit) block.getSuccOf(u);
+                Block block  = mUnitToBlockMap.get(u);
+                Unit succ = block.getSuccOf(u);
                 if( succ instanceof StoreInst) {
                     Unit currentUnit = u;
                     Unit candidate = null;
                     
                     while(currentUnit != block.getHead()) {
-                        currentUnit = (Unit) block.getPredOf(currentUnit);
+                        currentUnit = block.getPredOf(currentUnit);
                         if(canMoveUnitOver(currentUnit, succ)){
                             candidate = currentUnit;
                         } else
@@ -1229,65 +1079,6 @@ class Instance {
                 }
             } 
         }
-    }
-    
-
-
-    // For each LoadInst in the method body, call propagateLoadBackwards to
-    // try to relocate the load as close to the start of it's basic block as possible. 
-    private void propagateLoadsBackwards()
-    {        
-        boolean hasChanged = true;
-        while(hasChanged) {
-            hasChanged = false;
-            
-            List tempList = new ArrayList();
-            tempList.addAll(mUnits);
-
-            Iterator it = tempList.iterator();
-            while(it.hasNext()) {
-                Unit currentInst = (Unit) it.next();
-                    
-                if(currentInst instanceof LoadInst) {
-                    Block block = (Block)  mUnitToBlockMap.get(currentInst);                    
-                    Unit insertPoint = propagateLoadBackwards(currentInst, block);
-                        
-                    if(insertPoint != null) {                        
-                        block.remove(currentInst);
-                        block.insertBefore(currentInst, insertPoint);
-                        hasChanged = true;                       
-                    }
-                }
-            }        
-        }        
-    }
-    
-
-    // Given a LoadInst  and it's block, try to relocate the load as  close as possible to 
-    // the start of it's block.
-    private Unit propagateLoadBackwards(Unit aInst, Block aBlock) 
-    {
-        int h = 0;
-        Unit candidate = null;
-        Unit currentUnit =  aInst;   
-        
-        //List loadDefList = mLocalDefs.getDefsOfAt(((LoadInst)aInst).getLocal(), aInst);
-                
-        currentUnit = (Unit) aBlock.getPredOf(currentUnit);        
-        while( currentUnit != null) {
-            if(!canMoveUnitOver(currentUnit, aInst))
-                break;
-            
-            h -= ((Inst)currentUnit).getOutCount();                            
-            if(h < 0) break;                        
-            h += ((Inst)currentUnit).getInCount();
-            if(h == 0) candidate = currentUnit;
-           
-            
-            currentUnit = (Unit) aBlock.getPredOf(currentUnit);
-        }        
-        
-        return candidate;
     }
     
 

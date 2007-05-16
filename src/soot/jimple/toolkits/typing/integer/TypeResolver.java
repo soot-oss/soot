@@ -28,10 +28,7 @@ package soot.jimple.toolkits.typing.integer;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 import java.io.*;
 
 /**
@@ -40,10 +37,10 @@ import java.io.*;
 public class TypeResolver
 {
   /** All type variable instances **/
-  private final List typeVariableList = new ArrayList();
+  private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariable **/
-  private final Map typeVariableMap = new HashMap();
+  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
 
   private final JimpleBody stmtBody;
 
@@ -60,13 +57,13 @@ public class TypeResolver
   private static final boolean DEBUG = false;
 
   // categories for type variables (solved = hard, unsolved = soft)
-  private List unsolved;
-  private List solved;
+  private List<TypeVariable> unsolved;
+  private List<TypeVariable> solved;
 
   /** Get type variable for the given local. **/
   TypeVariable typeVariable(Local local)
   {
-    TypeVariable result = (TypeVariable) typeVariableMap.get(local);
+    TypeVariable result = typeVariableMap.get(local);
 
     if(result == null)
       {
@@ -90,7 +87,7 @@ public class TypeResolver
   /** Get type variable for the given type node. **/
   public TypeVariable typeVariable(TypeNode typeNode)
   {
-    TypeVariable result = (TypeVariable) typeVariableMap.get(typeNode);
+    TypeVariable result = typeVariableMap.get(typeNode);
 
     if(result == null)
       {
@@ -171,24 +168,10 @@ public class TypeResolver
       {
 	int count = 0;
 	G.v().out.println("**** START:" + message);
-	for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
-	    final TypeVariable var = (TypeVariable) varIt.next();
+	for (TypeVariable var : typeVariableList) {
 	    G.v().out.println(count++ + " " + var);
 	  }
 	G.v().out.println("**** END:" + message);
-      }
-  }
-
-  private void debug_body()
-  {
-    if(DEBUG)
-      {
-	G.v().out.println("-- Body Start --");
-	for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
-	    final Stmt stmt = (Stmt) stmtIt.next();
-	    G.v().out.println(stmt);
-	  }
-	G.v().out.println("-- Body End --");
       }
   }
 
@@ -271,7 +254,7 @@ public class TypeResolver
   private void merge_connected_components() throws TypeException
   {
     compute_solved();
-    List list = new LinkedList();
+    List<TypeVariable> list = new LinkedList<TypeVariable>();
     list.addAll(solved);
     list.addAll(unsolved);
     
@@ -287,18 +270,16 @@ public class TypeResolver
 	modified = false;
 	refresh_solved();
 	
-	for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
+	for (TypeVariable var : unsolved) {
 	
-	    final TypeVariable var = (TypeVariable) varIt.next();
-	    List children_to_remove = new LinkedList();
+	    List<TypeVariable> children_to_remove = new LinkedList<TypeVariable>();
 	    TypeNode lca = null;
 	    
 	    var.fixChildren();
 	    
-	    for( Iterator childIt = var.children().iterator(); childIt.hasNext(); ) {
+	    for (TypeVariable child : var.children()) {
 	    
-	        final TypeVariable child = (TypeVariable) childIt.next();
-		TypeNode type = child.type();
+	        TypeNode type = child.type();
 		
 		if(type != null)
 		  {
@@ -322,16 +303,14 @@ public class TypeResolver
 		    if(lca == ClassHierarchy.v().TOP)
 		      {
 			G.v().out.println("*** TOP *** " + var);
-			for(Iterator j = children_to_remove.iterator(); j.hasNext();)
-			  {
-			    G.v().out.println("-- " + j.next());
+			for (TypeVariable typeVariable : children_to_remove) {
+			    G.v().out.println("-- " + typeVariable);
 			  }
 		      }
 		  }
 		
-		for( Iterator childIt = children_to_remove.iterator(); childIt.hasNext(); ) {
+		for (TypeVariable child : children_to_remove) {
 		
-		    final TypeVariable child = (TypeVariable) childIt.next();
 		    var.removeChild(child);
 		  }
 		
@@ -340,7 +319,7 @@ public class TypeResolver
 
 	    if(var.children().size() == 1)
 	      {
-		TypeVariable child = (TypeVariable) var.children().get(0);
+		TypeVariable child = var.children().get(0);
 		TypeNode type = child.type();
 		
 		if(type == null || type.type() != null)
@@ -353,16 +332,14 @@ public class TypeResolver
       
 	if(!modified)
 	  {
-	    for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
-	        final TypeVariable var = (TypeVariable) varIt.next();
-		List parents_to_remove = new LinkedList();
+	    for (TypeVariable var : unsolved) {
+	        List<TypeVariable> parents_to_remove = new LinkedList<TypeVariable>();
 		TypeNode gcd = null;
 		
 		var.fixParents();
 		
-		for( Iterator parentIt = var.parents().iterator(); parentIt.hasNext(); ) {
+		for (TypeVariable parent : var.parents()) {
 		
-		    final TypeVariable parent = (TypeVariable) parentIt.next();
 		    TypeNode type = parent.type();
 		    
 		    if(type != null)
@@ -382,9 +359,8 @@ public class TypeResolver
 		
 		if(gcd != null)
 		  {
-		    for( Iterator parentIt = parents_to_remove.iterator(); parentIt.hasNext(); ) {
-		        final TypeVariable parent = (TypeVariable) parentIt.next();
-			var.removeParent(parent);
+		    for (TypeVariable parent : parents_to_remove) {
+		        var.removeParent(parent);
 		      }
 		    
 		    var.addParent(typeVariable(gcd));
@@ -392,7 +368,7 @@ public class TypeResolver
 		
 		if(var.parents().size() == 1)
 		  {
-		    TypeVariable parent = (TypeVariable) var.parents().get(0);
+		    TypeVariable parent = var.parents().get(0);
 		    TypeNode type = parent.type();
 		    
 		    if(type == null || type.type() != null)
@@ -406,10 +382,8 @@ public class TypeResolver
 
 	if(!modified)
 	  {
-	    for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
-	        final TypeVariable var = (TypeVariable) varIt.next();
-		
-		if(var.type() == null && var.inv_approx() != null && var.inv_approx().type() != null)
+	    for (TypeVariable var : unsolved) {
+	        if(var.type() == null && var.inv_approx() != null && var.inv_approx().type() != null)
 		  {
 		    if(DEBUG)
 		      {
@@ -424,10 +398,8 @@ public class TypeResolver
 
 	if(!modified)
 	  {
-	    for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
-	        final TypeVariable var = (TypeVariable) varIt.next();
-		
-		if(var.type() == null && var.approx() != null && var.approx().type() != null)
+	    for (TypeVariable var : unsolved) {
+	        if(var.type() == null && var.approx() != null && var.approx().type() != null)
 		  {
 		    if(DEBUG)
 		      {
@@ -442,10 +414,8 @@ public class TypeResolver
 
 	if(!modified)
 	  {
-	    for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
-	        final TypeVariable var = (TypeVariable) varIt.next();
-		
-		if(var.type() == null && var.approx() == ClassHierarchy.v().R0_32767)
+	    for (TypeVariable var : unsolved) {
+	        if(var.type() == null && var.approx() == ClassHierarchy.v().R0_32767)
 		  {
 		    if(DEBUG)
 		      {
@@ -460,10 +430,8 @@ public class TypeResolver
 
 	if(!modified)
 	  {
-	    for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
-	        final TypeVariable var = (TypeVariable) varIt.next();
-		
-		if(var.type() == null && var.approx() == ClassHierarchy.v().R0_127)
+	    for (TypeVariable var : unsolved) {
+	        if(var.type() == null && var.approx() == ClassHierarchy.v().R0_127)
 		  {
 		    if(DEBUG)
 		      {
@@ -478,10 +446,8 @@ public class TypeResolver
 
 	if(!modified)
 	  {
-	    for( Iterator varIt = R0_1.parents().iterator(); varIt.hasNext(); ) {
-	        final TypeVariable var = (TypeVariable) varIt.next();
-		
-		if(var.type() == null && var.approx() == ClassHierarchy.v().R0_1)
+	    for (TypeVariable var : R0_1.parents()) {
+	        if(var.type() == null && var.approx() == ClassHierarchy.v().R0_1)
 		  {
 		    if(DEBUG)
 		      {
@@ -607,10 +573,7 @@ public class TypeResolver
 	s = new StringBuffer("Checking:\n");
       }
 
-    for(int i = 0; i < stmts.length; i++)
-      {
-	Stmt stmt = stmts[i];
-
+    for (Stmt stmt : stmts) {
 	if(DEBUG)
 	  {
 	    s.append(" " + stmt + "\n");
@@ -632,13 +595,11 @@ public class TypeResolver
 
   private void compute_approximate_types() throws TypeException
   {
-    TreeSet workList = new TreeSet();
+    TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
 
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    for (TypeVariable var : typeVariableList) {
 
-        final TypeVariable var = (TypeVariable) varIt.next();
-
-	if(var.type() != null)
+        if(var.type() != null)
 	  {
 	    workList.add(var);
 	  }
@@ -646,13 +607,11 @@ public class TypeResolver
 
     TypeVariable.computeApprox(workList);
 
-    workList = new TreeSet();
+    workList = new TreeSet<TypeVariable>();
 
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    for (TypeVariable var : typeVariableList) {
 
-        final TypeVariable var = (TypeVariable) varIt.next();
-	
-	if(var.type() != null)
+        if(var.type() != null)
 	  {
 	    workList.add(var);
 	  }
@@ -660,11 +619,9 @@ public class TypeResolver
 
     TypeVariable.computeInvApprox(workList);
 
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    for (TypeVariable var : typeVariableList) {
 
-        final TypeVariable var = (TypeVariable) varIt.next();
-
-	if (var.approx() == null)
+        if (var.approx() == null)
 	  {
 	    var.union(INT);
 	  }
@@ -673,14 +630,12 @@ public class TypeResolver
   
   private void compute_solved()
   {
-    Set unsolved_set = new TreeSet();
-    Set solved_set = new TreeSet();
+    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
+    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>();
     
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    for (TypeVariable var : typeVariableList) {
     
-        final TypeVariable var = (TypeVariable) varIt.next();
-	
-	if(var.type() == null)
+        if(var.type() == null)
 	  {
 	    unsolved_set.add(var);
 	  }
@@ -690,20 +645,18 @@ public class TypeResolver
 	  }
       }
     
-    solved = new LinkedList(solved_set);
-    unsolved = new LinkedList(unsolved_set);
+    solved = new LinkedList<TypeVariable>(solved_set);
+    unsolved = new LinkedList<TypeVariable>(unsolved_set);
   }
 
   private void refresh_solved() throws TypeException
   {
-    Set unsolved_set = new TreeSet();
-    Set solved_set = new TreeSet(solved);
+    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
+    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>(solved);
     
-    for( Iterator varIt = unsolved.iterator(); varIt.hasNext(); ) {
+    for (TypeVariable var : unsolved) {
     
-        final TypeVariable var = (TypeVariable) varIt.next();
-	
-	if(var.type() == null)
+        if(var.type() == null)
 	  {
 	    unsolved_set.add(var);
 	  }
@@ -713,7 +666,7 @@ public class TypeResolver
 	  }
       }
     
-    solved = new LinkedList(solved_set);
-    unsolved = new LinkedList(unsolved_set);
+    solved = new LinkedList<TypeVariable>(solved_set);
+    unsolved = new LinkedList<TypeVariable>(unsolved_set);
   }
 }

@@ -26,17 +26,13 @@
 
 package soot.jimple.parser;
 
-import soot.baf.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 
-import soot.jimple.parser.parser.*;
-import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
 import soot.jimple.parser.analysis.*;
 
-import java.io.*;
 import java.util.*;
 
 /*Modified By Marc Berndl 17th May */
@@ -46,11 +42,11 @@ public class Walker extends DepthFirstAdapter
     boolean debug = false;
     LinkedList mProductions = new LinkedList();
     SootClass mSootClass = null;
-    Map mLocals = null;
+    Map<String, Local> mLocals = null;
     Value mValue = IntConstant.v(1);
 
-    Map mLabelToStmtMap;  // maps a label to the stmt following it in the jimple source
-    Map mLabelToPatchList; // maps a label to the a list of stmts that refer to the label (ie goto lableX)
+    Map<Object, Unit> mLabelToStmtMap;  // maps a label to the stmt following it in the jimple source
+    Map<String, List> mLabelToPatchList; // maps a label to the a list of stmts that refer to the label (ie goto lableX)
 
 
                
@@ -111,9 +107,8 @@ public class Walker extends DepthFirstAdapter
         inAFile(node);
         {
             Object temp[] = node.getModifier().toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                ((PModifier) temp[i]).apply(this);
+            for (Object element : temp) {
+                ((PModifier) element).apply(this);
             }
         }
         if(node.getFileType() != null)
@@ -223,14 +218,14 @@ public class Walker extends DepthFirstAdapter
         Type type;
         String name;
         List parameterList = null;
-        List throwsClause = null;
+        List<SootClass> throwsClause = null;
         JimpleBody methodBody = null;
 
         if(node.getMethodBody() instanceof AFullMethodBody)
 	    methodBody = (JimpleBody) mProductions.removeLast();
 
         if(node.getThrowsClause() != null)
-	    throwsClause = (List) mProductions.removeLast();
+	    throwsClause = (List<SootClass>) mProductions.removeLast();
 
         if(node.getParameterList() != null) {
 	    parameterList = (List) mProductions.removeLast();
@@ -472,20 +467,19 @@ public class Walker extends DepthFirstAdapter
 
     public void inAFullMethodBody(AFullMethodBody node)
     {
-        mLocals = new HashMap();
-        mLabelToStmtMap = new HashMap();
-        mLabelToPatchList = new HashMap();
+        mLocals = new HashMap<String, Local>();
+        mLabelToStmtMap = new HashMap<Object, Unit>();
+        mLabelToPatchList = new HashMap<String, List>();
     }
 
     public void outAFullMethodBody(AFullMethodBody node)
     {
-        Object catchClause = null;
         JimpleBody jBody = Jimple.v().newBody();
                 
         if(node.getCatchClause() != null) {
             int size = node.getCatchClause().size();
             for(int i =0; i < size; i++)             
-		jBody.getTraps().addFirst((Trap) mProductions.removeLast());
+		jBody.getTraps().addFirst(mProductions.removeLast());
         }
                                 
         if(node.getStatement() != null) {
@@ -520,12 +514,12 @@ public class Walker extends DepthFirstAdapter
         
       
         
-        Iterator it =  mLabelToPatchList.keySet().iterator();
+        Iterator<String> it =  mLabelToPatchList.keySet().iterator();
         while(it.hasNext()) {
-            String label = (String) it.next();
-            Unit target = (Unit) mLabelToStmtMap.get(label); 
+            String label = it.next();
+            Unit target = mLabelToStmtMap.get(label); 
         
-            Iterator patchIt = ((List) mLabelToPatchList.get(label)).iterator();
+            Iterator patchIt = mLabelToPatchList.get(label).iterator();
             while(patchIt.hasNext()) {
                 UnitBox box = (UnitBox) patchIt.next();
                 box.setUnit(target);
@@ -565,14 +559,14 @@ public class Walker extends DepthFirstAdapter
     
     public void outASingleParameterList(ASingleParameterList node)
     {
-        List l = new ArrayList();
+        List<Type> l = new ArrayList<Type>();
 	l.add((Type) mProductions.removeLast());
 	mProductions.addLast(l);
     }
 
     public void outAMultiParameterList(AMultiParameterList node)
     {
-	List l = (List) mProductions.removeLast();
+	List<Type> l = (List<Type>) mProductions.removeLast();
 	l.add(0,(Type) mProductions.removeLast());
 	mProductions.addLast(l);
     }
@@ -584,7 +578,7 @@ public class Walker extends DepthFirstAdapter
     */
     public void outASingleArgList(ASingleArgList node)
     {
-        List l = new ArrayList();
+        List<Value> l = new ArrayList<Value>();
 
 	l.add((Value) mProductions.removeLast()); 
 	mProductions.addLast(l);
@@ -592,7 +586,7 @@ public class Walker extends DepthFirstAdapter
 
     public void outAMultiArgList(AMultiArgList node)
     {
-	List l = (List) mProductions.removeLast();
+	List<Value> l = (List<Value>) mProductions.removeLast();
 	l.add(0,(Value) mProductions.removeLast());
 	mProductions.addLast(l);
     }
@@ -605,14 +599,14 @@ public class Walker extends DepthFirstAdapter
 
     public void outAClassNameSingleClassNameList(AClassNameSingleClassNameList node)
     {
-        List l = new ArrayList();
+        List<String> l = new ArrayList<String>();
 	l.add((String) mProductions.removeLast());
 	mProductions.addLast(l);
     }
 
     public void outAClassNameMultiClassNameList(AClassNameMultiClassNameList node)
     {
-	List l = (List) mProductions.removeLast();
+	List<String> l = (List<String>) mProductions.removeLast();
 	l.add(0,(String) mProductions.removeLast());
 	mProductions.addLast(l);  
     }
@@ -673,7 +667,7 @@ public class Walker extends DepthFirstAdapter
 	List localNameList = (List) mProductions.removeLast();
 	Type type = (Type) mProductions.removeLast();
         Iterator it = localNameList.iterator();
-        List localList = new ArrayList();
+        List<Local> localList = new ArrayList<Local>();
         
         while(it.hasNext()) {            
             Local l = Jimple.v().newLocal((String) it.next(),type);                        
@@ -706,14 +700,14 @@ public class Walker extends DepthFirstAdapter
     
     public void outASingleLocalNameList(ASingleLocalNameList node)
     {
-        List l = new ArrayList();
+        List<String> l = new ArrayList<String>();
 	l.add((String) mProductions.removeLast());
 	mProductions.addLast(l);
     }
 
     public void outAMultiLocalNameList(AMultiLocalNameList node)
     {
-	List l = (List) mProductions.removeLast();
+	List<String> l = (List<String>) mProductions.removeLast();
 	l.add(0,(String) mProductions.removeLast());
 	mProductions.addLast(l);
     }
@@ -801,7 +795,7 @@ public class Walker extends DepthFirstAdapter
 
     public void outATableswitchStatement(ATableswitchStatement node)
     {        
-        List targets = new ArrayList();
+        List<Object> targets = new ArrayList<Object>();
         UnitBox defaultTarget = null;
         
         int lowIndex = 0, highIndex = 0;
@@ -842,8 +836,8 @@ public class Walker extends DepthFirstAdapter
 
     public void outALookupswitchStatement(ALookupswitchStatement node)
     {        
-        List lookupValues = new ArrayList();
-        List targets = new ArrayList();
+        List<Object> lookupValues = new ArrayList<Object>();
+        List<Object> targets = new ArrayList<Object>();
         UnitBox defaultTarget = null;
         
 
@@ -882,7 +876,7 @@ public class Walker extends DepthFirstAdapter
     {
 	Type identityRefType = (Type) mProductions.removeLast();
 	String atClause = (String) mProductions.removeLast();
-	Value local = (Value)  mLocals.get(mProductions.removeLast()); // the local ref from it's identifier
+	Value local = mLocals.get(mProductions.removeLast()); // the local ref from it's identifier
         
         Value ref = null;
         if(atClause.startsWith("@this")) {
@@ -902,7 +896,7 @@ public class Walker extends DepthFirstAdapter
     public void outAIdentityNoTypeStatement(AIdentityNoTypeStatement node)
     {
 	mProductions.removeLast();  // get rid of @caughtexception string presently on top of the stack
-	Value local = (Value)  mLocals.get(mProductions.removeLast()); // the local ref from it's identifier
+	Value local = mLocals.get(mProductions.removeLast()); // the local ref from it's identifier
     
 
         Unit u = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
@@ -1022,7 +1016,7 @@ public class Walker extends DepthFirstAdapter
     {
 	String local = (String) mProductions.removeLast();
         
-        Local l = (Local) mLocals.get(local);
+        Local l = mLocals.get(local);
         if(l == null) throw new RuntimeException("did not find local: " + local);
 	mProductions.addLast(l);
     }
@@ -1307,7 +1301,7 @@ public class Walker extends DepthFirstAdapter
 	List l = (List) mProductions.removeLast();
 
         Iterator it = l.iterator();
-        List exceptionClasses = new ArrayList(l.size());
+        List<SootClass> exceptionClasses = new ArrayList<SootClass>(l.size());
       
         while(it.hasNext()) {                   
             String className = (String) it.next();
@@ -1331,7 +1325,7 @@ public class Walker extends DepthFirstAdapter
     {
 	String local = (String) mProductions.removeLast();
 
-        Local l = (Local) mLocals.get(local);
+        Local l = mLocals.get(local);
         if(l == null) throw new RuntimeException("did not find local: " + local);
 	mProductions.addLast(l);
     }
@@ -1353,7 +1347,7 @@ public class Walker extends DepthFirstAdapter
 	Value immediate = (Value) mProductions.removeLast();
 	String identifier = (String) mProductions.removeLast();
         
-        Local l = (Local) mLocals.get(identifier);
+        Local l = mLocals.get(identifier);
         if(l == null) throw new RuntimeException("did not find local: " + identifier);
         
 	mProductions.addLast(Jimple.v().newArrayRef(l, immediate));   
@@ -1372,7 +1366,7 @@ public class Walker extends DepthFirstAdapter
 
         String local = (String) mProductions.removeLast();
         
-        Local l = (Local) mLocals.get(local);
+        Local l = mLocals.get(local);
         if(l == null) throw new RuntimeException("did not find local: " + local);
         
 	mProductions.addLast(Jimple.v().newInstanceFieldRef(l, field));
@@ -1488,11 +1482,11 @@ public class Walker extends DepthFirstAdapter
 	String local = (String) mProductions.removeLast();
         
                
-        Local l = (Local) mLocals.get(local);
+        Local l = mLocals.get(local);
         if(l ==        null) throw new RuntimeException("did not find local: " + local);
                 
 
-        Node invokeType = (Node) node.getNonstaticInvoke();
+        Node invokeType = node.getNonstaticInvoke();
         Expr invokeExpr;
 
         if(invokeType instanceof ASpecialNonstaticInvoke){
@@ -1535,8 +1529,6 @@ public class Walker extends DepthFirstAdapter
     {
         String className, methodName;
         List parameterList = new ArrayList();
-        Type returnType;
-
         if(node.getParameterList() != null)
 	    parameterList =  (List) mProductions.removeLast();
         
@@ -1580,7 +1572,7 @@ public class Walker extends DepthFirstAdapter
         while(it.hasNext()) {
             AArrayDescriptor o = (AArrayDescriptor) it.next();
             if(o.getImmediate() != null)
-		sizes.add(0,(Value) mProductions.removeLast());
+		sizes.add(0,mProductions.removeLast());
             else 
                 break;
         }
@@ -1670,9 +1662,9 @@ public class Walker extends DepthFirstAdapter
     
     private void addBoxToPatch(String aLabelName, UnitBox aUnitBox)
     {
-        List patchList =  (List) mLabelToPatchList.get(aLabelName);
+        List<UnitBox> patchList =  mLabelToPatchList.get(aLabelName);
         if(patchList == null) {
-            patchList = new ArrayList();
+            patchList = new ArrayList<UnitBox>();
             mLabelToPatchList.put(aLabelName, patchList);
         }
         

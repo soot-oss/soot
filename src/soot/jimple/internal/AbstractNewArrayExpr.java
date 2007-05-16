@@ -30,7 +30,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -67,14 +66,14 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(Jimple.v().NEWARRAY + " (" + getBaseTypeString() + ")");
+        buffer.append(Jimple.NEWARRAY + " (" + getBaseTypeString() + ")");
         buffer.append("[" + sizeBox.getValue().toString() + "]");
 
         return buffer.toString();
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().NEWARRAY);
+        up.literal(Jimple.NEWARRAY);
         up.literal(" ");
         up.literal("(");
         up.type(baseType);
@@ -138,7 +137,7 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
         ((ExprSwitch) sw).caseNewArrayExpr(this);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
        ((ConvertToBaf)(getSize())).convertToBaf(context, out);
        

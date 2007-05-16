@@ -110,9 +110,9 @@ public abstract class Body extends AbstractHost implements Serializable
     }
 
     /** Copies the contents of the given Body into this one. */
-    public Map importBodyContentsFrom(Body b)
+    public Map<Object, Object> importBodyContentsFrom(Body b)
     {
-        HashMap bindings = new HashMap();
+        HashMap<Object, Object> bindings = new HashMap<Object, Object>();
 
         Iterator it = b.getUnits().iterator();
 
@@ -298,7 +298,7 @@ public abstract class Body extends AbstractHost implements Serializable
                 {
                     // This throws an exception if there is
                     // no def already; we check anyhow.
-                    List l = ld.getDefsOfAt((Local)v, u);
+                    List<Unit> l = ld.getDefsOfAt((Local)v, u);
                     if (l.size() == 0){
                         for( Iterator uuIt = getUnits().iterator(); uuIt.hasNext(); ) {
                             final Unit uu = (Unit) uuIt.next();

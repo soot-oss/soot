@@ -31,8 +31,6 @@ import soot.dava.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.misc.*;
 import soot.dava.toolkits.base.finders.*;
 
 public class SETTryNode extends SETNode
@@ -40,9 +38,7 @@ public class SETTryNode extends SETNode
     private ExceptionNode en;
     private DavaBody davaBody;
     private AugmentedStmtGraph asg;
-    private HashMap cb2clone;
-    private AugmentedStmt entgryStmt;
-
+    private final HashMap<IterableSet, IterableSet> cb2clone;
     public SETTryNode( IterableSet body, ExceptionNode en, AugmentedStmtGraph asg, DavaBody davaBody) 
     {
 	super( body);
@@ -52,7 +48,7 @@ public class SETTryNode extends SETNode
 
 	add_SubBody( en.get_TryBody());
 
-	cb2clone = new HashMap();
+	cb2clone = new HashMap<IterableSet, IterableSet>();
 
 	Iterator it = en.get_CatchList().iterator();
 	while (it.hasNext()) {
@@ -86,7 +82,7 @@ public class SETTryNode extends SETNode
 	if (entryStmt != null)
 	    return entryStmt;
 	else 
-	    return (AugmentedStmt) ((IterableSet) en.get_TryBody()).getFirst();
+	    return (AugmentedStmt) (en.get_TryBody()).getFirst();
 
 	// return ((SETNode) ((IterableSet) body2childChain.get( en.get_TryBody())).getFirst()).get_EntryStmt();
     }
@@ -95,10 +91,10 @@ public class SETTryNode extends SETNode
     {
 	IterableSet c = new IterableSet();
 	
-	Iterator it = subBodies.iterator();
+	Iterator<IterableSet> it = subBodies.iterator();
 	while (it.hasNext()) {
 
-	    Iterator eit = ((SETNode) ((IterableSet) body2childChain.get( it.next())).getLast()).get_NaturalExits().iterator();
+	    Iterator eit = ((SETNode) body2childChain.get( it.next()).getLast()).get_NaturalExits().iterator();
 	    while (eit.hasNext()) {
 		Object o = eit.next();
 
@@ -112,17 +108,17 @@ public class SETTryNode extends SETNode
 
     public ASTNode emit_AST()
     {
-	LinkedList catchList = new LinkedList();
-	HashMap 
-	    exceptionMap = new HashMap(),
-	    paramMap     = new HashMap();
+	LinkedList<Object> catchList = new LinkedList<Object>();
+	HashMap<Object, Object> 
+	    exceptionMap = new HashMap<Object, Object>(),
+	    paramMap     = new HashMap<Object, Object>();
 
 	Iterator it = en.get_CatchList().iterator();
 	while (it.hasNext()) {
 	    IterableSet originalCatchBody = (IterableSet) it.next();
-	    IterableSet catchBody = (IterableSet) cb2clone.get( originalCatchBody);
+	    IterableSet catchBody = cb2clone.get( originalCatchBody);
 
-	    List astBody = emit_ASTBody( (IterableSet) body2childChain.get( catchBody));
+	    List<Object> astBody = emit_ASTBody( body2childChain.get( catchBody));
 	    exceptionMap.put( astBody, en.get_Exception( originalCatchBody));
 	    catchList.addLast( astBody);
 
@@ -156,18 +152,18 @@ public class SETTryNode extends SETNode
 	    }
 	}
 
-	return new ASTTryNode( get_Label(), emit_ASTBody( (IterableSet) body2childChain.get( en.get_TryBody())), catchList, exceptionMap, paramMap);
+	return new ASTTryNode( get_Label(), emit_ASTBody( body2childChain.get( en.get_TryBody())), catchList, exceptionMap, paramMap);
     }
 
     protected boolean resolve( SETNode parent)
     {
-	Iterator sbit = parent.get_SubBodies().iterator();
+	Iterator<IterableSet> sbit = parent.get_SubBodies().iterator();
 	while (sbit.hasNext()) {
 
-	    IterableSet subBody = (IterableSet) sbit.next();
+	    IterableSet subBody = sbit.next();
 	    if (subBody.intersects( en.get_TryBody())) {
 
-		IterableSet childChain = (IterableSet) parent.get_Body2ChildChain().get( subBody);
+		IterableSet childChain = parent.get_Body2ChildChain().get( subBody);
 		Iterator ccit = childChain.iterator();
 		while (ccit.hasNext()) {
 
@@ -194,7 +190,7 @@ public class SETTryNode extends SETNode
 		    Iterator cit = en.get_CatchList().iterator();
 		    while (cit.hasNext()) {
 
-			Iterator bit = ((IterableSet) cb2clone.get( cit.next())).snapshotIterator();
+			Iterator bit = cb2clone.get( cit.next()).snapshotIterator();
 			while (bit.hasNext()) {
 			    AugmentedStmt as = (AugmentedStmt) bit.next();
 			    

@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BNegInst extends AbstractOpTypeInst implements NegInst
 {
@@ -58,13 +57,13 @@ public class BNegInst extends AbstractOpTypeInst implements NegInst
   
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(getOpType());
+        return AbstractJasminClass.sizeOfType(getOpType());
     }
     
 
     public int getOutMachineCount()
     {
-        return JasminClass.sizeOfType(getOpType());
+        return AbstractJasminClass.sizeOfType(getOpType());
     }
        
     public final String getName() { return "neg"; }

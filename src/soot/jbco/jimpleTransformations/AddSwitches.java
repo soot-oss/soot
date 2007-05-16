@@ -22,13 +22,8 @@ package soot.jbco.jimpleTransformations;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Stack;
 import java.util.Vector;
-import java.util.regex.Pattern;
-
 import soot.*;
-import soot.baf.Baf;
-import soot.baf.IdentityInst;
 import soot.jbco.util.Rand;
 import soot.jbco.*;
 import soot.jimple.*;

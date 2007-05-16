@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** 
  * There should be at most one RuntimeVisibleParameterAnnotations 
  * attribute in method

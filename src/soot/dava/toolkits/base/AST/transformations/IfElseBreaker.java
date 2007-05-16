@@ -19,14 +19,12 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
 
 
 /*
@@ -59,7 +57,7 @@ PATTERN 2:
 */
 public class IfElseBreaker{
     ASTIfNode newIfNode;
-    List remainingBody;
+    List<Object> remainingBody;
 
     public IfElseBreaker(){
 	newIfNode=null;
@@ -67,7 +65,7 @@ public class IfElseBreaker{
     }
 
     public boolean isIfElseBreakingPossiblePatternOne(ASTIfElseNode node){
-	List ifBody = node.getIfBody();
+	List<Object> ifBody = node.getIfBody();
 	if(ifBody.size()!=1){
 	    //we are only interested if size is one
 	    return false;
@@ -89,7 +87,7 @@ public class IfElseBreaker{
 
 
     public boolean isIfElseBreakingPossiblePatternTwo(ASTIfElseNode node){
-	List elseBody = node.getElseBody();
+	List<Object> elseBody = node.getElseBody();
 	if(elseBody.size()!=1){
 	    //we are only interested if size is one
 	    return false;
@@ -122,7 +120,7 @@ public class IfElseBreaker{
 	}
 	
 	ASTStatementSequenceNode stmtNode=(ASTStatementSequenceNode)onlyNode;
-	List statements = stmtNode.getStatements();
+	List<Object> statements = stmtNode.getStatements();
 	if(statements.size()!=1){
 	    //need one stmt only
 	    return false;
@@ -173,18 +171,18 @@ public class IfElseBreaker{
       The new body is then returned;
 
     */
-    public List createNewBody(List oldSubBody, int nodeNumber){
+    public List<Object> createNewBody(List<Object> oldSubBody, int nodeNumber){
 	if(newIfNode == null)
 	    return null;
 
-	List newSubBody = new ArrayList();
+	List<Object> newSubBody = new ArrayList<Object>();
 
 	if(oldSubBody.size()<= nodeNumber){
 	    //something is wrong since the oldSubBody has lesser nodes than nodeNumber
 	    return null;
 	}
 
-	Iterator oldIt = oldSubBody.iterator();
+	Iterator<Object> oldIt = oldSubBody.iterator();
 	int index=0;
 	while(index!=nodeNumber){
 	    newSubBody.add(oldIt.next());

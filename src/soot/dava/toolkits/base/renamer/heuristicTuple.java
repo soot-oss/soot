@@ -19,23 +19,22 @@
 
 package soot.dava.toolkits.base.renamer;
 
-import soot.*;
 import java.util.*;
 
 public class heuristicTuple{
     BitSet heuristics;
     int bitSetSize;
-    Vector methodName;  //local is assigned the result of this method call
-    Vector objectClassName; //local is initialized with a new invocation of this class
-    Vector fieldName; //local is initialized with a field
-    Vector castStrings; //local is casted to a type
+    Vector<String> methodName;  //local is assigned the result of this method call
+    Vector<String> objectClassName; //local is initialized with a new invocation of this class
+    Vector<String> fieldName; //local is initialized with a field
+    Vector<String> castStrings; //local is casted to a type
 
     public heuristicTuple(int bits){
     	heuristics =new BitSet(bits);
-    	this.methodName= new Vector();
-    	this.objectClassName = new Vector();
-    	this.fieldName = new Vector();
-    	this.castStrings = new Vector();
+    	this.methodName= new Vector<String>();
+    	this.objectClassName = new Vector<String>();
+    	this.fieldName = new Vector<String>();
+    	this.castStrings = new Vector<String>();
     	bitSetSize=bits;
     }
 
@@ -44,7 +43,7 @@ public class heuristicTuple{
     	setHeuristic(infoGatheringAnalysis.CAST);
     }
     
-    public List getCastStrings(){
+    public List<String> getCastStrings(){
     	return castStrings;
     }
     
@@ -53,7 +52,7 @@ public class heuristicTuple{
 	setHeuristic(infoGatheringAnalysis.FIELDASSIGN);
     }
     
-    public List getFieldName(){
+    public List<String> getFieldName(){
 	return fieldName;
     }
 
@@ -62,7 +61,7 @@ public class heuristicTuple{
 	setHeuristic(infoGatheringAnalysis.CLASSNAME);
     }
     
-    public List getObjectClassName(){
+    public List<String> getObjectClassName(){
 	return objectClassName;
     }
 
@@ -73,7 +72,7 @@ public class heuristicTuple{
     		setHeuristic(infoGatheringAnalysis.GETSET);
     }
     
-    public List getMethodName(){
+    public List<String> getMethodName(){
 	return methodName;
     }
 
@@ -102,9 +101,9 @@ public class heuristicTuple{
 	temp=temp.concat("  Field: "+fieldName.toString());
 
 	temp=temp.concat("  Method: ");
-	Iterator it = getMethodName().iterator();
+	Iterator<String> it = getMethodName().iterator();
 	while(it.hasNext()){
-	    temp = temp.concat((String)it.next()+" , ");
+	    temp = temp.concat(it.next()+" , ");
 	}
 
 	temp=temp.concat("  Class: "+objectClassName.toString());

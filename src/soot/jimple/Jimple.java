@@ -31,9 +31,7 @@ package soot.jimple;
 
 import soot.*;
 import soot.jimple.internal.*;
-import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 /**
     The Jimple class contains all the constructors for the components of the Jimple
@@ -115,9 +113,9 @@ public class Jimple
     public final static String TRUE = "true";
     public final static String FALSE = "false";
 
-    public static List jimpleKeywordList()
+    public static List<String> jimpleKeywordList()
     {
-        List l = new LinkedList();
+        List<String> l = new LinkedList<String>();
         l.add (NEWARRAY); l.add (NEWMULTIARRAY); l.add (NOP);
         l.add (RET); l.add (SPECIALINVOKE); l.add (STATICINVOKE);
         l.add (TABLESWITCH); l.add (VIRTUALINVOKE); l.add (NULL_TYPE);
@@ -739,7 +737,7 @@ public class Jimple
     }
 
 
-    public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, UnitBox defaultTarget)
+    public TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, List<Object> targets, UnitBox defaultTarget)
     {                
         return new JTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
     }
@@ -753,7 +751,7 @@ public class Jimple
         return new JLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
     }
     
-    public LookupSwitchStmt newLookupSwitchStmt(Value key, List lookupValues, List targets, UnitBox defaultTarget)
+    public LookupSwitchStmt newLookupSwitchStmt(Value key, List<Object> lookupValues, List<Object> targets, UnitBox defaultTarget)
     {
         return new JLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
     }

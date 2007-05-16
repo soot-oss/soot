@@ -1,6 +1,5 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
-import soot.*;
 import soot.util.*;
 import java.util.*;
 
@@ -23,9 +22,9 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 public class MultiCalledMethods{
 	
 	Set visited = new HashSet();
-	Set multiCalledMethods = new HashSet();
+	Set<Object> multiCalledMethods = new HashSet<Object>();
 	
-	MultiCalledMethods(PegCallGraph pcg, Set mcm){
+	MultiCalledMethods(PegCallGraph pcg, Set<Object> mcm){
 //		System.out.println("==inside MultiCaleedMethods==");
 		//checkScc(pcg);
 		multiCalledMethods = mcm;	
@@ -41,7 +40,7 @@ public class MultiCalledMethods{
 		 * This information should be propagated through call graph.
 		 * This method implements the propagation.
 		 */
-		Iterator it = multiCalledMethods.iterator();
+		Iterator<Object> it = multiCalledMethods.iterator();
 		Set visited = new ArraySet();
 		while (it.hasNext()){
 			Object obj = it.next();
@@ -70,8 +69,8 @@ public class MultiCalledMethods{
 		while (it.hasNext()){
 			Object head = it.next();
 			//breadth first scan
-			Set gray = new HashSet();
-			LinkedList queue = new LinkedList();
+			Set<Object> gray = new HashSet<Object>();
+			LinkedList<Object> queue = new LinkedList<Object>();
 			queue.add(head);
 			
 			while (queue.size()>0){
@@ -101,8 +100,8 @@ public class MultiCalledMethods{
 	private void finder2(PegCallGraph pcg){
 		
 		pcg.trim();
-		Set first = new HashSet();
-		Set second = new HashSet();
+		Set<Object> first = new HashSet<Object>();
+		Set<Object> second = new HashSet<Object>();
 		// Visit each node
 		Iterator it = pcg.iterator();
 		while (it.hasNext()){
@@ -117,7 +116,7 @@ public class MultiCalledMethods{
 		
 	}
 	
-	private void visitNode(Object node, PegCallGraph pcg, Set first, Set second){
+	private void visitNode(Object node, PegCallGraph pcg, Set<Object> first, Set<Object> second){
 		if (first.contains(node)){
 			second.add(node);
 			if (!multiCalledMethods.contains(node)){
@@ -135,16 +134,8 @@ public class MultiCalledMethods{
 		}
 	}
 	
-	public Set getMultiCalledMethods(){
-		return (Set)multiCalledMethods;
-	}
-	private void test(){
-		System.out.println("===multiCalledMethods===");
-		Iterator it = multiCalledMethods.iterator();
-		while (it.hasNext()){
-			System.out.println(it.next());
-		}
-		System.out.println("===multiCalledMethods===end==");
+	public Set<Object> getMultiCalledMethods(){
+		return multiCalledMethods;
 	}
 	
 }

@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** For representing an unknown, or generic attribute.
  * @see attribute_info
  * @author Clark Verbrugge

@@ -43,9 +43,7 @@ import soot.dava.DavaBody;
 import soot.dava.DecompilationException;
 
 import soot.dava.internal.AST.ASTNode;
-import soot.dava.internal.javaRep.DIntConstant;
 import soot.dava.toolkits.base.AST.traversals.AllDefinitionsFinder;
-import soot.grimp.internal.GAssignStmt;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FieldRef;
@@ -58,7 +56,6 @@ import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
-import soot.tagkit.StringConstantValueTag;
 import soot.util.Chain;
 
 /*
@@ -77,10 +74,10 @@ public class ConstantFieldValueFinder {
 	
 	public static String combiner = "_$p$g_";
 
-	HashMap classNameFieldNameToSootFieldMapping = new HashMap();
+	HashMap<String, SootField> classNameFieldNameToSootFieldMapping = new HashMap<String, SootField>();
 	
-	HashMap fieldToValues = new HashMap();
-	HashMap primTypeFieldValueToUse = new HashMap();
+	HashMap<String, ArrayList> fieldToValues = new HashMap<String, ArrayList>();
+	HashMap<String, Object> primTypeFieldValueToUse = new HashMap<String, Object>();
 	
 	Chain appClasses;
 	
@@ -97,11 +94,11 @@ public class ConstantFieldValueFinder {
 	 * class + combiner + field   ----> Double/Float/Long/Integer
 	 * if there is no mapping for a particular field then that means we couldnt detect a constant value for it
 	 */
-	public HashMap getFieldsWithConstantValues(){	
+	public HashMap<String, Object> getFieldsWithConstantValues(){	
 		return primTypeFieldValueToUse;
 	}
 	
-	public HashMap getClassNameFieldNameToSootFieldMapping(){
+	public HashMap<String, SootField> getClassNameFieldNameToSootFieldMapping(){
 		return classNameFieldNameToSootFieldMapping;
 	}
 	
@@ -272,7 +269,7 @@ public class ConstantFieldValueFinder {
 				else if(tempConstant instanceof IntConstant){
 					Integer tempVal = new Integer( ((IntConstant)tempConstant).value );
 					if(tempVal.compareTo(new Integer(0)) ==0){
-						SootField tempField = (SootField)classNameFieldNameToSootFieldMapping.get(combined);
+						SootField tempField = classNameFieldNameToSootFieldMapping.get(combined);
 						if(tempField.getType() instanceof BooleanType){
 							primTypeFieldValueToUse.put(combined,new Boolean(false));							
 							//System.out.println("puttingvalue false for"+combined);	
@@ -324,11 +321,11 @@ public class ConstantFieldValueFinder {
 				//find all definitions in the program
 				AllDefinitionsFinder defFinder = new AllDefinitionsFinder();
 				AST.apply(defFinder);
-				Iterator allDefIt = defFinder.getAllDefs().iterator();
+				Iterator<DefinitionStmt> allDefIt = defFinder.getAllDefs().iterator();
 				
 				//go through each definition
 				while(allDefIt.hasNext()){
-					DefinitionStmt stmt = (DefinitionStmt)allDefIt.next();
+					DefinitionStmt stmt = allDefIt.next();
 					//debug("DefinitionStmt")
 					Value left = stmt.getLeftOp();
 					
@@ -384,9 +381,9 @@ public class ConstantFieldValueFinder {
 	
 	public void printConstantValueFields(){
 		System.out.println("\n\n Printing Constant Value Fields (method: printConstantValueFields)");
-		Iterator it =  primTypeFieldValueToUse.keySet().iterator();
+		Iterator<String> it =  primTypeFieldValueToUse.keySet().iterator();
 		while(it.hasNext()){
-			String combined = (String)it.next();
+			String combined = it.next();
 			
 			int temp = combined.indexOf(combiner,0);
 			if(temp > 0){

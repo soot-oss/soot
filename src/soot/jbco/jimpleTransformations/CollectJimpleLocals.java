@@ -23,9 +23,6 @@ import java.util.*;
 
 import soot.*;
 import soot.jbco.IJbcoTransform;
-import soot.jbco.util.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
 import soot.util.Chain;
 
 /**

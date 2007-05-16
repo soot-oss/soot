@@ -20,13 +20,14 @@
 package soot.dava.toolkits.base.finders;
 
 import soot.*;
+
+import java.io.Serializable;
 import java.util.*;
 import soot.util.*;
 import soot.dava.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
-import soot.dava.internal.AST.*;
 
 public class ExceptionFinder implements FactFinder
 {
@@ -178,7 +179,7 @@ public class ExceptionFinder implements FactFinder
 
 		    // Get the try block entry points
 		    IterableSet tryBody = en.get_TryBody();
-		    LinkedList heads = new LinkedList();
+		    LinkedList<AugmentedStmt> heads = new LinkedList<AugmentedStmt>();
 		    Iterator trIt = tryBody.iterator();
 		    while (trIt.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) trIt.next();
@@ -196,18 +197,18 @@ public class ExceptionFinder implements FactFinder
 			    }
 		    }
 
-		    HashSet touchSet = new HashSet();
+		    HashSet<AugmentedStmt> touchSet = new HashSet<AugmentedStmt>();
 		    touchSet.addAll( heads);
 
 		    // Break up the try block for all the so-far detectable parts.
-		    AugmentedStmt head = (AugmentedStmt) heads.removeFirst();
+		    AugmentedStmt head = heads.removeFirst();
 		    IterableSet subTryBlock = new IterableSet();
-		    LinkedList worklist = new LinkedList();
+		    LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
 		    
 		    worklist.add( head);
 		    
 		    while (worklist.isEmpty() == false) {
-			AugmentedStmt as = (AugmentedStmt) worklist.removeFirst();
+			AugmentedStmt as = worklist.removeFirst();
 			
 			subTryBlock.add( as);
 			Iterator sit = as.csuccs.iterator();
@@ -238,10 +239,11 @@ public class ExceptionFinder implements FactFinder
 
 	// Aggregate the try blocks.
 	{
-	    LinkedList reps = new LinkedList();
-	    HashMap 
-		hCode2bucket          = new HashMap(),
-		tryBody2exceptionNode = new HashMap();
+	    LinkedList<ExceptionNode> reps = new LinkedList<ExceptionNode>();
+	    HashMap<Serializable, LinkedList<IterableSet>>
+	    	hCode2bucket = new HashMap<Serializable, LinkedList<IterableSet>>();	    
+		HashMap<Serializable, ExceptionNode> 
+			tryBody2exceptionNode = new HashMap<Serializable, ExceptionNode>();
 	    
 	    Iterator enlit = enlist.iterator();
 	    while (enlit.hasNext()) {
@@ -255,20 +257,20 @@ public class ExceptionFinder implements FactFinder
 		    hashCode ^= trit.next().hashCode();
 		Integer I = new Integer( hashCode);
 
-		LinkedList bucket = (LinkedList) hCode2bucket.get( I);
+		LinkedList<IterableSet> bucket = hCode2bucket.get( I);
 		if (bucket == null) {
-		    bucket = new LinkedList();
+		    bucket = new LinkedList<IterableSet>();
 		    hCode2bucket.put( I, bucket);
 		}
 
 		ExceptionNode repExceptionNode = null;
 
-		Iterator bit = bucket.iterator();
+		Iterator<IterableSet> bit = bucket.iterator();
 		while (bit.hasNext()) {
-		    IterableSet bucketTryBody = (IterableSet) bit.next();
+		    IterableSet bucketTryBody = bit.next();
 			
 		    if (bucketTryBody.equals( curTryBody)) {
-			repExceptionNode = (ExceptionNode) tryBody2exceptionNode.get( bucketTryBody);
+			repExceptionNode = tryBody2exceptionNode.get( bucketTryBody);
 			break;
 		    }
 		}

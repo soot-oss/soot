@@ -30,13 +30,13 @@ public class InteractionHandler {
     public InteractionHandler(Singletons.Global g){}
     public static InteractionHandler v() { return G.v().soot_toolkits_graph_interaction_InteractionHandler();}
 
-    private ArrayList stopUnitList;
-    public ArrayList getStopUnitList(){
+    private ArrayList<Object> stopUnitList;
+    public ArrayList<Object> getStopUnitList(){
         return stopUnitList;
     }
     public void addToStopUnitList(Object elem){
         if (stopUnitList == null){
-            stopUnitList = new ArrayList();
+            stopUnitList = new ArrayList<Object>();
         }
         stopUnitList.add(elem);
     }
@@ -244,9 +244,7 @@ public class InteractionHandler {
         return autoCon;
     }
 
-    private boolean stopInteraction = false;
     public void stopInteraction(boolean b){
-        stopInteraction = b;
         Options.v().set_interactive_mode(false);
     }
     

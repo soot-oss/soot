@@ -2,7 +2,6 @@ package soot.jimple.toolkits.thread.mhp;
 
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.*;
 import soot.util.*;
@@ -21,10 +20,10 @@ import java.util.*;
 
 public class DfsForBackEdge{
 	
-	private Map backEdges = new HashMap();    
-	private Set gray = new HashSet();
-	private Set black = new HashSet();
-	private DominatorsFinder domFinder;
+	private final Map<Object, Object> backEdges = new HashMap<Object, Object>();    
+	private final Set<Object> gray = new HashSet<Object>();
+	private final Set<Object> black = new HashSet<Object>();
+	private final DominatorsFinder domFinder;
 	
 	DfsForBackEdge(Chain chain, DirectedGraph peg){
 		
@@ -69,7 +68,7 @@ public class DfsForBackEdge{
 						/* If succ is in s's dominator list, 
 						 * then this retreating edge is a back edge.
 						 */
-						FlowSet dominators = (FlowSet)domFinder.getDominatorsOf(s);
+						FlowSet dominators = domFinder.getDominatorsOf(s);
 						if (dominators.contains(succ)){
 							System.out.println("s is "+s);
 							System.out.println("succ is "+succ);
@@ -84,8 +83,8 @@ public class DfsForBackEdge{
 		
 	}
 	
-	protected Map getBackEdges(){
-		return (Map)backEdges;
+	protected Map<Object, Object> getBackEdges(){
+		return backEdges;
 	}
 	
 	private void testBackEdge(){

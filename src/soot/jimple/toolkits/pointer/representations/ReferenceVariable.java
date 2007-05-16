@@ -38,7 +38,5 @@
 
 package soot.jimple.toolkits.pointer.representations;
 
-import soot.*;
-
 public interface ReferenceVariable {
 }

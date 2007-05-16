@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 
 
 /** Represents a tag; these get attached to implementations of Host.

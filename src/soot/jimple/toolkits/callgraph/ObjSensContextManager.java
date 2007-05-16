@@ -19,11 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.options.*;
-import soot.jimple.*;
-import java.util.*;
-import soot.util.*;
-import soot.util.queue.*;
 
 /** A context manager which creates an object-sensitive call graph.
  * @author Ondrej Lhotak

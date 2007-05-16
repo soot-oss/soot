@@ -27,7 +27,6 @@ import soot.dava.internal.AST.ASTIfElseNode;
 import soot.dava.internal.AST.ASTIfNode;
 import soot.dava.internal.AST.ASTLabeledBlockNode;
 import soot.dava.internal.AST.ASTLabeledNode;
-import soot.dava.internal.AST.ASTMethodNode;
 import soot.dava.internal.AST.ASTSwitchNode;
 import soot.dava.internal.AST.ASTSynchronizedBlockNode;
 import soot.dava.internal.AST.ASTTryNode;
@@ -47,15 +46,15 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
  *        
  */
 public class LabelToNodeMapper extends DepthFirstAdapter {
-	private HashMap labelsToNode;
+	private final HashMap<String, ASTLabeledNode> labelsToNode;
 	
 	public LabelToNodeMapper(){
-		labelsToNode = new HashMap();
+		labelsToNode = new HashMap<String, ASTLabeledNode>();
 	}
 	
 	public LabelToNodeMapper(boolean verbose){
 		super(verbose);
-		labelsToNode = new HashMap();
+		labelsToNode = new HashMap<String, ASTLabeledNode>();
 	}
 	
 	/*

@@ -28,11 +28,7 @@
 
 package soot.tagkit;
 
-import soot.*;
-
-
 import java.util.*;
-import javax.swing.*;
 
 
 /** Represents an inner class attribute which can be attatched to
@@ -42,16 +38,16 @@ import javax.swing.*;
  */
 public class InnerClassAttribute implements Tag
 {
-    private ArrayList list;
+    private ArrayList<Tag> list;
     
-    public InnerClassAttribute(ArrayList list)
+    public InnerClassAttribute(ArrayList<Tag> list)
     {
 	    this.list = list;
     }
 
     public String getClassSpecs(){
         StringBuffer sb = new StringBuffer();
-        Iterator it = list.iterator();
+        Iterator<Tag> it = list.iterator();
         while (it.hasNext()){
             InnerClassTag ict = (InnerClassTag)it.next();
             sb.append(".inner_class_spec_attr ");
@@ -76,7 +72,7 @@ public class InnerClassAttribute implements Tag
         return new byte[1];
     }
 
-    public ArrayList getSpecs(){
+    public ArrayList<Tag> getSpecs(){
         return list;
     }
 }

@@ -32,6 +32,8 @@ package soot.dava.toolkits.base.AST.traversals;
 
 
 import java.util.*;
+
+import soot.Unit;
 import soot.jimple.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.javaRep.*;
@@ -51,18 +53,18 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTParentNodeFinder extends DepthFirstAdapter{
 
-    HashMap parentOf;
-    Stack parentStack;
+    HashMap<Unit, ASTNode> parentOf;
+    Stack<ASTNode> parentStack;
 
     public ASTParentNodeFinder(){
-	parentOf = new HashMap();
-	parentStack = new Stack();
+	parentOf = new HashMap<Unit, ASTNode>();
+	parentStack = new Stack<ASTNode>();
     }
 
     public ASTParentNodeFinder(boolean verbose){
 	super(verbose);
-	parentOf = new HashMap();
-	parentStack = new Stack();
+	parentOf = new HashMap<Unit, ASTNode>();
+	parentStack = new Stack<ASTNode>();
     }
 
     public void inASTMethodNode(ASTMethodNode node){

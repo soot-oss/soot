@@ -31,9 +31,6 @@ package soot.jimple;
 
 import soot.*;
 import soot.jimple.internal.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
 
 public class PlaceholderStmt extends AbstractStmt
 {

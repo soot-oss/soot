@@ -170,7 +170,7 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
     }
     public final void caseInvokeStmt(InvokeStmt s) {
 	statement = s;
-	caseInvokeStmt( null, (InvokeExpr) s.getInvokeExpr() );
+	caseInvokeStmt( null, s.getInvokeExpr() );
     }
     public final void caseIdentityStmt(IdentityStmt s) {
 	statement = s;

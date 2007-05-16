@@ -33,7 +33,6 @@ import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
-import java.io.*;
 import soot.grimp.PrecedenceTest;
 
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
@@ -128,7 +127,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         return getField().equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf)getBase()).convertToBaf(context, out);
 	Unit u;

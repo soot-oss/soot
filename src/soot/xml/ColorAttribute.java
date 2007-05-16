@@ -19,15 +19,13 @@
 
 package soot.xml;
 
-import soot.*;
-
 public class ColorAttribute{
             
     private int red;
     private int green;
     private int blue;
     private int fg;
-    private String analysisType;
+    private final String analysisType;
     
     public ColorAttribute(int red, int green, int blue, boolean fg, String type){
         this.red = red;

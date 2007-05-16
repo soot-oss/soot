@@ -24,19 +24,19 @@ import java.util.*;
 
 public class LocalGenerator{
 
-    private soot.Body body;
+    private final soot.Body body;
     public LocalGenerator(Body b){
           body = b;
     }
     
-    private transient Set localNames = null; 
+    private transient Set<String> localNames = null; 
     
     private boolean bodyContainsLocal(String name){
         return localNames.contains(name);       
     }
     
     private void initLocalNames() {
-    	localNames = new HashSet();
+    	localNames = new HashSet<String>();
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             localNames.add(((soot.Local)it.next()).getName());

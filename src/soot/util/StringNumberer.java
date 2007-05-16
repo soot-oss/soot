@@ -26,10 +26,10 @@ import java.util.*;
  */
 
 public class StringNumberer extends ArrayNumberer {
-    HashMap stringToNumbered = new HashMap(1024);
+    HashMap<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
 
     public NumberedString find( String s ) {
-        NumberedString ret = (NumberedString) stringToNumbered.get( s );
+        NumberedString ret = stringToNumbered.get( s );
         if( ret == null ) {
             stringToNumbered.put( s, ret = new NumberedString(s) );
             add( ret );
@@ -37,7 +37,7 @@ public class StringNumberer extends ArrayNumberer {
         return ret;
     }
     public NumberedString findOrAdd( String s ) {
-        NumberedString ret = (NumberedString) stringToNumbered.get( s );
+        NumberedString ret = stringToNumbered.get( s );
         if( ret == null ) {
             stringToNumbered.put( s, ret = new NumberedString(s) );
             add( ret );

@@ -34,8 +34,6 @@ import soot.baf.*;
 import soot.util.*;
 import java.util.*;
 
-import soot.tagkit.*;
-
 
 public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr, ConvertToBaf
 {
@@ -55,8 +53,8 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
             if (!(getMethod().equals(ie.getMethod()) && 
                   argBoxes.length == ie.argBoxes.length))
                 return false;
-            for (int i = 0; i < argBoxes.length; i++)
-                if (!(argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())))
+            for (ValueBox element : argBoxes)
+				if (!(element.getValue().equivTo(element.getValue())))
                     return false;
             return true;
         }
@@ -81,7 +79,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(Jimple.v().STATICINVOKE + " " + methodRef.getSignature() + "(");
+        buffer.append(Jimple.STATICINVOKE + " " + methodRef.getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -98,7 +96,7 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
 
     public void toString(UnitPrinter up)
     {
-        up.literal(Jimple.v().STATICINVOKE);
+        up.literal(Jimple.STATICINVOKE);
         up.literal(" ");
         up.methodRef(methodRef);
         up.literal("(");
@@ -118,10 +116,9 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     {
         List list = new ArrayList();
 
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            list.addAll(argBoxes[i].getValue().getUseBoxes());
-            list.add(argBoxes[i]);
+        for (ValueBox element : argBoxes) {
+            list.addAll(element.getValue().getUseBoxes());
+            list.add(element);
         }
 
         return list;
@@ -132,12 +129,11 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         ((ExprSwitch) sw).caseStaticInvokeExpr(this);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
-       for(int i = 0; i < argBoxes.length; i++)
-        {
-            ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
-        }
+       for (ValueBox element : argBoxes) {
+	    ((ConvertToBaf)(element.getValue())).convertToBaf(context, out);
+	}
        
        Unit u;
        out.add(u = Baf.v().newStaticInvokeInst(methodRef));

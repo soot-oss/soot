@@ -319,225 +319,225 @@ class ByteCode {
       Instruction i;
       int x;
 
-      x = ((int)b)&0xff;
+      x = (b)&0xff;
 
       switch(x) {
       case BIPUSH:
-         i = (Instruction)new Instruction_Bipush();
+         i = new Instruction_Bipush();
          break;
       case SIPUSH:
-         i = (Instruction)new Instruction_Sipush();
+         i = new Instruction_Sipush();
          break;
       case LDC1:
-         i = (Instruction)new Instruction_Ldc1();
+         i = new Instruction_Ldc1();
          break;
       case LDC2:
-         i = (Instruction)new Instruction_Ldc2();
+         i = new Instruction_Ldc2();
          break;
       case LDC2W:
-         i = (Instruction)new Instruction_Ldc2w();
+         i = new Instruction_Ldc2w();
          break;
       case ACONST_NULL:
-         i = (Instruction)new Instruction_Aconst_null();
+         i = new Instruction_Aconst_null();
          break;
       case ICONST_M1:
-         i = (Instruction)new Instruction_Iconst_m1();
+         i = new Instruction_Iconst_m1();
          break;
       case ICONST_0:
-         i = (Instruction)new Instruction_Iconst_0();
+         i = new Instruction_Iconst_0();
          break;
       case ICONST_1:
-         i = (Instruction)new Instruction_Iconst_1();
+         i = new Instruction_Iconst_1();
          break;
       case ICONST_2:
-         i = (Instruction)new Instruction_Iconst_2();
+         i = new Instruction_Iconst_2();
          break;
       case ICONST_3:
-         i = (Instruction)new Instruction_Iconst_3();
+         i = new Instruction_Iconst_3();
          break;
       case ICONST_4:
-         i = (Instruction)new Instruction_Iconst_4();
+         i = new Instruction_Iconst_4();
          break;
       case ICONST_5:
-         i = (Instruction)new Instruction_Iconst_5();
+         i = new Instruction_Iconst_5();
          break;
       case LCONST_0:
-         i = (Instruction)new Instruction_Lconst_0();
+         i = new Instruction_Lconst_0();
          break;
       case LCONST_1:
-         i = (Instruction)new Instruction_Lconst_1();
+         i = new Instruction_Lconst_1();
          break;
       case FCONST_0:
-         i = (Instruction)new Instruction_Fconst_0();
+         i = new Instruction_Fconst_0();
          break;
       case FCONST_1:
-         i = (Instruction)new Instruction_Fconst_1();
+         i = new Instruction_Fconst_1();
          break;
       case FCONST_2:
-         i = (Instruction)new Instruction_Fconst_2();
+         i = new Instruction_Fconst_2();
          break;
       case DCONST_0:
-         i = (Instruction)new Instruction_Dconst_0();
+         i = new Instruction_Dconst_0();
          break;
       case DCONST_1:
-         i = (Instruction)new Instruction_Dconst_1();
+         i = new Instruction_Dconst_1();
          break;
       case ILOAD:
-         i = (Instruction)new Instruction_Iload();
+         i = new Instruction_Iload();
          break;
       case ILOAD_0:
-         i = (Instruction)new Instruction_Iload_0();
+         i = new Instruction_Iload_0();
          break;
       case ILOAD_1:
-         i = (Instruction)new Instruction_Iload_1();
+         i = new Instruction_Iload_1();
          break;
       case ILOAD_2:
-         i = (Instruction)new Instruction_Iload_2();
+         i = new Instruction_Iload_2();
          break;
       case ILOAD_3:
-         i = (Instruction)new Instruction_Iload_3();
+         i = new Instruction_Iload_3();
          break;
       case LLOAD:
-         i = (Instruction)new Instruction_Lload();
+         i = new Instruction_Lload();
          break;
       case LLOAD_0:
-         i = (Instruction)new Instruction_Lload_0();
+         i = new Instruction_Lload_0();
          break;
       case LLOAD_1:
-         i = (Instruction)new Instruction_Lload_1();
+         i = new Instruction_Lload_1();
          break;
       case LLOAD_2:
-         i = (Instruction)new Instruction_Lload_2();
+         i = new Instruction_Lload_2();
          break;
       case LLOAD_3:
-         i = (Instruction)new Instruction_Lload_3();
+         i = new Instruction_Lload_3();
          break;
       case FLOAD:
-         i = (Instruction)new Instruction_Fload();
+         i = new Instruction_Fload();
          break;
       case FLOAD_0:
-         i = (Instruction)new Instruction_Fload_0();
+         i = new Instruction_Fload_0();
          break;
       case FLOAD_1:
-         i = (Instruction)new Instruction_Fload_1();
+         i = new Instruction_Fload_1();
          break;
       case FLOAD_2:
-         i = (Instruction)new Instruction_Fload_2();
+         i = new Instruction_Fload_2();
          break;
       case FLOAD_3:
-         i = (Instruction)new Instruction_Fload_3();
+         i = new Instruction_Fload_3();
          break;
       case DLOAD:
-         i = (Instruction)new Instruction_Dload();
+         i = new Instruction_Dload();
          break;
       case DLOAD_0:
-         i = (Instruction)new Instruction_Dload_0();
+         i = new Instruction_Dload_0();
          break;
       case DLOAD_1:
-         i = (Instruction)new Instruction_Dload_1();
+         i = new Instruction_Dload_1();
          break;
       case DLOAD_2:
-         i = (Instruction)new Instruction_Dload_2();
+         i = new Instruction_Dload_2();
          break;
       case DLOAD_3:
-         i = (Instruction)new Instruction_Dload_3();
+         i = new Instruction_Dload_3();
          break;
       case ALOAD:
-         i = (Instruction)new Instruction_Aload();
+         i = new Instruction_Aload();
          break;
       case ALOAD_0:
-         i = (Instruction)new Instruction_Aload_0();
+         i = new Instruction_Aload_0();
          break;
       case ALOAD_1:
-         i = (Instruction)new Instruction_Aload_1();
+         i = new Instruction_Aload_1();
          break;
       case ALOAD_2:
-         i = (Instruction)new Instruction_Aload_2();
+         i = new Instruction_Aload_2();
          break;
       case ALOAD_3:
-         i = (Instruction)new Instruction_Aload_3();
+         i = new Instruction_Aload_3();
          break;
       case ISTORE:
-         i = (Instruction)new Instruction_Istore();
+         i = new Instruction_Istore();
          break;
       case ISTORE_0:
-         i = (Instruction)new Instruction_Istore_0();
+         i = new Instruction_Istore_0();
          break;
       case ISTORE_1:
-         i = (Instruction)new Instruction_Istore_1();
+         i = new Instruction_Istore_1();
          break;
       case ISTORE_2:
-         i = (Instruction)new Instruction_Istore_2();
+         i = new Instruction_Istore_2();
          break;
       case ISTORE_3:
-         i = (Instruction)new Instruction_Istore_3();
+         i = new Instruction_Istore_3();
          break;
       case LSTORE:
-         i = (Instruction)new Instruction_Lstore();
+         i = new Instruction_Lstore();
          break;
       case LSTORE_0:
-         i = (Instruction)new Instruction_Lstore_0();
+         i = new Instruction_Lstore_0();
          break;
       case LSTORE_1:
-         i = (Instruction)new Instruction_Lstore_1();
+         i = new Instruction_Lstore_1();
          break;
       case LSTORE_2:
-         i = (Instruction)new Instruction_Lstore_2();
+         i = new Instruction_Lstore_2();
          break;
       case LSTORE_3:
-         i = (Instruction)new Instruction_Lstore_3();
+         i = new Instruction_Lstore_3();
          break;
       case FSTORE:
-         i = (Instruction)new Instruction_Fstore();
+         i = new Instruction_Fstore();
          break;
       case FSTORE_0:
-         i = (Instruction)new Instruction_Fstore_0();
+         i = new Instruction_Fstore_0();
          break;
       case FSTORE_1:
-         i = (Instruction)new Instruction_Fstore_1();
+         i = new Instruction_Fstore_1();
          break;
       case FSTORE_2:
-         i = (Instruction)new Instruction_Fstore_2();
+         i = new Instruction_Fstore_2();
          break;
       case FSTORE_3:
-         i = (Instruction)new Instruction_Fstore_3();
+         i = new Instruction_Fstore_3();
          break;
       case DSTORE:
-         i = (Instruction)new Instruction_Dstore();
+         i = new Instruction_Dstore();
          break;
       case DSTORE_0:
-         i = (Instruction)new Instruction_Dstore_0();
+         i = new Instruction_Dstore_0();
          break;
       case DSTORE_1:
-         i = (Instruction)new Instruction_Dstore_1();
+         i = new Instruction_Dstore_1();
          break;
       case DSTORE_2:
-         i = (Instruction)new Instruction_Dstore_2();
+         i = new Instruction_Dstore_2();
          break;
       case DSTORE_3:
-         i = (Instruction)new Instruction_Dstore_3();
+         i = new Instruction_Dstore_3();
          break;
       case ASTORE:
-         i = (Instruction)new Instruction_Astore();
+         i = new Instruction_Astore();
          break;
       case ASTORE_0:
-         i = (Instruction)new Instruction_Astore_0();
+         i = new Instruction_Astore_0();
          break;
       case ASTORE_1:
-         i = (Instruction)new Instruction_Astore_1();
+         i = new Instruction_Astore_1();
          break;
       case ASTORE_2:
-         i = (Instruction)new Instruction_Astore_2();
+         i = new Instruction_Astore_2();
          break;
       case ASTORE_3:
-         i = (Instruction)new Instruction_Astore_3();
+         i = new Instruction_Astore_3();
          break;
       case IINC:
-         i = (Instruction)new Instruction_Iinc();
+         i = new Instruction_Iinc();
          break;
       case WIDE:
       {
-         int nextIndex = ((int) bc[index+1]) & 0xff;
+         int nextIndex = (bc[index+1]) & 0xff;
 
          switch(nextIndex)
          {
@@ -600,349 +600,349 @@ class ByteCode {
         break;
 
       case NEWARRAY:
-         i = (Instruction)new Instruction_Newarray();
+         i = new Instruction_Newarray();
          break;
       case ANEWARRAY:
-         i = (Instruction)new Instruction_Anewarray();
+         i = new Instruction_Anewarray();
          break;
       case MULTIANEWARRAY:
-         i = (Instruction)new Instruction_Multianewarray();
+         i = new Instruction_Multianewarray();
          break;
       case ARRAYLENGTH:
-         i = (Instruction)new Instruction_Arraylength();
+         i = new Instruction_Arraylength();
          break;
       case IALOAD:
-         i = (Instruction)new Instruction_Iaload();
+         i = new Instruction_Iaload();
          break;
       case LALOAD:
-         i = (Instruction)new Instruction_Laload();
+         i = new Instruction_Laload();
          break;
       case FALOAD:
-         i = (Instruction)new Instruction_Faload();
+         i = new Instruction_Faload();
          break;
       case DALOAD:
-         i = (Instruction)new Instruction_Daload();
+         i = new Instruction_Daload();
          break;
       case AALOAD:
-         i = (Instruction)new Instruction_Aaload();
+         i = new Instruction_Aaload();
          break;
       case BALOAD:
-         i = (Instruction)new Instruction_Baload();
+         i = new Instruction_Baload();
          break;
       case CALOAD:
-         i = (Instruction)new Instruction_Caload();
+         i = new Instruction_Caload();
          break;
       case SALOAD:
-         i = (Instruction)new Instruction_Saload();
+         i = new Instruction_Saload();
          break;
       case IASTORE:
-         i = (Instruction)new Instruction_Iastore();
+         i = new Instruction_Iastore();
          break;
       case LASTORE:
-         i = (Instruction)new Instruction_Lastore();
+         i = new Instruction_Lastore();
          break;
       case FASTORE:
-         i = (Instruction)new Instruction_Fastore();
+         i = new Instruction_Fastore();
          break;
       case DASTORE:
-         i = (Instruction)new Instruction_Dastore();
+         i = new Instruction_Dastore();
          break;
       case AASTORE:
-         i = (Instruction)new Instruction_Aastore();
+         i = new Instruction_Aastore();
          break;
       case BASTORE:
-         i = (Instruction)new Instruction_Bastore();
+         i = new Instruction_Bastore();
          break;
       case CASTORE:
-         i = (Instruction)new Instruction_Castore();
+         i = new Instruction_Castore();
          break;
       case SASTORE:
-         i = (Instruction)new Instruction_Sastore();
+         i = new Instruction_Sastore();
          break;
       case NOP:
-         i = (Instruction)new Instruction_Nop();
+         i = new Instruction_Nop();
          break;
       case POP:
-         i = (Instruction)new Instruction_Pop();
+         i = new Instruction_Pop();
          break;
       case POP2:
-         i = (Instruction)new Instruction_Pop2();
+         i = new Instruction_Pop2();
          break;
       case DUP:
-         i = (Instruction)new Instruction_Dup();
+         i = new Instruction_Dup();
          break;
       case DUP2:
-         i = (Instruction)new Instruction_Dup2();
+         i = new Instruction_Dup2();
          break;
       case DUP_X1:
-         i = (Instruction)new Instruction_Dup_x1();
+         i = new Instruction_Dup_x1();
          break;
       case DUP_X2:
-         i = (Instruction)new Instruction_Dup_x2();
+         i = new Instruction_Dup_x2();
          break;
       case DUP2_X1:
-         i = (Instruction)new Instruction_Dup2_x1();
+         i = new Instruction_Dup2_x1();
          break;
       case DUP2_X2:
-         i = (Instruction)new Instruction_Dup2_x2();
+         i = new Instruction_Dup2_x2();
          break;
       case SWAP:
-         i = (Instruction)new Instruction_Swap();
+         i = new Instruction_Swap();
          break;
       case IADD:
-         i = (Instruction)new Instruction_Iadd();
+         i = new Instruction_Iadd();
          break;
       case LADD:
-         i = (Instruction)new Instruction_Ladd();
+         i = new Instruction_Ladd();
          break;
       case FADD:
-         i = (Instruction)new Instruction_Fadd();
+         i = new Instruction_Fadd();
          break;
       case DADD:
-         i = (Instruction)new Instruction_Dadd();
+         i = new Instruction_Dadd();
          break;
       case ISUB:
-         i = (Instruction)new Instruction_Isub();
+         i = new Instruction_Isub();
          break;
       case LSUB:
-         i = (Instruction)new Instruction_Lsub();
+         i = new Instruction_Lsub();
          break;
       case FSUB:
-         i = (Instruction)new Instruction_Fsub();
+         i = new Instruction_Fsub();
          break;
       case DSUB:
-         i = (Instruction)new Instruction_Dsub();
+         i = new Instruction_Dsub();
          break;
       case IMUL:
-         i = (Instruction)new Instruction_Imul();
+         i = new Instruction_Imul();
          break;
       case LMUL:
-         i = (Instruction)new Instruction_Lmul();
+         i = new Instruction_Lmul();
          break;
       case FMUL:
-         i = (Instruction)new Instruction_Fmul();
+         i = new Instruction_Fmul();
          break;
       case DMUL:
-         i = (Instruction)new Instruction_Dmul();
+         i = new Instruction_Dmul();
          break;
       case IDIV:
-         i = (Instruction)new Instruction_Idiv();
+         i = new Instruction_Idiv();
          break;
       case LDIV:
-         i = (Instruction)new Instruction_Ldiv();
+         i = new Instruction_Ldiv();
          break;
       case FDIV:
-         i = (Instruction)new Instruction_Fdiv();
+         i = new Instruction_Fdiv();
          break;
       case DDIV:
-         i = (Instruction)new Instruction_Ddiv();
+         i = new Instruction_Ddiv();
          break;
       case IREM:
-         i = (Instruction)new Instruction_Irem();
+         i = new Instruction_Irem();
          break;
       case LREM:
-         i = (Instruction)new Instruction_Lrem();
+         i = new Instruction_Lrem();
          break;
       case FREM:
-         i = (Instruction)new Instruction_Frem();
+         i = new Instruction_Frem();
          break;
       case DREM:
-         i = (Instruction)new Instruction_Drem();
+         i = new Instruction_Drem();
          break;
       case INEG:
-         i = (Instruction)new Instruction_Ineg();
+         i = new Instruction_Ineg();
          break;
       case LNEG:
-         i = (Instruction)new Instruction_Lneg();
+         i = new Instruction_Lneg();
          break;
       case FNEG:
-         i = (Instruction)new Instruction_Fneg();
+         i = new Instruction_Fneg();
          break;
       case DNEG:
-         i = (Instruction)new Instruction_Dneg();
+         i = new Instruction_Dneg();
          break;
       case ISHL:
-         i = (Instruction)new Instruction_Ishl();
+         i = new Instruction_Ishl();
          break;
       case ISHR:
-         i = (Instruction)new Instruction_Ishr();
+         i = new Instruction_Ishr();
          break;
       case IUSHR:
-         i = (Instruction)new Instruction_Iushr();
+         i = new Instruction_Iushr();
          break;
       case LSHL:
-         i = (Instruction)new Instruction_Lshl();
+         i = new Instruction_Lshl();
          break;
       case LSHR:
-         i = (Instruction)new Instruction_Lshr();
+         i = new Instruction_Lshr();
          break;
       case LUSHR:
-         i = (Instruction)new Instruction_Lushr();
+         i = new Instruction_Lushr();
          break;
       case IAND:
-         i = (Instruction)new Instruction_Iand();
+         i = new Instruction_Iand();
          break;
       case LAND:
-         i = (Instruction)new Instruction_Land();
+         i = new Instruction_Land();
          break;
       case IOR:
-         i = (Instruction)new Instruction_Ior();
+         i = new Instruction_Ior();
          break;
       case LOR:
-         i = (Instruction)new Instruction_Lor();
+         i = new Instruction_Lor();
          break;
       case IXOR:
-         i = (Instruction)new Instruction_Ixor();
+         i = new Instruction_Ixor();
          break;
       case LXOR:
-         i = (Instruction)new Instruction_Lxor();
+         i = new Instruction_Lxor();
          break;
       case I2L:
-         i = (Instruction)new Instruction_I2l();
+         i = new Instruction_I2l();
          break;
       case I2F:
-         i = (Instruction)new Instruction_I2f();
+         i = new Instruction_I2f();
          break;
       case I2D:
-         i = (Instruction)new Instruction_I2d();
+         i = new Instruction_I2d();
          break;
       case L2I:
-         i = (Instruction)new Instruction_L2i();
+         i = new Instruction_L2i();
          break;
       case L2F:
-         i = (Instruction)new Instruction_L2f();
+         i = new Instruction_L2f();
          break;
       case L2D:
-         i = (Instruction)new Instruction_L2d();
+         i = new Instruction_L2d();
          break;
       case F2I:
-         i = (Instruction)new Instruction_F2i();
+         i = new Instruction_F2i();
          break;
       case F2L:
-         i = (Instruction)new Instruction_F2l();
+         i = new Instruction_F2l();
          break;
       case F2D:
-         i = (Instruction)new Instruction_F2d();
+         i = new Instruction_F2d();
          break;
       case D2I:
-         i = (Instruction)new Instruction_D2i();
+         i = new Instruction_D2i();
          break;
       case D2L:
-         i = (Instruction)new Instruction_D2l();
+         i = new Instruction_D2l();
          break;
       case D2F:
-         i = (Instruction)new Instruction_D2f();
+         i = new Instruction_D2f();
          break;
       case INT2BYTE:
-         i = (Instruction)new Instruction_Int2byte();
+         i = new Instruction_Int2byte();
          break;
       case INT2CHAR:
-         i = (Instruction)new Instruction_Int2char();
+         i = new Instruction_Int2char();
          break;
       case INT2SHORT:
-         i = (Instruction)new Instruction_Int2short();
+         i = new Instruction_Int2short();
          break;
       case IFEQ:
-         i = (Instruction)new Instruction_Ifeq();
+         i = new Instruction_Ifeq();
          break;
       case IFNULL:
-         i = (Instruction)new Instruction_Ifnull();
+         i = new Instruction_Ifnull();
          break;
       case IFLT:
-         i = (Instruction)new Instruction_Iflt();
+         i = new Instruction_Iflt();
          break;
       case IFLE:
-         i = (Instruction)new Instruction_Ifle();
+         i = new Instruction_Ifle();
          break;
       case IFNE:
-         i = (Instruction)new Instruction_Ifne();
+         i = new Instruction_Ifne();
          break;
       case IFNONNULL:
-         i = (Instruction)new Instruction_Ifnonnull();
+         i = new Instruction_Ifnonnull();
          break;
       case IFGT:
-         i = (Instruction)new Instruction_Ifgt();
+         i = new Instruction_Ifgt();
          break;
       case IFGE:
-         i = (Instruction)new Instruction_Ifge();
+         i = new Instruction_Ifge();
          break;
       case IF_ICMPEQ:
-         i = (Instruction)new Instruction_If_icmpeq();
+         i = new Instruction_If_icmpeq();
          break;
       case IF_ICMPLT:
-         i = (Instruction)new Instruction_If_icmplt();
+         i = new Instruction_If_icmplt();
          break;
       case IF_ICMPLE:
-         i = (Instruction)new Instruction_If_icmple();
+         i = new Instruction_If_icmple();
          break;
       case IF_ICMPNE:
-         i = (Instruction)new Instruction_If_icmpne();
+         i = new Instruction_If_icmpne();
          break;
       case IF_ICMPGT:
-         i = (Instruction)new Instruction_If_icmpgt();
+         i = new Instruction_If_icmpgt();
          break;
       case IF_ICMPGE:
-         i = (Instruction)new Instruction_If_icmpge();
+         i = new Instruction_If_icmpge();
          break;
       case LCMP:
-         i = (Instruction)new Instruction_Lcmp();
+         i = new Instruction_Lcmp();
          break;
       case FCMPL:
-         i = (Instruction)new Instruction_Fcmpl();
+         i = new Instruction_Fcmpl();
          break;
       case FCMPG:
-         i = (Instruction)new Instruction_Fcmpg();
+         i = new Instruction_Fcmpg();
          break;
       case DCMPL:
-         i = (Instruction)new Instruction_Dcmpl();
+         i = new Instruction_Dcmpl();
          break;
       case DCMPG:
-         i = (Instruction)new Instruction_Dcmpg();
+         i = new Instruction_Dcmpg();
          break;
       case IF_ACMPEQ:
-         i = (Instruction)new Instruction_If_acmpeq();
+         i = new Instruction_If_acmpeq();
          break;
       case IF_ACMPNE:
-         i = (Instruction)new Instruction_If_acmpne();
+         i = new Instruction_If_acmpne();
          break;
       case GOTO:
-         i = (Instruction)new Instruction_Goto();
+         i = new Instruction_Goto();
          break;
       case GOTO_W:
-         i = (Instruction)new Instruction_Goto_w();
+         i = new Instruction_Goto_w();
          break;
       case JSR:
-         i = (Instruction)new Instruction_Jsr();
+         i = new Instruction_Jsr();
          break;
       case JSR_W:
-         i = (Instruction)new Instruction_Jsr_w();
+         i = new Instruction_Jsr_w();
          break;
       case RET:
-         i = (Instruction)new Instruction_Ret();
+         i = new Instruction_Ret();
          break;
       case RET_W:
-         i = (Instruction)new Instruction_Ret_w();
+         i = new Instruction_Ret_w();
          break;
       case RETURN:
-         i = (Instruction)new Instruction_Return();
+         i = new Instruction_Return();
          break;
       case IRETURN:
-         i = (Instruction)new Instruction_Ireturn();
+         i = new Instruction_Ireturn();
          break;
       case LRETURN:
-         i = (Instruction)new Instruction_Lreturn();
+         i = new Instruction_Lreturn();
          break;
       case FRETURN:
-         i = (Instruction)new Instruction_Freturn();
+         i = new Instruction_Freturn();
          break;
       case DRETURN:
-         i = (Instruction)new Instruction_Dreturn();
+         i = new Instruction_Dreturn();
          break;
       case ARETURN:
-         i = (Instruction)new Instruction_Areturn();
+         i = new Instruction_Areturn();
          break;
       case BREAKPOINT:
-         i = (Instruction)new Instruction_Breakpoint();
+         i = new Instruction_Breakpoint();
          break;
       case TABLESWITCH:
          i = (Instruction)new Instruction_Tableswitch();
@@ -1019,10 +1019,7 @@ class ByteCode {
     * @see ClassFile#relabel
     */
    public void build(Instruction insts) {
-      Instruction i,j;
-      attribute_info ai;
-      Code_attribute ca;
-
+      Instruction i;
       i = insts;
       // find out how many instructions that is
       icount = 0;

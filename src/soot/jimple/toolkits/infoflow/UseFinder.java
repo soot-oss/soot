@@ -3,6 +3,7 @@ package soot.jimple.toolkits.infoflow;
 import soot.*;
 import soot.util.*;
 import java.util.*;
+
 import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
@@ -17,18 +18,18 @@ public class UseFinder
 {
 	ReachableMethods rm;
 
-	Map classToExtFieldAccesses; // each field access is a Pair <containing method, stmt>
-	Map classToIntFieldAccesses;
+	Map<SootClass, List> classToExtFieldAccesses; // each field access is a Pair <containing method, stmt>
+	Map<SootClass, ArrayList> classToIntFieldAccesses;
 	
-	Map classToExtCalls; // each call is a Pair <containing method, stmt>
-	Map classToIntCalls;
+	Map<SootClass, List> classToExtCalls; // each call is a Pair <containing method, stmt>
+	Map<SootClass, ArrayList> classToIntCalls;
 	
 	public UseFinder()
 	{
-		classToExtFieldAccesses = new HashMap();
-		classToIntFieldAccesses = new HashMap();
-		classToExtCalls = new HashMap();
-		classToIntCalls = new HashMap();
+		classToExtFieldAccesses = new HashMap<SootClass, List>();
+		classToIntFieldAccesses = new HashMap<SootClass, ArrayList>();
+		classToExtCalls = new HashMap<SootClass, List>();
+		classToIntCalls = new HashMap<SootClass, ArrayList>();
 		
 		rm = Scene.v().getReachableMethods();
 		
@@ -37,10 +38,10 @@ public class UseFinder
 	
 	public UseFinder(ReachableMethods rm)
 	{
-		classToExtFieldAccesses = new HashMap();
-		classToIntFieldAccesses = new HashMap();
-		classToExtCalls = new HashMap();
-		classToIntCalls = new HashMap();
+		classToExtFieldAccesses = new HashMap<SootClass, List>();
+		classToIntFieldAccesses = new HashMap<SootClass, ArrayList>();
+		classToExtCalls = new HashMap<SootClass, List>();
+		classToIntCalls = new HashMap<SootClass, ArrayList>();
 		
 		this.rm = rm;
 		
@@ -50,38 +51,38 @@ public class UseFinder
 	public List getExtFieldAccesses(SootClass sc)
 	{
 		if(classToExtFieldAccesses.containsKey(sc))
-			return (List) classToExtFieldAccesses.get(sc);
+			return classToExtFieldAccesses.get(sc);
 		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
 	}
 	
 	public List getIntFieldAccesses(SootClass sc)
 	{
 		if(classToIntFieldAccesses.containsKey(sc))
-			return (List) classToIntFieldAccesses.get(sc);
+			return classToIntFieldAccesses.get(sc);
 		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
 	}
 	
 	public List getExtCalls(SootClass sc)
 	{
 		if(classToExtCalls.containsKey(sc))
-			return (List) classToExtCalls.get(sc);
+			return classToExtCalls.get(sc);
 		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
 	}
 	
 	public List getIntCalls(SootClass sc)
 	{
 		if(classToIntCalls.containsKey(sc))
-			return (List) classToIntCalls.get(sc);
+			return classToIntCalls.get(sc);
 		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
 	}
 	
 	// This is an incredibly stupid way to do this... we should just use the call graph for faster/better info!
-	public List getExtMethods(SootClass sc)
+	public List<SootMethod> getExtMethods(SootClass sc)
 	{
 		if(classToExtCalls.containsKey(sc))
 		{
-			List extCalls = (List) classToExtCalls.get(sc);
-			List extMethods = new ArrayList();
+			List extCalls = classToExtCalls.get(sc);
+			List<SootMethod> extMethods = new ArrayList<SootMethod>();
 			for(Iterator callIt = extCalls.iterator(); callIt.hasNext(); )
 			{
 				Pair call = (Pair) callIt.next();
@@ -94,12 +95,12 @@ public class UseFinder
 		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
 	}
 	
-	public List getExtFields(SootClass sc)
+	public List<SootField> getExtFields(SootClass sc)
 	{
 		if(classToExtFieldAccesses.containsKey(sc))
 		{
-			List extAccesses = (List) classToExtFieldAccesses.get(sc);
-			List extFields = new ArrayList();
+			List extAccesses = classToExtFieldAccesses.get(sc);
+			List<SootField> extFields = new ArrayList<SootField>();
 			for(Iterator accessIt = extAccesses.iterator(); accessIt.hasNext(); )
 			{
 				Pair access = (Pair) accessIt.next();
@@ -151,7 +152,7 @@ public class UseFinder
 								if(fr instanceof StaticFieldRef)
 								{
 									// static field ref in same class is considered internal
-									((List) classToIntFieldAccesses.get(appClass)).add(new Pair(method, s));
+									classToIntFieldAccesses.get(appClass).add(new Pair(method, s));
 								}
 								else if(fr instanceof InstanceFieldRef)
 								{
@@ -159,22 +160,22 @@ public class UseFinder
 									if( !method.isStatic() && ifr.getBase().equivTo(b.getThisLocal()) )
 									{
 										// this.field ref is considered internal
-										((List) classToIntFieldAccesses.get(appClass)).add(new Pair(method, s));
+										classToIntFieldAccesses.get(appClass).add(new Pair(method, s));
 									}
 									else
 									{
 										// o.field ref is considered external
-										((List) classToExtFieldAccesses.get(appClass)).add(new Pair(method, s));
+										classToExtFieldAccesses.get(appClass).add(new Pair(method, s));
 									}
 								}
 							}
 							else
 							{
 								// ref to some other class is considered external
-								List otherClassList = ((List) classToExtFieldAccesses.get(fr.getFieldRef().resolve().getDeclaringClass()));
+								List<Pair> otherClassList = classToExtFieldAccesses.get(fr.getFieldRef().resolve().getDeclaringClass());
 								if(otherClassList == null)
 								{
-									otherClassList = new ArrayList();
+									otherClassList = new ArrayList<Pair>();
 									classToExtFieldAccesses.put(fr.getFieldRef().resolve().getDeclaringClass(), otherClassList);
 								}
 								otherClassList.add(new Pair(method, s));
@@ -188,7 +189,7 @@ public class UseFinder
 								if(ie instanceof StaticInvokeExpr)
 								{
 									// static field ref in same class is considered internal
-									((List) classToIntCalls.get(appClass)).add(new Pair(method, s));
+									classToIntCalls.get(appClass).add(new Pair(method, s));
 								}
 								else if(ie instanceof InstanceInvokeExpr)
 								{
@@ -196,22 +197,22 @@ public class UseFinder
 									if( !method.isStatic() && iie.getBase().equivTo(b.getThisLocal()) )
 									{
 										// this.field ref is considered internal
-										((List) classToIntCalls.get(appClass)).add(new Pair(method, s));
+										classToIntCalls.get(appClass).add(new Pair(method, s));
 									}
 									else
 									{
 										// o.field ref is considered external
-										((List) classToExtCalls.get(appClass)).add(new Pair(method, s));
+										classToExtCalls.get(appClass).add(new Pair(method, s));
 									}
 								}
 							}
 							else
 							{
 								// ref to some other class is considered external
-								List otherClassList = ((List) classToExtCalls.get(ie.getMethodRef().resolve().getDeclaringClass()));
+								List<Pair> otherClassList = classToExtCalls.get(ie.getMethodRef().resolve().getDeclaringClass());
 								if(otherClassList == null)
 								{
-									otherClassList = new ArrayList();
+									otherClassList = new ArrayList<Pair>();
 									classToExtCalls.put(ie.getMethodRef().resolve().getDeclaringClass(), otherClassList);
 								}
 								otherClassList.add(new Pair(method, s));

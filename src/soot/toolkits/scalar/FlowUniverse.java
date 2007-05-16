@@ -26,8 +26,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
 
 /** 

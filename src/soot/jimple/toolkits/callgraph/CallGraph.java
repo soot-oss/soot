@@ -29,12 +29,12 @@ import java.util.*;
  */
 public class CallGraph
 { 
-    protected Set edges = new HashSet();
+    protected Set<Edge> edges = new HashSet<Edge>();
     protected ChunkedQueue stream = new ChunkedQueue();
     protected QueueReader reader = stream.reader();
-    protected Map srcMethodToEdge = new HashMap();
-    protected Map srcUnitToEdge = new HashMap();
-    protected Map tgtToEdge = new HashMap();
+    protected Map<MethodOrMethodContext,Edge> srcMethodToEdge = new HashMap();
+    protected Map<Unit, Edge> srcUnitToEdge = new HashMap<Unit, Edge>();
+    protected Map<MethodOrMethodContext, Edge> tgtToEdge = new HashMap<MethodOrMethodContext, Edge>();
     protected Edge dummy = new Edge( null, null, null, Kind.INVALID );
 
     /** Used to add an edge to the call graph. Returns true iff the edge was
@@ -44,21 +44,21 @@ public class CallGraph
         stream.add( e );
         Edge position = null;
 
-        position = (Edge) srcUnitToEdge.get( e.srcUnit() );
+        position = srcUnitToEdge.get( e.srcUnit() );
         if( position == null ) {
             srcUnitToEdge.put( e.srcUnit(), e );
             position = dummy;
         }
         e.insertAfterByUnit( position );
 
-        position = (Edge) srcMethodToEdge.get( e.getSrc() );
+        position = srcMethodToEdge.get( e.getSrc() );
         if( position == null ) {
             srcMethodToEdge.put( e.getSrc(), e );
             position = dummy;
         }
         e.insertAfterBySrc( position );
 
-        position = (Edge) tgtToEdge.get( e.getTgt() );
+        position = tgtToEdge.get( e.getTgt() );
         if( position == null ) {
             tgtToEdge.put( e.getTgt(), e );
             position = dummy;
@@ -114,7 +114,7 @@ public class CallGraph
         TargetsOfUnitIterator( Unit u ) {
             this.u = u;
             if( u == null ) throw new RuntimeException();
-            position = (Edge) srcUnitToEdge.get( u );
+            position = srcUnitToEdge.get( u );
             if( position == null ) position = dummy;
         }
         public boolean hasNext() {
@@ -141,7 +141,7 @@ public class CallGraph
         TargetsOfMethodIterator( MethodOrMethodContext m ) {
             this.m = m;
             if( m == null ) throw new RuntimeException();
-            position = (Edge) srcMethodToEdge.get( m );
+            position = srcMethodToEdge.get( m );
             if( position == null ) position = dummy;
         }
         public boolean hasNext() {
@@ -168,7 +168,7 @@ public class CallGraph
         CallersOfMethodIterator( MethodOrMethodContext m ) {
             this.m = m;
             if( m == null ) throw new RuntimeException();
-            position = (Edge) tgtToEdge.get( m );
+            position = tgtToEdge.get( m );
             if( position == null ) position = dummy;
         }
         public boolean hasNext() {

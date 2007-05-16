@@ -25,8 +25,6 @@
 
 package soot;
 
-import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -64,9 +62,9 @@ public class TrapManager
     }
 
     /** Returns the list of traps caught at Unit u in Body b. */
-    public static List getTrapsAt(Unit unit, Body b)
+    public static List<Trap> getTrapsAt(Unit unit, Body b)
     {
-        List trapsList = new ArrayList();
+        List<Trap> trapsList = new ArrayList<Trap>();
         Chain units = b.getUnits();
 
         Iterator trapsIt = b.getTraps().iterator();

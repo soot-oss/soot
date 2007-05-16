@@ -28,9 +28,11 @@ package soot.util;
 
 import java.util.*;
 
+import soot.SootClass;
+
 public class IterableSet extends HashChain implements Set
 {
-    public IterableSet( Collection c)
+    public IterableSet( Collection<SootClass> c)
     {
 	super();
 	addAll( c);

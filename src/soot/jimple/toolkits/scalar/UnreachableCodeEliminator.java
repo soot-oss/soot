@@ -31,8 +31,8 @@ import soot.options.*;
 import soot.util.*;
 import soot.*;
 import soot.jimple.*;
-import java.io.*;
 import java.util.*;
+
 import soot.toolkits.graph.*;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 
@@ -48,7 +48,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
 
     class Instance {
         ExceptionalUnitGraph stmtGraph;
-        HashSet visited;
+        HashSet<Object> visited;
         int numPruned;
 
         protected void internalTransform(Body b, String phaseName, Map options) 
@@ -71,15 +71,15 @@ public class UnreachableCodeEliminator extends BodyTransformer
                 stmtGraph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(),
                                                     false);
             }
-            visited = new HashSet();
+            visited = new HashSet<Object>();
 
             // We need a map from Units that handle Traps, to a Set of their
             // Traps, so we can remove the Traps should we remove the handler.
-            Map handlerToTraps = new HashMap();
+            Map<Unit, Set> handlerToTraps = new HashMap<Unit, Set>();
             for( Iterator trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
                 final Trap trap = (Trap) trapIt.next();
                 Unit handler = trap.getHandlerUnit();
-                Set handlersTraps = (Set) handlerToTraps.get(handler);
+                Set<Trap> handlersTraps = handlerToTraps.get(handler);
                 if (handlersTraps == null) {
                     handlersTraps = new ArraySet(3);
                     handlerToTraps.put(handler, handlersTraps);
@@ -92,7 +92,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
             // 3799th level.
 
             if (!body.getUnits().isEmpty()) {
-                LinkedList startPoints = new LinkedList();
+                LinkedList<Object> startPoints = new LinkedList<Object>();
                 startPoints.addLast(body.getUnits().getFirst());
 
                 visitStmts(startPoints);
@@ -107,7 +107,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
                 if (!visited.contains(stmt)) 
                 {
                     body.getUnits().remove(stmt);
-                    Set traps = (Set) handlerToTraps.get(stmt);
+                    Set traps = handlerToTraps.get(stmt);
                     if (traps != null) {
                         for( Iterator trapIt = traps.iterator(); trapIt.hasNext(); ) {
                             final Trap trap = (Trap) trapIt.next();
@@ -147,7 +147,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
             
     } // pruneUnreachables
 
-        private void visitStmts(LinkedList st) {
+        private void visitStmts(LinkedList<Object> st) {
 
             // Do DFS of the unit graph, starting from the passed nodes.
 

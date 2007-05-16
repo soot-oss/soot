@@ -29,10 +29,8 @@
 
 package soot.baf.internal;
 
-import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BExitMonitorInst extends AbstractInst implements ExitMonitorInst
 {

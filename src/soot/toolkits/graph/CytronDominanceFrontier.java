@@ -19,12 +19,7 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 
 /**
  * Class to compute the DominanceFrontier using Cytron's celebrated efficient
@@ -39,12 +34,12 @@ import soot.util.*;
 public class CytronDominanceFrontier implements DominanceFrontier
 {
     protected DominatorTree dt;
-    protected Map nodeToFrontier;
+    protected Map<DominatorNode, List<DominatorNode>> nodeToFrontier;
     
     public CytronDominanceFrontier(DominatorTree dt)
     {
         this.dt = dt;
-        nodeToFrontier = new HashMap();
+        nodeToFrontier = new HashMap<DominatorNode, List<DominatorNode>>();
         bottomUpDispatch(dt.getHead());
     }
 
@@ -109,14 +104,14 @@ public class CytronDominanceFrontier implements DominanceFrontier
      **/
     protected void processNode(DominatorNode node)
     {
-        List dominanceFrontier = new ArrayList();
+        List<DominatorNode> dominanceFrontier = new ArrayList<DominatorNode>();
         
         // local
         {
-            Iterator succsIt = dt.getSuccsOf(node).iterator();
+            Iterator<DominatorNode> succsIt = dt.getSuccsOf(node).iterator();
             
             while(succsIt.hasNext()){
-                DominatorNode succ = (DominatorNode) succsIt.next();
+                DominatorNode succ = succsIt.next();
                 
                 if(!dt.isImmediateDominatorOf(node, succ))
                     dominanceFrontier.add(succ);

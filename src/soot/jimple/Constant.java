@@ -32,7 +32,6 @@ package soot.jimple;
 import soot.tagkit.*;
 import soot.baf.*;
 import soot.*;
-import soot.util.*;
 import java.util.*;
 
 public abstract class Constant implements Value, ConvertToBaf, Immediate
@@ -43,7 +42,7 @@ public abstract class Constant implements Value, ConvertToBaf, Immediate
     }
 
     /** Adds a Baf instruction pushing this constant to the stack onto <code>out</code>. */
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         Unit u = Baf.v().newPushInst(this);
         out.add(u);

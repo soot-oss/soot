@@ -25,7 +25,6 @@ import java.util.*;
 import soot.util.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
-import soot.dava.internal.AST.*;
 
 public class SequenceFinder implements FactFinder
 {
@@ -39,7 +38,7 @@ public class SequenceFinder implements FactFinder
 	SET.find_StatementSequences( this, body);
     }
 
-    public void find_StatementSequences( SETNode SETParent, IterableSet body, HashSet childUnion, DavaBody davaBody)
+    public void find_StatementSequences( SETNode SETParent, IterableSet body, HashSet<AugmentedStmt> childUnion, DavaBody davaBody)
     {
 	Iterator bit = body.iterator();
 	while (bit.hasNext()) {
@@ -70,7 +69,7 @@ public class SequenceFinder implements FactFinder
 		    break;
 	    }
 
-	    SETParent.add_Child( new SETStatementSequenceNode( sequenceBody, davaBody), (IterableSet) SETParent.get_Body2ChildChain().get( body));
+	    SETParent.add_Child( new SETStatementSequenceNode( sequenceBody, davaBody), SETParent.get_Body2ChildChain().get( body));
 	}
     }
 }

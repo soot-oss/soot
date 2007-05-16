@@ -31,12 +31,11 @@
 
 package soot.coffi;
 
-import java.util.Enumeration;
-import java.util.Vector;
 import java.util.*;
+
+import soot.jimple.Stmt;
 import soot.util.*;
 import soot.*;
-import java.util.*;
 
 /** Represents one basic block in a control flow graph.
  * @see CFG
@@ -61,11 +60,11 @@ class BasicBlock {
    /** Vector of predecessor BasicBlocks.
     * @see java.util.Vector
     */
-   public Vector succ;
+   public Vector<BasicBlock> succ;
    /** Vector of successor BasicBlocks.
     * @see java.util.Vector
     */
-   public Vector pred;
+   public Vector<BasicBlock> pred;
 
    public boolean inq;
    /** Flag for whether starting an exception or not. */
@@ -83,25 +82,17 @@ class BasicBlock {
    /** Unique (among basic blocks) id. */
    public long id;                   // unique id
 
-   private short wide;                 // convert indices when parsing jimple
-
-   /** Constructs a BasicBlock consisting of the given list of Instructions.
-    * @param insts list of instructions composing this basic block.
-    */
-
-   private soot.jimple.Stmt stmt;  // statement generated
-
-   List statements;
+   List<Stmt> statements;
    Set addressesToFixup = new ArraySet();
 
    soot.jimple.Stmt getHeadJStmt()
    {
-      return (soot.jimple.Stmt) statements.get(0);
+      return statements.get(0);
    }
 
    soot.jimple.Stmt getTailJStmt()
    {
-      return (soot.jimple.Stmt) statements.get(statements.size() - 1);
+      return statements.get(statements.size() - 1);
    }
 
    public BasicBlock(Instruction insts) {
@@ -116,8 +107,8 @@ class BasicBlock {
             tail = tail.next;
          }
       }
-      succ = new Vector(2,10);
-      pred = new Vector(2,3);
+      succ = new Vector<BasicBlock>(2,10);
+      pred = new Vector<BasicBlock>(2,3);
    }
 
     public BasicBlock(Instruction headinsn, Instruction tailinsn)
@@ -125,8 +116,8 @@ class BasicBlock {
 	id = G.v().coffi_BasicBlock_ids++;
 	head = headinsn;
 	tail = tailinsn;
-	succ = new Vector(2,10);
-	pred = new Vector(2,3);
+	succ = new Vector<BasicBlock>(2,10);
+	pred = new Vector<BasicBlock>(2,3);
     }
 
    /** Computes a hash code for this block from the label of the
@@ -150,13 +141,5 @@ class BasicBlock {
    /** For printing the string "BB: " + id.
     */
    public String toString() { return "BB: " + id; }
-
-   // Returns the index of b given the current wide
-   // wide to 0
-   private int wideIndex(short b) {
-      int i = ((((int)wide)<<8)&0xff00) | (((int)b)&0xff);
-      wide = (byte)0;
-      return i;
-   }
 
 }

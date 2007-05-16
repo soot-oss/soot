@@ -18,7 +18,6 @@
  */
 
 package soot;
-import soot.jimple.*;
 import java.util.*;
 
 /** Represents a pair of a method and a context.
@@ -47,8 +46,8 @@ public final class MethodContext implements MethodOrMethodContext
     public static MethodOrMethodContext v( SootMethod method, Context context ) {
         if( context == null ) return method;
         MethodContext probe = new MethodContext( method, context );
-        Map map = G.v().MethodContext_map;
-        MethodContext ret = (MethodContext) map.get( probe );
+        Map<MethodContext, MethodContext> map = G.v().MethodContext_map;
+        MethodContext ret = map.get( probe );
         if( ret == null ) {
             map.put( probe, probe );
             return probe;

@@ -26,7 +26,6 @@ import soot.jimple.toolkits.thread.*;
 import soot.toolkits.scalar.*;
 
 import java.util.*;
-import soot.util.*;
 
 
 
@@ -94,13 +93,13 @@ class WholeObject
 public class TransactionAwareSideEffectAnalysis {
 	PointsToAnalysis pa;
 	CallGraph cg;
-	Map methodToNTReadSet = new HashMap();
-	Map methodToNTWriteSet = new HashMap();
+	Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<SootMethod, CodeBlockRWSet>();
+	Map<SootMethod, CodeBlockRWSet> methodToNTWriteSet = new HashMap<SootMethod, CodeBlockRWSet>();
 	int rwsetcount = 0;
 	TransactionVisibleEdgesPred tve;
 	TransitiveTargets tt;
 	TransitiveTargets normaltt;
-	Collection transactions;
+	Collection<Transaction> transactions;
 	EncapsulatedObjectAnalysis eoa;
 	ThreadLocalObjectsAnalysis tlo;
 	
@@ -123,10 +122,10 @@ public class TransactionAwareSideEffectAnalysis {
 			// Ignore Reads/Writes inside another transaction
 			if(transactions != null)
 			{
-				Iterator tnIt = transactions.iterator();
+				Iterator<Transaction> tnIt = transactions.iterator();
 				while(tnIt.hasNext())
 				{
-					Transaction tn = (Transaction) tnIt.next();
+					Transaction tn = tnIt.next();
 					if(tn.units.contains(s) || tn.prepStmt == s)
 					{
 						ignore = true;
@@ -156,15 +155,15 @@ public class TransactionAwareSideEffectAnalysis {
 	
 	public RWSet nonTransitiveReadSet( SootMethod method ) {
 		findNTRWSets( method );
-		return (RWSet) methodToNTReadSet.get( method );
+		return methodToNTReadSet.get( method );
 	}
 	
 	public RWSet nonTransitiveWriteSet( SootMethod method ) {
 		findNTRWSets( method );
-		return (RWSet) methodToNTWriteSet.get( method );
+		return methodToNTWriteSet.get( method );
 	}
 	
-	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions, ThreadLocalObjectsAnalysis tlo ) {
+	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection<Transaction> transactions, ThreadLocalObjectsAnalysis tlo ) {
 		this.pa = pa;
 		this.cg = cg;
 		this.tve = new TransactionVisibleEdgesPred(transactions);
@@ -243,7 +242,7 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
 					{
-						Object field = (Object) fieldsIt.next();
+						Object field = fieldsIt.next();
 						PointsToSet targetBase = targetRW.getBaseForField(field);
 						if(base.hasNonEmptyIntersection(targetBase))
 							sSet.addFieldRef(base, field); // should use intersection of bases!!!
@@ -284,8 +283,6 @@ public class TransactionAwareSideEffectAnalysis {
 			}
 			else if(ie instanceof InstanceInvokeExpr)
 			{
-				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-				
 				if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
 				{
 					ignore = true;
@@ -300,7 +297,7 @@ public class TransactionAwareSideEffectAnalysis {
 		boolean inaccessibleUses = false;
 		RWSet ret = null;
 		tve.setExemptTransaction(tn);
-		Iterator targets = tt.iterator( stmt );
+		Iterator<MethodOrMethodContext> targets = tt.iterator( stmt );
 		while( !ignore && targets.hasNext() )
 		{
 			SootMethod target = (SootMethod) targets.next();
@@ -463,7 +460,7 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
 					{
-						Object field = (Object) fieldsIt.next();
+						Object field = fieldsIt.next();
 						PointsToSet targetBase = targetRW.getBaseForField(field);
 						if(base.hasNonEmptyIntersection(targetBase))
 							sSet.addFieldRef(base, field); // should use intersection of bases!!!
@@ -498,8 +495,6 @@ public class TransactionAwareSideEffectAnalysis {
 			}
 			else if(ie instanceof InstanceInvokeExpr)
 			{
-				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-				
 				if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
 				{
 					ignore = true;
@@ -514,7 +509,7 @@ public class TransactionAwareSideEffectAnalysis {
 		boolean inaccessibleUses = false;
 		RWSet ret = null;
 		tve.setExemptTransaction(tn);
-		Iterator targets = tt.iterator( stmt );
+		Iterator<MethodOrMethodContext> targets = tt.iterator( stmt );
 		while( !ignore && targets.hasNext() ) {
 			SootMethod target = (SootMethod) targets.next();
 //			if( target.isNative() ) {
@@ -680,7 +675,7 @@ public class TransactionAwareSideEffectAnalysis {
 			// Should actually get a list of fields of this object that are read/written
 			// make fake RW set of <base, all fields> (use a special class)
 			// intersect with the REAL RW set of this stmt
-			Iterator targets = tt.iterator( s );
+			Iterator<MethodOrMethodContext> targets = tt.iterator( s );
 			while( targets.hasNext() )
 			{
 				SootMethod target = (SootMethod) targets.next();
@@ -689,7 +684,7 @@ public class TransactionAwareSideEffectAnalysis {
 				targetRW.union(nonTransitiveReadSet(target));
 				for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
 				{
-					Object field = (Object) fieldsIt.next();
+					Object field = fieldsIt.next();
 					PointsToSet targetBase = targetRW.getBaseForField(field);
 					if(base.hasNonEmptyIntersection(targetBase))
 						ret.addFieldRef(base, field); // should use intersection of bases!!!

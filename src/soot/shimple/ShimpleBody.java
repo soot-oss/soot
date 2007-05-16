@@ -22,11 +22,7 @@ package soot.shimple;
 import soot.*;
 import soot.options.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.scalar.*;
 import soot.shimple.internal.*;
-import soot.shimple.toolkits.scalar.*;
-import soot.toolkits.scalar.*;
 import soot.util.*;
 import java.util.*;
 

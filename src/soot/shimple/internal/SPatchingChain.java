@@ -101,8 +101,8 @@ public class SPatchingChain extends PatchingChain
 
             Object[] boxes = unit.getBoxesPointingToThis().toArray();
 
-            for(int i = 0; i < boxes.length; i++){
-                UnitBox ub = (UnitBox) boxes[i];
+            for (Object element : boxes) {
+                UnitBox ub = (UnitBox) element;
 
                 if(ub.getUnit() != unit)
                     throw new RuntimeException("Assertion failed.");
@@ -110,7 +110,7 @@ public class SPatchingChain extends PatchingChain
                     continue;
 
                 SUnitBox box = getSBox(ub);
-                Boolean needsPatching = (Boolean) boxToNeedsPatching.get(box);
+                Boolean needsPatching = boxToNeedsPatching.get(box);
                 
                 if(needsPatching == null || box.isUnitChanged()){
                     // if boxes were added or removed to the known Phi
@@ -132,7 +132,7 @@ public class SPatchingChain extends PatchingChain
                     }
                     
                     computeNeedsPatching();
-                    needsPatching = (Boolean) boxToNeedsPatching.get(box);
+                    needsPatching = boxToNeedsPatching.get(box);
 
                     if(needsPatching == null){
                         // maybe the user forgot to clearUnitBoxes()
@@ -152,13 +152,13 @@ public class SPatchingChain extends PatchingChain
         }
     }
 
-    public void insertAfter(List toInsert, Object point)
+    public void insertAfter(List<Unit> toInsert, Object point)
     {
         processPhiNode(toInsert);
         super.insertAfter(toInsert, point);
     }
     
-    public void insertBefore(List toInsert, Object point)
+    public void insertBefore(List<Unit> toInsert, Object point)
     {
         processPhiNode(toInsert);
         super.insertBefore(toInsert, point);
@@ -194,14 +194,14 @@ public class SPatchingChain extends PatchingChain
     /**
      * Map from UnitBox to the Phi node owning it.
      **/
-    protected Map boxToPhiNode = new HashMap();
+    protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<UnitBox, Unit>();
 
     /**
      * Flag that indicates whether control flow falls through from the
      * box to the Phi node.  null indicates we probably need a call to
      * computeInternal().
      **/
-    protected Map boxToNeedsPatching = new HashMap();
+    protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
     
     protected void processPhiNode(Object o)
@@ -226,11 +226,11 @@ public class SPatchingChain extends PatchingChain
 
     protected void reprocessPhiNodes()
     {
-        Set phiNodes = new HashSet(boxToPhiNode.values());
-        boxToPhiNode = new HashMap();
-        boxToNeedsPatching = new HashMap();
+        Set<Unit> phiNodes = new HashSet<Unit>(boxToPhiNode.values());
+        boxToPhiNode = new HashMap<UnitBox, Unit>();
+        boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
-        Iterator phiNodesIt = phiNodes.iterator();
+        Iterator<Unit> phiNodesIt = phiNodes.iterator();
         while(phiNodesIt.hasNext())
             processPhiNode(phiNodesIt.next());
     }
@@ -244,7 +244,7 @@ public class SPatchingChain extends PatchingChain
     protected void computeNeedsPatching()
     {
         {
-            Set boxes = boxToPhiNode.keySet();
+            Set<UnitBox> boxes = boxToPhiNode.keySet();
 
             if(boxes.isEmpty())
                 return;

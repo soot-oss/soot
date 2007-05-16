@@ -29,6 +29,7 @@ package soot.toolkits.scalar;
 import soot.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
 
 /** Provides methods for register coloring.  Jimple uses these methods
@@ -39,9 +40,9 @@ public class FastColorer
      * <code>unitBody</code>, attempting to not
      * split locals assigned the same name in the original Jimple. */
     public static void unsplitAssignColorsToLocals(Body unitBody, 
-                                                   Map localToGroup, 
-                                                   Map localToColor, 
-                                                   Map groupToColorCount)
+                                                   Map<Local, Object> localToGroup, 
+                                                   Map<Local, Integer> localToColor, 
+                                                   Map<Object, Integer> groupToColorCount)
     {
         ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody);
 
@@ -52,7 +53,7 @@ public class FastColorer
         UnitInterferenceGraph intGraph = 
             new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
 
-        Map localToOriginalName = new HashMap();
+        Map<Local, String> localToOriginalName = new HashMap<Local, String>();
         
         // Map each local variable to its original name
         {
@@ -77,7 +78,7 @@ public class FastColorer
             }
         }
         
-        Map originalNameAndGroupToColors = new HashMap();
+        Map<StringGroupPair, List> originalNameAndGroupToColors = new HashMap<StringGroupPair, List>();
             // maps an original name to the colors being used for it
                     
         // Assign a color for each local.
@@ -97,7 +98,7 @@ public class FastColorer
                 
                 Object group = localToGroup.get(local);
                 int colorCount = 
-                    ((Integer) groupToColorCount.get(group)).intValue();
+                    groupToColorCount.get(group).intValue();
                 
                 if(freeColors.length < colorCount)
                     freeColors = 
@@ -114,12 +115,11 @@ public class FastColorer
                     Local[] interferences = 
                         intGraph.getInterferencesOf(local);
 
-                    for(int i = 0; i < interferences.length; i++)
-                    {
-                        if(localToColor.containsKey(interferences[i]))
+                    for (Local element : interferences) {
+                        if(localToColor.containsKey(element))
                         {
                             int usedColor = 
-                                ((Integer) localToColor.get(interferences[i]))
+                                localToColor.get(element)
                                 .intValue();
                 
                             freeColors[usedColor] = 0;
@@ -130,14 +130,14 @@ public class FastColorer
                 // Assign a color to this local.
                 {
                     String originalName = 
-                        (String) localToOriginalName.get(local);
-                    List originalNameColors = 
-                        (List) originalNameAndGroupToColors.get
-                        (new StringGroupPair(originalName, group));
+                        localToOriginalName.get(local);
+                    List<Integer> originalNameColors = 
+                        originalNameAndGroupToColors.get
+					(new StringGroupPair(originalName, group));
                     
                     if(originalNameColors == null)
                     {
-                        originalNameColors = new ArrayList();
+                        originalNameColors = new ArrayList<Integer>();
                         originalNameAndGroupToColors.put
                             (new StringGroupPair(originalName, group), 
                              originalNameColors);
@@ -149,11 +149,11 @@ public class FastColorer
                     // Check if the colors assigned to this 
                     // original name is already free
                     {
-                        Iterator colorIt = originalNameColors.iterator();
+                        Iterator<Integer> colorIt = originalNameColors.iterator();
                         
                         while(colorIt.hasNext())
                         {
-                            Integer color = (Integer) colorIt.next();
+                            Integer color = colorIt.next();
                             
                             if(freeColors[color.intValue()] == 1)
                             {
@@ -178,8 +178,8 @@ public class FastColorer
 
     /** Provides an economical coloring for the locals of 
      * <code>unitBody</code>. */
-    public static void assignColorsToLocals(Body unitBody, Map localToGroup, 
-        Map localToColor, Map groupToColorCount)
+    public static void assignColorsToLocals(Body unitBody, Map<Local, Object> localToGroup, 
+        Map<Local, Integer> localToColor, Map<Object, Integer> groupToColorCount)
     {
         ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody);
         LiveLocals liveLocals;
@@ -206,7 +206,7 @@ public class FastColorer
                 
                 Object group = localToGroup.get(local);
                 int colorCount = 
-                    ((Integer) groupToColorCount.get(group)).intValue();
+                    groupToColorCount.get(group).intValue();
                 
                 if(freeColors.length < colorCount)
                     freeColors = new int[Math.max(freeColors.length * 2, 
@@ -223,13 +223,12 @@ public class FastColorer
                     Local[] interferences = 
                         intGraph.getInterferencesOf(local);
 
-                    for(int i = 0; i < interferences.length; i++)
-                    {
-                        if(localToColor.containsKey(interferences[i]))
+                    for (Local element : interferences) {
+                        if(localToColor.containsKey(element))
                         {
                             int usedColor = 
-                                ((Integer) localToColor.
-                                 get(interferences[i])).intValue();
+                                localToColor.
+                                 get(element).intValue();
                 
                             freeColors[usedColor] = 0;
                         }
@@ -264,7 +263,7 @@ public class FastColorer
     /** Implementation of a unit interference graph. */
     public static class UnitInterferenceGraph
     {
-        Map localToLocals;// Maps a local to its interfering locals.
+        Map<Local, ArraySet> localToLocals;// Maps a local to its interfering locals.
         List locals;
         
         private UnitInterferenceGraph()
@@ -276,7 +275,7 @@ public class FastColorer
             return locals;
         }
         
-        public UnitInterferenceGraph(Body body, Map localToGroup, 
+        public UnitInterferenceGraph(Body body, Map<Local, Object> localToGroup, 
                                      LiveLocals liveLocals)
         {
             locals = new ArrayList();
@@ -284,7 +283,7 @@ public class FastColorer
             
             // Initialize localToLocals
             {
-                localToLocals = new HashMap(body.getLocalCount() * 2 + 1, 
+                localToLocals = new HashMap<Local, ArraySet>(body.getLocalCount() * 2 + 1, 
                                             0.7f);
     
                 Iterator localIt = body.getLocals().iterator();
@@ -342,13 +341,13 @@ public class FastColorer
     
         public boolean localsInterfere(Local l1, Local l2)
         {
-            return ((Set) localToLocals.get(l1)).contains(l2);
+            return localToLocals.get(l1).contains(l2);
         }
     
         public void setInterference(Local l1, Local l2)
         {
-            ((Set) localToLocals.get(l1)).add(l2);
-            ((Set) localToLocals.get(l2)).add(l1);
+            localToLocals.get(l1).add(l2);
+            localToLocals.get(l2).add(l1);
         }
     
         public boolean isEmpty()
@@ -358,7 +357,7 @@ public class FastColorer
         
         Local[] getInterferencesOf(Local l)
         {
-            Object[] objects = ((Set) localToLocals.get(l)).toArray();
+            Object[] objects = localToLocals.get(l).toArray();
             Local[] locals = new Local[objects.length];
     
             for(int i = 0; i < objects.length; i++)

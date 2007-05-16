@@ -26,24 +26,18 @@
 
 
 package soot;
-import soot.*;
 import soot.options.*;
 
-import soot.coffi.*;
 import java.util.*;
-import java.io.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.javaToJimple.*;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
 {
     /** Maps each resolved class to a list of all references in it. */
-    private Map classToReferences = new HashMap();
+    private final Map<SootClass, ArrayList> classToReferences = new HashMap<SootClass, ArrayList>();
     
     /** SootClasses waiting to be resolved. */
-    private LinkedList/*SootClass*/[] worklist = new LinkedList[4];
+    private final LinkedList/*SootClass*/[] worklist = new LinkedList[4];
 
     public SootResolver (Singletons.Global g) {
         worklist[SootClass.HIERARCHY] = new LinkedList();
@@ -57,7 +51,7 @@ public class SootResolver
     private boolean resolveEverything() {
         return( Options.v().whole_program() || Options.v().whole_shimple()
 	|| Options.v().full_resolver() 
-	|| Options.v().output_format() == Options.v().output_format_dava );
+	|| Options.v().output_format() == Options.output_format_dava );
     }
 
     /** Returns a (possibly not yet resolved) SootClass to be used in references
@@ -186,8 +180,7 @@ public class SootResolver
                 final Type ptype = (Type) ptypeIt.next();
                 addToResolveWorklist( ptype, SootClass.HIERARCHY );
             }
-            for( Iterator exceptionIt = m.getExceptions().iterator(); exceptionIt.hasNext(); ) {
-                final SootClass exception = (SootClass) exceptionIt.next();
+            for (SootClass exception : m.getExceptions()) {
                 addToResolveWorklist( exception, SootClass.HIERARCHY );
             }
         }
@@ -216,7 +209,7 @@ public class SootResolver
             G.v().out.println("bringing to BODIES: "+sc);
         sc.setResolvingLevel(SootClass.BODIES);
 
-        Collection references = (Collection) classToReferences.get(sc);
+        Collection references = classToReferences.get(sc);
         if( references == null ) return;
 
         Iterator it = references.iterator();

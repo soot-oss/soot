@@ -28,6 +28,7 @@ package soot.toolkits.graph;
 
 
 import java.util.*;
+
 import soot.*;
 import soot.util.*;
 
@@ -41,8 +42,8 @@ import soot.util.*;
 public class HashMutableDirectedGraph implements MutableDirectedGraph {
 		
 
-    protected HashMap nodeToPreds = new HashMap();
-    protected HashMap nodeToSuccs = new HashMap();
+    protected HashMap<Object,ArrayList> nodeToPreds = new HashMap();
+    protected HashMap<Object,ArrayList> nodeToSuccs = new HashMap();
 
     protected Chain heads = new HashChain();
     protected Chain tails = new HashChain();
@@ -84,7 +85,7 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
     public List getPredsOf(Object s)
     {
-        List l = (List) nodeToPreds.get(s);
+        List l = nodeToPreds.get(s);
         if (l != null)
             return Collections.unmodifiableList(l);
         else
@@ -93,7 +94,7 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
     public List getSuccsOf(Object s)
     {
-        List l = (List) nodeToSuccs.get(s);
+        List l = nodeToSuccs.get(s);
         if (l != null)
             return Collections.unmodifiableList(l);
         else
@@ -118,11 +119,11 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
         if (containsEdge(from, to))
             return;
 
-        List succsList = (List)nodeToSuccs.get(from);
+        List<Object> succsList = nodeToSuccs.get(from);
         if (succsList == null)
             throw new RuntimeException(from + " not in graph!");
 
-        List predsList = (List)nodeToPreds.get(to);
+        List<Object> predsList = nodeToPreds.get(to);
         if (predsList == null)
             throw new RuntimeException(to + " not in graph!");
 
@@ -141,11 +142,11 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
         if (!containsEdge(from, to))
             return;
 
-        List succsList = (List)nodeToSuccs.get(from);
+        List succsList = nodeToSuccs.get(from);
         if (succsList == null)
             throw new RuntimeException(from + " not in graph!");
 
-        List predsList = (List)nodeToPreds.get(to);
+        List predsList = nodeToPreds.get(to);
         if (predsList == null)
             throw new RuntimeException(to + " not in graph!");
 
@@ -161,7 +162,7 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
     public boolean containsEdge(Object from, Object to)
     {
-				List succs = (List)nodeToSuccs.get(from);
+				List succs = nodeToSuccs.get(from);
 				if (succs == null)
 						return false;
         return succs.contains(to);
@@ -172,7 +173,7 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
         return nodeToPreds.keySet().contains(node);
     }
 
-    public List getNodes()
+    public List<Object> getNodes()
     {
         return Arrays.asList(nodeToPreds.keySet().toArray());
     }
@@ -190,12 +191,12 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
     public void removeNode(Object node)
     {
-        List succs = (List)((ArrayList)nodeToSuccs.get(node)).clone();
+        List succs = (List)nodeToSuccs.get(node).clone();
         for (Iterator succsIt = succs.iterator(); succsIt.hasNext(); )
             removeEdge(node, succsIt.next());
         nodeToSuccs.remove(node);
 
-        List preds = (List)((ArrayList)nodeToPreds.get(node)).clone();
+        List preds = (List)nodeToPreds.get(node).clone();
         for (Iterator predsIt = preds.iterator(); predsIt.hasNext(); )
             removeEdge(predsIt.next(), node);
         nodeToPreds.remove(node);

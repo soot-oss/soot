@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.infoflow;
 
 import soot.*;
+
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
@@ -43,15 +44,15 @@ public class SmartMethodLocalObjectsAnalysis
 	{
 		EquivalentValue localEqVal;
 		if(local instanceof InstanceFieldRef)
-			localEqVal = dfa.getNodeForFieldRef(method, ((FieldRef) local).getField());
+			localEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, ((FieldRef) local).getField());
 		else
 			localEqVal = new EquivalentValue(local);
 			
-		List sources = smdfa.sourcesOf(localEqVal);
-		Iterator sourcesIt = sources.iterator();
+		List<EquivalentValue> sources = smdfa.sourcesOf(localEqVal);
+		Iterator<EquivalentValue> sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
-			EquivalentValue source = (EquivalentValue) sourcesIt.next();
+			EquivalentValue source = sourcesIt.next();
 			if(source.getValue() instanceof Ref)
 			{
 				if(!context.isFieldLocal(source))
@@ -73,15 +74,15 @@ public class SmartMethodLocalObjectsAnalysis
 
 		EquivalentValue localEqVal;
 		if(local instanceof InstanceFieldRef)
-			localEqVal = dfa.getNodeForFieldRef(method, ((FieldRef) local).getField());
+			localEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, ((FieldRef) local).getField());
 		else
 			localEqVal = new EquivalentValue(local);
 			
-		List sources = smdfa.sourcesOf(localEqVal);
-		Iterator sourcesIt = sources.iterator();
+		List<EquivalentValue> sources = smdfa.sourcesOf(localEqVal);
+		Iterator<EquivalentValue> sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
-			EquivalentValue source = (EquivalentValue) sourcesIt.next();
+			EquivalentValue source = sourcesIt.next();
 			if(source.getValue() instanceof Ref)
 			{
 				if(!context.isFieldLocal(source))

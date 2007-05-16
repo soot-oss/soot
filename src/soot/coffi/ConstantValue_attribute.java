@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** An attribute for a constant value; used for field initializers.
  * @see attribute_info
  * @see field_info#attributes

@@ -27,8 +27,6 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 /**
@@ -36,7 +34,7 @@ import java.util.*;
  *
  * <P> This class is primarily used by the TypeResolver class, to optimize its computation.
  **/
-class ClassHierarchy
+public class ClassHierarchy
 {
   /** Map: Scene -> ClassHierarchy **/
   
@@ -48,14 +46,11 @@ class ClassHierarchy
   //public final TypeNode UNKNOWN;
   //public final TypeNode ERROR;
 
-  /** The class manager **/
-  private final Scene scene;
-  
   /** All type node instances **/
-  private final List typeNodeList = new ArrayList();
+  private final List<TypeNode> typeNodeList = new ArrayList<TypeNode>();
   
   /** Map: Type -> TypeNode **/
-  private final HashMap typeNodeMap = new HashMap();
+  private final HashMap<Type, TypeNode> typeNodeMap = new HashMap<Type, TypeNode>();
   
   /** Used to transform boolean, byte, short and char to int **/
   private final ToInt transform = new ToInt();
@@ -70,7 +65,6 @@ class ClassHierarchy
 	throw new InternalTypingException();
       }
 
-    this.scene = scene;
     G.v().ClassHierarchy_classHierarchyMap.put(scene, this);
 
     NULL = typeNode(NullType.v());
@@ -98,7 +92,7 @@ class ClassHierarchy
       }
     
     ClassHierarchy classHierarchy =
-      (ClassHierarchy) G.v().ClassHierarchy_classHierarchyMap.get(scene);
+      G.v().ClassHierarchy_classHierarchyMap.get(scene);
 
     if(classHierarchy == null)
       {
@@ -117,7 +111,7 @@ class ClassHierarchy
       }
     
     type = transform.toInt(type);
-    TypeNode typeNode = (TypeNode) typeNodeMap.get(type);
+    TypeNode typeNode = typeNodeMap.get(type);
 
     if(typeNode == null)
       {
@@ -140,8 +134,7 @@ class ClassHierarchy
     boolean colon = false;
 
     s.append("ClassHierarchy:{");
-    for(Iterator i = typeNodeList.iterator(); i.hasNext();)
-      {
+    for (TypeNode typeNode : typeNodeList) {
 	if(colon)
 	  {
 	    s.append(",");
@@ -151,7 +144,7 @@ class ClassHierarchy
 	    colon = true;
 	  }
 
-	s.append(i.next());
+	s.append(typeNode);
       }
     s.append("}");
 

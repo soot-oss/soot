@@ -34,7 +34,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -87,7 +86,7 @@ public class JIdentityStmt extends AbstractDefinitionStmt
         ((StmtSwitch) sw).caseIdentityStmt(this);
     }    
     
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         Value currentRhs = getRightOp();
         Value newRhs;

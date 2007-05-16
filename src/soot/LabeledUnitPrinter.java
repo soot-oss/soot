@@ -30,14 +30,14 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
     /** branch targets **/
     protected Map labels;
     /** for unit references in Phi nodes **/
-    protected Map references;
+    protected Map<Unit, String> references;
 
     public LabeledUnitPrinter( Body b ) {
         createLabelMaps(b);
     }
 
     public Map labels() { return labels; }
-    public Map references() { return references; }
+    public Map<Unit, String> references() { return references; }
 
     public abstract void literal( String s );
     public abstract void methodRef( SootMethodRef m );
@@ -60,7 +60,7 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
         }
         // refs to control flow predecessors (for Shimple)
         else{
-            String ref = (String) references.get( u );
+            String ref = references.get( u );
 
             if(startOfLine){
                 String newIndent = "(" + ref + ")" +
@@ -78,20 +78,20 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
         Chain units = body.getUnits();
 
         labels = new HashMap(units.size() * 2 + 1, 0.7f);
-        references = new HashMap(units.size() * 2 + 1, 0.7f);
+        references = new HashMap<Unit, String>(units.size() * 2 + 1, 0.7f);
         
         // Create statement name table
         {
             Iterator boxIt = body.getAllUnitBoxes().iterator();
 
-            Set labelStmts = new HashSet();
-            Set refStmts = new HashSet();
+            Set<Unit> labelStmts = new HashSet<Unit>();
+            Set<Unit> refStmts = new HashSet<Unit>();
             
             // Build labelStmts and refStmts
             {
                 while (boxIt.hasNext()) {
                     UnitBox box = (UnitBox) boxIt.next();
-                    Unit stmt = (Unit) box.getUnit();
+                    Unit stmt = box.getUnit();
 
                     if(box.isBranchTarget())
                         labelStmts.add(stmt);

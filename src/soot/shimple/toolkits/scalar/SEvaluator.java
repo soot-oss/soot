@@ -43,11 +43,11 @@ public class SEvaluator
     public static boolean isValueConstantValued(Value op)
     {
         if(op instanceof PhiExpr) {
-            Iterator argsIt = ((PhiExpr) op).getValues().iterator();
+            Iterator<Value> argsIt = ((PhiExpr) op).getValues().iterator();
             Constant firstConstant = null;
 
             while(argsIt.hasNext()){
-                Value arg = (Value) argsIt.next();
+                Value arg = argsIt.next();
 
                 if(!(arg instanceof Constant))
                     return false;
@@ -76,7 +76,7 @@ public class SEvaluator
         if(!(isValueConstantValued(op)))
             return null;
         
-        return (Value) ((PhiExpr) op).getValue(0);
+        return ((PhiExpr) op).getValue(0);
     }
 
     /**
@@ -109,10 +109,10 @@ public class SEvaluator
 
         if(expr instanceof PhiExpr){
             PhiExpr phi = (PhiExpr) expr;
-            Iterator argsIt = phi.getValues().iterator();
+            Iterator<Value> argsIt = phi.getValues().iterator();
 
             while(argsIt.hasNext()){
-                Value arg = (Value) argsIt.next();
+                Value arg = argsIt.next();
             
                 if(!(arg instanceof Constant))
                     continue;
@@ -163,13 +163,13 @@ public class SEvaluator
      * @see SEvaluator.TopConstant
      * @see SEvaluator.BottomConstant
      **/
-    public static Constant getFuzzyConstantValueOf(Value v, Map localToConstant)
+    public static Constant getFuzzyConstantValueOf(Value v, Map<Local, Constant> localToConstant)
     {
         if(v instanceof Constant)
             return (Constant) v;
 
         if(v instanceof Local)
-            return (Constant) localToConstant.get(v);
+            return localToConstant.get(v);
 
         if(!(v instanceof Expr))
             return BottomConstant.v();
@@ -183,7 +183,7 @@ public class SEvaluator
             ValueBox useBox = (ValueBox) useBoxIt.next();
             Value use = useBox.getValue();
             if(use instanceof Local){
-                Constant constant = (Constant) localToConstant.get(use);
+                Constant constant = localToConstant.get(use);
                 if(useBox.canContainValue(constant))
                     useBox.setValue(constant);
             }

@@ -23,15 +23,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
-import soot.shimple.toolkits.scalar.*;
-import soot.shimple.toolkits.graph.*;
-import soot.options.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.base.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.jimple.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
@@ -104,7 +96,7 @@ public class PhiNodeManager
         
         int[] workFlags = new int[cfg.size()];
         int iterCount = 0;
-        Stack workList = new Stack();
+        Stack<Block> workList = new Stack<Block>();
 
         /* Main Cytron algorithm. */
         
@@ -127,7 +119,7 @@ public class PhiNodeManager
                 }
 
                 while(!workList.empty()){
-                    Block block = (Block) workList.pop();
+                    Block block = workList.pop();
                     DominatorNode node = dt.getDode(block);
                     Iterator frontierNodes = df.getDominanceFrontierOf(node).iterator();
 
@@ -220,7 +212,7 @@ public class PhiNodeManager
      **/
     public void trimExceptionalPhiNodes()
     {
-        Set handlerUnits = new HashSet();
+        Set<Unit> handlerUnits = new HashSet<Unit>();
         Iterator trapsIt = body.getTraps().iterator();
 
         while(trapsIt.hasNext()) {
@@ -367,7 +359,7 @@ public class PhiNodeManager
         */
     }
     
-    protected Map unitToBlock;
+    protected Map<Unit, Block> unitToBlock;
 
     /**
      * Returns true if champ dominates challenger.  Note that false
@@ -385,8 +377,8 @@ public class PhiNodeManager
         if(unitToBlock == null)
             unitToBlock = getUnitToBlockMap(cfg);
 
-        Block champBlock = (Block) unitToBlock.get(champ);
-        Block challengerBlock = (Block) unitToBlock.get(challenger);
+        Block champBlock = unitToBlock.get(champ);
+        Block challengerBlock = unitToBlock.get(challenger);
 
         if(champBlock.equals(challengerBlock)){
             Iterator unitsIt = champBlock.iterator();
@@ -424,7 +416,7 @@ public class PhiNodeManager
         boolean addedNewLocals = false;
         
         // List of Phi nodes to be deleted.
-        List phiNodes = new ArrayList();
+        List<Unit> phiNodes = new ArrayList<Unit>();
 
         // This stores the assignment statements equivalent to each
         // (and every) Phi.  We use lists instead of a Map of
@@ -432,12 +424,12 @@ public class PhiNodeManager
         // of the assignment statements, i.e. if a block has more than
         // one Phi expression, we prefer that the equivalent
         // assignments be placed in the same order as the Phi expressions.
-        List equivStmts = new ArrayList();
+        List<AssignStmt> equivStmts = new ArrayList<AssignStmt>();
 
         // Similarly, to preserve order, instead of directly storing
         // the pred, we store the pred box so that we follow the
         // pointers when SPatchingChain moves them.
-        List predBoxes = new ArrayList();
+        List<ValueUnitPair> predBoxes = new ArrayList<ValueUnitPair>();
         
         Chain units = body.getUnits();
         Iterator unitsIt = units.iterator();
@@ -469,8 +461,8 @@ public class PhiNodeManager
         /* Avoid Concurrent Modification exceptions. */
 
         for(int i = 0; i < equivStmts.size(); i++){
-            AssignStmt stmt = (AssignStmt) equivStmts.get(i);
-            Unit pred = ((UnitBox) predBoxes.get(i)).getUnit();
+            AssignStmt stmt = equivStmts.get(i);
+            Unit pred = predBoxes.get(i).getUnit();
 
             if(pred == null)
                 throw new RuntimeException("Assertion failed.");
@@ -508,10 +500,10 @@ public class PhiNodeManager
                 units.insertAfter(stmt, pred);
         }
         
-        Iterator phiNodesIt = phiNodes.iterator();
+        Iterator<Unit> phiNodesIt = phiNodes.iterator();
 
         while(phiNodesIt.hasNext()){
-            Unit removeMe = (Unit) phiNodesIt.next();
+            Unit removeMe = phiNodesIt.next();
             units.remove(removeMe);
             removeMe.clearUnitBoxes();
         }
@@ -523,9 +515,9 @@ public class PhiNodeManager
      * Convenience function that maps units to blocks.  Should
      * probably be in BlockGraph.
      **/
-    public Map getUnitToBlockMap(BlockGraph blocks)
+    public Map<Unit, Block> getUnitToBlockMap(BlockGraph blocks)
     {
-        Map unitToBlock = new HashMap();
+        Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>();
 
         Iterator blocksIt = blocks.iterator();
         while(blocksIt.hasNext()){

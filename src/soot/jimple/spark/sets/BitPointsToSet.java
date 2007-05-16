@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.internal.*;
@@ -47,7 +46,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
 
     private final boolean nativeAddAll( BitPointsToSet other, BitPointsToSet exclude ) {
         BitVector mask = null;
-        TypeManager typeManager = (TypeManager) pag.getTypeManager();
+        TypeManager typeManager = pag.getTypeManager();
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
             mask = typeManager.get( this.getType() );
         }

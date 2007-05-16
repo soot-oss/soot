@@ -24,15 +24,14 @@ import soot.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTSynchronizedBlockNode extends ASTLabeledNode
 {
-    private List body;
+    private List<Object> body;
     private ValueBox localBox;
 
-    public ASTSynchronizedBlockNode( SETNodeLabel label, List body, Value local)
+    public ASTSynchronizedBlockNode( SETNodeLabel label, List<Object> body, Value local)
     {
 	super( label);
 	this.body = body;
@@ -45,9 +44,9 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
       Nomair A Naeem 21-FEB-2005
       Used by UselessLabeledBlockRemove to update a body
     */
-    public void replaceBody(List body){
+    public void replaceBody(List<Object> body){
 	this.body=body;
-	subBodies=new ArrayList();
+	subBodies=new ArrayList<Object>();
 	subBodies.add(body);
     }
 

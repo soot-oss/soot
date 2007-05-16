@@ -18,19 +18,14 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.*;
-import soot.jimple.spark.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
-import soot.jimple.spark.builder.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.*;
+
 import java.util.*;
-import soot.util.*;
 import soot.util.queue.*;
-import soot.options.SparkOptions;
 import soot.options.CGOptions;
-import soot.toolkits.scalar.Pair;
 
 
 /** The interface between the pointer analysis engine and the on-the-fly
@@ -39,11 +34,11 @@ import soot.toolkits.scalar.Pair;
  */
 
 public class OnFlyCallGraph {
-    private OnFlyCallGraphBuilder ofcgb;
-    private ReachableMethods reachableMethods;
-    private QueueReader reachablesReader;
-    private QueueReader callEdges;
-    private CallGraph callGraph;
+    private final OnFlyCallGraphBuilder ofcgb;
+    private final ReachableMethods reachableMethods;
+    private final QueueReader reachablesReader;
+    private final QueueReader callEdges;
+    private final CallGraph callGraph;
 
     public ReachableMethods reachableMethods() { return reachableMethods; }
     public CallGraph callGraph() { return callGraph; }
@@ -52,7 +47,7 @@ public class OnFlyCallGraph {
         this.pag = pag;
         CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         if( options.all_reachable() ) {
-            List entryPoints = new ArrayList();
+            List<SootMethod> entryPoints = new ArrayList<SootMethod>();
             entryPoints.addAll( EntryPoints.v().all() );
             entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
             Scene.v().setEntryPoints( entryPoints );
@@ -80,7 +75,6 @@ public class OnFlyCallGraph {
         }
     }
     private void processCallEdges() {
-        Stmt s = null;
         while(callEdges.hasNext()) {
             Edge e = (Edge) callEdges.next();
             MethodPAG amp = MethodPAG.v( pag, e.tgt() );

@@ -20,12 +20,14 @@
 package soot.javaToJimple;
 import java.util.*;
 
+import polyglot.util.IdentityKey;
+
 public class PrivateAccessUses extends polyglot.visit.NodeVisitor {
 
-    private ArrayList list;
+    private final ArrayList<IdentityKey> list;
     private ArrayList avail;
     
-    public ArrayList getList() {
+    public ArrayList<IdentityKey> getList() {
         return list;
     }
 
@@ -34,7 +36,7 @@ public class PrivateAccessUses extends polyglot.visit.NodeVisitor {
     }
     
     public PrivateAccessUses(){
-        list = new ArrayList();
+        list = new ArrayList<IdentityKey>();
     }
 
     public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {

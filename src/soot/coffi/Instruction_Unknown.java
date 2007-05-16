@@ -30,7 +30,6 @@
 
 
 package soot.coffi;
-import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>
@@ -62,6 +61,6 @@ import java.io.*;
 class Instruction_Unknown extends Instruction_noargs {
    public Instruction_Unknown(byte c) {
       super(c);
-      name = "unknown instruction (" + (((int)c)&0xff) + ")";
+      name = "unknown instruction (" + ((c)&0xff) + ")";
    }
 }

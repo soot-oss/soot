@@ -18,14 +18,12 @@
  */
 
 package soot.jimple.spark.internal;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.*;
 import soot.util.*;
 import java.util.Iterator;
 import soot.util.queue.*;
 import soot.Type;
-import soot.options.SparkOptions;
 
 /** A map of bit-vectors representing subtype relationships.
  * @author Ondrej Lhotak

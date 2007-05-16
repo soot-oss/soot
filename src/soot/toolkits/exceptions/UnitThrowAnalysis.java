@@ -26,7 +26,6 @@ import soot.jimple.*;
 import soot.grimp.*;
 import soot.shimple.ShimpleValueSwitch;
 import soot.shimple.PhiExpr;
-import soot.toolkits.exceptions.*;
 
 /**
  * A {@link ThrowAnalysis} which returns the set of runtime exceptions
@@ -120,7 +119,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     protected class UnitSwitch implements InstSwitch, StmtSwitch {
 
-	private ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
+	private final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
 
 	// Asynchronous errors are always possible:
 	private ThrowableSet result = mgr.VM_ERRORS;
@@ -461,7 +460,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     protected class ValueSwitch implements GrimpValueSwitch, ShimpleValueSwitch {
 
-	private ThrowableSet.Manager mgr = 
+	private final ThrowableSet.Manager mgr = 
 	    ThrowableSet.Manager.v();
 
 	// Asynchronous errors are always possible:

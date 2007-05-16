@@ -40,15 +40,15 @@ import java.util.*;
 
 public class StronglyConnectedComponents
 {
-    private HashMap nodeToColor;
+    private HashMap<Object, Object> nodeToColor;
     private static final Object Visited=new Object();
     private static final Object Black=new Object();
-    private LinkedList finishingOrder;
-    private List componentList = new ArrayList();
-    private HashMap nodeToComponent = new HashMap();
+    private final LinkedList<Object> finishingOrder;
+    private List<List> componentList = new ArrayList<List>();
+    private final HashMap<Object, List<Object>> nodeToComponent = new HashMap<Object, List<Object>>();
     MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
-    private int[] indexStack;
-    private Object[] nodeStack;
+    private final int[] indexStack;
+    private final Object[] nodeStack;
     private int last;
     
     /**
@@ -58,10 +58,10 @@ public class StronglyConnectedComponents
      */
     public StronglyConnectedComponents(DirectedGraph g)
     {
-	nodeToColor = new HashMap((3*g.size())/2,0.7f);
+	nodeToColor = new HashMap<Object, Object>((3*g.size())/2,0.7f);
 	indexStack = new int[g.size()];
 	nodeStack = new Object[g.size()];        
-	finishingOrder = new LinkedList();
+	finishingOrder = new LinkedList<Object>();
 	
         // Visit each node
         {
@@ -78,18 +78,18 @@ public class StronglyConnectedComponents
 
 	
         // Re-color all nodes white
-        nodeToColor = new HashMap((3*g.size()),0.7f);
+        nodeToColor = new HashMap<Object, Object>((3*g.size()),0.7f);
 
         // Visit each node via transpose edges
         {
-            Iterator revNodeIt = finishingOrder.iterator();
+            Iterator<Object> revNodeIt = finishingOrder.iterator();
             while (revNodeIt.hasNext())
             {
                 Object s = revNodeIt.next();
 
                 if(nodeToColor.get(s) == null)
                 {
-                    List currentComponent = null;
+                    List<Object> currentComponent = null;
 
 		    currentComponent = new StationaryArrayList();
 		    nodeToComponent.put(s, currentComponent);
@@ -147,7 +147,7 @@ public class StronglyConnectedComponents
         }
     }
 
-    private void visitRevNode(DirectedGraph graph, Object startNode, List currentComponent)
+    private void visitRevNode(DirectedGraph graph, Object startNode, List<Object> currentComponent)
     {
 	last=0;
         
@@ -211,7 +211,7 @@ public class StronglyConnectedComponents
      *   @return a list of the strongly-connnected components that make
      *           up the computed strongly-connnect component graph.
      */
-    public List getComponents()
+    public List<List> getComponents()
     {
         return componentList;
     }
@@ -223,7 +223,7 @@ public class StronglyConnectedComponents
      */
     public List getComponentOf(Object a)
     {
-        return (List)nodeToComponent.get(a);
+        return nodeToComponent.get(a);
     }
 
     /** 

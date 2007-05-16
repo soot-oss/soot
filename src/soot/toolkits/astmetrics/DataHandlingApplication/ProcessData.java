@@ -29,7 +29,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +55,7 @@ public class ProcessData {
 	private static String metricListFileName=null;
 	
 	
-	private static ArrayList xmlFileList = new ArrayList();
+	private static final ArrayList<String> xmlFileList = new ArrayList<String>();
 
 	
 	private static int aggregationMechanism =-1;
@@ -181,9 +180,9 @@ public class ProcessData {
 			}
 		}
 		
-		Iterator it = xmlFileList.iterator();
+		Iterator<String> it = xmlFileList.iterator();
 		while(it.hasNext()){
-			System.out.println("Will be reading: "+(String)it.next());
+			System.out.println("Will be reading: "+it.next());
 		}
 	}
 	
@@ -255,19 +254,19 @@ public class ProcessData {
 			};
 			children = dir.list(filter);
 			
-			for(int i=0;i<children.length;i++)
-				xmlFileList.add(children[i]);
+			for (String element : children)
+				xmlFileList.add(element);
 		}
 	}
 	
 	
 	
 	private static void writeMetricLists(PrintWriter out){
-		ArrayList metricList = new ArrayList();
+		ArrayList<String> metricList = new ArrayList<String>();
 		
-		Iterator it = xmlFileList.iterator();
+		Iterator<String> it = xmlFileList.iterator();
 		while(it.hasNext()){
-			String fileName = (String)it.next();
+			String fileName = it.next();
 			try {
 				DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -317,7 +316,7 @@ public class ProcessData {
 		
 	private static void generateMetricsTables(){
 		
-		Vector columns = new Vector(); 
+		Vector<String> columns = new Vector<String>(); 
 		
 		/*
 		 * create the columns which are the metriclist
@@ -346,7 +345,7 @@ public class ProcessData {
 		
 		
 		
-		Vector allMetrics = new Vector();
+		Vector<String> allMetrics = new Vector<String>();
 		
 		try{
 			FileReader file = new FileReader("myList");
@@ -396,22 +395,22 @@ public class ProcessData {
 			 * fft-enabled.xml fft-disabled.xml should be in one table where as
 			 * matrix-enabled.xml matrix-disabled.xml should be in another table
 			 */			
-			HashMap benchMarkToFiles = new HashMap();
-			Iterator it = xmlFileList.iterator();
+			HashMap<String, List> benchMarkToFiles = new HashMap<String, List>();
+			Iterator<String> it = xmlFileList.iterator();
 			while(it.hasNext()){
-				String fileName = (String)it.next();
+				String fileName = it.next();
 				if(fileName.indexOf('-') <0){
 					System.out.println("XML files should have following syntax:\n <BENCHMARKNAME>-<PROPERTY>.xml\n PROPERTY should be enabled disabled etc");
 					return;
 				}
 				String benchmark = fileName.substring(0,fileName.indexOf('-'));
 				Object temp = benchMarkToFiles.get(benchmark);
-				List tempList = null;
+				List<String> tempList = null;
 				if(temp == null){
-					tempList = new ArrayList();
+					tempList = new ArrayList<String>();
 				}
 				else{
-					tempList = (ArrayList)temp;
+					tempList = (ArrayList<String>)temp;
 				}
 				tempList.add(fileName);
 				benchMarkToFiles.put(benchmark,tempList);
@@ -440,10 +439,10 @@ public class ProcessData {
 			if(CSV)
 				printCSVHeader(bench);
 			
-			Iterator keys = benchMarkToFiles.keySet().iterator();
+			Iterator<String> keys = benchMarkToFiles.keySet().iterator();
 			while(keys.hasNext()){
 				//each key gets its own table
-				String key = (String)keys.next();
+				String key = keys.next();
 				
 				if(!CSV)
 					printTexTableHeader(bench,key,columns);				
@@ -452,7 +451,7 @@ public class ProcessData {
 				Object tempValue = benchMarkToFiles.get(key);
 				if(tempValue == null)
 					continue;
-				List files = (List)tempValue;
+				List<String> files = (List<String>)tempValue;
 				
 				
 				/*
@@ -465,9 +464,9 @@ public class ProcessData {
 						throw new RuntimeException("not all xml files available for this benchmark!!");
 					System.out.println("old order"+files.toString());
 					String[] newFileOrder = new String[files.size()];
-					Iterator tempIt = files.iterator();
+					Iterator<String> tempIt = files.iterator();
 					while(tempIt.hasNext()){
-						String fileSort = (String)tempIt.next();
+						String fileSort = tempIt.next();
 						if(fileSort.indexOf("Jad")>-1){
 							newFileOrder[1] = fileSort;
 						}
@@ -488,7 +487,7 @@ public class ProcessData {
 
 					}
 
-					files = new ArrayList();
+					files = new ArrayList<String>();
 					files.add(newFileOrder[0]);
 					files.add(newFileOrder[1]);
 					files.add(newFileOrder[2]);
@@ -503,9 +502,9 @@ public class ProcessData {
 						throw new RuntimeException("not all xml files available for this benchmark!!");
 					System.out.println("old order"+files.toString());
 					String[] newFileOrder = new String[files.size()];
-					Iterator tempIt = files.iterator();
+					Iterator<String> tempIt = files.iterator();
 					while(tempIt.hasNext()){
-						String fileSort = (String)tempIt.next();
+						String fileSort = tempIt.next();
 						if(fileSort.indexOf("original")>-1){
 							newFileOrder[0] = fileSort;
 						}
@@ -525,7 +524,7 @@ public class ProcessData {
 							throw new RuntimeException("property xml not correct");
 					}
 
-					files = new ArrayList();
+					files = new ArrayList<String>();
 					files.add(newFileOrder[0]);
 					files.add(newFileOrder[1]);
 					files.add(newFileOrder[2]);
@@ -536,10 +535,10 @@ public class ProcessData {
 				}
 				
 				
-				Iterator fileIt = files.iterator();
+				Iterator<String> fileIt = files.iterator();
 				int count=-1;
 				while(fileIt.hasNext()){
-					String fileName = (String)fileIt.next();
+					String fileName = fileIt.next();
 					count++;
 					try{
 						DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -559,12 +558,12 @@ public class ProcessData {
 						}
 			
 						
-						HashMap aggregatedValues = new HashMap();
+						HashMap<String, Number> aggregatedValues = new HashMap<String, Number>();
 				
 						
 						//TODO Should compute all metrics always
 						//only print out the one we want
-						Iterator tempIt = allMetrics.iterator();
+						Iterator<String> tempIt = allMetrics.iterator();
 						while(tempIt.hasNext()){
 							aggregatedValues.put(tempIt.next(),new Integer(0));
 						}
@@ -626,7 +625,7 @@ public class ProcessData {
 						
 						tempIt = columns.iterator();
 						while(tempIt.hasNext()){
-							String nexttempit = (String)tempIt.next();
+							String nexttempit = tempIt.next();
 							Object temp = aggregatedValues.get(nexttempit);
 							//System.out.println("NEXT TEMP IT ISSSSSSSSSSSSSSSSSSSSSS"+nexttempit);
 							if(temp instanceof Integer){
@@ -849,9 +848,9 @@ public class ProcessData {
 		else{		
 		
 		
-			Iterator it = xmlFileList.iterator();
+			Iterator<String> it = xmlFileList.iterator();
 			while(it.hasNext()){
-				String fileName = (String)it.next();
+				String fileName = it.next();
 
 				try{
 					DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -915,7 +914,7 @@ public class ProcessData {
 	 * 
 	 * Should read all of its metrics and add them to the aggregated values
 	 */
-	private static int aggregateXMLFileMetrics(Document doc, HashMap aggregated){
+	private static int aggregateXMLFileMetrics(Document doc, HashMap<String, Number> aggregated){
 		
 		NodeList classes = doc.getElementsByTagName("Class");
 		int numClasses =classes.getLength();
@@ -1014,7 +1013,7 @@ public class ProcessData {
 	
 	
 	
-	private static void getClassMetrics(String fileName, Document doc,Vector columns){
+	private static void getClassMetrics(String fileName, Document doc,Vector<String> columns){
 		//create a tex file with name (fileName - xml + tex)
 		String newClassName = fileName;
 		if(newClassName.endsWith(".xml"))
@@ -1035,8 +1034,8 @@ public class ProcessData {
     	 * In order to print all class info alphabetically
     	 * we will create a map of className to data to be displayed
     	 */
-    	ArrayList classNames = new ArrayList();
-    	HashMap classData = new HashMap();
+    	ArrayList<String> classNames = new ArrayList<String>();
+    	HashMap<String, String> classData = new HashMap<String, String>();
 		
     	//each row is a class the name is obtained from the tag Class
 		NodeList classes = doc.getElementsByTagName("Class");
@@ -1151,10 +1150,10 @@ public class ProcessData {
 		
 		Collections.sort(classNames);
 		
-		Iterator tempIt = classNames.iterator();
+		Iterator<String> tempIt = classNames.iterator();
 		while(tempIt.hasNext()){
-			String className = (String)tempIt.next();
-			String data = (String)classData.get(className);
+			String className = tempIt.next();
+			String data = classData.get(className);
 			writerOut.print(className);
 			writerOut.println(data);
 		}
@@ -1186,7 +1185,7 @@ public class ProcessData {
 	}
 
 	
-	private static void printTexTableHeader(PrintWriter out, String rowHeading, Vector columns){
+	private static void printTexTableHeader(PrintWriter out, String rowHeading, Vector<String> columns){
 		//out.println("\\begin{figure}[hbtp]");
 		out.println("\\begin{table}[hbtp]");
 		out.print("\\begin{tabular}{");
@@ -1199,9 +1198,9 @@ public class ProcessData {
 		
 		out.print(rowHeading+"   ");
 		
-		Iterator it = columns.iterator();
+		Iterator<String> it = columns.iterator();
 		while(it.hasNext()){
-			out.print("&"+(String)it.next());
+			out.print("&"+it.next());
 			if(it.hasNext())
 				out.print("   ");
 		}

@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BShlInst extends AbstractOpTypeInst implements ShlInst
 {
@@ -54,7 +53,7 @@ public class BShlInst extends AbstractOpTypeInst implements ShlInst
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(getOpType()) + 1;
+        return AbstractJasminClass.sizeOfType(getOpType()) + 1;
     }
     
     public int getOutCount()
@@ -64,7 +63,7 @@ public class BShlInst extends AbstractOpTypeInst implements ShlInst
 
     public int getOutMachineCount()
     {
-        return 1 * JasminClass.sizeOfType(getOpType());
+        return 1 * AbstractJasminClass.sizeOfType(getOpType());
     }
     
     public final String getName() { return "shl"; }

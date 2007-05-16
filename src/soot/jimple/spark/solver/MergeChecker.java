@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
@@ -34,24 +33,24 @@ public class MergeChecker {
     public MergeChecker( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public void check() {
-	for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-	    handleAllocNode( (AllocNode) it.next() );
+	for (Object object : pag.allocSources()) {
+	    handleAllocNode( (AllocNode) object );
 	}
-        for( Iterator it = pag.simpleSources().iterator(); it.hasNext(); ) {
-            handleSimples( (VarNode) it.next() );
+        for (Object object : pag.simpleSources()) {
+            handleSimples( (VarNode) object );
         }
-        for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {
-            handleLoads( (FieldRefNode) it.next() );
+        for (Object object : pag.loadSources()) {
+            handleLoads( (FieldRefNode) object );
         }
-        for( Iterator it = pag.storeSources().iterator(); it.hasNext(); ) {
-            handleStores( (VarNode) it.next() );
+        for (Object object : pag.storeSources()) {
+            handleStores( (VarNode) object );
         }
-        for( Iterator frIt = pag.loadSources().iterator(); frIt.hasNext(); ) {
-            final FieldRefNode fr = (FieldRefNode) frIt.next();
+        for (Object object : pag.loadSources()) {
+            final FieldRefNode fr = (FieldRefNode) object;
             fieldToBase.put( fr.getField(), fr.getBase() );
         }
-        for( Iterator frIt = pag.storeInvSources().iterator(); frIt.hasNext(); ) {
-            final FieldRefNode fr = (FieldRefNode) frIt.next();
+        for (Object object : pag.storeInvSources()) {
+            final FieldRefNode fr = (FieldRefNode) object;
             fieldToBase.put( fr.getField(), fr.getBase() );
         }
         for( Iterator srcIt = pag.getVarNodeNumberer().iterator(); srcIt.hasNext(); ) {
@@ -100,8 +99,8 @@ public class MergeChecker {
     }
     protected void handleAllocNode( AllocNode src ) {
 	Node[] targets = pag.allocLookup( src );
-	for( int i = 0; i < targets.length; i++ ) {
-            checkNode( targets[i], src, src );
+	for (Node element : targets) {
+            checkNode( element, src, src );
 	}
     }
 
@@ -109,8 +108,8 @@ public class MergeChecker {
 	PointsToSetInternal srcSet = src.getP2Set();
 	if( srcSet.isEmpty() ) return;
 	final Node[] simpleTargets = pag.simpleLookup( src );
-	for( int i = 0; i < simpleTargets.length; i++ ) {
-            checkAll( simpleTargets[i], srcSet, src );
+	for (Node element : simpleTargets) {
+            checkAll( element, srcSet, src );
 	}
     }
 
@@ -118,8 +117,8 @@ public class MergeChecker {
 	final PointsToSetInternal srcSet = src.getP2Set();
 	if( srcSet.isEmpty() ) return;
 	Node[] storeTargets = pag.storeLookup( src );
-	for( int i = 0; i < storeTargets.length; i++ ) {
-            final FieldRefNode fr = (FieldRefNode) storeTargets[i];
+	for (Node element : storeTargets) {
+            final FieldRefNode fr = (FieldRefNode) element;
             checkAll( fr, srcSet, src );
 	}
     }
@@ -128,8 +127,8 @@ public class MergeChecker {
 	final Node[] loadTargets = pag.loadLookup( src );
         PointsToSetInternal set = src.getP2Set();
         if( set.isEmpty() ) return;
-        for( int i = 0; i < loadTargets.length; i++ ) {
-            VarNode target = (VarNode) loadTargets[i];
+        for (Node element : loadTargets) {
+            VarNode target = (VarNode) element;
             checkAll( target, set, src );
         }
     }

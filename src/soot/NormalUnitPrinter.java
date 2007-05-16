@@ -19,7 +19,6 @@
 
 package soot;
 import soot.jimple.*;
-import java.util.*;
 
 /**
 * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf

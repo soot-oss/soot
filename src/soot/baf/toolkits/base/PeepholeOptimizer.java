@@ -30,11 +30,6 @@ import java.util.*;
 import java.io.*;
 
 import soot.*;
-import soot.util.*;
-import soot.baf.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.baf.internal.*;
 
 /**
  *   Driver class to run peepholes on the Baf IR. The peepholes applied
@@ -54,7 +49,7 @@ public class PeepholeOptimizer extends BodyTransformer
     private InputStream peepholeListingStream = null;
     private final String packageName = "soot.baf.toolkits.base";
 
-    private Map peepholeMap = new HashMap();
+    private final Map<String, Class> peepholeMap = new HashMap<String, Class>();
 
     /** The method that drives the optimizations. */
     /* This is the public interface to PeepholeOptimizer */
@@ -70,7 +65,7 @@ public class PeepholeOptimizer extends BodyTransformer
         reader = new BufferedReader(new InputStreamReader(peepholeListingStream));        
 
         String line = null;
-        List peepholes = new LinkedList();
+        List<String> peepholes = new LinkedList<String>();
         try {
             line = reader.readLine();
             while(line != null) {
@@ -88,20 +83,20 @@ public class PeepholeOptimizer extends BodyTransformer
         while(changed) {
             changed = false;           
 
-            Iterator  it = peepholes.iterator();
+            Iterator<String>  it = peepholes.iterator();
             while(it.hasNext()) {
                 
                 boolean peepholeWorked = true;
-                String peepholeName = (String) it.next();
+                String peepholeName = it.next();
                 
                 while(peepholeWorked) {
                     peepholeWorked = false;
 
                 
                     Class peepholeClass;
-                    if((peepholeClass = (Class) peepholeMap.get(peepholeName)) == null) {
+                    if((peepholeClass = peepholeMap.get(peepholeName)) == null) {
                         try {
-                            peepholeClass =  (Class) Class.forName(packageName + "." + peepholeName);
+                            peepholeClass =  Class.forName(packageName + "." + peepholeName);
                         } catch (ClassNotFoundException e) {
                             throw new RuntimeException(e.toString());
                         }

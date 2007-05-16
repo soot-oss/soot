@@ -29,8 +29,8 @@ package soot.tagkit;
 public class JimpleLineNumberTag implements Tag
 {
     /* it is a value representing line number. */
-    private int startLineNumber;
-	private int endLineNumber;
+    private final int startLineNumber;
+	private final int endLineNumber;
     
     public JimpleLineNumberTag(int ln)
     {

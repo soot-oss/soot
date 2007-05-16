@@ -19,12 +19,7 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 
 /**
  * Represents a dominator node in DominatorTree.  Usually you should

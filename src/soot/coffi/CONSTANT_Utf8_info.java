@@ -28,7 +28,6 @@ package soot.coffi;
 import soot.*;
 
 import java.io.*;
-import java.util.Enumeration;
 
 /** A constant pool entry of type CONSTANT_Utf8; note this is <b>not</b>
  * multithread safe.  It is, however, immutable.
@@ -41,7 +40,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    // for caching the conversion.
    private String s;
    /** Byte array of actual utf8 string. */
-   private byte bytes[];
+   private final byte bytes[];
    /** Constructor from a DataInputSream */
    public CONSTANT_Utf8_info(DataInputStream d) throws IOException {
           int len;
@@ -64,7 +63,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    }
    /** Length in bytes of byte array. */
    public int length() {
-      return (((((int)(bytes[0]))&0xff)<<8) + (((int)(bytes[1]))&0xff));
+      return (((((bytes[0]))&0xff)<<8) + (((bytes[1]))&0xff));
    }
    /** Returns the size of this cp_info object.
     * @return number of bytes occupied by this object.

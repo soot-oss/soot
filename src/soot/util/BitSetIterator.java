@@ -27,7 +27,6 @@
 package soot.util;
 
 import java.util.*;
-import soot.util.*;
 
 
 /** A fast enumerator for sparse bit sets. When the enumerator is

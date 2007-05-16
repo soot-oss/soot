@@ -29,6 +29,7 @@ import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
+
 import java.util.*;
 import soot.util.*;
 
@@ -40,10 +41,10 @@ import soot.util.*;
  * the kill rule would be computed on-the-fly for each statement. */
 public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 {
-    Map unitToGenerateSet;
-    Map unitToPreserveSet;
-    Map rhsToContainingStmt;
-    private HashMap valueToEquivValue;
+    Map<Unit, BoundedFlowSet> unitToGenerateSet;
+    Map<Unit, BoundedFlowSet> unitToPreserveSet;
+    Map<Value, Stmt> rhsToContainingStmt;
+    private final HashMap<Value, EquivalentValue> valueToEquivValue;
 
     FlowSet emptySet;
     
@@ -55,18 +56,18 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
         /* we need a universe of all of the expressions. */
         Iterator unitsIt = g.getBody().getUnits().iterator();
-        ArrayList exprs = new ArrayList();
+        ArrayList<Value> exprs = new ArrayList<Value>();
 
         // Consider "a + b".  containingExprs maps a and b (object equality) both to "a + b" (equivalence).
-        HashMap containingExprs = new HashMap();
+        HashMap<EquivalentValue, Chain> containingExprs = new HashMap<EquivalentValue, Chain>();
 
         // maps a Value to its EquivalentValue.
-        valueToEquivValue = new HashMap();
+        valueToEquivValue = new HashMap<Value, EquivalentValue>();
 
         // maps an rhs to its containing stmt.  object equality in rhs.
-        rhsToContainingStmt = new HashMap();
+        rhsToContainingStmt = new HashMap<Value, Stmt>();
 
-        HashMap equivValToSiblingList = new HashMap();
+        HashMap<EquivalentValue, Chain> equivValToSiblingList = new HashMap<EquivalentValue, Chain>();
 
         // Create the set of all expressions, and a map from values to their containing expressions.
         while (unitsIt.hasNext())
@@ -77,7 +78,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
             {
                 Value v = ((AssignStmt)s).getRightOp();
                 rhsToContainingStmt.put(v, s);
-                EquivalentValue ev = (EquivalentValue)valueToEquivValue.get(v);
+                EquivalentValue ev = valueToEquivValue.get(v);
                 if (ev == null)
                 {
                     ev = new EquivalentValue(v);
@@ -88,7 +89,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                 if (equivValToSiblingList.get(ev) == null)
                     { sibList = new HashChain(); equivValToSiblingList.put(ev, sibList); }
                 else
-                    sibList = (Chain)equivValToSiblingList.get(ev);
+                    sibList = equivValToSiblingList.get(ev);
                 
                 if (!sibList.contains(v)) sibList.add(v);
 
@@ -104,22 +105,22 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                     while (it.hasNext())
                     {
                         Value o = ((ValueBox)it.next()).getValue();
-                        EquivalentValue eo = (EquivalentValue)valueToEquivValue.get(o);
+                        EquivalentValue eo = valueToEquivValue.get(o);
                         if (eo == null)
                         {
-                            eo = new EquivalentValue((Value)o);
+                            eo = new EquivalentValue(o);
                             valueToEquivValue.put(o, eo);
                         }
 
                         if (equivValToSiblingList.get(eo) == null)
                             { sibList = new HashChain(); equivValToSiblingList.put(eo, sibList); }
                         else
-                            sibList = (Chain)equivValToSiblingList.get(eo);
+                            sibList = equivValToSiblingList.get(eo);
                         if (!sibList.contains(o)) sibList.add(o);
 
                         Chain l = null;
                         if (containingExprs.containsKey(eo))
-                            l = (HashChain)containingExprs.get(eo);
+                            l = containingExprs.get(eo);
                         else
                         {
                             l = new HashChain();
@@ -138,7 +139,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
         // Create preserve sets.
         {
-            unitToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            unitToPreserveSet = new HashMap<Unit, BoundedFlowSet>(g.size() * 2 + 1, 0.7f);
 
             Iterator unitIt = g.iterator();
 
@@ -156,7 +157,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                 {
                     ValueBox box = (ValueBox) boxIt.next();
                     Value v = box.getValue();
-                    EquivalentValue ev = (EquivalentValue)valueToEquivValue.get(v);
+                    EquivalentValue ev = valueToEquivValue.get(v);
 
                     HashChain c = (HashChain)containingExprs.get(ev);
                     if (c != null)
@@ -166,7 +167,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                         {
                             // Add all siblings of it.next().
                             EquivalentValue container = (EquivalentValue)it.next();
-                            Iterator sibListIt = ((Chain)equivValToSiblingList.get(container)).iterator();
+                            Iterator sibListIt = equivValToSiblingList.get(container).iterator();
                             while (sibListIt.hasNext())
                                 killSet.add(sibListIt.next(), killSet);
                         }
@@ -181,7 +182,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
         // Create generate sets
         {
-            unitToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            unitToGenerateSet = new HashMap<Unit, BoundedFlowSet>(g.size() * 2 + 1, 0.7f);
 
             Iterator unitIt = g.iterator();
 
@@ -215,7 +216,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                 }
 
                 // remove the kill set
-                genSet.intersection((FlowSet)unitToPreserveSet.get(s), genSet);
+                genSet.intersection(unitToPreserveSet.get(s), genSet);
 
                 unitToGenerateSet.put(s, genSet);
             }
@@ -241,10 +242,10 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
         // Perform kill
-            in.intersection((FlowSet) unitToPreserveSet.get(unit), out);
+            in.intersection(unitToPreserveSet.get(unit), out);
 
         // Perform generation
-            out.union((FlowSet) unitToGenerateSet.get(unit), out);
+            out.union(unitToGenerateSet.get(unit), out);
     }
 
     protected void merge(Object in1, Object in2, Object out)

@@ -27,7 +27,6 @@
 package soot;
 
 import soot.util.*;
-import java.util.*;
 
 
 /**

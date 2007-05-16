@@ -29,9 +29,7 @@ import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
-import soot.jimple.toolkits.pointer.*;
 import java.util.*;
-import soot.util.*;
 
 /** Implements an available expressions analysis on local variables. 
  * The current implementation is slow but correct.
@@ -41,9 +39,9 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 {
     SideEffectTester st;
 
-    Map unitToGenerateSet;
+    Map<Unit, FlowSet> unitToGenerateSet;
     Map unitToPreserveSet;
-    Map rhsToContainingStmt;
+    Map<Value, Unit> rhsToContainingStmt;
 
     FlowSet emptySet;
 
@@ -57,13 +55,13 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
         // maps an rhs to its containing stmt.  object equality in rhs.
-        rhsToContainingStmt = new HashMap();
+        rhsToContainingStmt = new HashMap<Value, Unit>();
 
         emptySet = new ToppedSet(new ArraySparseSet());
 
         // Create generate sets
         {
-            unitToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            unitToGenerateSet = new HashMap<Unit, FlowSet>(g.size() * 2 + 1, 0.7f);
 
             Iterator unitIt = g.iterator();
 
@@ -71,7 +69,7 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
             {
                 Unit s = (Unit) unitIt.next();
 
-                FlowSet genSet = (FlowSet)emptySet.clone();
+                FlowSet genSet = emptySet.clone();
                 // In Jimple, expressions only occur as the RHS of an AssignStmt.
                 if (s instanceof AssignStmt)
                 {
@@ -124,7 +122,7 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
             return;
 
         // Perform generation
-            out.union((FlowSet) unitToGenerateSet.get(unit), out);
+            out.union(unitToGenerateSet.get(unit), out);
 
         // Perform kill.
 	    Unit u = (Unit)unit;
@@ -135,7 +133,7 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                 throw new RuntimeException("trying to kill on topped set!");
             }
 	    List l = new LinkedList();
-            l.addAll(((FlowSet)out).toList());
+            l.addAll((out).toList());
             Iterator it = l.iterator();
 
             // iterate over things (avail) in out set.

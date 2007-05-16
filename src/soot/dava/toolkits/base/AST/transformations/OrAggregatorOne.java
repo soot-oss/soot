@@ -95,13 +95,13 @@ public class OrAggregatorOne extends DepthFirstAdapter{
 	
 	// Create a list of conditions to be Ored together 
 	// remembering that the last ones condition is to be flipped
-	List conditions = getConditions(secondLabelsBodies.iterator());
+	List<ASTCondition> conditions = getConditions(secondLabelsBodies.iterator());
 
 	//create an aggregated condition
-	Iterator condIt = conditions.iterator();
+	Iterator<ASTCondition> condIt = conditions.iterator();
 	ASTCondition newCond=null;;
 	while(condIt.hasNext()){
-	    ASTCondition next = (ASTCondition)condIt.next();
+	    ASTCondition next = condIt.next();
 	    if(newCond==null)
 		newCond=next;
 	    else
@@ -110,10 +110,10 @@ public class OrAggregatorOne extends DepthFirstAdapter{
 	
 
 	//will contain the Body of the ASTIfNode
-	List newIfBody = new ArrayList();
+	List<Object> newIfBody = new ArrayList<Object>();
 
 	//get_SubBodies of upper labeled block
-	List subBodies = node.get_SubBodies();
+	List<Object> subBodies = node.get_SubBodies();
 	//we know that there is only one SubBody for this node retrieve that
 
 	List labeledBlockBody = (List)subBodies.get(0);
@@ -128,7 +128,7 @@ public class OrAggregatorOne extends DepthFirstAdapter{
 
 	ASTIfNode newNode = new ASTIfNode(new SETNodeLabel(),newCond,newIfBody);
 
-	List newLabeledBlockBody = new ArrayList();
+	List<Object> newLabeledBlockBody = new ArrayList<Object>();
 	newLabeledBlockBody.add(newNode);
 
 	G.v().ASTTransformations_modified = true;
@@ -145,7 +145,7 @@ public class OrAggregatorOne extends DepthFirstAdapter{
     
 
     private ASTLabeledBlockNode isLabelWithinLabel(ASTLabeledBlockNode node){
-	List subBodies = node.get_SubBodies(); 
+	List<Object> subBodies = node.get_SubBodies(); 
 	if(subBodies.size()==0){ //shouldnt happen
 	    //labeledBlockNodes size is zero this is a useless label
 	    //marked for removal by setting an empty SETNodeLabel
@@ -180,7 +180,7 @@ public class OrAggregatorOne extends DepthFirstAdapter{
 
     private List getSecondLabeledBlockBodies(ASTLabeledBlockNode secondLabeledBlockNode){
 	//retrieve the SubBodies of this second labeledblock
-	List secondLabelsSubBodies = secondLabeledBlockNode.get_SubBodies();
+	List<Object> secondLabelsSubBodies = secondLabeledBlockNode.get_SubBodies();
 	if(secondLabelsSubBodies.size()==0){
 	    //there is nothing in the labeledblock
 	    //highlly unlikely but if yes then set labeledBlockNode for not printing/deletion
@@ -262,7 +262,7 @@ public class OrAggregatorOne extends DepthFirstAdapter{
 	//check that the body of ASTIfNode has a single ASTStatementSequence
 
 	ASTIfNode ifNode =(ASTIfNode)secondLabelsBody;
-	List ifSubBodies =ifNode.get_SubBodies();
+	List<Object> ifSubBodies =ifNode.get_SubBodies();
 	if(ifSubBodies.size()!=1){
 	    //if body should always have oneSubBody
 	    return null;
@@ -285,7 +285,7 @@ public class OrAggregatorOne extends DepthFirstAdapter{
 	}
 
 	//the only ASTnode is a ASTStatementSequence 
-	List statements = ((ASTStatementSequenceNode)ifBodysBody).getStatements();
+	List<Object> statements = ((ASTStatementSequenceNode)ifBodysBody).getStatements();
 	if(statements.size()!=1){
 	    //there is more than one statement
 	    return null;
@@ -305,8 +305,8 @@ public class OrAggregatorOne extends DepthFirstAdapter{
       it knows the following:
       1, All nodes are ASTIFNodes
     */  
-    private List getConditions(Iterator it){
-	List toReturn = new ArrayList();
+    private List<ASTCondition> getConditions(Iterator it){
+	List<ASTCondition> toReturn = new ArrayList<ASTCondition>();
 	while(it.hasNext()){
 	    //safe cast since we know these are all ASTIfNodes
 	    ASTIfNode node = (ASTIfNode)it.next();

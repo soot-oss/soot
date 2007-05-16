@@ -29,7 +29,6 @@ import soot.dava.internal.AST.ASTDoWhileNode;
 import soot.dava.internal.AST.ASTForLoopNode;
 import soot.dava.internal.AST.ASTIfElseNode;
 import soot.dava.internal.AST.ASTIfNode;
-import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.AST.ASTOrCondition;
 import soot.dava.internal.AST.ASTUnaryCondition;
 import soot.dava.internal.AST.ASTWhileNode;

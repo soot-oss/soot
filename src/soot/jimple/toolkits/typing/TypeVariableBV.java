@@ -27,7 +27,6 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -514,18 +513,18 @@ class TypeVariableBV implements Comparable
 
   /** Computes approximative types.  The work list must be 
    *  initialized with all constant type variables. */
-  public static void computeApprox(TreeSet workList) throws TypeException
+  public static void computeApprox(TreeSet<TypeVariableBV> workList) throws TypeException
   {
     while(workList.size() > 0)
       {
-	TypeVariableBV var = (TypeVariableBV) workList.first();
+	TypeVariableBV var = workList.first();
 	workList.remove(var);
 
 	var.fixApprox(workList);
       }
   }
 
-  private void fixApprox(TreeSet workList) throws TypeException
+  private void fixApprox(TreeSet<TypeVariableBV> workList) throws TypeException
   {
     if(rep != this)
       {

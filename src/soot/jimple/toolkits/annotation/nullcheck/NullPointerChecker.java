@@ -33,7 +33,6 @@ import soot.options.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
-import java.io.*;
 import java.util.*;
 import soot.tagkit.*;
 import soot.jimple.toolkits.annotation.tags.*;
@@ -98,7 +97,7 @@ public class NullPointerChecker extends BodyTransformer
 
 		if (s.containsArrayRef())
 		{
-		    ArrayRef aref = (ArrayRef)s.getArrayRef();
+		    ArrayRef aref = s.getArrayRef();
 		    obj = aref.getBase();
 		}
 		else
@@ -185,7 +184,7 @@ public class NullPointerChecker extends BodyTransformer
 		    int vInfo = analysis.anyRefInfo(obj, beforeSet);
 			
 		    boolean needCheck = 
-			(vInfo != analysis.kNonNull);
+			(vInfo != BranchedRefVarsAnalysis.kNonNull);
 
 		    if (isProfiling)
 		    {

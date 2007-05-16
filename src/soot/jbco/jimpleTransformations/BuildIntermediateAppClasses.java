@@ -70,8 +70,8 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
     // iterate through application classes, build intermediate classes
     Iterator it = scene.getApplicationClasses().snapshotIterator();
     while (it.hasNext()) {
-      Vector initMethodsToRewrite = new Vector();
-      Hashtable methodsToAdd = new Hashtable();
+      Vector<SootMethod> initMethodsToRewrite = new Vector<SootMethod>();
+      Hashtable<String, SootMethod> methodsToAdd = new Hashtable<String, SootMethod>();
       SootClass c = (SootClass) it.next();
       SootClass cOrigSuperclass = c.getSuperclass();
       
@@ -107,10 +107,10 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
           scene.releaseActiveHierarchy();
           
           Hierarchy hierarchy = scene.getActiveHierarchy();
-          Iterator cIt = hierarchy
+          Iterator<SootClass> cIt = hierarchy
               .getSuperclassesOfIncluding(cOrigSuperclass).iterator();
           while (cIt.hasNext()) {
-            SootClass _c = (SootClass) cIt.next();
+            SootClass _c = cIt.next();
             if (_c.isLibraryClass() && _c.declaresMethod(subSig)
                 && hierarchy.isVisible(c, _c.getMethod(subSig))) 
             {
@@ -141,10 +141,10 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
 
         ThisRef thisRef = new ThisRef(iC.getType());
         
-        Enumeration keys = methodsToAdd.keys();
+        Enumeration<String> keys = methodsToAdd.keys();
         while (keys.hasMoreElements()) {
-          String sSig = (String) keys.nextElement();
-          SootMethod oldM = (SootMethod) methodsToAdd.get(sSig);
+          String sSig = keys.nextElement();
+          SootMethod oldM = methodsToAdd.get(sSig);
           List paramTypes = oldM.getParameterTypes();
           Type rType = oldM.getReturnType();
           SootMethod newM;
@@ -216,7 +216,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
         int i = initMethodsToRewrite.size();
         while(i-- > 0)
         {
-          SootMethod im = (SootMethod)initMethodsToRewrite.remove(i);
+          SootMethod im = initMethodsToRewrite.remove(i);
           Body b = im.getActiveBody();
           Local thisLocal = b.getThisLocal();
           Iterator uIt = b.getUnits().snapshotIterator();

@@ -57,7 +57,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 	DavaBody davaBody;
 	
-	List cancelFinalModifier;
+	List<SootField> cancelFinalModifier;
 
 	public FinalFieldDefinition(ASTMethodNode node) {
 		davaBody = node.getDavaBody();
@@ -75,18 +75,18 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 		}
 
 		// create a list of interesting vars
-		ArrayList interesting = findFinalFields();
+		ArrayList<SootField> interesting = findFinalFields();
 		if (interesting.size() == 0) {
 			// no final fields of interest
 			return;
 		}
 
-		cancelFinalModifier = new ArrayList();
+		cancelFinalModifier = new ArrayList<SootField>();
 		analyzeMethod(node, interesting);
 
-		Iterator it = cancelFinalModifier.iterator();
+		Iterator<SootField> it = cancelFinalModifier.iterator();
 		while (it.hasNext()) {
-			SootField field = (SootField) it.next();
+			SootField field = it.next();
 			field.setModifiers((soot.Modifier.FINAL ^ 0xFFFF)
 					& field.getModifiers());
 		}
@@ -100,10 +100,10 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 	 * 
 	 * Fields which are initialized in their declaration should not be added
 	 */
-	public ArrayList findFinalFields() {
+	public ArrayList<SootField> findFinalFields() {
 
 		// first thing is to get a list of all final fields in the class
-		ArrayList interestingFinalFields = new ArrayList();
+		ArrayList<SootField> interestingFinalFields = new ArrayList<SootField>();
 
 		Iterator fieldIt = sootClass.getFields().iterator();
 		while (fieldIt.hasNext()) {
@@ -126,13 +126,13 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 		return interestingFinalFields;
 	}
 
-	public void analyzeMethod(ASTMethodNode node, List varsOfInterest) {
+	public void analyzeMethod(ASTMethodNode node, List<SootField> varsOfInterest) {
 		MustMayInitialize must = new MustMayInitialize(node,
 				MustMayInitialize.MUST);
 
-		Iterator it = varsOfInterest.iterator();
+		Iterator<SootField> it = varsOfInterest.iterator();
 		while (it.hasNext()) {
-			SootField interest = (SootField) it.next();
+			SootField interest = it.next();
 
 			// check for constant value tags
 			Type fieldType = interest.getType();
@@ -202,12 +202,12 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 		if (defaultStmt == null)
 			return;
 
-		List subBodies = (List) node.get_SubBodies();
+		List<Object> subBodies = node.get_SubBodies();
 		if (subBodies.size() != 1)
 			throw new RuntimeException(
 					"SubBodies size of method node not equal to 1");
 
-		List body = (List) subBodies.get(0);
+		List<Object> body = (List<Object>) subBodies.get(0);
 
 		// check if the bodys last node is an ASTStatementSequenceNode where we
 		// might be able to add
@@ -216,7 +216,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 		if (body.size() != 0) {
 			ASTNode lastNode = (ASTNode) body.get(body.size() - 1);
 			if (lastNode instanceof ASTStatementSequenceNode) {
-				List stmts = ((ASTStatementSequenceNode) lastNode)
+				List<Object> stmts = ((ASTStatementSequenceNode) lastNode)
 						.getStatements();
 				if (stmts.size() != 0) {
 					Stmt s = ((AugmentedStmt) stmts.get(0)).get_Stmt();
@@ -238,7 +238,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 			}
 		}
 		if (!done) {
-			List newBody = new ArrayList();
+			List<Object> newBody = new ArrayList<Object>();
 			newBody.add(defaultStmt);
 
 			ASTStatementSequenceNode newNode = new ASTStatementSequenceNode(
@@ -263,7 +263,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				ref = new DStaticFieldRef(tempFieldRef, true);
 			else
 				ref = new DInstanceFieldRef(new JimpleLocal("this", fieldType),
-						tempFieldRef, new HashSet());
+						tempFieldRef, new HashSet<Object>());
 
 		} else if (field instanceof Local) {
 			ref = (Local) field;
@@ -389,16 +389,16 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 				// STORE IT IN Methods Declaration Node
 				ASTStatementSequenceNode declNode = node.getDeclarations();
-				List stmts = declNode.getStatements();
+				List<Object> stmts = declNode.getStatements();
 				stmts.add(as);
     			
 				declNode = new ASTStatementSequenceNode(stmts);
 
-				List subBodies = (List) node.get_SubBodies();
+				List<Object> subBodies = node.get_SubBodies();
 				if (subBodies.size() != 1)
 					throw new DecompilationException("ASTMethodNode does not have one subBody");
 
-				List body = (List) subBodies.get(0);
+				List<Object> body = (List<Object>) subBodies.get(0);
 
 				body.remove(0);
 				body.add(0, declNode);
@@ -426,14 +426,14 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				ASTNode nodeSecond = (ASTNode) body.get(1);
 				if (nodeSecond instanceof ASTStatementSequenceNode) {
 					// the second node is a stmt seq node just add the stmt here
-					List stmts1 = ((ASTStatementSequenceNode) nodeSecond).getStatements();
+					List<Object> stmts1 = ((ASTStatementSequenceNode) nodeSecond).getStatements();
 					stmts1.add(initialization);
 					nodeSecond = new ASTStatementSequenceNode(stmts1);
 					// System.out.println("Init added in exisiting node");
 					body.remove(1);
 				} else {
 					//System.out.println("had to add new node");
-					List tempList = new ArrayList();
+					List<Object> tempList = new ArrayList<Object>();
 					tempList.add(initialization);
 					nodeSecond = new ASTStatementSequenceNode(tempList);
 				}
@@ -450,14 +450,14 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				//STMT3
 				
 				// have to make a field ref
-				SootFieldRef tempFieldRef = ((SootField) field).makeRef();
+				SootFieldRef tempFieldRef = (field).makeRef();
 
 				Value ref;
 				if (field.isStatic())
 					ref = new DStaticFieldRef(tempFieldRef, true);
 				else {
 					ref = new DInstanceFieldRef(new JimpleLocal("this", field
-							.getType()), tempFieldRef, new HashSet());
+							.getType()), tempFieldRef, new HashSet<Object>());
 					// throw new RuntimeException("STOPPED");
 				}
 
@@ -505,15 +505,15 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 					boolean notResolved=false;
 					// look for grandParent in parentOfGrandParent
 					ASTNode ancestor = (ASTNode)parentOfGrandParent;
-					List ancestorBodies = ancestor.get_SubBodies();
-					Iterator it = ancestorBodies.iterator();
+					List<Object> ancestorBodies = ancestor.get_SubBodies();
+					Iterator<Object> it = ancestorBodies.iterator();
 					while(it.hasNext()){
-						List ancestorSubBody = null;
+						List<ASTStatementSequenceNode> ancestorSubBody = null;
 					
 						if (ancestor instanceof ASTTryNode)
-							ancestorSubBody = (List) ((ASTTryNode.container) it.next()).o;
+							ancestorSubBody = (List<ASTStatementSequenceNode>) ((ASTTryNode.container) it.next()).o;
 						else
-							ancestorSubBody = (List) it.next();
+							ancestorSubBody = (List<ASTStatementSequenceNode>) it.next();
 					 
 						if(ancestorSubBody.indexOf(grandParent) > -1) {
 							//grandParent is present in this body
@@ -522,12 +522,12 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 						
 							if(index+1 < ancestorSubBody.size() && ancestorSubBody.get(index+1) instanceof ASTStatementSequenceNode ){
 								//there is an stmt seq node node after the grandParent
-								ASTStatementSequenceNode someNode = (ASTStatementSequenceNode)ancestorSubBody.get(index+1);
+								ASTStatementSequenceNode someNode = ancestorSubBody.get(index+1);
 							 
 								//add the assign stmt here
 							 
-								List stmtsLast = ((ASTStatementSequenceNode) someNode).getStatements();
-								List newStmts = new ArrayList();
+								List<Object> stmtsLast = (someNode).getStatements();
+								List<Object> newStmts = new ArrayList<Object>();
 								newStmts.add(assignStmt1);
 								newStmts.addAll(stmtsLast);
 								someNode.setStatements(newStmts);
@@ -542,7 +542,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 							}
 							else{
 								//create a new stmt seq node and add it here
-									List tempList = new ArrayList();
+									List<Object> tempList = new ArrayList<Object>();
 									tempList.add(assignStmt1);
 									ASTStatementSequenceNode lastNode = new ASTStatementSequenceNode(tempList);
 									ancestorSubBody.add(index+1,lastNode);

@@ -241,15 +241,15 @@ public class StackTypeHeightCalculator {
     }
     
     public void caseVirtualInvokeInst(VirtualInvokeInst i){
-      instanceinvoke((MethodArgInst)i);   
+      instanceinvoke(i);   
     }
     
     public void caseInterfaceInvokeInst(InterfaceInvokeInst i){
-      instanceinvoke((MethodArgInst)i);
+      instanceinvoke(i);
     }
     
     public void caseSpecialInvokeInst(SpecialInvokeInst i){
-      instanceinvoke((MethodArgInst)i);
+      instanceinvoke(i);
     }
     
     public void caseThrowInst(ThrowInst i){
@@ -474,7 +474,7 @@ public class StackTypeHeightCalculator {
     {
       Unit h = (Unit)heads.get(i);
       RefType handlerExc = isHandlerUnit(b.getTraps(),h);
-      Stack stack = (Stack)results.get(h);
+      Stack<Type> stack = (Stack<Type>)results.get(h);
       if (stack != null) {
         if (stack.size() != (handlerExc!=null ? 1 : 0))
           throw new java.lang.RuntimeException("Problem with stack height - head expects ZERO or one if handler");
@@ -482,7 +482,7 @@ public class StackTypeHeightCalculator {
       }
         
       ArrayList worklist = new ArrayList();
-      stack = new Stack();
+      stack = new Stack<Type>();
       if (handlerExc!=null)
         stack.push(handlerExc);
       results.put(h,stack);
@@ -493,7 +493,7 @@ public class StackTypeHeightCalculator {
         inst.apply(sw);
 
         try {
-          stack = updateStack(sw,(Stack)results.get(inst));
+          stack = updateStack(sw,(Stack<Type>)results.get(inst));
         } catch (RuntimeException rexc) {
           printStack(b.getUnits(),results,false);
           System.exit(1);
@@ -519,20 +519,20 @@ public class StackTypeHeightCalculator {
     return results;
   }
 
-  public static Stack updateStack(Unit u, Stack st) {
+  public static Stack<Type> updateStack(Unit u, Stack<Type> st) {
     u.apply(sw);
     return updateStack(sw,st);
   }
   
-  public static Stack updateStack(StackEffectSwitch sw, Stack st) {
-    Stack clone = (Stack)st.clone();
+  public static Stack<Type> updateStack(StackEffectSwitch sw, Stack<Type> st) {
+    Stack<Type> clone = (Stack<Type>)st.clone();
     
     if (sw.remove_types != null) {
 	    if (sw.remove_types.length > clone.size()) {
           String exc = "Expecting values on stack: ";
-          for (int i = 0; i < sw.remove_types.length; i++) {
-            String type = sw.remove_types[i].toString();
-            if (type.trim().length() == 0) type = sw.remove_types[i] instanceof RefLikeType ? "L" : "U";
+          for (Type element : sw.remove_types) {
+            String type = element.toString();
+            if (type.trim().length() == 0) type = element instanceof RefLikeType ? "L" : "U";
             
             exc += type + "  ";
           }
@@ -551,7 +551,7 @@ public class StackTypeHeightCalculator {
         }
 	    for (int i = sw.remove_types.length - 1; i >= 0; i--) {
 	      try {
-            Type t = (Type)clone.pop();
+            Type t = clone.pop();
          
             if (!checkTypes(t,sw.remove_types[i])) {
               //System.out.println("Incompatible types: " + t + "  :  "+sw.remove_types[i]);
@@ -563,8 +563,8 @@ public class StackTypeHeightCalculator {
     }
     
     if (sw.add_types != null)
-	  for (int i = 0; i < sw.add_types.length; i++)
-	    clone.push(sw.add_types[i]);
+		for (Type element : sw.add_types)
+			clone.push(element);
     
     return clone;
   }
@@ -618,7 +618,7 @@ public class StackTypeHeightCalculator {
       } catch (Exception e) {
         G.v().out.println("Error in StackTypeHeightCalculator trying to find index of unit");
       }
-      Stack stack = (Stack)stacks.get(o);
+      Stack<Type> stack = (Stack<Type>)stacks.get(o);
       if (stack != null) {
         if (!before) {
           ((Unit)o).apply(sw);
@@ -630,7 +630,7 @@ public class StackTypeHeightCalculator {
           }
         }
         for (int i = 0; i < stack.size(); i++)
-          s += printType((Type)stack.get(i));
+          s += printType(stack.get(i));
       } else s+="***missing***";
       System.out.println(s+"]");  
     }
@@ -667,13 +667,13 @@ public class StackTypeHeightCalculator {
     return null;
   }
   
-  public static Stack getAfterStack(Body b, Unit u) {
-    Stack stack = (Stack)calculateStackHeights(b).get(u);
+  public static Stack<Type> getAfterStack(Body b, Unit u) {
+    Stack<Type> stack = (Stack<Type>)calculateStackHeights(b).get(u);
     u.apply(sw);
     return updateStack(sw,stack);
   }
   
-  public static Stack getAfterStack(Stack beforeStack, Unit u) {
+  public static Stack<Type> getAfterStack(Stack<Type> beforeStack, Unit u) {
     u.apply(sw);
     return updateStack(sw,beforeStack);
   }

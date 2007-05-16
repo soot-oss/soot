@@ -7,7 +7,6 @@ import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
-import soot.jimple.StringConstant;
 
 public class CPHelper {
 

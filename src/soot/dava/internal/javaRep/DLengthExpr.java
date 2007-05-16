@@ -21,7 +21,6 @@ package soot.dava.internal.javaRep;
 
 import soot.*;
 import soot.grimp.*;
-import soot.jimple.*;
 import soot.jimple.internal.*;
 
 public class DLengthExpr extends AbstractLengthExpr implements Precedence

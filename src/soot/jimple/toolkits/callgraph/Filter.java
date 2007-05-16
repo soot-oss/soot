@@ -18,8 +18,6 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
-import soot.util.queue.*;
 import java.util.*;
 
 /** Represents a subset of the edges in a call graph satisfying an EdgePredicate

@@ -26,10 +26,7 @@
 package soot.jimple;
 
 import soot.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody

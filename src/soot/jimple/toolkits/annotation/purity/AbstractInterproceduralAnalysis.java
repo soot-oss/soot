@@ -70,11 +70,11 @@ public abstract class AbstractInterproceduralAnalysis {
 
     public static final boolean doCheck = false;
 
-    protected CallGraph     cg;        // analysed call-graph
-    protected DirectedGraph dg;        // filtered trimed call-graph
-    protected Map data;                // SootMethod -> summary
-    protected Map order;               // SootMethod -> topo order
-    protected Map unanalysed;          // SootMethod -> summary
+    protected CallGraph     cg;        		// analysed call-graph
+    protected DirectedGraph dg;        		// filtered trimed call-graph
+    protected Map data;                		// SootMethod -> summary
+    protected Map<Object,Integer> order;    // SootMethod -> topo order
+    protected Map unanalysed;          		// SootMethod -> summary
 
 
     /** Initial summary value for analysed funtions. */
@@ -218,7 +218,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	dot.setGraphAttribute("compound","true");
 	//dot.setGraphAttribute("rankdir","LR");
 	int id = 0;
-	Map idmap = new HashMap();
+	Map<SootMethod, Integer> idmap = new HashMap<SootMethod, Integer>();
 
 	// draw sub-graph cluster
 	Iterator it = dg.iterator();
@@ -325,8 +325,8 @@ public abstract class AbstractInterproceduralAnalysis {
 	class IntComparator implements Comparator {
 	    public int compare(Object o1, Object o2) 
 	    {
-		Integer v1 = (Integer)order.get(o1);
-		Integer v2 = (Integer)order.get(o2);
+		Integer v1 = order.get(o1);
+		Integer v2 = order.get(o2);
 		return v1.intValue()-v2.intValue();
 	    }
 	};
@@ -340,7 +340,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	    queue.add(o);
 	}
 
-	Map nb = new HashMap(); // only for debug pretty-printing
+	Map<SootMethod,Integer> nb = new HashMap<SootMethod,Integer>(); // only for debug pretty-printing
 
 	// fixpoint iterations
 	while (!queue.isEmpty()) {
@@ -349,7 +349,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	    Object newSummary = newInitialSummary();
 	    Object oldSummary = data.get(m);
 
-	    if (nb.containsKey(m)) nb.put(m,new Integer(((Integer)nb.get(m)).intValue()+1));
+	    if (nb.containsKey(m)) nb.put(m,new Integer(nb.get(m).intValue()+1));
 	    else nb.put(m,new Integer(1));
 	    if (verbose)
 		G.v().out.println(" |- processing "+m.toString()+" ("+nb.get(m)+"-st time)");

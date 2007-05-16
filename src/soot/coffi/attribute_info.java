@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** Generic superclass for all attributes.
  * @author Clark Verbrugge
  */

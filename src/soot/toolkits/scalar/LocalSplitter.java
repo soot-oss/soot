@@ -31,7 +31,6 @@ package soot.toolkits.scalar;
 import soot.options.*;
 
 import soot.*;
-import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
@@ -63,7 +62,7 @@ public class LocalSplitter extends BodyTransformer
     protected void internalTransform(Body body, String phaseName, Map options)
     {
         Chain units = body.getUnits();
-        List webs = new ArrayList();
+        List<List> webs = new ArrayList<List>();
 
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
@@ -89,8 +88,8 @@ public class LocalSplitter extends BodyTransformer
             if(Options.v().time())
                 Timers.v().splitPhase2Timer.start();
 
-            Set markedBoxes = new HashSet();
-            Map boxToUnit = new HashMap(units.size() * 2 + 1, 0.7f);
+            Set<ValueBox> markedBoxes = new HashSet<ValueBox>();
+            Map<ValueBox, Unit> boxToUnit = new HashMap<ValueBox, Unit>(units.size() * 2 + 1, 0.7f);
             
             Iterator codeIt = units.iterator();
 
@@ -109,8 +108,8 @@ public class LocalSplitter extends BodyTransformer
 
                 if(lo instanceof Local && !markedBoxes.contains(loBox))
                 {
-                    LinkedList defsToVisit = new LinkedList();
-                    LinkedList boxesToVisit = new LinkedList();
+                    LinkedList<Unit> defsToVisit = new LinkedList<Unit>();
+                    LinkedList<ValueBox> boxesToVisit = new LinkedList<ValueBox>();
 
                     List web = new ArrayList();
                     webs.add(web);
@@ -122,7 +121,7 @@ public class LocalSplitter extends BodyTransformer
                     {
                         if(!defsToVisit.isEmpty())
                         {
-                            Unit d = (Unit) defsToVisit.removeFirst();
+                            Unit d = defsToVisit.removeFirst();
 
                             web.add(d.getDefBoxes().get(0));
 
@@ -145,19 +144,19 @@ public class LocalSplitter extends BodyTransformer
                             }
                         }
                         else {
-                            ValueBox box = (ValueBox) boxesToVisit.removeFirst();
+                            ValueBox box = boxesToVisit.removeFirst();
 
                             web.add(box);
 
                             // Add all the definitions of this use to the queue.
                             {               
-                                List defs = localDefs.getDefsOfAt((Local) box.getValue(),
-                                    (Unit) boxToUnit.get(box));
-                                Iterator defIt = defs.iterator();
+                                List<Unit> defs = localDefs.getDefsOfAt((Local) box.getValue(),
+                                    boxToUnit.get(box));
+                                Iterator<Unit> defIt = defs.iterator();
     
                                 while(defIt.hasNext())
                                 {
-                                    Unit u = (Unit) defIt.next();
+                                    Unit u = defIt.next();
 
                                     Iterator defBoxesIter = u.getDefBoxes().iterator();
                                     ValueBox b;
@@ -181,12 +180,12 @@ public class LocalSplitter extends BodyTransformer
 
         // Assign locals appropriately.
         {
-            Map localToUseCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-            Iterator webIt = webs.iterator();
+            Map<Local, Integer> localToUseCount = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+            Iterator<List> webIt = webs.iterator();
 
             while(webIt.hasNext())
             {
-                List web = (List) webIt.next();
+                List web = webIt.next();
 
                 ValueBox rep = (ValueBox) web.get(0);
                 Local desiredLocal = (Local) rep.getValue();
@@ -200,7 +199,7 @@ public class LocalSplitter extends BodyTransformer
                 else {
                     // generate a new local
 
-                    int useCount = ((Integer) localToUseCount.get(desiredLocal)).intValue() + 1;
+                    int useCount = localToUseCount.get(desiredLocal).intValue() + 1;
                     localToUseCount.put(desiredLocal, new Integer(useCount));
         
                     Local local = (Local) desiredLocal.clone();

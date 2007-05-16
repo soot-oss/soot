@@ -32,12 +32,10 @@
 package soot.coffi;
 import soot.options.*;
 
-import java.lang.*;
 import java.util.*;
 
 import soot.*;
 import soot.jimple.*;
-import soot.baf.*;
 import soot.util.*;
 import soot.tagkit.*;
 
@@ -57,20 +55,16 @@ public class CFG {
     Chain units;
     JimpleBody listBody;
 
-    Map instructionToFirstStmt;
-    Map instructionToLastStmt;
+    Map<Instruction, Stmt> instructionToFirstStmt;
+    Map<Instruction, Stmt> instructionToLastStmt;
     SootMethod jmethod;
     Scene cm;
 
     Instruction firstInstruction;
     Instruction lastInstruction;
 
-    private short wide;                 // convert indices when parsing jimple
-
     private Instruction sentinel;
-    private Hashtable h2bb, t2bb;
-    private int bbcount;        // statistics, number of BBs processed
-
+    private Hashtable<Instruction, BasicBlock> h2bb, t2bb;
     /** Constructs a new control flow graph for the given method.
      * @param m the method in question.
      * @see method_info
@@ -123,38 +117,21 @@ public class CFG {
 	*/
     }
 
-    private void printBBCFGSucc()
-    {
-	BasicBlock b = this.cfg;
-	while ( b!= null )
-	{
-	    G.v().out.print(b.id +" -> ");
-	    for (int i=0; i<b.succ.size(); i++)
-	    {
-		BasicBlock bs = (BasicBlock)b.succ.elementAt(i);
-		G.v().out.print(bs.id+" ");
-	    }
-	    G.v().out.println();
-	    b = b.next;
-	}
-    }
-    
-    public static HashMap methodsToVEM = new HashMap();
+    public static HashMap<SootMethod, int[]> methodsToVEM = new HashMap<SootMethod, int[]>();
     private void complexity() 
     {
       // ignore all non-app classes
       if (!method.jmethod.getDeclaringClass().isApplicationClass()) return;
       
       BasicBlock b = this.cfg;
-      HashMap block2exc = new HashMap();
+      HashMap<BasicBlock, Integer> block2exc = new HashMap<BasicBlock, Integer>();
       int tmp, nodes = 0, edges = 0, highest = 0;
       
       while (b != null) {
         tmp = 0;
-        for (int i = 0; i < method.code_attr.exception_table.length; i++)
-        {
-          Instruction start = method.code_attr.exception_table[i].start_inst;
-          Instruction end = method.code_attr.exception_table[i].start_inst;
+        for (exception_table_entry element : method.code_attr.exception_table) {
+          Instruction start = element.start_inst;
+          Instruction end = element.start_inst;
           if ((start.label >= b.head.label && start.label <= b.tail.label) ||
                 (end.label > b.head.label && (b.tail.next == null || end.label <= b.tail.next.label)))
             tmp++;
@@ -167,7 +144,7 @@ public class CFG {
       while ( b!= null )
       {
         nodes++;
-        tmp = b.succ.size() + ((Integer)block2exc.get(b)).intValue();
+        tmp = b.succ.size() + block2exc.get(b).intValue();
         
         // exceptions are not counted in succs and preds so we need to do so manually
         int deg = b.pred.size() + tmp + (b.beginException ? 1 : 0);
@@ -179,95 +156,17 @@ public class CFG {
       methodsToVEM.put(method.jmethod,new int[]{nodes, edges, highest});
     }
 
-    private void printBBCFGPred()
-    {
-	BasicBlock b = this.cfg;
-	while ( b!= null )
-	{
-	    G.v().out.print(b.id +" <- ");
-	    for (int i=0; i<b.pred.size(); i++)
-	    {
-		BasicBlock bs = (BasicBlock)b.pred.elementAt(i);
-		G.v().out.print(bs.id+" ");
-	    }
-	    G.v().out.println();
-	    b = b.next;
-	}
-    }
-
-    private void printOneBasicBlock(BasicBlock b)
-    {
-	G.v().out.println("Block "+b.id);
-	
-	Instruction insn = b.head;
-	G.v().out.println(insn);
-	while (insn != b.tail && insn != null)
-	{
-	    insn = insn.next;
-	    G.v().out.println(insn);
-	}
-
-	G.v().out.println();	
-    }
-
-    private void printBBHeadTail(BasicBlock fb)
-    {
-	BasicBlock b = fb;
-	while (b != null)
-	{
-	    G.v().out.println(b.head);
-	    G.v().out.println(b.tail+"\n");
-	    b = b.next;
-	}	
-    }
-
-    private void printBBs()
-    {
-	BasicBlock bb = this.cfg;
-	while (bb != null)
-	{
-	    printOneBasicBlock(bb);
-	    bb = bb.next;
-	}
-    }
-
-    private void printInstructions()
-    {
-	Instruction insn = method.instructions;
-	while (insn != null)
-	{
-	    G.v().out.println(insn);
-	    insn = insn.next;
-	}
-    }
-
-    private void printExceptionTable()
-    {
-	Code_attribute ca = this.method.locate_code_attribute();
-	
-	G.v().out.println("\nException table :");
-	G.v().out.println("start\tend\thandler");
-	for (int i=0; i<ca.exception_table.length; i++)
-	{
-	    exception_table_entry ete = ca.exception_table[i];
-	    G.v().out.println((ete.start_inst == null ? "null" :
-			       Integer.toString(ete.start_inst.label)) + " \t " + 
-			      (ete.end_inst == null ? "null" :
-			       Integer.toString(ete.end_inst.label)) + " \t " +
-			      ete.handler_inst.label);
-	}
-    }
     // Constructs the actual control flow graph. Assumes the hash table
     // currently associates leaders with BasicBlocks, this function
     // builds the next[] and prev[] pointer arrays.
     private void buildBBCFG() 
     {
-	Object branches[], nextinsn;
+	Object branches[];
 	Code_attribute ca = method.locate_code_attribute();
 
 	{
-	    h2bb = new Hashtable(100,25);
-	    t2bb = new Hashtable(100,25);
+	    h2bb = new Hashtable<Instruction, BasicBlock>(100,25);
+	    t2bb = new Hashtable<Instruction, BasicBlock>(100,25);
 
 	    Instruction insn = this.sentinel.next;
 	    BasicBlock blast = null;
@@ -305,7 +204,7 @@ public class CFG {
 		{
 		    // see how many targets it can reach.  Note that this is a
 		    // subset of the exception_table.
-		    HashSet ethandlers = new HashSet();
+		    HashSet<Instruction> ethandlers = new HashSet<Instruction>();
 
 		    // not quite a subset---could also be that control 
 		    // exits this method, so start icount at 1
@@ -333,10 +232,9 @@ public class CFG {
 		{
 		    block.succ.ensureCapacity(block.succ.size()+branches.length);
 
-		    for (int i=0; i<branches.length; i++) 
-		    {
-			if ( branches[i]!=null ) {
-			    BasicBlock bb = (BasicBlock)h2bb.get(branches[i]);
+		    for (Object element : branches) {
+			if ( element!=null ) {
+			    BasicBlock bb = h2bb.get(element);
                  
 			    if (bb == null)
 			    {                 
@@ -366,7 +264,7 @@ public class CFG {
 	// basic blocks begin their code
 	for (int i=0; i<ca.exception_table_length; i++) 
 	{
-	    BasicBlock bb = (BasicBlock)h2bb.get(
+	    BasicBlock bb = h2bb.get(
 					 ca.exception_table[i].handler_inst);
 	    if ( bb == null )
 	    {
@@ -408,62 +306,11 @@ public class CFG {
 	return insn;
     }
 
-    /* get a set of reachable instructions from an astore to matching ret. 
-     * it does not consider the exception handler as reachable now.
-     */     
-    private Set getReachableInsns(Instruction from, Instruction to)
-    {
-	Code_attribute codeAttribute = method.locate_code_attribute();
-
-	/* find all reachable blocks. */
-	Set reachableinsns = new HashSet();
-	LinkedList tovisit = new LinkedList();
-
-	reachableinsns.add(from);
-	tovisit.add(from);
-	
-	while (!tovisit.isEmpty())
-	{
-	    Instruction insn = (Instruction)tovisit.removeFirst();
-
-	    if (insn == to)
-		continue;
-
-	    Instruction[] bps = null;
-	    if (insn.branches)
-	    {
-		bps = insn.branchpoints(insn.next);	
-	    }
-	    else
-	    {
-		bps = new Instruction[1];
-		bps[0] = insn.next;
-	    }
-
-	    if (bps != null)
-	    {
-		for (int i=0; i<bps.length; i++)
-		{
-		    Instruction bp = bps[i];
-
-		    if (bp != null
-			&& !reachableinsns.contains(bp))
-		    {
-			reachableinsns.add(bp);
-			tovisit.add(bp);
-		    }
-		}
-	    }	    
-	}
-
-	return reachableinsns;
-    }
-
     /* We only handle simple cases. */
-    Map jsr2astore = new HashMap();
-    Map astore2ret = new HashMap();
+    Map<Instruction, Instruction> jsr2astore = new HashMap<Instruction, Instruction>();
+    Map<Instruction, Instruction> astore2ret = new HashMap<Instruction, Instruction>();
     
-    LinkedList jsrorder = new LinkedList();
+    LinkedList<Instruction> jsrorder = new LinkedList<Instruction>();
 
     /* Eliminate subroutines ( JSR/RET instructions ) by inlining the 
        routine bodies. */
@@ -477,21 +324,21 @@ public class CFG {
 	}
 	this.lastInstruction = insn;
 
-	HashMap todoBlocks = new HashMap();
+	HashMap<Instruction, Instruction> todoBlocks = new HashMap<Instruction, Instruction>();
 	todoBlocks.put(this.sentinel.next, this.lastInstruction);
-	LinkedList todoList = new LinkedList();
+	LinkedList<Instruction> todoList = new LinkedList<Instruction>();
 	todoList.add(this.sentinel.next);
 
 	while (!todoList.isEmpty()) {
-	    Instruction firstInsn = (Instruction)todoList.removeFirst();
-	    Instruction lastInsn  = (Instruction)todoBlocks.get(firstInsn);
+	    Instruction firstInsn = todoList.removeFirst();
+	    Instruction lastInsn  = todoBlocks.get(firstInsn);
 
 	    jsrorder.clear();
 	    jsr2astore.clear();
 	    astore2ret.clear();
 
 	    if (findOutmostJsrs(firstInsn, lastInsn)) {
-		HashMap newblocks = inliningJsrTargets();
+		HashMap<Instruction, Instruction> newblocks = inliningJsrTargets();
 		todoBlocks.putAll(newblocks);
 		todoList.addAll(newblocks.keySet());
 	    }
@@ -521,7 +368,7 @@ public class CFG {
     // the caller cleans jsr2astore, astore2ret
     private boolean findOutmostJsrs(Instruction start, Instruction end) {
 	// use to put innerJsrs.
-	HashSet innerJsrs = new HashSet();
+	HashSet<Instruction> innerJsrs = new HashSet<Instruction>();
 	boolean unusual = false;
 
 	Instruction insn = start;
@@ -572,7 +419,7 @@ public class CFG {
 
     private Instruction findMatchingRet(Instruction astore, 
 					Instruction jsr,
-					HashSet     innerJsrs)
+					HashSet<Instruction>     innerJsrs)
     {
 	int astorenum = ((Interface_Astore)astore).getLocalNumber();
 	
@@ -602,7 +449,7 @@ public class CFG {
 
     // make copies of jsr/ret blocks
     // return new blocks
-    private HashMap inliningJsrTargets()
+    private HashMap<Instruction, Instruction> inliningJsrTargets()
     {
 	/*
 	for (int i=0, n=jsrorder.size(); i<n; i++) {
@@ -614,14 +461,14 @@ public class CFG {
 			       +"ret"+ret.label);
 	}
 	*/
-	HashMap newblocks = new HashMap();
+	HashMap<Instruction, Instruction> newblocks = new HashMap<Instruction, Instruction>();
 
 	while (!jsrorder.isEmpty())
 	{
-	    Instruction jsr = (Instruction)jsrorder.removeFirst();	    
-	    Instruction astore = (Instruction)jsr2astore.get(jsr);
+	    Instruction jsr = jsrorder.removeFirst();	    
+	    Instruction astore = jsr2astore.get(jsr);
 
-	    Instruction ret = (Instruction)astore2ret.get(astore);
+	    Instruction ret = astore2ret.get(astore);
 
 	    // make a copy of the code, append to the last instruction.     
 	    Instruction newhead = makeCopyOf(astore, ret, jsr.next);	
@@ -668,7 +515,7 @@ public class CFG {
 	int curlabel = this.lastInstruction.label;
 
 	// mapping from original instructions to new instructions.
-	HashMap insnmap = new HashMap(); 
+	HashMap<Instruction, Instruction> insnmap = new HashMap<Instruction, Instruction>(); 
 	Instruction insn = astore.next;
 	
 	while (insn != ret && insn != null)
@@ -713,7 +560,7 @@ public class CFG {
 	    if (insn instanceof Instruction_branch)
 	    {
 		Instruction oldtgt = ((Instruction_branch)insn).target;
-		Instruction newtgt = (Instruction)insnmap.get(oldtgt);
+		Instruction newtgt = insnmap.get(oldtgt);
 		if (newtgt != null)
 		{
 		    ((Instruction_branch)insn).target = newtgt;
@@ -726,7 +573,7 @@ public class CFG {
 		Instruction_Lookupswitch switchinsn = 
 		    (Instruction_Lookupswitch)insn;
 		
-		Instruction newdefault = (Instruction)insnmap.get(switchinsn.default_inst);
+		Instruction newdefault = insnmap.get(switchinsn.default_inst);
 		if (newdefault != null)
 		{
 		    switchinsn.default_inst = newdefault;
@@ -735,7 +582,7 @@ public class CFG {
 
 		for (int i=0; i<switchinsn.match_insts.length; i++)
 		{
-		    Instruction newtgt = (Instruction)insnmap.get(switchinsn.match_insts[i]);
+		    Instruction newtgt = insnmap.get(switchinsn.match_insts[i]);
 		    if (newtgt != null)
 		    {
 			switchinsn.match_insts[i] = newtgt;
@@ -749,7 +596,7 @@ public class CFG {
 		Instruction_Tableswitch switchinsn = 
 		    (Instruction_Tableswitch)insn;
 		
-		Instruction newdefault = (Instruction)insnmap.get(switchinsn.default_inst);
+		Instruction newdefault = insnmap.get(switchinsn.default_inst);
 		if (newdefault != null)
 		{
 		    switchinsn.default_inst = newdefault;
@@ -758,7 +605,7 @@ public class CFG {
 
 		for (int i=0; i<switchinsn.jump_insts.length; i++)
 		{
-		    Instruction newtgt = (Instruction)insnmap.get(switchinsn.jump_insts[i]);
+		    Instruction newtgt = insnmap.get(switchinsn.jump_insts[i]);
 		    if (newtgt != null)
 		    {
 			switchinsn.jump_insts[i] = newtgt;
@@ -776,7 +623,7 @@ public class CFG {
 	{
 	    Code_attribute ca = method.locate_code_attribute();
 
-	    LinkedList newentries = new LinkedList();
+	    LinkedList<exception_table_entry> newentries = new LinkedList<exception_table_entry>();
 
 	    int orig_start_of_subr = astore.next.originalIndex; // inclusive
 	    int orig_end_of_subr = ret.originalIndex; // again, inclusive
@@ -796,7 +643,7 @@ public class CFG {
 		    if (orig_start_of_trap <= orig_start_of_subr) {
 			newone.start_inst = headbefore.next;
 		    } else {
-			newone.start_inst = (Instruction)insnmap.get(etentry.start_inst);
+			newone.start_inst = insnmap.get(etentry.start_inst);
 		    }
 		    if (orig_end_of_trap > orig_end_of_subr) {
 			newone.end_inst = null; // Representing the insn after
@@ -804,10 +651,10 @@ public class CFG {
 						// subr; we need to fix it if
 						// we inline another subr.
 		    } else {
-			newone.end_inst = (Instruction)insnmap.get(etentry.end_inst);
+			newone.end_inst = insnmap.get(etentry.end_inst);
 		    }
 
-		    newone.handler_inst = (Instruction)insnmap.get(etentry.handler_inst);
+		    newone.handler_inst = insnmap.get(etentry.handler_inst);
 		    if (newone.handler_inst == null)
 			newone.handler_inst = etentry.handler_inst;
 
@@ -833,7 +680,7 @@ public class CFG {
 		System.arraycopy(ca.exception_table, 0, newtable, 0, ca.exception_table.length);
 		for (int i=0, j=ca.exception_table.length; i<newentries.size(); i++, j++)
 		{
-		    newtable[j] = (exception_table_entry)newentries.get(i);
+		    newtable[j] = newentries.get(i);
 		}
 		
 		ca.exception_table = newtable;
@@ -843,76 +690,8 @@ public class CFG {
 	return headbefore.next;
     }
 
-    private void pruneExceptionTable() {
-	HashSet invalidInsns = new HashSet();
-	Instruction insn = this.sentinel.next;
-        do {
-	    if (insn instanceof Instruction_Jsr
-		|| insn instanceof Instruction_Jsr_w) {
-		Instruction astore = ((Instruction_branch)insn).target;
-		int astorenum = ((Interface_Astore)astore).getLocalNumber();
-		Instruction ret = astore.next;
-		do {
-		    invalidInsns.add(ret);
-		    if (ret instanceof Instruction_Ret
-			|| ret instanceof Instruction_Ret_w) {
-			int retnum = ((Interface_OneIntArg)ret).getIntArg();
-			if (astorenum == retnum) {
-			    insn = ret;
-			    break;
-			}
-		    }
-		    ret = ret.next;
-		} while (true);
-	    }
-	    insn = insn.next;
-	} while (insn != null);
-
-	Iterator it = invalidInsns.iterator();
-	while (it.hasNext()) {
-	    G.v().out.println(it.next());
-	}
-
-	// pruning exception table
-	LinkedList validEntries = new LinkedList();
-
-	Code_attribute codeAttribute = method.locate_code_attribute();
-	for(int i = 0; i < codeAttribute.exception_table_length; i++)
-	{
-	    exception_table_entry entry = codeAttribute.exception_table[i];
-
-	    if (!invalidInsns.contains(entry.start_inst)) {
-		validEntries.add(entry);
-	    }
-	}
-
-	if (validEntries.size() != codeAttribute.exception_table_length) {
-	    exception_table_entry newtable[] = 
-		new exception_table_entry[validEntries.size()];
-	    for (int i=0; i<newtable.length; i++) {
-		newtable[i] = 
-		    (exception_table_entry)validEntries.get(i);
-	    }
-	    codeAttribute.exception_table = newtable;
-	    codeAttribute.exception_table_length = newtable.length;
-	}
-    }
-
     /* if a jsr/astore/ret is replaced by some other instruction, it will be put on this table. */
-    private Hashtable replacedInsns = new Hashtable();
-    private void dumpReplacedInsns()
-    {
-	G.v().out.println("replaced table:");
-	Set keys = replacedInsns.keySet();
-	Iterator keyIt = keys.iterator();
-	while (keyIt.hasNext())
-	{
-	    Object key = keyIt.next();
-	    Object value = replacedInsns.get(key);
-	    G.v().out.println(key + " ==> "+ value);
-	}
-    }
-
+    private final Hashtable<Instruction, Instruction_Goto> replacedInsns = new Hashtable<Instruction, Instruction_Goto>();
     /* do not forget set the target labelled as TRUE.*/
     private void adjustBranchTargets()
     {
@@ -922,7 +701,7 @@ public class CFG {
 	    if (insn instanceof Instruction_branch)
 	    {
 		Instruction_branch binsn = (Instruction_branch)insn;
-		Instruction newtgt = (Instruction)replacedInsns.get(binsn.target);
+		Instruction newtgt = replacedInsns.get(binsn.target);
 		if (newtgt != null)
 		{
 		    binsn.target = newtgt;
@@ -936,7 +715,7 @@ public class CFG {
 		    (Instruction_Lookupswitch)insn;
 		
 		Instruction newdefault = 
-		    (Instruction)replacedInsns.get(switchinsn.default_inst);
+		    replacedInsns.get(switchinsn.default_inst);
 		if (newdefault != null)
 		{
 		    switchinsn.default_inst = newdefault;
@@ -946,7 +725,7 @@ public class CFG {
 		for (int i=0; i<switchinsn.npairs; i++)
 		{
 		    Instruction newtgt = 
-			(Instruction)replacedInsns.get(switchinsn.match_insts[i]);
+			replacedInsns.get(switchinsn.match_insts[i]);
 		    if (newtgt != null)
 		    {
 			switchinsn.match_insts[i] = newtgt;
@@ -960,7 +739,7 @@ public class CFG {
 		Instruction_Tableswitch switchinsn = 
 		    (Instruction_Tableswitch)insn;
 		
-		Instruction newdefault = (Instruction)replacedInsns.get(switchinsn.default_inst);
+		Instruction newdefault = replacedInsns.get(switchinsn.default_inst);
 		if (newdefault != null)
 		{
 		    switchinsn.default_inst = newdefault;
@@ -970,7 +749,7 @@ public class CFG {
 		for (int i=0; i<=switchinsn.high-switchinsn.low; i++)
 		{
 		    Instruction newtgt = 
-			(Instruction)replacedInsns.get(switchinsn.jump_insts[i]);
+			replacedInsns.get(switchinsn.jump_insts[i]);
 		    if (newtgt != null)
 		    {
 			switchinsn.jump_insts[i] = newtgt;
@@ -993,20 +772,20 @@ public class CFG {
 	    exception_table_entry entry = codeAttribute.exception_table[i];
 
 	    Instruction oldinsn = entry.start_inst;
-	    Instruction newinsn = (Instruction)replacedInsns.get(oldinsn);
+	    Instruction newinsn = replacedInsns.get(oldinsn);
 	    if (newinsn != null) 
 		entry.start_inst = newinsn;
 
 	    oldinsn = entry.end_inst;
 	    if (entry.end_inst != null)
 	    {
-		newinsn = (Instruction)replacedInsns.get(oldinsn);	    
+		newinsn = replacedInsns.get(oldinsn);	    
 		if (newinsn != null)
 		    entry.end_inst = newinsn;
 	    }
 
 	    oldinsn = entry.handler_inst;
-	    newinsn = (Instruction)replacedInsns.get(oldinsn);
+	    newinsn = replacedInsns.get(oldinsn);
 	    if (newinsn != null)
 		entry.handler_inst = newinsn;
 	}
@@ -1021,20 +800,18 @@ public class CFG {
 
 	attribute_info[] attributes = method.code_attr.attributes;
 
-	for (int i=0; i<attributes.length; i++)
-	{
-	    if (attributes[i] instanceof LineNumberTable_attribute)
+	for (attribute_info element : attributes) {
+	    if (element instanceof LineNumberTable_attribute)
 	    {
 		LineNumberTable_attribute lntattr =
-		    (LineNumberTable_attribute)attributes[i];
-		for (int j=0; j<lntattr.line_number_table.length; j++)
-		{
+		    (LineNumberTable_attribute)element;
+		for (line_number_table_entry element0 : lntattr.line_number_table) {
 		    Instruction oldinst = 
-			lntattr.line_number_table[j].start_inst;
+			element0.start_inst;
 		    Instruction newinst =
-			(Instruction)replacedInsns.get(oldinst);
+			replacedInsns.get(oldinst);
 		    if (newinst != null)
-			lntattr.line_number_table[j].start_inst = newinst;
+			element0.start_inst = newinst;
 		}
 	    }
 	}
@@ -1071,8 +848,8 @@ public class CFG {
 
         this.listBody = listBody;
         this.units = units;
-        instructionToFirstStmt = new HashMap();
-        instructionToLastStmt = new HashMap();
+        instructionToFirstStmt = new HashMap<Instruction, Stmt>();
+        instructionToLastStmt = new HashMap<Instruction, Stmt>();
 
         jmethod = listBody.getMethod();
         cm = Scene.v();
@@ -1189,36 +966,17 @@ public class CFG {
  
 	    {
 		// The successors are the ones from the basic block.
-		Vector bsucc = block.succ;
+		Vector<BasicBlock> bsucc = block.succ;
 		int size = bsucc.size();
 		Instruction[] succs = new Instruction[size];
 
 		for(int i = 0; i<size; i++)
-		    succs[i] = ((BasicBlock)bsucc.elementAt(i)).head;		    
+		    succs[i] = bsucc.elementAt(i).head;		    
 		insn.succs = succs;			      
 	    } 
 
 	    block = block.next;
 	}	
-    }
-
-    private void printInsnCFG()
-    {
-	Instruction insn = cfg.head;
-	while (insn != null)
-	{
-	    G.v().out.println(insn + " --> " + makeString(insn.succs));
-	    insn = insn.next;
-	}
-    }
-
-    private String makeString(Object[] objs)
-    {
-	String buf = "";
-	for (int i=0; i<objs.length; i++)
-	    buf += " , "+objs[i];
-
-	return buf;
     }
 
     /** Main.v() entry point for converting list of Instructions to Jimple statements;
@@ -1235,11 +993,11 @@ public class CFG {
     void jimplify(cp_info constant_pool[],int this_class)
     {
         Code_attribute codeAttribute = method.locate_code_attribute();
-        Set handlerInstructions = new ArraySet();
+        Set<Instruction> handlerInstructions = new ArraySet();
 
-        Map handlerInstructionToException = new HashMap();
-        Map instructionToTypeStack;
-        Map instructionToPostTypeStack;
+        Map<Instruction, SootClass> handlerInstructionToException = new HashMap<Instruction, SootClass>();
+        Map<Instruction, TypeStack> instructionToTypeStack;
+        Map<Instruction, TypeStack> instructionToPostTypeStack;
 
         {
             // build graph in 
@@ -1302,25 +1060,22 @@ public class CFG {
             }
         }
 
-        Set reachableInstructions = new HashSet();
+        Set<Instruction> reachableInstructions = new HashSet<Instruction>();
         
         // Mark all the reachable instructions
         {
-            LinkedList instructionsToVisit = new LinkedList();
+            LinkedList<Instruction> instructionsToVisit = new LinkedList<Instruction>();
             
             reachableInstructions.add(firstInstruction);
             instructionsToVisit.addLast(firstInstruction);
             
             while( !instructionsToVisit.isEmpty())
             {
-                Instruction ins = (Instruction) instructionsToVisit.removeFirst();
+                Instruction ins = instructionsToVisit.removeFirst();
 
 		Instruction[] succs = ins.succs;
 	       
-		for (int i=0; i<succs.length; i++)
-		{
-		    Instruction succ = succs[i];
-                    
+		for (Instruction succ : succs) {
 		    if(!reachableInstructions.contains(succ))
 		    {
 			reachableInstructions.add(succ);
@@ -1354,11 +1109,11 @@ public class CFG {
         
         // Perform the flow analysis, and build up instructionToTypeStack and instructionToLocalArray
         {
-            instructionToTypeStack = new HashMap();
-            instructionToPostTypeStack = new HashMap();
+            instructionToTypeStack = new HashMap<Instruction, TypeStack>();
+            instructionToPostTypeStack = new HashMap<Instruction, TypeStack>();
 
-            Set visitedInstructions = new HashSet();
-            List changedInstructions = new ArrayList();
+            Set<Instruction> visitedInstructions = new HashSet<Instruction>();
+            List<Instruction> changedInstructions = new ArrayList<Instruction>();
 
             TypeStack initialTypeStack;
 
@@ -1379,21 +1134,18 @@ public class CFG {
             {
                 while(!changedInstructions.isEmpty())
                 {
-                    Instruction ins = (Instruction) changedInstructions.get(0);
+                    Instruction ins = changedInstructions.get(0);
 
                     changedInstructions.remove(0);
 
-                    OutFlow ret = processFlow(ins, (TypeStack) instructionToTypeStack.get(ins),
+                    OutFlow ret = processFlow(ins, instructionToTypeStack.get(ins),
                         constant_pool);
 
                     instructionToPostTypeStack.put(ins, ret.typeStack);
 
                     Instruction[] successors = ins.succs;
 
-                    for(int i = 0; i < successors.length; i++)
-                    {
-                        Instruction s = successors[i];
-
+                    for (Instruction s : successors) {
                         if(!visitedInstructions.contains(s))
                         {
                             // Special case for the first time visiting.
@@ -1401,7 +1153,7 @@ public class CFG {
                             if(handlerInstructions.contains(s))
                             {
                                 TypeStack exceptionTypeStack = (TypeStack.v()).push(RefType.v(
-                                    ((SootClass) handlerInstructionToException.get(s)).getName()));
+                                    handlerInstructionToException.get(s).getName()));
 
                                 instructionToTypeStack.put(s, exceptionTypeStack);
                             }
@@ -1418,7 +1170,7 @@ public class CFG {
                             // G.v().out.println("considering successor: " + s);
                         
 							TypeStack newTypeStack,
-                                oldTypeStack = (TypeStack) instructionToTypeStack.get(s);
+                                oldTypeStack = instructionToTypeStack.get(s);
 
                             if(handlerInstructions.contains(s))
                             {
@@ -1426,7 +1178,7 @@ public class CFG {
                                 // single object on the stack.
 
                                 TypeStack exceptionTypeStack = (TypeStack.v()).push(RefType.v(
-                                    ((SootClass) handlerInstructionToException.get(s)).getName()));
+                                    handlerInstructionToException.get(s).getName()));
 
                                 newTypeStack = exceptionTypeStack;
                             }
@@ -1461,7 +1213,7 @@ public class CFG {
 
             while(ins != null)
             {
-                TypeStack typeStack = (TypeStack) instructionToTypeStack.get(ins);
+                TypeStack typeStack = instructionToTypeStack.get(ins);
                 // TypeArray typeArray = (TypeArray) instructionToLocalArray.get(ins);
 /*
                 G.v().out.println("[TypeArray]");
@@ -1495,17 +1247,17 @@ public class CFG {
             while(b != null)
             {
                 Instruction ins = b.head;
-                b.statements = new ArrayList();
+                b.statements = new ArrayList<Stmt>();
 
-                List blockStatements = b.statements;
+                List<Stmt> blockStatements = b.statements;
 
 		for (;;)
 		{
-                    List statementsForIns = new ArrayList();
+                    List<Stmt> statementsForIns = new ArrayList<Stmt>();
 
                     if(reachableInstructions.contains(ins))
-                        generateJimple(ins, (TypeStack) instructionToTypeStack.get(ins),
-                            (TypeStack) instructionToPostTypeStack.get(ins), constant_pool,
+                        generateJimple(ins, instructionToTypeStack.get(ins),
+                            instructionToPostTypeStack.get(ins), constant_pool,
                             statementsForIns, b);
                     else
                         statementsForIns.add(Jimple.v().newNopStmt()); 
@@ -1560,7 +1312,7 @@ public class CFG {
 
         // Insert beginCatch/endCatch statements for exception handling
         {
-            Map targetToHandler = new HashMap();
+            Map<Stmt, Stmt> targetToHandler = new HashMap<Stmt, Stmt>();
             
 	    for(int i = 0; i < codeAttribute.exception_table_length; i++)
 	    {
@@ -1608,11 +1360,11 @@ public class CFG {
 		// Insert assignment of exception
 		{
 		    Stmt firstTargetStmt = 
-			(Stmt) instructionToFirstStmt.get(targetIns);
+			instructionToFirstStmt.get(targetIns);
                         
 		    if(targetToHandler.containsKey(firstTargetStmt))
 			newTarget = 
-			    (Stmt) targetToHandler.get(firstTargetStmt);
+			    targetToHandler.get(firstTargetStmt);
 		    else
                     {
 			Local local = 
@@ -1635,7 +1387,7 @@ public class CFG {
 
 		// Insert trap
 		{
-		    Stmt firstStmt = (Stmt)instructionToFirstStmt.get(startIns);
+		    Stmt firstStmt = instructionToFirstStmt.get(startIns);
 		    Stmt afterEndStmt;
 		    if (endIns == null) {
 			// A kludge which isn't really correct, but
@@ -1649,7 +1401,7 @@ public class CFG {
 			// the protected area.
 			afterEndStmt = (Stmt) units.getLast();
 		    } else {
-			afterEndStmt = (Stmt) instructionToLastStmt.get(endIns);
+			afterEndStmt = instructionToLastStmt.get(endIns);
 			IdentityStmt catchStart = 
 			    (IdentityStmt) targetToHandler.get(afterEndStmt); 
 			                    // (Cast to IdentityStmt as an assertion check.)
@@ -1677,25 +1429,23 @@ public class CFG {
 	/* convert line number table to tags attached to statements */
 	if (Options.v().keep_line_number())
 	{
-	    HashMap stmtstags = new HashMap();
-	    LinkedList startstmts = new LinkedList();
+	    HashMap<Stmt, Tag> stmtstags = new HashMap<Stmt, Tag>();
+	    LinkedList<Stmt> startstmts = new LinkedList<Stmt>();
 
 	    attribute_info[] attrs = codeAttribute.attributes;
-	    for (int i=0; i<attrs.length; i++)
-	    {
-		if (attrs[i] instanceof LineNumberTable_attribute)
+	    for (attribute_info element : attrs) {
+		if (element instanceof LineNumberTable_attribute)
 		{
 		    LineNumberTable_attribute lntattr =
-			(LineNumberTable_attribute)attrs[i];
-		    for (int j=0; j<lntattr.line_number_table.length; j++)
-		    {
-			Stmt start_stmt = (Stmt)instructionToFirstStmt.get(
-				 lntattr.line_number_table[j].start_inst);
+			(LineNumberTable_attribute)element;
+		    for (line_number_table_entry element0 : lntattr.line_number_table) {
+			Stmt start_stmt = instructionToFirstStmt.get(
+				 element0.start_inst);
 
 			if (start_stmt != null)
 			{
 			    LineNumberTag lntag= new LineNumberTag(
-		   		    lntattr.line_number_table[j].line_number);
+		   		    element0.line_number);
 			    stmtstags.put(start_stmt, lntag);
 			    startstmts.add(start_stmt);
 			}
@@ -1705,10 +1455,10 @@ public class CFG {
 
 	    /* if the predecessor of a statement is a caughtexcetionref,
              * give it the tag of its successor */
-            for( Iterator stmtIt = new ArrayList(stmtstags.keySet()).iterator(); stmtIt.hasNext(); ) {
-                final Stmt stmt = (Stmt) stmtIt.next();
+            for( Iterator<Stmt> stmtIt = new ArrayList<Stmt>(stmtstags.keySet()).iterator(); stmtIt.hasNext(); ) {
+                final Stmt stmt = stmtIt.next();
                 Stmt pred = stmt;
-                Tag tag = (Tag) stmtstags.get(stmt);
+                Tag tag = stmtstags.get(stmt);
                 while(true) {
                     pred = (Stmt)units.getPredOf(pred);
                     if( pred == null ) break;
@@ -1721,8 +1471,8 @@ public class CFG {
 	    /* attach line number tag to each statement. */
 	    for (int i=0; i<startstmts.size(); i++)
 	    {
-		Stmt stmt = (Stmt)startstmts.get(i);
-		Tag tag = (Tag)stmtstags.get(stmt);
+		Stmt stmt = startstmts.get(i);
+		Tag tag = stmtstags.get(stmt);
 		
 		stmt.addTag(tag);
 		
@@ -1754,7 +1504,7 @@ public class CFG {
         cp_info[] constant_pool)
     {
         int x;
-        x = ((int)(ins.code))&0xff;
+        x = ((ins.code))&0xff;
 
         switch(x)
         {
@@ -1940,7 +1690,7 @@ public class CFG {
          case ByteCode.NEWARRAY:
          {
             typeStack = popSafe(typeStack, IntType.v());
-            Type baseType = (Type) jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
+            Type baseType = jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
 
             typeStack = typeStack.push(ArrayType.v(baseType, 1));
             break;
@@ -1970,7 +1720,7 @@ public class CFG {
 
         case ByteCode.MULTIANEWARRAY:
         {
-            int bdims = (int)(((Instruction_Multianewarray)ins).dims);
+            int bdims = (((Instruction_Multianewarray)ins).dims);
 
 
             CONSTANT_Class_info c = (CONSTANT_Class_info) constant_pool[
@@ -2909,7 +2659,7 @@ public class CFG {
 		{
                    // Regular goto
 
-                    ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());
+                    ((GotoStmt)s).setTarget(b.succ.firstElement().getHeadJStmt());
                 }
                 else
                 {
@@ -2932,13 +2682,13 @@ public class CFG {
                if (b.succ.size()!=2)
                   G.v().out.println("How can an if not have 2 successors?");
 
-               if((BasicBlock)(b.succ.firstElement())==b.next)
+               if((b.succ.firstElement())==b.next)
                {
-                  ((IfStmt)s).setTarget(((BasicBlock) b.succ.elementAt(1)).getHeadJStmt());
+                  ((IfStmt)s).setTarget(b.succ.elementAt(1).getHeadJStmt());
                }
                else
                {
-                  ((IfStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());
+                  ((IfStmt)s).setTarget(b.succ.firstElement().getHeadJStmt());
                }
 
             }
@@ -2950,8 +2700,8 @@ public class CFG {
                // are listed in the successor vector in order, with the
                // default as the very first (0-th entry)
 
-               for (Enumeration e = b.succ.elements();e.hasMoreElements();) {
-                  p = (BasicBlock)(e.nextElement());
+               for (BasicBlock basicBlock : b.succ) {
+                  p = (basicBlock);
                   if (count==0) {
                      sts.setDefaultTarget(p.getHeadJStmt());
                   } else {
@@ -2967,8 +2717,8 @@ public class CFG {
                // are listed in the successor vector in order, with the
                // default as the very first (0-th entry)
 
-               for (Enumeration e = b.succ.elements();e.hasMoreElements();) {
-                  p = (BasicBlock)(e.nextElement());
+               for (BasicBlock basicBlock : b.succ) {
+                  p = (basicBlock);
                   if (count==0) {
                      sls.setDefaultTarget(p.getHeadJStmt());
                   } else {
@@ -2979,8 +2729,8 @@ public class CFG {
             }
 
          b.done = false;
-         for (Enumeration e = b.succ.elements();e.hasMoreElements();) {
-            p = (BasicBlock)(e.nextElement());
+         for (BasicBlock basicBlock : b.succ) {
+            p = (basicBlock);
             if (p.done) bbq.push(p);
          }
       }
@@ -3039,9 +2789,8 @@ public class CFG {
 
    private void generateJimpleForCPEntry(cp_info constant_pool[], int i,
                             TypeStack typeStack, TypeStack postTypeStack,
-                            SootMethod jmethod, List statements)
+                            SootMethod jmethod, List<Stmt> statements)
    {
-      Expr e;
       Stmt stmt;
       Value rvalue;
 
@@ -3123,14 +2872,12 @@ public class CFG {
 
     void generateJimple(Instruction ins, TypeStack typeStack, TypeStack postTypeStack,
         cp_info constant_pool[],
-        List statements, BasicBlock basicBlock)
+        List<Stmt> statements, BasicBlock basicBlock)
    {
       Value[] params;
-      Value v1=null,v2=null,v3=null,v4=null;
       Local l1 = null, l2 = null, l3 = null, l4 = null;
 
-      Expr e=null,rhs=null;
-      BinopExpr b=null;
+      Expr rhs=null;
       ConditionExpr co = null;
 
       ArrayRef a=null;
@@ -3141,7 +2888,7 @@ public class CFG {
 
       Stmt stmt = null;
 
-      int x = ((int)(ins.code))&0xff;
+      int x = ((ins.code))&0xff;
 
       Util.v().activeOriginalIndex = ins.originalIndex;
       Util.v().isLocalStore = false;
@@ -3200,22 +2947,21 @@ public class CFG {
          case ByteCode.FCONST_0:
          case ByteCode.FCONST_1:
          case ByteCode.FCONST_2:
-            rvalue = FloatConstant.v((float)(x - ByteCode.FCONST_0));
+            rvalue = FloatConstant.v((x - ByteCode.FCONST_0));
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), rvalue);
             break;
 
          case ByteCode.DCONST_0:
          case ByteCode.DCONST_1:
-            rvalue = DoubleConstant.v((double)(x-ByteCode.DCONST_0));
+            rvalue = DoubleConstant.v((x-ByteCode.DCONST_0));
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), rvalue);
             break;
 
          case ByteCode.ILOAD:
          {
-            Local local = (Local)
-                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar) ins).arg_b);
+            Local local = Util.v().getLocalForIndex(listBody, ((Instruction_bytevar) ins).arg_b);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3224,8 +2970,7 @@ public class CFG {
 
          case ByteCode.FLOAD:
          {
-            Local local = (Local)
-                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b);
+            Local local = Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3411,8 +3156,7 @@ public class CFG {
          case ByteCode.FSTORE_3:
          {
             Util.v().isLocalStore = true;
-            Local local = (Local)
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.FSTORE_0));
+            Local local = Util.v().getLocalForIndex(listBody, (x - ByteCode.FSTORE_0));
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
@@ -3474,7 +3218,7 @@ public class CFG {
 
          case ByteCode.NEWARRAY:
          {
-            Type baseType = (Type) jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
+            Type baseType = jimpleTypeOfAtype(((Instruction_Newarray)ins).atype);
 
             rhs = Jimple.v().newNewArrayExpr(baseType,
                 Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
@@ -3506,7 +3250,7 @@ public class CFG {
 
          case ByteCode.MULTIANEWARRAY:
          {
-               int bdims = (int)(((Instruction_Multianewarray)ins).dims);
+               int bdims = (((Instruction_Multianewarray)ins).dims);
                List dims = new ArrayList();
 
                for (int j=0; j < bdims; j++)
@@ -4552,7 +4296,6 @@ public class CFG {
 
             SootClass bclass = cm.getSootClass(className);
 
-            Local[] parameters;
             List parameterTypes;
             Type returnType;
 
@@ -4596,7 +4339,7 @@ public class CFG {
                     postTypeStack.topIndex()),rvalue);
             }
             else
-               stmt = Jimple.v().newInvokeStmt((InvokeExpr) rvalue);
+               stmt = Jimple.v().newInvokeStmt(rvalue);
             break;
         }
 
@@ -4625,7 +4368,6 @@ public class CFG {
 
                 SootClass bclass = cm.getSootClass(className);
 
-                Local[] parameters;
                 List parameterTypes;
                 Type returnType;
 
@@ -4669,7 +4411,7 @@ public class CFG {
                     postTypeStack.topIndex()), rvalue);
             }
             else
-                stmt = Jimple.v().newInvokeStmt((InvokeExpr) rvalue);
+                stmt = Jimple.v().newInvokeStmt(rvalue);
             break;
         }
 
@@ -4701,7 +4443,6 @@ public class CFG {
 
                 SootClass bclass = cm.getSootClass(className);
 
-                Local[] parameters;
                 List parameterTypes;
                 Type returnType;
 
@@ -4751,7 +4492,7 @@ public class CFG {
                     postTypeStack.topIndex()),rvalue);
             }
             else
-               stmt = Jimple.v().newInvokeStmt((InvokeExpr) rvalue);
+               stmt = Jimple.v().newInvokeStmt(rvalue);
 
             break;
          }
@@ -4784,7 +4525,6 @@ public class CFG {
 
                 SootClass bclass = cm.getSootClass(className);
 
-                Local[] parameters;
                 List parameterTypes;
                 Type returnType;
 
@@ -4828,7 +4568,7 @@ public class CFG {
                     postTypeStack.topIndex()), rvalue);
             }
             else
-               stmt = Jimple.v().newInvokeStmt((InvokeExpr) rvalue);
+               stmt = Jimple.v().newInvokeStmt(rvalue);
             break;
         }
 

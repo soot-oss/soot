@@ -25,10 +25,7 @@
 
 package soot.tagkit;
 
-import soot.*;
-
 import java.util.*;
-import java.io.*;
 
 
 

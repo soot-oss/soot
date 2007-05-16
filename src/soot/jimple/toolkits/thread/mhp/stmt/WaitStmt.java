@@ -2,14 +2,8 @@
 package soot.jimple.toolkits.thread.mhp.stmt;
 
 
-import soot.tagkit.*;
 import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.util.*;
 import soot.toolkits.graph.*;
-
-import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

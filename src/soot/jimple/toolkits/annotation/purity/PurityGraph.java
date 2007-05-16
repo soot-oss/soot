@@ -27,7 +27,6 @@
 
 package soot.jimple.toolkits.annotation.purity;
 import java.util.*;
-import java.io.*;
 import soot.*;
 import soot.util.*;
 import soot.util.dot.*;
@@ -167,17 +166,17 @@ public class PurityGraph
      * Caching: this semm to actually improve both speed and memory 
      * consumption!
      */
-    private static Map nodeCache =  new HashMap();
-    private static Map edgeCache =  new HashMap();
+    private static final Map<PurityNode, PurityNode> nodeCache =  new HashMap<PurityNode, PurityNode>();
+    private static final Map<PurityEdge, PurityEdge> edgeCache =  new HashMap<PurityEdge, PurityEdge>();
     private static PurityNode cacheNode(PurityNode p)
     {
 	if (!nodeCache.containsKey(p)) nodeCache.put(p,p);
-	return (PurityNode)nodeCache.get(p);
+	return nodeCache.get(p);
     }
     private static PurityEdge cacheEdge(PurityEdge e)
     {
 	if (!edgeCache.containsKey(e)) edgeCache.put(e,e);
-	return (PurityEdge)edgeCache.get(e);
+	return edgeCache.get(e);
     }
 
     /**
@@ -362,7 +361,7 @@ public class PurityGraph
     // ESCAPE INFORMATION //
     ////////////////////////
 
-    protected void internalPassEdges(Set toColor, Set dest, 
+    protected void internalPassEdges(Set toColor, Set<PurityNode> dest, 
 				     boolean consider_inside)
     {
 	Iterator it = toColor.iterator();
@@ -378,7 +377,7 @@ public class PurityGraph
 	}	
     }
 
-    protected void internalPassNode(PurityNode node, Set dest,
+    protected void internalPassNode(PurityNode node, Set<PurityNode> dest,
 				    boolean consider_inside)
     {
 	if (!dest.contains(node)) {
@@ -387,7 +386,7 @@ public class PurityGraph
 	}	
     }
 
-    protected void internalPassNodes(Set toColor, Set dest, 
+    protected void internalPassNodes(Set toColor, Set<PurityNode> dest, 
 				     boolean consider_inside)
     {
 	Iterator it = toColor.iterator();
@@ -396,9 +395,9 @@ public class PurityGraph
 			     dest, consider_inside);
     }
 
-    protected Set getEscaping()
+    protected Set<PurityNode> getEscaping()
     {
-	Set escaping = new HashSet();
+	Set<PurityNode> escaping = new HashSet<PurityNode>();
 	internalPassNodes(ret,escaping,true);
 	internalPassNodes(globEscape,escaping,true);
 	internalPassNode(PurityGlobalNode.node,escaping,true);
@@ -414,14 +413,14 @@ public class PurityGraph
     public boolean isPure()
     {
 	if (!mutated.get(PurityGlobalNode.node).isEmpty()) return false;
-	Set A = new HashSet();
-	Set B = new HashSet();
+	Set<PurityNode> A = new HashSet<PurityNode>();
+	Set<PurityNode> B = new HashSet<PurityNode>();
 	internalPassNodes(paramNodes, A, false);
 	internalPassNodes(globEscape, B, true);
 	internalPassNode(PurityGlobalNode.node,B,true);
-	Iterator it = A.iterator();
+	Iterator<PurityNode> it = A.iterator();
 	while (it.hasNext()) {
-	    PurityNode n = (PurityNode)it.next();
+	    PurityNode n = it.next();
 	    if (B.contains(n) || !mutated.get(n).isEmpty()) return false;
 	}
 	return true;
@@ -436,15 +435,15 @@ public class PurityGraph
     public boolean isPureConstructor()
     {
 	if (!mutated.get(PurityGlobalNode.node).isEmpty()) return false;
-	Set A = new HashSet();
-	Set B = new HashSet();
+	Set<PurityNode> A = new HashSet<PurityNode>();
+	Set<PurityNode> B = new HashSet<PurityNode>();
 	internalPassNodes(paramNodes, A, false);
 	internalPassNodes(globEscape, B, true);
 	internalPassNode(PurityGlobalNode.node,B,true);
 	PurityNode th = PurityThisNode.node;
-	Iterator it = A.iterator();
+	Iterator<PurityNode> it = A.iterator();
 	while (it.hasNext()) {
-	    PurityNode n = (PurityNode)it.next();
+	    PurityNode n = it.next();
 	    if (B.contains(n) || 
 		(!n.equals(th) && !mutated.get(n).isEmpty())) return false;
 	}
@@ -465,18 +464,18 @@ public class PurityGraph
     {
 	if (!paramNodes.contains(p)) return PARAM_RW;
 
-	Set S1 = new HashSet();
+	Set<PurityNode> S1 = new HashSet<PurityNode>();
 	internalPassNode(p, S1, false);
-	Iterator it = S1.iterator();
+	Iterator<PurityNode> it = S1.iterator();
 	while (it.hasNext()) {
-	    PurityNode n = (PurityNode)it.next();
+	    PurityNode n = it.next();
 	    if (n.isLoad() || n.equals(p)) {
 		if (!mutated.get(n).isEmpty() ||
 		    globEscape.contains(n)) return PARAM_RW;
 	    }
 	}
 
-	Set S2 = new HashSet();
+	Set<PurityNode> S2 = new HashSet<PurityNode>();
 	internalPassNodes(ret,S2,true);
 	internalPassNodes(paramNodes,S2,true);
 	it = S2.iterator();
@@ -633,7 +632,7 @@ public class PurityGraph
 	Iterator it = (new LinkedList(nodes)).iterator();
 	while (it.hasNext()) {
 	    PurityNode p = (PurityNode)it.next();
-	    Map fmap = new HashMap();
+	    Map<String, PurityNode> fmap = new HashMap<String, PurityNode>();
 	    Iterator itt = (new LinkedList(edges.get(p))).iterator();
 	    while (itt.hasNext()) {
 		PurityEdge e   = (PurityEdge)itt.next();
@@ -641,7 +640,7 @@ public class PurityGraph
 		if (!e.isInside() && !tgt.equals(p)) {
 		    String f = e.getField();
 		    if (fmap.containsKey(f) && nodes.contains(fmap.get(f))) 
-			mergeNodes(tgt, (PurityNode)fmap.get(f));
+			mergeNodes(tgt, fmap.get(f));
 		    else fmap.put(f,tgt);
 		}
 	    }
@@ -653,7 +652,7 @@ public class PurityGraph
 	from escaping nodes (params, ret, globEscape) or load nodes. */
     void simplifyInside()
     {
-	Set r = new HashSet();
+	Set<PurityNode> r = new HashSet<PurityNode>();
 	internalPassNodes(paramNodes,r,true);
 	internalPassNodes(ret,r,true);
 	internalPassNodes(globEscape,r,true);
@@ -732,8 +731,8 @@ public class PurityGraph
      */
     void assignFieldToLocal(Stmt stmt, Local right, String field, Local left)
     {
-	Set esc = new HashSet();
-	Set escaping = getEscaping();
+	Set<PurityNode> esc = new HashSet<PurityNode>();
+	Set<PurityNode> escaping = getEscaping();
 
 	// strong update on local
 	localsRemove(left);
@@ -758,9 +757,9 @@ public class PurityGraph
 	    PurityNode loadNode = cacheNode(new PurityStmtNode(stmt,false));
 	    nodes.add(loadNode);
 	    
-	    Iterator itEsc = esc.iterator();
+	    Iterator<PurityNode> itEsc = esc.iterator();
 	    while (itEsc.hasNext()) {
-		PurityNode node = (PurityNode) itEsc.next();
+		PurityNode node = itEsc.next();
 		PurityEdge edge = 
 		    cacheEdge(new PurityEdge(node, field, loadNode, false));
 		if (edges.put(node, edge))
@@ -1036,7 +1035,7 @@ public class PurityGraph
 	// simplification
 	/////////////////	
 		
-	Set escaping = getEscaping();
+	Set<PurityNode> escaping = getEscaping();
 	it = (new LinkedList(nodes)).iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
@@ -1101,7 +1100,7 @@ public class PurityGraph
      */
     void fillDotGraph(String prefix, DotGraph out)
     {
-        Map nodeId = new HashMap();
+        Map<PurityNode, String> nodeId = new HashMap<PurityNode, String>();
 	int id = 0;
 
 	// add nodes 
@@ -1128,8 +1127,8 @@ public class PurityGraph
 	    while (itt.hasNext()) {
 		PurityEdge e = (PurityEdge) itt.next();
 		DotGraphEdge edge = 
-		    out.drawEdge((String)nodeId.get(e.getSource()),
-				 (String)nodeId.get(e.getTarget()));
+		    out.drawEdge(nodeId.get(e.getSource()),
+				 nodeId.get(e.getTarget()));
 		edge.setLabel(e.getField());
 		if (!e.isInside()) {
 		    edge.setStyle("dashed");
@@ -1151,7 +1150,7 @@ public class PurityGraph
 		Iterator itt = locals.get(local).iterator();
 		while (itt.hasNext()) {
 		    PurityNode dst = (PurityNode) itt.next();
-		    out.drawEdge(label,(String)nodeId.get(dst));
+		    out.drawEdge(label,nodeId.get(dst));
 		}
 		id++;
 	    }
@@ -1165,7 +1164,7 @@ public class PurityGraph
 	    Iterator itt = ret.iterator();
 	    while (itt.hasNext()) {
 		PurityNode dst = (PurityNode) itt.next();
-		out.drawEdge("ret_"+prefix,(String)nodeId.get(dst));
+		out.drawEdge("ret_"+prefix,nodeId.get(dst));
 	    }	    
 	}
 
@@ -1180,7 +1179,7 @@ public class PurityGraph
 		DotGraphNode node = out.drawNode(label);
 		node.setLabel("");
 		node.setShape("plaintext");
-		DotGraphEdge edge = out.drawEdge((String)nodeId.get(n),label);
+		DotGraphEdge edge = out.drawEdge(nodeId.get(n),label);
 		edge.setLabel(f);
 		id++;
 	    }

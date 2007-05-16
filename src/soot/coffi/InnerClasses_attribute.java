@@ -30,9 +30,6 @@
 
 
 package soot.coffi;
-import soot.*;
-
-import java.io.*;
 
 /** Attribute that connects inner classes with their containing classes.
  * @see attribute_info

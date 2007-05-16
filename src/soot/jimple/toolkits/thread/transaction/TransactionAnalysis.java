@@ -26,7 +26,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	TransactionAwareSideEffectAnalysis tasea;
 //	SideEffectAnalysis sea;
 	
-	List prepUnits;
+	List<Object> prepUnits;
 
     Transaction methodTn;
 	
@@ -61,7 +61,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     	
 //    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
     				
-    	prepUnits = new ArrayList();
+    	prepUnits = new ArrayList<Object>();
     	
 		methodTn = null;
 		if(method.isSynchronized())
@@ -86,7 +86,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
      **/
     protected Object newInitialFlow()
     {
-		FlowSet ret = (FlowSet) emptySet.clone();
+		FlowSet ret = emptySet.clone();
 		if(method.isSynchronized() && methodTn != null)
 		{
 			ret.add(new TransactionFlowPair(methodTn, true));
@@ -99,7 +99,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
      **/
     protected Object entryInitialFlow()
     {
-		FlowSet ret = (FlowSet) emptySet.clone();
+		FlowSet ret = emptySet.clone();
 		if(method.isSynchronized() && methodTn != null)
 		{
 			ret.add(new TransactionFlowPair(methodTn, true));
@@ -334,12 +334,12 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 					}
         			tn.unitToRWSet.put(unit, bothRW);
 	
-					List usesList;
+					List<Object> usesList;
 					if(tn.unitToUses.containsKey(unit))
-						usesList = (List) tn.unitToUses.get(unit);
+						usesList = tn.unitToUses.get(unit);
 					else
 					{
-						usesList = new ArrayList();
+						usesList = new ArrayList<Object>();
 						tn.unitToUses.put(unit, usesList);
 					}
 
@@ -385,7 +385,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			newTn.entermonitor = stmt;
 			newTn.beginning = (Stmt) units.getSuccOf(stmt);
 			if(stmt instanceof EnterMonitorStmt)
-				newTn.origLock = (Local) ((EnterMonitorStmt) stmt).getOp();
+				newTn.origLock = ((EnterMonitorStmt) stmt).getOp();
 				
 /*			// 
 			else
@@ -407,7 +407,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			out.add(new TransactionFlowPair(newTn, true));
 			
 			// This is a really stupid way to find out which prep applies to this txn.
-			Iterator prepUnitsIt = prepUnits.iterator();
+			Iterator<Object> prepUnitsIt = prepUnits.iterator();
 			while(prepUnitsIt.hasNext())
 			{
 				Unit prepUnit = (Unit) prepUnitsIt.next();

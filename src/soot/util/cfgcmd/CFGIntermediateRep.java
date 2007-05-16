@@ -20,7 +20,6 @@
 package soot.util.cfgcmd;
 
 import soot.Body;
-import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.baf.Baf;
 import soot.grimp.Grimp;

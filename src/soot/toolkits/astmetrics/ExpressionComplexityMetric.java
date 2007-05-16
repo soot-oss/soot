@@ -20,10 +20,7 @@
 package soot.toolkits.astmetrics;
 
 import polyglot.ast.Expr;
-import polyglot.ast.If;
-import polyglot.ast.Loop;
 import polyglot.ast.Node;
-import polyglot.ast.Unary;
 import polyglot.visit.NodeVisitor;
 
 /**
@@ -50,9 +47,8 @@ public class ExpressionComplexityMetric extends ASTMetric {
 	}
 
 	public void addMetrics(ClassData data) {
-	  double avg = 0;
-	  double a = (double)exprDepthSum;
-	  double b = (double)exprCount;
+	  double a = exprDepthSum;
+	  double b = exprCount;
 	  
 	  data.addMetric(new MetricData("Expr-Complexity",new Double(a)));
 	  data.addMetric(new MetricData("Expr-Count",new Double(b)));

@@ -24,7 +24,6 @@ import java.util.Map;
 import soot.jbco.*;
 import soot.Body;
 import soot.BodyTransformer;
-import soot.PatchingChain;
 
 /**
  * @author Michael Batchelder 
@@ -54,7 +53,7 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
     System.out.println("\n"+b.getMethod().getSignature());
   
     if (stack) {
-      HashMap Stacks = null, b2j = (HashMap)soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());      
+      HashMap Stacks = null, b2j = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());      
       
       try {
         if (b2j == null)

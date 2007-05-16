@@ -37,7 +37,7 @@ import java.util.*;
 public class BDup1Inst extends BDupInst implements Dup1Inst
 {
 
-    private Type mOpType;
+    private final Type mOpType;
 
     
 
@@ -52,16 +52,16 @@ public class BDup1Inst extends BDupInst implements Dup1Inst
     }
 
 
-    public List getOpTypes()
+    public List<Type> getOpTypes()
     {
-        List res =  new ArrayList();
+        List<Type> res =  new ArrayList<Type>();
         res.add(mOpType);
         return res;
     }
     
-    public List getUnderTypes()
+    public List<Type> getUnderTypes()
     {
-        return new ArrayList();
+        return new ArrayList<Type>();
     }
 
     

@@ -20,10 +20,8 @@
 package soot.toolkits.graph;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.scalar.*;
-import soot.options.*;
 
 // STEP 1: What are we computing?
 // SETS OF Units that are post-dominators => Use ArraySparseSet.
@@ -103,7 +101,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis {
         else {
         
 //            System.out.println("s: "+s+" is not start node");
-            FlowSet domsOfSuccs = (FlowSet) allNodes.clone();
+            FlowSet domsOfSuccs = allNodes.clone();
         
             // for each pred of s
             Iterator succsIt = g.getSuccsOf(s).iterator();

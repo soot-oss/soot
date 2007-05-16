@@ -18,13 +18,11 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.*;
 import java.util.*;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.internal.*;
-import soot.options.SparkOptions;
 
 /** Collapses VarNodes (green) forming strongly-connected components in
  * the pointer assignment graph.
@@ -40,13 +38,12 @@ public class SCCCollapser {
         }
 
         new TopoSorter( pag, ignoreTypes ).sort();
-        TreeSet s = new TreeSet();
+        TreeSet<VarNode> s = new TreeSet<VarNode>();
         for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
             final VarNode v = (VarNode) vIt.next();
             s.add(v);
         }
-        for( Iterator vIt = s.iterator(); vIt.hasNext(); ) {
-            final VarNode v = (VarNode) vIt.next();
+        for (VarNode v : s) {
             dfsVisit( v, v );
         }
 
@@ -58,7 +55,7 @@ public class SCCCollapser {
     public SCCCollapser( PAG pag, boolean ignoreTypes ) {
         this.pag = pag;
         this.ignoreTypes = ignoreTypes;
-        this.typeManager = (TypeManager) pag.getTypeManager();
+        this.typeManager = pag.getTypeManager();
     }
     
     /* End of public methods. */
@@ -66,7 +63,7 @@ public class SCCCollapser {
 
     protected int numCollapsed = 0;
     protected PAG pag;
-    protected HashSet visited = new HashSet();
+    protected HashSet<VarNode> visited = new HashSet<VarNode>();
     protected boolean ignoreTypes;
     protected TypeManager typeManager;
 
@@ -74,10 +71,10 @@ public class SCCCollapser {
         if( visited.contains( v ) ) return;
         visited.add( v );
         Node[] succs = pag.simpleInvLookup( v );
-        for( int i = 0; i < succs.length; i++ ) {
+        for (Node element : succs) {
             if( ignoreTypes
-            || typeManager.castNeverFails( succs[i].getType(), v.getType() ) ) {
-                dfsVisit( (VarNode) succs[i], rootOfSCC );
+            || typeManager.castNeverFails( element.getType(), v.getType() ) ) {
+                dfsVisit( (VarNode) element, rootOfSCC );
             }
         }
         if( v != rootOfSCC ) {

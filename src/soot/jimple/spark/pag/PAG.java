@@ -19,8 +19,8 @@
 
 package soot.jimple.spark.pag;
 import java.util.*;
+
 import soot.jimple.*;
-import soot.jimple.spark.*;
 import soot.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.solver.OnFlyCallGraph;
@@ -40,7 +40,7 @@ public class PAG implements PointsToAnalysis {
     public PAG( final SparkOptions opts ) {
         this.opts = opts;
         if( opts.add_tags() ) {
-            nodeToTag = new HashMap();
+            nodeToTag = new HashMap<Node, Tag>();
         }
         typeManager = new TypeManager(this);
         if( !opts.ignore_types() ) {
@@ -172,7 +172,7 @@ public class PAG implements PointsToAnalysis {
             }
             return n.getP2Set();
         }
-        if( ((SparkOptions)getOpts()).propagator() == SparkOptions.propagator_alias ) {
+        if( (getOpts()).propagator() == SparkOptions.propagator_alias ) {
             throw new RuntimeException( "The alias edge propagator does not compute points-to information for instance fields! Use a different propagator." );
         }
         PointsToSetInternal bases = (PointsToSetInternal) s;
@@ -195,10 +195,9 @@ public class PAG implements PointsToAnalysis {
         }
         Map[] maps = { simple, alloc, store, load,
             simpleInv, allocInv, storeInv, loadInv };
-        for( int i = 0; i < maps.length; i++ ) {
-            Map m = maps[i];
-            for( Iterator it = m.keySet().iterator(); it.hasNext(); ) {
-                lookup( m, it.next() );
+        for (Map<Object, Object> m : maps) {
+            for (Object object : m.keySet()) {
+                lookup( m, object );
             }
         }
         somethingMerged = false;
@@ -231,9 +230,7 @@ public class PAG implements PointsToAnalysis {
 
         Map[] maps = { simple, alloc, store, load,
             simpleInv, allocInv, storeInv, loadInv };
-        for( int mapi = 0; mapi < maps.length; mapi++ ) {
-            Map m = maps[mapi];
-
+        for (Map<Node, Object> m : maps) {
             if( !m.keySet().contains( n2 ) ) continue;
 
             Object[] os = { m.get( n1 ), m.get( n2 ) };
@@ -247,14 +244,14 @@ public class PAG implements PointsToAnalysis {
                     ((HashSet) os[0]).addAll( (HashSet) os[1] );
                 } else {
                     Node[] ar = (Node[]) os[1];
-                    for( int j = 0; j < ar.length; j++ ) {
-                        ( (HashSet) os[0] ).add( ar[j] );
+                    for (Node element0 : ar) {
+                        ( (HashSet<Node>) os[0] ).add( element0 );
                     }
                 }
             } else if( os[1] instanceof HashSet ) {
                 Node[] ar = (Node[]) os[0];
-                for( int j = 0; j < ar.length; j++ ) {
-                    ((HashSet) os[1]).add( ar[j] );
+                for (Node element0 : ar) {
+                    ((HashSet<Node>) os[1]).add( element0 );
                 }
                 m.put( n1, os[1] );
             } else if( size1*size2 < 1000 ) {
@@ -263,8 +260,7 @@ public class PAG implements PointsToAnalysis {
                 Node[] ret = new Node[size1+size2];
                 System.arraycopy( a1, 0, ret, 0, a1.length ); 
                 int j = a1.length;
-                outer: for( int i = 0; i < a2.length; i++ ) {
-                    Node rep = a2[i];
+                outer: for (Node rep : a2) {
                     for( int k = 0; k < j; k++ )
                         if( rep == ret[k] ) continue outer;
                     ret[j++] = rep;
@@ -273,16 +269,15 @@ public class PAG implements PointsToAnalysis {
                 System.arraycopy( ret, 0, newArray, 0, j );
                 m.put( n1, ret = newArray );
             } else {
-                HashSet s = new HashSet( size1+size2 );
-                for( int j = 0; j < os.length; j++ ) {
-                    Object o = os[j];
+                HashSet<Node> s = new HashSet<Node>( size1+size2 );
+                for (Object o : os) {
                     if( o == null ) continue;
                     if( o instanceof Set ) {
                         s.addAll( (Set) o );
                     } else {
                         Node[] ar = (Node[]) o;
-                        for( int k = 0; k < ar.length; k++ ) {
-                            s.add( ar[k] );
+                        for (Node element1 : ar) {
+                            s.add( element1 );
                         }
                     }
                 }
@@ -292,7 +287,7 @@ public class PAG implements PointsToAnalysis {
         }
     }
     protected final static Node[] EMPTY_NODE_ARRAY = new Node[0];
-    protected Node[] lookup( Map m, Object key ) {
+    protected Node[] lookup( Map<Object, Object> m, Object key ) {
 	Object valueList = m.get( key );
 	if( valueList == null ) {
 	    return EMPTY_NODE_ARRAY;
@@ -300,7 +295,7 @@ public class PAG implements PointsToAnalysis {
 	if( valueList instanceof Set ) {
             try {
 	    m.put( key, valueList = 
-		    (Node[]) ( (Set) valueList ).toArray( EMPTY_NODE_ARRAY ) );
+		    ( (Set) valueList ).toArray( EMPTY_NODE_ARRAY ) );
             } catch( Exception e ) {
                 for( Iterator it = ((Set)valueList).iterator(); it.hasNext(); ) {
                     G.v().out.println( ""+it.next() );
@@ -314,7 +309,7 @@ public class PAG implements PointsToAnalysis {
                 Node reti = ret[i];
                 Node rep = reti.getReplacement();
                 if( rep != reti || rep == key ) {
-                    Set s;
+                    Set<Node> s;
                     if( ret.length <= 75 ) {
                         int j = i;
                         outer: for( ; i < ret.length; i++ ) {
@@ -329,7 +324,7 @@ public class PAG implements PointsToAnalysis {
                         System.arraycopy( ret, 0, newArray, 0, j );
                         m.put( key, ret = newArray );
                     } else {
-                        s = new HashSet( ret.length * 2 );
+                        s = new HashSet<Node>( ret.length * 2 );
                         for( int j = 0; j < i; j++ ) s.add( ret[j] );
                         for( int j = i; j < ret.length; j++ ) {
                             rep = ret[j].getReplacement();
@@ -337,7 +332,7 @@ public class PAG implements PointsToAnalysis {
                                 s.add( rep );
                             }
                         }
-                        m.put( key, ret = (Node[]) s.toArray( EMPTY_NODE_ARRAY ) );
+                        m.put( key, ret = s.toArray( EMPTY_NODE_ARRAY ) );
                     }
                     break;
                 }
@@ -362,23 +357,23 @@ public class PAG implements PointsToAnalysis {
     { return lookup( alloc, key ); }
     public Node[] allocInvLookup( VarNode key ) 
     { return lookup( allocInv, key ); }
-    public Set simpleSources() { return simple.keySet(); }
-    public Set allocSources() { return alloc.keySet(); }
-    public Set storeSources() { return store.keySet(); }
-    public Set loadSources() { return load.keySet(); }
-    public Set simpleInvSources() { return simpleInv.keySet(); }
-    public Set allocInvSources() { return allocInv.keySet(); }
-    public Set storeInvSources() { return storeInv.keySet(); }
-    public Set loadInvSources() { return loadInv.keySet(); }
+    public Set<Object> simpleSources() { return simple.keySet(); }
+    public Set<Object> allocSources() { return alloc.keySet(); }
+    public Set<Object> storeSources() { return store.keySet(); }
+    public Set<Object> loadSources() { return load.keySet(); }
+    public Set<Object> simpleInvSources() { return simpleInv.keySet(); }
+    public Set<Object> allocInvSources() { return allocInv.keySet(); }
+    public Set<Object> storeInvSources() { return storeInv.keySet(); }
+    public Set<Object> loadInvSources() { return loadInv.keySet(); }
 
-    public Iterator simpleSourcesIterator() { return simple.keySet().iterator(); }
-    public Iterator allocSourcesIterator() { return alloc.keySet().iterator(); }
-    public Iterator storeSourcesIterator() { return store.keySet().iterator(); }
-    public Iterator loadSourcesIterator() { return load.keySet().iterator(); }
-    public Iterator simpleInvSourcesIterator() { return simpleInv.keySet().iterator(); }
-    public Iterator allocInvSourcesIterator() { return allocInv.keySet().iterator(); }
-    public Iterator storeInvSourcesIterator() { return storeInv.keySet().iterator(); }
-    public Iterator loadInvSourcesIterator() { return loadInv.keySet().iterator(); }
+    public Iterator<Object> simpleSourcesIterator() { return simple.keySet().iterator(); }
+    public Iterator<Object> allocSourcesIterator() { return alloc.keySet().iterator(); }
+    public Iterator<Object> storeSourcesIterator() { return store.keySet().iterator(); }
+    public Iterator<Object> loadSourcesIterator() { return load.keySet().iterator(); }
+    public Iterator<Object> simpleInvSourcesIterator() { return simpleInv.keySet().iterator(); }
+    public Iterator<Object> allocInvSourcesIterator() { return allocInv.keySet().iterator(); }
+    public Iterator<Object> storeInvSourcesIterator() { return storeInv.keySet().iterator(); }
+    public Iterator<Object> loadInvSourcesIterator() { return loadInv.keySet().iterator(); }
 
     static private int getSize( Object set ) {
         if( set instanceof Set ) return ((Set) set).size();
@@ -415,7 +410,7 @@ public class PAG implements PointsToAnalysis {
     }
     public AllocNode makeAllocNode( Object newExpr, Type type, SootMethod m ) {
         if( opts.types_for_sites() || opts.vta() ) newExpr = type;
-	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
+	AllocNode ret = valToAllocNode.get( newExpr );
 	if( ret == null ) {
 	    valToAllocNode.put( newExpr, ret = new AllocNode( this, newExpr, type, m ) );
             newAllocNodes.add( ret );
@@ -459,7 +454,7 @@ public class PAG implements PointsToAnalysis {
         if( opts.rta() ) {
             value = null;
         }
-	return (GlobalVarNode) valToGlobalVarNode.get( value );
+	return valToGlobalVarNode.get( value );
     }
     /** Finds the LocalVarNode for the variable value, or returns null. */
     public LocalVarNode findLocalVarNode( Object value ) {
@@ -468,7 +463,7 @@ public class PAG implements PointsToAnalysis {
         } else if( value instanceof Local ) {
             return (LocalVarNode) localToNodeMap.get( (Local) value );
         }
-	return (LocalVarNode) valToLocalVarNode.get( value );
+	return valToLocalVarNode.get( value );
     }
     /** Finds or creates the GlobalVarNode for the variable value, of type type. */
     public GlobalVarNode makeGlobalVarNode( Object value, Type type ) {
@@ -476,7 +471,7 @@ public class PAG implements PointsToAnalysis {
             value = null;
             type = RefType.v("java.lang.Object");
         }
-        GlobalVarNode ret = (GlobalVarNode) valToGlobalVarNode.get( value );
+        GlobalVarNode ret = valToGlobalVarNode.get( value );
         if( ret == null ) {
             valToGlobalVarNode.put( value, 
                     ret = new GlobalVarNode( this, value, type ) );
@@ -507,7 +502,7 @@ public class PAG implements PointsToAnalysis {
             }
             return ret;
         }
-        LocalVarNode ret = (LocalVarNode) valToLocalVarNode.get( value );
+        LocalVarNode ret = valToLocalVarNode.get( value );
         if( ret == null ) {
             valToLocalVarNode.put( value, 
                     ret = new LocalVarNode( this, value, type, method ) );
@@ -689,21 +684,21 @@ public class PAG implements PointsToAnalysis {
     }
 
     /** Returns list of dereferences variables. */
-    public List getDereferences() {
+    public List<VarNode> getDereferences() {
         return dereferences;
     }
 
-    public Map getNodeTags() {
+    public Map<Node, Tag> getNodeTags() {
         return nodeToTag;
     }
 
-    private ArrayNumberer allocNodeNumberer = new ArrayNumberer();
+    private final ArrayNumberer allocNodeNumberer = new ArrayNumberer();
     public ArrayNumberer getAllocNodeNumberer() { return allocNodeNumberer; }
-    private ArrayNumberer varNodeNumberer = new ArrayNumberer();
+    private final ArrayNumberer varNodeNumberer = new ArrayNumberer();
     public ArrayNumberer getVarNodeNumberer() { return varNodeNumberer; }
-    private ArrayNumberer fieldRefNodeNumberer = new ArrayNumberer();
+    private final ArrayNumberer fieldRefNodeNumberer = new ArrayNumberer();
     public ArrayNumberer getFieldRefNodeNumberer() { return fieldRefNodeNumberer; }
-    private ArrayNumberer allocDotFieldNodeNumberer = new ArrayNumberer();
+    private final ArrayNumberer allocDotFieldNodeNumberer = new ArrayNumberer();
     public ArrayNumberer getAllocDotFieldNodeNumberer() { return allocDotFieldNodeNumberer; }
 
 
@@ -797,7 +792,7 @@ public class PAG implements PointsToAnalysis {
                                      Context tgtContext ) {
         MethodNodeFactory srcnf = srcmpag.nodeFactory();
         MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
-        InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
+        InvokeExpr ie = s.getInvokeExpr();
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
             Value arg = ie.getArg( i );
@@ -846,26 +841,27 @@ public class PAG implements PointsToAnalysis {
 
     protected SparkOptions opts;
 
-    protected Map simple = new HashMap();
-    protected Map load = new HashMap();
-    protected Map store = new HashMap();
-    protected Map alloc = new HashMap();
+    protected Map<Object, Object> simple = new HashMap<Object, Object>();
+    protected Map<Object, Object> load = new HashMap<Object, Object>();
+    protected Map<Object, Object> store = new HashMap<Object, Object>();
+    protected Map<Object, Object> alloc = new HashMap<Object, Object>();
 
-    protected Map simpleInv = new HashMap();
-    protected Map loadInv = new HashMap();
-    protected Map storeInv = new HashMap();
-    protected Map allocInv = new HashMap();
+    protected Map<Object, Object> simpleInv = new HashMap<Object, Object>();
+    protected Map<Object, Object> loadInv = new HashMap<Object, Object>();
+    protected Map<Object, Object> storeInv = new HashMap<Object, Object>();
+    protected Map<Object, Object> allocInv = new HashMap<Object, Object>();
 
-    protected boolean addToMap( Map m, Node key, Node value ) {
+    protected boolean addToMap( Map<Object, Object> m, Node key, Node value ) {
 	Object valueList = m.get( key );
 
 	if( valueList == null ) {
 	    m.put( key, valueList = new HashSet(4) );
 	} else if( !(valueList instanceof Set) ) {
 	    Node[] ar = (Node[]) valueList;
-            HashSet vl = new HashSet(ar.length+4);
+            HashSet<Node> vl = new HashSet<Node>(ar.length+4);
             m.put( key, vl );
-            for( int i = 0; i < ar.length; i++ ) vl.add( ar[i] );
+            for (Node element : ar)
+				vl.add( element );
             return vl.add( value );
             /*
 	    Node[] ar = (Node[]) valueList;
@@ -880,18 +876,18 @@ public class PAG implements PointsToAnalysis {
             return true;
             */
 	}
-	return ((Set) valueList).add( value );
+	return ((Set<Node>) valueList).add( value );
     }
-    private Map valToLocalVarNode = new HashMap(1000);
-    private Map valToGlobalVarNode = new HashMap(1000);
-    private Map valToAllocNode = new HashMap(1000);
+    private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<Object, LocalVarNode>(1000);
+    private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<Object, GlobalVarNode>(1000);
+    private final Map<Object, AllocNode> valToAllocNode = new HashMap<Object, AllocNode>(1000);
     private OnFlyCallGraph ofcg;
-    private ArrayList dereferences = new ArrayList();
+    private final ArrayList<VarNode> dereferences = new ArrayList<VarNode>();
     protected TypeManager typeManager;
-    private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
+    private final LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
-    private Map nodeToTag;
-    private GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
+    private Map<Node, Tag> nodeToTag;
+    private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
     public GlobalNodeFactory nodeFactory() { return nodeFactory; }
     public NativeMethodDriver nativeMethodDriver;
 

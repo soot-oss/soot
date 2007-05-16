@@ -201,8 +201,8 @@ public class Timers
 	      cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
 	    */
 
-            timeInSecs = (float) totalTime / 1000.0f;
-            float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
+            timeInSecs = totalTime / 1000.0f;
+            float memoryUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
             
             G.v().out.println("totalTime:" + toTimeString(totalTimer, totalTime));
             

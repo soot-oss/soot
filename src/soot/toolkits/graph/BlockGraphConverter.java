@@ -20,7 +20,6 @@
 package soot.toolkits.graph;
 
 import soot.*;
-import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 

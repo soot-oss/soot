@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.Type;
 import soot.util.*;
 
 /** Represents a field.

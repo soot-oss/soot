@@ -31,9 +31,7 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BArrayWriteInst extends AbstractOpTypeInst 
                              implements ArrayWriteInst
@@ -58,7 +56,7 @@ public class BArrayWriteInst extends AbstractOpTypeInst
     
     public int getInMachineCount()
     {
-        return 2 +  JasminClass.sizeOfType(getOpType());          
+        return 2 +  AbstractJasminClass.sizeOfType(getOpType());          
     }
     
     public int getOutCount()

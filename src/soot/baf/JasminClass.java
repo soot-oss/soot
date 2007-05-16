@@ -35,7 +35,6 @@ import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 public class JasminClass extends AbstractJasminClass
 {
@@ -77,7 +76,7 @@ public class JasminClass extends AbstractJasminClass
         int stackLimitIndex = -1;
         
 
-        subroutineToReturnAddressSlot = new HashMap(10, 0.7f);
+        subroutineToReturnAddressSlot = new HashMap<Unit, Integer>(10, 0.7f);
 
         // Determine the unitToLabel map
         {
@@ -104,7 +103,7 @@ public class JasminClass extends AbstractJasminClass
         // Emit the exceptions, recording the Units at the beginning
 	// of handlers so that later on we can recognize blocks that 
 	// begin with an exception on the stack.
-	Set handlerUnits = new ArraySet(body.getTraps().size());
+	Set<Unit> handlerUnits = new ArraySet(body.getTraps().size());
         {
             Iterator trapIt = body.getTraps().iterator();
 
@@ -126,10 +125,10 @@ public class JasminClass extends AbstractJasminClass
             int localCount = 0;
             int[] paramSlots = new int[method.getParameterCount()];
             int thisSlot = 0;
-            Set assignedLocals = new HashSet();
+            Set<Local> assignedLocals = new HashSet<Local>();
             Map groupColorPairToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             
-            localToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
             //assignColorsToLocals(body);
             
@@ -259,11 +258,11 @@ public class JasminClass extends AbstractJasminClass
                                 initialHeight = new Integer(0);
                             }                                                
                             if (blockToStackHeight == null){
-                                blockToStackHeight = new HashMap();
+                                blockToStackHeight = new HashMap<Block, Integer>();
                             }
                             blockToStackHeight.put(entryBlock, initialHeight);
                             if (blockToLogicalStackHeight == null){
-                                blockToLogicalStackHeight = new HashMap();
+                                blockToLogicalStackHeight = new HashMap<Block, Integer>();
                             }
                             blockToLogicalStackHeight.put(entryBlock, initialHeight); 
                         }                
@@ -498,7 +497,7 @@ public class JasminClass extends AbstractJasminClass
                 if(i.getRightOp() instanceof CaughtExceptionRef &&
                     i.getLeftOp() instanceof Local)
                 {
-                    int slot = ((Integer) localToSlot.get(i.getLeftOp())).intValue();
+                    int slot = localToSlot.get(i.getLeftOp()).intValue();
 
                     if(slot >= 0 && slot <= 3)
                         emit("astore_" + slot);
@@ -510,7 +509,7 @@ public class JasminClass extends AbstractJasminClass
             public void caseStoreInst(StoreInst i)
             {
                     final int slot = 
-                        ((Integer) localToSlot.get(i.getLocal())).intValue();
+                        localToSlot.get(i.getLocal()).intValue();
 
                     i.getOpType().apply(new TypeSwitch()
                     {
@@ -627,7 +626,7 @@ public class JasminClass extends AbstractJasminClass
             public void caseLoadInst(LoadInst i)
             {
                 final int slot = 
-                    ((Integer) localToSlot.get(i.getLocal())).intValue();
+                    localToSlot.get(i.getLocal()).intValue();
 
                 i.getOpType().apply(new TypeSwitch()
                 {
@@ -1591,7 +1590,7 @@ public class JasminClass extends AbstractJasminClass
                 if(((ValueBox) i.getUseBoxes().get(0)).getValue() != ((ValueBox) i.getDefBoxes().get(0)).getValue())
                     throw new RuntimeException("iinc def and use boxes don't match");
                     
-                emit("iinc " + ((Integer) localToSlot.get(i.getLocal())) + " " + i.getConstant());
+                emit("iinc " + localToSlot.get(i.getLocal()) + " " + i.getConstant());
             }
 
             public void caseArrayLengthInst(ArrayLengthInst i)
@@ -1806,7 +1805,7 @@ public class JasminClass extends AbstractJasminClass
     private void calculateStackHeight(Block aBlock)
     {
         Iterator it = aBlock.iterator();
-        int blockHeight =  ((Integer)blockToStackHeight.get(aBlock)).intValue();
+        int blockHeight =  blockToStackHeight.get(aBlock).intValue();
         if( blockHeight > maxStackHeight) {
             maxStackHeight = blockHeight;
         }
@@ -1837,7 +1836,7 @@ public class JasminClass extends AbstractJasminClass
         Iterator succs = aBlock.getSuccs().iterator();
         while(succs.hasNext()) {
             Block b = (Block) succs.next();
-            Integer i = (Integer) blockToStackHeight.get(b);
+            Integer i = blockToStackHeight.get(b);
             if(i != null) {
                 if(i.intValue() != blockHeight) {
                     throw new RuntimeException(aBlock.getBody().getMethod().getSignature() + ": incoherent stack height at block merge point " + b + aBlock + "\ncomputed blockHeight == " + blockHeight + " recorded blockHeight = " + i.intValue());
@@ -1854,7 +1853,7 @@ public class JasminClass extends AbstractJasminClass
     private void calculateLogicalStackHeightCheck(Block aBlock)
     {
         Iterator it = aBlock.iterator();
-        int blockHeight =  ((Integer)blockToLogicalStackHeight.get(aBlock)).intValue();
+        int blockHeight =  blockToLogicalStackHeight.get(aBlock).intValue();
         
         while(it.hasNext()) {
             Inst nInst = (Inst) it.next();
@@ -1880,7 +1879,7 @@ public class JasminClass extends AbstractJasminClass
         Iterator succs = aBlock.getSuccs().iterator();
         while(succs.hasNext()) {
             Block b = (Block) succs.next();
-            Integer i = (Integer) blockToLogicalStackHeight.get(b);
+            Integer i = blockToLogicalStackHeight.get(b);
             if(i != null) {
                 if(i.intValue() != blockHeight) {
                     throw new RuntimeException("incoherent logical stack height at block merge point " + b + aBlock);

@@ -1,10 +1,6 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.*;
 import soot.util.*;
 import soot.toolkits.scalar.*;
 import java.util.*;
@@ -35,11 +31,11 @@ public class CompactSequentNodes{
 	
 	private void compactGraph(Chain chain, PegGraph peg){
 		Set canNotBeCompacted = peg.getCanNotBeCompacted();
-		List list = computeSequentNodes(chain, peg);
+		List<List<Object>> list = computeSequentNodes(chain, peg);
 //		printSeq(list);
-		Iterator it = list.iterator();	
+		Iterator<List<Object>> it = list.iterator();	
 		while (it.hasNext()){
-			List s = (List)it.next();
+			List s = it.next();
 			
 			if (!checkIfContainsElemsCanNotBeCompacted(s, canNotBeCompacted)){
 				add++;
@@ -62,16 +58,16 @@ public class CompactSequentNodes{
 		}
 		
 	}   
-	private List computeSequentNodes(Chain chain, PegGraph pg){
-		Set gray = new HashSet();
-		List sequentNodes = new ArrayList();
+	private List<List<Object>> computeSequentNodes(Chain chain, PegGraph pg){
+		Set<Object> gray = new HashSet<Object>();
+		List<List<Object>> sequentNodes = new ArrayList<List<Object>>();
 		
 		Set canNotBeCompacted = pg.getCanNotBeCompacted();
 		TopologicalSorter ts = new TopologicalSorter(chain, pg);
-		ListIterator  it = ts.sorter().listIterator();
+		ListIterator<Object>  it = ts.sorter().listIterator();
 		while (it.hasNext()){
 			Object node = it.next();
-			List list = new ArrayList();
+			List<Object> list = new ArrayList<Object>();
 			if (!gray.contains(node)){
 				visitNode(pg, node, list, canNotBeCompacted, gray);
 				if (list.size()>1){	
@@ -82,11 +78,11 @@ public class CompactSequentNodes{
 				
 			}
 		}
-		return  (List)sequentNodes;
+		return  sequentNodes;
 	}
 	
-	private void visitNode(PegGraph pg, Object node, List list,
-			Set canNotBeCompacted, Set gray){
+	private void visitNode(PegGraph pg, Object node, List<Object> list,
+			Set canNotBeCompacted, Set<Object> gray){
 		//System.out.println("node is: "+node);
 		if (pg.getPredsOf(node).size() ==1 && pg.getSuccsOf(node).size()==1 &&
 				!canNotBeCompacted.contains(node) && !gray.contains(node)){
@@ -126,8 +122,8 @@ public class CompactSequentNodes{
 		FlowSet allNodes = peg.getAllNodes();
 		HashMap unitToSuccs = peg.getUnitToSuccs();
 		HashMap unitToPreds = peg.getUnitToPreds();
-		List newPreds = new ArrayList();
-		List newSuccs = new ArrayList();
+		List<Object> newPreds = new ArrayList<Object>();
+		List<Object> newSuccs = new ArrayList<Object>();
 		
 		while (it.hasNext()){
 			Object s = it.next();
@@ -211,53 +207,5 @@ public class CompactSequentNodes{
 			
 		}
 		//System.out.println("=======update monitor==end====");		     
-	}
-	
-	private void printSeq(List sequentNodes){
-		Iterator it = sequentNodes.iterator();
-		while (it.hasNext()){
-			Iterator  listIt = ((List)it.next()).iterator();
-			System.out.println("seq list:");
-			while (listIt.hasNext()){
-				Object o = listIt.next();
-				if (o instanceof JPegStmt){
-					Tag tag = (Tag)((JPegStmt)o).getTags().get(0);
-					System.out.println(tag + " " + o );
-				}
-				else
-					System.out.println(o);
-			}
-			
-		}
-	}
-	private void testList(List list){
-		Iterator it = list.iterator();
-		while (it.hasNext()){
-			Object o = it.next();
-			if (o instanceof JPegStmt){
-				JPegStmt  unit = (JPegStmt)o;
-				
-				Tag tag = (Tag)unit.getTags().get(0);
-				System.out.println(tag+" "+unit);
-				
-			}
-			
-			
-			else{
-				System.out.println("---list---");
-				Iterator listIt = ((List)o).iterator();
-				while (listIt.hasNext()){
-					Object oo = listIt.next();
-					if (oo instanceof JPegStmt){
-						JPegStmt  unit = (JPegStmt)oo;
-						Tag tag = (Tag)unit.getTags().get(0);
-						System.out.println(tag+" "+unit);
-					}
-					else
-						System.out.println(oo);
-				}
-				System.out.println("---list--end-");
-			}
-		}
 	}
 }

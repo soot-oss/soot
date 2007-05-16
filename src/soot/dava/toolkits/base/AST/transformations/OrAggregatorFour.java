@@ -78,8 +78,8 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	if(label==null)
 	    return;
 	
-	List subBodies=node.get_SubBodies();
-	List newBody=matchPattern(label,subBodies);
+	List<Object> subBodies=node.get_SubBodies();
+	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
 	    //System.out.println("OR AGGREGATOR FOUR");
@@ -99,8 +99,8 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	if(label==null)
 	    return;
 	
-	List subBodies=node.get_SubBodies();
-	List newBody=matchPattern(label,subBodies);
+	List<Object> subBodies=node.get_SubBodies();
+	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
 	    //System.out.println("OR AGGREGATOR FOUR");
@@ -118,8 +118,8 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	if(label==null)
 	    return;
 
-	List subBodies=node.get_SubBodies();
-	List newBody=matchPattern(label,subBodies);
+	List<Object> subBodies=node.get_SubBodies();
+	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
 	    //System.out.println("OR AGGREGATOR FOUR");
@@ -136,8 +136,8 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	if(label==null)
 	    return;
 
-	List subBodies=node.get_SubBodies();
-	List newBody=matchPattern(label,subBodies);
+	List<Object> subBodies=node.get_SubBodies();
+	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
 	    //System.out.println("OR AGGREGATOR FOUR");
@@ -149,7 +149,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	UselessLabelFinder.v().findAndKill(node);
     }
 
-    public List matchPattern(String whileLabel,List subBodies){
+    public List<Object> matchPattern(String whileLabel,List<Object> subBodies){
 	//since the subBodies are coming from a cycle node we know
 	//there is only one subBody
 	if(subBodies.size()!=1){
@@ -173,7 +173,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 		}
 		
 		//get labeledBlocksBodies
-		List labeledBlocksSubBodies = labeledNode.get_SubBodies();
+		List<Object> labeledBlocksSubBodies = labeledNode.get_SubBodies();
 		if(labeledBlocksSubBodies.size()!=1){
 		    //should always be one
 		    nodeNumber++;
@@ -193,7 +193,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 		//the pattern has been matched do the transformation
 
 		//nodeNumber is the location of the ASTLabeledBlockNode
-		List whileBody = createWhileBody(subBody,labeledBlocksSubBody,nodeNumber);
+		List<Object> whileBody = createWhileBody(subBody,labeledBlocksSubBody,nodeNumber);
 		if(whileBody!=null){
 		    return whileBody;
 		}
@@ -203,9 +203,9 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	return null;
     }
 
-    private List createWhileBody(List subBody,List labeledBlocksSubBody,int nodeNumber){
+    private List<Object> createWhileBody(List subBody,List labeledBlocksSubBody,int nodeNumber){
 	//create BodyA, Nodes from 0 to nodeNumber
-	List bodyA = new ArrayList();
+	List<Object> bodyA = new ArrayList<Object>();
 	
 	//this is an iterator of ASTNodes
 	Iterator it = subBody.iterator();
@@ -224,13 +224,13 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	//create ASTIfNode
 	// Create a list of conditions to be Ored together 
 	// remembering that the last ones condition is to be flipped
-	List conditions = getConditions(labeledBlocksSubBody.iterator());
+	List<ASTCondition> conditions = getConditions(labeledBlocksSubBody.iterator());
 
 	//create an aggregated condition
-	Iterator condIt = conditions.iterator();
+	Iterator<ASTCondition> condIt = conditions.iterator();
 	ASTCondition newCond=null;;
 	while(condIt.hasNext()){
-	    ASTCondition next = (ASTCondition)condIt.next();
+	    ASTCondition next = condIt.next();
 	    if(newCond==null)
 		newCond=next;
 	    else
@@ -240,7 +240,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	
 	//create BodyB
 	it.next();//this skips the LabeledBlockNode
-	List bodyB = new ArrayList();
+	List<Object> bodyB = new ArrayList<Object>();
 	while(it.hasNext()){
 	    bodyB.add(it.next());
 	}
@@ -259,8 +259,8 @@ public class OrAggregatorFour extends DepthFirstAdapter{
       it knows the following:
        All nodes are ASTIFNodes
     */  
-    private List getConditions(Iterator it){
-	List toReturn = new ArrayList();
+    private List<ASTCondition> getConditions(Iterator it){
+	List<ASTCondition> toReturn = new ArrayList<ASTCondition>();
 	while(it.hasNext()){
 	    //safe cast since we know these are all ASTIfNodes
 	    ASTIfNode node = (ASTIfNode)it.next();
@@ -365,7 +365,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	//check that the body of ASTIfNode has a single ASTStatementSequence
 
 	ASTIfNode ifNode =(ASTIfNode)secondLabelsBody;
-	List ifSubBodies =ifNode.get_SubBodies();
+	List<Object> ifSubBodies =ifNode.get_SubBodies();
 	if(ifSubBodies.size()!=1){
 	    //if body should always have oneSubBody
 	    return null;
@@ -388,7 +388,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	}
 
 	//the only ASTnode is a ASTStatementSequence 
-	List statements = ((ASTStatementSequenceNode)ifBodysBody).getStatements();
+	List<Object> statements = ((ASTStatementSequenceNode)ifBodysBody).getStatements();
 	if(statements.size()!=1){
 	    //there is more than one statement
 	    return null;

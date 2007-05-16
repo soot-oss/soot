@@ -28,7 +28,6 @@ import soot.options.*;
 
 import soot.*;
 import soot.util.*;
-import soot.toolkits.graph.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -43,11 +42,11 @@ public class RectangularArrayFinder extends SceneTransformer
     public RectangularArrayFinder( Singletons.Global g ) {}
     public static RectangularArrayFinder v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder(); }
 
-    private ExtendedHashMutableDirectedGraph agraph =
+    private final ExtendedHashMutableDirectedGraph agraph =
 	new ExtendedHashMutableDirectedGraph();
 
-    private Set falseSet = new HashSet();
-    private Set trueSet = new HashSet();
+    private final Set falseSet = new HashSet();
+    private final Set<Object> trueSet = new HashSet<Object>();
     private CallGraph cg;
 
     protected void internalTransform(String phaseName, Map opts)
@@ -154,7 +153,7 @@ public class RectangularArrayFinder extends SceneTransformer
         /* propagate graph info from TRUE node then. */
 	if (agraph.containsNode(BoolValue.v(true)))
 	{
-	    List changedNodeList = new ArrayList();
+	    List<Object> changedNodeList = new ArrayList<Object>();
 
 	    List startNodes = agraph.getSuccsOf(BoolValue.v(true));
 
@@ -199,7 +198,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	{
 	    G.v().out.println("Rectangular Array :");
 	    {
-		Iterator nodeIt = trueSet.iterator();
+		Iterator<Object> nodeIt = trueSet.iterator();
 		while (nodeIt.hasNext())
 		{
 		    Object node = nodeIt.next();
@@ -240,7 +239,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
 	Body body = method.getActiveBody();
 
-	Set tmpNode = new HashSet();
+	Set<Object> tmpNode = new HashSet<Object>();
 
 	/* check the return type of method, if it is multi-array. */
 
@@ -256,7 +255,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	    }
 	}      
 
-	Set arrayLocal = new HashSet();
+	Set<Local> arrayLocal = new HashSet<Local>();
 
 	/* Collect the multi-array locals */
 
@@ -291,7 +290,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	    /* for each invoke site, add edges from local parameter to the target methods' parameter node. */
 	    if (s.containsInvokeExpr())
 	    {
-		InvokeExpr iexpr = (InvokeExpr)s.getInvokeExpr();
+		InvokeExpr iexpr = s.getInvokeExpr();
 		
 		int argnum = iexpr.getArgCount();
 		
@@ -388,8 +387,8 @@ public class RectangularArrayFinder extends SceneTransformer
 		    if (arrayLocal.contains(base))
 		    {
 			/* add 'a' to 'a[' first */
-			to = new ArrayReferenceNode(method, (Local)base);
-			from = new MethodLocal(method, (Local)base);
+			to = new ArrayReferenceNode(method, base);
+			from = new MethodLocal(method, base);
 			ehmdg.addMutualEdge(from, to);
 
 			/* put 'a[' into temporary object pool. */
@@ -410,7 +409,7 @@ public class RectangularArrayFinder extends SceneTransformer
 		    {
 			/* to recover the SWAP of array dimensions. */
 			Object suspect = new MethodLocal(method, (Local)rightOp);
-			Object arrRef = new ArrayReferenceNode(method, (Local)base);
+			Object arrRef = new ArrayReferenceNode(method, base);
 			
 			boolean doNothing = false;
 
@@ -550,7 +549,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	
 	if (needTransfer)
 	{
-	    Iterator tmpNodeIt = tmpNode.iterator();
+	    Iterator<Object> tmpNodeIt = tmpNode.iterator();
 	
 	    while (tmpNodeIt.hasNext())
 	    {	    
@@ -566,7 +565,7 @@ public class RectangularArrayFinder extends SceneTransformer
     private void recoverRectArray(SootMethod method)
     {
 	Body body = method.getActiveBody();
-	HashSet malocal = new HashSet();
+	HashSet<Local> malocal = new HashSet<Local>();
 
 	Chain locals = body.getLocals();
 	Iterator localsIt = locals.iterator();
@@ -782,7 +781,6 @@ public class RectangularArrayFinder extends SceneTransformer
 	}
 
 	{
-	    int pos = 0;
 	    int curdim = 0;
 	    Local tmpcur = local;
 

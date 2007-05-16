@@ -31,7 +31,6 @@
 
 package soot.coffi;
 import soot.*;
-import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>
@@ -83,8 +82,7 @@ class Instruction_Lookupswitch extends Instruction {
    }
    public int parse(byte bc[],int index) {
       // first figure out padding to next 4-byte quantity
-      int i,j,baseindex;
-      baseindex = index;
+      int i,j;
       i = index % 4;
       if (i != 0)
          pad = (byte)(4 - i);
@@ -110,8 +108,7 @@ class Instruction_Lookupswitch extends Instruction {
       return index;
    }
    public int nextOffset(int curr) {
-      int i,j,baseindex,siz=0;
-      baseindex = curr;
+      int i,siz=0;
       i = (curr+1) % 4;
       if (i != 0)
          siz = (4 - i);

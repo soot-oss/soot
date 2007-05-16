@@ -24,10 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
-
-import java.util.*;
-import java.io.*;
 
 /** Interface to allow display of tags. */
 public interface TagPrinter

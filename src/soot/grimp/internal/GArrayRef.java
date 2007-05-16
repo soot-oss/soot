@@ -33,9 +33,6 @@ package soot.grimp.internal;
 
 import soot.*;
 import soot.grimp.*;
-import soot.util.*;
-import java.util.*;
-import soot.jimple.*;
 import soot.jimple.internal.*;
 
 public class GArrayRef extends JArrayRef implements Precedence

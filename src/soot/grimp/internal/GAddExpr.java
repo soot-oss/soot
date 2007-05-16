@@ -33,11 +33,7 @@ package soot.grimp.internal;
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.*;
-import soot.grimp.*;
-import soot.grimp.*;
-import soot.grimp.*;
 import soot.util.*;
-import java.util.*;
 
 public class GAddExpr extends AbstractGrimpFloatBinopExpr implements AddExpr
 {

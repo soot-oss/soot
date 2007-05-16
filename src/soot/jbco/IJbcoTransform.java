@@ -20,7 +20,6 @@
 package soot.jbco;
 
 import java.io.PrintStream;
-import soot.Pack;
 import soot.G;
 
 /**

@@ -21,11 +21,8 @@ package soot.jimple.toolkits.annotation;
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.tagkit.*;
 import soot.jimple.*;
 import soot.options.*;
-import soot.util.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.scalar.*;
 
@@ -50,14 +47,12 @@ public class AvailExprTagger extends BodyTransformer
         }
         sideEffect.newMethod( b.getMethod() );
                                 
-        SlowAvailableExpressionsAnalysis analysis;
-        
         AETOptions options = new AETOptions(opts);
         if (options.kind() == AETOptions.kind_optimistic){
-            analysis = new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b)); 
+            new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b)); 
         }
         else {
-            analysis = new PessimisticAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), sideEffect); 
+            new PessimisticAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), sideEffect); 
         }
     }
 }

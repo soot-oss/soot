@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.internal;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
@@ -55,7 +54,6 @@ public class SparkNativeHelper extends NativeHelper {
         pag.addEdge( objNode, pag.nodeFactory().caseThrow() );
     }
     protected ReferenceVariable arrayElementOfImpl(ReferenceVariable base) {
-        Node n = (Node) base;
         VarNode l;
 	if( base instanceof VarNode ) {
 	    l = (VarNode) base;

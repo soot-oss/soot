@@ -81,8 +81,7 @@ public class Main {
                 "Option parse error");
 
         if( PackManager.v().onlyStandardPacks() ) {
-            for( Iterator packIt = PackManager.v().allPacks().iterator(); packIt.hasNext(); ) {
-                final Pack pack = (Pack) packIt.next();
+            for (Pack pack : PackManager.v().allPacks()) {
                 Options.v().warnForeignPhase(pack.getPhaseName());
                 for( Iterator trIt = pack.iterator(); trIt.hasNext(); ) {
                     final Transform tr = (Transform) trIt.next();
@@ -181,10 +180,10 @@ public class Main {
             		writerOut.println("<?xml version='1.0'?>");
             		writerOut.println("<ASTMetrics>");		 		
             		
-            		Iterator it = G.v().ASTMetricsData.iterator();
+            		Iterator<ClassData> it = G.v().ASTMetricsData.iterator();
             		while(it.hasNext()){
             			//each is a classData object
-            			ClassData cData = (ClassData)it.next();
+            			ClassData cData = it.next();
             			writerOut.println(cData.toString());
             		}
 

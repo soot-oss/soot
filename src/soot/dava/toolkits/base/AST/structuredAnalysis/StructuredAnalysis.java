@@ -47,12 +47,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
 
 import soot.*;
 import java.util.*;
+
 import soot.jimple.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.structuredAnalysis.UnreachableCodeFinder.UnreachableCodeFlowSet;
 
 
 
@@ -92,11 +92,11 @@ public abstract class StructuredAnalysis{
     final int INTERSECTION=2;
 
     //storing before and after sets for each stmt or ASTNode
-    HashMap beforeSets,afterSets;
+    HashMap<Object, Object> beforeSets,afterSets;
 
     public StructuredAnalysis(){
-	beforeSets = new HashMap();
-	afterSets = new HashMap();
+	beforeSets = new HashMap<Object, Object>();
+	afterSets = new HashMap<Object, Object>();
 	MERGETYPE=UNDEFINED;
 	//invoke user defined function which makes sure that you have the merge operator set
 	setMergeType();
@@ -316,7 +316,7 @@ public abstract class StructuredAnalysis{
      */
     public final Object processSingleSubBodyNode(ASTNode node, Object input){
 	//get the subBodies
-	List subBodies = node.get_SubBodies();
+	List<Object> subBodies = node.get_SubBodies();
 	if(subBodies.size()!=1){
 	    throw new RuntimeException("processSingleSubBodyNode called with a node without one subBody");
 	}
@@ -433,8 +433,8 @@ public abstract class StructuredAnalysis{
 
 
     public Object processASTStatementSequenceNode(ASTStatementSequenceNode node,Object input){
-    	List statements = node.getStatements();
-    	Iterator it = statements.iterator();
+    	List<Object> statements = node.getStatements();
+    	Iterator<Object> it = statements.iterator();
 
     	Object output = cloneFlowSet(input);//needed if there are no stmts
 		
@@ -532,7 +532,7 @@ public abstract class StructuredAnalysis{
 
     public Object processASTIfElseNode(ASTIfElseNode node,Object input){
     	//get the subBodies
-    	List subBodies = node.get_SubBodies();
+    	List<Object> subBodies = node.get_SubBodies();
     	if(subBodies.size()!=2){
     	    throw new RuntimeException("processASTIfElseNode called with a node without two subBodies");
     	}
@@ -703,8 +703,8 @@ public abstract class StructuredAnalysis{
 
 
     public Object processASTForLoopNode(ASTForLoopNode node,Object input){
-    	List init = node.getInit();
-    	Iterator it = init.iterator();
+    	List<Object> init = node.getInit();
+    	Iterator<Object> it = init.iterator();
     	while(it.hasNext()){
     	    AugmentedStmt as = (AugmentedStmt)it.next();
     	    Stmt s = as.get_Stmt();
@@ -733,7 +733,7 @@ public abstract class StructuredAnalysis{
     	    //handle update
     	    output2 = cloneFlowSet(output1);//if there is nothing in update
 
-    	    List update = node.getUpdate();
+    	    List<Object> update = node.getUpdate();
     	    it = update.iterator();
     	    while(it.hasNext()){
     		AugmentedStmt as = (AugmentedStmt)it.next();
@@ -781,10 +781,10 @@ public abstract class StructuredAnalysis{
     	if(DEBUG)
     		System.out.println("Going into switch: "+input.toString());
 
-	List indexList = node.getIndexList();
-	Map index2BodyList = node.getIndex2BodyList();
+	List<Object> indexList = node.getIndexList();
+	Map<Object, List<Object>> index2BodyList = node.getIndex2BodyList();
 
-	Iterator it = indexList.iterator();
+	Iterator<Object> it = indexList.iterator();
 	
 
 	input=processSwitchKey(node.get_Key(),input);
@@ -793,11 +793,11 @@ public abstract class StructuredAnalysis{
 	Object out = null;
 	Object defaultOut = null;
 	
-	List toMergeBreaks = new ArrayList();
+	List<Object> toMergeBreaks = new ArrayList<Object>();
 
 	while (it.hasNext()) {//going through all the cases of the switch statement
 	    Object currentIndex = it.next();
-	    List body = (List) index2BodyList.get( currentIndex);
+	    List body = index2BodyList.get( currentIndex);
 
 	    //BUG FIX if body is null (fall through we shouldnt invoke process
 	    //Reported by Steffen Pingel 14th Jan 2006 on the soot mailing list
@@ -849,7 +849,7 @@ public abstract class StructuredAnalysis{
 
 	//have to handleBreaks for all the different cases
 
-	List outList = new ArrayList();
+	List<Object> outList = new ArrayList<Object>();
 	
 	//handling breakLists of each of the toMergeBreaks
 	it = toMergeBreaks.iterator();
@@ -896,7 +896,7 @@ public abstract class StructuredAnalysis{
 			System.out.println("TRY START is:"+input);
 
 	//System.out.println("SET beginning of tryBody is:"+input);
-	List tryBody = node.get_TryBody();
+	List<Object> tryBody = node.get_TryBody();
 	Object tryBodyOutput = process(tryBody,input);
 	//System.out.println("SET end of tryBody is:"+tryBodyOutput);
 
@@ -908,9 +908,9 @@ public abstract class StructuredAnalysis{
 	if(DEBUG_TRY)
 		System.out.println("TRY initialFLOW is:"+inputCatch);
 
-       	List catchList = node.get_CatchList();
-        Iterator it = catchList.iterator();
-	List catchOutput = new ArrayList();
+       	List<Object> catchList = node.get_CatchList();
+        Iterator<Object> it = catchList.iterator();
+	List<Object> catchOutput = new ArrayList<Object>();
 
 	while (it.hasNext()) {
 	    ASTTryNode.container catchBody = (ASTTryNode.container)it.next();
@@ -940,7 +940,7 @@ public abstract class StructuredAnalysis{
 	 * The correct way to handle this is create a list of handledBreak objects (in the outList)
 	 * And then to merge them
 	 */
-	List outList = new ArrayList();
+	List<Object> outList = new ArrayList<Object>();
 	
 	//handle breaks out of tryBodyOutput
 	outList.add(handleBreak(label,tryBodyOutput,node));
@@ -1027,17 +1027,17 @@ public abstract class StructuredAnalysis{
 	
 	DavaFlowSet out;  
 	if(in1 == NOPATH && in2 != NOPATH){
-	    out = (DavaFlowSet)in2.clone();
+	    out = in2.clone();
 	    out.copyInternalDataFrom(in1);
 	    return out;
 	}
 	else if(in1 != NOPATH && in2 == NOPATH){
-	    out = (DavaFlowSet)in1.clone();
+	    out = in1.clone();
 	    out.copyInternalDataFrom(in2);
 	    return out;
 	}
 	else if(in1 == NOPATH && in2 == NOPATH){
-	    out = (DavaFlowSet)in1.clone();
+	    out = in1.clone();
 	    out.copyInternalDataFrom(in2);
 	    return out; //meaning return NOPATH
 	}

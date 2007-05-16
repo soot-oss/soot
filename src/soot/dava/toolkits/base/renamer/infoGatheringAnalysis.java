@@ -89,7 +89,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		HashSet params = new HashSet();
 		//	params.addAll(davaBody.get_ParamMap().values());
 		//params.addAll(davaBody.get_CaughtRefs());
-		HashSet thisLocals = davaBody.get_ThisLocals();
+		HashSet<Object> thisLocals = davaBody.get_ThisLocals();
 
 		//System.out.println("params"+params);
 
@@ -340,7 +340,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 	public void inASTForLoopNode(ASTForLoopNode node) {
 		inFor = true;
 
-		Iterator updateIt = node.getUpdate().iterator();
+		Iterator<Object> updateIt = node.getUpdate().iterator();
 		while (updateIt.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) updateIt.next();
 			Stmt s = as.get_Stmt();

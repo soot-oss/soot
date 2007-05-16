@@ -21,11 +21,7 @@ package soot.jimple.toolkits.annotation.callgraph;
 
 import soot.*;
 import java.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.tagkit.*;
 import soot.jimple.*;
-import soot.util.queue.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.toolkits.graph.interaction.*;
 import soot.options.*;
@@ -40,13 +36,13 @@ public class CallGraphGrapher extends SceneTransformer
     private CallGraph cg;
     private boolean showLibMeths;
     
-    private ArrayList getTgtMethods(SootMethod method, boolean recurse){
+    private ArrayList<MethInfo> getTgtMethods(SootMethod method, boolean recurse){
         //G.v().out.println("meth for tgts: "+method);
         if (!method.hasActiveBody()){
-            return new ArrayList();
+            return new ArrayList<MethInfo>();
         }
         Body b = method.getActiveBody();
-        ArrayList list = new ArrayList();
+        ArrayList<MethInfo> list = new ArrayList<MethInfo>();
         Iterator sIt = b.getUnits().iterator();
         while (sIt.hasNext()){
             Stmt s = (Stmt) sIt.next();
@@ -80,20 +76,20 @@ public class CallGraphGrapher extends SceneTransformer
     }
 
     private boolean hasTgtMethods(SootMethod meth){
-        ArrayList list = getTgtMethods(meth, false);
+        ArrayList<MethInfo> list = getTgtMethods(meth, false);
         if (!list.isEmpty()) return true;
         else return false;
     }
 
     private boolean hasSrcMethods(SootMethod meth){
-        ArrayList list = getSrcMethods(meth, false);
+        ArrayList<MethInfo> list = getSrcMethods(meth, false);
         if (list.size() > 1) return true;
         else return false;
     }
     
-    private ArrayList getSrcMethods(SootMethod method, boolean recurse){
+    private ArrayList<MethInfo> getSrcMethods(SootMethod method, boolean recurse){
         //G.v().out.println("meth for srcs: "+method);
-        ArrayList list = new ArrayList();
+        ArrayList<MethInfo> list = new ArrayList<MethInfo>();
         
         for( Iterator momcIt = methodToContexts.get(method).iterator(); momcIt.hasNext(); ) {
             final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
@@ -144,9 +140,9 @@ public class CallGraphGrapher extends SceneTransformer
         SootClass sc = Scene.v().getMainClass();
         SootMethod sm = getFirstMethod(sc);
         //G.v().out.println("got first method");
-        ArrayList tgts = getTgtMethods(sm, true);
+        ArrayList<MethInfo> tgts = getTgtMethods(sm, true);
         //G.v().out.println("got tgt methods");
-        ArrayList srcs = getSrcMethods(sm, true);
+        ArrayList<MethInfo> srcs = getSrcMethods(sm, true);
         //G.v().out.println("got src methods");
         CallGraphInfo info = new CallGraphInfo(sm, tgts, srcs);
         //G.v().out.println("will handle new call graph");
@@ -166,9 +162,9 @@ public class CallGraphGrapher extends SceneTransformer
     
     public void handleNextMethod(){
         if (!getNextMethod().hasActiveBody()) return;
-        ArrayList tgts = getTgtMethods(getNextMethod(), true);
+        ArrayList<MethInfo> tgts = getTgtMethods(getNextMethod(), true);
         //System.out.println("for: "+getNextMethod().getName()+" tgts: "+tgts);
-        ArrayList srcs = getSrcMethods(getNextMethod(), true);
+        ArrayList<MethInfo> srcs = getSrcMethods(getNextMethod(), true);
         //System.out.println("for: "+getNextMethod().getName()+" srcs: "+srcs);
         CallGraphInfo info = new CallGraphInfo(getNextMethod(), tgts, srcs);
         //System.out.println("sending next method");

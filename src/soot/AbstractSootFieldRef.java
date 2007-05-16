@@ -19,7 +19,6 @@
 
 package soot;
 import java.util.*;
-import soot.util.*;
 
 /** Representation of a reference to a field as it appears in a class file.
  * Note that the field directly referred to may not actually exist; the
@@ -80,7 +79,6 @@ class AbstractSootFieldRef implements SootFieldRef {
         return ret;
     }
     private SootField resolve(StringBuffer trace) {
-        SootField ret = null;
         SootClass cl = declaringClass;
         while(true) {
             if(trace != null) trace.append(
@@ -96,10 +94,10 @@ class AbstractSootFieldRef implements SootFieldRef {
                 cl.addField(f);
                 return f;
             } else {
-                LinkedList queue = new LinkedList();
+                LinkedList<SootClass> queue = new LinkedList<SootClass>();
                 queue.addAll( cl.getInterfaces() );
                 while( !queue.isEmpty() ) {
-                    SootClass iface = (SootClass) queue.removeFirst();
+                    SootClass iface = queue.removeFirst();
                     if(trace != null) trace.append(
                             "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
                     if( iface.declaresField(name, type) ) {

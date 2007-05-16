@@ -25,11 +25,6 @@
 
 
 package soot;
-import soot.coffi.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
-import soot.jimple.parser.*;
 
 /** A MethodSource for methods that don't know where to get Body's from. 
  * @see soot.jimple.JimpleMethodSource

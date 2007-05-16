@@ -1,6 +1,7 @@
 package soot.toolkits.astmetrics;
 
 import java.util.*;
+
 import polyglot.ast.*;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
@@ -12,10 +13,10 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   int maxDepth;
   int numNodes;
   
-  Stack labelNodesSoFar = new Stack();
-  ArrayList blocksWithAbruptFlow = new ArrayList();
-  HashMap stmtToMetric = new HashMap();
-  HashMap stmtToMetricDepth = new HashMap();
+  Stack<ArrayList> labelNodesSoFar = new Stack<ArrayList>();
+  ArrayList<Node> blocksWithAbruptFlow = new ArrayList<Node>();
+  HashMap<Node, Integer> stmtToMetric = new HashMap<Node, Integer>();
+  HashMap<Node, Integer> stmtToMetricDepth = new HashMap<Node, Integer>();
   
   public static boolean tmpAbruptChecker = false; 
   
@@ -82,7 +83,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     }
     else if (n instanceof Labeled) {
       // add any labels we find to the array
-      ((ArrayList)labelNodesSoFar.peek()).add(((Labeled)n).label());
+      labelNodesSoFar.peek().add(((Labeled)n).label());
     }
     
     if(n instanceof If || n instanceof Loop || n instanceof Try || n instanceof Switch
@@ -99,7 +100,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
           if(node instanceof Branch) {
             Branch b = (Branch)node;
             // null branching out of a plain block is NOT ALLOWED!
-            if (b.label() != null && ((ArrayList)labelNodesSoFar.peek()).contains(b.label()))
+            if (b.label() != null && labelNodesSoFar.peek().contains(b.label()))
             {
               StmtSumWeightedByDepth.tmpAbruptChecker = true;
             }

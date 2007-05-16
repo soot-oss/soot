@@ -34,7 +34,6 @@ import soot.dava.toolkits.base.AST.transformations.EliminateConditions;
 import soot.dava.toolkits.base.AST.transformations.SimplifyConditions;
 import soot.dava.toolkits.base.AST.transformations.CPApplication;
 import soot.dava.toolkits.base.AST.transformations.LocalVariableCleaner;
-import soot.dava.toolkits.base.AST.transformations.SimplifyConditions;
 import soot.dava.toolkits.base.AST.transformations.SimplifyExpressions;
 import soot.dava.toolkits.base.AST.transformations.UnreachableCodeEliminator;
 import soot.dava.toolkits.base.AST.transformations.UselessLabelFinder;
@@ -58,7 +57,7 @@ public class InterProceduralAnalyses {
 			System.out.println("\n\nInvoking redundantFielduseEliminator");
 		ConstantFieldValueFinder finder = new ConstantFieldValueFinder(classes);
 		
-		HashMap constantValueFields = finder.getFieldsWithConstantValues();
+		HashMap<String, Object> constantValueFields = finder.getFieldsWithConstantValues();
 		if(DEBUG)		
 			finder.printConstantValueFields();
 		
@@ -114,10 +113,10 @@ public class InterProceduralAnalyses {
 		        
 		        AST.apply(new EliminateConditions((ASTMethodNode)AST));
 		        //the above should ALWAYS be followed by an unreachable code eliminator
-		        AST.apply(new UnreachableCodeEliminator((ASTMethodNode)AST));
+		        AST.apply(new UnreachableCodeEliminator(AST));
 		        
 		        //local variable cleanup
-		        AST.apply(new LocalVariableCleaner((ASTMethodNode)AST));
+		        AST.apply(new LocalVariableCleaner(AST));
 
 		         //VERY EXPENSIVE STAGE of redoing all analyses!!!!
 		        if(deobfuscate){

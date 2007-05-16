@@ -20,7 +20,6 @@
 package soot.jimple.toolkits.callgraph;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;

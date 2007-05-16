@@ -31,7 +31,7 @@ import soot.options.*;
 import soot.util.*;
 import soot.*;
 import soot.jimple.*;
-import java.io.*;
+
 import java.util.*;
 
 
@@ -43,7 +43,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
     static final int JUMPOPT_TYPES = 6;
     int numFound[], numFixed[];
 
-    HashMap stmtMap;
+    HashMap<Stmt, Stmt> stmtMap;
     
     protected void internalTransform(Body b, String phaseName, Map options) 
     {
@@ -65,7 +65,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
         }
 
         Chain units = body.getUnits();
-        stmtMap = new HashMap();
+        stmtMap = new HashMap<Stmt, Stmt>();
 
         // find goto and if-goto statements
         Iterator stmtIt = units.iterator();
@@ -97,13 +97,13 @@ public class UnconditionalBranchFolder extends BodyTransformer
                 }
             }
             else if (stmt instanceof IfStmt) {
-                target = (Stmt)((IfStmt)stmt).getTarget();
+                target = ((IfStmt)stmt).getTarget();
 
                 if (target instanceof GotoStmt) {
                     newTarget = getFinalTarget(target);
                     if (newTarget == null)
                         newTarget = stmt;
-                    ((IfStmt)stmt).setTarget((Unit)newTarget);
+                    ((IfStmt)stmt).setTarget(newTarget);
                     updateCounters(2, true);
                 }
                 else if (target instanceof IfStmt) {
@@ -146,7 +146,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
         // check if target is in statement map
         if (stmtMap.containsKey(target)) {
             // see if it maps to itself
-            finalTarget = (Stmt)stmtMap.get(target);
+            finalTarget = stmtMap.get(target);
             if (finalTarget == target)
                 // this is part of a cycle
                 finalTarget = null;

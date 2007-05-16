@@ -18,8 +18,6 @@
  */
 
 package soot.jimple.toolkits.pointer;
-import soot.*;
-import java.util.*;
 import soot.tagkit.*;
 
 public class DependenceTag implements Tag

@@ -28,16 +28,8 @@
 
 package soot.jimple.parser;
 
-import soot.baf.*;
 import soot.*;
-import soot.jimple.*;
-
-import soot.jimple.parser.parser.*;
-import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
-import soot.jimple.parser.analysis.*;
-
-import java.io.*;
 import java.util.*;
 
 
@@ -64,9 +56,8 @@ public class SkeletonExtractorWalker extends Walker
         inAFile(node);
         {
             Object temp[] = node.getModifier().toArray();
-            for(int i = 0; i < temp.length; i++)
-            {
-                ((PModifier) temp[i]).apply(this);
+            for (Object element : temp) {
+                ((PModifier) element).apply(this);
             }
         }
         if(node.getFileType() != null)
@@ -158,10 +149,9 @@ public class SkeletonExtractorWalker extends Walker
         inAMethodMember(node);
         {
             Object temp[] = node.getModifier().toArray();
-            for(int i = 0; i < temp.length; i++)
-                {
-                    ((PModifier) temp[i]).apply(this);
-                }
+            for (Object element : temp) {
+			    ((PModifier) element).apply(this);
+			}
         }
         if(node.getType() != null)
             {
@@ -199,15 +189,9 @@ public class SkeletonExtractorWalker extends Walker
         Type type;
         String name;
         List parameterList = null;
-        List throwsClause = null;
-        JimpleBody methodBody = null;
-
-        /* if(node.getMethodBody() instanceof AFullMethodBody)
-            methodBody = (JimpleBody) mProductions.pop();
-        */
-        
+        List<SootClass> throwsClause = null;
         if(node.getThrowsClause() != null)
-	    throwsClause = (List) mProductions.removeLast();
+	    throwsClause = (List<SootClass>) mProductions.removeLast();
         
         if(node.getParameterList() != null) {
 	    parameterList = (List) mProductions.removeLast();
@@ -243,7 +227,7 @@ public class SkeletonExtractorWalker extends Walker
 	List l = (List) mProductions.removeLast();
 
         Iterator it = l.iterator();
-        List exceptionClasses = new ArrayList(l.size());
+        List<SootClass> exceptionClasses = new ArrayList<SootClass>(l.size());
       
         while(it.hasNext()) {                   
             String className = (String) it.next();

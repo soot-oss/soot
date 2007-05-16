@@ -57,12 +57,12 @@ public class OrAggregatorThree {
 
 	if(!(node instanceof ASTIfElseNode)){
 	    //these are the nodes which always have one subBody
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size()!=1){
 		//there is something wrong
 		throw new RuntimeException("Please report this benchmark to the programmer");
 	    }
-	    List onlySubBody = (List)subBodies.get(0);
+	    List<Object> onlySubBody = (List<Object>)subBodies.get(0);
 
 	    /*
 	      The onlySubBody contains the Two consective if nodes
@@ -70,7 +70,7 @@ public class OrAggregatorThree {
 	    */
 	    
 	    //match the pattern and get the newBody
-	    List newBody = createNewNodeBody(onlySubBody,nodeNumber,ifOne,ifTwo);
+	    List<Object> newBody = createNewNodeBody(onlySubBody,nodeNumber,ifOne,ifTwo);
 
 
 	    if(newBody==null){
@@ -124,19 +124,19 @@ public class OrAggregatorThree {
 		//System.out.println("Error-------not modifying AST");
 		return;
 	    }
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size()!=2){
 		//there is something wrong
 		throw new RuntimeException("Please report this benchmark to the programmer");
 	    }
 
-	    List toModifySubBody = (List)subBodies.get(subBodyNumber);
+	    List<Object> toModifySubBody = (List<Object>)subBodies.get(subBodyNumber);
 
 	    /*
 	      The toModifySubBody contains the two consective if nodes in question
 	      at location given by the nodeNumber and nodeNumer+1
 	    */
-	    List newBody = createNewNodeBody(toModifySubBody,nodeNumber,ifOne,ifTwo);
+	    List<Object> newBody = createNewNodeBody(toModifySubBody,nodeNumber,ifOne,ifTwo);
 	    if(newBody==null){
 		//something went wrong, the pattern didnt match or something else
 		return;
@@ -145,13 +145,13 @@ public class OrAggregatorThree {
 		//the if body was modified
 		//System.out.println("OR AGGREGATOR THREE");
 		G.v().ASTTransformations_modified = true;
-		((ASTIfElseNode)node).replaceBody(newBody,(List)subBodies.get(1));
+		((ASTIfElseNode)node).replaceBody(newBody,(List<Object>)subBodies.get(1));
 	    }
 	    else if(subBodyNumber==1){
 		//else body was modified
 		//System.out.println("OR AGGREGATOR THREE");
 		G.v().ASTTransformations_modified = true;
-		((ASTIfElseNode)node).replaceBody((List)subBodies.get(0),newBody);
+		((ASTIfElseNode)node).replaceBody((List<Object>)subBodies.get(0),newBody);
 	    }
 	    else{//realllly shouldnt come here
 		//something bad is happening dont do nothin
@@ -172,17 +172,17 @@ public class OrAggregatorThree {
 	 b, ifTwo has been removed from the subBody
     */
 
-    public static List createNewNodeBody(List oldSubBody,int nodeNumber,ASTIfNode ifOne ,ASTIfNode ifTwo){
+    public static List<Object> createNewNodeBody(List<Object> oldSubBody,int nodeNumber,ASTIfNode ifOne ,ASTIfNode ifTwo){
 	if(!matchPattern(ifOne,ifTwo)){
 	    //pattern did not match
 	    return null;
 	}
 	
 	//create a new SubBody
-	List newSubBody = new ArrayList();
+	List<Object> newSubBody = new ArrayList<Object>();
 	
 	//this is an iterator of ASTNodes
-	Iterator it = oldSubBody.iterator();
+	Iterator<Object> it = oldSubBody.iterator();
 	
 	//copy to newSubBody all nodes until you get to nodeNumber
 	int index=0;
@@ -254,8 +254,8 @@ public class OrAggregatorThree {
       d, The statement is an abrupt control flow statement
     */
     private static boolean matchPattern(ASTIfNode one, ASTIfNode two){
-	List subBodiesOne=one.get_SubBodies();
-	List subBodiesTwo=two.get_SubBodies();
+	List<Object> subBodiesOne=one.get_SubBodies();
+	List<Object> subBodiesTwo=two.get_SubBodies();
 	
 	if(subBodiesOne.size()!=1 || subBodiesTwo.size()!=1){
 	    //these are both if nodes they should always have one subBody
@@ -280,8 +280,8 @@ public class OrAggregatorThree {
 	ASTStatementSequenceNode stmtSeqOne = (ASTStatementSequenceNode)onlyASTNodeOne;
 	ASTStatementSequenceNode stmtSeqTwo = (ASTStatementSequenceNode)onlyASTNodeTwo;
 
-	List stmtsOne = stmtSeqOne.getStatements();
-	List stmtsTwo = stmtSeqTwo.getStatements();
+	List<Object> stmtsOne = stmtSeqOne.getStatements();
+	List<Object> stmtsTwo = stmtSeqTwo.getStatements();
 
 	if(stmtsOne.size()!=1 || stmtsTwo.size()!=1){
 	    //there should only be one statement

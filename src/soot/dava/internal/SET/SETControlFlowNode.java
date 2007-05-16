@@ -41,14 +41,14 @@ public abstract class SETControlFlowNode extends SETNode
 
     protected boolean resolve( SETNode parent)
     {
-	Iterator sbit = parent.get_SubBodies().iterator();
+	Iterator<IterableSet> sbit = parent.get_SubBodies().iterator();
 	while (sbit.hasNext()) {
-	    IterableSet subBody = (IterableSet) sbit.next();
+	    IterableSet subBody = sbit.next();
 	    
 	    if (subBody.contains( get_EntryStmt()) == false)
 		continue;
 
-	    IterableSet childChain = (IterableSet) parent.get_Body2ChildChain().get( subBody);
+	    IterableSet childChain = parent.get_Body2ChildChain().get( subBody);
 	    HashSet childUnion = new HashSet();
 
 	    Iterator ccit = childChain.iterator();

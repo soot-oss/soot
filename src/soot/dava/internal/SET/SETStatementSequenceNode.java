@@ -66,7 +66,7 @@ public class SETStatementSequenceNode extends SETNode
 
     public ASTNode emit_AST()
     {
-	List l = new LinkedList();
+	List<Object> l = new LinkedList<Object>();
 	
 	boolean isStaticInitializer = davaBody.getMethod().getName().equals( SootMethod.staticInitializerName);
 	

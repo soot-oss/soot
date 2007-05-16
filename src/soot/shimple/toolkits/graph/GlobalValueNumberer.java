@@ -20,11 +20,6 @@
 package soot.shimple.toolkits.graph;
 
 import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import soot.shimple.*;
-import soot.toolkits.graph.*;
-import java.util.*;
 
 public interface GlobalValueNumberer
 {

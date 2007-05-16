@@ -36,9 +36,9 @@ public class PASideEffectTester implements SideEffectTester
 {
     PointsToAnalysis pa = Scene.v().getPointsToAnalysis();
     SideEffectAnalysis sea = Scene.v().getSideEffectAnalysis();
-    HashMap unitToRead;
-    HashMap unitToWrite;
-    HashMap localToReachingObjects;
+    HashMap<Unit, RWSet> unitToRead;
+    HashMap<Unit, RWSet> unitToWrite;
+    HashMap<Local, PointsToSet> localToReachingObjects;
     SootMethod currentMethod;
 
     public PASideEffectTester() {
@@ -51,15 +51,15 @@ public class PASideEffectTester implements SideEffectTester
 
     /** Call this when starting to analyze a new method to setup the cache. */
     public void newMethod( SootMethod m ) {
-	unitToRead = new HashMap();
-	unitToWrite = new HashMap();
-	localToReachingObjects = new HashMap();
+	unitToRead = new HashMap<Unit, RWSet>();
+	unitToWrite = new HashMap<Unit, RWSet>();
+	localToReachingObjects = new HashMap<Local, PointsToSet>();
 	currentMethod = m;
 	sea.findNTRWSets( currentMethod );
     }
 
     protected RWSet readSet( Unit u ) {
-	RWSet ret = (RWSet) unitToRead.get( u );
+	RWSet ret = unitToRead.get( u );
 	if( ret == null ) {
 	    unitToRead.put( u, ret = sea.readSet( currentMethod, (Stmt) u ) );
 	}
@@ -67,7 +67,7 @@ public class PASideEffectTester implements SideEffectTester
     }
 
     protected RWSet writeSet( Unit u ) {
-	RWSet ret = (RWSet) unitToWrite.get( u );
+	RWSet ret = unitToWrite.get( u );
 	if( ret == null ) {
 	    unitToWrite.put( u, ret = sea.writeSet( currentMethod, (Stmt) u ) );
 	}
@@ -75,7 +75,7 @@ public class PASideEffectTester implements SideEffectTester
     }
     
     protected PointsToSet reachingObjects( Local l ) {
-	PointsToSet ret = (PointsToSet) localToReachingObjects.get( l );
+	PointsToSet ret = localToReachingObjects.get( l );
 	if( ret == null ) {
 	    localToReachingObjects.put( l, 
 		    ret = pa.reachingObjects( l ) );

@@ -29,7 +29,6 @@ package soot.jimple.toolkits.annotation.purity;
 import java.util.*;
 import soot.*;
 import soot.util.*;
-import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.toolkits.graph.*;
 
@@ -47,8 +46,8 @@ import soot.toolkits.graph.*;
 public class DirectedCallGraph implements DirectedGraph {
 
     protected Set  nodes;
-    protected Map  succ;
-    protected Map  pred;
+    protected Map<Object,List>  succ;
+    protected Map<Object,List>  pred;
     protected List heads;
     protected List tails;
     protected int  size;
@@ -143,8 +142,8 @@ public class DirectedCallGraph implements DirectedGraph {
     public int size() { return size; }
     
     /** You get a List of SootMethod. */
-    public List getSuccsOf(Object s) { return (List)succ.get(s); }
+    public List getSuccsOf(Object s) { return succ.get(s); }
 
     /** You get a List of SootMethod. */
-    public List getPredsOf(Object s) { return (List)pred.get(s); }
+    public List getPredsOf(Object s) { return pred.get(s); }
 }

@@ -81,10 +81,10 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
     public void outASTIfElseNode(ASTIfElseNode node){
 	//check whether the else body has another if and nothing else
 
-	List ifBody = node.getIfBody();
-	List elseBody = node.getElseBody();
+	List<Object> ifBody = node.getIfBody();
+	List<Object> elseBody = node.getElseBody();
 
-	List innerIfBody=checkElseHasOnlyIf(elseBody);
+	List<Object> innerIfBody=checkElseHasOnlyIf(elseBody);
 	
 	if(innerIfBody==null){
 	    //pattern 1 did not match
@@ -122,14 +122,14 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 	/*
 	  Always have to follow with a parse to remove unwanted empty ElseBodies
 	*/
-	node.replaceElseBody(new ArrayList());
+	node.replaceElseBody(new ArrayList<Object>());
 
 
 	G.v().ASTTransformations_modified = true;
     }
 
 
-    public ASTCondition getRightCond(List elseBody){
+    public ASTCondition getRightCond(List<Object> elseBody){
 	//We know from checkElseHasOnlyIf that there is only one node
 	//in this body and it is an ASTIfNode
 	ASTIfNode innerIfNode = (ASTIfNode)elseBody.get(0);
@@ -138,7 +138,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 
 
 
-    public List checkElseHasOnlyIf(List elseBody){
+    public List<Object> checkElseHasOnlyIf(List<Object> elseBody){
 	if(elseBody.size()!=1){
 	    //there should only be on IfNode here
 	    return null;
@@ -150,7 +150,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 	    return null;
 	}
 	ASTIfNode innerIfNode = (ASTIfNode)temp;
-	List innerIfBody = innerIfNode.getIfBody();
+	List<Object> innerIfBody = innerIfNode.getIfBody();
 	return innerIfBody;
     }
 
@@ -159,7 +159,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 
     public void matchPatternTwo(ASTIfElseNode node){
 		debug("OrAggregatorTwo","matchPatternTwo","Did not match patternOne...trying patternTwo");
-	List ifBody = node.getIfBody();
+	List<Object> ifBody = node.getIfBody();
 	if(ifBody.size()!=1){
 	    //we are only interested if size is one
 	    return;
@@ -170,7 +170,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 	    return;
 	}
 	ASTStatementSequenceNode stmtNode=(ASTStatementSequenceNode)onlyNode;
-	List statements = stmtNode.getStatements();
+	List<Object> statements = stmtNode.getStatements();
 	if(statements.size()!=1){
 	    //there is more than one statement
 	    return;
@@ -195,7 +195,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 	ASTCondition cond = node.get_Condition();
 	cond.flip();
 
-	List elseBody = node.getElseBody();	
+	List<Object> elseBody = node.getElseBody();	
 	SETNodeLabel label = node.get_Label();
 
 	node.replace(label,cond,elseBody,ifBody);

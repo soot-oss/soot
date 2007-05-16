@@ -1,7 +1,6 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import soot.*;
-import soot.jimple.spark.*;
 import soot.jimple.toolkits.callgraph.*;
 import java.util.*;
 
@@ -18,11 +17,11 @@ import java.util.*;
 
 public class TargetMethodsFinder{
 	
-	public List find(Unit unit, CallGraph cg, boolean canBeNullList, boolean canBeNative){
+	public List<SootMethod> find(Unit unit, CallGraph cg, boolean canBeNullList, boolean canBeNative){
 		// target method list can be null during build methodsNeedingInlining, otherwise NOT.
-		Set clinit = new HashSet(); 
-		List target = new ArrayList(); 
-		List t = new ArrayList();
+		Set<SootMethod> clinit = new HashSet<SootMethod>(); 
+		List<SootMethod> target = new ArrayList<SootMethod>(); 
+		List<SootMethod> t = new ArrayList<SootMethod>();
 		Iterator it = cg.edgesOutOf(unit);
 		//System.out.println("***unit is: "+unit);
 		while (it.hasNext()){
@@ -52,9 +51,9 @@ public class TargetMethodsFinder{
 		}
 		if (target.size()>1){
 //			System.out.println("clinit: "+clinit);
-			Iterator targetIt = target.iterator();
+			Iterator<SootMethod> targetIt = target.iterator();
 			while (targetIt.hasNext()){
-				SootMethod sm = (SootMethod)targetIt.next();
+				SootMethod sm = targetIt.next();
 				if (clinit.contains(sm)){
 					targetIt.remove();
 					//System.out.println("remove(clinit) : "+sm);
@@ -72,7 +71,7 @@ public class TargetMethodsFinder{
 		 System.out.println(target);
 		 }
 		 */		
-		return (List)target;
+		return target;
 	}
 }
 

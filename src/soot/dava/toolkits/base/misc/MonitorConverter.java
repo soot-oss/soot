@@ -20,7 +20,6 @@
 package soot.dava.toolkits.base.misc;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.dava.*;
 import soot.jimple.*;
@@ -64,7 +63,7 @@ public class MonitorConverter
 
     public static MonitorConverter v() { return G.v().soot_dava_toolkits_base_misc_MonitorConverter(); }
 
-    private SootMethod v, enter, exit; 
+    private final SootMethod v, enter, exit; 
 
     public void convert( DavaBody body)
     {
@@ -79,9 +78,9 @@ public class MonitorConverter
 	    arg.add( ms.getOp());
 
 	    if (ms instanceof EnterMonitorStmt)
-		mas.set_Stmt( new GInvokeStmt( new DVirtualInvokeExpr( new DStaticInvokeExpr( v.makeRef(), new ArrayList()), enter.makeRef(), arg, new HashSet())));
+		mas.set_Stmt( new GInvokeStmt( new DVirtualInvokeExpr( new DStaticInvokeExpr( v.makeRef(), new ArrayList()), enter.makeRef(), arg, new HashSet<Object>())));
 	    else
-		mas.set_Stmt( new GInvokeStmt( new DVirtualInvokeExpr( new DStaticInvokeExpr( v.makeRef(), new ArrayList()), exit.makeRef(), arg, new HashSet())));
+		mas.set_Stmt( new GInvokeStmt( new DVirtualInvokeExpr( new DStaticInvokeExpr( v.makeRef(), new ArrayList()), exit.makeRef(), arg, new HashSet<Object>())));
 	}
     }
 }

@@ -26,8 +26,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.StringTokenizer;
-import java.util.Iterator;
-import java.lang.reflect.*;
 import soot.Singletons;
 import soot.G;
 
@@ -47,17 +45,17 @@ public class AltClassLoader extends ClassLoader {
 
   private String[] locations;	// Locations in the alternate
 				// classpath.
-  private Map alreadyFound = new HashMap(); // Maps from already loaded
+  private final Map<String, Class> alreadyFound = new HashMap<String, Class>(); // Maps from already loaded
 					    // classnames to their
 					    // Class objects.
 
-  private Map nameToMangledName = new HashMap();// Maps from the names
+  private final Map<String, String> nameToMangledName = new HashMap<String, String>();// Maps from the names
 						// of classes to be
 						// loaded from the alternate
 						// classpath to mangled
 						// names to use for them.
 
-  private Map mangledNameToName = new HashMap();// Maps from the mangled names
+  private final Map<String, String> mangledNameToName = new HashMap<String, String>();// Maps from the mangled names
 						// of classes back to their
 						// original names.
 
@@ -93,7 +91,7 @@ public class AltClassLoader extends ClassLoader {
    * {@link File#pathSeparator}.
    */
   public void setAltClassPath(String altClassPath) {
-    List locationList = new LinkedList();
+    List<String> locationList = new LinkedList<String>();
     for (StringTokenizer tokens = 
 	   new StringTokenizer(altClassPath, File.pathSeparator, false);
 	 tokens.hasMoreTokens() ; ) {
@@ -101,7 +99,7 @@ public class AltClassLoader extends ClassLoader {
       locationList.add(location);
     }
     locations = new String[locationList.size()];
-    locations = (String[]) locationList.toArray(locations);
+    locations = locationList.toArray(locations);
   }
 
 
@@ -115,8 +113,7 @@ public class AltClassLoader extends ClassLoader {
    */
   public void setAltClasses(String[] classNames) {
     nameToMangledName.clear();
-    for (int i = 0; i < classNames.length; i++) {
-      String origName = classNames[i];
+    for (String origName : classNames) {
       String mangledName = mangleName(origName);
       nameToMangledName.put(origName, mangledName);
       mangledNameToName.put(mangledName, origName);
@@ -183,19 +180,19 @@ public class AltClassLoader extends ClassLoader {
       G.v().out.println("AltClassLoader.findClass(" + maybeMangledName + ')');
     }
 
-    Class result = (Class) alreadyFound.get(maybeMangledName);
+    Class result = alreadyFound.get(maybeMangledName);
     if (result != null) {
       return result;
     }
 
-    String name = (String) mangledNameToName.get(maybeMangledName);
+    String name = mangledNameToName.get(maybeMangledName);
     if (name == null) {
       name = maybeMangledName;
     }
     String pathTail = "/" + name.replace('.', File.separatorChar) + ".class";
 
-    for (int i = 0; i < locations.length; i++) {
-      String path = locations[i] + pathTail;
+    for (String element : locations) {
+      String path = element + pathTail;
       try {
 	FileInputStream stream = new FileInputStream(path);
 	byte[] classBytes = new byte[stream.available()];
@@ -236,7 +233,7 @@ public class AltClassLoader extends ClassLoader {
       G.v().out.println("AltClassLoader.loadClass(" + name + ")");
     }
 
-    String nameForParent = (String) nameToMangledName.get(name);
+    String nameForParent = nameToMangledName.get(name);
     if (nameForParent == null) {
       // This is not an alternate class
       nameForParent = name;
@@ -260,9 +257,8 @@ public class AltClassLoader extends ClassLoader {
    * with this so far!
    */
   private void replaceAltClassNames(byte[] classBytes) {
-    for (Iterator it = nameToMangledName.entrySet().iterator();
-	 it.hasNext(); ) {
-      Map.Entry entry = (Map.Entry) it.next();
+    for (Object element : nameToMangledName.entrySet()) {
+      Map.Entry entry = (Map.Entry) element;
       String origName = (String) entry.getKey();
       origName = origName.replace('.', '/');
       String mangledName = (String) entry.getValue();

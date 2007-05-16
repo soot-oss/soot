@@ -1,17 +1,10 @@
 package soot.jimple.toolkits.scalar;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
 
 // EqualLocalsAnalysis written by Richard L. Halpert, 2006-12-04
 // Finds all values at the given statement from which all of the listed uses
@@ -41,7 +34,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis
 		doAnalysis();
 
 		List ancestorList = new ArrayList();
-		ancestorList.addAll(((FlowSet) getFlowAfter((Unit) s)).toList());
+		ancestorList.addAll(((FlowSet) getFlowAfter(s)).toList());
 
 		return ancestorList;
 	}
@@ -66,7 +59,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis
 		in.copy(out);
 
 		// get list of definitions at this unit
-		List newDefs = new ArrayList();
+		List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
 		Iterator newDefBoxesIt = stmt.getDefBoxes().iterator();
 		while( newDefBoxesIt.hasNext() )
 		{
@@ -85,7 +78,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis
 		}
 		else if( stmt instanceof DefinitionStmt )
 		{
-			Iterator newDefsIt = newDefs.iterator();
+			Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
 			while(newDefsIt.hasNext())
 				out.remove( newDefsIt.next() );
 			// to be smarter, we could also add the right side to the list of aliases...

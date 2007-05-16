@@ -8,13 +8,11 @@
  */
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
 import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
+
 import soot.toolkits.scalar.*;
 import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.toolkits.thread.mhp.stmt.BeginStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.JoinStmt;
@@ -42,17 +40,16 @@ class MhpAnalysis
 {
 	
 	private PegGraph g;
-	private Map unitToGen;
-	private Map unitToKill;
-	private Map unitToM;
+	private final Map<Object, FlowSet> unitToGen;
+	private final Map<Object, FlowSet> unitToKill;
+	private final Map<Object, FlowSet> unitToM;
 	//  private Map unitToMSym;
-	private Map unitToOut;
-	private Map genNotifyAll;
-	private Map notifySucc;
-	private Map monitor;
-	private Map notifyPred;
+	private final Map<Object, FlowSet> unitToOut;
+	private final Map<Object, FlowSet> notifySucc;
+	private final Map<String, FlowSet> monitor;
+	private final Map<JPegStmt, Set<JPegStmt>> notifyPred;
 	FlowSet fullSet = new ArraySparseSet();
-	LinkedList workList = new LinkedList();
+	LinkedList<Object> workList = new LinkedList<Object>();
 	
 	MhpAnalysis(PegGraph g)
 	{
@@ -60,15 +57,14 @@ class MhpAnalysis
 		this.g = g;
 		int size = g.size();
 		Map startToThread = g.getStartToThread();
-		unitToGen = new HashMap(size*2+1,0.7f);
-		unitToKill = new HashMap(size*2+1,0.7f);
-		unitToM= new HashMap(size*2+1,0.7f);
+		unitToGen = new HashMap<Object, FlowSet>(size*2+1,0.7f);
+		unitToKill = new HashMap<Object, FlowSet>(size*2+1,0.7f);
+		unitToM= new HashMap<Object, FlowSet>(size*2+1,0.7f);
 		//unitToMSym = new HashMap(size*2+1, 0.7f);
-		unitToOut = new HashMap(size*2+1,0.7f);
-		notifySucc = new HashMap(size*2+1,0.7f);
-		genNotifyAll = new HashMap(size*2+1,0.7f);
+		unitToOut = new HashMap<Object, FlowSet>(size*2+1,0.7f);
+		notifySucc = new HashMap<Object, FlowSet>(size*2+1,0.7f);
 		//	notifyEdge = new HashMap(size*2+1,0.7f);
-		notifyPred = new HashMap(size*2+1,0.7f);
+		notifyPred = new HashMap<JPegStmt, Set<JPegStmt>>(size*2+1,0.7f);
 		//monitor = new HashMap(size*2+1,0.7f);
 		monitor = g.getMonitor();
 		
@@ -143,7 +139,7 @@ class MhpAnalysis
 					else{
 						//compute kill set for (t,join,*)
 						
-						Chain chain = (Chain)(g.getJoinStmtToThread().get(s));
+						Chain chain = (g.getJoinStmtToThread().get(s));
 						Iterator nodesIt = chain.iterator();
 						if (nodesIt.hasNext()) {
 							while (nodesIt.hasNext()){
@@ -162,7 +158,7 @@ class MhpAnalysis
 					
 					Iterator It = g.iterator();
 					if (monitor.containsKey(s.getObject())){
-						killSet = (FlowSet)monitor.get(s.getObject());
+						killSet = monitor.get(s.getObject());
 					}
 					unitToGen.put(s, genSet);
 					unitToKill.put(s, killSet);
@@ -170,11 +166,11 @@ class MhpAnalysis
 					
 				}
 				else if (s instanceof NotifyAllStmt){
-					Map waitingNodes = g.getWaitingNodes();
+					Map<String, FlowSet> waitingNodes = g.getWaitingNodes();
 					
 					if (waitingNodes.containsKey(s.getObject())){
 						//System.out.println("******find object:"+s.getObject());
-						FlowSet killNodes= (FlowSet)waitingNodes.get(s.getObject());
+						FlowSet killNodes= waitingNodes.get(s.getObject());
 						Iterator nodesIt = killNodes.iterator();
 						while (nodesIt.hasNext()){
 							killSet.add(nodesIt.next());
@@ -188,9 +184,9 @@ class MhpAnalysis
 				}
 				else if (s instanceof NotifyStmt){
 					//else if (s.getName().equals("notify")){
-					Map waitingNodes = g.getWaitingNodes();
+					Map<String, FlowSet> waitingNodes = g.getWaitingNodes();
 					if (waitingNodes.containsKey(s.getObject())){
-						FlowSet killNodes= (FlowSet)waitingNodes.get(s.getObject());
+						FlowSet killNodes= waitingNodes.get(s.getObject());
 						if (killNodes.size() == 1){
 							Iterator nodesIt = killNodes.iterator();
 							while (nodesIt.hasNext()){
@@ -206,7 +202,7 @@ class MhpAnalysis
 				else if ((s instanceof StartStmt) && g.getStartToThread().containsKey(s)){
 					//modify Feb 5
 					
-					Iterator chainIt  = ((List)g.getStartToThread().get(s)).iterator();
+					Iterator chainIt  = g.getStartToThread().get(s).iterator();
 					while (chainIt.hasNext()){
 						PegChain chain = (PegChain)chainIt.next();
 						Iterator beginNodesIt = chain.getHeads().iterator();
@@ -281,14 +277,14 @@ class MhpAnalysis
 			 */
 			//get kill, gen, m and out set.
 			
-			FlowSet killSet = (FlowSet)unitToKill.get(currentObj);
-			FlowSet genSet = (FlowSet)unitToGen.get(currentObj);
+			FlowSet killSet = unitToKill.get(currentObj);
+			FlowSet genSet = unitToGen.get(currentObj);
 			//  FlowSet mSet = (FlowSet)unitToM.get(currentNode);
 			FlowSet mSet = new ArraySparseSet();
 			
 			
-			FlowSet outSet = (FlowSet)unitToOut.get(currentObj);
-			FlowSet notifySuccSet = (FlowSet)notifySucc.get(currentObj);
+			FlowSet outSet = unitToOut.get(currentObj);
+			FlowSet notifySuccSet = notifySucc.get(currentObj);
 			/*   if (unitToMSym.containsKey(currentObj)){
 			 FlowSet mSetSym = (FlowSet)unitToMSym.get(currentObj);
 			 //test("mSetSym",mSetSym);
@@ -297,10 +293,10 @@ class MhpAnalysis
 			  
 			  }
 			  */
-			FlowSet mOld = (FlowSet)unitToM.get(currentObj);
-			FlowSet outOld = (FlowSet)outSet.clone();
+			FlowSet mOld = unitToM.get(currentObj);
+			FlowSet outOld = outSet.clone();
 			
-			FlowSet notifySuccSetOld = (FlowSet)notifySuccSet.clone();
+			FlowSet notifySuccSetOld = notifySuccSet.clone();
 			FlowSet genNotifyAllSet = new ArraySparseSet();
 			JPegStmt waitingPred = null;
 			
@@ -312,13 +308,13 @@ class MhpAnalysis
 			//testWorkList();
 			if (!(currentObj instanceof JPegStmt)){
 				// compute M Set
-				Iterator localPredIt = ((List)g.getPredsOf(currentObj)).iterator();
+				Iterator localPredIt = (g.getPredsOf(currentObj)).iterator();
 				
 				while (localPredIt.hasNext()){
 					
 					
 					Object tempStmt = localPredIt.next();
-					FlowSet out = (FlowSet)unitToOut.get(tempStmt);
+					FlowSet out = unitToOut.get(tempStmt);
 					//testSet(out,"out of localPred");
 					if (out!=null){
 						mSet.union(out);
@@ -374,7 +370,7 @@ class MhpAnalysis
 							}
 							else{
 								
-								FlowSet  mSetMSym = (FlowSet)unitToM.get(tempM);
+								FlowSet  mSetMSym = unitToM.get(tempM);
 								if (!(mSetMSym.size() == 0)){
 									if (!mSetMSym.contains(currentObj)){
 										
@@ -436,7 +432,7 @@ class MhpAnalysis
 				 */
 				if (!outOld.equals(outSet)){
 					//compute LocalSucc(n)
-					Iterator localSuccIt =((List)g.getSuccsOf(currentObj)).iterator();
+					Iterator localSuccIt =(g.getSuccsOf(currentObj)).iterator();
 					
 					while (localSuccIt.hasNext()){
 						
@@ -504,9 +500,9 @@ class MhpAnalysis
 				
 				if (currentNode instanceof NotifyStmt || currentNode instanceof NotifyAllStmt){
 					//if (currentNode.getName().equals("notify") ||currentNode.getName().equals("notifyAll") ){
-					Map waitingNodes = g.getWaitingNodes();
+					Map<String, FlowSet> waitingNodes = g.getWaitingNodes();
 					if (waitingNodes.containsKey(currentNode.getObject())){
-						FlowSet waitingNodeSet = (FlowSet)waitingNodes.get(currentNode.getObject());
+						FlowSet waitingNodeSet = waitingNodes.get(currentNode.getObject());
 						//test("waitingNodeSet",waitingNodeSet);
 						Iterator waitingNodesIt = waitingNodeSet.iterator();
 						while(waitingNodesIt.hasNext()){
@@ -523,7 +519,7 @@ class MhpAnalysis
 									if (waitingSucc instanceof NotifiedEntryStmt){
 										//build notifySucc Map
 										
-										FlowSet notifySet = (FlowSet)notifySucc.get(currentNode);
+										FlowSet notifySet = notifySucc.get(currentNode);
 										notifySet.add(waitingSucc);
 										notifySucc.put(currentNode, notifySet);
 										
@@ -534,12 +530,12 @@ class MhpAnalysis
 										
 										
 										if (notifyPred.containsKey(waitingSucc)){
-											Set notifyPredSet = (Set)notifyPred.get(waitingSucc);
+											Set<JPegStmt> notifyPredSet = notifyPred.get(waitingSucc);
 											notifyPredSet.add(currentNode);
 											notifyPred.put(waitingSucc, notifyPredSet);
 										}
 										else{
-											Set notifyPredSet = new HashSet();
+											Set<JPegStmt> notifyPredSet = new HashSet<JPegStmt>();
 											notifyPredSet.add(currentNode);
 											//notifyPredSet.add(waitingSucc);
 											notifyPred.put(waitingSucc, notifyPredSet);
@@ -583,7 +579,7 @@ class MhpAnalysis
 				// compute GENnotifyAll(n) for (obj, notified-entry,*)
 				//if (currentNode.getName().equals("notified-entry")){
 				if (currentNode instanceof NotifiedEntryStmt){
-					Iterator waitingPredIt = ((List)g.getPredsOf(currentNode)).iterator();
+					Iterator waitingPredIt = (g.getPredsOf(currentNode)).iterator();
 					while (waitingPredIt.hasNext()){
 						waitingPred = (JPegStmt)waitingPredIt.next();
 						if ((waitingPred instanceof WaitingStmt) &&
@@ -599,10 +595,10 @@ class MhpAnalysis
 					 * we can find waitingNodes for obj, then find the notified-entry nodes.
 					 */
 					
-					Map waitingNodes = g.getWaitingNodes();
+					Map<String, FlowSet> waitingNodes = g.getWaitingNodes();
 					FlowSet notifyEntrySet = new ArraySparseSet();
 					if (waitingNodes.containsKey(currentNode.getObject())){
-						FlowSet waitingNodesSet= (FlowSet)waitingNodes.get(currentNode.getObject());
+						FlowSet waitingNodesSet= waitingNodes.get(currentNode.getObject());
 						Iterator waitingNodesIt = waitingNodesSet.iterator();
 						while (waitingNodesIt.hasNext()){
 							List waitingNodesSucc = g.getSuccsOf(waitingNodesIt.next());
@@ -622,7 +618,7 @@ class MhpAnalysis
 					Iterator notifyEntrySetIt = notifyEntrySet.iterator();
 					while (notifyEntrySetIt.hasNext()){
 						JPegStmt notifyEntry = (JPegStmt)notifyEntrySetIt.next();
-						Iterator waitingPredIterator = ((List)g.getPredsOf(notifyEntry)).iterator();
+						Iterator waitingPredIterator = (g.getPredsOf(notifyEntry)).iterator();
 						
 						JPegStmt waitingPredNode = null;
 						//find the WaitingPred(notified-entry node)
@@ -638,17 +634,17 @@ class MhpAnalysis
 							
 						}
 						else{  
-							FlowSet mWaitingPredM = (FlowSet)unitToM.get(waitingPredNode);
+							FlowSet mWaitingPredM = unitToM.get(waitingPredNode);
 							if (mWaitingPredM.contains(waitingPred)){
 								//get r: r is (obj,notifyAll,*)
-								Map notifyAll = (Map)g.getNotifyAll();
+								Map<String, Set<JPegStmt>> notifyAll = g.getNotifyAll();
 								if (notifyAll.containsKey(currentNode.getObject())){
-									Set notifyAllSet = (Set)notifyAll.get(currentNode.getObject());
+									Set notifyAllSet = notifyAll.get(currentNode.getObject());
 									Iterator notifyAllIt = notifyAllSet.iterator();
 									while (notifyAllIt.hasNext()){
 										JPegStmt notifyAllStmt = (JPegStmt)notifyAllIt.next();
 										if (unitToM.containsKey(waitingPred)){
-											FlowSet mWaitingPredN = (FlowSet)unitToM.get(waitingPred);
+											FlowSet mWaitingPredN = unitToM.get(waitingPred);
 											if (mWaitingPredM.contains(notifyAllStmt) && mWaitingPredN.contains(notifyAllStmt)){
 												genNotifyAllSet.add(notifyEntry);
 											}
@@ -672,7 +668,7 @@ class MhpAnalysis
 						
 						FlowSet mSetOfNotifyEntry = new ArraySparseSet();
 						//compute the Union of out(NotifyPred(n))
-						Set notifyPredSet = (Set)notifyPred.get(currentNode);
+						Set notifyPredSet = notifyPred.get(currentNode);
 						//System.out.println("notifyPredSet: "+notifyPredSet);
 						if (notifyPredSet == null){
 							// System.out.println(currentNode+"has no notifyPredset");
@@ -682,14 +678,14 @@ class MhpAnalysis
 							while (notifyPredSetIt.hasNext()){
 								JPegStmt notifyPred = (JPegStmt)notifyPredSetIt.next();
 								//System.out.println("notifyPred: "+notifyPred.getTags().get(0)+" "+notifyPred);
-								FlowSet outWaitingPredTemp = (FlowSet)unitToOut.get(notifyPred);
+								FlowSet outWaitingPredTemp = unitToOut.get(notifyPred);
 								//testSet(outWaitingPredTemp, "out of notifyPred");
 								outWaitingPredTemp.copy(notifyPredUnion);
 							}
 							//testSet(notifyPredUnion, "Union of out of notifyPred");
 							
 							//compute OUT(waitingPred(n))  waitingPred=waitingPred(n)
-							FlowSet outWaitingPredSet = (FlowSet)unitToOut.get(waitingPred);
+							FlowSet outWaitingPredSet = unitToOut.get(waitingPred);
 							//testSet(outWaitingPredSet, "out of WaitingPred");
 							
 							//compute the  intersection of (the Union of out(NotifyPred(n)) ) and (OUT(waitingPred(n)))
@@ -708,19 +704,19 @@ class MhpAnalysis
 						//compute StartPred(n)
 						//modify Feb 6
 						mSet= new ArraySparseSet();
-						Map startToThread = g.getStartToThread();
-						Set keySet  = startToThread.keySet();
-						Iterator it = keySet.iterator();
+						Map<JPegStmt,List> startToThread = g.getStartToThread();
+						Set<JPegStmt> keySet  = startToThread.keySet();
+						Iterator<JPegStmt> it = keySet.iterator();
 						while(it.hasNext()){
-							JPegStmt tempStmt = (JPegStmt)it.next();
-							Iterator chainListIt = ((List)startToThread.get(tempStmt)).iterator();
+							JPegStmt tempStmt = it.next();
+							Iterator chainListIt = startToThread.get(tempStmt).iterator();
 							while (chainListIt.hasNext()){
 								
 								List beginNodes = ((PegChain)chainListIt.next()).getHeads();
 								if (beginNodes.contains(currentNode)){
 									
 									//compute OUT(p)
-									Iterator outStartPredIt = ((FlowSet)unitToOut.get(tempStmt)).iterator();
+									Iterator outStartPredIt = unitToOut.get(tempStmt).iterator();
 									while (outStartPredIt.hasNext()){
 										Object startPred = outStartPredIt.next();
 										//System.out.println("add startPred to mSet: "+startPred);
@@ -740,7 +736,7 @@ class MhpAnalysis
 						while(iter.hasNext()){
 							
 							JPegStmt tempStmt = (JPegStmt)iter.next();
-							Iterator chainListIt = ((List)startToThread.get(tempStmt)).iterator();
+							Iterator chainListIt = startToThread.get(tempStmt).iterator();
 							while (chainListIt.hasNext()){
 								
 								Chain chain = (Chain)chainListIt.next();
@@ -766,12 +762,12 @@ class MhpAnalysis
 					else{
 						//  System.out.println("=======entering"); 
 						
-						Iterator localPredIt = ((List)g.getPredsOf(currentNode)).iterator();
+						Iterator localPredIt = (g.getPredsOf(currentNode)).iterator();
 						if (!(currentNode instanceof NotifiedEntryStmt)){
 							while (localPredIt.hasNext()){
 								
 								Object tempStmt = localPredIt.next();
-								FlowSet out = (FlowSet)unitToOut.get(tempStmt);
+								FlowSet out = unitToOut.get(tempStmt);
 								//testSet(out,"out of localPred");
 								if (out!=null){
 									mSet.union(out);
@@ -862,7 +858,7 @@ class MhpAnalysis
 								throw new RuntimeException("unitToM does not contain: "+tempM);
 							}
 							else{
-								FlowSet  mSetMSym = (FlowSet)unitToM.get(tempM);
+								FlowSet  mSetMSym = unitToM.get(tempM);
 								if (!(mSetMSym.size() == 0)){
 									if (!mSetMSym.contains(currentNode)){
 										
@@ -929,7 +925,7 @@ class MhpAnalysis
 				
 				if (!outOld.equals(outSet)){
 					//compute LocalSucc(n)
-					Iterator localSuccIt =((List)g.getSuccsOf(currentNode)).iterator();
+					Iterator localSuccIt =(g.getSuccsOf(currentNode)).iterator();
 					
 					while (localSuccIt.hasNext()){
 						
@@ -970,12 +966,12 @@ class MhpAnalysis
 					//compute StartSucc(n)
 					if (currentNode instanceof StartStmt){
 						//if (currentNode.getName().equals("start")){
-						Map startToThread = g.getStartToThread();
+						Map<JPegStmt,List> startToThread = g.getStartToThread();
 						if (!startToThread.containsKey(currentNode)){
 						}
 						else{
 							
-							Iterator it = ((List)startToThread.get(currentNode)).iterator();
+							Iterator it = startToThread.get(currentNode).iterator();
 							while(it.hasNext()){
 								Iterator chainIt = ((Chain)it.next()).iterator();
 								while (chainIt.hasNext()){
@@ -1024,395 +1020,14 @@ class MhpAnalysis
 		return fullSet.clone();
 	}
 	
-	private void test(String st, FlowSet flowSet){
-		System.out.println(st);
-		
-		Iterator it = flowSet.iterator();
-		
-		
-		while (it.hasNext()){
-			Object obj = it.next();
-			
-			if (obj instanceof JPegStmt){
-				JPegStmt key =(JPegStmt)obj;
-				Tag tagKey = (Tag)key.getTags().get(0);
-				System.out.println(tagKey+" "+key);
-			}
-			else{
-				System.out.println("--list---");
-				Iterator listIt = ((List)obj).iterator();
-				while (listIt.hasNext()){
-					Object oo = listIt.next();
-					if (oo instanceof JPegStmt){
-						JPegStmt  unit = (JPegStmt)oo;
-						Tag tag = (Tag)unit.getTags().get(0);
-						System.out.println(tag+" "+unit);
-					}
-					
-					else
-						System.out.println(oo);
-					
-				}
-				
-				System.out.println("---list--end-");
-			}
-			
-			
-			
-			
-			
-		}
-	}
-	
-	private void testM(){
-		System.out.println("------unitToM---begin");
-		Set maps = unitToM.entrySet();
-		for(Iterator iter=maps.iterator(); iter.hasNext();){
-			Map.Entry entry = (Map.Entry)iter.next();
-			
-			FlowSet fs = (FlowSet)entry.getValue();
-			if (fs.size()>0){
-				Object obj = entry.getKey();    
-				if (obj instanceof JPegStmt){
-					JPegStmt key =(JPegStmt)obj;
-					Tag tagKey = (Tag)key.getTags().get(0);
-					System.out.println("---key=  "+tagKey+" "+key);
-				}
-				else{
-					System.out.println("--key=--list---");
-					Iterator listIt = ((List)obj).iterator();
-					while (listIt.hasNext()){
-						Object oo = listIt.next();
-						if (oo instanceof JPegStmt){
-							JPegStmt  unit = (JPegStmt)oo;
-							Tag tag = (Tag)unit.getTags().get(0);
-							System.out.println(tag+" "+unit);
-						}
-						
-						else
-							System.out.println(oo);
-						
-					}
-					
-					System.out.println("---list--end-");
-				}
-				
-				
-				System.out.println("**M set: "+fs.size());
-				Iterator it = fs.iterator();
-				String[] tagArray;	
-				JPegStmt[] stmtArray;
-				final int number=fs.size();
-				//	System.err.println("size is: "+number);
-				int i=0;
-				tagArray = new String[number];
-				stmtArray =  new JPegStmt[number];
-				
-				while (it.hasNext()){
-					Object o = it.next();
-					//		    if (o ==null) System.out.println("in testM o is null");
-					if (o instanceof JPegStmt){
-						JPegStmt  unit = (JPegStmt)o;
-						
-						Tag tag = (Tag)unit.getTags().get(0);
-						//			if (tag == null) System.out.println("tag is null"); 
-						//	System.out.println("tag:"+tag);
-						tagArray[i] = tag.toString();
-						stmtArray[i] = unit;
-						i++;
-						
-						//	System.out.println(tag+" "+unit);
-					}
-					
-					
-					else{
-						System.out.println("---list---");
-						Iterator listIt = ((List)o).iterator();
-						while (listIt.hasNext()){
-							Object oo = listIt.next();
-							if (oo instanceof JPegStmt){
-								JPegStmt  unit = (JPegStmt)oo;
-								
-								Tag tag = (Tag)unit.getTags().get(0);
-								System.out.println(tag+" "+unit);
-							}
-							else
-								System.out.println(oo);
-						}
-						System.out.println("---list--end-");
-						
-					}
-				}
-				String[] newTagArray = new String[i];
-				for (int j=0;j<i;j++) newTagArray[j]= tagArray[j];
-				
-				/*System.out.println("i is: "+i);
-				 System.out.println("===tagArray===");
-				 for (int j=0; j<i;j++){
-				 System.out.println(j + " "+tagArray[j]);
-				 }
-				 */
-				
-				Arrays.sort(newTagArray);
-				for (int k=0;k<i;k++) {
-					String s = newTagArray[k];
-					for (int j=0;j<i;j++){
-						if (newTagArray[k].equals(tagArray[j])){
-							System.out.println(newTagArray[k]+" "+stmtArray[j]);
-							break;
-							
-						}
-					}
-				}
-				
-			}
-		}
-		System.out.println("------------unitToM----ends--------");	
-	}
-	
-	private void testGen(){
-		System.out.println("------unitToGen---begin");
-		Set maps = unitToGen.entrySet();
-		for(Iterator iter=maps.iterator(); iter.hasNext();){
-			Map.Entry entry = (Map.Entry)iter.next();
-			
-			FlowSet fs = (FlowSet)entry.getValue();
-			if (fs.size()>0){
-				System.out.println("---key=  "+(Tag)((JPegStmt)entry.getKey()).getTags().get(0)+" "+entry.getKey());
-				System.out.println("**gen set:");
-				Iterator it = fs.iterator();
-				while (it.hasNext()){
-					Object o = it.next();
-					if (o instanceof JPegStmt){
-						JPegStmt  unit = (JPegStmt)o;
-						
-						Tag tag = (Tag)unit.getTags().get(0);
-						System.out.println(tag+" "+unit);
-						
-					}
-					
-					
-					else{
-						System.out.println("---list---");
-						Iterator listIt = ((List)o).iterator();
-						while (listIt.hasNext()){
-							Object oo = listIt.next();
-							if (oo instanceof JPegStmt){
-								JPegStmt  unit = (JPegStmt)oo;
-								Tag tag = (Tag)unit.getTags().get(0);
-								System.out.println(tag+" "+unit);
-							}
-							else
-								System.out.println(oo);
-						}
-						System.out.println("---list--end-");
-					}
-				}
-			}
-		}
-		System.out.println("------------unitToGen---ends--------");	
-	}
-	private void testKill(){
-		System.out.println("------unitToKill---begin");
-		Set maps = unitToKill.entrySet();
-		for(Iterator iter=maps.iterator(); iter.hasNext();){
-			Map.Entry entry = (Map.Entry)iter.next();
-			
-			FlowSet fs = (FlowSet)entry.getValue();
-			if (fs.size()>0){
-				System.out.println("---key=  "+entry.getKey());
-				System.out.println("**kill set:"+fs.size());
-				Iterator it = fs.iterator();
-				while (it.hasNext()){
-					Object o = it.next();
-					//		    if (o ==null) System.out.println("in testM o is null");
-					if (o instanceof JPegStmt){
-						JPegStmt  unit = (JPegStmt)o;
-						
-						Tag tag = (Tag)unit.getTags().get(0);
-						//			if (tag == null) System.out.println("tag is null"); 
-						System.out.println(tag+" "+unit);
-						
-					}
-					
-					
-					else{
-						System.out.println("---list---");
-						Iterator listIt = ((List)o).iterator();
-						while (listIt.hasNext()){
-							Object oo = listIt.next();
-							if (oo instanceof JPegStmt){
-								JPegStmt  unit = (JPegStmt)oo;
-								Tag tag = (Tag)unit.getTags().get(0);
-								System.out.println(tag+" "+unit);
-							}
-							else
-								System.out.println(oo);
-						}
-						System.out.println("---list--end-");
-						
-					}
-					
-				}
-			}
-			
-		}
-		System.out.println("------------unitToKill---ends--------");	
-	}
-	private void testmaps(){
-		Iterator it = g.iterator();
-		while (it.hasNext()){
-			JPegStmt st = (JPegStmt)it.next();
-			if (st.getName().equals("start")){
-				Map tempMap = g.getStartToThread();
-				if (tempMap.containsKey(st)) System.out.println("find start key in startToThread");
-			}
-			if (st.getName().equals("notifyAll")){
-				System.out.println(st);
-				Map tempMap = g.getWaitingNodes();
-				if (tempMap.containsKey(st.getObject())){
-					System.out.println("find waiting key in waitingNodes");
-				}
-				
-			}
-		}
-	}
-	
-	private void testNotifySucc(){
-		System.out.println("------notifySucc---begin");
-		Set maps = notifySucc.entrySet();
-		for(Iterator iter=maps.iterator(); iter.hasNext();){
-			Map.Entry entry = (Map.Entry)iter.next();
-			
-			FlowSet fs = (FlowSet)entry.getValue();
-			if (fs.size()>0){
-				System.out.println("---key=  "+entry.getKey());
-				System.out.println("**notifySucc set:");
-				Iterator it = fs.iterator();
-				while (it.hasNext()){
-					JPegStmt  unit =(JPegStmt)it.next();
-					
-					System.out.println(unit.toString());
-				}
-			}
-			
-		}
-		System.out.println("-----------notifySucc---ends--------");
-	}
-	private void testMap(Map map, String st){
-		
-		
-		System.out.println("---"+st+"-----begin");
-		Set maps = unitToM.entrySet();
-		for(Iterator iter=maps.iterator(); iter.hasNext();){
-			Map.Entry entry = (Map.Entry)iter.next();
-			
-			FlowSet fs = (FlowSet)entry.getValue();
-			if (fs.size()>0){
-				JPegStmt key =(JPegStmt)entry.getKey();
-				Tag tagKey = (Tag)key.getTags().get(0);
-				System.out.println("---key=  "+tagKey+" "+key);
-				
-				System.out.println("**"+st);
-				Iterator it = fs.iterator();
-				while (it.hasNext()){
-					JPegStmt  unit =(JPegStmt)it.next();
-					
-					Tag tag = (Tag)unit.getTags().get(0);	    
-					System.out.println(tag+" "+unit);
-					//	    System.out.println(unit.toString());
-				}
-			}
-		}
-		System.out.println("---"+st+"-----end");	
-		
-		
-		
-	}
-	
-	
-	private void testWorkList(){
-		System.out.println("------worklist---begin");
-		ListIterator it = workList.listIterator(0);
-		while (it.hasNext()){
-			Object o = it.next();
-			if (o instanceof JPegStmt){
-				JPegStmt  unit =(JPegStmt)o;
-				Tag tag = (Tag)unit.getTags().get(0);	    
-				System.out.println(tag+" "+unit);
-			}
-			else{
-				System.out.println(o);
-			}
-		}
-		System.out.println("------worklist---end");
-	}
-	private void testWorkList(LinkedList ll, String st){
-		System.out.println("===="+st+"--worklist---begin");
-		ListIterator it = workList.listIterator(0);
-		while (it.hasNext()){
-			Object o = it.next();
-			if (o instanceof JPegStmt){
-				JPegStmt  unit =(JPegStmt)o;
-				Tag tag = (Tag)unit.getTags().get(0);	    
-				System.out.println(tag+" "+unit);
-			}
-			else{
-				System.out.println(o);
-			}
-		}
-		System.out.println("===="+st+"--worklist---end");
-	}
-	private void testSet(FlowSet fs, String st){
-		System.out.println("========test "+st+" begin "+fs.size());
-		Iterator it = fs.iterator();
-		while (it.hasNext()){
-			Object o = it.next();
-			if (o instanceof JPegStmt){
-				JPegStmt  unit = (JPegStmt)o;
-				
-				Tag tag = (Tag)unit.getTags().get(0);
-				System.out.println(tag+" "+unit);
-				
-			}
-			
-			
-			else{
-				System.out.println("---list---");
-				Iterator listIt = ((List)o).iterator();
-				while (listIt.hasNext()){
-					Object oo = listIt.next();
-					if (oo instanceof JPegStmt){
-						JPegStmt  unit = (JPegStmt)oo;
-						Tag tag = (Tag)unit.getTags().get(0);
-						System.out.println(tag+" "+unit);
-					}
-					else
-						System.out.println(oo);
-				}
-				System.out.println("---list--end-");
-			}
-		}
-		System.out.println("========test "+st+"end");
-	}
-	private void testSet(Set fs, String st){
-		System.out.println("========test "+st+"begin");
-		Iterator it = fs.iterator();
-		while (it.hasNext()){
-			JPegStmt  unit =(JPegStmt)it.next();
-			
-			System.out.println(unit.toString());
-		}
-		System.out.println("========test "+st+"end");
-	}
 	//add for debug
-	protected Map getUnitToM(){
-		return (Map)unitToM;
+	protected Map<Object, FlowSet> getUnitToM(){
+		return unitToM;
 	}
 	//end add for debug
 	
 	private void computeMPairs(){
-		Set mSetPairs = new HashSet();
+		Set<Set<Object>> mSetPairs = new HashSet<Set<Object>>();
 		Set maps = unitToM.entrySet();
 		for(Iterator iter=maps.iterator(); iter.hasNext();){
 			Map.Entry entry = (Map.Entry)iter.next();
@@ -1436,7 +1051,7 @@ class MhpAnalysis
 				 */
 				
 				Object m = it.next();
-				Set pair = new HashSet();
+				Set<Object> pair = new HashSet<Object>();
 				pair.add(obj);
 				pair.add(m);
 				if (!mSetPairs.contains(pair)){
@@ -1452,7 +1067,6 @@ class MhpAnalysis
 	private void computeMSet(){
 		long min = 0;
 		long max = 0;
-		long average = 0;
 		long nodes = 0;
 		long totalNodes = 0;
 		Set maps = unitToM.entrySet();

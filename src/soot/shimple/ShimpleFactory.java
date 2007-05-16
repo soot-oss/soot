@@ -20,20 +20,8 @@
 package soot.shimple;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
-import soot.shimple.*;
-import soot.shimple.toolkits.scalar.*;
 import soot.shimple.toolkits.graph.*;
-import soot.options.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.base.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.jimple.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 
 /**
  * @author Navindra Umanee

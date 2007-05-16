@@ -19,16 +19,12 @@ import soot.ShortType;
 import soot.SootField;
 import soot.Type;
 import soot.Value;
-import soot.ValueBox;
-import soot.dava.DavaBody;
 import soot.dava.DavaFlowAnalysisException;
-import soot.dava.DecompilationException;
 import soot.dava.internal.AST.ASTBinaryCondition;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTIfElseNode;
 import soot.dava.internal.AST.ASTIfNode;
 import soot.dava.internal.AST.ASTMethodNode;
-import soot.dava.internal.AST.ASTSwitchNode;
 import soot.dava.internal.AST.ASTUnaryCondition;
 
 import soot.dava.internal.AST.ASTUnaryBinaryCondition;
@@ -38,15 +34,8 @@ import soot.dava.toolkits.base.AST.interProcedural.ConstantFieldValueFinder;
 import soot.jimple.BinopExpr;
 import soot.jimple.ConditionExpr;
 import soot.jimple.DefinitionStmt;
-import soot.jimple.DoubleConstant;
 import soot.jimple.FieldRef;
-import soot.jimple.FloatConstant;
-import soot.jimple.IntConstant;
-import soot.jimple.InvokeExpr;
-import soot.jimple.LongConstant;
-import soot.jimple.NegExpr;
 import soot.jimple.Stmt;
-import soot.toolkits.scalar.FlowSet;
 
 public class CP extends StructuredAnalysis {
 	/*  
@@ -91,12 +80,12 @@ public class CP extends StructuredAnalysis {
 	 *     public Object processASTSwitchNode(ASTSwitchNode node,Object input)
      */
 	
-	ArrayList constantFieldTuples = null;  //VariableTuples of constantFields
-	ArrayList formals = null;   //VariableTuples for formals initially set to T
-	ArrayList locals = null;  //VariableTuples for locals initially set to default
+	ArrayList<CPTuple> constantFieldTuples = null;  //VariableTuples of constantFields
+	ArrayList<CPTuple> formals = null;   //VariableTuples for formals initially set to T
+	ArrayList<CPTuple> locals = null;  //VariableTuples for locals initially set to default
 
 	
-	ArrayList initialInput = null; //VariableTuples of constantFields, locals set to 0 and formals set to T
+	ArrayList<CPTuple> initialInput = null; //VariableTuples of constantFields, locals set to 0 and formals set to T
 	
 	ASTMethodNode methodNode = null;
 	String localClassName = null;
@@ -104,7 +93,7 @@ public class CP extends StructuredAnalysis {
 	/*
 	 * The start of the analysis takes place whenever this constructor is invoked
 	 */
-    public CP(ASTMethodNode analyze, HashMap constantFields,HashMap classNameFieldNameToSootFieldMapping){
+    public CP(ASTMethodNode analyze, HashMap<String, Object> constantFields,HashMap<String, SootField> classNameFieldNameToSootFieldMapping){
     	super();
 /*
     	DEBUG = true;
@@ -123,7 +112,7 @@ public class CP extends StructuredAnalysis {
     	    	
     	//input to constant propagation should not be an empty flow set it is the set of all constant fields, locals assigned 0 and formals assigned T
     	CPFlowSet initialSet = new CPFlowSet();
-    	Iterator it = initialInput.iterator();
+    	Iterator<CPTuple> it = initialInput.iterator();
     	while(it.hasNext())
     		initialSet.add(it.next());
     	
@@ -142,7 +131,7 @@ public class CP extends StructuredAnalysis {
 	 * 
 	 */
     public void createInitialInput(){
-    	initialInput = new ArrayList();    	
+    	initialInput = new ArrayList<CPTuple>();    	
     
     	//adding constant fields
     	initialInput.addAll(constantFieldTuples);
@@ -150,7 +139,7 @@ public class CP extends StructuredAnalysis {
     	//String className = analyze.getDavaBody().getMethod().getDeclaringClass().getName();
     	    	   	
     	//adding formals
-    	formals = new ArrayList();
+    	formals = new ArrayList<CPTuple>();
     	//System.out.println("Adding following formals: with TOP");
     	Collection col = methodNode.getDavaBody().get_ParamMap().values();
     	Iterator it = col.iterator();
@@ -176,7 +165,7 @@ public class CP extends StructuredAnalysis {
     	//adding locals
     	List decLocals = methodNode.getDeclaredLocals();
     	it = decLocals.iterator();
-    	locals = new ArrayList();
+    	locals = new ArrayList<CPTuple>();
     	//System.out.println("Adding following locals with default values:");
     	while(it.hasNext()){
     		Object temp = it.next();
@@ -231,20 +220,20 @@ public class CP extends StructuredAnalysis {
 	/*
 	 * Uses the results of the ConstantValueFinder to create a list of constantField CPTuple
 	 */
-	private void createConstantFieldsList(HashMap constantFields, HashMap classNameFieldNameToSootFieldMapping){
-		constantFieldTuples = new ArrayList();
+	private void createConstantFieldsList(HashMap<String, Object> constantFields, HashMap<String, SootField> classNameFieldNameToSootFieldMapping){
+		constantFieldTuples = new ArrayList<CPTuple>();
 		
-		Iterator it = constantFields.keySet().iterator();
+		Iterator<String> it = constantFields.keySet().iterator();
 		//System.out.println("Adding constant fields to initial set: ");
 		while(it.hasNext()){
-			String combined = (String)it.next();
+			String combined = it.next();
 			
 			int temp = combined.indexOf(ConstantFieldValueFinder.combiner,0);
 			if(temp > 0){
 				String className = combined.substring(0,temp);
 				
 				//String fieldName = combined.substring(temp+ ConstantFieldValueFinder.combiner.length());
-				SootField field = (SootField)classNameFieldNameToSootFieldMapping.get(combined);
+				SootField field = classNameFieldNameToSootFieldMapping.get(combined);
 				//String fieldName = field.getName();
 				
 				if(! (field.getType() instanceof PrimType)){
@@ -253,7 +242,7 @@ public class CP extends StructuredAnalysis {
 				}
 				
 				//object type is double float long boolean or integer
-				Object value = (Object)constantFields.get(combined);
+				Object value = constantFields.get(combined);
 
 				CPVariable var = new CPVariable(field);
 				
@@ -300,13 +289,13 @@ public class CP extends StructuredAnalysis {
 		CPFlowSet flowSet = new CPFlowSet();
 		
 		//formals and locals should be both initialized to top since we dont know what has happened so far in the body
-		ArrayList localsAndFormals = new ArrayList();
+		ArrayList<CPTuple> localsAndFormals = new ArrayList<CPTuple>();
 		localsAndFormals.addAll(formals);
 		localsAndFormals.addAll(locals);
 		
-		Iterator it = localsAndFormals.iterator();
+		Iterator<CPTuple> it = localsAndFormals.iterator();
 		while(it.hasNext()){
-			CPTuple tempTuple = (CPTuple)((CPTuple)it.next()).clone();
+			CPTuple tempTuple = (CPTuple)it.next().clone();
 			
 			//just making sure all are set to Top
 			if(!tempTuple.isTop())
@@ -489,7 +478,7 @@ public class CP extends StructuredAnalysis {
 		} //going through all elements of the flow set
 		
 		//if this element was no where enter it with top
-		CPVariable newVar = new CPVariable((Local)left);
+		CPVariable newVar = new CPVariable(left);
 		
 		//create the CPTuple
 		//System.out.println("trying to kill something which was not present so added with TOP");
@@ -698,7 +687,7 @@ public class CP extends StructuredAnalysis {
 			throw new DavaFlowAnalysisException("not a flow set");
 		}
 
-    	CPFlowSet inputToBody = (CPFlowSet)((CPFlowSet)input).clone();
+    	CPFlowSet inputToBody = ((CPFlowSet)input).clone();
     	
     	CPTuple tuple = checkForValueHints(node.get_Condition(),inputToBody,false);
   	
@@ -743,7 +732,7 @@ public class CP extends StructuredAnalysis {
     		}
 
          	//get the subBodies
-    		List subBodies = node.get_SubBodies();
+    		List<Object> subBodies = node.get_SubBodies();
     		if(subBodies.size()!=2){
     		    throw new RuntimeException("processASTIfElseNode called with a node without two subBodies");
     		}

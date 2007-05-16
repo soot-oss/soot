@@ -68,8 +68,7 @@ abstract class OptionsBase {
     protected String getPhaseUsage() {
         StringBuffer b = new StringBuffer();
         b.append( "\nPhases and phase options:\n" );
-        for( Iterator pIt = PackManager.v().allPacks().iterator(); pIt.hasNext(); ) {
-            final Pack p = (Pack) pIt.next();
+        for (Pack p : PackManager.v().allPacks()) {
             b.append( padOpt( p.getPhaseName(), p.getDeclaredOptions() ) );
             for( Iterator phIt = p.iterator(); phIt.hasNext(); ) {
                 final HasPhaseOptions ph = (HasPhaseOptions) phIt.next();
@@ -79,13 +78,13 @@ abstract class OptionsBase {
         return b.toString();
     }
 
-    private LinkedList options = new LinkedList();
+    private final LinkedList<String> options = new LinkedList<String>();
     protected void pushOptions( String s ) {
         options.addFirst( s );
     }
 
     protected boolean hasMoreOptions() { return !options.isEmpty(); }
-    protected String nextOption() { return (String) options.removeFirst(); }
+    protected String nextOption() { return options.removeFirst(); }
 
     protected LinkedList classes = new LinkedList();
     public LinkedList classes() { return classes; }

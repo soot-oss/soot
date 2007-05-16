@@ -30,13 +30,7 @@ import soot.options.*;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
-import soot.jimple.toolkits.base.*;
-import soot.grimp.toolkits.base.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
 import java.util.*;
-import soot.baf.*;
-import java.io.*;
 
 /** Implementation of the Body class for the Grimp IR. */
 public class GrimpBody extends StmtBody
@@ -77,12 +71,12 @@ public class GrimpBody extends StmtBody
 
         Iterator it = jBody.getLocals().iterator();
         while (it.hasNext())
-            getLocals().add(((Local)(it.next())));
+            getLocals().add(((it.next())));
             //            getLocals().add(((Local)(it.next())).clone());
 
         it = jBody.getUnits().iterator();
 
-        final HashMap oldToNew = new HashMap(getUnits().size() * 2 + 1, 0.7f);
+        final HashMap<Stmt, Stmt> oldToNew = new HashMap<Stmt, Stmt>(getUnits().size() * 2 + 1, 0.7f);
         LinkedList updates = new LinkedList();
 
         /* we should Grimpify the Stmt's here... */
@@ -111,10 +105,6 @@ public class GrimpBody extends StmtBody
                 public void caseInvokeStmt(InvokeStmt s)
                 {
                     newStmtBox.setUnit(Grimp.v().newInvokeStmt(s));
-                }
-                public void defaultCase(Stmt s)
-                  {
-                    throw new RuntimeException("invalid jimple stmt: "+s);
                 }
                 public void caseEnterMonitorStmt(EnterMonitorStmt s)
                 {
@@ -193,29 +183,25 @@ public class GrimpBody extends StmtBody
 
             stmt.apply(new AbstractStmtSwitch()
             {
-                public void defaultCase(Stmt s)
-                  {
-                    throw new RuntimeException("Internal error: "+s);
-                }
                 public void caseGotoStmt(GotoStmt s)
                 {
                     GotoStmt newStmt = (GotoStmt)(oldToNew.get(s));
-                    newStmt.setTarget((Stmt)oldToNew.get(newStmt.getTarget()));
+                    newStmt.setTarget(oldToNew.get(newStmt.getTarget()));
                 }
                 public void caseIfStmt(IfStmt s)
                 {
                     IfStmt newStmt = (IfStmt)(oldToNew.get(s));
-                    newStmt.setTarget((Stmt)oldToNew.get(newStmt.getTarget()));
+                    newStmt.setTarget(oldToNew.get(newStmt.getTarget()));
                 }
                 public void caseLookupSwitchStmt(LookupSwitchStmt s)
                 {
                     LookupSwitchStmt newStmt = 
                         (LookupSwitchStmt)(oldToNew.get(s));
                     newStmt.setDefaultTarget
-                        ((Unit)(oldToNew.get(newStmt.getDefaultTarget())));
+                        ((oldToNew.get(newStmt.getDefaultTarget())));
                     Unit[] newTargList = new Unit[newStmt.getTargetCount()];
                     for (int i = 0; i < newStmt.getTargetCount(); i++)
-                        newTargList[i] = (Unit)(oldToNew.get
+                        newTargList[i] = (oldToNew.get
                                                 (newStmt.getTarget(i)));
                     newStmt.setTargets(newTargList);
                 }
@@ -224,9 +210,9 @@ public class GrimpBody extends StmtBody
                     TableSwitchStmt newStmt = 
                         (TableSwitchStmt)(oldToNew.get(s));
                     newStmt.setDefaultTarget
-                        ((Unit)(oldToNew.get(newStmt.getDefaultTarget())));
+                        ((oldToNew.get(newStmt.getDefaultTarget())));
                     int tc = newStmt.getHighIndex() - newStmt.getLowIndex()+1;
-                    LinkedList newTargList = new LinkedList();
+                    LinkedList<Unit> newTargList = new LinkedList<Unit>();
                     for (int i = 0; i < tc; i++)
                         newTargList.add(oldToNew.get
                                         (newStmt.getTarget(i)));
@@ -241,9 +227,9 @@ public class GrimpBody extends StmtBody
             Trap oldTrap = (Trap)(it.next());
             getTraps().add(Grimp.v().newTrap
                            (oldTrap.getException(),
-                            (Unit)(oldToNew.get(oldTrap.getBeginUnit())),
-                            (Unit)(oldToNew.get(oldTrap.getEndUnit())),
-                            (Unit)(oldToNew.get(oldTrap.getHandlerUnit()))));
+                            (oldToNew.get(oldTrap.getBeginUnit())),
+                            (oldToNew.get(oldTrap.getEndUnit())),
+                            (oldToNew.get(oldTrap.getHandlerUnit()))));
         }
 
         PackManager.v().getPack( "gb" ).apply( this );

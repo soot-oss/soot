@@ -64,7 +64,7 @@ public class BoundedPriorityList implements Collection
 
 		for (ListIterator worklistIter = worklist.listIterator(); worklistIter
 				.hasNext();) {
-			Object tocomp = (Object) worklistIter.next();
+			Object tocomp = worklistIter.next();
 			int tmpidx = fulllist.indexOf(tocomp);
 			if (index < tmpidx) {
 				worklistIter.add(toadd);
@@ -83,7 +83,7 @@ public class BoundedPriorityList implements Collection
 	public boolean addAll(Collection c) {
 		boolean addedSomething = false;
 		for (Iterator iter = c.iterator(); iter.hasNext();) {
-			Object o = (Object) iter.next();
+			Object o = iter.next();
 			addedSomething |= add(o);			
 		}
 		return addedSomething;

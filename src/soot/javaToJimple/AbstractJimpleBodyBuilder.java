@@ -23,8 +23,6 @@ package soot.javaToJimple;
 
 import java.util.*;
 
-import soot.SootFieldRef;
-
 public abstract class AbstractJimpleBodyBuilder {
    
     protected soot.jimple.JimpleBody body;

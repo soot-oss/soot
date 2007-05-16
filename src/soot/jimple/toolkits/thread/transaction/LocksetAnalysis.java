@@ -1,17 +1,11 @@
 package soot.jimple.toolkits.thread.transaction;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
+
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
 
 // LocksetAnalysis written by Richard L. Halpert, 2007-04-19
 // Finds the set of local variables and/or references that represent all of
@@ -21,7 +15,7 @@ import soot.toolkits.scalar.*;
 public class LocksetAnalysis extends BackwardFlowAnalysis
 {
 	UnitGraph graph;
-	Map unitToUses;
+	Map<Stmt, List<Value>> unitToUses;
 	Stmt begin;
 	boolean lostObjects;
 	
@@ -37,7 +31,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		// analysis is done on-demand, not now
 	}
 
-	public List getLocksetOf(Map unitToUses, Stmt begin)
+	public List getLocksetOf(Map<Stmt, List<Value>> unitToUses, Stmt begin)
 	{
 		this.unitToUses = unitToUses;
 		this.begin = begin;
@@ -62,7 +56,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 	{
 		Map inMap1 = (Map) in1;
 		Map inMap2 = (Map) in2;
-		Map outMap = (Map) out;
+		Map<Object, Object> outMap = (Map<Object, Object>) out;
 		Map tmpMap = new HashMap();
 		
 		// union of the two maps, except when the same key is present,
@@ -89,10 +83,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			else if(outMap.get(key) != tmpMap.get(key))
 			{
 				Object outvalue = outMap.get(key);
-		//      for each outentry in outMap
-				for(Iterator outEntryIt = outMap.entrySet().iterator(); outEntryIt.hasNext(); )
-				{
-					Map.Entry entry = (Map.Entry) outEntryIt.next();
+		for (Object element : outMap.entrySet()) {
+					Map.Entry entry = (Map.Entry) element;
 		//          if the value == outvalue, change it to tmpvalue
 					if(entry.getValue() == outvalue)
 						entry.setValue(value);
@@ -115,18 +107,18 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			Object outValue)
 	{
 		Map in  = (Map) inValue;
-		Map out = (Map) outValue;
+		Map<EquivalentValue, Object> out = (Map<EquivalentValue, Object>) outValue;
 		Stmt stmt = (Stmt) unit;
 		
 //		out.clear();
 //		out.putAll(in);
-		merge(in, (Map) ((HashMap) out).clone(), out);
+		merge(in, ((HashMap<EquivalentValue, Object>) out).clone(), out);
 		
 		// If this statement contains a use
 		if( unitToUses.keySet().contains(stmt) )
 		{
 			// For each use, either add it to an existing lock, or add a new lock
-			List uses = (List) unitToUses.get(stmt);
+			List uses = unitToUses.get(stmt);
 			Iterator usesIt = uses.iterator();
 			if(!usesIt.hasNext()) // an empty set of uses indicates that some uses are inaccessible
 			{
@@ -168,9 +160,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 					if(out.containsKey(rvalue))
 					{
 						Object rvaluevalue = out.get(rvalue);
-						for(Iterator outEntryIt = out.entrySet().iterator(); outEntryIt.hasNext(); )
-						{
-							Map.Entry entry = (Map.Entry) outEntryIt.next();
+						for (Object element : out.entrySet()) {
+							Map.Entry entry = (Map.Entry) element;
 							if(entry.getValue() == lvaluevalue)
 								entry.setValue(rvaluevalue);
 						}

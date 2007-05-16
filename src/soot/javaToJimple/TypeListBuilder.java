@@ -20,17 +20,19 @@
 package soot.javaToJimple;
 import java.util.*;
 
+import polyglot.types.Type;
+
 public class TypeListBuilder extends polyglot.visit.NodeVisitor {
 
 
-    private HashSet list;
+    private final HashSet<Type> list;
 
-    public HashSet getList() {
+    public HashSet<Type> getList() {
         return list;
     }
 
     public TypeListBuilder(){
-        list = new HashSet();
+        list = new HashSet<Type>();
     }
 
     public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {

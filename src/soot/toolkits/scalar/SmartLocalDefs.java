@@ -42,13 +42,13 @@ import soot.util.Cons;
  */
 public class SmartLocalDefs implements LocalDefs
 {
-    private final Map answer;
+    private final Map<Cons, ArrayList<Unit>> answer;
 
-    private final Map localToDefs; // for each local, set of units
+    private final Map<Local, HashSet<Unit>> localToDefs; // for each local, set of units
                                    // where it's defined
     private final UnitGraph graph;
     private final LocalDefsAnalysis analysis;
-    private final Map unitToMask;
+    private final Map<Unit, HashSet> unitToMask;
     public SmartLocalDefs(UnitGraph g, LiveLocals live) {
         this.graph = g;
 
@@ -59,13 +59,13 @@ public class SmartLocalDefs implements LocalDefs
             G.v().out.println("[" + g.getBody().getMethod().getName() +
                                "]     Constructing SmartLocalDefs...");
 
-        localToDefs = new HashMap();
-        unitToMask = new HashMap();
+        localToDefs = new HashMap<Local, HashSet<Unit>>();
+        unitToMask = new HashMap<Unit, HashSet>();
         for( Iterator uIt = g.iterator(); uIt.hasNext(); ) {
             final Unit u = (Unit) uIt.next();
             Local l = localDef(u);
             if( l == null ) continue;
-            HashSet s = defsOf(l);
+            HashSet<Unit> s = defsOf(l);
             s.add(u);
         }
 
@@ -84,7 +84,7 @@ public class SmartLocalDefs implements LocalDefs
 
         analysis = new LocalDefsAnalysis(graph);
 
-        answer = new HashMap();
+        answer = new HashMap<Cons, ArrayList<Unit>>();
         for( Iterator uIt = graph.iterator(); uIt.hasNext(); ) {
             final Unit u = (Unit) uIt.next();
             for( Iterator vbIt = u.getUseBoxes().iterator(); vbIt.hasNext(); ) {
@@ -92,9 +92,8 @@ public class SmartLocalDefs implements LocalDefs
                 Value v = vb.getValue();
                 if( !(v instanceof Local) ) continue;
                 HashSet analysisResult = (HashSet) analysis.getFlowBefore(u);
-                ArrayList al = new ArrayList();
-                for( Iterator unitIt = defsOf((Local)v).iterator(); unitIt.hasNext(); ) {
-                    final Unit unit = (Unit) unitIt.next();
+                ArrayList<Unit> al = new ArrayList<Unit>();
+                for (Unit unit : defsOf((Local)v)) {
                     if(analysisResult.contains(unit)) al.add(unit);
                 }
                 answer.put(new Cons(u, v), al);
@@ -117,9 +116,9 @@ public class SmartLocalDefs implements LocalDefs
         if( !(v instanceof Local) ) return null;
         return (Local) v;
     }
-    private HashSet defsOf( Local l ) {
-        HashSet ret = (HashSet)localToDefs.get(l);
-        if( ret == null ) localToDefs.put( l, ret = new HashSet() );
+    private HashSet<Unit> defsOf( Local l ) {
+        HashSet<Unit> ret = localToDefs.get(l);
+        if( ret == null ) localToDefs.put( l, ret = new HashSet<Unit>() );
         return ret;
     }
 
@@ -147,11 +146,11 @@ public class SmartLocalDefs implements LocalDefs
         protected void flowThrough(Object inValue, Object unit, Object outValue) {
             Unit u = (Unit) unit;
             HashSet in = (HashSet) inValue;
-            HashSet out = (HashSet) outValue;
+            HashSet<Unit> out = (HashSet<Unit>) outValue;
             out.clear();
-            Set mask = (Set) unitToMask.get(u);
+            Set mask = unitToMask.get(u);
             Local l = localDef(u);
-			HashSet allDefUnits = null;
+			HashSet<Unit> allDefUnits = null;
 			if (l == null)
 			{//add all units contained in mask
 	            for( Iterator inUIt = in.iterator(); inUIt.hasNext(); ) {
@@ -185,7 +184,7 @@ public class SmartLocalDefs implements LocalDefs
     
         protected void copy(Object source, Object dest) {
             HashSet sourceSet = (HashSet) source;
-            HashSet destSet   = (HashSet) dest;
+            HashSet<Object> destSet   = (HashSet<Object>) dest;
               
 			//retain all the elements contained by sourceSet
 			if (destSet.size() > 0)
@@ -214,9 +213,9 @@ public class SmartLocalDefs implements LocalDefs
         }
     }
 
-    public List getDefsOfAt(Local l, Unit s)
+    public List<Unit> getDefsOfAt(Local l, Unit s)
     {
-        return (List) answer.get(new Cons(s, l));
+        return answer.get(new Cons(s, l));
     }
 
 }

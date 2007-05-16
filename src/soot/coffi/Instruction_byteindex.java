@@ -30,7 +30,6 @@
 
 
 package soot.coffi;
-import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>
@@ -66,13 +65,13 @@ class Instruction_byteindex extends Instruction {
    public short arg_b;
    public Instruction_byteindex(byte c) { super(c); }
    public String toString(cp_info constant_pool[]) {
-      int i = ((int)arg_b)&0xff;
+      int i = (arg_b)&0xff;
       return super.toString(constant_pool) + argsep + "[" +
          constant_pool[i].toString(constant_pool) + "]";
    }
    public int nextOffset(int curr) { return curr+2; }
-   public void markCPRefs(boolean[] refs) { refs[((int)arg_b)&0xff] = true; }
-   public void redirectCPRefs(short redirect[]) { arg_b = (byte)(redirect[((int)arg_b)&0xff]); }
+   public void markCPRefs(boolean[] refs) { refs[(arg_b)&0xff] = true; }
+   public void redirectCPRefs(short redirect[]) { arg_b = (byte)(redirect[(arg_b)&0xff]); }
    public int parse(byte bc[],int index) {
       arg_b = bc[index];
 

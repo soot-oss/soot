@@ -26,7 +26,6 @@
 
 package soot.util;
 
-import soot.util.*;
 import java.util.*;
 
 /** Implementation of HashMap which guarantees a stable
@@ -36,7 +35,7 @@ import java.util.*;
  * local-name drift. */
 public class DeterministicHashMap extends HashMap
 {
-    Set keys = new TrustingMonotonicArraySet();
+    Set<Object> keys = new TrustingMonotonicArraySet();
     
     /** Constructs a DeterministicHashMap with the given initial capacity. */
     public DeterministicHashMap(int initialCapacity)
@@ -72,7 +71,7 @@ public class DeterministicHashMap extends HashMap
     }
     
     /** Returns a backed list of keys for this HashMap (unsupported). */
-    public Set keySet()
+    public Set<Object> keySet()
     {
         return keys;
     }
@@ -104,8 +103,8 @@ class TrustingMonotonicArraySet extends AbstractSet
     {
         this();
 
-        for(int i = 0; i < elements.length; i++)
-            add(elements[i]);
+        for (Object element : elements)
+			add(element);
     }
 
     public void clear()

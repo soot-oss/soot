@@ -31,7 +31,6 @@ package soot.baf;
 
 import soot.*;
 import soot.util.*;
-import java.util.*;
 
 public class WordType extends Type
 {

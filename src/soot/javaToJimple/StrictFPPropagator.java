@@ -18,7 +18,6 @@
  */
 
 package soot.javaToJimple;
-import java.util.*;
 
 public class StrictFPPropagator extends polyglot.visit.NodeVisitor {
 

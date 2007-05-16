@@ -21,8 +21,6 @@ package soot.jimple.toolkits.callgraph;
 
 import soot.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.util.*;
 import java.util.*;
 
 public class UnreachableMethodTransformer extends BodyTransformer
@@ -36,8 +34,8 @@ public class UnreachableMethodTransformer extends BodyTransformer
 
         JimpleBody body = (JimpleBody) method.getActiveBody();
 
-        PatchingChain units = (PatchingChain) body.getUnits();
-        List list = new Vector();
+        PatchingChain units = body.getUnits();
+        List<Unit> list = new Vector<Unit>();
 
         Local tmpRef = Jimple.v().newLocal( "tmpRef", RefType.v( "java.io.PrintStream" ) );
         body.getLocals().add(tmpRef);

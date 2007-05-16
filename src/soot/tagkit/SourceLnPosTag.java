@@ -21,10 +21,10 @@ package soot.tagkit;
 
 public class SourceLnPosTag implements Tag {
 
-    private int startLn;
-    private int endLn;
-    private int startPos;
-    private int endPos;
+    private final int startLn;
+    private final int endLn;
+    private final int startPos;
+    private final int endPos;
     
     public SourceLnPosTag(int sline, int eline, int spos, int epos){
         startLn = sline;

@@ -18,12 +18,11 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.internal.*;
 import soot.*;
+
 import java.util.*;
-import soot.options.SparkOptions;
 
 /** Collapses nodes that are members of simple trees (EBBs)
  * in the pointer assignment graph.
@@ -55,12 +54,12 @@ public class EBBCollapser {
     protected PAG pag;
     protected void collapseAlloc() {
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
-        for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
-            final AllocNode n = (AllocNode) nIt.next();
+        for (Object object : pag.allocSources()) {
+            final AllocNode n = (AllocNode) object;
             Node[] succs = pag.allocLookup( n );
             VarNode firstSucc = null;
-            for( int i = 0; i < succs.length; i++ ) {
-                VarNode succ = (VarNode) succs[i];
+            for (Node element0 : succs) {
+                VarNode succ = (VarNode) element0;
                 if( pag.allocInvLookup( succ ).length > 1 ) continue;
                 if( pag.loadInvLookup( succ ).length > 0 ) continue;
                 if( pag.simpleInvLookup( succ ).length > 0 ) continue;
@@ -78,16 +77,16 @@ public class EBBCollapser {
     }
     protected void collapseSimple() {
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
-        final TypeManager typeManager = (TypeManager) pag.getTypeManager();
+        final TypeManager typeManager = pag.getTypeManager();
         boolean change;
         do {
             change = false;
-            for( Iterator nIt = new ArrayList( pag.simpleSources() ).iterator(); nIt.hasNext(); ) {
+            for( Iterator<Object> nIt = new ArrayList<Object>( pag.simpleSources() ).iterator(); nIt.hasNext(); ) {
                 final VarNode n = (VarNode) nIt.next();
                 Type nType = n.getType();
                 Node[] succs = pag.simpleLookup( n );
-                for( int i = 0; i < succs.length; i++ ) {
-                    VarNode succ = (VarNode) succs[i];
+                for (Node element : succs) {
+                    VarNode succ = (VarNode) element;
                     Type sType = succ.getType();
                     if( !typeManager.castNeverFails( nType, sType ) ) continue;
                     if( pag.allocInvLookup( succ ).length > 0 ) continue;
@@ -104,15 +103,15 @@ public class EBBCollapser {
     }
     protected void collapseLoad() {
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
-        final TypeManager typeManager = (TypeManager) pag.getTypeManager();
-        for( Iterator nIt = new ArrayList( pag.loadSources() ).iterator(); nIt.hasNext(); ) {
+        final TypeManager typeManager = pag.getTypeManager();
+        for( Iterator<Object> nIt = new ArrayList<Object>( pag.loadSources() ).iterator(); nIt.hasNext(); ) {
             final FieldRefNode n = (FieldRefNode) nIt.next();
             Type nType = n.getType();
             Node[] succs = pag.loadLookup( n );
             Node firstSucc = null;
-            HashMap typeToSucc = new HashMap();
-            for( int i = 0; i < succs.length; i++ ) {
-                VarNode succ = (VarNode) succs[i];
+            HashMap<Type, VarNode> typeToSucc = new HashMap<Type, VarNode>();
+            for (Node element : succs) {
+                VarNode succ = (VarNode) element;
                 Type sType = succ.getType();
                 if( pag.allocInvLookup( succ ).length > 0 ) continue;
                 if( pag.loadInvLookup( succ ).length > 1 ) continue;
@@ -126,7 +125,7 @@ public class EBBCollapser {
                         numCollapsed++;
                     }
                 } else {
-                    VarNode rep = (VarNode) typeToSucc.get( succ.getType() );
+                    VarNode rep = typeToSucc.get( succ.getType() );
                     if( rep == null ) {
                         typeToSucc.put( succ.getType(), succ );
                     } else {

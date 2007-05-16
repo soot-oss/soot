@@ -18,12 +18,7 @@
  */
 
 package soot.javaToJimple;
-import polyglot.main.*;
 import polyglot.frontend.*;
-import polyglot.util.*;
-import polyglot.visit.*;
-import polyglot.ast.*;
-
 import java.util.*;
 import java.io.*;
 
@@ -37,9 +32,9 @@ public class JavaToJimple {
     /**
      * sets up the info needed to invoke polyglot
      */
-	public polyglot.frontend.ExtensionInfo initExtInfo(String fileName, List sourceLocations){
+	public polyglot.frontend.ExtensionInfo initExtInfo(String fileName, List<String> sourceLocations){
 		
-        Set source = new HashSet();
+        Set<String> source = new HashSet<String>();
         ExtensionInfo extInfo = new soot.javaToJimple.jj.ExtensionInfo() {
             public List passes(Job job) {
                 List passes = super.passes(job);
@@ -56,8 +51,8 @@ public class JavaToJimple {
         polyglot.main.Options options = extInfo.getOptions();
 
         options.assertions = true;
-        options.source_path = new LinkedList();
-        Iterator it = sourceLocations.iterator();
+        options.source_path = new LinkedList<File>();
+        Iterator<String> it = sourceLocations.iterator();
         while (it.hasNext()){
             Object next = it.next();
             //System.out.println("adding src loc: "+next.toString());

@@ -26,8 +26,6 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import java.io.*;
 import soot.*;
 
 

@@ -105,7 +105,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
     	}
     	else{//yes we want to inline 
     		// we know that the method to be inlined has no declarations.
-    		List subBodies = toInlineASTMethod.get_SubBodies();
+    		List<Object> subBodies = toInlineASTMethod.get_SubBodies();
     		if(subBodies.size() != 1){
     			throw new RuntimeException ("Found ASTMEthod node with more than one subBodies");
     		}
@@ -115,7 +115,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
     		ASTParentNodeFinder finder = new ASTParentNodeFinder();
     		underAnalysis.apply(finder);
 	    
-    		List newChangedBodyPart = createChangedBodyPart(s,body,finder);
+    		List<ASTStatementSequenceNode> newChangedBodyPart = createChangedBodyPart(s,body,finder);
 
 
     		boolean replaced = replaceSubBody(s,newChangedBodyPart,finder);
@@ -150,10 +150,10 @@ public class MethodCallFinder extends DepthFirstAdapter{
 			GThrowStmt throwStmt = new GThrowStmt(newInvokeExpr);
 						
 			AugmentedStmt augStmt = new AugmentedStmt(throwStmt);
-			List sequence = new ArrayList();
+			List<Object> sequence = new ArrayList<Object>();
 			sequence.add(augStmt);
 			ASTStatementSequenceNode seqNode = new ASTStatementSequenceNode(sequence);
-			List subBody = new ArrayList();
+			List<Object> subBody = new ArrayList<Object>();
 			subBody.add(seqNode);
 
 			toInlineASTMethod.replaceBody(subBody);
@@ -164,20 +164,20 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	}
     }
 
-    public List getSubBodyFromSingleSubBodyNode(ASTNode node){
-    	List subBodies = node.get_SubBodies();
+    public List<Object> getSubBodyFromSingleSubBodyNode(ASTNode node){
+    	List<Object> subBodies = node.get_SubBodies();
     	if(subBodies.size() != 1)
     		throw new RuntimeException("Found a single subBody node with more than 1 subBodies");
 
-    	return (List)subBodies.get(0);
+    	return (List<Object>)subBodies.get(0);
     }
 
 
-    public List createNewSubBody(List orignalBody, List partNewBody,Object stmtSeqNode){
+    public List<Object> createNewSubBody(List<Object> orignalBody, List<ASTStatementSequenceNode> partNewBody,Object stmtSeqNode){
 
-	List newBody = new ArrayList();
+	List<Object> newBody = new ArrayList<Object>();
 
-	Iterator it = orignalBody.iterator();
+	Iterator<Object> it = orignalBody.iterator();
 	while(it.hasNext()){
 	    Object temp = it.next();
 	    if(temp != stmtSeqNode)
@@ -199,7 +199,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
     }
 
 
-    public boolean replaceSubBody(InvokeStmt s, List newChangedBodyPart,ASTParentNodeFinder finder){
+    public boolean replaceSubBody(InvokeStmt s, List<ASTStatementSequenceNode> newChangedBodyPart,ASTParentNodeFinder finder){
 
 	//get the stmt seq node of invoke stmt
 	Object stmtSeqNode = finder.getParentOf(s);
@@ -217,70 +217,70 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	
 	if(node instanceof ASTMethodNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTMethodNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTSynchronizedBlockNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTSynchronizedBlockNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTLabeledBlockNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTLabeledBlockNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTUnconditionalLoopNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTUnconditionalLoopNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTIfNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTIfNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTWhileNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTWhileNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTDoWhileNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTDoWhileNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTForLoopNode){
 	    //get the subBody to replace
-	    List subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> subBodyToReplace = getSubBodyFromSingleSubBodyNode(node);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 	    ((ASTForLoopNode)node).replaceBody(newBody);
 	    return true;
 	}
 	else if(node instanceof ASTIfElseNode){
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size() != 2)
 		throw new RuntimeException("Found an ifelse ASTNode which does not have two bodies");
-	    List ifBody = (List)subBodies.get(0);
-	    List elseBody = (List)subBodies.get(1);
+	    List<Object> ifBody = (List<Object>)subBodies.get(0);
+	    List<Object> elseBody = (List<Object>)subBodies.get(1);
 
 	    //find out which of these bodies has the stmt seq node with the invoke stmt
 	    int subBodyNumber=-1;
-	    Iterator it = ifBody.iterator();
+	    Iterator<Object> it = ifBody.iterator();
 	    while(it.hasNext()){
 		Object temp = it.next();
 		if(temp == stmtSeqNode){
@@ -299,7 +299,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
 		}
 	    }
 	    
-	    List subBodyToReplace = null;
+	    List<Object> subBodyToReplace = null;
 	    if(subBodyNumber==0)
 		subBodyToReplace=ifBody;
 	    else if (subBodyNumber==1)
@@ -307,7 +307,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	    else
 		throw new RuntimeException("Could not find the related ASTNode in the method");
 		
-	    List newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
+	    List<Object> newBody = createNewSubBody(subBodyToReplace,newChangedBodyPart,stmtSeqNode);
 
 	    if(subBodyNumber==0){
 		((ASTIfElseNode)node).replaceBody(newBody,elseBody);
@@ -324,8 +324,8 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	    //THe only reason for this being that mostly method calls are made in the try and not the catch
 				    
 	    //get try body 
-	    List tryBody = ((ASTTryNode)node).get_TryBody();
-	    Iterator it = tryBody.iterator();
+	    List<Object> tryBody = ((ASTTryNode)node).get_TryBody();
+	    Iterator<Object> it = tryBody.iterator();
 		
 	    //find whether stmtSeqNode is in the tryBody
 	    boolean inTryBody = false;
@@ -342,26 +342,26 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	    }
 	    
 	    
-	    List newBody = createNewSubBody(tryBody,newChangedBodyPart,stmtSeqNode);
+	    List<Object> newBody = createNewSubBody(tryBody,newChangedBodyPart,stmtSeqNode);
 	    ((ASTTryNode)node).replaceTryBody(newBody);
 	    return true;
 	}
 	else if (node instanceof ASTSwitchNode){
 
-	    List indexList = ((ASTSwitchNode)node).getIndexList();
-	    Map index2BodyList = ((ASTSwitchNode)node).getIndex2BodyList();
+	    List<Object> indexList = ((ASTSwitchNode)node).getIndexList();
+	    Map<Object, List<Object>> index2BodyList = ((ASTSwitchNode)node).getIndex2BodyList();
 				    
-	    Iterator it = indexList.iterator();
+	    Iterator<Object> it = indexList.iterator();
 	    while (it.hasNext()) {//going through all the cases of the switch statement
 		Object currentIndex = it.next();
-		List body = (List) index2BodyList.get( currentIndex);
+		List<Object> body = index2BodyList.get( currentIndex);
 					
 		if (body != null){
 		    //this body is a list of ASTNodes 
 
 		    //see if it contains stmtSeqNode
 		    boolean found=false;
-		    Iterator itBody = body.iterator();
+		    Iterator<Object> itBody = body.iterator();
 		    while (itBody.hasNext()){
 			ASTNode temp = (ASTNode) itBody.next();
 			if(temp == stmtSeqNode){
@@ -371,7 +371,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
 		    }
 		    if(found){
 			//this is the body which has the stmt seq node
-			List newBody = createNewSubBody(body,newChangedBodyPart,stmtSeqNode);
+			List<Object> newBody = createNewSubBody(body,newChangedBodyPart,stmtSeqNode);
 
 			//put this body in the Map
 			index2BodyList.put(currentIndex,newBody);
@@ -394,7 +394,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
      * body of the inlined method and the third part are the stmts below the invoke stmt
      */
     
-    public List createChangedBodyPart(InvokeStmt s, List body, ASTParentNodeFinder finder){
+    public List<ASTStatementSequenceNode> createChangedBodyPart(InvokeStmt s, List body, ASTParentNodeFinder finder){
 	//get parent node of invoke stmt
 	Object parent = finder.getParentOf(s);
 	if(parent == null){
@@ -410,8 +410,8 @@ public class MethodCallFinder extends DepthFirstAdapter{
 
 
 	//copying the stmts till above the inoke stmt into one stmt sequence node
-	List newInitialNode = new ArrayList();
-	Iterator it = orignal.getStatements().iterator();
+	List<Object> newInitialNode = new ArrayList<Object>();
+	Iterator<Object> it = orignal.getStatements().iterator();
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();
 	    Stmt tempStmt = as.get_Stmt();
@@ -425,12 +425,12 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	}
 	
 	//copy remaining stmts into the AFTER stmt sequence node
-	List newSecondNode = new ArrayList();
+	List<Object> newSecondNode = new ArrayList<Object>();
 	while(it.hasNext()){
 	    newSecondNode.add(it.next());
 	}
 	
-	List toReturn = new ArrayList();
+	List<ASTStatementSequenceNode> toReturn = new ArrayList<ASTStatementSequenceNode>();
 
 	if(newInitialNode.size()!=0)
 	    toReturn.add(new ASTStatementSequenceNode(newInitialNode));

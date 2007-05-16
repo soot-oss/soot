@@ -21,9 +21,7 @@ package soot.jimple.toolkits.callgraph;
 import soot.*;
 import soot.jimple.*;
 
-import java.util.*;
 import soot.util.*;
-import soot.util.queue.*;
 
 /** Holds relevant information about a particular virtual call site.
  * @author Ondrej Lhotak

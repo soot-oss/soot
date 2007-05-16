@@ -29,9 +29,7 @@ import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
-import soot.toolkits.scalar.*;
 import soot.util.*;
-import soot.toolkits.graph.*;
 import java.util.*;
 
 public class NopEliminator extends BodyTransformer

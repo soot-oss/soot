@@ -26,7 +26,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.util.*;
 import java.util.*;
 
 /**
@@ -34,13 +33,13 @@ import java.util.*;
  * <code>ObjectIntMap</code> may map different ints to the same object.
  */
 class ObjectIntMapper {
-  private Vector intToObjects;
+  private Vector<Object> intToObjects;
   private int counter;
-  private Map objectToInts;
+  private Map<Object, Integer> objectToInts;
   
   public ObjectIntMapper() {
-    intToObjects = new Vector();
-    objectToInts = new HashMap();
+    intToObjects = new Vector<Object>();
+    objectToInts = new HashMap<Object, Integer>();
     counter = 0;
   }
 
@@ -53,8 +52,8 @@ class ObjectIntMapper {
   }
 
   private ObjectIntMapper(Iterator it, int initSize) {
-    intToObjects = new Vector(initSize);
-    objectToInts = new HashMap(initSize);
+    intToObjects = new Vector<Object>(initSize);
+    objectToInts = new HashMap<Object, Integer>(initSize);
     counter = 0;
     while (it.hasNext())
       add(it.next());
@@ -79,7 +78,7 @@ class ObjectIntMapper {
    * @return <code>o</code>'s mapping
    */
   public int getInt(Object o) {
-    Integer i = (Integer)objectToInts.get(o);
+    Integer i = objectToInts.get(o);
     if (i != null) return i.intValue();
     return add(o);
   }

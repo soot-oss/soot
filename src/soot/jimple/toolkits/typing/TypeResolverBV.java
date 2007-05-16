@@ -40,14 +40,14 @@ import java.io.*;
 public class TypeResolverBV
 {
   /** Reference to the class hierarchy **/
-  private ClassHierarchy hierarchy;
+  private final ClassHierarchy hierarchy;
 
   /** All type variable instances **/
-  private final List typeVariableList = new ArrayList();
-  private BitVector invalidIds = new BitVector();
+  private final List<TypeVariableBV> typeVariableList = new ArrayList<TypeVariableBV>();
+  private final BitVector invalidIds = new BitVector();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariableBV **/
-  private final Map typeVariableMap = new HashMap();
+  private final Map<Object, TypeVariableBV> typeVariableMap = new HashMap<Object, TypeVariableBV>();
 
   private final JimpleBody stmtBody;
 
@@ -83,7 +83,7 @@ public class TypeResolverBV
   /** Get type variable for the given local. **/
   TypeVariableBV typeVariable(Local local)
   {
-    TypeVariableBV result = (TypeVariableBV) typeVariableMap.get(local);
+    TypeVariableBV result = typeVariableMap.get(local);
 
     if(result == null)
       {
@@ -107,7 +107,7 @@ public class TypeResolverBV
   /** Get type variable for the given type node. **/
   public TypeVariableBV typeVariable(TypeNode typeNode)
   {
-    TypeVariableBV result = (TypeVariableBV) typeVariableMap.get(typeNode);
+    TypeVariableBV result = typeVariableMap.get(typeNode);
 
     if(result == null)
       {
@@ -222,8 +222,7 @@ public class TypeResolverBV
       {
 	int count = 0;
 	G.v().out.println("**** START:" + message);
-	for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
-	    final TypeVariableBV var = (TypeVariableBV) varIt.next();
+	for (TypeVariableBV var : typeVariableList) {
 	    G.v().out.println(count++ + " " + var);
 	  }
 	G.v().out.println("**** END:" + message);
@@ -354,11 +353,10 @@ public class TypeResolverBV
     compute_approximate_types();
 
     TypeVariableBV[] vars = new TypeVariableBV[typeVariableList.size()];
-    vars = (TypeVariableBV[]) typeVariableList.toArray(vars);
+    vars = typeVariableList.toArray(vars);
 
-    for(int i = 0; i < vars.length; i++)
-      {
-	vars[i].fixDepth();
+    for (TypeVariableBV element : vars) {
+	element.fixDepth();
       }
   }
 
@@ -366,9 +364,8 @@ public class TypeResolverBV
   {
     // find max depth
     int max = 0;
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
-        final TypeVariableBV var = (TypeVariableBV) varIt.next();
-	int depth = var.depth();
+    for (TypeVariableBV var : typeVariableList) {
+        int depth = var.depth();
 
 	if(depth > max)
 	  {
@@ -391,10 +388,8 @@ public class TypeResolverBV
 	lists[i] = new LinkedList();
       }
 
-    // initialize lists
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
-        final TypeVariableBV var = (TypeVariableBV) varIt.next();
-	int depth = var.depth();
+    for (TypeVariableBV var : typeVariableList) {
+        int depth = var.depth();
 	
 	lists[depth].add(var);
       }
@@ -402,9 +397,7 @@ public class TypeResolverBV
     // propagate constraints, starting with highest depth
     for(int i = max; i >= 0; i--)
       {
-	for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
-	    final TypeVariableBV var = (TypeVariableBV) varIt.next();
-
+	for (TypeVariableBV var : typeVariableList) {
 	    var.propagate();
 	  }
       }
@@ -663,7 +656,7 @@ public class TypeResolverBV
 	for( BitSetIterator varIt = multiple_parents.iterator(); varIt.hasNext(); ) {
 	
 	    final TypeVariableBV var = typeVariableForId(varIt.next());
-	    LinkedList hp = new LinkedList(); // hard parents
+	    LinkedList<TypeVariableBV> hp = new LinkedList<TypeVariableBV>(); // hard parents
 	    
 	    for( BitSetIterator parentIt = var.parents().iterator(); parentIt.hasNext(); ) {
 	    
@@ -672,9 +665,9 @@ public class TypeResolverBV
 		
 		if(type != null)
 		  {
-                    Iterator k = hp.iterator();
+                    Iterator<TypeVariableBV> k = hp.iterator();
                     while( k.hasNext() ) {
-                        TypeVariableBV otherparent = (TypeVariableBV) k.next();
+                        TypeVariableBV otherparent = k.next();
 			TypeNode othertype = otherparent.type();
 			
 			if(type.hasDescendant(othertype))
@@ -832,10 +825,7 @@ public class TypeResolverBV
 	s = new StringBuffer("Checking:\n");
       }
 
-    for(int i = 0; i < stmts.length; i++)
-      {
-	Stmt stmt = stmts[i];
-
+    for (Stmt stmt : stmts) {
 	if(DEBUG)
 	  {
 	    s.append(" " + stmt + "\n");
@@ -857,13 +847,11 @@ public class TypeResolverBV
 
   private void compute_approximate_types() throws TypeException
   {
-    TreeSet workList = new TreeSet();
+    TreeSet<TypeVariableBV> workList = new TreeSet<TypeVariableBV>();
 
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    for (TypeVariableBV var : typeVariableList) {
 
-        final TypeVariableBV var = (TypeVariableBV) varIt.next();
-
-	if(var.type() != null)
+        if(var.type() != null)
 	  {
 	    workList.add(var);
 	  }
@@ -871,11 +859,9 @@ public class TypeResolverBV
 
     TypeVariableBV.computeApprox(workList);
 
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    for (TypeVariableBV var : typeVariableList) {
 
-        final TypeVariableBV var = (TypeVariableBV) varIt.next();
-
-	if(var.approx() == NULL)
+        if(var.approx() == NULL)
 	  {
 	    var.union(typeVariable(NULL));
 	  }
@@ -891,11 +877,9 @@ public class TypeResolverBV
     unsolved = new BitVector();
     solved = new BitVector();
     
-    for( Iterator varIt = typeVariableList.iterator(); varIt.hasNext(); ) {
+    for (TypeVariableBV var : typeVariableList) {
     
-        final TypeVariableBV var = (TypeVariableBV) varIt.next();
-	
-	if(var.depth() == 0)
+        if(var.depth() == 0)
 	  {
 	    if(var.type() == null)
 	      {
@@ -1009,87 +993,6 @@ public class TypeResolverBV
       }
   }
 
-  private void validate() throws TypeException
-  {
-    for( BitSetIterator varIt = solved.iterator(); varIt.hasNext(); ) {
-        final TypeVariableBV var = typeVariableForId(varIt.next());
-	
-	try
-	  {
-	    var.validate();
-	  }
-	catch(TypeException e)
-	  {
-	    debug_vars("Error while validating");
-	    throw(e);
-	  }
-      }
-  }
-
-  /*
-  private void remove_spurious_locals()
-  {
-    boolean repeat;
-
-    do
-      {
-	ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
-	SimpleLocalDefs defs = new SimpleLocalDefs(graph);
-	SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
-	PatchingChain units = stmtBody.getUnits();
-	Stmt[] stmts = new Stmt[units.size()];
-	HashSet deleted = new HashSet();
-
-	repeat = false;
-	units.toArray(stmts);
-	
-	for(int i = 0; i < stmts.length; i++)
-	  {
-	    Stmt stmt = stmts[i];
-	    
-	    if(stmt instanceof AssignStmt)
-	      {
-		AssignStmt assign1 = (AssignStmt) stmt;
-		
-		if(assign1.getLeftOp() instanceof Local)
-		  {
-		    List uselist = uses.getUsesOf(assign1);
-		    
-		    if(uselist.size() == 1)
-		      {
-			UnitValueBoxPair pair = (UnitValueBoxPair) uselist.get(0);
-			
-			List deflist = defs.getDefsOfAt((Local) pair.getValueBox().getValue(), pair.getUnit());
-			
-			if(deflist.size() == 1)
-			  {
-			    if(pair.getValueBox().canContainValue(assign1.getRightOp()))
-			      {
-				// This is definitely a spurious local!
-
-				// Hmm.. use is in a deleted statement.  Must wait till next iteration.
-				if(deleted.contains(pair.getUnit()))
-				  {
-				    repeat = true;
-				    continue;
-				  }
-				
-				pair.getValueBox().setValue(assign1.getRightOp());
-				deleted.add(assign1);
-				units.remove(assign1);
-				stmtBody.getLocals().remove(assign1.getLeftOp());
-				
-			      }
-			  }
-		      }
-		  }
-	      }
-	  }
-      }
-    while(repeat);
-  }
-  */
-
   private void split_new()
   {
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
@@ -1099,10 +1002,7 @@ public class TypeResolverBV
 
     units.toArray(stmts);
     
-    for(int i = 0; i < stmts.length; i++)
-      {
-	Stmt stmt = stmts[i];
-
+    for (Stmt stmt : stmts) {
 	if(stmt instanceof InvokeStmt)
 	  {
 	    InvokeStmt invoke = (InvokeStmt) stmt;
@@ -1113,7 +1013,7 @@ public class TypeResolverBV
 		
 		if(special.getMethodRef().name().equals("<init>"))
 		  {
-		    List deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
+		    List<Unit> deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
 		    
 		    while(deflist.size() == 1)
 		      {
@@ -1150,7 +1050,7 @@ public class TypeResolverBV
   }
   
   public TypeVariableBV typeVariableForId(int idx) {
-      return (TypeVariableBV)typeVariableList.get(idx);
+      return typeVariableList.get(idx);
   }
   
   public BitVector invalidIds() {

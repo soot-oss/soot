@@ -27,10 +27,6 @@
 package soot.jimple;
 import soot.options.*;
 import soot.*;
-import soot.coffi.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
 import soot.jimple.parser.*;
 
 public class JimpleMethodSource implements MethodSource

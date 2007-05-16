@@ -43,39 +43,6 @@ public class BIncInst extends AbstractInst implements IncInst
   Constant mConstant;
   List mDefBoxes;  
 
-    private class LinkedBafLocalBox extends BafLocalBox
-    {
-        ValueBox otherBox = null;
-
-        private LinkedBafLocalBox(Value v)
-        {
-            super(v);
-        }
-
-        public void setOtherBox(ValueBox otherBox) 
-        { 
-            this.otherBox = otherBox; 
-        }
-
-        public Value getValue()
-        {
-            Value toReturn = super.getValue();
-            
-            return toReturn;
-        }
-        
-        public void setValue(Value v)
-        {
-            super.setValue(v);
-            
-            if(otherBox != null)
-            {
-                if(otherBox.getValue() != v)
-                    otherBox.setValue(v);
-            }
-        }
-    }
-       
     public BIncInst(Local local, Constant constant)
     {
       mConstant = constant;

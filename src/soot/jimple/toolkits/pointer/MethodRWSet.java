@@ -24,7 +24,7 @@ import soot.*;
 /** Represents the read or write set of a statement. */
 public class MethodRWSet extends RWSet {
     public Set globals;
-    public Map fields;
+    public Map<Object,PointsToSet> fields;
     protected boolean callsNative = false;
     protected boolean isFull = false;
     public static final int MAX_SIZE = Integer.MAX_VALUE;
@@ -33,15 +33,15 @@ public class MethodRWSet extends RWSet {
         boolean empty = true;
         StringBuffer ret = new StringBuffer();
         if( fields != null ) {
-            for( Iterator fieldIt = fields.keySet().iterator(); fieldIt.hasNext(); ) {
-                final Object field = (Object) fieldIt.next();
+            for (Object element : fields.keySet()) {
+                final Object field = element;
                 ret.append( "[Field: "+field+" "+fields.get(field)+"]\n" );
                 empty = false;
             }
         }
         if( globals != null ) {
             for( Iterator globalIt = globals.iterator(); globalIt.hasNext(); ) {
-                final Object global = (Object) globalIt.next();
+                final Object global = globalIt.next();
                 ret.append( "[Global: "+global+"]\n" );
                 empty = false;
             }
@@ -105,7 +105,7 @@ public class MethodRWSet extends RWSet {
     public PointsToSet getBaseForField( Object f ) {
 	if( isFull ) return FullObjectSet.v();
 	if( fields == null ) return null;
-	return (PointsToSet) fields.get( f );
+	return fields.get( f );
     }
 
     public boolean hasNonEmptyIntersection( RWSet oth ) {
@@ -122,8 +122,8 @@ public class MethodRWSet extends RWSet {
 	}
 	if( fields != null && other.fields != null
 		&& !fields.isEmpty() && !other.fields.isEmpty() ) {
-	    for( Iterator fieldIt = other.fields.keySet().iterator(); fieldIt.hasNext(); ) {
-	        final Object field = (Object) fieldIt.next();
+	    for (Object element : other.fields.keySet()) {
+	        final Object field = element;
 		if( fields.containsKey( field ) ) {
 		    if( Union.hasNonEmptyIntersection(
                                 getBaseForField( field ),
@@ -165,8 +165,8 @@ public class MethodRWSet extends RWSet {
 		}
 	    }
 	    if( o.fields != null ) {
-		for( Iterator fieldIt = o.fields.keySet().iterator(); fieldIt.hasNext(); ) {
-		    final Object field = (Object) fieldIt.next();
+		for (Object element : o.fields.keySet()) {
+		    final Object field = element;
 		    PointsToSet os = o.getBaseForField( field );
 		    ret = addFieldRef( os, field ) | ret;
 		}

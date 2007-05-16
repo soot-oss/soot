@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 import java.util.*;
 
 
@@ -59,9 +58,9 @@ public class AnnotationTag implements Tag
     // different kinds - with second level for the constant kinds
  
     private String type;
-    private int visibility = 0; 
+    private final int visibility = 0; 
     private int numElems = 0;
-    private ArrayList elems;
+    private ArrayList<AnnotationElem> elems;
     
     /*public AnnotationTag(int vis, int numElems){
         this.visibility = vis;
@@ -77,10 +76,10 @@ public class AnnotationTag implements Tag
     public String toString() {
         StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+numElems+" elems: ");
         if (elems != null){
-            Iterator it = elems.iterator();
+            Iterator<AnnotationElem> it = elems.iterator();
             while (it.hasNext()){
                 sb.append("\n");
-                sb.append((AnnotationElem)it.next());
+                sb.append(it.next());
             }
         }
         sb.append("\n");
@@ -115,17 +114,17 @@ public class AnnotationTag implements Tag
 
     public void addElem(AnnotationElem elem){
         if (elems == null){
-            elems = new ArrayList();
+            elems = new ArrayList<AnnotationElem>();
         }
         elems.add(elem);
     }
     
-    public void setElems(ArrayList list){
+    public void setElems(ArrayList<AnnotationElem> list){
         this.elems = list;
     }
 
     public AnnotationElem getElemAt(int i){
-        return (AnnotationElem)elems.get(i);
+        return elems.get(i);
     }
 }
 

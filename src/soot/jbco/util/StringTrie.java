@@ -18,8 +18,6 @@
  */
 
 package soot.jbco.util;
-
-import java.util.Vector;
 /**
  * @author Michael Batchelder 
  * 
@@ -57,8 +55,8 @@ public class StringTrie {
     
     int i = findSpot(c, 0, oldLength - 1);
     
-    char tmp[] = (char[])startChars.clone();
-    StringTrie t[] = (StringTrie[])tries.clone();
+    char tmp[] = startChars.clone();
+    StringTrie t[] = tries.clone();
     
     startChars = new char[oldLength + 1];
     tries = new StringTrie[oldLength + 1];

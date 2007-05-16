@@ -25,11 +25,6 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.util.*;
-import java.util.*;
-
 class FlowGraphEdge
 {
     Object from;

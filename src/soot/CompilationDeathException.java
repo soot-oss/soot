@@ -29,7 +29,7 @@ package soot;
 public class CompilationDeathException extends RuntimeException
 {
     private String mMsg;
-    private int mStatus;
+    private final int mStatus;
 
     public static final int COMPILATION_ABORTED = 0;
     public static final int COMPILATION_SUCCEEDED = 1;

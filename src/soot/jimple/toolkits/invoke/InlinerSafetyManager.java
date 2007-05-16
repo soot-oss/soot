@@ -38,7 +38,7 @@ public class InlinerSafetyManager
     
     	boolean accessors=options.equals("accessors");
     	
-        Body inlineeBody = (JimpleBody) target.getActiveBody();
+        Body inlineeBody = target.getActiveBody();
         
         Iterator unitsIt = inlineeBody.getUnits().iterator();
         while (unitsIt.hasNext())
@@ -46,7 +46,7 @@ public class InlinerSafetyManager
             Stmt st = (Stmt)unitsIt.next();
             if (st.containsInvokeExpr())
             {
-                InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();
+                InvokeExpr ie1 = st.getInvokeExpr();
                 
                 if (ie1 instanceof SpecialInvokeExpr) 
                 {
@@ -83,7 +83,7 @@ public class InlinerSafetyManager
 //		 Check the body of the method to inline for
         //   method or field access restrictions
         {
-            Body inlineeBody = (JimpleBody) target.getActiveBody();
+            Body inlineeBody = target.getActiveBody();
             
             Iterator unitsIt = inlineeBody.getUnits().iterator();
             while (unitsIt.hasNext())
@@ -91,7 +91,7 @@ public class InlinerSafetyManager
                 Stmt st = (Stmt)unitsIt.next();
                 if (st.containsInvokeExpr())
                 {
-                    InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();                
+                    InvokeExpr ie1 = st.getInvokeExpr();                
                     
                     if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
                         return false;
@@ -187,7 +187,7 @@ public class InlinerSafetyManager
         //         toInline statement.
         // Does not occur for static methods, because there is no base?
 
-        InvokeExpr ie = (InvokeExpr)toInline.getInvokeExpr();
+        InvokeExpr ie = toInline.getInvokeExpr();
         Value base = (ie instanceof InstanceInvokeExpr) ? 
             ((InstanceInvokeExpr)ie).getBase() : null;
 

@@ -18,17 +18,14 @@
  */
 
 package soot.jimple.spark.builder;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
-import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.*;
+
 import java.util.*;
-import soot.jimple.*;
 import soot.jimple.spark.internal.*;
-import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.util.queue.*;
 import soot.options.*;
@@ -41,8 +38,8 @@ public class ContextInsensitiveBuilder {
         boolean change = true;
         while( change ) {
             change = false;
-            for( Iterator cIt = new ArrayList(Scene.v().getClasses()).iterator(); cIt.hasNext(); ) {
-                final SootClass c = (SootClass) cIt.next();
+            for( Iterator<SootClass> cIt = new ArrayList<SootClass>(Scene.v().getClasses()).iterator(); cIt.hasNext(); ) {
+                final SootClass c = cIt.next();
                 for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
                     final SootMethod m = (SootMethod) mIt.next();
                     if( !m.isConcrete() ) continue;
@@ -63,7 +60,7 @@ public class ContextInsensitiveBuilder {
             pag.nativeMethodDriver = new NativeMethodDriver(new SparkNativeHelper(pag));
         }
         if( opts.on_fly_cg() && !opts.vta() ) {
-            ofcg = new OnFlyCallGraph( (PAG) pag );
+            ofcg = new OnFlyCallGraph( pag );
             pag.setOnFlyCallGraph( ofcg );
         } else {
             cgb = new CallGraphBuilder( DumbPointerAnalysis.v() );
@@ -87,7 +84,6 @@ public class ContextInsensitiveBuilder {
             final SootClass c = (SootClass) cIt.next();
 	    handleClass( c );
 	}
-        Stmt s = null;
         while(callEdges.hasNext()) {
             Edge e = (Edge) callEdges.next();
             MethodPAG.v( pag, e.tgt() ).addToPAG(null);

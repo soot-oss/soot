@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** A debugging attribute, this gives the name of the source file
  * for this <tt>.class</tt> file.
  * @see attribute_info

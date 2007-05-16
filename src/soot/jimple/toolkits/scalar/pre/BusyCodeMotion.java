@@ -64,8 +64,7 @@ public class BusyCodeMotion extends BodyTransformer {
    */
   protected void internalTransform(Body b, String phaseName, Map opts) {
     BCMOptions options = new BCMOptions( opts );
-    int counter = 0;
-    HashMap expToHelper = new HashMap();
+    HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
     Chain unitChain = b.getUnits();
 
     if(Options.v().verbose())
@@ -123,7 +122,7 @@ public class BusyCodeMotion extends BodyTransformer {
           EquivalentValue equiVal = (EquivalentValue)earliestIt.next();
           Value exp = equiVal.getValue();
           /* get the unic helper-name for this expression */
-          Local helper = (Local)expToHelper.get(equiVal);
+          Local helper = expToHelper.get(equiVal);
           if (helper == null) {
             helper = localCreation.newLocal(equiVal.getType());
             expToHelper.put(equiVal, helper);
@@ -143,7 +142,7 @@ public class BusyCodeMotion extends BodyTransformer {
         Unit currentUnit = (Unit)unitIt.next();
         EquivalentValue rhs = (EquivalentValue)unitToEquivRhs.get(currentUnit);
         if (rhs != null) {
-          Local helper = (Local)expToHelper.get(rhs);
+          Local helper = expToHelper.get(rhs);
           if (helper != null)
             ((AssignStmt)currentUnit).setRightOp(helper);
         }

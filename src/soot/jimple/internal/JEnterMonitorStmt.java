@@ -35,7 +35,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -61,11 +60,11 @@ public class JEnterMonitorStmt extends AbstractStmt
 
     public String toString()
     {
-        return Jimple.v().ENTERMONITOR + " "  + opBox.getValue().toString();
+        return Jimple.ENTERMONITOR + " "  + opBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().ENTERMONITOR);
+        up.literal(Jimple.ENTERMONITOR);
         up.literal(" ");
         opBox.toString(up);
     }
@@ -101,7 +100,7 @@ public class JEnterMonitorStmt extends AbstractStmt
 
     }
     
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf)(getOp())).convertToBaf(context, out);
 	Unit u;

@@ -20,10 +20,10 @@
 package soot.toolkits.scalar;
 
 import java.util.*;
+
 import soot.*;
 import soot.options.*;
 import soot.toolkits.graph.*;
-import soot.util.*;
 
 /**
  * Find all locals guaranteed to be defined at (just before) a given
@@ -33,7 +33,7 @@ import soot.util.*;
  **/
 public class GuaranteedDefs
 {
-    protected Map unitToGuaranteedDefs;
+    protected Map<Unit, List> unitToGuaranteedDefs;
 
     public GuaranteedDefs(UnitGraph graph)
     {
@@ -45,7 +45,7 @@ public class GuaranteedDefs
 
         // build map
         {
-            unitToGuaranteedDefs = new HashMap(graph.size() * 2 + 1, 0.7f);
+            unitToGuaranteedDefs = new HashMap<Unit, List>(graph.size() * 2 + 1, 0.7f);
             Iterator unitIt = graph.iterator();
 
             while(unitIt.hasNext()){
@@ -63,7 +63,7 @@ public class GuaranteedDefs
      **/
     public List getGuaranteedDefs(Unit s)
     {
-        return (List) unitToGuaranteedDefs.get(s);
+        return unitToGuaranteedDefs.get(s);
     }
 }
 
@@ -74,18 +74,18 @@ public class GuaranteedDefs
 class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet = new ArraySparseSet();
-    Map unitToGenerateSet;
+    Map<Unit, FlowSet> unitToGenerateSet;
 
     GuaranteedDefsAnalysis(UnitGraph graph)
     {
         super(graph);
         DominatorsFinder df = new MHGDominatorsFinder(graph);
-        unitToGenerateSet = new HashMap(graph.size() * 2 + 1, 0.7f);
+        unitToGenerateSet = new HashMap<Unit, FlowSet>(graph.size() * 2 + 1, 0.7f);
 
         // pre-compute generate sets
         for(Iterator unitIt = graph.iterator(); unitIt.hasNext();){
             Unit s = (Unit) unitIt.next();
-            FlowSet genSet = (FlowSet) emptySet.clone();
+            FlowSet genSet = emptySet.clone();
             
             for(Iterator domsIt = df.getDominators(s).iterator(); domsIt.hasNext();){
                 Unit dom = (Unit) domsIt.next();
@@ -128,7 +128,7 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
             out = (FlowSet) outValue;
 
         // perform generation (kill set is empty)
-        in.union((FlowSet) unitToGenerateSet.get(unit), out);
+        in.union(unitToGenerateSet.get(unit), out);
     }
 
     /**

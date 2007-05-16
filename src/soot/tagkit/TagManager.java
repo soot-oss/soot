@@ -26,11 +26,6 @@
 package soot.tagkit;
 import soot.*;
 
-
-import java.util.*;
-import javax.swing.*;
-import java.io.*;
-
 /** Utility functions for tags. */
 public class TagManager
 {

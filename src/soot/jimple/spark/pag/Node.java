@@ -18,8 +18,6 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
-import soot.jimple.spark.*;
 import soot.util.*;
 import soot.Type;
 import soot.jimple.spark.sets.PointsToSetInternal;
@@ -97,7 +95,7 @@ public class Node implements ReferenceVariable, Numberable {
         }
         Node rep = getReplacement();
         if( rep == this ) {
-            p2set = pag.getSetFactory().newSet( type, (PAG) pag );
+            p2set = pag.getSetFactory().newSet( type, pag );
         }
         return rep.makeP2Set();
     }

@@ -45,7 +45,7 @@ import java.util.*;
  */
 public class SimpleLocalUses implements LocalUses
 {
-    Map unitToUses;
+    Map<Unit, List> unitToUses;
 
     /**
      * Construct the analysis from a UnitGraph representation
@@ -79,7 +79,7 @@ public class SimpleLocalUses implements LocalUses
     
 	Chain units = body.getUnits();
 	
-        unitToUses = new HashMap(units.size() * 2 + 1, 0.7f);
+        unitToUses = new HashMap<Unit, List>(units.size() * 2 + 1, 0.7f);
     
         // Initialize this map to empty sets
         {
@@ -118,12 +118,12 @@ public class SimpleLocalUses implements LocalUses
 
                         Local l = (Local) useBox.getValue();
 
-                        List possibleDefs = localDefs.getDefsOfAt(l, s);
-                        Iterator defIt = possibleDefs.iterator();
+                        List<Unit> possibleDefs = localDefs.getDefsOfAt(l, s);
+                        Iterator<Unit> defIt = possibleDefs.iterator();
 
                         while(defIt.hasNext())
                         {
-                            List useList = (List) unitToUses.get(defIt.next());
+                            List<UnitValueBoxPair> useList = unitToUses.get(defIt.next());
                             useList.add(new UnitValueBoxPair(s, useBox));
                         }
                     }
@@ -145,7 +145,7 @@ public class SimpleLocalUses implements LocalUses
             {
                 Unit s = (Unit) it.next();
 
-                unitToUses.put(s, Collections.unmodifiableList(((List) unitToUses.get(s))));
+                unitToUses.put(s, Collections.unmodifiableList(unitToUses.get(s)));
             }
             
         }
@@ -170,7 +170,7 @@ public class SimpleLocalUses implements LocalUses
      */
     public List getUsesOf(Unit s)
     {
-        List l = (List) unitToUses.get(s);
+        List l = unitToUses.get(s);
 
         return l;
     }

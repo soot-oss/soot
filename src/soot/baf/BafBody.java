@@ -32,12 +32,7 @@ import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
-import soot.baf.toolkits.base.*;
-import soot.toolkits.scalar.*;
-
-import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 public class BafBody extends Body
 {
@@ -94,7 +89,7 @@ public class BafBody extends Body
             }
         }
     
-        Map stmtToFirstInstruction = new HashMap();
+        Map<Stmt, Unit> stmtToFirstInstruction = new HashMap<Stmt, Unit>();
             
         // Convert all jimple instructions
         {
@@ -103,7 +98,7 @@ public class BafBody extends Body
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-                List conversionList = new ArrayList();
+                List<Unit> conversionList = new ArrayList<Unit>();
 
                 context.setCurrentUnit(s);
                 ((ConvertToBaf) s).convertToBaf(context, conversionList);
@@ -124,7 +119,7 @@ public class BafBody extends Body
                 if(box.getUnit() instanceof PlaceholderInst)
                 {
                     Unit source = ((PlaceholderInst) box.getUnit()).getSource();
-                    box.setUnit((Unit) stmtToFirstInstruction.get(source));
+                    box.setUnit(stmtToFirstInstruction.get(source));
                 }
             }
         }
@@ -137,9 +132,9 @@ public class BafBody extends Body
                 Trap trap = (Trap) trapIt.next();
 
                 getTraps().add(Baf.v().newTrap(trap.getException(),
-                     (Unit)stmtToFirstInstruction.get(trap.getBeginUnit()),
-                     (Unit)stmtToFirstInstruction.get(trap.getEndUnit()),
-                     (Unit)stmtToFirstInstruction.get(trap.getHandlerUnit())));
+                     stmtToFirstInstruction.get(trap.getBeginUnit()),
+                     stmtToFirstInstruction.get(trap.getEndUnit()),
+                     stmtToFirstInstruction.get(trap.getHandlerUnit())));
             }
         }
         

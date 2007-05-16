@@ -31,9 +31,7 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BPopInst extends AbstractInst implements PopInst
 {
@@ -89,7 +87,7 @@ public class BPopInst extends AbstractInst implements PopInst
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(mType);
+        return AbstractJasminClass.sizeOfType(mType);
     }
 
 

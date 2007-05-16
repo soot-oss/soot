@@ -22,14 +22,13 @@ import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 import java.util.*;
-import soot.util.*;
 
 /** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {
     PointsToAnalysis pa;
     CallGraph cg;
-    Map methodToNTReadSet = new HashMap();
-    Map methodToNTWriteSet = new HashMap();
+    Map<SootMethod, MethodRWSet> methodToNTReadSet = new HashMap<SootMethod, MethodRWSet>();
+    Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<SootMethod, MethodRWSet>();
     int rwsetcount = 0;
     TransitiveTargets tt;
 
@@ -59,12 +58,12 @@ public class SideEffectAnalysis {
 
     public RWSet nonTransitiveReadSet( SootMethod method ) {
 	findNTRWSets( method );
-	return (RWSet) methodToNTReadSet.get( method );
+	return methodToNTReadSet.get( method );
     }
 
     public RWSet nonTransitiveWriteSet( SootMethod method ) {
 	findNTRWSets( method );
-	return (RWSet) methodToNTWriteSet.get( method );
+	return methodToNTWriteSet.get( method );
     }
 
     public SideEffectAnalysis( PointsToAnalysis pa, CallGraph cg ) {
@@ -94,7 +93,7 @@ public class SideEffectAnalysis {
     }
     public RWSet readSet( SootMethod method, Stmt stmt ) {
 	RWSet ret = null;
-        Iterator targets = tt.iterator( stmt );
+        Iterator<MethodOrMethodContext> targets = tt.iterator( stmt );
         while( targets.hasNext() ) {
             SootMethod target = (SootMethod) targets.next();
             if( target.isNative() ) {
@@ -123,7 +122,7 @@ public class SideEffectAnalysis {
     }
     public RWSet writeSet( SootMethod method, Stmt stmt ) {
 	RWSet ret = null;
-        Iterator targets = tt.iterator( stmt );
+        Iterator<MethodOrMethodContext> targets = tt.iterator( stmt );
         while( targets.hasNext() ) {
             SootMethod target = (SootMethod) targets.next();
             if( target.isNative() ) {

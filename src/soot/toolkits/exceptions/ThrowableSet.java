@@ -20,8 +20,6 @@
 package soot.toolkits.exceptions;
 
 import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 /**
@@ -95,7 +93,7 @@ public final class ThrowableSet {
 	 * Map from {@link Integer}s representing set size to all
 	 * <code>ThrowableSet</code>s of that size.
 	 */
-	private final Map sizeToSets = new HashMap();
+	private final Map<Integer, List> sizeToSets = new HashMap<Integer, List>();
 
 	/**
 	 * <code>ThrowableSet</code> containing no exception classes.
@@ -169,8 +167,8 @@ public final class ThrowableSet {
 	private int addsExclusionWithSearch = 0;
 	private int addsExclusionWithoutSearch = 0;
 	private int removesOfAnySubType = 0;
-	private int removesFromMap = 0;
-	private int removesFromMemo = 0;
+	private final int removesFromMap = 0;
+	private final int removesFromMemo = 0;
 	private int removesFromSearch = 0;
 	private int registrationCalls = 0;
 	private int catchableAsQueries = 0;
@@ -308,13 +306,12 @@ public final class ThrowableSet {
 	    int size = include.size() + exclude.size();
 	    Integer sizeKey = new Integer(size);
 
-	    List sizeList = (List) sizeToSets.get(sizeKey);
+	    List<ThrowableSet> sizeList = sizeToSets.get(sizeKey);
 	    if (sizeList == null) {
-		sizeList = new LinkedList();
+		sizeList = new LinkedList<ThrowableSet>();
 		sizeToSets.put(sizeKey, sizeList);
 	    }
-	    for (Iterator i = sizeList.iterator(); i.hasNext() ;) {
-		ThrowableSet set = (ThrowableSet) i.next();
+	    for (ThrowableSet set : sizeList) {
 		if (set.exceptionsIncluded.equals(include) 
 		    && set.exceptionsExcluded.equals(exclude)) {
 		    return set;
@@ -338,8 +335,7 @@ public final class ThrowableSet {
 	 */
 	public String reportInstrumentation() {
 	    int setCount = 0;
-	    for (Iterator it = sizeToSets.values().iterator(); it.hasNext(); ) {
-		List sizeList = (List) it.next();
+	    for (List sizeList : sizeToSets.values()) {
 		setCount += sizeList.size();
 	    }
 	    if (setCount != registeredSets) {
@@ -389,7 +385,7 @@ public final class ThrowableSet {
 	 * A package-private method to provide unit tests with access
 	 * to the collection of ThrowableSets.   
 	 */
-	Map getSizeToSets() {
+	Map<Integer, List> getSizeToSets() {
 	    return Manager.v().sizeToSets;
 	}
     }
@@ -429,13 +425,13 @@ public final class ThrowableSet {
      * {@link RefLikeType}, then v is the set that results from adding
      * k to <code>this</code>.
      */
-    private Map memoizedAdds;
+    private Map<Object,ThrowableSet> memoizedAdds;
 
     private ThrowableSet getMemoizedAdds(Object key) {
 	if (memoizedAdds == null) {
 	    memoizedAdds = new HashMap();
 	}
-	return (ThrowableSet) memoizedAdds.get(key);
+	return memoizedAdds.get(key);
     }
 
 
@@ -1299,12 +1295,12 @@ public final class ThrowableSet {
      * @return an unmodifiable collection view of the
      * <code>Throwable</code> types in this set.
      */
-    Collection typesIncluded() {
+    Collection<Object> typesIncluded() {
         return new AbstractCollection() {
 
 	    public Iterator iterator() {
 		return new Iterator() {
-		    private Iterator i = exceptionsIncluded.iterator();
+		    private final Iterator i = exceptionsIncluded.iterator();
 
 		    public boolean hasNext() {
 			return i.hasNext();
@@ -1335,12 +1331,12 @@ public final class ThrowableSet {
      * @return an unmodifiable collection view of the
      * <code>Throwable</code> types excluded from this set.
      */
-    Collection typesExcluded() {
+    Collection<Object> typesExcluded() {
         return new AbstractCollection() {
 
 	    public Iterator iterator() {
 		return new Iterator() {
-		    private Iterator i = exceptionsExcluded.iterator();
+		    private final Iterator i = exceptionsExcluded.iterator();
 
 		    public boolean hasNext() {
 			return i.hasNext();

@@ -19,9 +19,6 @@
 
 package soot.shimple;
 
-import soot.util.*;
-import java.util.*;
-import soot.*;
 import soot.jimple.*;
 
 /**

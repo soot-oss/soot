@@ -33,9 +33,6 @@ package soot.coffi;
 import soot.*;
 
 import java.util.*;
-import java.io.*;
-import java.util.Vector;
-import soot.util.*;
 
 /** Represents a single method_info object.
  * @see ClassFile

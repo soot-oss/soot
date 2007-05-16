@@ -25,13 +25,21 @@
 
 package soot;
 import soot.coffi.*;
+import soot.dava.internal.SET.SETBasicBlock;
+import soot.dava.internal.SET.SETNode;
+
 import java.io.PrintStream;
 import java.util.*;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
+import soot.jimple.spark.pag.MethodPAG;
+import soot.jimple.spark.pag.Parm;
 import soot.jimple.spark.sets.P2SetFactory;
-import soot.jimple.toolkits.invoke.*;
+import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
+import soot.jimple.toolkits.typing.ClassHierarchy;
 import soot.shimple.*;
+import soot.toolkits.astmetrics.ClassData;
+import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
@@ -49,28 +57,28 @@ public class G extends Singletons
     public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e1 = new Utf8_Enumeration();
     public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e2 = new Utf8_Enumeration();
     public int SETNodeLabel_uniqueId = 0;
-    public HashMap SETBasicBlock_binding = new HashMap();
+    public HashMap<SETNode, SETBasicBlock> SETBasicBlock_binding = new HashMap<SETNode, SETBasicBlock>();
     public boolean ASTAnalysis_modified;
     public NativeHelper NativeHelper_helper = null;
     public P2SetFactory newSetFactory;
     public P2SetFactory oldSetFactory;
-    public HashMap Parm_pairToElement = new HashMap();
+    public HashMap<Pair, Parm> Parm_pairToElement = new HashMap<Pair, Parm>();
     public int SparkNativeHelper_tempVar = 0;
     public int PaddleNativeHelper_tempVar = 0;
     public boolean PointsToSetInternal_warnedAlready = false;
-    public HashMap MethodPAG_methodToPag = new HashMap();
+    public HashMap<SootMethod, MethodPAG> MethodPAG_methodToPag = new HashMap<SootMethod, MethodPAG>();
     public Set MethodRWSet_allGlobals = new HashSet();
     public Set MethodRWSet_allFields = new HashSet();
     public int GeneralConstObject_counter = 0;
     public UnionFactory Union_factory = null;
-    public HashMap Array2ndDimensionSymbol_pool = new HashMap();
+    public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool = new HashMap<Object, Array2ndDimensionSymbol>();
     public Map AbstractUnit_allMapToUnnamed = Collections.unmodifiableMap(new AbstractUnitAllMapTo("<unnamed>"));
-    public List Timer_outstandingTimers = new ArrayList();
+    public List<Timer> Timer_outstandingTimers = new ArrayList<Timer>();
     public boolean Timer_isGarbageCollecting;
     public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
     public int Timer_count;
-    public final Map ClassHierarchy_classHierarchyMap = new HashMap();
-    public final Map MethodContext_map = new HashMap();
+    public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<Scene, ClassHierarchy>();
+    public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<MethodContext, MethodContext>();
 
     public ShimpleFactory shimpleFactory = new DefaultShimpleFactory();
 
@@ -118,10 +126,10 @@ public class G extends Singletons
      * of DavSuperHandler
      */
     public boolean SootMethodAddedByDava;
-    public ArrayList SootClassNeedsDavaSuperHandlerClass = new ArrayList();
+    public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<SootClass>();
     public ArrayList SootMethodsAdded = new ArrayList();
     
     //ASTMetrics Data
-    public ArrayList ASTMetricsData = new ArrayList();
+    public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();
 }
 

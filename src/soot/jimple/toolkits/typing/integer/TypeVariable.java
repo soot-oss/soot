@@ -26,10 +26,6 @@
 
 package soot.jimple.toolkits.typing.integer;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
 import java.util.*;
 
 /** Represents a type variable. **/
@@ -38,8 +34,6 @@ class TypeVariable implements Comparable
   private static final boolean DEBUG = false;
 
   private final int id;
-  private final TypeResolver resolver;
-
   private TypeVariable rep = this;
   private int rank = 0;
 
@@ -48,19 +42,17 @@ class TypeVariable implements Comparable
   
   private TypeNode type;
 
-  private List parents = Collections.unmodifiableList(new LinkedList());
-  private List children = Collections.unmodifiableList(new LinkedList());
+  private List<TypeVariable> parents = Collections.unmodifiableList(new LinkedList());
+  private List<TypeVariable> children = Collections.unmodifiableList(new LinkedList());
 
   public TypeVariable(int id, TypeResolver resolver)
   {
     this.id = id;
-    this.resolver = resolver;
   }
 
   public TypeVariable(int id, TypeResolver resolver, TypeNode type)
   {
     this.id = id;
-    this.resolver = resolver;
     this.type = type;
     approx = type;
     inv_approx = type;
@@ -182,18 +174,18 @@ class TypeVariable implements Comparable
 
     // Merge parents
     {
-      Set set = new TreeSet(parents);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(parents);
       set.addAll(var.parents);
       set.remove(this);
-      parents = Collections.unmodifiableList(new LinkedList(set));
+      parents = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
 
     // Merge children
     {
-      Set set = new TreeSet(children);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(children);
       set.addAll(var.children);
       set.remove(this);
-      children = Collections.unmodifiableList(new LinkedList(set));
+      children = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
   }
 
@@ -223,15 +215,15 @@ class TypeVariable implements Comparable
       }
 
     {
-      Set set = new TreeSet(parents);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(parents);
       set.add(var);
-      parents = Collections.unmodifiableList(new LinkedList(set));
+      parents = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
     
     {
-      Set set = new TreeSet(var.children);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(var.children);
       set.add(this);
-      var.children = Collections.unmodifiableList(new LinkedList(set));
+      var.children = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
   }
 
@@ -246,15 +238,15 @@ class TypeVariable implements Comparable
     TypeVariable var = variable.ecr();
  
     {
-      Set set = new TreeSet(parents);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(parents);
       set.remove(var);
-      parents = Collections.unmodifiableList(new LinkedList(set));
+      parents = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
 
     {
-      Set set = new TreeSet(var.children);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(var.children);
       set.remove(this);
-      var.children = Collections.unmodifiableList(new LinkedList(set));
+      var.children = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
   }
 
@@ -274,15 +266,15 @@ class TypeVariable implements Comparable
       }
 
     {
-      Set set = new TreeSet(children);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(children);
       set.add(var);
-      children = Collections.unmodifiableList(new LinkedList(set));
+      children = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
 
     {
-      Set set = new TreeSet(var.parents);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(var.parents);
       set.add(this);
-      var.parents = Collections.unmodifiableList(new LinkedList(set));
+      var.parents = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
   }
 
@@ -297,19 +289,19 @@ class TypeVariable implements Comparable
     TypeVariable var = variable.ecr();
  
     {
-      Set set = new TreeSet(children);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(children);
       set.remove(var);
-      children = Collections.unmodifiableList(new LinkedList(set));
+      children = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
 
     {
-      Set set = new TreeSet(var.parents);
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(var.parents);
       set.remove(this);
-      var.parents = Collections.unmodifiableList(new LinkedList(set));
+      var.parents = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
   }
 
-  public List parents()
+  public List<TypeVariable> parents()
   {
     if(rep != this)
       {
@@ -319,7 +311,7 @@ class TypeVariable implements Comparable
     return parents;
   }
 
-  public List children()
+  public List<TypeVariable> children()
   {
     if(rep != this)
       {
@@ -377,29 +369,29 @@ class TypeVariable implements Comparable
 
   /** Computes approximative types.  The work list must be 
    *  initialized with all constant type variables. */
-  public static void computeApprox(TreeSet workList) throws TypeException
+  public static void computeApprox(TreeSet<TypeVariable> workList) throws TypeException
   {
     while(workList.size() > 0)
       {
-	TypeVariable var = (TypeVariable) workList.first();
+	TypeVariable var = workList.first();
 	workList.remove(var);
 
 	var.fixApprox(workList);
       }
   }
 
-  public static void computeInvApprox(TreeSet workList) throws TypeException
+  public static void computeInvApprox(TreeSet<TypeVariable> workList) throws TypeException
   {
     while(workList.size() > 0)
       {
-	TypeVariable var = (TypeVariable) workList.first();
+	TypeVariable var = workList.first();
 	workList.remove(var);
 
 	var.fixInvApprox(workList);
       }
   }
 
-  private void fixApprox(TreeSet workList) throws TypeException
+  private void fixApprox(TreeSet<TypeVariable> workList) throws TypeException
   {
     if(rep != this)
       {
@@ -407,9 +399,8 @@ class TypeVariable implements Comparable
 	return;
       }
 
-    for(Iterator i = parents.iterator(); i.hasNext();)
-      {
-	TypeVariable parent = ((TypeVariable) i.next()).ecr();
+    for (TypeVariable typeVariable : parents) {
+	TypeVariable parent = typeVariable.ecr();
 
 	if(parent.approx == null)
 	  {
@@ -434,7 +425,7 @@ class TypeVariable implements Comparable
       }
   }
 
-  private void fixInvApprox(TreeSet workList) throws TypeException
+  private void fixInvApprox(TreeSet<TypeVariable> workList) throws TypeException
   {
     if(rep != this)
       {
@@ -442,9 +433,8 @@ class TypeVariable implements Comparable
 	return;
       }
 
-    for(Iterator i = children.iterator(); i.hasNext();)
-      {
-	TypeVariable child = ((TypeVariable) i.next()).ecr();
+    for (TypeVariable typeVariable : children) {
+	TypeVariable child = typeVariable.ecr();
 
 	if(child.inv_approx == null)
 	  {
@@ -482,8 +472,7 @@ class TypeVariable implements Comparable
     {
       boolean comma = false;
       
-      for(Iterator i = parents.iterator(); i.hasNext(); )
-	{
+      for (TypeVariable typeVariable : parents) {
 	  if(comma)
 	    {
 	      s.append(",");
@@ -492,7 +481,7 @@ class TypeVariable implements Comparable
 	    {
 	      comma = true;
 	    }
-	  s.append(((TypeVariable) i.next()).id());
+	  s.append(typeVariable.id());
 	}
     }
     
@@ -501,8 +490,7 @@ class TypeVariable implements Comparable
     {
       boolean comma = false;
       
-      for(Iterator i = children.iterator(); i.hasNext(); )
-	{
+      for (TypeVariable typeVariable : children) {
 	  if(comma)
 	    {
 	      s.append(",");
@@ -511,7 +499,7 @@ class TypeVariable implements Comparable
 	    {
 	      comma = true;
 	    }
-	  s.append(((TypeVariable) i.next()).id());
+	  s.append(typeVariable.id());
 	}
     }
     
@@ -528,8 +516,8 @@ class TypeVariable implements Comparable
       }
 
     {
-      Set set = new TreeSet(parents);
-      parents = Collections.unmodifiableList(new LinkedList(set));
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(parents);
+      parents = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
   }
 
@@ -542,8 +530,8 @@ class TypeVariable implements Comparable
       }
 
     {
-      Set set = new TreeSet(children);
-      children = Collections.unmodifiableList(new LinkedList(set));
+      Set<TypeVariable> set = new TreeSet<TypeVariable>(children);
+      children = Collections.unmodifiableList(new LinkedList<TypeVariable>(set));
     }
   }
 

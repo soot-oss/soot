@@ -71,7 +71,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
     protected void makeInitialSet() {
         // Find all locals of reference type
         Chain locals = ((UnitGraph)graph).getBody().getLocals();
-        List refLocals = new ArrayList();
+        List<Local> refLocals = new ArrayList<Local>();
         for( Iterator lIt = locals.iterator(); lIt.hasNext(); ) {
             final Local l = (Local) lIt.next();
             if( l.getType() instanceof RefType ) {
@@ -80,7 +80,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
         }
 
         // Find types of all casts
-        List types = new ArrayList();
+        List<Type> types = new ArrayList<Type>();
         for( Iterator sIt = ((UnitGraph)graph).getBody().getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s instanceof AssignStmt ) {
@@ -158,7 +158,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
             // took goto's out of the language... <grumble> <grumble>
             do {
                 if( graph.getPredsOf( stmt ).size() != 1 ) break;
-                Object predecessor = (Stmt) graph.getPredsOf( stmt ).get(0);
+                Object predecessor = graph.getPredsOf( stmt ).get(0);
                 if( !( predecessor instanceof AssignStmt ) ) break;
                 AssignStmt pred = (AssignStmt) predecessor;
                 if( !(pred.getRightOp() instanceof InstanceOfExpr ) ) break;

@@ -28,10 +28,7 @@ package soot.jimple.toolkits.scalar.pre;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 
 /** 
  * Performs a Delayability-analysis on the given graph.
@@ -118,7 +115,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
     in.copy(out);
 
     // Perform generation
-    out.union((FlowSet)earliest.getFlowBefore((Unit)unit));
+    out.union((FlowSet)earliest.getFlowBefore(unit));
 
     { /* Perform kill */
       Unit u = (Unit)unit;

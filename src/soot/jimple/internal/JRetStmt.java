@@ -58,11 +58,11 @@ public class JRetStmt extends AbstractStmt implements RetStmt
 
     public String toString()
     {
-        return Jimple.v().RET + " "  + stmtAddressBox.getValue().toString();
+        return Jimple.RET + " "  + stmtAddressBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().RET);
+        up.literal(Jimple.RET);
         up.literal(" ");
         stmtAddressBox.toString(up);
     }

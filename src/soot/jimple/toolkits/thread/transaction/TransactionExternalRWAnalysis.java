@@ -85,7 +85,7 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
     	{
     		Transaction tn = new Transaction(false, body.getMethod(), 0);
     		tn.entermonitor = (Stmt) unit;
-    		tn.units.add((Stmt) unit);
+    		tn.units.add(unit);
     		tn.read.union(stmtRead);
     		tn.write.union(stmtWrite);
     		out.add(tn);
@@ -98,8 +98,8 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
     protected void merge(Object in1, Object in2, Object out)
     {
         FlowSet
-            inSet1 = (FlowSet) ((FlowSet) in1).clone(),
-            inSet2 = (FlowSet) ((FlowSet) in2).clone(),
+            inSet1 = ((FlowSet) in1).clone(),
+            inSet2 = ((FlowSet) in2).clone(),
             outSet = (FlowSet) out;
 /*
         boolean hasANull1 = false;

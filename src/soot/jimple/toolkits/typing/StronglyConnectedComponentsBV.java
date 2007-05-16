@@ -27,20 +27,19 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
 class StronglyConnectedComponentsBV
 {
   BitVector variables;
-  Set black;
-  LinkedList finished;
+  Set<TypeVariableBV> black;
+  LinkedList<TypeVariableBV> finished;
   
   TypeResolverBV resolver;
   
-  LinkedList forest = new LinkedList();
-  LinkedList current_tree;
+  LinkedList<LinkedList<TypeVariableBV>> forest = new LinkedList<LinkedList<TypeVariableBV>>();
+  LinkedList<TypeVariableBV> current_tree;
   
   private static final boolean DEBUG = false;
   
@@ -49,8 +48,8 @@ class StronglyConnectedComponentsBV
     this.resolver = resolver;
     variables = typeVariableList;
     
-    black = new TreeSet();
-    finished = new LinkedList();
+    black = new TreeSet<TypeVariableBV>();
+    finished = new LinkedList<TypeVariableBV>();
     
     for(BitSetIterator i = variables.iterator(); i.hasNext(); )
       {
@@ -63,24 +62,21 @@ class StronglyConnectedComponentsBV
 	  }
       }
     
-    black = new TreeSet();
+    black = new TreeSet<TypeVariableBV>();
     
-    for(Iterator i = finished.iterator(); i.hasNext(); )
-      {
-	TypeVariableBV var = (TypeVariableBV) i.next();
-	
+    for (TypeVariableBV var : finished) {
 	if(!black.contains(var))
 	  {
-	    current_tree = new LinkedList();
+	    current_tree = new LinkedList<TypeVariableBV>();
 	    forest.add(current_tree);
 	    black.add(var);
 	    dfsgt_visit(var);
 	  }
       }
     
-    for(Iterator i = forest.iterator(); i.hasNext();)
+    for(Iterator<LinkedList<TypeVariableBV>> i = forest.iterator(); i.hasNext();)
       {
-	LinkedList list = (LinkedList) i.next();
+	LinkedList list = i.next();
 	TypeVariableBV previous = null;
 	StringBuffer s = null;
 	if(DEBUG)

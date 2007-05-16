@@ -18,16 +18,11 @@
  */
 
 package soot.jimple.spark.builder;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
-import soot.util.*;
 import soot.toolkits.scalar.Pair;
-import soot.jimple.spark.internal.*;
-import soot.jimple.toolkits.callgraph.Edge;
 import soot.shimple.*;
-import java.util.*;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
@@ -130,8 +125,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     final public void casePhiExpr(PhiExpr e) {
         Pair phiPair = new Pair( e, PointsToAnalysis.PHI_NODE );
         Node phiNode = pag.makeLocalVarNode( phiPair, e.getType(), method );
-        for(Iterator opsIt = e.getValues().iterator(); opsIt.hasNext();){
-            Value op = (Value) opsIt.next();
+        for (Value op : e.getValues()) {
             op.apply( MethodNodeFactory.this );
             Node opNode = getNode();
             mpag.addInternalEdge( opNode, phiNode );

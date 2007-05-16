@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** There can be many annotations in each Visibility attribute 
  * @see attribute_info
  * @author Jennifer Lhotak

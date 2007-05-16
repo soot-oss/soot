@@ -7,7 +7,6 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.spark.pag.*;
-import soot.util.*;
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -24,24 +23,24 @@ import java.util.*;
 
 public class AllocNodesFinder{
 	
-	private Set allocNodes;
-	private Set  multiRunAllocNodes;
-	private Set multiCalledMethods;
-	private HashMap methodsToMultiObjsSites;
+	private final Set<AllocNode> allocNodes;
+	private final Set<AllocNode>  multiRunAllocNodes;
+	private final Set<Object> multiCalledMethods;
+	private final HashMap methodsToMultiObjsSites;
 	PAG pag;
 	
 	public  AllocNodesFinder(PegCallGraph pcg, CallGraph cg, PAG pag){
 		//System.out.println("===inside AllocNodesFinder===");
 		this.pag = pag;
-		allocNodes = new HashSet();
-		multiRunAllocNodes = new HashSet();
-		multiCalledMethods = new HashSet();
+		allocNodes = new HashSet<AllocNode>();
+		multiRunAllocNodes = new HashSet<AllocNode>();
+		multiCalledMethods = new HashSet<Object>();
 		methodsToMultiObjsSites = new HashMap();
 		MultiCalledMethods mcm = new MultiCalledMethods(pcg, multiCalledMethods);
 		
 		find(mcm.getMultiCalledMethods(), pcg, cg);
 	}
-	private void find(Set multiCalledMethods, PegCallGraph pcg, CallGraph callGraph){
+	private void find(Set<Object> multiCalledMethods, PegCallGraph pcg, CallGraph callGraph){
 		Set clinitMethods = pcg.getClinitMethods();
 		Iterator it = pcg.iterator();
 		while (it.hasNext()){
@@ -75,7 +74,7 @@ public class AllocNodesFinder{
 							Value rightOp = ((DefinitionStmt)unit).getRightOp();
 							if (rightOp instanceof NewExpr){
 								Type type = ((NewExpr)rightOp).getType();
-								AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
+								AllocNode allocNode = pag.makeAllocNode(rightOp, type, sm);
 								//System.out.println("make alloc node: "+allocNode);
 								allocNodes.add(allocNode);
 								multiRunAllocNodes.add(allocNode);
@@ -111,7 +110,7 @@ public class AllocNodesFinder{
 							Value rightOp = ((DefinitionStmt)unit).getRightOp();
 							if (rightOp instanceof NewExpr){
 								Type type = ((NewExpr)rightOp).getType();
-								AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
+								AllocNode allocNode = pag.makeAllocNode(rightOp, type, sm);
 								//System.out.println("make alloc node: "+allocNode);
 								allocNodes.add(allocNode);
 								if (fs.contains(unit)){
@@ -133,18 +132,18 @@ public class AllocNodesFinder{
 		//System.out.println("end ==multiAllocNodes: "+multiRunAllocNodes);
 	}
 	
-	public Set getAllocNodes()
+	public Set<AllocNode> getAllocNodes()
 	{
-		return (Set) allocNodes;
+		return allocNodes;
 	}
 	
-	public Set getMultiRunAllocNodes()
+	public Set<AllocNode> getMultiRunAllocNodes()
 	{
-		return  (Set) multiRunAllocNodes;
+		return  multiRunAllocNodes;
 	}
 	
-	public Set getMultiCalledMethods()
+	public Set<Object> getMultiCalledMethods()
 	{
-		return (Set) multiCalledMethods;
+		return multiCalledMethods;
 	}
 }

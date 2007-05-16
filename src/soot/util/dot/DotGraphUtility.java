@@ -27,9 +27,6 @@
 /* @author Feng Qian */
 
 package soot.util.dot;
-import soot.*;
-
-import java.util.*;
 import java.io.*;
 
 public class DotGraphUtility {
@@ -38,8 +35,8 @@ public class DotGraphUtility {
   public static String replaceQuotes(String original){
     byte[] ord = original.getBytes();
     int quotes = 0;
-    for (int i=0, n=ord.length; i<n; i++) {
-      if (ord[i] == '\"') quotes++;
+    for (byte element : ord) {
+      if (element == '\"') quotes++;
     }
 
     if (quotes == 0) return original;
@@ -64,8 +61,8 @@ public class DotGraphUtility {
   public static String replaceReturns(String original){
     byte[] ord = original.getBytes();
     int quotes = 0;
-    for (int i=0, n=ord.length; i<n; i++) {
-      if (ord[i] == '\n') quotes++;
+    for (byte element : ord) {
+      if (element == '\n') quotes++;
     }
 
     if (quotes == 0) return original;

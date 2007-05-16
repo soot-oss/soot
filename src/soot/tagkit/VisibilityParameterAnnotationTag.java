@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 import java.util.*;
 
 /** Represents the visibility of an annotation attribute attatched 
@@ -38,7 +37,7 @@ public class VisibilityParameterAnnotationTag implements  Tag
     
     private int num_params;
     private int kind;
-    private ArrayList visibilityAnnotations;
+    private ArrayList<VisibilityAnnotationTag> visibilityAnnotations;
     
     public VisibilityParameterAnnotationTag(int num, int kind){
         this.num_params = num;
@@ -49,10 +48,10 @@ public class VisibilityParameterAnnotationTag implements  Tag
     public String toString() {
         StringBuffer sb = new StringBuffer("Visibility Param Annotation: num params: "+num_params+" kind: "+kind);
         if (visibilityAnnotations != null){
-            Iterator it = visibilityAnnotations.iterator();
+            Iterator<VisibilityAnnotationTag> it = visibilityAnnotations.iterator();
             while (it.hasNext()){
                 sb.append("\n");
-                sb.append(((VisibilityAnnotationTag)it.next()).toString());
+                sb.append(it.next().toString());
             }
         }
         sb.append("\n");
@@ -75,12 +74,12 @@ public class VisibilityParameterAnnotationTag implements  Tag
 
     public void addVisibilityAnnotation(VisibilityAnnotationTag a){
         if (visibilityAnnotations == null){
-            visibilityAnnotations = new ArrayList();
+            visibilityAnnotations = new ArrayList<VisibilityAnnotationTag>();
         }
         visibilityAnnotations.add(a);
     }
 
-    public ArrayList getVisibilityAnnotations(){
+    public ArrayList<VisibilityAnnotationTag> getVisibilityAnnotations(){
         return visibilityAnnotations;
     }
 

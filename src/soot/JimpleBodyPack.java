@@ -29,10 +29,6 @@ import soot.options.*;
 
 import soot.jimple.*;
 import java.util.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.jimple.toolkits.typing.*;
-import soot.jimple.toolkits.base.*;
 import soot.options.JBOptions;
 
 

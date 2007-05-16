@@ -22,9 +22,6 @@ package soot.javaToJimple.jj.ast;
 import polyglot.ast.*;
 import polyglot.ext.jl.ast.*;
 import polyglot.types.Flags;
-import polyglot.types.Package;
-import polyglot.types.Type;
-import polyglot.types.Qualifier;
 import polyglot.util.*;
 import java.util.*;
 
@@ -61,7 +58,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     }
 
     public Assign Assign(Position pos, Expr left, Assign.Operator op, Expr right) {
-        Assign n;
         if (left instanceof Local) {
             return LocalAssign(pos, (Local)left, op, right);
         }

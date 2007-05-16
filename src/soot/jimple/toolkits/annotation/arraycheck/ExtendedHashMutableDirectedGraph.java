@@ -80,23 +80,19 @@ class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph
 	Object[] succs = getSuccsOf(node).toArray();
 
 	
-	for (int i=0; i<preds.length; i++)
-	{
-	    for (int j=0; j<succs.length; j++)
-	    {
-		if (preds[i] != succs[j])
-		    super.addEdge(preds[i], succs[j]);
+	for (Object element : preds) {
+	    for (Object element0 : succs) {
+		if (element != element0)
+		    super.addEdge(element, element0);
 	    }
 	}
 
-	for (int i=0; i<preds.length; i++)
-	{
-	    super.removeEdge(preds[i], node);
+	for (Object element : preds) {
+	    super.removeEdge(element, node);
 	}
 
-	for (int j=0; j<succs.length; j++)
-	{
-	    super.removeEdge(node, succs[j]);
+	for (Object element : succs) {
+	    super.removeEdge(node, element);
 	}
 
 	super.removeNode(node);
@@ -104,9 +100,9 @@ class ExtendedHashMutableDirectedGraph extends HashMutableDirectedGraph
 
     public void mergeWith(ExtendedHashMutableDirectedGraph other)
     {
-	List nodes = other.getNodes();
+	List<Object> nodes = other.getNodes();
 
-	Iterator nodesIt = nodes.iterator();
+	Iterator<Object> nodesIt = nodes.iterator();
 
 	while (nodesIt.hasNext())
 	{

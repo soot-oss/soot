@@ -93,9 +93,9 @@ public class ReachingDefs extends StructuredAnalysis{
 	//find all definitions in the program
 	AllDefinitionsFinder defFinder = new AllDefinitionsFinder();
 	((ASTNode)toAnalyze).apply(defFinder);
-	List allDefs = defFinder.getAllDefs();
+	List<DefinitionStmt> allDefs = defFinder.getAllDefs();
 	//all defs is the list of all augmented stmts which contains DefinitionStmts
-	Iterator defIt = allDefs.iterator();
+	Iterator<DefinitionStmt> defIt = allDefs.iterator();
 	while(defIt.hasNext())
 	    initial.add(defIt.next());
 
@@ -234,8 +234,8 @@ public class ReachingDefs extends StructuredAnalysis{
     }
 
 
-    public List getReachingDefs(Local local,Object node){
-	ArrayList toReturn = new ArrayList();
+    public List<DefinitionStmt> getReachingDefs(Local local,Object node){
+	ArrayList<DefinitionStmt> toReturn = new ArrayList<DefinitionStmt>();
 
 	//get the reaching defs of this node
 	Object beforeSet=null;

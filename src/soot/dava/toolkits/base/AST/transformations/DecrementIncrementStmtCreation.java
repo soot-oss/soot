@@ -22,7 +22,6 @@ package soot.dava.toolkits.base.AST.transformations;
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
-import soot.dava.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
@@ -42,8 +41,8 @@ public class DecrementIncrementStmtCreation extends DepthFirstAdapter {
 	}
 
 	public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
-		List statements = node.getStatements();
-		Iterator stmtIt = statements.iterator();
+		List<Object> statements = node.getStatements();
+		Iterator<Object> stmtIt = statements.iterator();
 				
 		while (stmtIt.hasNext()) {
 			Object temp = stmtIt.next();

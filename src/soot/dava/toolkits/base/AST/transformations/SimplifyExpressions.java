@@ -2,16 +2,12 @@ package soot.dava.toolkits.base.AST.transformations;
 
 import soot.Value;
 import soot.ValueBox;
-import soot.dava.internal.AST.ASTBinaryCondition;
-import soot.dava.internal.AST.ASTUnaryCondition;
 import soot.dava.internal.javaRep.DCmpExpr;
 import soot.dava.internal.javaRep.DCmpgExpr;
 import soot.dava.internal.javaRep.DCmplExpr;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.AddExpr;
 import soot.jimple.BinopExpr;
-import soot.jimple.CmpExpr;
-import soot.jimple.ConditionExpr;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;

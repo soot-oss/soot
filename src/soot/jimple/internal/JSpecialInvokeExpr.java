@@ -33,7 +33,6 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr 
@@ -41,7 +40,7 @@ public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr
     public JSpecialInvokeExpr(Local base, SootMethodRef methodRef, List args)
     {
         super(Jimple.v().newLocalBox(base), methodRef,
-             (ValueBox[]) new ImmediateBox[args.size()]);
+             new ImmediateBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++) {
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));

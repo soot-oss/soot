@@ -59,7 +59,7 @@ public class BodyBuilder {
 
   public static boolean bodiesHaveBeenBuilt = false;
   public static boolean namesHaveBeenRetrieved = false;
-  public static ArrayList nameList = new ArrayList();
+  public static ArrayList<String> nameList = new ArrayList<String>();
   public static void retrieveAllBodies() 
   {
     if (bodiesHaveBeenBuilt) return;

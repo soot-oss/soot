@@ -25,8 +25,6 @@
 
 package soot;
 
-import java.util.*;
-
 /** Provides methods common to Soot objects belonging to classes,
  * namely SootField and SootMethod. */
 public interface ClassMember

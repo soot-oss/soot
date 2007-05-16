@@ -21,8 +21,8 @@ package soot.util;
 import java.util.*;
 
 public class MapNumberer implements Numberer {
-    Map map = new HashMap();
-    ArrayList al = new ArrayList();
+    Map<Object, Integer> map = new HashMap<Object, Integer>();
+    ArrayList<Object> al = new ArrayList<Object>();
     int nextIndex = 1;
     public void add( Object o ) {
         if( !map.containsKey(o) ) {
@@ -36,7 +36,7 @@ public class MapNumberer implements Numberer {
     }
     public long get( Object o ) {
         if( o == null ) return 0;
-        Integer i = (Integer) map.get(o);
+        Integer i = map.get(o);
         if( i == null ) throw new RuntimeException( "couldn't find "+o );
         return i.intValue();
     }

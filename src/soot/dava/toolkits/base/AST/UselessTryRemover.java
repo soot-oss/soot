@@ -35,21 +35,21 @@ public class UselessTryRemover extends ASTAnalysis
 
     public void analyseASTNode( ASTNode n)
     {
-	Iterator sbit = n.get_SubBodies().iterator();
+	Iterator<Object> sbit = n.get_SubBodies().iterator();
 
 	while (sbit.hasNext()) {
 	    
-	    List 
+	    List<Object> 
 		subBody = null,
-		toRemove = new ArrayList();
+		toRemove = new ArrayList<Object>();
 
 	    if (n instanceof ASTTryNode)
-		subBody = (List) ((ASTTryNode.container) sbit.next()).o;
+		subBody = (List<Object>) ((ASTTryNode.container) sbit.next()).o;
 	    else
-		subBody = (List) sbit.next();
+		subBody = (List<Object>) sbit.next();
 
 
-	    Iterator cit = subBody.iterator();
+	    Iterator<Object> cit = subBody.iterator();
 	    while (cit.hasNext()) {
 		Object child = cit.next();
 		
@@ -63,7 +63,7 @@ public class UselessTryRemover extends ASTAnalysis
 		}
 	    }
 
-	    Iterator trit = toRemove.iterator();
+	    Iterator<Object> trit = toRemove.iterator();
 	    while (trit.hasNext()) {
 		ASTTryNode tryNode = (ASTTryNode) trit.next();
 

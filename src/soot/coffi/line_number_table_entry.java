@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** An entry in the line number table.
  * @see LineNumberTable_attribute
  * @author Clark Verbrugge

@@ -34,7 +34,6 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
-import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
 
 /*
@@ -69,8 +68,8 @@ public class ReachingCopies extends StructuredAnalysis{
 
     /***************** DEFINIING LOCAL PAIR CLASS ************************/
     public class LocalPair{
-	private Local leftLocal;
-	private Local rightLocal;
+	private final Local leftLocal;
+	private final Local rightLocal;
 	
 	public LocalPair(Local left, Local right){
 	    leftLocal=left;

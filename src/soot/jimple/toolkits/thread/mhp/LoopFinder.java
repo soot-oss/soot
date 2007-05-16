@@ -1,11 +1,9 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.*;
 import soot.util.*;
+
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -20,23 +18,23 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class LoopFinder{
-	private Map chainToLoop = new HashMap();
+	private final Map<Chain, Set<Set<Object>>> chainToLoop = new HashMap<Chain, Set<Set<Object>>>();
 	
 	LoopFinder(PegGraph peg){
 		Chain chain = peg.getMainPegChain();
-		DfsForBackEdge dfsForBackEdge = new DfsForBackEdge(chain, (DirectedGraph)peg);
-		Map backEdges = dfsForBackEdge.getBackEdges();
-		LoopBodyFinder lbf = new LoopBodyFinder(backEdges, (DirectedGraph)peg);
-		Set loopBody = 	lbf.getLoopBody();
+		DfsForBackEdge dfsForBackEdge = new DfsForBackEdge(chain, peg);
+		Map<Object, Object> backEdges = dfsForBackEdge.getBackEdges();
+		LoopBodyFinder lbf = new LoopBodyFinder(backEdges, peg);
+		Set<Set<Object>> loopBody = 	lbf.getLoopBody();
 		testLoops(loopBody);
 		chainToLoop.put(chain, loopBody);
 		
 	}
-	private void testLoops(Set loopBody){
+	private void testLoops(Set<Set<Object>> loopBody){
 		System.out.println("====loops===");
-		Iterator it = loopBody.iterator();
+		Iterator<Set<Object>> it = loopBody.iterator();
 		while (it.hasNext()){
-			Set loop = (Set)it.next();
+			Set loop = it.next();
 			Iterator loopIt = loop.iterator();
 			System.out.println("---loop---");
 			while (loopIt.hasNext()){

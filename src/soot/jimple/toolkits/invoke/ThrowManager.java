@@ -73,7 +73,7 @@ public class ThrowManager
                 if (!(prosNew instanceof AssignStmt))
                     continue;
 
-                InvokeExpr ie = (InvokeExpr)((InvokeStmt)prosInvoke).getInvokeExpr();
+                InvokeExpr ie = ((InvokeStmt)prosInvoke).getInvokeExpr();
                 if (!(ie instanceof SpecialInvokeExpr))
                     continue;
 

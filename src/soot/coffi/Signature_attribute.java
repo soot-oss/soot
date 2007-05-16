@@ -30,9 +30,6 @@
 
 
 package soot.coffi;
-import soot.*;
-
-import java.io.*;
 
 /** Attribute that connects signature attribute.
  * @see attribute_info

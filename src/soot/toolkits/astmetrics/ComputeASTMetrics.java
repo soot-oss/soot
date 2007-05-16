@@ -29,12 +29,12 @@ import soot.options.Options;
  */
 public class ComputeASTMetrics {
 	
-	ArrayList metrics;
+	ArrayList<ASTMetric> metrics;
 	/*
 	 * New metrics should be added into the metrics linked list
 	 */
 	public ComputeASTMetrics(Node astNode){
-		metrics = new ArrayList();
+		metrics = new ArrayList<ASTMetric>();
 		//add new metrics below this line
 		//REMEMBER ALL METRICS NEED TO implement MetricInterface
 		
@@ -53,9 +53,9 @@ public class ComputeASTMetrics {
 			return;
 		}
 				
-		Iterator metricIt = metrics.iterator();
+		Iterator<ASTMetric> metricIt = metrics.iterator();
 		while(metricIt.hasNext())
-			((MetricInterface)metricIt.next()).execute();
+			metricIt.next().execute();
 		
 	}
 }

@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.*;
 import soot.Type;
 import soot.jimple.spark.pag.PAG;
 

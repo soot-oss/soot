@@ -37,11 +37,6 @@ import java.util.*;
 import soot.dava.*;
 import soot.util.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
-
-import soot.grimp.*;
-import soot.grimp.internal.*;
-
 import soot.dava.internal.javaRep.*;
 import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.*;
@@ -53,7 +48,7 @@ import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
  * SEQUENCE NODE WITH DECLARATIONS!!!!
  */
 public class ASTMethodNode extends ASTNode {
-	private List body;
+	private List<Object> body;
 
 	private DavaBody davaBody;
 
@@ -66,12 +61,12 @@ public class ASTMethodNode extends ASTNode {
 	 * 
 	 * Any local in the dontPrintLocals list is not printed in the top declarations
 	 */
-	private List dontPrintLocals = new ArrayList();
+	private List<Local> dontPrintLocals = new ArrayList<Local>();
 	
 	/*
 	 typeToLocals stores the type of the local and a list of all locals with that type
 	 */
-	private Map typeToLocals;//Nomair A. Naeem 24th January why is this a field? why not a localVar of storeLocals???
+	private Map<Type, List> typeToLocals;//Nomair A. Naeem 24th January why is this a field? why not a localVar of storeLocals???
 
 	public ASTStatementSequenceNode getDeclarations() {
 		return declarations;
@@ -101,7 +96,7 @@ public class ASTMethodNode extends ASTNode {
 		HashSet params = new HashSet();
 		params.addAll(davaBody.get_ParamMap().values());
 		params.addAll(davaBody.get_CaughtRefs());
-		HashSet thisLocals = davaBody.get_ThisLocals();
+		HashSet<Object> thisLocals = davaBody.get_ThisLocals();
 
 		//populating the typeToLocals Map
 		Iterator localIt = OrigBody.getLocals().iterator();
@@ -111,7 +106,7 @@ public class ASTMethodNode extends ASTNode {
 			if (params.contains(local) || thisLocals.contains(local))
 				continue;
 
-			List localList;
+			List<Local> localList;
 
 			String typeName;
 			Type t = local.getType();
@@ -119,9 +114,9 @@ public class ASTMethodNode extends ASTNode {
 			typeName = t.toString();
 
 			if (typeToLocals.containsKey(t))
-				localList = (List) typeToLocals.get(t);
+				localList = typeToLocals.get(t);
 			else {
-				localList = new ArrayList();
+				localList = new ArrayList<Local>();
 				typeToLocals.put(t, localList);
 			}
 
@@ -130,22 +125,22 @@ public class ASTMethodNode extends ASTNode {
 
 		//create a StatementSequenceNode with all the declarations
 
-		List statementSequence = new ArrayList();
+		List<Object> statementSequence = new ArrayList<Object>();
 
-		Iterator typeIt = typeToLocals.keySet().iterator();
+		Iterator<Type> typeIt = typeToLocals.keySet().iterator();
 
 		while (typeIt.hasNext()) {
-			Type typeObject = (Type) typeIt.next();
+			Type typeObject = typeIt.next();
 			String type = typeObject.toString();
 
-			List localList = (List) typeToLocals.get(typeObject);
+			List localList = typeToLocals.get(typeObject);
 			Object[] locals = localList.toArray();
 
 			DVariableDeclarationStmt varStmt = null;
 			varStmt = new DVariableDeclarationStmt(typeObject,davaBody);
 
-			for (int k = 0; k < locals.length; k++) {
-				varStmt.addLocal((Local) locals[k]);
+			for (Object element : locals) {
+				varStmt.addLocal((Local) element);
 			}
 			AugmentedStmt as = new AugmentedStmt(varStmt);
 			statementSequence.add(as);
@@ -154,11 +149,11 @@ public class ASTMethodNode extends ASTNode {
 		declarations = new ASTStatementSequenceNode(statementSequence);
 
 		body.add(0, declarations);
-		subBodies = new ArrayList();
+		subBodies = new ArrayList<Object>();
 		subBodies.add(body);
 	}
 
-	public ASTMethodNode(List body) {
+	public ASTMethodNode(List<Object> body) {
 		super();
 		this.body = body;
 		subBodies.add(body);	
@@ -172,7 +167,7 @@ public class ASTMethodNode extends ASTNode {
 	public List getDeclaredLocals() {
 		List toReturn = new ArrayList();
 
-		Iterator it = declarations.getStatements().iterator();
+		Iterator<Object> it = declarations.getStatements().iterator();
 
 		while (it.hasNext()) {//going through each stmt
 			Stmt s = ((AugmentedStmt) it.next()).get_Stmt();
@@ -203,7 +198,7 @@ public class ASTMethodNode extends ASTNode {
 	 */
 	public void removeDeclaredLocal(Local local) {
 		Stmt s = null;
-		Iterator it = declarations.getStatements().iterator();
+		Iterator<Object> it = declarations.getStatements().iterator();
 		while (it.hasNext()) {//going through each stmt
 			s = ((AugmentedStmt) it.next()).get_Stmt();
 
@@ -235,7 +230,7 @@ public class ASTMethodNode extends ASTNode {
 		//the removal of a local might have made some declaration empty
 		//remove such a declaraion
 
-		List newSequence = new ArrayList();
+		List<Object> newSequence = new ArrayList<Object>();
 		it = declarations.getStatements().iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
@@ -257,9 +252,9 @@ public class ASTMethodNode extends ASTNode {
 	 Nomair A Naeem 21-FEB-2005
 	 Used by UselessLabeledBlockRemove to update a body
 	 */
-	public void replaceBody(List body) {
+	public void replaceBody(List<Object> body) {
 		this.body = body;
-		subBodies = new ArrayList();
+		subBodies = new ArrayList<Object>();
 		subBodies.add(body);
 	}
 
@@ -270,7 +265,7 @@ public class ASTMethodNode extends ASTNode {
 		return toReturn;
 	}
 
-	public void setDontPrintLocals(List list){
+	public void setDontPrintLocals(List<Local> list){
 		dontPrintLocals=list;
 	}
 	
@@ -356,11 +351,11 @@ public class ASTMethodNode extends ASTNode {
 	 * want to remove the local entry in the declarations node since this is used by analyses throughout as a quick and
 	 * easy way to find out which locals are used by this method...... bad code design but hey what can i say :(
 	 */
-	public void printDeclarationsFollowedByBody(UnitPrinter up, List body){
+	public void printDeclarationsFollowedByBody(UnitPrinter up, List<Object> body){
 		//System.out.println("printing body from within MEthodNode\n\n"+body.toString());
 		
-		List stmts = declarations.getStatements();
-		Iterator it = stmts.iterator();
+		List<Object> stmts = declarations.getStatements();
+		Iterator<Object> it = stmts.iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
 			//System.out.println("Stmt is:"+as.get_Stmt());
@@ -438,7 +433,7 @@ public class ASTMethodNode extends ASTNode {
 		if(body.size()>0){
 			ASTNode firstNode = (ASTNode)body.get(0);
 			if(firstNode instanceof ASTStatementSequenceNode){
-				List tempstmts = ((ASTStatementSequenceNode)firstNode).getStatements();
+				List<Object> tempstmts = ((ASTStatementSequenceNode)firstNode).getStatements();
 				if(tempstmts.size()!=0){
 					AugmentedStmt tempas = (AugmentedStmt)tempstmts.get(0);
 					Stmt temps = tempas.get_Stmt();

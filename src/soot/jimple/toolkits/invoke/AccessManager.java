@@ -32,7 +32,6 @@ import java.util.LinkedList;
 import soot.*;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.*;
-import soot.util.Chain;
 
 /** Methods for checking Java scope and visibiliity requirements. */
 public class AccessManager
@@ -132,11 +131,11 @@ public class AccessManager
     	if (after!=null && !units.contains(after))
     		throw new RuntimeException();
     	
-        ArrayList unitList = new ArrayList(); unitList.addAll(units);
+        ArrayList<Unit> unitList = new ArrayList<Unit>(); unitList.addAll(units);
         
     	boolean bInside=before==null;
-    	for (java.util.Iterator it=unitList.iterator(); it.hasNext();) {
-    		Stmt s=(Stmt)it.next();
+    	for (Unit unit : unitList) {
+    		Stmt s=(Stmt)unit;
     		
     		if (bInside) {
     			if (s==after)
@@ -224,7 +223,7 @@ public class AccessManager
     
 	private static void createGetAccessor(SootMethod container, AssignStmt as, FieldRef ref) {
     	java.util.List parameterTypes=new LinkedList();
-    	java.util.List thrownExceptions=new LinkedList();
+    	java.util.List<SootClass> thrownExceptions=new LinkedList<SootClass>();
     	
     	
     	Body accessorBody = Jimple.v().newBody();
@@ -279,7 +278,7 @@ public class AccessManager
 
 	private static void createSetAccessor(SootMethod container, AssignStmt as, FieldRef ref) {
     	java.util.List parameterTypes=new LinkedList();
-    	java.util.List thrownExceptions=new LinkedList();
+    	java.util.List<SootClass> thrownExceptions=new LinkedList<SootClass>();
     	
     	Body accessorBody = Jimple.v().newBody();
     	soot.util.Chain accStmts=accessorBody.getUnits();
@@ -344,7 +343,7 @@ public class AccessManager
 
 	private static void createInvokeAccessor(SootMethod container, Stmt stmt) {    	
     	java.util.List parameterTypes=new LinkedList();
-    	java.util.List thrownExceptions=new LinkedList();
+    	java.util.List<SootClass> thrownExceptions=new LinkedList<SootClass>();
     	Type returnType;
     	
     	Body accessorBody = Jimple.v().newBody();

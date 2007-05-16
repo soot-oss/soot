@@ -1,7 +1,6 @@
 package soot.util;
 
 import soot.util.StringTools;
-import java.util.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -16,7 +15,6 @@ public class StringTools_replaceAll_Test extends TestCase {
 	super(name);
     }
 
-    private static boolean useJJ = false;
     private static void runAndCompare(String orig, String toBeReplaced,
 			       String replacement, String expected) {
 	String result = StringTools.replaceAll(orig, toBeReplaced, replacement);
@@ -125,10 +123,6 @@ public class StringTools_replaceAll_Test extends TestCase {
     }
 
     public static void main(String[] arg) {
-	if (arg.length > 0 && arg[0].equals("useJJ")) 
-	    useJJ = true;
-	else
-	    useJJ = false;
     	junit.textui.TestRunner.run(reflectionSuite());
     }
 }

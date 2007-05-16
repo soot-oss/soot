@@ -68,7 +68,7 @@ class TypeArray
     {
         TypeArray newArray = new TypeArray();
 
-        newArray.types = (Type[]) types.clone();
+        newArray.types = types.clone();
         newArray.types[index] = type;
 
         return newArray;
@@ -83,8 +83,8 @@ class TypeArray
             if(types.length != other.types.length)
                 return false;
 
-            for(int i = 0; i < types.length; i++)
-                if(!types[i].equals(other.types[i]))
+            for (Type element : types)
+				if(!element.equals(element))
                     return false;
 
             return true;

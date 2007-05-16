@@ -6,7 +6,6 @@ import soot.PointsToSet;
 import soot.SootField;
 
 import soot.*;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 
@@ -37,9 +36,8 @@ public class CodeBlockRWSet extends MethodRWSet
 		final StringBuffer ret = new StringBuffer();
 		if( fields != null )
 		{
-			for( Iterator fieldIt = fields.keySet().iterator(); fieldIt.hasNext(); )
-			{
-				final Object field = (Object) fieldIt.next();
+			for (Object element : fields.keySet()) {
+				final Object field = element;
 				ret.append( "[Field: "+field+" ");
 				PointsToSetInternal base = (PointsToSetInternal) fields.get(field);
 				base.forall( 
@@ -59,7 +57,7 @@ public class CodeBlockRWSet extends MethodRWSet
 		{
 			for( Iterator globalIt = globals.iterator(); globalIt.hasNext(); )
 			{
-				final Object global = (Object) globalIt.next();
+				final Object global = globalIt.next();
 				ret.append( "[Global: "+global+"]\n" );
 				empty = false;
 			}
@@ -104,9 +102,8 @@ public class CodeBlockRWSet extends MethodRWSet
 		    }
 		    if( o.fields != null )
 		    {
-				for( Iterator fieldIt = o.fields.keySet().iterator(); fieldIt.hasNext(); )
-				{
-				    final Object field = (Object) fieldIt.next();
+				for (Object element : o.fields.keySet()) {
+				    final Object field = element;
 				    PointsToSet os = o.getBaseForField( field );
 				    ret = addFieldRef( os, field ) | ret;
 				}
@@ -127,9 +124,8 @@ public class CodeBlockRWSet extends MethodRWSet
 		else if( other instanceof SiteRWSet)
 		{
 		    SiteRWSet oth = (SiteRWSet) other;
-		    for( Iterator sIt = oth.sets.iterator(); sIt.hasNext(); ) 
-		    {
-		    	this.union((RWSet) sIt.next());
+		    for (RWSet set : oth.sets) {
+		    	this.union(set);
 		    }
 		}
 		if( !getCallsNative() && other.getCallsNative() )
@@ -161,14 +157,13 @@ public class CodeBlockRWSet extends MethodRWSet
 		if( fields != null && other.fields != null
 			&& !fields.isEmpty() && !other.fields.isEmpty() )
 		{
-		    for( Iterator fieldIt = other.fields.keySet().iterator(); fieldIt.hasNext(); )
-		    {
-		        final Object field = (Object) fieldIt.next();
+		    for (Object element : other.fields.keySet()) {
+		        final Object field = element;
 		        
 				if( fields.containsKey( field ) ) 
 				{
-					PointsToSet pts1 = (PointsToSet) getBaseForField( field );
-					PointsToSet pts2 = (PointsToSet) other.getBaseForField( field );
+					PointsToSet pts1 = getBaseForField( field );
+					PointsToSet pts2 = other.getBaseForField( field );
 			    	if( pts1.hasNonEmptyIntersection(pts2) )
 					{
 						if(pts1 instanceof FullObjectSet)
@@ -217,7 +212,6 @@ public class CodeBlockRWSet extends MethodRWSet
 		}
 		if( otherBase.equals( base ) )
 			return false;
-		Union u;
 		if( base == null )
 		{			
 //			final PointsToSetInternal newpti = new HashPointsToSet(((PointsToSetInternal)otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());

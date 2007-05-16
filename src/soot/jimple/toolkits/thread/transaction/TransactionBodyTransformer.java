@@ -4,12 +4,11 @@ import java.util.*;
 import soot.*;
 import soot.util.Chain;
 import soot.jimple.*;
-import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.toolkits.scalar.*;
 
 public class TransactionBodyTransformer extends BodyTransformer
 {
-    private static TransactionBodyTransformer instance = new TransactionBodyTransformer();
+    private static final TransactionBodyTransformer instance = new TransactionBodyTransformer();
     private TransactionBodyTransformer() {}
 
     public static TransactionBodyTransformer v() { return instance; }
@@ -23,14 +22,14 @@ public class TransactionBodyTransformer extends BodyTransformer
     	throw new RuntimeException("Not Supported");
     }
     
-    protected void internalTransform(Body b, FlowSet fs, List groups)
+    protected void internalTransform(Body b, FlowSet fs, List<TransactionGroup> groups)
 	{
 		// 
 		JimpleBody j = (JimpleBody) b;
 		SootMethod thisMethod = b.getMethod();
     	PatchingChain units = b.getUnits();
 		Iterator unitIt = units.iterator();
-		Unit firstUnit = (Unit) j.getFirstNonIdentityStmt();
+		Unit firstUnit = j.getFirstNonIdentityStmt();
 		Unit lastUnit = (Unit) units.getLast();
 		
 		// Objects of synchronization, plus book keeping
@@ -52,7 +51,7 @@ public class TransactionBodyTransformer extends BodyTransformer
         // Get references to them if they do already exist.
   		for(int i = 1; i < groups.size(); i++)
    		{
-   			TransactionGroup tnGroup = (TransactionGroup) groups.get(i);
+   			TransactionGroup tnGroup = groups.get(i);
 // 			if( useGlobalLock[i - 1] )
 			if( !tnGroup.useDynamicLock && !tnGroup.useLocksets )
    			{
@@ -111,7 +110,7 @@ public class TransactionBodyTransformer extends BodyTransformer
         	
     		for(int i = 1; i < groups.size(); i++)
     		{
-    			TransactionGroup tnGroup = (TransactionGroup) groups.get(i);
+    			TransactionGroup tnGroup = groups.get(i);
 //    			if( useGlobalLock[i - 1] )
 				if( !tnGroup.useDynamicLock && !tnGroup.useLocksets )
     			{
@@ -180,9 +179,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 						
 						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
 						if(tn.wholeMethod)
-							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
+							units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
 						else
-							units.insertBefore(assignLocalLockStmt, (Stmt) tn.entermonitor);
+							units.insertBefore(assignLocalLockStmt, tn.entermonitor);
 						clo = lockObj[tn.setNumber];
 					}
 					else if(lock instanceof Local)
@@ -205,9 +204,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 						// make it refer to the right lock object
 						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockLocal, lock);
 						if(tn.entermonitor != null)
-							units.insertBefore(assignLocalLockStmt, (Stmt) tn.entermonitor);
+							units.insertBefore(assignLocalLockStmt, tn.entermonitor);
 						else
-							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) tn.beginning);
+							units.insertBeforeNoRedirect(assignLocalLockStmt, tn.beginning);
 							
 						// use it as the lock
 						clo = lockLocal;
@@ -227,9 +226,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						LockRegion nlr = new LockRegion();
 
 						nlr.beginning = clr.beginning;
-						for(Iterator earlyEndsIt = clr.earlyEnds.iterator(); earlyEndsIt.hasNext(); )
-						{
-							Pair earlyEnd = (Pair) earlyEndsIt.next(); // <early end, early exitmonitor>
+						for (Pair earlyEnd : clr.earlyEnds) {
 							Stmt earlyExitmonitor = (Stmt) earlyEnd.getO2();
 							nlr.earlyEnds.add(new Pair(earlyExitmonitor, null)); // <early exitmonitor, null>
 						}
@@ -255,7 +252,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					if(tn.wholeMethod)
 						units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
 					else
-						units.insertBefore(assignLocalLockStmt, (Stmt) tn.entermonitor);
+						units.insertBefore(assignLocalLockStmt, tn.entermonitor);
 					clo = lockObj[tn.setNumber];
 					clr = tn;
 					moreLocks = false;
@@ -296,10 +293,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 					}
 					
 					// For each early end, reuse or insert exitmonitor stmt
-					List newEarlyEnds = new ArrayList();
-					for(Iterator earlyEndsIt = clr.earlyEnds.iterator(); earlyEndsIt.hasNext(); )
-					{
-						Pair end = (Pair) earlyEndsIt.next();
+					List<Pair> newEarlyEnds = new ArrayList<Pair>();
+					for (Pair end : clr.earlyEnds) {
 						Stmt earlyEnd = (Stmt) end.getO1();
 						Stmt exitmonitor = (Stmt) end.getO2();
 						
@@ -362,9 +357,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						}
 						else
 						{
-							for(Iterator earlyEndsIt = clr.earlyEnds.iterator(); earlyEndsIt.hasNext(); )
-							{
-								Pair earlyEnd = (Pair) earlyEndsIt.next();
+							for (Pair earlyEnd : clr.earlyEnds) {
 								Stmt end = (Stmt) earlyEnd.getO1();
 								if( lastEnd == null || units.follows(end, lastEnd) )
 									lastEnd = end;
@@ -447,14 +440,14 @@ public class TransactionBodyTransformer extends BodyTransformer
 			
 			// deal with waits and notifys
 			{
-				Iterator notifysIt = tn.notifys.iterator();
+				Iterator<Object> notifysIt = tn.notifys.iterator();
 				while(notifysIt.hasNext())
 				{
 					Stmt sNotify = (Stmt) notifysIt.next();
 					Stmt newNotify = 
 						Jimple.v().newInvokeStmt(
 	           				Jimple.v().newVirtualInvokeExpr(
-	       						(Local) clo,
+	       						clo,
 	       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
 	       						Collections.EMPTY_LIST));
 		            units.insertBefore(newNotify, sNotify);
@@ -463,7 +456,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 				}
 
 				// Replace base object of calls to wait with appropriate lockobj
-				Iterator waitsIt = tn.waits.iterator();
+				Iterator<Object> waitsIt = tn.waits.iterator();
 				while(waitsIt.hasNext())
 				{
 					Stmt sWait = (Stmt) waitsIt.next();
@@ -483,7 +476,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 	}
 	
 	static int lockNumber = 0;
-	Map lockEqValToLock = new HashMap();
+	Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<EquivalentValue, StaticFieldRef>();
 	public Value getLockFor(EquivalentValue lockEqVal)
 	{
 		Value lock = lockEqVal.getValue();
@@ -497,7 +490,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		if( lock instanceof StaticFieldRef )
 		{
 			if( lockEqValToLock.containsKey(lockEqVal) )
-				return (Value) lockEqValToLock.get(lockEqVal);
+				return lockEqValToLock.get(lockEqVal);
 			
 			StaticFieldRef sfrLock = (StaticFieldRef) lock;
 			SootClass lockClass = sfrLock.getField().getDeclaringClass();

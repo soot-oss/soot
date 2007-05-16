@@ -30,7 +30,6 @@
 
 
 package soot.coffi;
-import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>
@@ -220,7 +219,7 @@ import java.io.*;
     */
    public static short getShort(byte bc[],int index) {
       short s,bh,bl;
-      bh = (short)(bc[index]); bl = (short)(bc[index+1]);
+      bh = (bc[index]); bl = (bc[index+1]);
       s = (short)(((bh<<8)&0xff00) | (bl&0xff));
       //s = (short)((int)(bc[index])<<8 + bc[index+1]);
       return s;
@@ -236,10 +235,10 @@ import java.io.*;
     */
    public static int getInt(byte bc[],int index) {
       int i,bhh,bhl,blh,bll;
-      bhh = (((int)(bc[index]))<<24)&0xff000000;
-      bhl = (((int)(bc[index+1]))<<16)&0xff0000;
-      blh = (((int)(bc[index+2]))<<8)&0xff00;
-      bll = ((int)(bc[index+3]))&0xff;
+      bhh = (((bc[index]))<<24)&0xff000000;
+      bhl = (((bc[index+1]))<<16)&0xff0000;
+      blh = (((bc[index+2]))<<8)&0xff00;
+      bll = ((bc[index+3]))&0xff;
       i = bhh | bhl | blh | bll;
       return i;
    }
@@ -281,7 +280,7 @@ import java.io.*;
     * @return String representation of this instruction.
     */
    public String toString(cp_info constant_pool[]) {
-      int i = ((int)code)&0xff;
+      int i = (code)&0xff;
       if (name==null) name = "null???=" + Integer.toString(i);
       return name;
    }

@@ -32,7 +32,7 @@ class WeightedDirectedSparseGraph
     private boolean isUnknown;
 
     /* The graph is in linked list structure. */
-    private Hashtable sources = new Hashtable();
+    private Hashtable<Object, Hashtable<Object, IntContainer>> sources = new Hashtable<Object, Hashtable<Object, IntContainer>>();
 
     /* vertex set, may contain superious nodes. */
     private HashSet vertexes = new HashSet();
@@ -72,16 +72,16 @@ class WeightedDirectedSparseGraph
 	if (this.isUnknown)
 	    throw new RuntimeException("Unknown graph can not have edges");
 
-	Hashtable targets = (Hashtable)sources.get(from);
+	Hashtable<Object, IntContainer> targets = sources.get(from);
 
 	if (targets == null)
 	{
 	    /* a new node was added to the graph */
-	    targets = new Hashtable();
+	    targets = new Hashtable<Object, IntContainer>();
 	    sources.put(from, targets);
 	}
 
-        IntContainer weight = (IntContainer)targets.get(to);
+        IntContainer weight = targets.get(to);
 
 	if (weight == null)
 	{
@@ -111,7 +111,7 @@ class WeightedDirectedSparseGraph
      */
     public void removeEdge(Object from, Object to)
     {
-	Hashtable targets = (Hashtable)sources.get(from);
+	Hashtable targets = sources.get(from);
 	if (targets == null)
 	    return;
 
@@ -125,7 +125,7 @@ class WeightedDirectedSparseGraph
 	
     public boolean hasEdge(Object from, Object to)
     {
-	Hashtable targets = (Hashtable)sources.get(from);
+	Hashtable targets = sources.get(from);
 
 	if (targets == null)
 	    return false;
@@ -136,7 +136,7 @@ class WeightedDirectedSparseGraph
     /* return back the weight of the edge from source to target */
     public int edgeWeight(Object from, Object to)
     {
-	Hashtable targets = (Hashtable)sources.get(from);
+	Hashtable targets = sources.get(from);
 
 	if (targets == null)
 	    throw new RuntimeException("No such edge ("+from+" ,"+to+") exists.");
@@ -158,7 +158,7 @@ class WeightedDirectedSparseGraph
 	    return;
 	
 	WeightedDirectedSparseGraph othergraph =
-	    (WeightedDirectedSparseGraph)other;
+	    other;
 
 	if (othergraph.isUnknown)
 	    return;
@@ -166,15 +166,15 @@ class WeightedDirectedSparseGraph
 	if (this.isUnknown)
 	    addAll(othergraph);
 	
-	List sourceList = new ArrayList(this.sources.keySet());
+	List<Object> sourceList = new ArrayList<Object>(this.sources.keySet());
 
-	Iterator firstSrcIt = sourceList.iterator();
+	Iterator<Object> firstSrcIt = sourceList.iterator();
 
 	while (firstSrcIt.hasNext())
 	{
 	    Object srcKey = firstSrcIt.next();
-	    Hashtable src1 = (Hashtable)this.sources.get(srcKey);
-	    Hashtable src2 = (Hashtable)othergraph.sources.get(srcKey);
+	    Hashtable src1 = this.sources.get(srcKey);
+	    Hashtable src2 = othergraph.sources.get(srcKey);
 
 	    /* other is unbounded */
 	    if (src2 == null)
@@ -216,21 +216,21 @@ class WeightedDirectedSparseGraph
     public void widenEdges(WeightedDirectedSparseGraph othergraph)
     {
 	WeightedDirectedSparseGraph other =
-	    (WeightedDirectedSparseGraph)othergraph;
+	    othergraph;
 
 	if (other.isUnknown)
 	    return;
 
-	Hashtable othersources = other.sources;
+	Hashtable<Object, Hashtable<Object, IntContainer>> othersources = other.sources;
 
-	List sourceList = new ArrayList(this.sources.keySet());
+	List<Object> sourceList = new ArrayList<Object>(this.sources.keySet());
 
-	Iterator srcIt = sourceList.iterator();
+	Iterator<Object> srcIt = sourceList.iterator();
 	while (srcIt.hasNext())
 	{
 	    Object src = srcIt.next();
-	    Hashtable thistargets = (Hashtable)this.sources.get(src);
-	    Hashtable othertargets = (Hashtable)othersources.get(src);
+	    Hashtable thistargets = this.sources.get(src);
+	    Hashtable othertargets = othersources.get(src);
 
 	    /* the former is unbounded */
 	    if (othertargets == null)
@@ -280,15 +280,15 @@ class WeightedDirectedSparseGraph
 
        	this.makeShortestPathGraph();
 
-	List sourceList = new ArrayList(sources.keySet());
+	List<Object> sourceList = new ArrayList<Object>(sources.keySet());
 
-	Iterator srcIt = sourceList.iterator();
+	Iterator<Object> srcIt = sourceList.iterator();
 
 	while (srcIt.hasNext())
 	{
 	    Object src = srcIt.next();
 
-	    Hashtable targets = (Hashtable)sources.get(src);
+	    Hashtable targets = sources.get(src);
 	    /* delete the in edge */
 	    targets.remove(tokill);
 
@@ -306,13 +306,13 @@ class WeightedDirectedSparseGraph
     public void updateWeight(Object which, int c)
     {
 	/* for the in edge, the weight + c. for the out edge, the weight - c */
-	Iterator srcIt = sources.keySet().iterator();
+	Iterator<Object> srcIt = sources.keySet().iterator();
 	
 	while (srcIt.hasNext())
 	{
 	    Object from = srcIt.next();
 	    
-	    Hashtable targets = (Hashtable)sources.get(from);
+	    Hashtable targets = sources.get(from);
 
 	    IntContainer weight = (IntContainer)targets.get(which);
 
@@ -321,7 +321,7 @@ class WeightedDirectedSparseGraph
 	}
 
 	/* update out edges */
-	Hashtable toset = (Hashtable)sources.get(which);
+	Hashtable toset = sources.get(which);
 
 	if (toset == null)
 	    return;
@@ -355,17 +355,17 @@ class WeightedDirectedSparseGraph
     {
 	this.isUnknown = another.isUnknown;
 
-	Hashtable othersources = another.sources;
+	Hashtable<Object, Hashtable<Object, IntContainer>> othersources = another.sources;
 
 	Iterator thisnodeIt = this.vertexes.iterator();
 	while (thisnodeIt.hasNext())
 	{
 	    Object src = thisnodeIt.next();
-	    Hashtable othertargets = (Hashtable)othersources.get(src);
+	    Hashtable othertargets = othersources.get(src);
 	    if (othertargets == null)
 		continue;
 
-	    Hashtable thistargets = new Hashtable();
+	    Hashtable<Object, IntContainer> thistargets = new Hashtable<Object, IntContainer>();
 	    Iterator othertargetIt = othertargets.keySet().iterator();
 	    while (othertargetIt.hasNext())
 	    {
@@ -389,21 +389,21 @@ class WeightedDirectedSparseGraph
     public void addAll(WeightedDirectedSparseGraph othergraph)
     {
 	WeightedDirectedSparseGraph another =
-	    (WeightedDirectedSparseGraph)othergraph;
+	    othergraph;
 
 	this.isUnknown = another.isUnknown;
 	this.clear();
 
-	Hashtable othersources = another.sources;
-	Iterator othersrcIt = othersources.keySet().iterator();
+	Hashtable<Object, Hashtable<Object, IntContainer>> othersources = another.sources;
+	Iterator<Object> othersrcIt = othersources.keySet().iterator();
 
 	while (othersrcIt.hasNext())
 	{
 	    Object src = othersrcIt.next();
 
-	    Hashtable othertargets = (Hashtable)othersources.get(src);
+	    Hashtable othertargets = othersources.get(src);
 
-	    Hashtable thistargets = new Hashtable(othersources.size());
+	    Hashtable<Object, IntContainer> thistargets = new Hashtable<Object, IntContainer>(othersources.size());
 	    this.sources.put(src, thistargets);
 
 	    Iterator targetIt = othertargets.keySet().iterator();
@@ -437,17 +437,17 @@ class WeightedDirectedSparseGraph
 	    return true;
 
 	// compare each edges. It is not always true, only when shortest path graph can be guaranteed.
-	Hashtable othersources = othergraph.sources;
+	Hashtable<Object, Hashtable<Object, IntContainer>> othersources = othergraph.sources;
 
 	if (this.sources.size() != othersources.size())
 	    return false;
 
-	Iterator sourceIt = this.sources.keySet().iterator();
+	Iterator<Object> sourceIt = this.sources.keySet().iterator();
 	while (sourceIt.hasNext())
 	{
 	    Object src = sourceIt.next();
-	    Hashtable thistarget = (Hashtable)sources.get(src);
-	    Hashtable othertarget = (Hashtable)othersources.get(src);
+	    Hashtable thistarget = sources.get(src);
+	    Hashtable othertarget = othersources.get(src);
 	    
 	    if (othertarget == null)
 		return false;
@@ -479,7 +479,7 @@ class WeightedDirectedSparseGraph
 
 	graphstring = graphstring+this.vertexes+"\n";
 
-	Iterator srcIt = sources.keySet().iterator();
+	Iterator<Object> srcIt = sources.keySet().iterator();
 
 	while (srcIt.hasNext())
 	{
@@ -487,7 +487,7 @@ class WeightedDirectedSparseGraph
 
 	    graphstring = graphstring + src +" : ";
 
-	    Hashtable targets = (Hashtable)sources.get(src);
+	    Hashtable targets = sources.get(src);
 	    
 	    Iterator targetIt = targets.keySet().iterator();
 	    while (targetIt.hasNext())
@@ -516,9 +516,9 @@ class WeightedDirectedSparseGraph
     {
 	boolean nonegcycle = true;
 
-	List srcList = new ArrayList(sources.keySet());
+	List<Object> srcList = new ArrayList<Object>(sources.keySet());
 
-	Iterator srcIt = srcList.iterator();
+	Iterator<Object> srcIt = srcList.iterator();
 	
 	while (srcIt.hasNext())
 	{
@@ -533,14 +533,14 @@ class WeightedDirectedSparseGraph
 	return nonegcycle;
     }
 
-    private HashSet reachableNodes = new HashSet();
-    private HashSet reachableEdges = new HashSet();
-    private Hashtable distance = new Hashtable();
-    private Hashtable pei = new Hashtable();
+    private final HashSet<Object> reachableNodes = new HashSet<Object>();
+    private final HashSet<WeightedDirectedEdge> reachableEdges = new HashSet<WeightedDirectedEdge>();
+    private final Hashtable<Object, IntContainer> distance = new Hashtable<Object, IntContainer>();
+    private final Hashtable<Object, Object> pei = new Hashtable<Object, Object>();
     
     private boolean SSSPFinder(Object src)
     {
-	Hashtable outedges = (Hashtable)sources.get(src);
+	Hashtable<Object, IntContainer> outedges = sources.get(src);
 	if (outedges == null)
 	    return true;
 
@@ -555,12 +555,12 @@ class WeightedDirectedSparseGraph
 
 	for (int i=0; i<vSize; i++)
 	{
-	    Iterator edgeIt = reachableEdges.iterator();
+	    Iterator<WeightedDirectedEdge> edgeIt = reachableEdges.iterator();
 
 	    while (edgeIt.hasNext())
 	    {
 		WeightedDirectedEdge edge = 
-		    (WeightedDirectedEdge)edgeIt.next();
+		    edgeIt.next();
 
 		Relax(edge.from, edge.to, edge.weight);
 	    }
@@ -571,18 +571,18 @@ class WeightedDirectedSparseGraph
 	// check negative cycle
 	
 	{
-	    Iterator edgeIt = reachableEdges.iterator();
+	    Iterator<WeightedDirectedEdge> edgeIt = reachableEdges.iterator();
 	    while (edgeIt.hasNext())
 	    {
 		WeightedDirectedEdge edge =
-		    (WeightedDirectedEdge)edgeIt.next();
+		    edgeIt.next();
 
-		IntContainer dfrom = (IntContainer)distance.get(edge.from);
+		IntContainer dfrom = distance.get(edge.from);
 
 		if (dfrom == null)
 		    continue;
 		
-		IntContainer dto = (IntContainer)distance.get(edge.to);
+		IntContainer dto = distance.get(edge.to);
 		if (dto == null)
 		    continue;
 
@@ -593,11 +593,11 @@ class WeightedDirectedSparseGraph
 
 	// update the graph
 	outedges.clear();
-	Iterator targetIt = distance.keySet().iterator();
+	Iterator<Object> targetIt = distance.keySet().iterator();
 	while (targetIt.hasNext())
 	{
 	    Object to = targetIt.next();
-	    IntContainer dist = (IntContainer)distance.get(to);
+	    IntContainer dist = distance.get(to);
 
 	    outedges.put(to, dist.dup());	    
 	}
@@ -617,7 +617,7 @@ class WeightedDirectedSparseGraph
 
     private void getReachableNodesAndEdges(Object src)
     {
-	LinkedList worklist = new LinkedList();
+	LinkedList<Object> worklist = new LinkedList<Object>();
 
 	reachableNodes.add(src);
 	worklist.add(src);
@@ -626,7 +626,7 @@ class WeightedDirectedSparseGraph
 	{
 	    Object from = worklist.removeFirst();
 
-	    Hashtable targets = (Hashtable)sources.get(from);
+	    Hashtable targets = sources.get(from);
 	    if (targets == null)
 		continue;
 
@@ -650,8 +650,8 @@ class WeightedDirectedSparseGraph
 
     private void Relax(Object from, Object to, int weight)
     {
-	IntContainer dfrom = (IntContainer)distance.get(from);
-	IntContainer dto = (IntContainer)distance.get(to);
+	IntContainer dfrom = distance.get(from);
+	IntContainer dto = distance.get(to);
 
 	if (dfrom != null)
 	{

@@ -25,6 +25,7 @@ import java.util.List;
 
 import polyglot.ast.NodeFactory;
 import polyglot.frontend.Job;
+import polyglot.frontend.Source;
 import polyglot.main.Options;
 import polyglot.types.TypeSystem;
 import soot.javaToJimple.jj.ast.JjNodeFactory_c;
@@ -67,13 +68,13 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
         return passes;
     }
 
-    private HashMap sourceJobMap;
+    private HashMap<Source, Job> sourceJobMap;
 
-    public HashMap sourceJobMap(){
+    public HashMap<Source, Job> sourceJobMap(){
         return sourceJobMap;
     }
 
-    public void sourceJobMap(HashMap map){
+    public void sourceJobMap(HashMap<Source, Job> map){
         sourceJobMap = map;
     }
     

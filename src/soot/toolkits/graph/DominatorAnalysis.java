@@ -20,10 +20,8 @@
 package soot.toolkits.graph;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.scalar.*;
-import soot.options.*;
 
 // STEP 1: What are we computing?
 // SETS OF Units that are dominators => Use ArraySparseSet.
@@ -103,7 +101,7 @@ public class DominatorAnalysis extends ForwardFlowAnalysis {
         else {
         
             //System.out.println("s: "+s+" is not start node");
-            FlowSet domsOfPreds = (FlowSet) allNodes.clone();
+            FlowSet domsOfPreds = allNodes.clone();
         
             // for each pred of s
             Iterator predsIt = g.getPredsOf(s).iterator();

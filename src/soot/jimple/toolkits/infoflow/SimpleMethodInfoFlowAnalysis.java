@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.infoflow;
 
 import soot.*;
+
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
@@ -43,7 +44,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			EquivalentValue parameterRefEqVal = dfa.getNodeForParameterRef(sm, i);
+			EquivalentValue parameterRefEqVal = InfoFlowAnalysis.getNodeForParameterRef(sm, i);
 			if(!infoFlowGraph.containsNode(parameterRefEqVal))
 				infoFlowGraph.addNode(parameterRefEqVal);
 		}
@@ -52,7 +53,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
 		{
 			SootField sf = (SootField) it.next();
-			EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
+			EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
 			if(!infoFlowGraph.containsNode(fieldRefEqVal))
 				infoFlowGraph.addNode(fieldRefEqVal);
 		}
@@ -67,7 +68,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 	        while(scFieldsIt.hasNext())
 	        {
 				SootField scField = (SootField) scFieldsIt.next();
-				EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField);
+				EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
 				if(!infoFlowGraph.containsNode(fieldRefEqVal))
 					infoFlowGraph.addNode(fieldRefEqVal);
 	        }
@@ -75,7 +76,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		}
 		
 		// Add thisref of this class
-		EquivalentValue thisRefEqVal = dfa.getNodeForThisRef(sm);
+		EquivalentValue thisRefEqVal = InfoFlowAnalysis.getNodeForThisRef(sm);
 		if(!infoFlowGraph.containsNode(thisRefEqVal))
 			infoFlowGraph.addNode(thisRefEqVal);
 		
@@ -180,9 +181,9 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		return isInterestingSink(sink) || (sink instanceof Ref) || (sink instanceof Local);
 	}
 	
-	private ArrayList getDirectSources(Value v, FlowSet fs)
+	private ArrayList<Value> getDirectSources(Value v, FlowSet fs)
 	{
-		ArrayList ret = new ArrayList(); // of "interesting sources"
+		ArrayList<Value> ret = new ArrayList<Value>(); // of "interesting sources"
 		EquivalentValue vEqVal = new EquivalentValue(v);
 		Iterator fsIt = fs.iterator();
 		while(fsIt.hasNext())
@@ -194,37 +195,19 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		return ret;
 	}
 	
-	private List getSources(Value v, FlowSet fs) // returns all sources, including sources of sources (recursively)
-	{		
-		ArrayList sources = getDirectSources(v, fs); // of "interesting sources"
-		for(int i = 0; i < sources.size(); i++)
-		{
-			Value currentSource = (Value) sources.get(i);
-			List newSources = getDirectSources(currentSource, fs);
-			Iterator newSourcesIt = newSources.iterator();
-			while(newSourcesIt.hasNext())
-			{
-				Value newSource = (Value) newSourcesIt.next();
-				if(!sources.contains(newSource))
-					sources.add(newSource);
-			}
-		}
-		return sources;
-	}
-
 	// For when data flows to a local
 	protected void handleFlowsToValue(Value sink, Value initialSource, FlowSet fs)
 	{
 		if(!isTrackableSink(sink))
 			return;
 
-		List sources = getDirectSources(initialSource, fs); // list of Refs... returns all other sources
+		List<Value> sources = getDirectSources(initialSource, fs); // list of Refs... returns all other sources
 		if(isTrackableSource(initialSource))
 			sources.add(initialSource);
-		Iterator sourcesIt = sources.iterator();
+		Iterator<Value> sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
-			Value source = (Value) sourcesIt.next();
+			Value source = sourcesIt.next();
 			EquivalentValue sinkEqVal = new EquivalentValue(sink);
 			EquivalentValue sourceEqVal = new EquivalentValue(source);
 			if(sinkEqVal.equals(sourceEqVal))
@@ -250,21 +233,21 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 	// for when data flows to the data structure pointed to by a local
 	protected void handleFlowsToDataStructure(Value base, Value initialSource, FlowSet fs)
 	{
-		List sinks = getDirectSources(base, fs);
+		List<Value> sinks = getDirectSources(base, fs);
 		if(isTrackableSink(base))
 			sinks.add(base);
-		List sources = getDirectSources(initialSource, fs);
+		List<Value> sources = getDirectSources(initialSource, fs);
 		if(isTrackableSource(initialSource))
 			sources.add(initialSource);
-		Iterator sourcesIt = sources.iterator();
+		Iterator<Value> sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
-			Value source = (Value) sourcesIt.next();
+			Value source = sourcesIt.next();
 			EquivalentValue sourceEqVal = new EquivalentValue(source);
-			Iterator sinksIt = sinks.iterator();
+			Iterator<Value> sinksIt = sinks.iterator();
 			while(sinksIt.hasNext())
 			{
-				Value sink = (Value) sinksIt.next();
+				Value sink = sinksIt.next();
 				if(!isTrackableSink(sink))
 					continue;
 				EquivalentValue sinkEqVal = new EquivalentValue(sink);
@@ -322,7 +305,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		
 		List returnValueSources = new ArrayList();
 		
-		Iterator nodeIt = dataFlowGraph.getNodes().iterator();
+		Iterator<Object> nodeIt = dataFlowGraph.getNodes().iterator();
 		while(nodeIt.hasNext())
 		{
 			EquivalentValue nodeEqVal = (EquivalentValue) nodeIt.next();

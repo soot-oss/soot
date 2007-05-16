@@ -32,7 +32,6 @@ import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.util.*;
 import java.util.*;
-import java.io.*;
 import soot.grimp.*;
 
 /** Methods for producing Jasmin code from Jimple. */
@@ -122,7 +121,7 @@ public class JasminClass extends AbstractJasminClass
 
         int stackLimitIndex = -1;
         
-        subroutineToReturnAddressSlot = new HashMap(10, 0.7f);
+        subroutineToReturnAddressSlot = new HashMap<Unit, Integer>(10, 0.7f);
 
         // Determine the unitToLabel map
         {
@@ -163,10 +162,10 @@ public class JasminClass extends AbstractJasminClass
             int localCount = 0;
             int[] paramSlots = new int[method.getParameterCount()];
             int thisSlot = 0;
-            Set assignedLocals = new HashSet();
-            Map groupColorPairToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            Set<Local> assignedLocals = new HashSet<Local>();
+            Map<GroupIntPair, Integer> groupColorPairToSlot = new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
             
-            localToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
             assignColorsToLocals(body);
             
@@ -221,7 +220,7 @@ public class JasminClass extends AbstractJasminClass
                         {
                             
                             GroupIntPair pair = new GroupIntPair(localToGroup.get(l), 
-                                ((Integer) localToColor.get(l)).intValue());
+                                localToColor.get(l).intValue());
                                 
                             groupColorPairToSlot.put(pair, new Integer(slot));
                         }
@@ -244,7 +243,7 @@ public class JasminClass extends AbstractJasminClass
                     if(!assignedLocals.contains(local))
                     {
                         GroupIntPair pair = new GroupIntPair(localToGroup.get(local), 
-                                ((Integer) localToColor.get(local)).intValue());
+                                localToColor.get(local).intValue());
                             
                         int slot;
 
@@ -253,7 +252,7 @@ public class JasminClass extends AbstractJasminClass
                             // This local should share the same slot as the previous local with
                             // the same (group, color);
                             
-                            slot = ((Integer) groupColorPairToSlot.get(pair)).intValue();
+                            slot = groupColorPairToSlot.get(pair).intValue();
                         }
                         else { 
                             slot = localCount;           
@@ -299,7 +298,7 @@ public class JasminClass extends AbstractJasminClass
 
                     modifyStackHeight(1); // simulate the pushing of address onto the stack by the jsr
 
-                    int slot = ((Integer) localToSlot.get(assignStmt.getLeftOp())).intValue();
+                    int slot = localToSlot.get(assignStmt.getLeftOp()).intValue();
                     
                     if(slot >= 0 && slot <= 3)
                         emit("astore_" + slot, -1);
@@ -543,7 +542,7 @@ public class JasminClass extends AbstractJasminClass
                     
                     if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
                     {
-                        emit("iinc " + ((Integer) localToSlot.get(l)).intValue() + " " +  
+                        emit("iinc " + localToSlot.get(l).intValue() + " " +  
                             ((expr instanceof AddExpr) ? x : -x), 0);
                         return;
                     }        
@@ -617,11 +616,6 @@ public class JasminClass extends AbstractJasminClass
                     });
                 }
                 
-                public void defaultCase(Value v)
-                    {
-                        throw new RuntimeException("Can't store in value " + v);
-                    }
-                
                 public void caseInstanceFieldRef(InstanceFieldRef v)
                     {
                         emitValue(v.getBase());
@@ -634,7 +628,7 @@ public class JasminClass extends AbstractJasminClass
                 
                 public void caseLocal(final Local v)
                 {
-                    final int slot = ((Integer) localToSlot.get(v)).intValue();
+                    final int slot = localToSlot.get(v).intValue();
                         
                     v.getType().apply(new TypeSwitch()
                     {
@@ -830,10 +824,6 @@ public class JasminClass extends AbstractJasminClass
                         emit("ifge " + label, -1);
                     }
         
-                    public void defaultCase(Value v)
-                    {
-                        throw new RuntimeException("invalid condition " + v);
-                    }
                 });               
                  
                 return;
@@ -876,10 +866,6 @@ public class JasminClass extends AbstractJasminClass
                         emit("ifle " + label, -1);
                     }
         
-                    public void defaultCase(Value v)
-                    {
-                        throw new RuntimeException("invalid condition " + v);
-                    }
                 });               
                  
                 return;
@@ -1245,10 +1231,6 @@ public class JasminClass extends AbstractJasminClass
                 });
             }
 
-            public void defaultCase(Value v)
-            {
-                throw new RuntimeException("invalid condition " + v);
-            }
         });
     }
 
@@ -1266,7 +1248,7 @@ public class JasminClass extends AbstractJasminClass
                 if(s.getRightOp() instanceof CaughtExceptionRef &&
                     s.getLeftOp() instanceof Local)
                 {
-                    int slot = ((Integer) localToSlot.get(s.getLeftOp())).intValue();
+                    int slot = localToSlot.get(s.getLeftOp()).intValue();
 
                     modifyStackHeight(1); // simulate the pushing of the exception onto the 
                                           // stack by the jvm
@@ -1298,11 +1280,6 @@ public class JasminClass extends AbstractJasminClass
                     else
                         emit("pop2", -2);
                 }
-            }
-
-            public void defaultCase(Stmt s)
-            {
-                throw new RuntimeException("invalid stmt: " + s);
             }
 
             public void caseEnterMonitorStmt(EnterMonitorStmt s)
@@ -1470,7 +1447,7 @@ public class JasminClass extends AbstractJasminClass
 
     void emitLocal(Local v)
     {
-        final int slot = ((Integer) localToSlot.get(v)).intValue();
+        final int slot = localToSlot.get(v).intValue();
         final Local vAlias = v;
 
         v.getType().apply(new TypeSwitch()
@@ -1918,11 +1895,6 @@ public class JasminClass extends AbstractJasminClass
                     emit("fcmpl", -1);
                 else
                     emit("dcmpl", -3);
-            }
-
-            public void defaultCase(Value v)
-            {
-                throw new RuntimeException("Can't load value: " + v);
             }
 
             public void caseDivExpr(DivExpr v)
@@ -2394,11 +2366,6 @@ public class JasminClass extends AbstractJasminClass
                     }
 
                     public void caseArrayType(ArrayType t)
-                    {
-                        emitBooleanBranch("if_acmpeq");
-                    }
-
-                    public void casbeRefType(RefType t)
                     {
                         emitBooleanBranch("if_acmpeq");
                     }

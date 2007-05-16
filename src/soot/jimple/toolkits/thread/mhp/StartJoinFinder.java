@@ -1,17 +1,12 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
+
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
 
 // StartJoinFinder written by Richard L. Halpert, 2006-12-04
 // This can be used as an alternative to PegGraph and PegChain
@@ -22,23 +17,23 @@ import soot.toolkits.scalar.*;
 
 public class StartJoinFinder
 {
-	Set startStatements;
-	Set joinStatements;
+	Set<Stmt> startStatements;
+	Set<Stmt> joinStatements;
 	
-	Map startToRunMethods;
-	Map startToAllocNodes;
-	Map startToJoin;
-	Map startToContainingMethod;
+	Map<Stmt, List<SootMethod>> startToRunMethods;
+	Map<Stmt, List<AllocNode>> startToAllocNodes;
+	Map<Stmt, Stmt> startToJoin;
+	Map<Stmt, SootMethod> startToContainingMethod;
 	
 	public StartJoinFinder(CallGraph callGraph, PAG pag)
 	{
-		startStatements = new HashSet();
-		joinStatements = new HashSet();
+		startStatements = new HashSet<Stmt>();
+		joinStatements = new HashSet<Stmt>();
 
-		startToRunMethods = new HashMap();
-		startToAllocNodes = new HashMap();
-		startToJoin = new HashMap();
-		startToContainingMethod = new HashMap();
+		startToRunMethods = new HashMap<Stmt, List<SootMethod>>();
+		startToAllocNodes = new HashMap<Stmt, List<AllocNode>>();
+		startToJoin = new HashMap<Stmt, Stmt>();
+		startToContainingMethod = new HashMap<Stmt, SootMethod>();
 		
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (runAnalysisClassesIt.hasNext()) 
@@ -72,10 +67,10 @@ public class StartJoinFinder
     				startToRunMethods.putAll(sja.getStartToRunMethods());
     				startToAllocNodes.putAll(sja.getStartToAllocNodes());
     				startToJoin.putAll(sja.getStartToJoin());
-    				Iterator startIt = sja.getStartStatements().iterator();
+    				Iterator<Stmt> startIt = sja.getStartStatements().iterator();
     				while(startIt.hasNext())
     				{
-    					Stmt start = (Stmt) startIt.next();
+    					Stmt start = startIt.next();
     					startToContainingMethod.put(start, method);
     				}
     			}
@@ -83,32 +78,32 @@ public class StartJoinFinder
     	}
 	}
 	
-	public Set getStartStatements()
+	public Set<Stmt> getStartStatements()
 	{
 		return startStatements;
 	}
 	
-	public Set getJoinStatements()
+	public Set<Stmt> getJoinStatements()
 	{
 		return joinStatements;
 	}
 
-	public Map getStartToRunMethods()
+	public Map<Stmt, List<SootMethod>> getStartToRunMethods()
 	{
 		return startToRunMethods;
 	}
 
-	public Map getStartToAllocNodes()
+	public Map<Stmt, List<AllocNode>> getStartToAllocNodes()
 	{
 		return startToAllocNodes;
 	}
 	
-	public Map getStartToJoin()
+	public Map<Stmt, Stmt> getStartToJoin()
 	{
 		return startToJoin;
 	}
 	
-	public Map getStartToContainingMethod()
+	public Map<Stmt, SootMethod> getStartToContainingMethod()
 	{
 		return startToContainingMethod;
 	}

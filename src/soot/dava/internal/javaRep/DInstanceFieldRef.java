@@ -26,9 +26,9 @@ import soot.grimp.internal.*;
 
 public class DInstanceFieldRef extends GInstanceFieldRef 
 {
-    private HashSet thisLocals;
+    private HashSet<Object> thisLocals;
 
-    public DInstanceFieldRef( Value base, SootFieldRef fieldRef, HashSet thisLocals)
+    public DInstanceFieldRef( Value base, SootFieldRef fieldRef, HashSet<Object> thisLocals)
     {
 	super( base, fieldRef);
 

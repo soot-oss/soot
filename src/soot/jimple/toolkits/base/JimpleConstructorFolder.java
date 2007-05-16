@@ -35,10 +35,8 @@ import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
-import soot.grimp.*;
 import soot.util.*;
 import java.util.*;
-import soot.tagkit.*;
 
 public class JimpleConstructorFolder extends BodyTransformer
 {
@@ -84,7 +82,7 @@ public class JimpleConstructorFolder extends BodyTransformer
     static Local rhsLocal(Stmt s) { return (Local) rhs(s); }
     static Local lhsLocal(Stmt s) { return (Local) lhs(s); }
     private class Fact {
-        private Map varToStmt = new HashMap();
+        private Map<Local, Stmt> varToStmt = new HashMap<Local, Stmt>();
         private MultiMap stmtToVar = new HashMultiMap();
         private Stmt alloc = null;
         public void add(Local l, Stmt s) {
@@ -92,7 +90,7 @@ public class JimpleConstructorFolder extends BodyTransformer
             stmtToVar.put(s, l);
         }
         public Stmt get(Local l) {
-            return (Stmt) varToStmt.get(l);
+            return varToStmt.get(l);
         }
         public Set get(Stmt s) {
             return stmtToVar.get(s);
@@ -105,18 +103,18 @@ public class JimpleConstructorFolder extends BodyTransformer
             stmtToVar.remove(s);
         }
         public void copyFrom(Fact in) {
-            varToStmt = new HashMap(in.varToStmt);
+            varToStmt = new HashMap<Local, Stmt>(in.varToStmt);
             stmtToVar = new HashMultiMap(in.stmtToVar);
             alloc = in.alloc;
         }
         public void mergeFrom(Fact in1, Fact in2) {
-            varToStmt = new HashMap();
-            Iterator it = in1.varToStmt.keySet().iterator();
+            varToStmt = new HashMap<Local, Stmt>();
+            Iterator<Local> it = in1.varToStmt.keySet().iterator();
             while(it.hasNext()) {
-                Local l = (Local) it.next();
-                Stmt newStmt = (Stmt) in1.varToStmt.get(l);
+                Local l = it.next();
+                Stmt newStmt = in1.varToStmt.get(l);
                 if(in2.varToStmt.containsKey(l)) {
-                    Stmt newStmt2 = (Stmt) in2.varToStmt.get(l);
+                    Stmt newStmt2 = in2.varToStmt.get(l);
                     if(!newStmt.equals(newStmt2)) {
                         throw new RuntimeException("Merge of different uninitialized values; are you sure this bytecode is verifiable?");
                     }
@@ -125,8 +123,8 @@ public class JimpleConstructorFolder extends BodyTransformer
             }
             it = in2.varToStmt.keySet().iterator();
             while(it.hasNext()) {
-                Local l = (Local) it.next();
-                Stmt newStmt = (Stmt) in2.varToStmt.get(l);
+                Local l = it.next();
+                Stmt newStmt = in2.varToStmt.get(l);
                 add(l, newStmt);
             }
             if(in1.alloc != null && in1.alloc.equals(in2.alloc)) {
@@ -201,10 +199,10 @@ public class JimpleConstructorFolder extends BodyTransformer
         Analysis analysis = new Analysis(new BriefUnitGraph(body));
 
         Chain units = body.getUnits();
-        List stmtList = new ArrayList();
+        List<Unit> stmtList = new ArrayList<Unit>();
         stmtList.addAll(units);
 
-        Iterator it;
+        Iterator<Unit> it;
         it = stmtList.iterator();
         while(it.hasNext()) {
             Stmt s = (Stmt) it.next();

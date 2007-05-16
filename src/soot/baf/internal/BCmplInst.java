@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BCmplInst extends AbstractOpTypeInst implements CmplInst
 {
@@ -56,7 +55,7 @@ public class BCmplInst extends AbstractOpTypeInst implements CmplInst
     
     public int getInMachineCount()
     {
-        return 2*JasminClass.sizeOfType(getOpType());
+        return 2*AbstractJasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()

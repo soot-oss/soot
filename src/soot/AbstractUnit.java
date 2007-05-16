@@ -30,7 +30,6 @@
 package soot;
 
 import soot.tagkit.*;
-import soot.*;
 import soot.util.*;
 import java.util.*;
 
@@ -140,9 +139,8 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
         Object[] boxes = boxesPointing.toArray();
         // important to change this to an array to have a static copy
         
-        for(int i = 0; i < boxes.length; i++)
-        {
-            UnitBox box = (UnitBox) boxes[i];
+        for (Object element : boxes) {
+            UnitBox box = (UnitBox) element;
 
             if(box.getUnit() != this)
                 throw new RuntimeException("Something weird's happening");

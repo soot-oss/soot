@@ -24,14 +24,13 @@ import java.util.*;
 import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTDoWhileNode extends ASTControlFlowNode
 {
-    private List body;
+    private List<Object> body;
 
-    public ASTDoWhileNode( SETNodeLabel label, ConditionExpr ce, List body)
+    public ASTDoWhileNode( SETNodeLabel label, ConditionExpr ce, List<Object> body)
     {
 	super( label, ce);
 	this.body = body;
@@ -44,7 +43,7 @@ public class ASTDoWhileNode extends ASTControlFlowNode
       Needed because of change of grammar of condition being stored as a ASTCondition rather 
       than the ConditionExpr which was the case before
     */
-    public ASTDoWhileNode( SETNodeLabel label, ASTCondition ce, List body)
+    public ASTDoWhileNode( SETNodeLabel label, ASTCondition ce, List<Object> body)
     {
 	super( label, ce);
 	this.body = body;
@@ -56,9 +55,9 @@ public class ASTDoWhileNode extends ASTControlFlowNode
       Nomair A Naeem 20-FEB-2005
       Added for UselessLabeledBlockRemover
     */
-    public void replaceBody(List body){
+    public void replaceBody(List<Object> body){
 	this.body=body;
-	subBodies=new ArrayList();
+	subBodies=new ArrayList<Object>();
 	subBodies.add(body);
     }
 

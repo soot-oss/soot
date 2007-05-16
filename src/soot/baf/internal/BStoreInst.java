@@ -31,7 +31,6 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.baf.*;
 import soot.util.*;
 import java.util.*;
 
@@ -62,7 +61,7 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(getOpType());
+        return AbstractJasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()

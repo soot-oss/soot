@@ -36,7 +36,6 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 import soot.baf.*;
-import soot.jimple.*;
 
 public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
 {
@@ -52,11 +51,11 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
 
     public String toString()
     {
-        return Jimple.v().RETURN;
+        return Jimple.RETURN;
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().RETURN);
+        up.literal(Jimple.RETURN);
     }
     
     public void apply(Switch sw)
@@ -64,7 +63,7 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
         ((StmtSwitch) sw).caseReturnVoidStmt(this);
     }
     
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
 	Unit u;
         out.add(u = Baf.v().newReturnVoidInst());

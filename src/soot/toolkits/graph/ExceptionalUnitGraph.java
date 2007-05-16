@@ -35,7 +35,6 @@ import soot.util.*;
 import java.util.*;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
-import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.exceptions.ThrowableSet;
 import soot.baf.Inst;
 import soot.baf.NewInst;
@@ -325,7 +324,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
      */
     protected Map buildExceptionDests(ThrowAnalysis throwAnalysis) {
 	Chain units = body.getUnits();
-	Map unitToUncaughtThrowables = new HashMap(units.size());
+	Map<Unit, ThrowableSet> unitToUncaughtThrowables = new HashMap<Unit, ThrowableSet>(units.size());
 	Map result = null;
 	FastHierarchy hier = Scene.v().getOrMakeFastHierarchy();
 
@@ -337,7 +336,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 						  units.getPredOf(trap.getEndUnit()));
 		 unitIt.hasNext(); ) {
 		Unit unit = (Unit) unitIt.next();
-		ThrowableSet thrownSet = (ThrowableSet) unitToUncaughtThrowables.get(unit);
+		ThrowableSet thrownSet = unitToUncaughtThrowables.get(unit);
 		if (thrownSet == null) {
 		    thrownSet = throwAnalysis.mightThrow(unit);
 		}
@@ -357,18 +356,14 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	    }
 	}
 
-	// Record the escaping exceptions for units that have some
-	// caught exceptions (addDestToMap() screens any units which
-	// had no exceptions caught, despite being in the scope of a trap).
-	for (Iterator entryIt = unitToUncaughtThrowables.entrySet().iterator();
-	     entryIt.hasNext(); ) {
-	    Map.Entry entry = (Map.Entry) entryIt.next();
-	    Unit unit = (Unit) entry.getKey();
-	    ThrowableSet escaping = (ThrowableSet) entry.getValue();
-	    if (escaping != ThrowableSet.Manager.v().EMPTY) {
-		result = addDestToMap(result, unit, null, escaping);
-	    }
+	for (Object element : unitToUncaughtThrowables.entrySet()) {
+	Map.Entry entry = (Map.Entry) element;
+	Unit unit = (Unit) entry.getKey();
+	ThrowableSet escaping = (ThrowableSet) entry.getValue();
+	if (escaping != ThrowableSet.Manager.v().EMPTY) {
+	result = addDestToMap(result, unit, null, escaping);
 	}
+}
 	if (result == null) {
 	    result = Collections.EMPTY_MAP;
 	}
@@ -400,7 +395,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
      *         throws <code>caught</code> to <code>t</code>.
      */
     private Map addDestToMap(Map map, Unit u, Trap t, ThrowableSet caught) {
-	Collection dests = (map == null ? null : (Collection) map.get(u));
+	Collection<ExceptionDest> dests = (map == null ? null : (Collection) map.get(u));
 	if (dests == null) {
 	    if (t == null) {
 		// All exceptions from u escape, so don't record any.
@@ -409,7 +404,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 		if (map == null) {
 		     map = new HashMap(unitChain.size() * 2 + 1);
 		}
-		dests = new ArrayList(3);
+		dests = new ArrayList<ExceptionDest>(3);
 		map.put(u, dests);
 	    }
 	}
@@ -594,7 +589,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	    }
 	}
 
-	LinkedList workList = new LinkedList();
+	LinkedList<CFGEdge> workList = new LinkedList<CFGEdge>();
 
 	for (Iterator trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
 	    Trap trap = (Trap) trapIt.next();
@@ -621,7 +616,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	// edges from the head of that edge to the unit that catches
 	// the handler's exception.
 	while (workList.size() > 0) {
-	    CFGEdge edgeToThrower = (CFGEdge) workList.removeFirst();
+	    CFGEdge edgeToThrower = workList.removeFirst();
 	    Unit pred = edgeToThrower.head;
 	    Unit thrower = edgeToThrower.tail;
 	    Collection throwerDests = getExceptionDests(thrower);

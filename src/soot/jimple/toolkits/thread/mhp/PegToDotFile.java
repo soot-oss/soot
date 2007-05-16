@@ -26,12 +26,9 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
-import soot.toolkits.graph.*;
 import soot.util.dot.*;
 import soot.util.*;
 import java.util.*;
-import soot.jimple.internal.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.*;
 
@@ -63,15 +60,14 @@ public class PegToDotFile {
 	public static String methname;
 	
 	public static boolean isBrief      = false;
-	private static Map listNodeName = new HashMap();
-	private static int meth_count = 0;
-	private static Map startNodeToName = new HashMap(); 
+	private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
+	private static final Map<Object, String> startNodeToName = new HashMap<Object, String>(); 
 	
 	/* in one page or several pages of 8.5x11 */
 	public static boolean onepage      = true;
 	
 	public PegToDotFile(PegGraph graph, boolean onepage, String name) {
-		this.onepage = onepage;
+		PegToDotFile.onepage = onepage;
 		toDotFile(name, graph,"PEG graph");
 		
 		
@@ -168,7 +164,7 @@ public class PegToDotFile {
 			Map.Entry entry = (Map.Entry)iter.next();
 			Object startNode= entry.getKey();
 			System.out.println("startNode is: "+startNode);
-			String startNodeName = (String)startNodeToName.get(startNode);
+			String startNodeName = startNodeToName.get(startNode);
 			System.out.println("startNodeName is: "+startNodeName);
 			
 			List runMethodChainList = (List)entry.getValue();
@@ -263,14 +259,14 @@ public class PegToDotFile {
 		canvas.plot("peg.dot");
 	} 
 	
-	private static int getNodeOrder(Hashtable nodeindex, Object node){
+	private static int getNodeOrder(Hashtable<Object,Integer> nodeindex, Object node){
 		if (node == null ) {  
 			System.out.println("----node is null-----");
 			return 0;
 //			System.exit(1); // RLH
 		}
 		//System.out.println("node is: "+node);
-		Integer index = (Integer)nodeindex.get(node);
+		Integer index = nodeindex.get(node);
 		if (index == null) {
 			index = new Integer(nodecount++);
 			nodeindex.put(node, index);

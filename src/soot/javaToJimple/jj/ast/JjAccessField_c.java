@@ -20,7 +20,6 @@
 package soot.javaToJimple.jj.ast;
 
 import polyglot.ast.*;
-import polyglot.types.*;
 import polyglot.visit.*;
 import polyglot.ext.jl.ast.*;
 import polyglot.util.*;

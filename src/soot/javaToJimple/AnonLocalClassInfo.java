@@ -21,11 +21,13 @@ package soot.javaToJimple;
 
 import java.util.*;
 
+import polyglot.util.IdentityKey;
+
 public class AnonLocalClassInfo{
 
     private boolean inStaticMethod;
-    private ArrayList finalLocalsAvail;
-    private ArrayList finalLocalsUsed;
+    private ArrayList<IdentityKey> finalLocalsAvail;
+    private ArrayList<IdentityKey> finalLocalsUsed;
 
     public boolean inStaticMethod(){
         return inStaticMethod;
@@ -34,17 +36,17 @@ public class AnonLocalClassInfo{
         inStaticMethod = b;
     }
 
-    public ArrayList finalLocalsAvail(){
+    public ArrayList<IdentityKey> finalLocalsAvail(){
         return finalLocalsAvail;
     }
-    public void finalLocalsAvail(ArrayList list){
+    public void finalLocalsAvail(ArrayList<IdentityKey> list){
         finalLocalsAvail = list;
     }
 
-    public ArrayList finalLocalsUsed(){
+    public ArrayList<IdentityKey> finalLocalsUsed(){
         return finalLocalsUsed;
     }
-    public void finalLocalsUsed(ArrayList list){
+    public void finalLocalsUsed(ArrayList<IdentityKey> list){
         finalLocalsUsed = list;
     }
 

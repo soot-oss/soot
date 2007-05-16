@@ -19,7 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.util.queue.*;
 
@@ -31,12 +30,11 @@ import soot.util.queue.*;
 public class ReachableMethods
 { 
     private CallGraph cg;
-    private List entryPoints = new ArrayList(); 
     private Iterator edgeSource;
-    private ChunkedQueue reachables = new ChunkedQueue();
-    private Set set = new HashSet();
+    private final ChunkedQueue reachables = new ChunkedQueue();
+    private final Set<MethodOrMethodContext> set = new HashSet<MethodOrMethodContext>();
     private QueueReader unprocessedMethods;
-    private QueueReader allReachables = reachables.reader();
+    private final QueueReader allReachables = reachables.reader();
     private Filter filter;
     public ReachableMethods( CallGraph graph, Iterator entryPoints ) {
         this( graph, entryPoints, null );
@@ -49,7 +47,7 @@ public class ReachableMethods
         this.edgeSource = graph.listener();
         if( filter != null ) this.edgeSource = filter.wrap( this.edgeSource );
     }
-    public ReachableMethods( CallGraph graph, Collection entryPoints ) {
+    public ReachableMethods( CallGraph graph, Collection<SootMethod> entryPoints ) {
     	this(graph, entryPoints.iterator());
     }
     private void addMethods( Iterator methods ) {

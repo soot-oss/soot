@@ -27,9 +27,6 @@
 package soot.jimple;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
 
 /** Abstract base class for Body's on Stmts (Jimple and Grimp). */
 abstract public class StmtBody extends Body

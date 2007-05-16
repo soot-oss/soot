@@ -33,7 +33,6 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr 
@@ -58,7 +57,7 @@ public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr
             clonedArgs.add(i, getArg(i));
         }
         
-        return new  JVirtualInvokeExpr((Local) getBase(), methodRef, clonedArgs);
+        return new  JVirtualInvokeExpr(getBase(), methodRef, clonedArgs);
     }
         
 }

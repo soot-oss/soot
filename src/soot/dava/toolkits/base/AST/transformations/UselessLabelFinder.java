@@ -50,8 +50,8 @@ public class UselessLabelFinder{
     	if(DEBUG) System.out.println("dealing with labeled node"+label);
 	
 	
-    	List subBodies = (List)node.get_SubBodies();
-    	Iterator it = subBodies.iterator();
+    	List<Object> subBodies = node.get_SubBodies();
+    	Iterator<Object> it = subBodies.iterator();
     	while(it.hasNext()){
     		List subBodyTemp = null;
     		
@@ -93,8 +93,8 @@ public class UselessLabelFinder{
     		if(temp instanceof ASTStatementSequenceNode){
     			//if(DEBUG) System.out.println("Stmt seq Node");
     			ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)temp;
-    			List statements = stmtSeq.getStatements();
-    			Iterator stmtIt = statements.iterator();
+    			List<Object> statements = stmtSeq.getStatements();
+    			Iterator<Object> stmtIt = statements.iterator();
     			while(stmtIt.hasNext()){
     				AugmentedStmt as = (AugmentedStmt)stmtIt.next();
     				Stmt s = as.get_Stmt();
@@ -111,8 +111,8 @@ public class UselessLabelFinder{
     			//otherwise recursion
     			//getSubBodies
     			//if(DEBUG) System.out.println("Not Stmt seq Node");
-    			List subBodies=(List)temp.get_SubBodies();
-    			Iterator subIt = subBodies.iterator();
+    			List<Object> subBodies=temp.get_SubBodies();
+    			Iterator<Object> subIt = subBodies.iterator();
     			while(subIt.hasNext()){
     				List subBodyTemp = null;
     				if(temp instanceof ASTTryNode){

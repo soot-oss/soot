@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 import java.util.*;
 
 /** 
@@ -36,9 +35,9 @@ import java.util.*;
 public class AnnotationArrayElem extends AnnotationElem
 {
 
-    ArrayList values;
+    ArrayList<AnnotationElem> values;
 
-    public AnnotationArrayElem(ArrayList t, char kind, String name){
+    public AnnotationArrayElem(ArrayList<AnnotationElem> t, char kind, String name){
         super(kind, name);
         this.values = t;
     }
@@ -47,7 +46,7 @@ public class AnnotationArrayElem extends AnnotationElem
         return super.toString()+" values: "+values.toString();
     }
 
-    public ArrayList getValues(){
+    public ArrayList<AnnotationElem> getValues(){
         return values;
     }
 
@@ -57,7 +56,7 @@ public class AnnotationArrayElem extends AnnotationElem
     }
 
     public AnnotationElem getValueAt(int i){
-        return (AnnotationElem)values.get(i);
+        return values.get(i);
     }
 }
 

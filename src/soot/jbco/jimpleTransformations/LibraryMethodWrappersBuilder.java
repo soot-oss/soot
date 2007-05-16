@@ -54,11 +54,11 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
     out.println("Method Calls Replaced: "+methodcalls);
   }
   
-  private static HashMap libClassesToMethods = new HashMap();
+  private static final HashMap<SootClass, HashMap> libClassesToMethods = new HashMap<SootClass, HashMap>();
 
-  private static Scene scene = G.v().soot_Scene();
+  private static final Scene scene = G.v().soot_Scene();
 
-  public static ArrayList builtByMe = new ArrayList();
+  public static ArrayList<SootMethod> builtByMe = new ArrayList<SootMethod>();
 
   protected void internalTransform(String phaseName, Map options) {
     if (output)
@@ -182,7 +182,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
   }
 
   private SootMethodRef getNewMethodRef(SootClass libClass, SootMethod sm) {
-    HashMap methods = (HashMap) libClassesToMethods.get(libClass);
+    HashMap methods = libClassesToMethods.get(libClass);
     if (methods == null) {
       libClassesToMethods.put(libClass, new HashMap());
       return null;
@@ -193,7 +193,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
 
   private void setNewMethodRef(SootClass libClass, SootMethod sm,
       SootMethodRef smr) {
-    HashMap methods = (HashMap) libClassesToMethods.get(libClass);
+    HashMap<SootMethod, SootMethodRef> methods = libClassesToMethods.get(libClass);
     if (methods == null) {
       libClassesToMethods.put(libClass, new HashMap());
     }
@@ -209,7 +209,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
     SootMethod randMethod;
     String newName;
 
-    Vector availClasses = new Vector();
+    Vector<SootClass> availClasses = new Vector<SootClass>();
     Iterator aIt = scene.getApplicationClasses().iterator();
     while (aIt.hasNext()) {
       SootClass c = (SootClass)aIt.next();
@@ -223,9 +223,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
     
     do {
       int index = Rand.getInt(classCount);
-      if ((randClass = (SootClass) availClasses.get(index)) == fromC && classCount > 1) {
+      if ((randClass = availClasses.get(index)) == fromC && classCount > 1) {
         index = Rand.getInt(classCount);
-        randClass = (SootClass) availClasses.get(index);
+        randClass = availClasses.get(index);
       }
 
       methods = randClass.getMethods();
@@ -262,7 +262,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
           rtmp -= classCount;
           smParamTypes.add(getPrimType(rtmp));
         } else {
-          smParamTypes.add(((SootClass) availClasses.get(rtmp)).getType());
+          smParamTypes.add(availClasses.get(rtmp).getType());
         }
         extraParams++;
       }

@@ -29,10 +29,8 @@ package soot.jimple.toolkits.scalar.pre;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.toolkits.scalar.*;
 import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 
 /** 
  * Performs an DownSafe-analysis on the given graph.
@@ -86,7 +84,6 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
 			    sideEffect, BoundedFlowSet set) {
     super(dg);
     this.sideEffect = sideEffect;
-    UnitGraph g = (UnitGraph)dg;
     this.set = set;
     unitToGenerateMap = unitToGen;
     doAnalysis();
@@ -108,7 +105,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
     { /* Perform kill */
       Unit u = (Unit)unit;
 
-      Iterator outIt = ((FlowSet)out).iterator();
+      Iterator outIt = (out).iterator();
       // iterate over things (avail) in out set.
       while (outIt.hasNext()) {
         EquivalentValue equiVal = (EquivalentValue)outIt.next();

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import soot.G;
-import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.Value;
@@ -20,14 +19,11 @@ import soot.dava.internal.javaRep.DAssignStmt;
 import soot.dava.internal.javaRep.DShortcutAssignStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.InitializationDeclarationShortcut;
-import soot.grimp.internal.GAssignStmt;
-import soot.grimp.internal.ObjExprBox;
 import soot.jimple.ArrayRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.Stmt;
-import soot.jimple.internal.ImmediateBox;
 
 public class ShortcutArrayInit extends DepthFirstAdapter {
 	public static boolean DEBUG=false;
@@ -52,11 +48,11 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 	
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
 		debug("inASTStatementSequenceNode");
-		List stmts = node.getStatements();
-		Iterator it = stmts.iterator();
+		List<Object> stmts = node.getStatements();
+		Iterator<Object> it = stmts.iterator();
 		
 		boolean success=false;
-		ArrayList toRemove = new ArrayList();
+		ArrayList<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
 		while(it.hasNext()){
 			success = false;
 			AugmentedStmt as = (AugmentedStmt)it.next();
@@ -93,7 +89,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 			if(DEBUG)
 				System.out.println("Size of array is: "+((IntConstant)size).value);
 
-			Iterator tempIt = node.getStatements().iterator();
+			Iterator<Object> tempIt = node.getStatements().iterator();
 			//get to the array creation stmt
 			while(tempIt.hasNext()){
 				AugmentedStmt tempAs = (AugmentedStmt)tempIt.next();
@@ -164,7 +160,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 		if(success){
 			//means we did a transformation remove the stmts
 			it = node.getStatements().iterator();
-			List newStmtList = new ArrayList();
+			List<Object> newStmtList = new ArrayList<Object>();
 			while(it.hasNext()){
 				AugmentedStmt as = (AugmentedStmt)it.next();
 				if(toRemove.contains(as)){
@@ -234,10 +230,10 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 	 * followed by a definition Stmt
 	 */
 	public void secondPattern(ASTStatementSequenceNode node){
-		List stmts = node.getStatements();
-		Iterator it = stmts.iterator();
+		List<Object> stmts = node.getStatements();
+		Iterator<Object> it = stmts.iterator();
 		boolean success=false;
-		ArrayList toRemove = new ArrayList();
+		ArrayList<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
 		while(it.hasNext()){
 			success = false;
 			AugmentedStmt as = (AugmentedStmt)it.next();
@@ -273,7 +269,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 			if(DEBUG)
 				System.out.println("Size of array is: "+((IntConstant)size).value);
 
-			Iterator tempIt = node.getStatements().iterator();
+			Iterator<Object> tempIt = node.getStatements().iterator();
 			//get to the array creation stmt
 			while(tempIt.hasNext()){
 				AugmentedStmt tempAs = (AugmentedStmt)tempIt.next();
@@ -356,7 +352,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 		if(success){
 			//means we did a transformation remove the stmts
 			it = node.getStatements().iterator();
-			List newStmtList = new ArrayList();
+			List<Object> newStmtList = new ArrayList<Object>();
 			while(it.hasNext()){
 				AugmentedStmt as = (AugmentedStmt)it.next();
 				if(toRemove.contains(as)){

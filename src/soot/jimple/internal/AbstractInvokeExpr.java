@@ -34,7 +34,6 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
-import java.io.*;
 
 abstract public class AbstractInvokeExpr implements InvokeExpr
 {
@@ -65,8 +64,8 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
     public List getArgs()
     {
         List l = new ArrayList();
-        for (int i = 0; i < argBoxes.length; i++)
-            l.add(argBoxes[i].getValue());
+        for (ValueBox element : argBoxes)
+			l.add(element.getValue());
 
         return l;
     }

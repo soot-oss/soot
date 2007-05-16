@@ -26,9 +26,7 @@ import soot.baf.*;
 import soot.jbco.IJbcoTransform;
 import soot.jimple.*;
 import soot.util.*;
-import soot.baf.internal.*;
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 
 /**
  * @author Michael Batchelder
@@ -67,7 +65,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
       out.println("Checking " + b.getMethod().getName()
           + " for duplicate sequences..");
 
-    ArrayList illegalUnits = new ArrayList();
+    ArrayList<Unit> illegalUnits = new ArrayList<Unit>();
     ArrayList seenUnits = new ArrayList();
     ArrayList workList = new ArrayList();
     PatchingChain units = b.getUnits();
@@ -112,7 +110,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     Chain bLocals = b.getLocals();
     int counts[] = new int[longestSeq + 1];
     //ArrayList protectedUnits = new ArrayList();
-    HashMap bafToJLocals = (HashMap)soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
+    HashMap bafToJLocals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
     boolean changed = true;
     HashMap stackHeightsBefore = null;
     for (int count = longestSeq; count > 2; count--) 
@@ -123,8 +121,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
       //int count = uArry.length > 100 ? 4 : uArry.length > 50 ? 3 : 2;
 
-      ArrayList candidates = new ArrayList();
-      ArrayList unitIDs = new ArrayList();
+      ArrayList<ArrayList<Unit>> candidates = new ArrayList<ArrayList<Unit>>();
+      ArrayList<Object> unitIDs = new ArrayList<Object>();
       
       if (changed) {
         stackHeightsBefore = StackTypeHeightCalculator
@@ -140,7 +138,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
         if (i + count > uArry.length) 
           continue;
         
-        ArrayList seq = new ArrayList();
+        ArrayList<Unit> seq = new ArrayList<Unit>();
         for (int j = 0; j < count; j++) {
           Unit u = (Unit)uArry[i + j];
           if (u instanceof IdentityInst || u instanceof ReturnInst || illegalUnits.contains(u))
@@ -170,15 +168,15 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
           seq.add(u);
         }
         if (seq.size() == count) {
-          if (((Unit)seq.get(seq.size() - 1)).fallsThrough())
+          if (seq.get(seq.size() - 1).fallsThrough())
             candidates.add(seq);
         }
       }
 
-      HashMap selected = new HashMap();
+      HashMap<ArrayList, ArrayList<ArrayList<Object>>> selected = new HashMap<ArrayList, ArrayList<ArrayList<Object>>>();
       for (int i = 0; i < candidates.size(); i++) {
-        ArrayList seq = (ArrayList) candidates.get(i);
-        ArrayList matches = new ArrayList();
+        ArrayList seq = candidates.get(i);
+        ArrayList<ArrayList<Object>> matches = new ArrayList<ArrayList<Object>>();
         for (int j = 0; j < (uArry.length - count); j++) {
           if (overlap(uArry, seq, j, count))
             continue;
@@ -220,7 +218,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
           }
 
           if (found) {
-            ArrayList foundSeq = new ArrayList();
+            ArrayList<Object> foundSeq = new ArrayList<Object>();
             for (int m = 0; m < count; m++)
               foundSeq.add(uArry[j + m]);
             matches.add(foundSeq);
@@ -246,10 +244,10 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
       if (selected.size() <= 0)
         continue;
 
-      Iterator keys = selected.keySet().iterator();
+      Iterator<ArrayList> keys = selected.keySet().iterator();
       while (keys.hasNext()) {
-        ArrayList key = (ArrayList) keys.next();
-        ArrayList avalues = (ArrayList) selected.get(key);
+        ArrayList key = keys.next();
+        ArrayList avalues = selected.get(key);
         if (avalues.size() < 1 || soot.jbco.util.Rand.getInt(10) <= weight)
           continue;
 
@@ -356,8 +354,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     //    ((Unit)o2).getBoxesPointingToThis()))
     //  return false;
       
-    List l1 = getTrapsForUnit(o1,b);
-    List l2 = getTrapsForUnit(o2,b);
+    List<Trap> l1 = getTrapsForUnit(o1,b);
+    List<Trap> l2 = getTrapsForUnit(o2,b);
     if (l1.size() != l2.size()) 
       return false;
     else {
@@ -455,8 +453,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     return false;
   }
   
-  private List getTrapsForUnit(Object o, Body b) {
-    ArrayList list = new ArrayList();
+  private List<Trap> getTrapsForUnit(Object o, Body b) {
+    ArrayList<Trap> list = new ArrayList<Trap>();
     Chain traps = b.getTraps();
     if (traps.size() != 0) {
 	    PatchingChain units = b.getUnits();
@@ -515,8 +513,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     DupInst d1 = (DupInst) o1;
     DupInst d2 = (DupInst) o2;
 
-    List l1 = d1.getOpTypes();
-    List l2 = d2.getOpTypes();
+    List<Type> l1 = d1.getOpTypes();
+    List<Type> l2 = d2.getOpTypes();
     for (int k = 0; k < 2; k++) {
       if (k == 1) {
         l1 = d1.getUnderTypes();
@@ -550,11 +548,11 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     return false;
   }
 
-  private static ArrayList cullOverlaps(Body b, ArrayList ids, ArrayList matches) {
-    ArrayList newMatches = new ArrayList();
+  private static ArrayList<ArrayList<Object>> cullOverlaps(Body b, ArrayList<Object> ids, ArrayList<ArrayList<Object>> matches) {
+    ArrayList<ArrayList<Object>> newMatches = new ArrayList<ArrayList<Object>>();
     for (int i = 0; i < matches.size(); i++) {
-      ArrayList match = (ArrayList) matches.get(i);
-      Iterator it = match.iterator();
+      ArrayList<Object> match = matches.get(i);
+      Iterator<Object> it = match.iterator();
       boolean clean = true;
       while (it.hasNext()) {
         if (!ids.contains(it.next())) {
@@ -584,23 +582,5 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
       }
     }
     return newMatches;
-  }
-
-  private static ArrayList availableForCopy(ArrayList ids, ArrayList values) {
-    ArrayList results = new ArrayList();
-    for (int i = 0; i < values.size(); i++) {
-      boolean avail = true;
-      ArrayList val = (ArrayList) values.get(i);
-      for (int j = 0; j < val.size(); j++) {
-        if (!ids.contains(val.get(j))) {
-          avail = false;
-          break;
-        }
-      }
-      if (avail) {
-        results.add(val);
-      }
-    }
-    return results;
   }
 }

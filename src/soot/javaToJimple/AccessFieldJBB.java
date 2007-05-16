@@ -123,7 +123,7 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder{
         
         soot.Local baseLocal = base;
         if (base == null){
-            baseLocal = (soot.Local)ext().getBaseLocal((polyglot.ast.Receiver)call.target());
+            baseLocal = (soot.Local)ext().getBaseLocal(call.target());
         }
         if (methToCall.isStatic()){
             invoke = soot.jimple.Jimple.v().newStaticInvokeExpr(methToCall, params);

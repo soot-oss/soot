@@ -21,8 +21,6 @@ package soot.shimple.internal;
 
 import soot.*;
 import soot.shimple.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 import soot.toolkits.scalar.*;
@@ -65,7 +63,7 @@ public class SPhiExpr implements PhiExpr
     /**
      * Create a Phi expression from the given list of Values and Blocks.
      **/
-    public SPhiExpr(List args, List preds)
+    public SPhiExpr(List<Value> args, List<Unit> preds)
     {
         if(args.size() == 0)
             throw new RuntimeException("Arg list may not be empty");
@@ -73,12 +71,12 @@ public class SPhiExpr implements PhiExpr
         if(args.size() != preds.size())
             throw new RuntimeException("Arg list does not match Pred list");
 
-        type = ((Value) args.get(0)).getType();
-        Iterator argsIt = args.iterator();
-        Iterator predsIt = preds.iterator();
+        type = args.get(0).getType();
+        Iterator<Value> argsIt = args.iterator();
+        Iterator<Unit> predsIt = preds.iterator();
 
         while(argsIt.hasNext()){
-            Value arg = (Value) argsIt.next();
+            Value arg = argsIt.next();
             Object pred = predsIt.next();
 
             if(pred instanceof Block)
@@ -97,9 +95,9 @@ public class SPhiExpr implements PhiExpr
         return Collections.unmodifiableList(argPairs);
     }
 
-    public List getValues()
+    public List<Value> getValues()
     {
-        List args = new ArrayList();
+        List<Value> args = new ArrayList<Value>();
         Iterator argPairsIt = argPairs.iterator();
 
         while(argPairsIt.hasNext()){
@@ -110,9 +108,9 @@ public class SPhiExpr implements PhiExpr
         return args;
     }
 
-    public List getPreds()
+    public List<Unit> getPreds()
     {
-        List preds = new ArrayList();
+        List<Unit> preds = new ArrayList<Unit>();
         Iterator argPairsIt = argPairs.iterator();
 
         while(argPairsIt.hasNext()){

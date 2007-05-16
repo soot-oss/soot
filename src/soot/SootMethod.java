@@ -66,7 +66,7 @@ public class SootMethod
     boolean isPhantom = false;
 
     /** Declared exceptions thrown by this method.  Created upon demand. */
-    List exceptions = null;
+    List<SootClass> exceptions = null;
 
     /** Active body associated with this method. */
     Body activeBody;
@@ -133,7 +133,7 @@ public class SootMethod
         List parameterTypes,
         Type returnType,
         int modifiers,
-        List thrownExceptions) {
+        List<SootClass> thrownExceptions) {
         this.name = name;
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
@@ -142,7 +142,7 @@ public class SootMethod
         this.modifiers = modifiers;
 
         if (exceptions == null && !thrownExceptions.isEmpty()) {
-            exceptions = new ArrayList();
+            exceptions = new ArrayList<SootClass>();
             this.exceptions.addAll(thrownExceptions);
             /*DEBUG=true;
             if(DEBUG)
@@ -372,7 +372,7 @@ public class SootMethod
     		System.out.println("Adding exception "+e);
     	
         if (exceptions == null)
-            exceptions = new ArrayList();
+            exceptions = new ArrayList<SootClass>();
         else if (exceptions.contains(e))
             throw new RuntimeException(
                 "already throws exception " + e.getName());
@@ -386,7 +386,7 @@ public class SootMethod
     		System.out.println("Removing exception "+e);
 
         if (exceptions == null)
-            exceptions = new ArrayList();
+            exceptions = new ArrayList<SootClass>();
 
         if (!exceptions.contains(e))
             throw new RuntimeException(
@@ -401,7 +401,7 @@ public class SootMethod
     }
 
     public void setExceptions(List exceptions) {
-        this.exceptions = new ArrayList();
+        this.exceptions = new ArrayList<SootClass>();
         this.exceptions.addAll(exceptions);
     }
 
@@ -409,9 +409,9 @@ public class SootMethod
      * Returns a backed list of the exceptions thrown by this method.
      */
 
-    public List getExceptions() {
+    public List<SootClass> getExceptions() {
         if (exceptions == null)
-            exceptions = new ArrayList();
+            exceptions = new ArrayList<SootClass>();
 
         return exceptions;
     }
@@ -471,7 +471,7 @@ public class SootMethod
         StringBuffer buffer = new StringBuffer();
         for( Iterator typeIt = getParameterTypes().iterator(); typeIt.hasNext(); ) {
             final Type type = (Type) typeIt.next();
-            buffer.append(soot.jimple.JasminClass.jasminDescriptorOf(type));
+            buffer.append(AbstractJasminClass.jasminDescriptorOf(type));
         }
         return buffer.toString().intern();
     }
@@ -487,7 +487,7 @@ public class SootMethod
         buffer.append(
             "<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");
         buffer.append(name);
-        buffer.append(soot.jimple.JasminClass.jasminDescriptorOf(makeRef()));
+        buffer.append(AbstractJasminClass.jasminDescriptorOf(makeRef()));
         buffer.append(">");
 
         return buffer.toString().intern();
@@ -687,15 +687,15 @@ public class SootMethod
 
         // Print exceptions
         if (exceptions != null) {
-            Iterator exceptionIt = this.getExceptions().iterator();
+            Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
 
             if (exceptionIt.hasNext()) {
                 buffer.append(
-                    " throws " + ((SootClass) exceptionIt.next()).getName());
+                    " throws " + exceptionIt.next().getName());
 
                 while (exceptionIt.hasNext()) {
                     buffer.append(
-                        ", " + ((SootClass) exceptionIt.next()).getName());
+                        ", " + exceptionIt.next().getName());
                 }
             }
         }
@@ -746,15 +746,15 @@ public class SootMethod
 
         // Print exceptions
         if (exceptions != null) {
-            Iterator exceptionIt = this.getExceptions().iterator();
+            Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
 
             if (exceptionIt.hasNext()) {
                 buffer.append(
-                    " throws " + ((SootClass) exceptionIt.next()).getName());
+                    " throws " + exceptionIt.next().getName());
 
                 while (exceptionIt.hasNext()) {
                     buffer.append(
-                        ", " + ((SootClass) exceptionIt.next()).getName());
+                        ", " + exceptionIt.next().getName());
                 }
             }
         }

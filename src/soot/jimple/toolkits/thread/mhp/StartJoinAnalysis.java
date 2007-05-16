@@ -1,18 +1,15 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
+
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.scalar.EqualUsesAnalysis;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
 
 // StartJoinFinder written by Richard L. Halpert, 2006-12-04
 // This can be used as an alternative to PegGraph and PegChain
@@ -23,27 +20,27 @@ import soot.toolkits.scalar.*;
 
 public class StartJoinAnalysis extends ForwardFlowAnalysis
 {
-	Set startStatements;
-	Set joinStatements;
+	Set<Stmt> startStatements;
+	Set<Stmt> joinStatements;
 	
 	Hierarchy hierarchy;
 	
-	Map startToRunMethods;
-	Map startToAllocNodes;
-	Map startToJoin;
+	Map<Stmt, List<SootMethod>> startToRunMethods;
+	Map<Stmt, List<AllocNode>> startToAllocNodes;
+	Map<Stmt, Stmt> startToJoin;
 	
 	public StartJoinAnalysis(UnitGraph g, SootMethod sm, CallGraph callGraph, PAG pag)
 	{
 		super(g);
 		
-		startStatements = new HashSet();
-		joinStatements = new HashSet();
+		startStatements = new HashSet<Stmt>();
+		joinStatements = new HashSet<Stmt>();
 		
 		hierarchy = Scene.v().getActiveHierarchy();
 
-		startToRunMethods = new HashMap();
-		startToAllocNodes = new HashMap();
-		startToJoin = new HashMap();
+		startToRunMethods = new HashMap<Stmt, List<SootMethod>>();
+		startToAllocNodes = new HashMap<Stmt, List<AllocNode>>();
+		startToJoin = new HashMap<Stmt, Stmt>();
 		
 		// Get lists of start and join statements		
 		doFlowInsensitiveSingleIterationAnalysis();
@@ -58,23 +55,23 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 			// Build a map from start stmt to possible run methods, 
 			// and a map from start stmt to possible allocation nodes,
 			// and a map from start stmt to guaranteed join stmt
-			Iterator startIt = startStatements.iterator();
+			Iterator<Stmt> startIt = startStatements.iterator();
 			while (startIt.hasNext())
 			{
-				Stmt start = (Stmt) startIt.next();
+				Stmt start = startIt.next();
 				
-				List runMethodsList = new ArrayList(); // will be a list of possible run methods called by this start stmt
-				List allocNodesList = new ArrayList(); // will be a list of possible allocation nodes for the thread object that's getting started
+				List<SootMethod> runMethodsList = new ArrayList<SootMethod>(); // will be a list of possible run methods called by this start stmt
+				List<AllocNode> allocNodesList = new ArrayList<AllocNode>(); // will be a list of possible allocation nodes for the thread object that's getting started
 				
 				// Get possible thread objects (may alias)
 				Value startObject = ((InstanceInvokeExpr) (start).getInvokeExpr()).getBase();
 				PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local) startObject);
-				List mayAlias = getMayAliasList(pts);
+				List<AllocNode> mayAlias = getMayAliasList(pts);
 				if( mayAlias.size() < 1 )
 					continue; // If the may alias is empty, this must be dead code
 					
 				// For each possible thread object, get run method
-				Iterator mayRunIt = runMethodTargets.iterator( start ); // fails for some call graphs
+				Iterator<MethodOrMethodContext> mayRunIt = runMethodTargets.iterator( start ); // fails for some call graphs
 				while( mayRunIt.hasNext() )
 				{
 					SootMethod runMethod = (SootMethod) mayRunIt.next();
@@ -88,11 +85,11 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				// and add run from it and all subclasses
 				if(runMethodsList.isEmpty() && ((RefType) startObject.getType()).getSootClass().isApplicationClass())
 				{
-					List threadClasses = hierarchy.getSubclassesOfIncluding( ((RefType) startObject.getType()).getSootClass() );
-					Iterator threadClassesIt = threadClasses.iterator();
+					List<SootClass> threadClasses = hierarchy.getSubclassesOfIncluding( ((RefType) startObject.getType()).getSootClass() );
+					Iterator<SootClass> threadClassesIt = threadClasses.iterator();
 					while(threadClassesIt.hasNext())
 					{
-						SootClass currentClass = (SootClass) threadClassesIt.next();
+						SootClass currentClass = threadClassesIt.next();
 						if( currentClass.declaresMethod("void run()") )							
 						{
 							runMethodsList.add(currentClass.getMethod("void run()"));
@@ -101,10 +98,10 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				}
 
 				// For each possible thread object, get alloc node
-				Iterator mayAliasIt = mayAlias.iterator();
+				Iterator<AllocNode> mayAliasIt = mayAlias.iterator();
 				while( mayAliasIt.hasNext() )
 				{
-					AllocNode allocNode = (AllocNode)mayAliasIt.next();
+					AllocNode allocNode = mayAliasIt.next();
 					allocNodesList.add(allocNode);
 					if(runMethodsList.isEmpty())
 					{
@@ -132,16 +129,16 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				startToAllocNodes.put(start, allocNodesList);
 				
 				// does this start stmt match any join stmt???
-				Iterator joinIt = joinStatements.iterator();
+				Iterator<Stmt> joinIt = joinStatements.iterator();
 				while (joinIt.hasNext())
 				{
-					Stmt join = (Stmt) joinIt.next();
+					Stmt join = joinIt.next();
 					Value joinObject = ((InstanceInvokeExpr) (join).getInvokeExpr()).getBase();
 					
 					// If startObject and joinObject MUST be the same, and if join post-dominates start
 					if( lif.areEqualUses( start, (Local) startObject, join, (Local) joinObject ) )
 					{
-						if(((FlowSet) pd.getFlowBefore((Unit) start)).contains(join)) // does join post-dominate start?
+						if(((FlowSet) pd.getFlowBefore(start)).contains(join)) // does join post-dominate start?
 						{
 //							G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
 							startToJoin.put(start, join); // then this join always joins this start's thread
@@ -152,44 +149,44 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		}
 	}
 	
-	private List getMayAliasList(PointsToSetInternal pts)
+	private List<AllocNode> getMayAliasList(PointsToSetInternal pts)
 	{
-		List list = new ArrayList();
-		final HashSet ret = new HashSet();
+		List<AllocNode> list = new ArrayList<AllocNode>();
+		final HashSet<AllocNode> ret = new HashSet<AllocNode>();
 		pts.forall( new P2SetVisitor() {
 			public void visit( Node n ) {
 				
 				ret.add( (AllocNode)n );
 			}
 		} );
-		Iterator it = ret.iterator();
+		Iterator<AllocNode> it = ret.iterator();
 		while (it.hasNext()){
-			list.add( (AllocNode) it.next() );
+			list.add( it.next() );
 		}
 		return list;
 	}
 	
-	public Set getStartStatements()
+	public Set<Stmt> getStartStatements()
 	{
 		return startStatements;
 	}
 	
-	public Set getJoinStatements()
+	public Set<Stmt> getJoinStatements()
 	{
 		return joinStatements;
 	}
 
-	public Map getStartToRunMethods()
+	public Map<Stmt, List<SootMethod>> getStartToRunMethods()
 	{
 		return startToRunMethods;
 	}
 
-	public Map getStartToAllocNodes()
+	public Map<Stmt, List<AllocNode>> getStartToAllocNodes()
 	{
 		return startToAllocNodes;
 	}
 	
-	public Map getStartToJoin()
+	public Map<Stmt, Stmt> getStartToJoin()
 	{
 		return startToJoin;
 	}
@@ -217,8 +214,6 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 	protected void flowThrough(Object inValue, Object unit,
 			Object outValue)
 	{
-		FlowSet in  = (FlowSet) inValue;
-		FlowSet out = (FlowSet) outValue;
 		Stmt stmt = (Stmt) unit;
 		
 /*
@@ -256,11 +251,11 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					RefType baseType = (RefType) iie.getBase().getType();
 					if(!baseType.getSootClass().isInterface()) // the start method we're looking for is NOT an interface method
 					{
-						List superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
-						Iterator it = superClasses.iterator();
+						List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
+						Iterator<SootClass> it = superClasses.iterator();
 						while (it.hasNext())
 						{
-							if( ((SootClass) it.next()).getName().equals("java.lang.Thread") )
+							if( it.next().getName().equals("java.lang.Thread") )
 							{
 								// This is a Thread.start()
 								if(!startStatements.contains(stmt))
@@ -279,11 +274,11 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					RefType baseType = (RefType) iie.getBase().getType();
 					if(!baseType.getSootClass().isInterface())
 					{
-						List superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
-						Iterator it = superClasses.iterator();
+						List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
+						Iterator<SootClass> it = superClasses.iterator();
 						while (it.hasNext())
 						{
-							if( ((SootClass) it.next()).getName().equals("java.lang.Thread") )
+							if( it.next().getName().equals("java.lang.Thread") )
 							{
 								// This is a Thread.join()
 								if(!joinStatements.contains(stmt))

@@ -20,7 +20,6 @@
 package soot.dava.internal.javaRep;
 
 import soot.*;
-import java.util.*;
 import soot.grimp.internal.*;
 
 public class DIdentityStmt extends GIdentityStmt

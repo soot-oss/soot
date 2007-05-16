@@ -18,20 +18,19 @@
  */
 
 package soot.jimple.toolkits.pointer;
-import soot.*;
 import java.util.*;
 import soot.tagkit.*;
 
 public class DependenceGraph implements Attribute
 {
     private final static String NAME = "DependenceGraph";
-    HashSet edges = new HashSet();
+    HashSet<Edge> edges = new HashSet<Edge>();
 
     protected class Edge {
 	short from;
 	short to;
 	Edge( short from, short to ) { this.from = from; this.to = to; }
-	public int hashCode() { return ( (((int) from) << 16) + to ); }
+	public int hashCode() { return ( ((from) << 16) + to ); }
 	public boolean equals( Object other ) {
 	    Edge o = (Edge) other;
 	    return from == o.from && to == o.to;
@@ -65,8 +64,7 @@ public class DependenceGraph implements Attribute
     public byte[] getValue() {
 	byte[] ret = new byte[4*edges.size()];
 	int i = 0;
-	for( Iterator it = edges.iterator(); it.hasNext(); ) {
-	    Edge e = (Edge) it.next();
+	for (Edge e : edges) {
 	    ret[i+0] = (byte) ( (e.from >> 8) & 0xff );
 	    ret[i+1] = (byte) ( e.from  & 0xff );
 	    ret[i+2] = (byte) ( (e.to >> 8) & 0xff );
@@ -79,8 +77,7 @@ public class DependenceGraph implements Attribute
     public String toString()
     {
 	StringBuffer buf = new StringBuffer( "Dependences" );
-	for( Iterator it = edges.iterator(); it.hasNext(); ) {
-	    Edge e = (Edge) it.next();
+	for (Edge e : edges) {
 	    buf.append( "( "+e.from+", "+e.to+" ) " );
 	}
 	return buf.toString();

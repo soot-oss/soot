@@ -31,8 +31,6 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.util.*;
-import java.util.*;
 
 public abstract class AbstractInst extends AbstractUnit implements Inst
 {

@@ -53,8 +53,8 @@ public final class SmallNumberedMap {
     /** Returns the number of non-null values in this map. */
     public int nonNullSize() {
         int ret = 0;
-        for( int i = 0; i < values.length; i++ ) {
-            if( values[i] != null ) ret++;
+        for (Object element : values) {
+            if( element != null ) ret++;
         }
         return ret;
     }
@@ -127,7 +127,6 @@ public final class SmallNumberedMap {
     private final void doubleSize() {
         int uniSize = universe.size();
         if( array.length*128 > uniSize ) {
-            bits = new long[ uniSize/64+2 ];
         }
         Numberable[] oldArray = array;
         Object[] oldValues = values;
@@ -145,7 +144,6 @@ public final class SmallNumberedMap {
     }
     private Numberable[] array = new Numberable[8];
     private Object[] values = new Object[8];
-    private long[] bits;
     private int size = 0;
     private ArrayNumberer universe;
 }

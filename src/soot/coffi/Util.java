@@ -30,12 +30,9 @@
 
 
 package soot.coffi;
-import soot.options.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 import java.io.*;
-import soot.baf.*;
 import soot.tagkit.*;
 import soot.*;
 
@@ -295,8 +292,8 @@ public class Util
                         AnnotationDefault_attribute attr = (AnnotationDefault_attribute)methodInfo.attributes[j];
                         element_value [] input = new element_value[1];
                         input[0] = attr.default_value;
-                        ArrayList list = createElementTags(1, coffiClass, input);
-                        method.addTag(new AnnotationDefaultTag((AnnotationElem)list.get(0)));
+                        ArrayList<AnnotationElem> list = createElementTags(1, coffiClass, input);
+                        method.addTag(new AnnotationDefaultTag(list.get(0)));
                     }
                 }
             }
@@ -321,8 +318,8 @@ public class Util
                         || coffiClass.constant_pool[k] instanceof CONSTANT_InterfaceMethodref_info) {
                             Type[] types = jimpleTypesOfFieldOrMethodDescriptor(
                                 cp_info.getTypeDescr(coffiClass.constant_pool,k));
-                            for( int ii = 0; ii < types.length; ii++ ) {
-                                references.add(types[ii]);
+                            for (Type element : types) {
+                                references.add(element);
                             }
                         }
 
@@ -363,8 +360,6 @@ public class Util
                 String inner = null;
                 String outer = null;
                 String name = null;
-                int class_index;
-
                 if (e.inner_class_index != 0)
                     inner = ((CONSTANT_Utf8_info)coffiClass.constant_pool[((CONSTANT_Class_info)coffiClass.constant_pool[e.inner_class_index]).name_index]).convert();
                 if (e.outer_class_index != 0)
@@ -377,14 +372,12 @@ public class Util
         // set synthetic tags
         else if(coffiClass.attributes[i] instanceof Synthetic_attribute){
 		    
-		    Synthetic_attribute attr = (Synthetic_attribute)coffiClass.attributes[i];
-            bclass.addTag(new SyntheticTag());
+		    bclass.addTag(new SyntheticTag());
         }
         // set deprectaed tags
         else if(coffiClass.attributes[i] instanceof Deprecated_attribute){
 		    
-		    Deprecated_attribute attr = (Deprecated_attribute)coffiClass.attributes[i];
-            bclass.addTag(new DeprecatedTag());
+		    bclass.addTag(new DeprecatedTag());
         }
         else if (coffiClass.attributes[i] instanceof Signature_attribute){
             String generic_sig = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[((Signature_attribute)coffiClass.attributes[i]).signature_index])).convert();
@@ -421,7 +414,7 @@ public class Util
         return types[types.length - 1];
     }
 
-    private ArrayList conversionTypes = new ArrayList();
+    private final ArrayList<Type> conversionTypes = new ArrayList<Type>();
     
     /*
     private Map cache = new HashMap();
@@ -532,10 +525,10 @@ public class Util
 */
 
 
-    private Map cache = new HashMap();
+    private final Map<String, Type[]> cache = new HashMap<String, Type[]>();
     public Type[] jimpleTypesOfFieldOrMethodDescriptor(String descriptor)
     {
-        Type[] ret = (Type[]) cache.get(descriptor);
+        Type[] ret = cache.get(descriptor);
         if( ret != null ) return ret;
         char[] d = descriptor.toCharArray();
         int p = 0;
@@ -625,7 +618,7 @@ swtch:
             conversionTypes.add(t);
         }
 
-        ret = (Type[]) conversionTypes.toArray(new Type[0]);
+        ret = conversionTypes.toArray(new Type[0]);
         cache.put(descriptor, ret);
         return ret;
     }
@@ -821,8 +814,6 @@ swtch:
         String name = null;
         String debug_type = null;
         boolean assignedName = false;
-        boolean assignedType = false;
-        
         if(useFaithfulNaming && activeVariableTable != null)
         {
             if(activeOriginalIndex != -1)
@@ -840,7 +831,6 @@ swtch:
                 if (activeVariableTypeTable != null){
                debug_type = activeVariableTypeTable.getLocalVariableType(activeConstantPool, index, activeOriginalIndex);
                if (debug_type != null){
-                    assignedType = true;
                }
                 }
                 if(name != null) 
@@ -988,10 +978,10 @@ swtch:
         }
     }
     
-    private ArrayList createElementTags(int count, ClassFile coffiClass, element_value [] elems){
-        ArrayList list = new ArrayList();
+    private ArrayList<AnnotationElem> createElementTags(int count, ClassFile coffiClass, element_value [] elems){
+        ArrayList<AnnotationElem> list = new ArrayList<AnnotationElem>();
         for (int j = 0; j < count; j++){
-            element_value ev = (element_value)elems[j];
+            element_value ev = elems[j];
             char kind = ev.tag;
             String elemName = "default";
             if (ev.name_index != 0){
@@ -1056,7 +1046,7 @@ swtch:
                 array_element_value aev = (array_element_value)ev;
                 int num_vals = aev.num_values;
 
-                ArrayList elemVals = createElementTags(num_vals, coffiClass, aev.values);
+                ArrayList<AnnotationElem> elemVals = createElementTags(num_vals, coffiClass, aev.values);
                 AnnotationArrayElem elem = new AnnotationArrayElem(elemVals, kind, elemName);
                 list.add(elem);
             }

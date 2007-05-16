@@ -28,10 +28,8 @@ package soot.jimple.toolkits.scalar.pre;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.toolkits.scalar.*;
 import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 
 /** 
  * Computes the earliest points for the given expressions.<br>
@@ -54,9 +52,7 @@ import soot.util.*;
  * @see DownSafetyAnalysis
  */
 public class EarliestnessComputation {
-  private Map unitToEarliest;
-  private SideEffectTester sideEffect;
-
+  private Map<Unit, FlowSet> unitToEarliest;
   /**
    * given an UpSafetyAnalysis and a DownSafetyAnalysis, performs the
    * earliest-computation.<br>
@@ -87,9 +83,7 @@ public class EarliestnessComputation {
    */
   public EarliestnessComputation(UnitGraph unitGraph, UpSafetyAnalysis upSafe,
       DownSafetyAnalysis downSafe, SideEffectTester sideEffect, FlowSet set) {
-    this.sideEffect = sideEffect;
-
-    unitToEarliest = new HashMap(unitGraph.size() + 1, 0.7f);
+    unitToEarliest = new HashMap<Unit, FlowSet>(unitGraph.size() + 1, 0.7f);
 
     Iterator unitIt = unitGraph.iterator();
     while (unitIt.hasNext()) {
@@ -100,7 +94,7 @@ public class EarliestnessComputation {
 
       /* get a copy of the downSafe-set at the current unit */
       FlowSet downSafeSet =
-        (FlowSet)((FlowSet)downSafe.getFlowBefore(currentUnit)).clone();
+        ((FlowSet)downSafe.getFlowBefore(currentUnit)).clone();
 
       List predList = unitGraph.getPredsOf(currentUnit);
       if (predList.size() == 0) { //no predecessor
@@ -149,7 +143,6 @@ public class EarliestnessComputation {
             Iterator downSafeIt = downSafeSet.iterator();
             while (downSafeIt.hasNext()) {
               EquivalentValue equiVal = (EquivalentValue)downSafeIt.next();
-              Value avail = equiVal.getValue();
               FlowSet preDown = (FlowSet)downSafe.getFlowBefore(predecessor);
               FlowSet preUp = (FlowSet)upSafe.getFlowBefore(predecessor);
               if (!preDown.contains(equiVal) && !preUp.contains(equiVal)) {

@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** There can be many element_value pairs in each annotation 
  * @see attribute_info
  * @author Jennifer Lhotak

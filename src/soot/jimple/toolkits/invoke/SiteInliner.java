@@ -90,10 +90,10 @@ public class SiteInliner
               inlinee.getDeclaringClass().isLibraryClass()))
             return null;
 
-        Body inlineeB = (JimpleBody)inlinee.getActiveBody();
+        Body inlineeB = inlinee.getActiveBody();
         Chain inlineeUnits = inlineeB.getUnits();
 
-        InvokeExpr ie = (InvokeExpr)toInline.getInvokeExpr();
+        InvokeExpr ie = toInline.getInvokeExpr();
 
         Value thisToAdd = null;
         if (ie instanceof InstanceInvokeExpr)
@@ -184,7 +184,7 @@ public class SiteInliner
 
         // First, clone all of the inlinee's units & locals.
         HashMap oldLocalsToNew = new HashMap();
-        HashMap oldUnitsToNew = new HashMap();
+        HashMap<Stmt, Stmt> oldUnitsToNew = new HashMap<Stmt, Stmt>();
         {
             Stmt cursor = toInline;
             for( Iterator currIt = inlineeUnits.iterator(); currIt.hasNext(); ) {
@@ -240,7 +240,7 @@ public class SiteInliner
                 while (unitBoxes.hasNext())
                 {
                     UnitBox box = (UnitBox)unitBoxes.next();
-                    Unit uPrime = (Unit)(oldUnitsToNew.get(box.getUnit()));
+                    Unit uPrime = (oldUnitsToNew.get(box.getUnit()));
                     if (uPrime != null)
                         box.setUnit(uPrime);
                     else
@@ -257,9 +257,9 @@ public class SiteInliner
             while (trapsIt.hasNext())
             {
                 Trap t = (Trap)trapsIt.next();
-                Stmt newBegin = (Stmt)oldUnitsToNew.get(t.getBeginUnit()),
-                    newEnd = (Stmt)oldUnitsToNew.get(t.getEndUnit()),
-                    newHandler = (Stmt)oldUnitsToNew.get(t.getHandlerUnit());
+                Stmt newBegin = oldUnitsToNew.get(t.getBeginUnit()),
+                    newEnd = oldUnitsToNew.get(t.getEndUnit()),
+                    newHandler = oldUnitsToNew.get(t.getHandlerUnit());
 
                 if (newBegin == null || newEnd == null || newHandler == null)
                     throw new RuntimeException("couldn't map trap!");

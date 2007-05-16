@@ -31,18 +31,18 @@ public abstract class ASTNode extends AbstractUnit
 	TAB     = "    ",
 	NEWLINE = "\n";
 
-    protected List subBodies;
+    protected List<Object> subBodies;
 
     public ASTNode()
     {
-	subBodies = new ArrayList();
+	subBodies = new ArrayList<Object>();
     }
 
     public abstract void toString( UnitPrinter up );
  
-    protected void body_toString( UnitPrinter up, List body )
+    protected void body_toString( UnitPrinter up, List<Object> body )
     {
-	Iterator it = body.iterator();
+	Iterator<Object> it = body.iterator();
 	while (it.hasNext()) {
 	    ((ASTNode) it.next()).toString( up );
 
@@ -51,11 +51,11 @@ public abstract class ASTNode extends AbstractUnit
 	}
     }
 
-    protected String body_toString(List body)
+    protected String body_toString(List<Object> body)
     {
 	StringBuffer b = new StringBuffer();
 
-	Iterator it = body.iterator();
+	Iterator<Object> it = body.iterator();
 	while (it.hasNext()) {
 	    b.append( ((ASTNode) it.next()).toString());
 
@@ -66,7 +66,7 @@ public abstract class ASTNode extends AbstractUnit
 	return b.toString();	
     }
 
-    public List get_SubBodies()
+    public List<Object> get_SubBodies()
     {
 	return subBodies;
     }
@@ -76,7 +76,7 @@ public abstract class ASTNode extends AbstractUnit
 
     protected void perform_AnalysisOnSubBodies( ASTAnalysis a)
     {
-	Iterator sbit = subBodies.iterator();
+	Iterator<Object> sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
 	    Object subBody = sbit.next();
 	    Iterator it = null;

@@ -28,6 +28,7 @@ package soot.util;
 
 import java.util.*;
 import soot.*;
+
 import java.io.*;
 
 /** Augmented data type guaranteeing O(1) insertion and removal from a set
@@ -35,9 +36,9 @@ import java.io.*;
 public interface Chain extends Collection, Serializable
 {
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
-    public void insertBefore(List toInsert, Object point);
+    public void insertBefore(List<Unit> toInsert, Object point);
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
-    public void insertAfter(List toInsert, Object point);
+    public void insertAfter(List<Unit> toInsert, Object point);
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(Object toInsert, Object point);
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */

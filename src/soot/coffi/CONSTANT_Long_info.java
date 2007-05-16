@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** A constant pool entry of type CONSTANT_Long
  * @see cp_info
  * @author Clark Verbrugge
@@ -76,6 +74,6 @@ class CONSTANT_Long_info extends cp_info {
       if (tag!=cp.tag) return tag-cp.tag;
       CONSTANT_Long_info cu = (CONSTANT_Long_info)cp;
       d = convert()-cu.convert();
-      return ((d>(long)0) ? 1 : ((d<(long)0) ? -1 : 0));
+      return ((d>0) ? 1 : ((d<0) ? -1 : 0));
    }
 }

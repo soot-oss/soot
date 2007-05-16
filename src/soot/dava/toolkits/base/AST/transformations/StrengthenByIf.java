@@ -19,50 +19,20 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-/*
-  Nomair A. Naeem 18-FEB-2005
-
-	PATTERN ONE:
-	   label_1:                                                 
-           while(cond1){                       
-               if(cond2){                      while(cond1 && !cond2){
-                   Body              
-               }                               }
-           }                                   //if body is a break label_1
-	
-
-	    PATTERN TWO:
-	      lable_1:
-              while(true){                while(!cond){
-                if(cond){                 }     
-                    Body                  Body(minus the break)
-                }
-              }
-              This pattern can be applied only if
-	      1: the loop is an UnconditionalLoopNode
-	      2, The body should be a statement sequence (could do the general
-	         case but its too complex
-	      2, The body contains an abrupt edge out of the loop
-
-  TO MAKE CODE EFFECIENT BLOCK THE ANALYSIS TO GOING INTO STATEMENTS
-  this is done by overriding the caseASTStatementSequenceNode
-*/
 
 public class StrengthenByIf{
     /*
       We know this method is called when there is a while node which has a body
       consisting entirely of one ASTIfNode
     */
-    public static List getNewNode(ASTNode loopNode, ASTIfNode ifNode){
-	List ifBody = ifNode.getIfBody();
+    public static List<ASTNode> getNewNode(ASTNode loopNode, ASTIfNode ifNode){
+	List<Object> ifBody = ifNode.getIfBody();
 	String label = isItOnlyBreak(ifBody);
 	if(label != null){
 	    //only one break statement and it is breaking some label
@@ -82,14 +52,14 @@ public class StrengthenByIf{
 			//aggregate the two conditions
 			ASTCondition newCond = new ASTAndCondition(outerCond,innerCond);
 			//make empty body
-			List newWhileBody = new ArrayList();
+			List<Object> newWhileBody = new ArrayList<Object>();
 			//SETNodeLabel newLabel = ((ASTWhileNode)loopNode).get_Label();
 
 			// dont need any label name since the body of the while is empty
 			SETNodeLabel newLabel = new SETNodeLabel();
 
 			//make new ASTWhileNode
-			List toReturn = new ArrayList();
+			List<ASTNode> toReturn = new ArrayList<ASTNode>();
 			toReturn.add(new ASTWhileNode(newLabel,newCond,newWhileBody));
 			return toReturn;
 			
@@ -115,14 +85,14 @@ public class StrengthenByIf{
 			innerCond.flip();
 
 			//make empty body
-			List newWhileBody = new ArrayList();
+			List<Object> newWhileBody = new ArrayList<Object>();
 			//SETNodeLabel newLabel = ((ASTUnconditionalLoopNode)loopNode).get_Label();
 
 			// dont need any label name since the body of the while is empty
 			SETNodeLabel newLabel = new SETNodeLabel();
 			
 			//make new ASTWhileNode
-			List toReturn = new ArrayList();
+			List<ASTNode> toReturn = new ArrayList<ASTNode>();
 			toReturn.add(new ASTWhileNode(newLabel,innerCond,newWhileBody));
 			return toReturn;
 		    }
@@ -136,8 +106,8 @@ public class StrengthenByIf{
 	    ASTNode tempNode = (ASTNode)ifBody.get(0);
 	    if(tempNode instanceof ASTStatementSequenceNode){
 		//a stmtSeq
-		List statements = ((ASTStatementSequenceNode)tempNode).getStatements();
-		Iterator stIt = statements.iterator();
+		List<Object> statements = ((ASTStatementSequenceNode)tempNode).getStatements();
+		Iterator<Object> stIt = statements.iterator();
 		while(stIt.hasNext()){
 		    AugmentedStmt as = (AugmentedStmt)stIt.next();
 		    Stmt stmt = as.get_Stmt();
@@ -157,16 +127,16 @@ public class StrengthenByIf{
 				    innerCond.flip();
 				    
 				    //make empty body
-				    List newWhileBody = new ArrayList();
+				    List<Object> newWhileBody = new ArrayList<Object>();
 				    SETNodeLabel newLabel = ((ASTUnconditionalLoopNode)loopNode).get_Label();
 				    
 				    //make new ASTWhileNode
-				    List toReturn = new ArrayList();
+				    List<ASTNode> toReturn = new ArrayList<ASTNode>();
 				    toReturn.add(new ASTWhileNode(newLabel,innerCond,newWhileBody));
 				    
 				    //  Add the statementSequenceNode AFTER the whileNode except for the laststmt
-				    Iterator tempIt = statements.iterator();
-				    List newStmts = new ArrayList();
+				    Iterator<Object> tempIt = statements.iterator();
+				    List<Object> newStmts = new ArrayList<Object>();
 				    while(tempIt.hasNext()){
 					Object tempStmt = tempIt.next();
 					if(tempIt.hasNext()){
@@ -187,7 +157,7 @@ public class StrengthenByIf{
 			    innerCond.flip();
 			    
 			    //make empty body
-			    List newWhileBody = new ArrayList();
+			    List<Object> newWhileBody = new ArrayList<Object>();
 			    //SETNodeLabel newLabel = ((ASTUnconditionalLoopNode)loopNode).get_Label();
 			    
 
@@ -195,12 +165,12 @@ public class StrengthenByIf{
 			    SETNodeLabel newLabel = new SETNodeLabel();
 
 			    //make new ASTWhileNode
-			    List toReturn = new ArrayList();
+			    List<ASTNode> toReturn = new ArrayList<ASTNode>();
 			    toReturn.add(new ASTWhileNode(newLabel,innerCond,newWhileBody));
 			    
 			    //  Add the statementSequenceNode AFTER the whileNode except for the laststmt
-			    Iterator tempIt = statements.iterator();
-			    List newStmts = new ArrayList();
+			    Iterator<Object> tempIt = statements.iterator();
+			    List<Object> newStmts = new ArrayList<Object>();
 			    while(tempIt.hasNext()){
 				newStmts.add(tempIt.next());
 			    }
@@ -227,7 +197,7 @@ public class StrengthenByIf{
       If the conditions are true the label of the break stmt is returned
       otherwise null is returned
     */
-    private static String isItOnlyBreak(List body){
+    private static String isItOnlyBreak(List<Object> body){
 	if(body.size()!=1){
 	    //this is more than one we need one stmtSeq Node
 	    return null;
@@ -238,7 +208,7 @@ public class StrengthenByIf{
 	    return null;
 	}
 	  
-	List statements = ((ASTStatementSequenceNode)tempNode).getStatements();
+	List<Object> statements = ((ASTStatementSequenceNode)tempNode).getStatements();
 	if(statements.size()!=1){
 	    //we need one break
 	    return null;

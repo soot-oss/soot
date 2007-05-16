@@ -1,11 +1,7 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
 import soot.util.*;
 import java.util.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.*;
 
 
 // *** USE AT YOUR OWN RISK ***
@@ -24,8 +20,8 @@ public class TopologicalSorter
 {
 	Chain chain;
 	PegGraph pg;
-	LinkedList sorter = new LinkedList();
-	List visited = new ArrayList();
+	LinkedList<Object> sorter = new LinkedList<Object>();
+	List<Object> visited = new ArrayList<Object>();
 	public TopologicalSorter(Chain chain, PegGraph pg){
 		this.chain = chain;
 		this.pg = pg;
@@ -51,22 +47,5 @@ public class TopologicalSorter
 		}
 		sorter.addFirst(m);
 	}
-	public List sorter(){return sorter;}
-	
-	private void printSeq(List sequentNodes){
-		System.out.println("topo sorter:");
-		Iterator it = sequentNodes.iterator();
-		while (it.hasNext()){
-			
-			Object o = it.next();
-			if (o instanceof JPegStmt){
-				Tag tag = (Tag)((JPegStmt)o).getTags().get(0);
-				System.out.println(tag + " " + o );
-			}
-			else
-				System.out.println(o);
-		}
-		
-		System.out.println("end topo sorter:");
-	}
+	public List<Object> sorter(){return sorter;}
 }

@@ -25,14 +25,12 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
-import soot.toolkits.graph.*;
-
 class BoolValue 
 {
     private boolean isRectangular;
 
-    private static BoolValue trueValue = new BoolValue(true);
-    private static BoolValue falseValue = new BoolValue(false);
+    private static final BoolValue trueValue = new BoolValue(true);
+    private static final BoolValue falseValue = new BoolValue(false);
 
     public BoolValue(boolean v)
     {

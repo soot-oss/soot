@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.*;
 import soot.jimple.spark.internal.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
@@ -48,9 +47,9 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     private final boolean nativeAddAll( HybridPointsToSet other, HybridPointsToSet exclude ) {
         boolean ret = false;
         BitVector mask = null;
-        TypeManager typeManager = (TypeManager) pag.getTypeManager();
+        TypeManager typeManager = pag.getTypeManager();
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
-            mask = (BitVector) typeManager.get( this.getType() );
+            mask = typeManager.get( this.getType() );
         }
         if( other.bits != null ) {
             convertToBits();

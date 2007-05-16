@@ -60,7 +60,7 @@ public class AndAggregator extends DepthFirstAdapter{
     }
 
     public void outASTIfNode(ASTIfNode node){
-	List bodies = node.get_SubBodies();
+	List<Object> bodies = node.get_SubBodies();
 	if(bodies.size()==1){ //this should always be one since there is only one body of an if statement
 	    List body = (List)bodies.get(0);
 	    //this is the if body check to see if this is a single if Node
@@ -76,7 +76,7 @@ public class AndAggregator extends DepthFirstAdapter{
 		    ASTCondition outerCond = node.get_Condition();
 		    ASTCondition innerCond = ((ASTIfNode)bodyNode).get_Condition();
 
-		    SETNodeLabel outerLabel = ((ASTIfNode)node).get_Label();
+		    SETNodeLabel outerLabel = (node).get_Label();
 		    SETNodeLabel innerLabel = ((ASTIfNode)bodyNode).get_Label();
 		    
 		    SETNodeLabel newLabel = null;
@@ -100,11 +100,11 @@ public class AndAggregator extends DepthFirstAdapter{
 		    ASTCondition newCond = new ASTAndCondition(outerCond,innerCond);
 
 		    //Get the body of the inner Node that will be the overall body
-		    List newBodyList = ((ASTIfNode)bodyNode).get_SubBodies();
+		    List<Object> newBodyList = ((ASTIfNode)bodyNode).get_SubBodies();
 
 		    //retireve the actual body List
 		    if(newBodyList.size()==1){//should always be one since this is body of IF
-			List newBody = (List)newBodyList.get(0);
+			List<Object> newBody = (List<Object>)newBodyList.get(0);
 			node.replace(newLabel,newCond,newBody);
 			//System.out.println("ANDDDDDD AGGREGATING !!!");
 			G.v().ASTTransformations_modified=true;
@@ -120,16 +120,16 @@ public class AndAggregator extends DepthFirstAdapter{
 
     private void changeUses(String to, String from, ASTNode node){
 	//remember this method is only called when "to" and "from" are both non null
-	List subBodies = node.get_SubBodies();
-	Iterator it = subBodies.iterator();
+	List<Object> subBodies = node.get_SubBodies();
+	Iterator<Object> it = subBodies.iterator();
 	while(it.hasNext()){
 	    //going over all subBodies
 	    if (node instanceof ASTStatementSequenceNode){
 		//check for abrupt stmts
 
 		ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)node;
-		List statements = stmtSeq.getStatements();
-		Iterator stmtIt = statements.iterator();
+		List<Object> statements = stmtSeq.getStatements();
+		Iterator<Object> stmtIt = statements.iterator();
 		while(stmtIt.hasNext()){
 		    AugmentedStmt as = (AugmentedStmt)stmtIt.next();
 		    Stmt s = as.get_Stmt();

@@ -34,36 +34,36 @@ import java.util.* ;
 
 class ArrayBoundsCheckerAnalysis 
 {
-    protected Map blockToBeforeFlow;
-    protected Map unitToBeforeFlow;
+    protected Map<Block, WeightedDirectedSparseGraph> blockToBeforeFlow;
+    protected Map<Unit, WeightedDirectedSparseGraph> unitToBeforeFlow;
 
-    private Map edgeMap;
-    private Set edgeSet;
+    private final Map<FlowGraphEdge, WeightedDirectedSparseGraph> edgeMap;
+    private final Set<FlowGraphEdge> edgeSet;
 
-    private HashMap stableRoundOfUnits;
+    private HashMap<Block, Integer> stableRoundOfUnits;
 
     private ArrayRefBlockGraph graph;
 
-    private IntContainer zero = new IntContainer(0);
+    private final IntContainer zero = new IntContainer(0);
 
     private boolean fieldin = false;
-    private HashMap localToFieldRef;
-    private HashMap fieldToFieldRef;
-    private int strictness = 2;
+    private HashMap<Object, HashSet<Value>> localToFieldRef;
+    private HashMap<Object, HashSet<Value>> fieldToFieldRef;
+    private final int strictness = 2;
 
     private boolean arrayin = false;
 
     private boolean csin = false;
-    private HashMap localToExpr;
+    private HashMap<Value, HashSet<Value>> localToExpr;
 
     private boolean classfieldin = false;
     private ClassFieldAnalysis cfield;
 
     private boolean rectarray = false;
-    private HashSet rectarrayset;
-    private HashSet multiarraylocals;
+    private HashSet<Local> rectarrayset;
+    private HashSet<Local> multiarraylocals;
 
-    private ArrayIndexLivenessAnalysis ailanalysis;
+    private final ArrayIndexLivenessAnalysis ailanalysis;
 
     /* A little bit different from ForwardFlowAnalysis */
     public ArrayBoundsCheckerAnalysis(Body body, 
@@ -97,14 +97,14 @@ class ArrayBoundsCheckerAnalysis
             if (rectarray)
             {
                 this.multiarraylocals = ailanalysis.getMultiArrayLocals();
-                this.rectarrayset = new HashSet();
+                this.rectarrayset = new HashSet<Local>();
 
                 RectangularArrayFinder pgbuilder = RectangularArrayFinder.v();
 
-                Iterator localIt = multiarraylocals.iterator();
+                Iterator<Local> localIt = multiarraylocals.iterator();
                 while (localIt.hasNext())
                 {
-                    Local local = (Local)localIt.next();
+                    Local local = localIt.next();
                     
                     MethodLocal mlocal = new MethodLocal(thismethod, local);
                     
@@ -126,9 +126,9 @@ class ArrayBoundsCheckerAnalysis
 
         this.graph = new ArrayRefBlockGraph(body);
 
-        blockToBeforeFlow = new HashMap(graph.size()*2+1, 0.7f);
+        blockToBeforeFlow = new HashMap<Block, WeightedDirectedSparseGraph>(graph.size()*2+1, 0.7f);
         
-        edgeMap = new HashMap(graph.size()*2+1, 0.7f);
+        edgeMap = new HashMap<FlowGraphEdge, WeightedDirectedSparseGraph>(graph.size()*2+1, 0.7f);
         
         edgeSet = buildEdgeSet(graph);
         
@@ -142,11 +142,11 @@ class ArrayBoundsCheckerAnalysis
 
     private void convertToUnitEntry()
     {
-        unitToBeforeFlow = new HashMap();
-        Iterator blockIt = blockToBeforeFlow.keySet().iterator();
+        unitToBeforeFlow = new HashMap<Unit, WeightedDirectedSparseGraph>();
+        Iterator<Block> blockIt = blockToBeforeFlow.keySet().iterator();
         while (blockIt.hasNext())
         {
-            Block block = (Block)blockIt.next();
+            Block block = blockIt.next();
             Unit first = block.getHead();
             unitToBeforeFlow.put(first, blockToBeforeFlow.get(block));
         }
@@ -154,9 +154,9 @@ class ArrayBoundsCheckerAnalysis
 
     /** buildEdgeSet creates a set of edges from directed graph.
      */
-    public Set buildEdgeSet(DirectedGraph dg)
+    public Set<FlowGraphEdge> buildEdgeSet(DirectedGraph dg)
     {
-        HashSet edges = new HashSet();
+        HashSet<FlowGraphEdge> edges = new HashSet<FlowGraphEdge>();
 
         Iterator unitIt = dg.iterator();
         while (unitIt.hasNext())
@@ -277,14 +277,14 @@ class ArrayBoundsCheckerAnalysis
 
         HashSet changedUnitsSet = new HashSet(allUnits);
 
-        List changedSuccs;
+        List<Object> changedSuccs;
 
         /* An temporary object. */
         FlowGraphEdge tmpEdge = new FlowGraphEdge();
 
         /* If any output flow set has unknow value, it will be put in this set
          */
-        HashSet unvisitedNodes = new HashSet(graph.size()*2+1, 0.7f);
+        HashSet<Block> unvisitedNodes = new HashSet<Block>(graph.size()*2+1, 0.7f);
 
         /* adjust livelocals set */
         {
@@ -292,14 +292,14 @@ class ArrayBoundsCheckerAnalysis
             while (blockIt.hasNext())
             {
                 Block block = (Block)blockIt.next();
-                HashSet livelocals = (HashSet)ailanalysis.getFlowBefore(block.getHead());
+                HashSet<IntContainer> livelocals = (HashSet<IntContainer>)ailanalysis.getFlowBefore(block.getHead());
                 livelocals.add(zero);
             }
         }
 
         /* Set initial values and nodes to visit. */
         {
-            stableRoundOfUnits = new HashMap();
+            stableRoundOfUnits = new HashMap<Block, Integer>();
             
             Iterator it = graph.iterator();
 
@@ -316,10 +316,10 @@ class ArrayBoundsCheckerAnalysis
                 blockToBeforeFlow.put(block, new WeightedDirectedSparseGraph(livelocals, false));                
             }
 
-            Iterator edgeIt = edgeSet.iterator();
+            Iterator<FlowGraphEdge> edgeIt = edgeSet.iterator();
             while (edgeIt.hasNext())
             {
-                FlowGraphEdge edge = (FlowGraphEdge)edgeIt.next();
+                FlowGraphEdge edge = edgeIt.next();
                 
                 Block target = (Block)edge.to;
                 HashSet livelocals = (HashSet)ailanalysis.getFlowBefore(target.getHead());
@@ -339,7 +339,7 @@ class ArrayBoundsCheckerAnalysis
                 FlowGraphEdge edge = new FlowGraphEdge(head, head);
 
                 WeightedDirectedSparseGraph initgraph = 
-                    (WeightedDirectedSparseGraph)edgeMap.get(edge) ;
+                    edgeMap.get(edge) ;
 
                 initgraph.setTop();
             }        
@@ -362,7 +362,7 @@ class ArrayBoundsCheckerAnalysis
 
                 /* previousAfterFlow, old-out, it is null initially */
                 WeightedDirectedSparseGraph previousBeforeFlow = 
-                    (WeightedDirectedSparseGraph)blockToBeforeFlow.get(s);
+                    blockToBeforeFlow.get(s);
                 
                 beforeFlow.setVertexes(previousBeforeFlow.getVertexes());
 
@@ -471,9 +471,9 @@ class ArrayBoundsCheckerAnalysis
     /* Flow go through a node, the output will be put into edgeMap, and also
      * the changed succ will be in a list to return back.
      */
-    private List flowThrough(Object inValue, Object unit)
+    private List<Object> flowThrough(Object inValue, Object unit)
     {        
-        ArrayList changedSuccs = new ArrayList();
+        ArrayList<Object> changedSuccs = new ArrayList<Object>();
       
         WeightedDirectedSparseGraph ingraph = 
             (WeightedDirectedSparseGraph)inValue;
@@ -541,11 +541,11 @@ class ArrayBoundsCheckerAnalysis
         if (!s.containsArrayRef())
             return;
 
-        ArrayRef op = (ArrayRef)s.getArrayRef();
+        ArrayRef op = s.getArrayRef();
         
 
-        Value base = ((ArrayRef)op).getBase();
-        Value index = ((ArrayRef)op).getIndex();
+        Value base = (op).getBase();
+        Value index = (op).getIndex();
 
         HashSet livelocals = (HashSet)ailanalysis.getFlowAfter(s);
         if (!livelocals.contains(base) && !livelocals.contains(index))
@@ -598,7 +598,7 @@ class ArrayBoundsCheckerAnalysis
                             SootClass pclass = ((RefType)type).getSootClass();
 
                             /* then we are looking for the possible types. */
-                            Iterator keyIt = localToFieldRef.keySet().iterator();
+                            Iterator<Object> keyIt = localToFieldRef.keySet().iterator();
                             while (keyIt.hasNext())
                             {
                                 Value local = (Value)keyIt.next();
@@ -610,7 +610,7 @@ class ArrayBoundsCheckerAnalysis
                                 if (hierarchy.isClassSuperclassOfIncluding(pclass, lclass) ||
                                     hierarchy.isClassSuperclassOfIncluding(lclass, pclass))
                                 {
-                                    HashSet toadd = (HashSet)localToFieldRef.get(local);
+                                    HashSet toadd = localToFieldRef.get(local);
                                     tokills.addAll(toadd);
                                 }                                    
                             }
@@ -626,7 +626,7 @@ class ArrayBoundsCheckerAnalysis
                             SootClass pclass = ((RefType)type).getSootClass();
 
                             /* then we are looking for the possible types. */
-                            Iterator keyIt = localToFieldRef.keySet().iterator();
+                            Iterator<Object> keyIt = localToFieldRef.keySet().iterator();
                             while (keyIt.hasNext())
                             {
                                 Value local = (Value)keyIt.next();
@@ -638,7 +638,7 @@ class ArrayBoundsCheckerAnalysis
                                 if (hierarchy.isClassSuperclassOfIncluding(pclass, lclass) ||
                                     hierarchy.isClassSuperclassOfIncluding(lclass, pclass))
                                 {
-                                    HashSet toadd = (HashSet)localToFieldRef.get(local);
+                                    HashSet toadd = localToFieldRef.get(local);
                                     tokills.addAll(toadd);
                                 }                                    
                             }
@@ -667,10 +667,10 @@ class ArrayBoundsCheckerAnalysis
 
                     if (killall)
                     {
-                        Iterator keyIt = localToFieldRef.keySet().iterator();
+                        Iterator<Object> keyIt = localToFieldRef.keySet().iterator();
                         while (keyIt.hasNext())
                         {
-                            HashSet toadd = (HashSet)localToFieldRef.get(keyIt.next());
+                            HashSet toadd = localToFieldRef.get(keyIt.next());
                             tokills.addAll(toadd);
                         }                            
                     }
@@ -743,7 +743,7 @@ class ArrayBoundsCheckerAnalysis
         {
             if (leftOp instanceof Local)
             {
-                HashSet fieldrefs = (HashSet)localToFieldRef.get(leftOp);
+                HashSet fieldrefs = localToFieldRef.get(leftOp);
                 
                 if (fieldrefs != null)
                 {
@@ -761,7 +761,7 @@ class ArrayBoundsCheckerAnalysis
             {
                 SootField field = ((InstanceFieldRef)leftOp).getField();
                 
-                HashSet fieldrefs = (HashSet)fieldToFieldRef.get(field);
+                HashSet fieldrefs = fieldToFieldRef.get(field);
                 
                 if (fieldrefs != null)
                 {
@@ -833,7 +833,7 @@ class ArrayBoundsCheckerAnalysis
                     ingraph.killNode(ref);
                 }
                 */
-                HashSet vertexes = (HashSet)ingraph.getVertexes();
+                HashSet vertexes = ingraph.getVertexes();
                 {
                     Iterator nodeIt = vertexes.iterator();
                     while (nodeIt.hasNext())
@@ -874,7 +874,7 @@ class ArrayBoundsCheckerAnalysis
 
         if (csin)
         {
-            HashSet exprs = (HashSet)localToExpr.get(leftOp);
+            HashSet exprs = localToExpr.get(leftOp);
             if (exprs != null)
             {
                 Iterator exprIt = exprs.iterator();
@@ -1152,7 +1152,7 @@ class ArrayBoundsCheckerAnalysis
     private boolean assertBranchStmt(Object in,
                                      Unit s, Block current,
                                      List succs,
-                                     List changedSuccs)
+                                     List<Object> changedSuccs)
     {
         IfStmt ifstmt = (IfStmt)s;
 
@@ -1291,7 +1291,7 @@ class ArrayBoundsCheckerAnalysis
         // targetgraph -> targetBlock
 
         FlowGraphEdge targetEdge = new FlowGraphEdge(current, targetBlock);
-        WeightedDirectedSparseGraph prevtarget = (WeightedDirectedSparseGraph)edgeMap.get(targetEdge);
+        WeightedDirectedSparseGraph prevtarget = edgeMap.get(targetEdge);
         boolean changed = false;
 
                targetgraph.makeShortestPathGraph();
@@ -1313,7 +1313,7 @@ class ArrayBoundsCheckerAnalysis
         
         // ingraph -> nextBlock
         FlowGraphEdge nextEdge = new FlowGraphEdge(current, nextBlock);
-        WeightedDirectedSparseGraph prevnext = (WeightedDirectedSparseGraph)edgeMap.get(nextEdge);
+        WeightedDirectedSparseGraph prevnext = edgeMap.get(nextEdge);
         changed = false;
 
                ingraph.makeShortestPathGraph();
@@ -1338,7 +1338,7 @@ class ArrayBoundsCheckerAnalysis
     private void updateOutEdges(Object in,
                                 Block current,
                                 List succs,
-                                List changedSuccs)
+                                List<Object> changedSuccs)
     {
         WeightedDirectedSparseGraph ingraph = (WeightedDirectedSparseGraph)in;
 
@@ -1349,7 +1349,7 @@ class ArrayBoundsCheckerAnalysis
             Object next = succs.get(i);
             FlowGraphEdge nextEdge = new FlowGraphEdge(current, next);
             
-            WeightedDirectedSparseGraph prevs = (WeightedDirectedSparseGraph)edgeMap.get(nextEdge);
+            WeightedDirectedSparseGraph prevs = edgeMap.get(nextEdge);
             boolean changed = false;
 
             /* equals should be used to take out sub graph first */

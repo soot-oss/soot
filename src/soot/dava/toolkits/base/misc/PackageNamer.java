@@ -68,9 +68,9 @@ public class PackageNamer
 	if (fixed == false)
 	    return originalFullClassName;
 
-	Iterator it = appRoots.iterator();
+	Iterator<NameHolder> it = appRoots.iterator();
 	while (it.hasNext()) {
-	    NameHolder h = (NameHolder) it.next();
+	    NameHolder h = it.next();
 	    if (h.contains_OriginalName( new StringTokenizer( originalFullClassName, "."), true))
 		return h.get_FixedName( new StringTokenizer( originalFullClassName, "."), true);
 	}
@@ -86,9 +86,9 @@ public class PackageNamer
 	if (originalPackageName.equals( ""))
 	    return "";
 
-	Iterator it = appRoots.iterator();
+	Iterator<NameHolder> it = appRoots.iterator();
 	while (it.hasNext()) {
-	    NameHolder h = (NameHolder) it.next();
+	    NameHolder h = it.next();
 	    if (h.contains_OriginalName( new StringTokenizer( originalPackageName, "."), false))
 		return h.get_FixedName( new StringTokenizer( originalPackageName, "."), false);
 	}
@@ -99,8 +99,9 @@ public class PackageNamer
 
     private class NameHolder
     {
-    	private String originalName, packageName, className;
-    	private ArrayList children;
+    	private final String originalName;
+		private String packageName, className;
+    	private final ArrayList<NameHolder> children;
     	private NameHolder parent;
     	private boolean isClass;
 	
@@ -114,7 +115,7 @@ public class PackageNamer
     		this.parent = parent;
     		this.isClass = isClass;
 
-    		children = new ArrayList();
+    		children = new ArrayList<NameHolder>();
     	}
 
     	public NameHolder get_Parent() {
@@ -156,7 +157,7 @@ public class PackageNamer
 			return originalName;
 		}
 
-		public ArrayList get_Children() {
+		public ArrayList<NameHolder> get_Children() {
 			return children;
 		}
 
@@ -193,9 +194,9 @@ public class PackageNamer
 	    }
 
 	    String subName = st.nextToken();
-	    Iterator cit = children.iterator();
+	    Iterator<NameHolder> cit = children.iterator();
 	    while (cit.hasNext()) {
-	    	NameHolder h = (NameHolder) cit.next();
+	    	NameHolder h = cit.next();
 
 	    	if (h.get_OriginalName().equals( subName)) {
 	    		if (forClass)
@@ -214,9 +215,9 @@ public class PackageNamer
 
 	    String subName = st.nextToken();
 
-	    Iterator cit = children.iterator();
+	    Iterator<NameHolder> cit = children.iterator();
 	    while (cit.hasNext()) {
-		NameHolder h = (NameHolder) cit.next();
+		NameHolder h = cit.next();
 
 		if (h.get_PackageName().equals( subName)) {
 		    String originalSubPackageName = h.get_OriginalPackageName( st);
@@ -245,9 +246,9 @@ public class PackageNamer
 		return (((forClass) && (is_Class())) || ((!forClass) && (is_Package())));
 
 	    String subName = st.nextToken();
-	    Iterator cit = children.iterator();
+	    Iterator<NameHolder> cit = children.iterator();
 	    while (cit.hasNext()) {
-		NameHolder h = (NameHolder) cit.next();
+		NameHolder h = cit.next();
 
 		if (h.get_OriginalName().equals( subName))
 		    return h.finds_OriginalName( st, forClass);
@@ -270,9 +271,9 @@ public class PackageNamer
 		    className = tClassName + "_c" + i;
 	    }
 
-	    Iterator it = children.iterator();
+	    Iterator<NameHolder> it = children.iterator();
 	    while (it.hasNext())
-		((NameHolder) it.next()).fix_ClassNames( curPackName + "." + packageName);
+		it.next().fix_ClassNames( curPackName + "." + packageName);
 	}
 
 	public void fix_PackageNames()
@@ -289,9 +290,9 @@ public class PackageNamer
 		    packageName = tPackageName + "_p" + i;
 	    }
 
-	    Iterator it = children.iterator();
+	    Iterator<NameHolder> it = children.iterator();
 	    while (it.hasNext())
-		((NameHolder) it.next()).fix_PackageNames();
+		it.next().fix_PackageNames();
 	}
 
 
@@ -304,7 +305,7 @@ public class PackageNamer
 
 	public boolean siblingClashes( String name)
 	{
-	    Iterator it = null;
+	    Iterator<NameHolder> it = null;
 
 	    if (parent == null) {
 
@@ -317,7 +318,7 @@ public class PackageNamer
 		it = parent.get_Children().iterator();
 
 	    while (it.hasNext()) {
-		NameHolder sibling = (NameHolder) it.next();
+		NameHolder sibling = it.next();
 
 		if (sibling == this)
 		    continue;
@@ -340,17 +341,16 @@ public class PackageNamer
 		G.v().out.print("p");
 	    G.v().out.println( ")");
 
-	    Iterator it = children.iterator();
+	    Iterator<NameHolder> it = children.iterator();
 	    while (it.hasNext())
-	    	((NameHolder) it.next()).dump( indentation + "  ");
+	    	it.next().dump( indentation + "  ");
 		}
     }
 
     private boolean fixed = false;
-    private ArrayList appRoots = new ArrayList();
-    private ArrayList otherRoots = new ArrayList();
-    private HashSet keywords = new HashSet();
-    private HashMap class2package = new HashMap();
+    private final ArrayList<NameHolder> appRoots = new ArrayList<NameHolder>();
+    private final ArrayList<NameHolder> otherRoots = new ArrayList<NameHolder>();
+    private final HashSet<String> keywords = new HashSet<String>();
     private char fileSep;
     private String classPath, pathSep;
     
@@ -372,8 +372,8 @@ public class PackageNamer
 	    "package",	    "synchronized",	    "true",	    "false",	    "null"
 	};
 
-	for (int i=0; i<keywordArray.length; i++)
-	    keywords.add( keywordArray[i]);
+	for (String element : keywordArray)
+		keywords.add( element);
 
 	Iterator classIt = Scene.v().getLibraryClasses().iterator();
 	while (classIt.hasNext())
@@ -383,13 +383,13 @@ public class PackageNamer
 	while (classIt.hasNext())
 	    add_ClassName( ((SootClass) classIt.next()).getName(), appRoots);
 
-	Iterator arit = appRoots.iterator();
+	Iterator<NameHolder> arit = appRoots.iterator();
 	while (arit.hasNext())
-	    ((NameHolder) arit.next()).fix_ClassNames( "");
+	    arit.next().fix_ClassNames( "");
 
 	arit = appRoots.iterator();
 	while (arit.hasNext())
-	    ((NameHolder) arit.next()).fix_PackageNames();
+	    arit.next().fix_PackageNames();
 	
 	fileSep = System.getProperty( "file.separator").charAt(0);
 	pathSep = System.getProperty( "path.separator");
@@ -398,21 +398,21 @@ public class PackageNamer
 	fixed = true;
     }
 
-    private void add_ClassName( String className, ArrayList roots)
+    private void add_ClassName( String className, ArrayList<NameHolder> roots)
     {
-	ArrayList children = roots;
+	ArrayList<NameHolder> children = roots;
 	NameHolder curNode = null;
 	
 	StringTokenizer st = new StringTokenizer( className, ".");
 	while (st.hasMoreTokens()) {
-	    String curName = (String) st.nextToken();
+	    String curName = st.nextToken();
 
 	    NameHolder child = null;
 	    boolean found = false;
-	    Iterator lit = children.iterator();
+	    Iterator<NameHolder> lit = children.iterator();
 	    
 	    while (lit.hasNext()) {
-		child = (NameHolder) lit.next();
+		child = lit.next();
 		
 		if (child.get_OriginalName().equals( curName)) {
 
@@ -486,9 +486,9 @@ public class PackageNamer
 	    }
 
 	    String firstToken = st.nextToken();
-	    Iterator arit = appRoots.iterator();
+	    Iterator<NameHolder> arit = appRoots.iterator();
 	    while (arit.hasNext()) {
-		NameHolder h = (NameHolder) arit.next();
+		NameHolder h = arit.next();
 
 		if (h.get_PackageName().equals( firstToken)) {
 		    newPackage = h.get_OriginalPackageName( st);

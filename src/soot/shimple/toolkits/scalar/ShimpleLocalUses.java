@@ -20,10 +20,9 @@
 package soot.shimple.toolkits.scalar;
 
 import soot.*;
-import soot.util.*;
-import soot.jimple.*;
 import soot.shimple.*;
 import soot.toolkits.scalar.*;
+
 import java.util.*;
 
 /**
@@ -44,7 +43,7 @@ import java.util.*;
  **/
 public class ShimpleLocalUses implements LocalUses
 {
-    protected  Map localToUses;
+    protected  Map<Local, ArrayList> localToUses;
 
     /**
      * Build a LocalUses interface from a ShimpleBody.  Proper SSA
@@ -59,7 +58,7 @@ public class ShimpleLocalUses implements LocalUses
             throw new RuntimeException("ShimpleBody is not in proper SSA form as required by ShimpleLocalUses.  You may need to rebuild it or use SimpleLocalUses instead.");
 
         // initialise the map
-        localToUses = new HashMap();
+        localToUses = new HashMap<Local, ArrayList>();
         Iterator localsIt = sb.getLocals().iterator();
         while(localsIt.hasNext()){
             Local local = (Local) localsIt.next();
@@ -81,7 +80,7 @@ public class ShimpleLocalUses implements LocalUses
                 if(!(value instanceof Local))
                     continue;
 
-                List useList = (List) localToUses.get(value);
+                List<UnitValueBoxPair> useList = localToUses.get(value);
                 useList.add(new UnitValueBoxPair(unit, box));
             }
         }
@@ -97,7 +96,7 @@ public class ShimpleLocalUses implements LocalUses
      **/
     public List getUsesOf(Local local)
     {
-        List uses = (List) localToUses.get(local);
+        List uses = localToUses.get(local);
         if(uses == null)
             return Collections.EMPTY_LIST;
         return uses;

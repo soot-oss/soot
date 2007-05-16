@@ -31,7 +31,6 @@
 package soot.toolkits.scalar;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 
 
@@ -53,6 +52,6 @@ public interface LocalDefs
      *   @return a list of Units where the local is defined in the current
      *            method context.         
      */
-    public List getDefsOfAt(Local l, Unit s);
+    public List<Unit> getDefsOfAt(Local l, Unit s);
 }
 

@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
 import soot.*;
 import java.util.*;
 
@@ -28,7 +27,7 @@ import java.util.*;
  */
 public class LocalVarNode extends VarNode {
     public ContextVarNode context( Object context ) 
-    { return cvns == null ? null : (ContextVarNode) cvns.get( context ); }
+    { return cvns == null ? null : cvns.get( context ); }
 
     public SootMethod getMethod() {
         return method;
@@ -45,13 +44,13 @@ public class LocalVarNode extends VarNode {
     }
     /** Registers a cvn as having this node as its base. */
     void addContext( ContextVarNode cvn, Object context ) {
-	if( cvns == null ) cvns = new HashMap();
+	if( cvns == null ) cvns = new HashMap<Object, ContextVarNode>();
 	cvns.put( context, cvn );
     }
 
     /* End of package methods. */
 
-    protected Map cvns;
+    protected Map<Object, ContextVarNode> cvns;
     protected SootMethod method;
 }
 

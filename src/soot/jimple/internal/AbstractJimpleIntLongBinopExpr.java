@@ -33,7 +33,6 @@ package soot.jimple.internal;
 import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 abstract public class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBinopExpr implements ConvertToBaf
@@ -44,7 +43,7 @@ abstract public class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBino
         this.op2Box = Jimple.v().newArgBox(op2);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
         ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);

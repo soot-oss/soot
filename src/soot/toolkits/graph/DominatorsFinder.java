@@ -19,13 +19,7 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 
 /**
  * General interface for a dominators analysis.

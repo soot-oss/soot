@@ -73,7 +73,7 @@ public class Scene  //extends AbstractHost
     Chain libraryClasses = new HashChain();
     Chain phantomClasses = new HashChain();
     
-    private Map nameToClass = new HashMap();
+    private final Map nameToClass = new HashMap();
 
     ArrayNumberer kindNumberer = new ArrayNumberer();
     ArrayNumberer typeNumberer = new ArrayNumberer();
@@ -91,7 +91,7 @@ public class Scene  //extends AbstractHost
     private ReachableMethods reachableMethods;
     private PointsToAnalysis activePointsToAnalysis;
     private SideEffectAnalysis activeSideEffectAnalysis;
-    private List entryPoints;
+    private List<SootMethod> entryPoints;
 
     boolean allowsPhantomRefs = false;
 
@@ -574,7 +574,7 @@ public class Scene  //extends AbstractHost
     }
 
     /** Get the set of entry points that are used to build the call graph. */
-    public List getEntryPoints() {
+    public List<SootMethod> getEntryPoints() {
         if( entryPoints == null ) {
             entryPoints = EntryPoints.v().all();
         }
@@ -582,7 +582,7 @@ public class Scene  //extends AbstractHost
     }
 
     /** Change the set of entry point methods used to build the call graph. */
-    public void setEntryPoints( List entryPoints ) {
+    public void setEntryPoints( List<SootMethod> entryPoints ) {
         this.entryPoints = entryPoints;
     }
 
@@ -769,7 +769,7 @@ public class Scene  //extends AbstractHost
 	rn.add("to");
     }
 
-    private Set[]/*<String>*/ basicclasses=new Set[4];
+    private final Set[]/*<String>*/ basicclasses=new Set[4];
 
     private void addSootBasicClasses() {
         basicclasses[SootClass.HIERARCHY] = new HashSet();
@@ -857,8 +857,8 @@ public class Scene  //extends AbstractHost
 	}
     }
 
-    private List dynamicClasses;
-    public Collection dynamicClasses() {
+    private List<SootClass> dynamicClasses;
+    public Collection<SootClass> dynamicClasses() {
         return dynamicClasses;
     }
 
@@ -892,8 +892,7 @@ public class Scene  //extends AbstractHost
         for( Iterator pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
-            for( Iterator clIt = SourceLocator.v().getClassesUnder(path).iterator(); clIt.hasNext(); ) {
-                final String cl = (String) clIt.next();
+            for (String cl : SourceLocator.v().getClassesUnder(path)) {
                 Scene.v().loadClassAndSupport(cl).setApplicationClass();
             }
         }
@@ -904,8 +903,8 @@ public class Scene  //extends AbstractHost
     }
 
     public void loadDynamicClasses() {
-        dynamicClasses = new ArrayList();
-        HashSet dynClasses = new HashSet();
+        dynamicClasses = new ArrayList<SootClass>();
+        HashSet<String> dynClasses = new HashSet<String>();
         dynClasses.addAll(Options.v().dynamic_class());
 
         for( Iterator pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
@@ -920,9 +919,8 @@ public class Scene  //extends AbstractHost
             dynClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
         }
 
-        for( Iterator classNameIt = dynClasses.iterator(); classNameIt.hasNext(); ) {
+        for (String className : dynClasses) {
 
-            final String className = (String) classNameIt.next();
             dynamicClasses.add( Scene.v().loadClassAndSupport(className) );
         }
     }
@@ -949,14 +947,13 @@ public class Scene  //extends AbstractHost
         }
 
         // Remove/add all classes from packageInclusionMask as per -i option
-        Set processedClasses = new HashSet();
+        Set<SootClass> processedClasses = new HashSet<SootClass>();
         while(true) {
-            Set unprocessedClasses = new HashSet(Scene.v().getClasses());
+            Set<SootClass> unprocessedClasses = new HashSet<SootClass>(Scene.v().getClasses());
             unprocessedClasses.removeAll(processedClasses);
             if( unprocessedClasses.isEmpty() ) break;
             processedClasses.addAll(unprocessedClasses);
-            for( Iterator sIt = unprocessedClasses.iterator(); sIt.hasNext(); ) {
-                final SootClass s = (SootClass) sIt.next();
+            for (SootClass s : unprocessedClasses) {
                 if( s.isPhantom() ) continue;
                 if(Options.v().app()) {
                     s.setApplicationClass();
@@ -1026,8 +1023,8 @@ public class Scene  //extends AbstractHost
     }
     /** Returns the list of SootClasses that have been resolved at least to 
      * the level specified. */
-    public List/*SootClass*/ getClasses(int desiredLevel) {
-        List ret = new ArrayList();
+    public List/*SootClass*/<SootClass> getClasses(int desiredLevel) {
+        List<SootClass> ret = new ArrayList<SootClass>();
         for( Iterator clIt = getClasses().iterator(); clIt.hasNext(); ) {
             final SootClass cl = (SootClass) clIt.next();
             if( cl.resolvingLevel() >= desiredLevel ) ret.add(cl);

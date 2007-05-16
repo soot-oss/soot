@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
-import soot.jimple.internal.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.util.*;
 import java.util.*;
@@ -26,7 +24,6 @@ public class MethodInliner
 	}
 	public static void inline(ArrayList sites){
 		Iterator it = sites.iterator();
-		int i=0;
 		while (it.hasNext()){
 			ArrayList element = (ArrayList)it.next();
 			JPegStmt stmt = (JPegStmt)element.get(0);
@@ -62,15 +59,6 @@ public class MethodInliner
 		container.buildMaps(inlinee);
 		container.buildPreds();
 		//	container.testStartToThread();
-		
-	}
-	private static void testHeads(PegGraph p){
-		System.out.println("====test heads: begin====");
-		Iterator headsIt = p.getHeads().iterator();
-		while (headsIt.hasNext()){
-			System.out.println("head: "+headsIt.next());
-		}
-		System.out.println("====test heads: end====");
 		
 	}
 	

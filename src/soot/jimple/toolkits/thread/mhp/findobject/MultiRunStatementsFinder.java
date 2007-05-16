@@ -1,16 +1,12 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.thread.mhp.TargetMethodsFinder;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import soot.toolkits.scalar.*;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -28,7 +24,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 	Set visited = new HashSet();
 	FlowSet multiRunStatements = new ArraySparseSet();
 	//add soot method here just for debug
-	public MultiRunStatementsFinder(UnitGraph g, SootMethod sm, Set multiCalledMethods, CallGraph cg)
+	public MultiRunStatementsFinder(UnitGraph g, SootMethod sm, Set<Object> multiCalledMethods, CallGraph cg)
 	{
 		super(g);
 		//      System.out.println("===entering MultiObjectAllocSites==");	
@@ -40,27 +36,15 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 		// testMultiObjSites(sm);
 	}
 	
-	private void testMultiRunStatements(SootMethod sm){
-		if (multiRunStatements.size()>0){
-			System.out.println("==multiRunStatements==for "+sm);
-			Iterator it = multiRunStatements.iterator();
-			while (it.hasNext()){
-				System.out.println(it.next()); 
-				
-			}
-			System.out.println("==multiRunStatements=== end==");
-		}
-	}
-	
-	private void findMultiCalledMethodsIntra(Set multiCalledMethods, CallGraph callGraph){
+	private void findMultiCalledMethodsIntra(Set<Object> multiCalledMethods, CallGraph callGraph){
 		Iterator it = multiRunStatements.iterator();
 		while (it.hasNext()){
 			Unit unit = (Unit)it.next();
 			if (((Stmt)unit).containsInvokeExpr()){
 				
-				Value invokeExpr =(Value)((Stmt)unit).getInvokeExpr();
+				Value invokeExpr =((Stmt)unit).getInvokeExpr();
 				
-				List targetList = new ArrayList();
+				List<SootMethod> targetList = new ArrayList<SootMethod>();
 				SootMethod method =  ((InvokeExpr)invokeExpr).getMethod();
 				if (invokeExpr instanceof StaticInvokeExpr){
 					
@@ -79,9 +63,9 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 					
 				}
 				if (targetList != null){
-					Iterator iterator = targetList.iterator();
+					Iterator<SootMethod> iterator = targetList.iterator();
 					while (iterator.hasNext()){
-						SootMethod obj = (SootMethod)iterator.next();
+						SootMethod obj = iterator.next();
 						if (!obj.isNative()){
 							multiCalledMethods.add(obj);
 						}
@@ -155,7 +139,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 		return new ArraySparseSet();
 	}
 	public FlowSet getMultiRunStatements(){
-		return (FlowSet)multiRunStatements;
+		return multiRunStatements;
 	}
 	
 }

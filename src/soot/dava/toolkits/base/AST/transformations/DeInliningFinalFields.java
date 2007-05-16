@@ -83,7 +83,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
     SootMethod sootMethod=null; 
     DavaBody davaBody=null;  
 
-    HashMap finalFields;
+    HashMap<Comparable, SootField> finalFields;
     
     //ASTParentNodeFinder parentFinder;
 
@@ -100,7 +100,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 	//System.out.println("Deiniling  method: "+sootMethod.getName());
 	sootClass = sootMethod.getDeclaringClass();
 
-	finalFields = new HashMap();
+	finalFields = new HashMap<Comparable, SootField>();
 
 	ArrayList fieldChain = new ArrayList();
 
@@ -260,14 +260,13 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 		Type valType = ((IntConstant)val).getType();		
 
 
-		boolean charact=false;
 		Integer myInt=null;
 		try{
 		    if(myString.charAt(0)=='\''){//character
 			if(myString.length()<2)
 			    return null;
 
-			myInt = new Integer((int)myString.charAt(1));
+			myInt = new Integer(myString.charAt(1));
 		    }
 		    else
 			myInt = new Integer(myString);
@@ -315,7 +314,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
       by changing the value in the value box we can deInline any field
     */
     public void inASTSwitchNode(ASTSwitchNode node){
-	Value val = (Value)node.get_Key();
+	Value val = node.get_Key();
 
 	if(isConstant(val)){
 	    //find if there is a SootField with this constant
@@ -348,8 +347,8 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 
 
     public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-    	List statements = node.getStatements();
-    	Iterator it = statements.iterator();
+    	List<Object> statements = node.getStatements();
+    	Iterator<Object> it = statements.iterator();
 	
     	while(it.hasNext()){
     		AugmentedStmt as = (AugmentedStmt)it.next();
@@ -373,8 +372,8 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
   public void inASTForLoopNode(ASTForLoopNode node){
 
 	//checking uses in init
-	List init = node.getInit();
-	Iterator it = init.iterator();
+	List<Object> init = node.getInit();
+	Iterator<Object> it = init.iterator();
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();
 	    Stmt s = as.get_Stmt();
@@ -392,7 +391,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 
 	
 	//checking uses in update
-	List update = node.getUpdate();
+	List<Object> update = node.getUpdate();
 	it = update.iterator();
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();

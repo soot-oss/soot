@@ -27,7 +27,6 @@
 package soot;
 import soot.options.*;
 
-import soot.util.*;
 import java.util.*;
 
 /** Utility class providing a timer.  Used for profiling various
@@ -68,11 +67,11 @@ public class Timer
                 
                 // Stop all outstanding timers
                 {
-                    Iterator timerIt = G.v().Timer_outstandingTimers.iterator();
+                    Iterator<Timer> timerIt = G.v().Timer_outstandingTimers.iterator();
                     
                     while(timerIt.hasNext())
                     {
-                        Timer t = (Timer) timerIt.next();
+                        Timer t = timerIt.next();
                         
                         t.end();
                     }
@@ -82,11 +81,11 @@ public class Timer
         
                 // Start all outstanding timers
                 {
-                    Iterator timerIt = G.v().Timer_outstandingTimers.iterator();
+                    Iterator<Timer> timerIt = G.v().Timer_outstandingTimers.iterator();
                     
                     while(timerIt.hasNext())
                     {
-                        Timer t = (Timer) timerIt.next();
+                        Timer t = timerIt.next();
                         
                         t.start();
                     }

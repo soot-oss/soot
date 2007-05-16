@@ -18,9 +18,6 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
-import soot.*;
-import soot.jimple.spark.sets.PointsToSetInternal;
 
 /** Represents a field reference node (Red) in the pointer assignment graph.
  * @author Ondrej Lhotak

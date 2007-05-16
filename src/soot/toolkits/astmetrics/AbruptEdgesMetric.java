@@ -20,7 +20,6 @@
 package soot.toolkits.astmetrics;
 
 import polyglot.ast.Branch;
-import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 

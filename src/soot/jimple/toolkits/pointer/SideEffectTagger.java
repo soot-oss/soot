@@ -18,13 +18,10 @@
  */
 
 package soot.jimple.toolkits.pointer;
-import soot.tagkit.*;
 import soot.*;
 import java.util.*;
-import soot.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
-import java.io.*;
 
 public class SideEffectTagger extends BodyTransformer
 { 
@@ -41,24 +38,22 @@ public class SideEffectTagger extends BodyTransformer
     private CallGraph cg;
     
     protected class UniqueRWSets {
-	protected ArrayList l = new ArrayList();
+	protected ArrayList<RWSet> l = new ArrayList<RWSet>();
 	RWSet getUnique( RWSet s ) {
 	    if( s == null ) return s;
-	    for( Iterator retIt = l.iterator(); retIt.hasNext(); ) {
-	        final RWSet ret = (RWSet) retIt.next();
-		if( ret.isEquivTo( s ) ) return ret;
+	    for (RWSet ret : l) {
+	        if( ret.isEquivTo( s ) ) return ret;
 	    }
 	    l.add( s );
 	    return s;
 	}
-	Iterator iterator() {
+	Iterator<RWSet> iterator() {
 	    return l.iterator();
 	}
 	short indexOf( RWSet s ) {
 	    short i = 0;
-	    for( Iterator retIt = l.iterator(); retIt.hasNext(); ) {
-	        final RWSet ret = (RWSet) retIt.next();
-		if( ret.isEquivTo( s ) ) return i;
+	    for (RWSet ret : l) {
+	        if( ret.isEquivTo( s ) ) return i;
 		i++;
 	    }
 	    return -1;
@@ -101,8 +96,8 @@ public class SideEffectTagger extends BodyTransformer
 	if( !optionNaive ) {
 	    sea.findNTRWSets( body.getMethod() );
 	}
-	HashMap stmtToReadSet = new HashMap();
-	HashMap stmtToWriteSet = new HashMap();
+	HashMap<Object, RWSet> stmtToReadSet = new HashMap<Object, RWSet>();
+	HashMap<Object, RWSet> stmtToWriteSet = new HashMap<Object, RWSet>();
 	UniqueRWSets sets = new UniqueRWSets();
 	boolean justDoTotallyConservativeThing = 
 	    body.getMethod().getName().equals( "<clinit>" );
@@ -123,12 +118,12 @@ public class SideEffectTagger extends BodyTransformer
 	    }
 	}
 	DependenceGraph graph = new DependenceGraph();
-	for( Iterator outerIt = sets.iterator(); outerIt.hasNext(); ) {
-	    final RWSet outer = (RWSet) outerIt.next();
+	for( Iterator<RWSet> outerIt = sets.iterator(); outerIt.hasNext(); ) {
+	    final RWSet outer = outerIt.next();
 
-	    for( Iterator innerIt = sets.iterator(); innerIt.hasNext(); ) {
+	    for( Iterator<RWSet> innerIt = sets.iterator(); innerIt.hasNext(); ) {
 
-	        final RWSet inner = (RWSet) innerIt.next();
+	        final RWSet inner = innerIt.next();
 		if( inner == outer ) break;
 		if( outer.hasNonEmptyIntersection( inner ) ) {
                     //G.v().out.println( "inner set is: "+inner );
@@ -146,8 +141,8 @@ public class SideEffectTagger extends BodyTransformer
 	    } else {
 		key = keyFor( stmt );
 	    }
-	    RWSet read = (RWSet) stmtToReadSet.get( key );
-	    RWSet write = (RWSet) stmtToWriteSet.get( key );
+	    RWSet read = stmtToReadSet.get( key );
+	    RWSet write = stmtToWriteSet.get( key );
 	    if( read != null || write != null ) {
 		DependenceTag tag = new DependenceTag();
 		if( read != null && read.getCallsNative() ) {

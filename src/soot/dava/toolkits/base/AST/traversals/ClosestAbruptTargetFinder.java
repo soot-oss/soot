@@ -60,8 +60,8 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter{
 
 
 
-    HashMap closestNode = new HashMap();//a mapping of each abrupt statement to the node they are targeting
-    ArrayList nodeStack = new ArrayList(); //the last element will always be the "currentNode" meaning the closest target to a abrupt stmt
+    HashMap<DAbruptStmt, ASTNode> closestNode = new HashMap<DAbruptStmt, ASTNode>();//a mapping of each abrupt statement to the node they are targeting
+    ArrayList<ASTLabeledNode> nodeStack = new ArrayList<ASTLabeledNode>(); //the last element will always be the "currentNode" meaning the closest target to a abrupt stmt
 
     /**
      * To be invoked by other analyses. Given an abrupt stmt as input this method
@@ -151,7 +151,7 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter{
 		    //error
 		    throw new RuntimeException("nodeStack empty??"+nodeStack.toString());
 		}
-		ASTNode currentNode = (ASTNode)nodeStack.get(nodeStack.size()-1);
+		ASTNode currentNode = nodeStack.get(nodeStack.size()-1);
 		closestNode.put(ab,currentNode);
 	    }
 	    else if(ab.is_Continue()){
@@ -162,12 +162,12 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter{
 		    throw new RuntimeException("nodeStack empty??"+nodeStack.toString());
 		}
 
-		ASTNode currentNode = (ASTNode)nodeStack.get(index);
+		ASTNode currentNode = nodeStack.get(index);
 		while(currentNode instanceof ASTSwitchNode){
 		    if(index>0){
 			//more elements present in nodeStack
 			index--;
-			currentNode = (ASTNode)nodeStack.get(index);
+			currentNode = nodeStack.get(index);
 		    }
 		    else{
 			//error

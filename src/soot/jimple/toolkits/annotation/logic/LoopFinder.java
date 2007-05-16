@@ -22,17 +22,18 @@ package soot.jimple.toolkits.annotation.logic;
 import soot.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
+
 import java.util.*;
+
 import soot.toolkits.scalar.*;
-import soot.tagkit.*;
 
 public class LoopFinder extends BodyTransformer {
 
     private UnitGraph g;
 
-    private HashMap loops;
+    private HashMap<Stmt, List<Object>> loops;
 
-    public HashMap loops(){
+    public HashMap<Stmt, List<Object>> loops(){
         return loops;
     }
     
@@ -41,7 +42,7 @@ public class LoopFinder extends BodyTransformer {
         g = new ExceptionalUnitGraph(b);
         DominatorAnalysis a = new DominatorAnalysis(g);
         
-        loops = new HashMap();
+        loops = new HashMap<Stmt, List<Object>>();
         
         Iterator stmtsIt = b.getUnits().iterator();
         while (stmtsIt.hasNext()){
@@ -50,7 +51,7 @@ public class LoopFinder extends BodyTransformer {
             List succs = g.getSuccsOf(s);
             FlowSet dominators = (FlowSet)a.getFlowAfter(s);
 
-            ArrayList backEdges = new ArrayList();
+            ArrayList<Stmt> backEdges = new ArrayList<Stmt>();
 
             Iterator succsIt = succs.iterator();
             while (succsIt.hasNext()){
@@ -60,16 +61,16 @@ public class LoopFinder extends BodyTransformer {
                 }
             }
 
-            Iterator headersIt = backEdges.iterator();
+            Iterator<Stmt> headersIt = backEdges.iterator();
             while (headersIt.hasNext()){
-                Stmt header = (Stmt)headersIt.next();
-                List loopBody = getLoopBodyFor(header, s);
+                Stmt header = headersIt.next();
+                List<Object> loopBody = getLoopBodyFor(header, s);
 
                 // for now just print out loops as sets of stmts
                 //System.out.println("FOUND LOOP: Header: "+header+" Body: "+loopBody);
                 if (loops.containsKey(header)){
                     // merge bodies
-                    List lb1 = (List)loops.get(header);
+                    List<Object> lb1 = loops.get(header);
                     loops.put(header, union(lb1, loopBody));
                 }
                 else {
@@ -80,9 +81,9 @@ public class LoopFinder extends BodyTransformer {
         
         //print loops found
         int colorId = 0;
-        Iterator printIt = loops.keySet().iterator();
+        Iterator<Stmt> printIt = loops.keySet().iterator();
         while (printIt.hasNext()){
-            Stmt h = (Stmt)printIt.next();
+            Stmt h = printIt.next();
             System.out.println("FOUND LOOP: Header: "+h+" Body: "+loops.get(h));
 
             // tag loop stmts with colors
@@ -97,9 +98,9 @@ public class LoopFinder extends BodyTransformer {
     }
     
 
-    private List getLoopBodyFor(Stmt header, Stmt node){
+    private List<Object> getLoopBodyFor(Stmt header, Stmt node){
     
-        ArrayList loopBody = new ArrayList();
+        ArrayList<Object> loopBody = new ArrayList<Object>();
         Stack stack = new Stack();
 
         loopBody.add(header);
@@ -121,8 +122,8 @@ public class LoopFinder extends BodyTransformer {
         return loopBody;
     }
 
-    private List union(List l1, List l2){
-        Iterator it = l2.iterator();
+    private List<Object> union(List<Object> l1, List<Object> l2){
+        Iterator<Object> it = l2.iterator();
         while (it.hasNext()){
             Object next = it.next();
             if (!l1.contains(next)){
@@ -130,31 +131,5 @@ public class LoopFinder extends BodyTransformer {
             }
         }
         return l1;
-    }
-
-    private void tagLoopStmt(Stmt s, int id){
-        switch(id%5){
-            case 0: {
-                        s.addTag(new ColorTag(ColorTag.GREEN));
-                        break;
-                    }
-            case 1: {
-                        s.addTag(new ColorTag(ColorTag.RED));
-                        break;
-                    }
-            case 2: {
-                        s.addTag(new ColorTag(ColorTag.BLUE));
-                        break;
-                    }
-            case 3: {
-                        s.addTag(new ColorTag(ColorTag.YELLOW));
-                        break;
-                    }
-            case 4: {
-                        s.addTag(new ColorTag(ColorTag.ORANGE));
-                        break;
-                    }
-        
-        }
     }
 }

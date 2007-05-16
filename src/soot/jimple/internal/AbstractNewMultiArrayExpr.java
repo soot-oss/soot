@@ -34,7 +34,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -58,8 +57,8 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
             if (!baseType.equals(ae.baseType) || 
                     sizeBoxes.length != ae.sizeBoxes.length)
                 return false;
-            for (int i = 0; i < sizeBoxes.length; i++)
-                if (sizeBoxes[i] != ae.sizeBoxes[i])
+            for (ValueBox element : sizeBoxes)
+				if (element != element)
                     return false;
             return true;
         }
@@ -77,10 +76,10 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
         StringBuffer buffer = new StringBuffer();
 
         Type t = baseType.baseType;
-    buffer.append(Jimple.v().NEWMULTIARRAY + " (" +  t.toString() + ")");
+    buffer.append(Jimple.NEWMULTIARRAY + " (" +  t.toString() + ")");
 
-        for(int i = 0; i < sizeBoxes.length; i++)
-            buffer.append("[" + sizeBoxes[i].getValue().toString() + "]");
+        for (ValueBox element : sizeBoxes)
+			buffer.append("[" + element.getValue().toString() + "]");
 
         for(int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++)
             buffer.append("[]");
@@ -92,14 +91,14 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     {
         Type t = baseType.baseType;
         
-        up.literal(Jimple.v().NEWMULTIARRAY);
+        up.literal(Jimple.NEWMULTIARRAY);
         up.literal(" (");
         up.type(t);
         up.literal(")");
 
-        for(int i = 0; i < sizeBoxes.length; i++) {
+        for (ValueBox element : sizeBoxes) {
             up.literal("[");
-            sizeBoxes[i].toString(up);
+            element.toString(up);
             up.literal("]");
         }
         
@@ -137,8 +136,8 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     {
         List toReturn = new ArrayList();
 
-        for(int i = 0; i < sizeBoxes.length; i++)
-            toReturn.add(sizeBoxes[i].getValue());
+        for (ValueBox element : sizeBoxes)
+			toReturn.add(element.getValue());
 
         return toReturn;
     }
@@ -152,10 +151,9 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
     {
         List list = new ArrayList();
 
-        for(int i = 0; i < sizeBoxes.length; i++)
-        {
-            list.addAll(sizeBoxes[i].getValue().getUseBoxes());
-            list.add(sizeBoxes[i]);
+        for (ValueBox element : sizeBoxes) {
+            list.addAll(element.getValue().getUseBoxes());
+            list.add(element);
         }
 
         return list;
@@ -171,7 +169,7 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
         ((ExprSwitch) sw).caseNewMultiArrayExpr(this);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         List sizes = getSizes();
 

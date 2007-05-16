@@ -24,8 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
-import java.util.*;
 
 
 /** Represents the annotation default attribute attatched method

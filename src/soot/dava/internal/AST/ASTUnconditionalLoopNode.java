@@ -27,9 +27,9 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTUnconditionalLoopNode extends ASTLabeledNode
 {
-    private List body;
+    private List<Object> body;
 
-    public ASTUnconditionalLoopNode( SETNodeLabel label, List body)
+    public ASTUnconditionalLoopNode( SETNodeLabel label, List<Object> body)
     {
 	super( label);
 	this.body = body;
@@ -41,9 +41,9 @@ public class ASTUnconditionalLoopNode extends ASTLabeledNode
       Nomair A Naeem 20-FEB-2005
       Added for UselessLabeledBlockRemover
     */
-    public void replaceBody(List body){
+    public void replaceBody(List<Object> body){
 	this.body=body;
-	subBodies=new ArrayList();
+	subBodies=new ArrayList<Object>();
 	subBodies.add(body);
     }
 

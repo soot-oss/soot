@@ -22,7 +22,6 @@ package soot.shimple;
 import soot.*;
 import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 
@@ -68,13 +67,13 @@ public interface PhiExpr extends ShimpleExpr
     /**
      * Returns a list of the values used by this PhiExpr.
      **/
-    public List getValues();
+    public List<Value> getValues();
 
     /**
      * Returns a list of the control flow predecessor Units being
      * tracked by this PhiExpr
      **/
-    public List getPreds();
+    public List<Unit> getPreds();
 
     /**
      * Returns the number of arguments in this PhiExpr.

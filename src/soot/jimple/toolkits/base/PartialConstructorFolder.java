@@ -35,10 +35,8 @@ import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
-import soot.grimp.*;
 import soot.util.*;
 import java.util.*;
-import soot.tagkit.*;
 
 public class PartialConstructorFolder extends BodyTransformer
 {
@@ -67,11 +65,11 @@ public class PartialConstructorFolder extends BodyTransformer
                 "] Folding Jimple constructors...");
 
         Chain units = body.getUnits();
-        List stmtList = new ArrayList();
+        List<Unit> stmtList = new ArrayList<Unit>();
         stmtList.addAll(units);
 
-        Iterator it = stmtList.iterator();
-        Iterator nextStmtIt = stmtList.iterator();
+        Iterator<Unit> it = stmtList.iterator();
+        Iterator<Unit> nextStmtIt = stmtList.iterator();
         // start ahead one
         nextStmtIt.next();
         
@@ -121,7 +119,7 @@ public class PartialConstructorFolder extends BodyTransformer
             // check if new is in the types list - only process these
             if (!types.contains(((NewExpr)rhs).getType())) continue;
             
-            List lu = localUses.getUsesOf((DefinitionStmt)s);
+            List lu = localUses.getUsesOf(s);
             Iterator luIter = lu.iterator();
             boolean MadeNewInvokeExpr = false;
           
@@ -148,7 +146,7 @@ public class PartialConstructorFolder extends BodyTransformer
               // insert new one here
               units.insertBefore(constructStmt, use);
               
-              constructStmt.addTag((SourceLnPosTag)s.getTag("SourceLnPosTag"));
+              constructStmt.addTag(s.getTag("SourceLnPosTag"));
             }
           if (MadeNewInvokeExpr)
             {

@@ -61,7 +61,7 @@ public class JLookupSwitchStmt extends AbstractStmt
     }
 
 
-    private static UnitBox[] unitBoxListToArray(List targets) {
+    private static UnitBox[] unitBoxListToArray(List<Object> targets) {
         UnitBox[] targetBoxes = new UnitBox[targets.size()];
         
         for(int i = 0; i < targetBoxes.length; i++)
@@ -78,7 +78,7 @@ public class JLookupSwitchStmt extends AbstractStmt
     }
 
     /** Constructs a new JLookupSwitchStmt. lookupValues should be a list of IntConst s. */     
-    public JLookupSwitchStmt(Value key, List lookupValues, List targets, UnitBox defaultTarget)
+    public JLookupSwitchStmt(Value key, List<Object> lookupValues, List<Object> targets, UnitBox defaultTarget)
     {
         this(Jimple.v().newImmediateBox(key),
              lookupValues, unitBoxListToArray(targets),
@@ -114,8 +114,8 @@ public class JLookupSwitchStmt extends AbstractStmt
         {
             stmtBoxes = new ArrayList();
 
-            for(int i = 0; i < targetBoxes.length; i++)
-                stmtBoxes.add(targetBoxes[i]);
+            for (UnitBox element : targetBoxes)
+				stmtBoxes.add(element);
 
             stmtBoxes.add(defaultTargetBox);
             stmtBoxes = Collections.unmodifiableList(stmtBoxes);
@@ -127,18 +127,18 @@ public class JLookupSwitchStmt extends AbstractStmt
         StringBuffer buffer = new StringBuffer();
         String endOfLine = " ";
         
-        buffer.append(Jimple.v().LOOKUPSWITCH + "(" + 
+        buffer.append(Jimple.LOOKUPSWITCH + "(" + 
             keyBox.getValue().toString() + ")" + endOfLine);
             
         buffer.append("{" + endOfLine);
         
         for(int i = 0; i < lookupValues.size(); i++)
         {
-            buffer.append("    " +  Jimple.v().CASE + " " + lookupValues.get(i) + ": " +  Jimple.v().GOTO + " " + 
+            buffer.append("    " +  Jimple.CASE + " " + lookupValues.get(i) + ": " +  Jimple.GOTO + " " + 
                 getTarget(i) + ";" + endOfLine);
         }
 
-        buffer.append("    " +  Jimple.v().DEFAULT + ": " +  Jimple.v().GOTO +
+        buffer.append("    " +  Jimple.DEFAULT + ": " +  Jimple.GOTO +
                       " " + getDefaultTarget() + ";" + endOfLine);
         buffer.append("}");
 
@@ -147,7 +147,7 @@ public class JLookupSwitchStmt extends AbstractStmt
     
     public void toString(UnitPrinter up)
     {
-        up.literal(Jimple.v().LOOKUPSWITCH);
+        up.literal(Jimple.LOOKUPSWITCH);
         up.literal("(");
         keyBox.toString(up);
         up.literal(")");
@@ -156,11 +156,11 @@ public class JLookupSwitchStmt extends AbstractStmt
         up.newline();
         for(int i = 0; i < lookupValues.size(); i++) {
             up.literal("    ");
-            up.literal(Jimple.v().CASE);
+            up.literal(Jimple.CASE);
             up.literal(" ");
             up.constant((Constant)lookupValues.get(i));
             up.literal(": ");
-            up.literal(Jimple.v().GOTO);
+            up.literal(Jimple.GOTO);
             up.literal(" ");
             targetBoxes[i].toString(up);
             up.literal(";");
@@ -168,9 +168,9 @@ public class JLookupSwitchStmt extends AbstractStmt
         }
         
         up.literal("    ");
-        up.literal(Jimple.v().DEFAULT);
+        up.literal(Jimple.DEFAULT);
         up.literal(": ");
-        up.literal(Jimple.v().GOTO);
+        up.literal(Jimple.GOTO);
         up.literal(" ");
         defaultTargetBox.toString(up);
         up.literal(";");
@@ -254,8 +254,8 @@ public class JLookupSwitchStmt extends AbstractStmt
     {
         List targets = new ArrayList();
 
-        for(int i = 0; i < targetBoxes.length; i++)
-            targets.add(targetBoxes[i].getUnit());
+        for (UnitBox element : targetBoxes)
+			targets.add(element.getUnit());
 
         return targets;
     }
@@ -286,7 +286,7 @@ public class JLookupSwitchStmt extends AbstractStmt
       ((StmtSwitch) sw).caseLookupSwitchStmt(this);
     }
     
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ArrayList targetPlaceholders = new ArrayList();
 

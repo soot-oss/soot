@@ -19,12 +19,10 @@
 
 package soot.jimple.toolkits.annotation.fields;
 import soot.*;
+
 import java.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 import soot.tagkit.*;
 import soot.jimple.*;
-import soot.util.queue.*;
 
 /** A scene transformer that adds tags to unused fields. */
 public class UnreachableFieldsTagger extends SceneTransformer
@@ -35,7 +33,7 @@ public class UnreachableFieldsTagger extends SceneTransformer
     protected void internalTransform(String phaseName, Map options){
 
         // make list of all fields
-        ArrayList fieldList = new ArrayList();
+        ArrayList<SootField> fieldList = new ArrayList<SootField>();
         
         Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
         while (getClassesIt.hasNext()) {
@@ -82,9 +80,9 @@ public class UnreachableFieldsTagger extends SceneTransformer
         }
         
         // tag unused fields
-        Iterator unusedIt = fieldList.iterator();
+        Iterator<SootField> unusedIt = fieldList.iterator();
         while (unusedIt.hasNext()) {
-            SootField unusedField = (SootField)unusedIt.next();
+            SootField unusedField = unusedIt.next();
             unusedField.addTag(new StringTag("Field "+unusedField.getName()+" is not used!", "Unreachable Fields"));
             unusedField.addTag(new ColorTag(ColorTag.RED, true, "Unreachable Fields"));   
             //System.out.println("tagged field: "+unusedField);

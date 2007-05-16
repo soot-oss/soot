@@ -29,7 +29,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BVirtualInvokeInst extends AbstractInvokeInst implements VirtualInvokeInst
 {

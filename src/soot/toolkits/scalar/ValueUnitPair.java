@@ -179,8 +179,8 @@ public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo
         // When a body is cloned, the Values are cloned explicitly and
         // replaced, and UnitBoxes are explicitly patched.  See
         // Body.importBodyContentsFrom for details.
-        Value cv = Jimple.cloneIfNecessary((Value) getValue());
-        Unit cu = (Unit) getUnit();
+        Value cv = Jimple.cloneIfNecessary(getValue());
+        Unit cu = getUnit();
         return new ValueUnitPair(cv, cu);
     }
 }

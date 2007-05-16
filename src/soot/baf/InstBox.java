@@ -30,8 +30,6 @@
 package soot.baf;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
 
 class InstBox extends AbstractUnitBox
 {

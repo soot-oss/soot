@@ -30,9 +30,6 @@
 
 
 package soot.coffi;
-import soot.*;
-
-import java.io.*;
 
 /** A debugging attribute, this gives the names of local variables
  * within blocks of bytecode.
@@ -64,7 +61,6 @@ class LocalVariableTable_attribute extends attribute_info {
     */
    public String getLocalVariableName(cp_info constant_pool[],int idx,int code) {
       local_variable_table_entry e;
-      CONSTANT_Utf8_info cu;
       int i;
 
       // G.v().out.println("searching for name of local: " + idx + "at: " + code);

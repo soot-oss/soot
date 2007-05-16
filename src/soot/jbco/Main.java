@@ -22,10 +22,8 @@ package soot.jbco;
 import java.util.*;
 
 import soot.*;
-import soot.util.*;
 import soot.jbco.bafTransformations.*;
 import soot.jbco.jimpleTransformations.*;
-import soot.toolkits.exceptions.TrapTightener;
 /**
  * @author Michael Batchelder 
  * 
@@ -38,14 +36,14 @@ public class Main {
   public static boolean jbcoVerbose = false;
   public static boolean metrics = false;
   
-  public static HashMap transformsToWeights = new HashMap();
-  public static HashMap transformsToMethodsToWeights = new HashMap();
+  public static HashMap<String, Integer> transformsToWeights = new HashMap<String, Integer>();
+  public static HashMap<String, HashMap<Object, Integer>> transformsToMethodsToWeights = new HashMap<String, HashMap<Object, Integer>>();
   public static HashMap method2Locals2REALTypes = new HashMap();
-  public static HashMap methods2Baf2JLocals = new HashMap();
-  public static HashMap methods2JLocals = new HashMap();
-  public static ArrayList IntermediateAppClasses = new ArrayList();
+  public static HashMap<SootMethod, HashMap<Local, Local>> methods2Baf2JLocals = new HashMap<SootMethod, HashMap<Local, Local>>();
+  public static HashMap<SootMethod, ArrayList> methods2JLocals = new HashMap<SootMethod, ArrayList>();
+  public static ArrayList<SootClass> IntermediateAppClasses = new ArrayList<SootClass>();
   
-  static ArrayList jbcotransforms = new ArrayList();
+  static ArrayList<Transformer> jbcotransforms = new ArrayList<Transformer>();
   
   static String[][] optionStrings = new String[][] { {"Rename Classes","Rename Methods","Rename Fields","Build API Buffer Methods","Build Library Buffer Classes","Goto Instruction Augmentation","Add Dead Switche Statements","Convert Arith. Expr. To Bitshifting Ops","Convert Branches to JSR Instructions","Disobey Constructor Conventions","Reuse Duplicate Sequences","Replace If(Non)Nulls with Try-Catch","Indirect If Instructions","Pack Locals into Bitfields","Reorder Loads Above Ifs","Combine Try and Catch Blocks","Embed Constants in Fields","Partially Trap Switches"}, 
     {"wjtp.jbco_cr",  "wjtp.jbco_mr",  "wjtp.jbco_fr", "wjtp.jbco_blbc",                "wjtp.jbco_bapibm",                        "jtp.jbco_gia",                  "jtp.jbco_adss",        "jtp.jbco_cae2bo",                     "bb.jbco_cb2ji",          "bb.jbco_dcc",               "bb.jbco_rds",                       "bb.jbco_riitcb",                                         "bb.jbco_iii",                                        "bb.jbco_plvb",               "bb.jbco_rlaii",                                "bb.jbco_ctbcb",                          "bb.jbco_ecvf",              "bb.jbco_ptss"                         }};
@@ -54,7 +52,7 @@ public class Main {
   public static void main(String[] argv)
   { 
     int rcount = 0;
-    Vector transformsToAdd = new Vector();
+    Vector<String> transformsToAdd = new Vector<String>();
     boolean remove[] = new boolean[argv.length];
     for (int i = 0; i < argv.length; i++) {
       String arg = argv[i];
@@ -166,9 +164,9 @@ public class Main {
           o = arg;
         }
         
-        HashMap htmp = (HashMap)transformsToMethodsToWeights.get(trans);
+        HashMap<Object, Integer> htmp = transformsToMethodsToWeights.get(trans);
         if (htmp == null) {
-          htmp = new HashMap();
+          htmp = new HashMap<Object, Integer>();
           transformsToMethodsToWeights.put(trans,htmp);
         }
         htmp.put(o, new Integer(tweight));
@@ -215,7 +213,7 @@ public class Main {
       
       String jl = null;
       for (int i = 0; i < transformsToAdd.size(); i++) {
-        if (((String)transformsToAdd.get(i)).startsWith("bb")) {
+        if (transformsToAdd.get(i).startsWith("bb")) {
           jl = "jtp.jbco_jl";
           jtp.add(new Transform(jl,newTransform((Transformer)getTransform(jl))));
           bb.insertBefore(new Transform("bb.jbco_j2bl",newTransform((Transformer)getTransform("bb.jbco_j2bl"))), "bb.lso");
@@ -227,7 +225,7 @@ public class Main {
       }
       
       for (int i = 0; i < transformsToAdd.size(); i++) {
-        String tname = (String)transformsToAdd.get(i);
+        String tname = transformsToAdd.get(i);
         IJbcoTransform t = getTransform(tname);
   
         Pack p = tname.startsWith("wjtp") ? wjtp : tname.startsWith("jtp") ? jtp : bb;
@@ -274,7 +272,7 @@ public class Main {
     
     if (jbcoSummary){
       G.v().out.println("\n***** JBCO SUMMARY *****\n");
-      Iterator tit = jbcotransforms.iterator();
+      Iterator<Transformer> tit = jbcotransforms.iterator();
       while (tit.hasNext()) {
         Object o = tit.next();
         if (o instanceof IJbcoTransform) {
@@ -377,14 +375,14 @@ public class Main {
   
   private static int getWeight(String phasename) {
     int weight = 9;
-    Integer intg = (Integer)transformsToWeights.get(phasename);
+    Integer intg = transformsToWeights.get(phasename);
     if (intg != null)
       weight = intg.intValue();
     return weight;
   }
   
   public static int getWeight(String phasename, String method) {
-    HashMap htmp = (HashMap)transformsToMethodsToWeights.get(phasename);
+    HashMap htmp = transformsToMethodsToWeights.get(phasename);
     
     int result = 10;
     

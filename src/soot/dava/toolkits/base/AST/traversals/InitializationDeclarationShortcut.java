@@ -60,7 +60,7 @@ public class InitializationDeclarationShortcut extends DepthFirstAdapter {
 		//check that this is a local defined in this method
 		//its a sanity check
 		List declaredLocals = node.getDeclaredLocals();
-		if(!declaredLocals.contains((Local)defined)){
+		if(!declaredLocals.contains(defined)){
 			possible=false;
 			return;
 		}
@@ -72,7 +72,7 @@ public class InitializationDeclarationShortcut extends DepthFirstAdapter {
 		if(definedLocal==null)
 			return;
 		
-		Value defined = ((DefinitionStmt)s).getLeftOp();
+		Value defined = (s).getLeftOp();
 		if(!(defined instanceof Local)){
 			return;
 		}

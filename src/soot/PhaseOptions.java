@@ -43,14 +43,14 @@ public class PhaseOptions {
     public PhaseOptions( Singletons.Global g ) { }
     public static PhaseOptions v() { return G.v().soot_PhaseOptions(); }
 
-    private Map phaseToOptionMap = new HashMap();
+    private final Map<HasPhaseOptions, Map> phaseToOptionMap = new HashMap<HasPhaseOptions, Map>();
 
     public Map getPhaseOptions(String phaseName) {
         return getPhaseOptions(getPM().getPhase(phaseName));
     }
 
     public Map getPhaseOptions(HasPhaseOptions phase) {
-        Map ret = (Map) phaseToOptionMap.get(phase);
+        Map ret = phaseToOptionMap.get(phase);
         if( ret == null ) ret = new HashMap();
         else ret = new HashMap( ret );
         StringTokenizer st = new StringTokenizer( phase.getDefaultOptions() );
@@ -112,16 +112,16 @@ public class PhaseOptions {
     }
 
 
-    private Map mapForPhase( String phaseName ) {
+    private Map<String, String> mapForPhase( String phaseName ) {
         HasPhaseOptions phase = getPM().getPhase( phaseName );
         if( phase == null ) return null;
         return mapForPhase( phase );
     }
 
-    private Map mapForPhase( HasPhaseOptions phase ) {
-        Map optionMap = (Map) phaseToOptionMap.get( phase );
+    private Map<String, String> mapForPhase( HasPhaseOptions phase ) {
+        Map<String, String> optionMap = phaseToOptionMap.get( phase );
         if( optionMap == null ) {
-            phaseToOptionMap.put( phase, optionMap = new HashMap() );
+            phaseToOptionMap.put( phase, optionMap = new HashMap<String, String>() );
         }
         return optionMap;
     }
@@ -145,8 +145,7 @@ public class PhaseOptions {
         }
     }
     private void resetRadioPack( String phaseName ) {
-        for( Iterator pIt = getPM().allPacks().iterator(); pIt.hasNext(); ) {
-            final Pack p = (Pack) pIt.next();
+        for (Pack p : getPM().allPacks()) {
             if( !(p instanceof RadioScenePack) ) continue;
             if( p.get(phaseName) == null ) continue;
             for( Iterator tIt = p.iterator(); tIt.hasNext(); ) {
@@ -157,11 +156,7 @@ public class PhaseOptions {
     }
     private boolean checkParentEnabled( String phaseName ) {
         if( true ) return true;
-        // This check for the parent being enabled
-        // has been taken out, because it caused problems with the order in
-        // which the options are specified.
-        for( Iterator pIt = getPM().allPacks().iterator(); pIt.hasNext(); ) {
-            final Pack p = (Pack) pIt.next();
+        for (Pack p : getPM().allPacks()) {
             if( getBoolean( getPhaseOptions( p ), "enabled" ) ) continue;
             for( Iterator tIt = p.iterator(); tIt.hasNext(); ) {
                 final Transform t = (Transform) tIt.next();
@@ -184,7 +179,7 @@ public class PhaseOptions {
         return setPhaseOption( phase, option );
     }
     public boolean setPhaseOption( HasPhaseOptions phase, String option ) {
-        Map optionMap = mapForPhase( phase );
+        Map<String, String> optionMap = mapForPhase( phase );
         if( !checkParentEnabled( phase.getPhaseName() ) ) return false;
         if( optionMap == null ) {
             G.v().out.println( "Option "+option+" given for nonexistent"
@@ -219,7 +214,7 @@ public class PhaseOptions {
     }
 
     public void setPhaseOptionIfUnset( String phaseName, String option ) {
-        Map optionMap = mapForPhase( phaseName );
+        Map<String, String> optionMap = mapForPhase( phaseName );
         if( optionMap == null )
             throw new RuntimeException( "No such phase "+phaseName );
         if( optionMap.containsKey( getKey( option ) ) ) return;

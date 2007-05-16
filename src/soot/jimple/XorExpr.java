@@ -29,8 +29,6 @@
 
 package soot.jimple;
 
-import soot.*;
-
 public interface XorExpr extends BinopExpr
 {
 }

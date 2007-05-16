@@ -28,13 +28,11 @@ package soot.jimple.toolkits.typing;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 class ConstraintCollector extends AbstractStmtSwitch
 {
   private TypeResolver resolver;
-  private ClassHierarchy hierarchy;
   private boolean uses;  // if true, include use contraints
   
   private JimpleBody stmtBody;
@@ -44,7 +42,6 @@ class ConstraintCollector extends AbstractStmtSwitch
     this.resolver = resolver;
     this.uses = uses;
 
-    hierarchy = resolver.hierarchy();
   }
 
   public void collect(Stmt stmt, JimpleBody stmtBody)
@@ -180,7 +177,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 
   public void caseInvokeStmt(InvokeStmt stmt)
   {
-    handleInvokeExpr((InvokeExpr) stmt.getInvokeExpr());
+    handleInvokeExpr(stmt.getInvokeExpr());
   }
 
   public void caseAssignStmt(AssignStmt stmt)
@@ -442,8 +439,6 @@ class ConstraintCollector extends AbstractStmtSwitch
       }
     else if(r instanceof InstanceOfExpr)
       {
-	InstanceOfExpr ioe = (InstanceOfExpr) r;
-	
 	right = resolver.typeVariable(IntType.v());
       }
     else if(r instanceof InvokeExpr)
@@ -651,7 +646,7 @@ class ConstraintCollector extends AbstractStmtSwitch
       {
 	ConditionExpr cond = (ConditionExpr) stmt.getCondition();
 	
-	BinopExpr expr = (BinopExpr) cond;
+	BinopExpr expr = cond;
 	Value lv = expr.getOp1();
 	Value rv = expr.getOp2();
 	

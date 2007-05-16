@@ -31,9 +31,7 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst
 {

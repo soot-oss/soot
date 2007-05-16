@@ -34,11 +34,6 @@ package soot.grimp.internal;
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
-import soot.util.*;
-import java.util.*;
-import soot.jimple.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
 
 public class GInstanceFieldRef extends AbstractInstanceFieldRef
     implements Precedence

@@ -31,9 +31,7 @@
 package soot.grimp.internal;
 
 import soot.*;
-import soot.grimp.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
 
 public class GRValueBox extends AbstractValueBox
 {

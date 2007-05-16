@@ -19,8 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.util.*;
-import soot.util.queue.*;
 import java.util.*;
 
 /** Extends a TargetsOfMethod or TargetsOfUnit to include edges
@@ -38,8 +36,8 @@ public class TransitiveTargets
         this.cg = cg;
         this.filter = filter;
     }
-    public Iterator iterator( Unit u ) {
-        ArrayList methods = new ArrayList();
+    public Iterator<MethodOrMethodContext> iterator( Unit u ) {
+        ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
         Iterator it = cg.edgesOutOf( u );
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
@@ -48,8 +46,8 @@ public class TransitiveTargets
         }
         return iterator( methods.iterator() );
     }
-    public Iterator iterator( MethodOrMethodContext momc ) {
-        ArrayList methods = new ArrayList();
+    public Iterator<MethodOrMethodContext> iterator( MethodOrMethodContext momc ) {
+        ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
         Iterator it = cg.edgesOutOf( momc );
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
@@ -58,18 +56,18 @@ public class TransitiveTargets
         }
         return iterator( methods.iterator() );
     }
-    public Iterator iterator( Iterator methods ) {
-        Set s = new HashSet();
-        ArrayList worklist = new ArrayList();
+    public Iterator<MethodOrMethodContext> iterator( Iterator<MethodOrMethodContext> methods ) {
+        Set<MethodOrMethodContext> s = new HashSet<MethodOrMethodContext>();
+        ArrayList<MethodOrMethodContext> worklist = new ArrayList<MethodOrMethodContext>();
         while( methods.hasNext() ) {
-            MethodOrMethodContext method = (MethodOrMethodContext) methods.next();
+            MethodOrMethodContext method = methods.next();
             if( s.add( method ) ) worklist.add( method );
         }
         return iterator( s, worklist );
     }
-    private Iterator iterator( Set s, ArrayList worklist ) {
+    private Iterator<MethodOrMethodContext> iterator( Set<MethodOrMethodContext> s, ArrayList<MethodOrMethodContext> worklist ) {
         for( int i = 0; i < worklist.size(); i++ ) {
-            MethodOrMethodContext method = (MethodOrMethodContext) worklist.get(i);
+            MethodOrMethodContext method = worklist.get(i);
             Iterator it = cg.edgesOutOf( method );
             if( filter != null ) it = filter.wrap( it );
             while( it.hasNext() ) {

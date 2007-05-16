@@ -14,11 +14,14 @@
             destdir="classes"
             debug="true"
             deprecation="on"
-        	source="1.2"
-        	target="1.2"
+        	source="1.5"
+        	target="1.5"
         	fork="true"
         	memorymaximumsize="512m"
         >
+        	<compilerarg value="-Xlint:all"/>
+        	<compilerarg value="-Xlint:-unchecked"/>
+        	<compilerarg value="-Xlint:-serial"/>
         	<classpath>
         		<pathelement location="classes"/>
         		<pathelement location="${polyglot.jar}"/>

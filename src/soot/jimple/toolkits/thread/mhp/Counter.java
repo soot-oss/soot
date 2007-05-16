@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
-
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
 // This code should be treated as beta-quality code.

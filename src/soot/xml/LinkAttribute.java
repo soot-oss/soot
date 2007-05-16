@@ -17,9 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.xml;
-
-import soot.*;    
+package soot.xml;    
 
 public class LinkAttribute {
     
@@ -27,9 +25,9 @@ public class LinkAttribute {
     private int jimpleLink;
     private int javaLink;
     private String className;
-    private boolean isJimpleLink;
-    private boolean isJavaLink;
-    private String analysisType;
+    private final boolean isJimpleLink;
+    private final boolean isJavaLink;
+    private final String analysisType;
     
     public LinkAttribute(String info, int jimpleLink, int javaLink, String className, String type){
         this.info = info;

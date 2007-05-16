@@ -30,9 +30,6 @@
 
 
 package soot.coffi;
-import soot.*;
-
-import java.io.*;
 
 /** Attribute that connects synthetic attribute.
  * @see attribute_info

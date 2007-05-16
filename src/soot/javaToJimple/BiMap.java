@@ -23,18 +23,18 @@ import java.util.*;
 
 public class BiMap {
 
-    HashMap keyVal;
-    HashMap valKey;
+    HashMap<Object, Object> keyVal;
+    HashMap<Object, Object> valKey;
     
     public BiMap(){
     }
 
     public void put(Object key, Object val){
         if (keyVal == null){
-            keyVal = new HashMap();
+            keyVal = new HashMap<Object, Object>();
         }
         if (valKey == null){
-            valKey = new HashMap();
+            valKey = new HashMap<Object, Object>();
         }
 
         keyVal.put(key, val);

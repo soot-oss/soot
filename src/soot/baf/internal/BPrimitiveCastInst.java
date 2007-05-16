@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BPrimitiveCastInst extends AbstractInst 
                             implements PrimitiveCastInst
@@ -48,7 +47,7 @@ public class BPrimitiveCastInst extends AbstractInst
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(fromType);
+        return AbstractJasminClass.sizeOfType(fromType);
     }
     
     public int getOutCount()
@@ -58,7 +57,7 @@ public class BPrimitiveCastInst extends AbstractInst
 
     public int getOutMachineCount()
     {
-        return JasminClass.sizeOfType(toType);
+        return AbstractJasminClass.sizeOfType(toType);
     }
 
     

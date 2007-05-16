@@ -29,8 +29,6 @@
 
 package soot.jimple;
 
-import soot.util.*;
-import java.util.*;
 import soot.*;
 
 public interface ExitMonitorStmt extends MonitorStmt

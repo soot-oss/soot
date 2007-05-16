@@ -46,7 +46,7 @@ import java.util.*;
  **/
 public class ShimpleLocalDefs implements LocalDefs
 {
-    protected  Map localToDefs;
+    protected  Map<Value, SingletonList> localToDefs;
 
     /**
      * Build a LocalDefs interface from a ShimpleBody.  Proper SSA
@@ -66,7 +66,7 @@ public class ShimpleLocalDefs implements LocalDefs
         {
             Chain unitsChain = sb.getUnits();
             Iterator unitsIt = unitsChain.iterator();
-            localToDefs = new HashMap(unitsChain.size() * 2 + 1, 0.7f);
+            localToDefs = new HashMap<Value, SingletonList>(unitsChain.size() * 2 + 1, 0.7f);
         
             while(unitsIt.hasNext()){
                 Unit unit = (Unit) unitsIt.next();
@@ -91,9 +91,9 @@ public class ShimpleLocalDefs implements LocalDefs
      * <p> This method is currently not required by the LocalDefs
      * interface.
      **/
-    public List getDefsOf(Local l)
+    public List<Unit> getDefsOf(Local l)
     {
-        List defs = (List) localToDefs.get(l);
+        List<Unit> defs = localToDefs.get(l);
 
         if(defs == null)
             throw new RuntimeException("Local not found in Body.");
@@ -110,7 +110,7 @@ public class ShimpleLocalDefs implements LocalDefs
      * query for the definitions of the Local.
      * @return a singleton list containing the definition site.
      **/
-    public List getDefsOfAt(Local l, Unit s)
+    public List<Unit> getDefsOfAt(Local l, Unit s)
     {
         // For consistency with SimpleLocalDefs, check that the local
         // is indeed used in the given Unit.  This neatly sidesteps

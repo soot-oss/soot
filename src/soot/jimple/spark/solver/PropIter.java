@@ -18,13 +18,11 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
 import soot.util.queue.*;
 import java.util.*;
-import soot.options.SparkOptions;
 
 /** Propagates points-to sets along pointer assignment graph using iteration.
  * @author Ondrej Lhotak
@@ -36,19 +34,19 @@ public final class PropIter extends Propagator {
     public final void propagate() {
         final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
         new TopoSorter( pag, false ).sort();
-        for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-            handleAllocNode( (AllocNode) it.next() );
+        for (Object object : pag.allocSources()) {
+            handleAllocNode( (AllocNode) object );
         }
         int iteration = 1;
 	boolean change;
 	do {
 	    change = false;
-            TreeSet simpleSources = new TreeSet( pag.simpleSources() );
+            TreeSet<Object> simpleSources = new TreeSet<Object>( pag.simpleSources() );
             if( pag.getOpts().verbose() ) {
                 G.v().out.println( "Iteration "+(iteration++) );
             }
-            for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
-                change = handleSimples( (VarNode) it.next() ) | change;
+            for (Object object : simpleSources) {
+                change = handleSimples( (VarNode) object ) | change;
             }
             if( ofcg != null ) {
                 QueueReader addedEdges = pag.edgeReader();
@@ -66,18 +64,18 @@ public final class PropIter extends Propagator {
                         PointsToSetInternal p2set = ((VarNode)addedSrc).getP2Set();
                         if( p2set != null ) p2set.unFlushNew();
                     } else if( addedSrc instanceof AllocNode ) {
-                        ((VarNode) addedTgt).makeP2Set().add( (AllocNode) addedSrc );
+                        ((VarNode) addedTgt).makeP2Set().add( addedSrc );
                     }
                 }
                 if( change ) {
                     new TopoSorter( pag, false ).sort();
                 }
             }
-	    for( Iterator it = pag.loadSources().iterator(); it.hasNext(); ) {
-                change = handleLoads( (FieldRefNode) it.next() ) | change;
+	    for (Object object : pag.loadSources()) {
+                change = handleLoads( (FieldRefNode) object ) | change;
 	    }
-	    for( Iterator it = pag.storeSources().iterator(); it.hasNext(); ) {
-                change = handleStores( (VarNode) it.next() ) | change;
+	    for (Object object : pag.storeSources()) {
+                change = handleStores( (VarNode) object ) | change;
 	    }
 	} while( change );
     }
@@ -90,8 +88,8 @@ public final class PropIter extends Propagator {
     protected final boolean handleAllocNode( AllocNode src ) {
 	boolean ret = false;
 	Node[] targets = pag.allocLookup( src );
-	for( int i = 0; i < targets.length; i++ ) {
-	    ret = targets[i].makeP2Set().add( src ) | ret;
+	for (Node element : targets) {
+	    ret = element.makeP2Set().add( src ) | ret;
 	}
 	return ret;
     }
@@ -101,8 +99,8 @@ public final class PropIter extends Propagator {
 	PointsToSetInternal srcSet = src.getP2Set();
 	if( srcSet.isEmpty() ) return false;
 	Node[] simpleTargets = pag.simpleLookup( src );
-	for( int i = 0; i < simpleTargets.length; i++ ) {
-	    ret = simpleTargets[i].makeP2Set().addAll( srcSet, null ) | ret;
+	for (Node element : simpleTargets) {
+	    ret = element.makeP2Set().addAll( srcSet, null ) | ret;
 	}
         return ret;
     }
@@ -112,8 +110,8 @@ public final class PropIter extends Propagator {
 	final PointsToSetInternal srcSet = src.getP2Set();
 	if( srcSet.isEmpty() ) return false;
 	Node[] storeTargets = pag.storeLookup( src );
-	for( int i = 0; i < storeTargets.length; i++ ) {
-            final FieldRefNode fr = (FieldRefNode) storeTargets[i];
+	for (Node element : storeTargets) {
+            final FieldRefNode fr = (FieldRefNode) element;
             final SparkField f = fr.getField();
             ret = fr.getBase().getP2Set().forall( new P2SetVisitor() {
             public final void visit( Node n ) {
@@ -138,8 +136,8 @@ public final class PropIter extends Propagator {
                 if( nDotF == null ) return;
                 PointsToSetInternal set = nDotF.getP2Set();
                 if( set.isEmpty() ) return;
-                for( int i = 0; i < loadTargets.length; i++ ) {
-                    VarNode target = (VarNode) loadTargets[i];
+                for (Node element : loadTargets) {
+                    VarNode target = (VarNode) element;
                     if( target.makeP2Set().addAll( set, null ) ) {
                         returnValue = true;
                     }

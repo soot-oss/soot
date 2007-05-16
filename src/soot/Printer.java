@@ -28,6 +28,7 @@ import soot.options.*;
 import java.io.*;
 import soot.tagkit.*;
 import java.util.*;
+
 import soot.util.*;
 import soot.toolkits.graph.*;
 
@@ -84,7 +85,7 @@ public class Printer {
             StringTokenizer st =
                 new StringTokenizer(Modifier.toString(cl.getModifiers()));
             while (st.hasMoreTokens()) {
-                String tok = (String) st.nextToken();
+                String tok = st.nextToken();
                 if( cl.isInterface() && tok.equals("abstract") ) continue;
                 out.print(tok + " ");
             }
@@ -477,22 +478,6 @@ public class Printer {
 
     }
 
-    private int addJimpleLnTags(int lnNum, Unit stmt, int endLn) {
-		
-		if (endLn-lnNum <= 1) {
-        	stmt.addTag(new JimpleLineNumberTag(lnNum));
-			//G.v().out.println(stmt.getClass().toString());
-        	lnNum++;
-        	return lnNum;
-		}
-		else {
-			stmt.addTag(new JimpleLineNumberTag(lnNum, endLn));
-			//G.v().out.println("multi-line: "+stmt.getClass().toString());
-			endLn++;
-			return endLn;
-		}
-    }
-
     private int addJimpleLnTags(int lnNum, SootMethod meth) {
     	meth.addTag(new JimpleLineNumberTag(lnNum));
 	lnNum++;
@@ -511,7 +496,7 @@ public class Printer {
         UnitPrinter up) {
         // Print out local variables
         {
-            Map typeToLocals =
+            Map<Type, List> typeToLocals =
                 new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
 
             // Collect locals
@@ -521,14 +506,14 @@ public class Printer {
                 while (localIt.hasNext()) {
                     Local local = (Local) localIt.next();
 
-                    List localList;
+                    List<Local> localList;
 
                     Type t = local.getType();
 
                     if (typeToLocals.containsKey(t))
-                        localList = (List) typeToLocals.get(t);
+                        localList = typeToLocals.get(t);
                     else {
-                        localList = new ArrayList();
+                        localList = new ArrayList<Local>();
                         typeToLocals.put(t, localList);
                     }
 
@@ -538,12 +523,12 @@ public class Printer {
 
             // Print locals
             {
-                Iterator typeIt = typeToLocals.keySet().iterator();
+                Iterator<Type> typeIt = typeToLocals.keySet().iterator();
 
                 while (typeIt.hasNext()) {
-                    Type type = (Type) typeIt.next();
+                    Type type = typeIt.next();
 
-                    List localList = (List) typeToLocals.get(type);
+                    List localList = typeToLocals.get(type);
                     Object[] locals = localList.toArray();
                     up.type( type );
                     up.literal( " " );

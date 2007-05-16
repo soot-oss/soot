@@ -26,7 +26,6 @@
 
 package soot;
 
-import soot.util.*;
 import java.util.*;
 
 /** A wrapper object for a pack of optimizations.

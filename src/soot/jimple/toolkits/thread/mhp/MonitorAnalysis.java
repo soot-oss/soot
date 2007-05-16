@@ -1,13 +1,10 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.scalar.*;
 import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.jimple.*;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -35,11 +32,10 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 {
 	
 	private PegGraph g;
-	private HashMap unitToMonitorSet = new HashMap();
-	private HashMap monitor = new HashMap();
-	private Vector nodes = new Vector();    
-	private Vector valueBefore = new Vector();
-	private Vector valueAfter = new Vector();
+	private final HashMap<String, FlowSet> monitor = new HashMap<String, FlowSet>();
+	private final Vector<Object> nodes = new Vector<Object>();    
+	private final Vector<Object> valueBefore = new Vector<Object>();
+	private final Vector<Object> valueAfter = new Vector<Object>();
 	
 	public MonitorAnalysis(PegGraph g)
 	{
@@ -47,14 +43,14 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 		this.g = g;
 		doAnalysis();
 		//computeSynchNodes();
-		g.setMonitor((Map)monitor);
+		g.setMonitor(monitor);
 //		testMonitor();
 	}
 	
 	protected void doAnalysis()
 	{
-		LinkedList changedUnits = new LinkedList();
-		HashSet changedUnitsSet = new HashSet();
+		LinkedList<Object> changedUnits = new LinkedList<Object>();
+		HashSet<Object> changedUnitsSet = new HashSet<Object>();
 		
 		int numNodes = graph.size();
 		int numComputations = 0;
@@ -348,7 +344,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 				String objName = md.getObjName();
 				if (monitor.containsKey(objName)){
 					if (md.getDepth() > 0)    {
-						((FlowSet)monitor.get(objName)).add(unit);
+						monitor.get(objName).add(unit);
 						//System.out.println("add to monitorset "+unit);
 					}
 				}
@@ -362,7 +358,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 		}
 		
 	}
-	private void createWorkList(LinkedList changedUnits, HashSet changedUnitsSet ){
+	private void createWorkList(LinkedList<Object> changedUnits, HashSet<Object> changedUnitsSet ){
 		createWorkList( changedUnits, changedUnitsSet, g.getMainPegChain());
 		
 		Set maps = g.getStartToThread().entrySet();
@@ -438,10 +434,10 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 	          
 	          }*/
 	
-	private void createWorkList(LinkedList changedUnits, HashSet changedUnitsSet, PegChain chain ){
+	private void createWorkList(LinkedList<Object> changedUnits, HashSet<Object> changedUnitsSet, PegChain chain ){
 		//Depth first scan
 		Iterator it = chain.getHeads().iterator();
-		Set gray = new HashSet();
+		Set<Object> gray = new HashSet<Object>();
 		
 		while (it.hasNext()) {
 			Object head = it.next();
@@ -452,7 +448,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 		}
 	}
 	
-	private void visitNode(Set gray, Object obj,LinkedList changedUnits, HashSet changedUnitsSet ){
+	private void visitNode(Set<Object> gray, Object obj,LinkedList<Object> changedUnits, HashSet<Object> changedUnitsSet ){
 		
 		gray.add(obj);
 		changedUnits.addLast(obj);
@@ -472,8 +468,8 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 		}
 	}
 	
-	public Map getMonitor(){
-		return (Map)monitor;
+	public Map<String, FlowSet> getMonitor(){
+		return monitor;
 	}
 	public void testMonitor(){
 		System.out.println("=====test monitor size: "+monitor.size());
@@ -499,16 +495,6 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 			}
 		}
 		System.out.println("=========monitor--ends--------");
-	}
-	private void testWorkList(LinkedList changedUnits){
-		System.out.println("===workList==");
-		Iterator it = changedUnits.iterator();
-		while (it.hasNext()){
-			JPegStmt stmt = (JPegStmt)it.next();
-			Tag tag1 = (Tag)stmt.getTags().get(0);
-			System.out.println(tag1+" "+stmt);
-		}
-		System.out.println("===end workList==");
 	}
 }
 

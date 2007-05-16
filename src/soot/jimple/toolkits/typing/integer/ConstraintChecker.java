@@ -28,8 +28,6 @@ package soot.jimple.toolkits.typing.integer;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
 import java.io.*;
 
 class ConstraintChecker extends AbstractStmtSwitch
@@ -210,7 +208,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 
   public void caseInvokeStmt(InvokeStmt stmt)
   {
-    handleInvokeExpr((InvokeExpr) stmt.getInvokeExpr(), stmt);
+    handleInvokeExpr(stmt.getInvokeExpr(), stmt);
   }
 
   public void caseAssignStmt(AssignStmt stmt)
@@ -705,8 +703,6 @@ class ConstraintChecker extends AbstractStmtSwitch
       }
     else if(r instanceof InstanceOfExpr)
       {
-	InstanceOfExpr ioe = (InstanceOfExpr) r;
-
 	right = ClassHierarchy.v().BOOLEAN;
       }
     else if(r instanceof InvokeExpr)
@@ -771,8 +767,6 @@ class ConstraintChecker extends AbstractStmtSwitch
       }
     else if(r instanceof LengthExpr)
       {
-	LengthExpr le = (LengthExpr) r;
-
 	right = ClassHierarchy.v().INT;
       }
     else if(r instanceof NegExpr)
@@ -940,7 +934,7 @@ class ConstraintChecker extends AbstractStmtSwitch
   {
     ConditionExpr cond = (ConditionExpr) stmt.getCondition();
     
-    BinopExpr expr = (BinopExpr) cond;
+    BinopExpr expr = cond;
     Value lv = expr.getOp1();
     Value rv = expr.getOp2();
     

@@ -18,10 +18,8 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
 import soot.jimple.*;
 import soot.*;
-import java.util.*;
 
 /** Represents an allocation site node the represents a known java.lang.Class
  * object.

@@ -31,14 +31,9 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
-import soot.*;
 import java.util.*;
 import soot.jimple.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.analysis.*;
-import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 
 /*
@@ -48,7 +43,7 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 
 public class AllDefinitionsFinder extends DepthFirstAdapter{
-    ArrayList allDefs = new ArrayList();
+    ArrayList<DefinitionStmt> allDefs = new ArrayList<DefinitionStmt>();
 
     public AllDefinitionsFinder(){
 
@@ -63,7 +58,7 @@ public class AllDefinitionsFinder extends DepthFirstAdapter{
     }
 
 
-    public List getAllDefs(){
+    public List<DefinitionStmt> getAllDefs(){
 	return allDefs;
     }
 

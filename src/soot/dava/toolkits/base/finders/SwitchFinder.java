@@ -24,10 +24,8 @@ import java.util.*;
 import soot.dava.*;
 import soot.util.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
-import soot.dava.internal.AST.*;
 
 public class SwitchFinder implements FactFinder
 {
@@ -96,7 +94,7 @@ public class SwitchFinder implements FactFinder
 		AugmentedStmt tSucc = (AugmentedStmt) tsit.next();
 		AugmentedStmt target = (AugmentedStmt) tSucc2target.get( tSucc);
 
-		snTargetList.addLast( new SwitchNode( target, (TreeSet) tSucc2indexSet.get( tSucc), (IterableSet) tSucc2Body.get( tSucc)));
+		snTargetList.addLast( new SwitchNode( target, (TreeSet<Object>) tSucc2indexSet.get( tSucc), (IterableSet) tSucc2Body.get( tSucc)));
 	    }
 	    
 	    TreeSet 
@@ -149,7 +147,7 @@ public class SwitchFinder implements FactFinder
 		targetHeads.addAll( sng.getHeads());
 	    }
 
-	    LinkedList switchNodeList = new LinkedList();
+	    LinkedList<SwitchNode> switchNodeList = new LinkedList<SwitchNode>();
 
 	    // Now, merge the targetHeads list and the killBodies list, keeping bundles of case fall throughs from the node graph.
 	    {
@@ -182,9 +180,9 @@ public class SwitchFinder implements FactFinder
 
 	    IterableSet body = new IterableSet();
 	    body.add( as);
-	    Iterator snlit = switchNodeList.iterator();
+	    Iterator<SwitchNode> snlit = switchNodeList.iterator();
 	    while (snlit.hasNext()) {
-		SwitchNode sn = (SwitchNode) snlit.next();
+		SwitchNode sn = snlit.next();
 
 		body.addAll( sn.get_Body());
 		if (sn.get_IndexSet().contains( defaultStr)) {
@@ -211,7 +209,7 @@ public class SwitchFinder implements FactFinder
 			    
 			    snlit = switchNodeList.iterator();
 			    while (snlit.hasNext()) {
-				IterableSet switchBody = ((SwitchNode) snlit.next()).get_Body();
+				IterableSet switchBody = snlit.next().get_Body();
 
 				if (switchBody.contains( fbas)) {
 				    switchBody.remove( fbas);
@@ -230,7 +228,7 @@ public class SwitchFinder implements FactFinder
     private IterableSet find_SubBody( AugmentedStmt switchAS, AugmentedStmt branchS)
     {
 	IterableSet subBody = new IterableSet();
-	LinkedList worklist = new LinkedList();
+	LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
 
 	subBody.add( branchS);
 	branchS = (AugmentedStmt) branchS.bsuccs.get(0);
@@ -241,7 +239,7 @@ public class SwitchFinder implements FactFinder
 	}
 	
 	while (worklist.isEmpty() == false) {
-	    AugmentedStmt as = (AugmentedStmt) worklist.removeFirst();
+	    AugmentedStmt as = worklist.removeFirst();
 	    
 	    Iterator sit = as.csuccs.iterator();
 	    while (sit.hasNext()) {

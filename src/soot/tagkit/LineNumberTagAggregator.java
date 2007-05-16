@@ -29,7 +29,6 @@ package soot.tagkit;
 
 
 import soot.*;
-import java.util.*;
 
 /** The aggregator for LineNumberTable attribute. */
 public class LineNumberTagAggregator extends FirstTagAggregator

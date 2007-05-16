@@ -21,6 +21,7 @@ package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
 import java.util.*;
+
 import soot.dava.internal.SET.*;
 import soot.dava.internal.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
@@ -77,7 +78,7 @@ public class ASTCleaner extends DepthFirstAdapter{
   	}
 
     	//from the Node get the subBodes
-    	Iterator sbit = node.get_SubBodies().iterator();
+    	Iterator<Object> sbit = node.get_SubBodies().iterator();
 
     	//onlyASTIfElseNode has 2 subBodies but we need to deal with that
     	int subBodyNumber=0; 
@@ -103,7 +104,7 @@ public class ASTCleaner extends DepthFirstAdapter{
     		}
     		else if(temp instanceof ASTIfElseNode){
     		    //check if there is an empty else body
-    		    List elseBody = ((ASTIfElseNode)temp).getElseBody();
+    		    List<Object> elseBody = ((ASTIfElseNode)temp).getElseBody();
     		    if(elseBody.size()==0){
     		    	EmptyElseRemover.removeElseBody(node,(ASTIfElseNode)temp,subBodyNumber,nodeNumber);
     		    }
@@ -135,8 +136,8 @@ public class ASTCleaner extends DepthFirstAdapter{
 	inASTTryNode(node);
 
 	//get try body 
-	List tryBody = node.get_TryBody();
-	Iterator it = tryBody.iterator();
+	List<Object> tryBody = node.get_TryBody();
+	Iterator<Object> it = tryBody.iterator();
 
 	int nodeNumber=0;
 	//go over the ASTNodes and apply
@@ -149,7 +150,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 		if(label.toString()==null){
 		    //uselessLabeledBlock Found REMOVE IT
 		    
-		    List newBody=UselessLabeledBlockRemover.createNewSubBody(tryBody,nodeNumber,labelBlock);
+		    List<Object> newBody=UselessLabeledBlockRemover.createNewSubBody(tryBody,nodeNumber,labelBlock);
 		    if(newBody!=null){
 			//something did not go wrong
 			node.replaceTryBody(newBody);
@@ -160,10 +161,10 @@ public class ASTCleaner extends DepthFirstAdapter{
 	    }
 	    else if(temp instanceof ASTIfElseNode){
 		//check if there is an empty else body
-		List elseBody = ((ASTIfElseNode)temp).getElseBody();
+		List<Object> elseBody = ((ASTIfElseNode)temp).getElseBody();
 		if(elseBody.size()==0){
 		    //System.out.println("Empty else body found"+temp);
-		    List newBody=EmptyElseRemover.createNewNodeBody(tryBody,nodeNumber,(ASTIfElseNode)temp);
+		    List<Object> newBody=EmptyElseRemover.createNewNodeBody(tryBody,nodeNumber,(ASTIfElseNode)temp);
 		    if(newBody!=null){
 			//something did not go wrong
 			node.replaceTryBody(newBody);
@@ -179,7 +180,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 		    ASTNode nextNode = (ASTNode)tryBody.get(nodeNumber+1);
 		    if(nextNode instanceof ASTIfNode){
 			//found an If followed by another if might match Patter 3. 
-			List newBody=OrAggregatorThree.createNewNodeBody(tryBody,nodeNumber,(ASTIfNode)temp,(ASTIfNode)nextNode);
+			List<Object> newBody=OrAggregatorThree.createNewNodeBody(tryBody,nodeNumber,(ASTIfNode)temp,(ASTIfNode)nextNode);
 			if(newBody!=null){
 			    //something did not go wrong and pattern was matched
 			    node.replaceTryBody(newBody);
@@ -199,14 +200,14 @@ public class ASTCleaner extends DepthFirstAdapter{
 
 
 
-	Map exceptionMap = node.get_ExceptionMap();
-	Map paramMap = node.get_ParamMap();
+	Map<Object, Object> exceptionMap = node.get_ExceptionMap();
+	Map<Object, Object> paramMap = node.get_ParamMap();
 	//get catch list and apply on the following
 	// a, type of exception caught
 	// b, local of exception
 	// c, catchBody
-	List catchList = node.get_CatchList();
-	Iterator itBody=null;
+	List<Object> catchList = node.get_CatchList();
+	Iterator<Object> itBody=null;
         it = catchList.iterator();
 	while (it.hasNext()) {
 	    ASTTryNode.container catchBody = (ASTTryNode.container)it.next();
@@ -222,7 +223,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 	    decideCaseExprOrRef(local);
 
 	    //apply on catchBody
-	    List body = (List)catchBody.o;
+	    List<Object> body = (List<Object>)catchBody.o;
 	    itBody = body.iterator();
 
 	    nodeNumber=0;
@@ -236,7 +237,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 		    if(label.toString()==null){
 			//uselessLabeledBlock Found REMOVE IT
 			
-			List newBody=UselessLabeledBlockRemover.createNewSubBody(body,nodeNumber,labelBlock);
+			List<Object> newBody=UselessLabeledBlockRemover.createNewSubBody(body,nodeNumber,labelBlock);
 			if(newBody!=null){
 			    //something did not go wrong
 			    catchBody.replaceBody(newBody);
@@ -248,10 +249,10 @@ public class ASTCleaner extends DepthFirstAdapter{
 		}
 		else if(temp instanceof ASTIfElseNode){
 		    //check if there is an empty else body
-		    List elseBody = ((ASTIfElseNode)temp).getElseBody();
+		    List<Object> elseBody = ((ASTIfElseNode)temp).getElseBody();
 		    if(elseBody.size()==0){
 			//System.out.println("Empty else body found"+temp);
-			List newBody=EmptyElseRemover.createNewNodeBody(body,nodeNumber,(ASTIfElseNode)temp);
+			List<Object> newBody=EmptyElseRemover.createNewNodeBody(body,nodeNumber,(ASTIfElseNode)temp);
 			if(newBody!=null){
 			    //something did not go wrong
 			    catchBody.replaceBody(newBody);
@@ -267,7 +268,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			ASTNode nextNode = (ASTNode)body.get(nodeNumber+1);
 			if(nextNode instanceof ASTIfNode){
 			    //found an If followed by another if might match Patter 3. 
-			    List newBody=OrAggregatorThree.createNewNodeBody(body,nodeNumber,(ASTIfNode)temp,(ASTIfNode)nextNode);
+			    List<Object> newBody=OrAggregatorThree.createNewNodeBody(body,nodeNumber,(ASTIfNode)temp,(ASTIfNode)nextNode);
 			    if(newBody!=null){
 				//something did not go wrong and pattern was matched
 				catchBody.replaceBody(newBody);
@@ -290,18 +291,18 @@ public class ASTCleaner extends DepthFirstAdapter{
     private void dealWithSwitchNode(ASTSwitchNode node){
 	//do a depthfirst on elements of the switchNode
 
-	List indexList = node.getIndexList();
-	Map index2BodyList = node.getIndex2BodyList();
+	List<Object> indexList = node.getIndexList();
+	Map<Object, List<Object>> index2BodyList = node.getIndex2BodyList();
 
-	Iterator it = indexList.iterator();
+	Iterator<Object> it = indexList.iterator();
 	while (it.hasNext()) {//going through all the cases of the switch statement
 	    Object currentIndex = it.next();
-	    List body = (List) index2BodyList.get( currentIndex);
+	    List<Object> body = index2BodyList.get( currentIndex);
 	    
 	    if (body != null){
 		//this body is a list of ASTNodes 
 
-		Iterator itBody = body.iterator();
+		Iterator<Object> itBody = body.iterator();
 		int nodeNumber=0;
 		//go over the ASTNodes and apply
 		while (itBody.hasNext()){
@@ -313,7 +314,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			if(label.toString()==null){
 			    //uselessLabeledBlock Found REMOVE IT
 		    
-			    List newBody=UselessLabeledBlockRemover.createNewSubBody(body,nodeNumber,labelBlock);
+			    List<Object> newBody=UselessLabeledBlockRemover.createNewSubBody(body,nodeNumber,labelBlock);
 			    if(newBody!=null){
 				//something did not go wrong
 				
@@ -328,10 +329,10 @@ public class ASTCleaner extends DepthFirstAdapter{
 		    }
 		    else if(temp instanceof ASTIfElseNode){
 			//check if there is an empty else body
-			List elseBody = ((ASTIfElseNode)temp).getElseBody();
+			List<Object> elseBody = ((ASTIfElseNode)temp).getElseBody();
 			if(elseBody.size()==0){
 			    //System.out.println("Empty else body found"+temp);
-			    List newBody=EmptyElseRemover.createNewNodeBody(body,nodeNumber,(ASTIfElseNode)temp);
+			    List<Object> newBody=EmptyElseRemover.createNewNodeBody(body,nodeNumber,(ASTIfElseNode)temp);
 			    if(newBody!=null){
 				//something did not go wrong
 				
@@ -351,7 +352,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			    ASTNode nextNode = (ASTNode)body.get(nodeNumber+1);
 			    if(nextNode instanceof ASTIfNode){
 				//found an If followed by another if might match Patter 3. 
-				List newBody=OrAggregatorThree.createNewNodeBody(body,nodeNumber,(ASTIfNode)temp,(ASTIfNode)nextNode);
+				List<Object> newBody=OrAggregatorThree.createNewNodeBody(body,nodeNumber,(ASTIfNode)temp,(ASTIfNode)nextNode);
 				if(newBody!=null){
 				    //something did not go wrong and pattern was matched
 

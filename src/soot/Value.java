@@ -28,7 +28,6 @@ package soot;
 
 import soot.util.*;
 import java.util.*;
-import soot.*;
 import java.io.*;
 
 /** Data used as, for instance, arguments to instructions; typical implementations are

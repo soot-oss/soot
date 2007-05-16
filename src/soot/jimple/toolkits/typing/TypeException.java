@@ -26,11 +26,6 @@
 
 package soot.jimple.toolkits.typing;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
-
 public class TypeException extends Exception
 {
   public TypeException(String message)

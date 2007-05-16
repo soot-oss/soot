@@ -29,11 +29,10 @@
 
 package soot.jimple;
 
-import soot.util.*;
 import java.util.*;
 import soot.*;
 
 public interface ConvertToBaf
 {
-    public void convertToBaf(JimpleToBafContext context, List out);
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out);
 }

@@ -31,6 +31,7 @@ package soot.toolkits.graph;
 import soot.*;
 import soot.util.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 import soot.options.Options;
 
@@ -109,7 +110,7 @@ public abstract class UnitGraph implements DirectedGraph
 	    currentUnit = nextUnit;
 	    nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
                     
-	    List successors = new ArrayList();
+	    List<Unit> successors = new ArrayList<Unit>();
                     
 	    if( currentUnit.fallsThrough() ) {
 		// Add the next unit as the successor
@@ -187,10 +188,9 @@ public abstract class UnitGraph implements DirectedGraph
      * 
      * @param map      The map whose values are to be made unmodifiable.
      */
-    protected static void makeMappedListsUnmodifiable(Map map) {
-	for (Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-	    Map.Entry entry = (Map.Entry) it.next();
-	    List value = (List) entry.getValue();
+    protected static void makeMappedListsUnmodifiable(Map<Object,List> map) {
+	for (Entry<Object, List> entry : map.entrySet()) {
+	    List value = entry.getValue();
 	    if (value.size() == 0) {
 		entry.setValue(Collections.EMPTY_LIST);
 	    } else {
@@ -317,7 +317,7 @@ public abstract class UnitGraph implements DirectedGraph
    *  @param to   end point for the path. 
    *  @return null if there is no such path.
    */
-  public List getExtendedBasicBlockPathBetween(Unit from, Unit to)
+  public List<Unit> getExtendedBasicBlockPathBetween(Unit from, Unit to)
     {
         UnitGraph g = this;
         
@@ -327,19 +327,19 @@ public abstract class UnitGraph implements DirectedGraph
 
       // pathStack := list of succs lists
       // pathStackIndex := last visited index in pathStack
-      LinkedList pathStack = new LinkedList();
-      LinkedList pathStackIndex = new LinkedList();
+      LinkedList<Unit> pathStack = new LinkedList<Unit>();
+      LinkedList<Integer> pathStackIndex = new LinkedList<Integer>();
 
       pathStack.add(from);
       pathStackIndex.add(new Integer(0));
 
-      int psiMax = (g.getSuccsOf((Unit)pathStack.get(0))).size();
+      int psiMax = (g.getSuccsOf(pathStack.get(0))).size();
       int level = 0;
-      while (((Integer)pathStackIndex.get(0)).intValue() != psiMax)
+      while (pathStackIndex.get(0).intValue() != psiMax)
         {
-          int p = ((Integer)(pathStackIndex.get(level))).intValue();
+          int p = (pathStackIndex.get(level)).intValue();
 
-          List succs = g.getSuccsOf((Unit)(pathStack.get(level)));
+          List succs = g.getSuccsOf((pathStack.get(level)));
           if (p >= succs.size())
             {
               // no more succs - backtrack to previous level.
@@ -348,7 +348,7 @@ public abstract class UnitGraph implements DirectedGraph
               pathStackIndex.remove(level);
 
               level--;
-              int q = ((Integer)pathStackIndex.get(level)).intValue();
+              int q = pathStackIndex.get(level).intValue();
               pathStackIndex.set(level, new Integer(q+1));
               continue;
             }

@@ -26,7 +26,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.util.*;
 import java.util.*;
 
 
@@ -57,7 +56,7 @@ public class ArraySparseSet extends AbstractFlowSet
     {
         numElements = other.numElements;
         maxElements = other.maxElements;
-        elements = (Object[]) other.elements.clone();
+        elements = other.elements.clone();
     }
     
     /** Returns true if flowSet is the same type of flow set as this. */
@@ -66,7 +65,7 @@ public class ArraySparseSet extends AbstractFlowSet
         return (flowSet instanceof ArraySparseSet);
     }
 
-    public Object clone()
+    public ArraySparseSet clone()
     {
         return new ArraySparseSet(this);
     }
@@ -138,16 +137,7 @@ public class ArraySparseSet extends AbstractFlowSet
         }
     }
 
-  /* copy last element to the position of deleted element, and
-   * decrease the array size.
-   * pointed out by Florian Loitsch, March 2002
-   */
-    private void removeElementAt(int index)
-    {
-      elements[index] = elements[--numElements];
-    }
-
-    public void union(FlowSet otherFlow, FlowSet destFlow)
+  public void union(FlowSet otherFlow, FlowSet destFlow)
     {
       if (sameType(otherFlow) &&
           sameType(destFlow)) {
@@ -279,39 +269,6 @@ public class ArraySparseSet extends AbstractFlowSet
             dest.elements, 0, this.numElements);
       } else
         super.copy(destFlow);
-    }
-
-    private static class SparseArrayList extends AbstractList 
-    {
-        private Object[] array;
-        private int realSize;
-        
-        public SparseArrayList(Object[] array, int realSize)
-        {
-            this.array = array;
-            this.realSize = realSize;
-        }   
-        
-        public Object get(int index)
-        {
-            return array[index];
-        }
-        
-        public Object set(int index, Object element)
-        {
-            throw new UnsupportedOperationException();
-        }
-        
-        public int size()
-        {
-            return realSize;
-        }
-        
-        public Object clone()
-        {
-            return array.clone();
-        }
-        
     }
 
 }

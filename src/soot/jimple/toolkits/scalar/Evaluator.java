@@ -27,11 +27,8 @@
 
 package soot.jimple.toolkits.scalar;
 
-import soot.util.*;
 import soot.*;
 import soot.jimple.*;
-import java.io.*;
-import java.util.*;
 
 
 public class Evaluator {
@@ -114,7 +111,7 @@ public class Evaluator {
                 else if (c1 instanceof StringConstant)
                 {
                     boolean equality = ((StringConstant)c1).equals
-                        ((StringConstant)c2);
+                        (c2);
 
                     boolean truth = (op instanceof EqExpr) ? equality :
                         !equality;

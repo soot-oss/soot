@@ -64,7 +64,7 @@ public class LazyCodeMotion extends BodyTransformer {
    */
   protected void internalTransform(Body b, String phaseName, Map opts) {
     LCMOptions options = new LCMOptions( opts );
-    HashMap expToHelper = new HashMap();
+    HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
     Chain unitChain = b.getUnits();
 
     if(Options.v().verbose()) G.v().out.println("[" + b.getMethod().getName() +
@@ -176,13 +176,13 @@ public class LazyCodeMotion extends BodyTransformer {
         FlowSet latestSet = (FlowSet)latest.getFlowBefore(currentUnit);
         FlowSet notIsolatedSet =
           (FlowSet)notIsolated.getFlowAfter(currentUnit);
-        FlowSet insertHere = (FlowSet)latestSet.clone();
+        FlowSet insertHere = latestSet.clone();
         insertHere.intersection(notIsolatedSet, insertHere);
         Iterator insertIt = insertHere.iterator();
         while (insertIt.hasNext()) {
           EquivalentValue equiVal = (EquivalentValue)insertIt.next();
           /* get the unic helper-name for this expression */
-          Local helper = (Local)expToHelper.get(equiVal);
+          Local helper = expToHelper.get(equiVal);
           if (helper == null) {
             helper = localCreation.newLocal(equiVal.getType());
             expToHelper.put(equiVal, helper);
@@ -207,7 +207,7 @@ public class LazyCodeMotion extends BodyTransformer {
           FlowSet notIsolatedSet =
             (FlowSet)notIsolated.getFlowAfter(currentUnit);
           if (!latestSet.contains(rhs) && notIsolatedSet.contains(rhs)) {
-            Local helper = (Local)expToHelper.get(rhs);
+            Local helper = expToHelper.get(rhs);
 
 	    try {
 	      ((AssignStmt)currentUnit).setRightOp(helper);

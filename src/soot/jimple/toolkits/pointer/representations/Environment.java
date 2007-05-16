@@ -42,41 +42,40 @@
 package soot.jimple.toolkits.pointer.representations;
 
 import soot.*;
-import java.util.*;
 
 public class Environment {
     public Environment( Singletons.Global g ) {}
     public static Environment v() { return G.v().soot_jimple_toolkits_pointer_representations_Environment(); }
 
-  private ConstantObject clsloaders =
+  private final ConstantObject clsloaders =
     new GeneralConstObject(TypeConstants.v().CLASSLOADERCLASS, "classloader");
   
-  private ConstantObject processes  =
+  private final ConstantObject processes  =
     new GeneralConstObject(TypeConstants.v().PROCESSCLASS, "process");
 
-  private ConstantObject threads    =
+  private final ConstantObject threads    =
     new GeneralConstObject(TypeConstants.v().THREADCLASS, "thread");
 
-  private ConstantObject filesystem =
+  private final ConstantObject filesystem =
     new GeneralConstObject(TypeConstants.v().FILESYSTEMCLASS, "filesystem");
 
   /* representing all possible java.lang.Class type objects,
    * mostly used by reflection.
    */
-  private ConstantObject classobject =
+  private final ConstantObject classobject =
     new GeneralConstObject(TypeConstants.v().CLASSCLASS, "unknownclass");
 
   /* representing all possible java.lang.String objects, used by
    * any getName() or similiar methods.
    */
-  private ConstantObject stringobject =
+  private final ConstantObject stringobject =
     new GeneralConstObject(TypeConstants.v().STRINGCLASS, "unknownstring");
 
   /* to get finer resolution, it is worth to distinguish arrays and general
    * scalars.
    * WARNING: making array with java.lang.Object type may be a problem!
    */
-  private ConstantObject leastarray =
+  private final ConstantObject leastarray =
     new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastarray");
 
   /* makes a general unknown object,
@@ -84,28 +83,28 @@ public class Environment {
    *          useful when resolve virtual calls.
    *          Null type is a good candidate for this.
    */
-  private ConstantObject leastobject =
+  private final ConstantObject leastobject =
     new GeneralConstObject(TypeConstants.v().LEASTCLASS, "leastobject");
 
   /* provides an abstract java.lang.reflect.Field object.
    */
-  private ConstantObject fieldobject =
+  private final ConstantObject fieldobject =
     new GeneralConstObject(TypeConstants.v().FIELDCLASS, "field");
 
   /* provides an abstract java.lang.reflect.Method object
    */
-  private ConstantObject methodobject =
+  private final ConstantObject methodobject =
     new GeneralConstObject(TypeConstants.v().METHODCLASS, "method");
   
   /* provides an abstract java.lang.reflect.Constructor object
    */
-  private ConstantObject constructorobject =
+  private final ConstantObject constructorobject =
     new GeneralConstObject(TypeConstants.v().CONSTRUCTORCLASS, "constructor");
 
   /* represents the PrivilegedActionException thrown by
    * AccessController.doPrivileged
    */
-  private ConstantObject privilegedActionException =
+  private final ConstantObject privilegedActionException =
     new GeneralConstObject(TypeConstants.v().PRIVILEGEDACTIONEXCEPTION, "constructor");
 
   /********************* INTERFACE to NATIVE METHODS *******************/

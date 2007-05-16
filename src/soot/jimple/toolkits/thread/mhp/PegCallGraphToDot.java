@@ -26,14 +26,10 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
 import soot.toolkits.graph.*;
 //import soot.toolkits.mhp.*;
 import soot.util.dot.*;
-import soot.util.*;
 import java.util.*;
-import soot.jimple.internal.*;
-import soot.tagkit.*;
 
 
 
@@ -60,16 +56,14 @@ public class PegCallGraphToDot {
 	public static String methname;
 	
 	public static boolean isBrief      = false;
-	private static Map listNodeName = new HashMap();
-	private static int meth_count = 0;
-	private static Map startNodeToName = new HashMap(); 
+	private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
 	
 	/* in one page or several pages of 8.5x11 */
 	public static boolean onepage      = true;
 	
 	public PegCallGraphToDot(DirectedGraph graph, boolean onepage, String name) {
 		
-		this.onepage = onepage;
+		PegCallGraphToDot.onepage = onepage;
 		toDotFile(name, graph,"PegCallGraph");
 		
 		
@@ -184,9 +178,9 @@ public class PegCallGraphToDot {
 		canvas.plot("pecg.dot");
 	} 
 	
-	private static int getNodeOrder(Hashtable nodeindex, Object node){
+	private static int getNodeOrder(Hashtable<Object,Integer> nodeindex, Object node){
 		
-		Integer index = (Integer)nodeindex.get(node);
+		Integer index = nodeindex.get(node);
 		if (index == null) {
 			index = new Integer(nodecount++);
 			nodeindex.put(node, index);

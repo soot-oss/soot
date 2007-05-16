@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** A debugging attribute, this associates blocks of bytecode with
  * specific source code line numbers.
  * @see attribute_info

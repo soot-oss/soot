@@ -4,20 +4,15 @@ package soot.jimple.toolkits.thread.mhp;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.thread.AbstractRuntimeThread;
 import soot.jimple.toolkits.thread.mhp.findobject.AllocNodesFinder;
 import soot.jimple.toolkits.thread.mhp.findobject.MultiRunStatementsFinder;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.options.SparkOptions;
-import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 /** UnsynchronizedMhpAnalysis written by Richard L. Halpert 2006-12-09
  *  Calculates May-Happen-in-Parallel (MHP) information as if in the absence
@@ -35,12 +30,12 @@ import java.io.*;
 
 public class UnsynchronizedMhpAnalysis implements MhpTester
 {
-	List MHPLists;
+	List<AbstractRuntimeThread> MHPLists;
 	boolean optionPrintDebug;
 	
 	public UnsynchronizedMhpAnalysis()
 	{
-		MHPLists = new ArrayList();
+		MHPLists = new ArrayList<AbstractRuntimeThread>();
 		optionPrintDebug = false;
 		buildMHPLists();
 	}
@@ -69,20 +64,20 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 	    // Also find methods that are run more than once
 //		G.v().out.println("    MHP: AllocNodesFinder");
 		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph, (PAG) pta);
-		Set multiRunAllocNodes = anf.getMultiRunAllocNodes();
-		Set multiCalledMethods = anf.getMultiCalledMethods();
+		Set<AllocNode> multiRunAllocNodes = anf.getMultiRunAllocNodes();
+		Set<Object> multiCalledMethods = anf.getMultiCalledMethods();
 
 		// Find Thread.start() and Thread.join() statements (in live code)
 //		G.v().out.println("    MHP: StartJoinFinder");
 		StartJoinFinder sjf = new StartJoinFinder(callGraph, (PAG) pta); // does analysis
-		Map startToAllocNodes = sjf.getStartToAllocNodes();
-		Map startToRunMethods = sjf.getStartToRunMethods();
-		Map startToContainingMethod = sjf.getStartToContainingMethod();
-		Map startToJoin = sjf.getStartToJoin();
+		Map<Stmt, List<AllocNode>> startToAllocNodes = sjf.getStartToAllocNodes();
+		Map<Stmt, List<SootMethod>> startToRunMethods = sjf.getStartToRunMethods();
+		Map<Stmt, SootMethod> startToContainingMethod = sjf.getStartToContainingMethod();
+		Map<Stmt, Stmt> startToJoin = sjf.getStartToJoin();
 		
 		// Build MHP Lists
 //		G.v().out.println("    MHP: Building MHP Lists");
-		List runAtOnceCandidates = new ArrayList();
+		List<AbstractRuntimeThread> runAtOnceCandidates = new ArrayList<AbstractRuntimeThread>();
 		Iterator threadIt = startToRunMethods.entrySet().iterator();
 		int threadNum = 0;
 		while(threadIt.hasNext())
@@ -93,7 +88,7 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 			Map.Entry e = (Map.Entry) threadIt.next();
 			Stmt startStmt = (Stmt) e.getKey();
 			List runMethods = (List) e.getValue();
-			List threadAllocNodes = (List) startToAllocNodes.get(e.getKey());
+			List threadAllocNodes = startToAllocNodes.get(e.getKey());
 
 			// Get a list of all possible unique Runnable.run methods for this thread start statement
 			AbstractRuntimeThread thread = new AbstractRuntimeThread(); // provides a list interface to the methods in a threads sub call graph
@@ -154,7 +149,7 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 				thread.setStartStmtHasMultipleReachingObjects();
 			
 			// Find out if the "thread.start()" statement may be run more than once
-			SootMethod startStmtMethod = (SootMethod) startToContainingMethod.get(startStmt);
+			SootMethod startStmtMethod = startToContainingMethod.get(startStmt);
 			thread.setStartStmtMethod(startStmtMethod);
 			boolean mayBeRunMultipleTimes = multiCalledMethods.contains(startStmtMethod); // if method is called more than once...
 			if(!mayBeRunMultipleTimes)
@@ -177,10 +172,10 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 			// by one thread (sounds strict, but actually this is the most common case)
 			if(mayBeRunMultipleTimes && startToJoin.containsKey(startStmt))
 			{
-				thread.setJoinStmt((Stmt) startToJoin.get(startStmt));
+				thread.setJoinStmt(startToJoin.get(startStmt));
 				mayBeRunMultipleTimes = false; // well, actually, we don't know yet
 				methodNum = 0;
-				List containingMethodCalls = new ArrayList();
+				List<SootMethod> containingMethodCalls = new ArrayList<SootMethod>();
 				containingMethodCalls.add(startStmtMethod);
 				while(methodNum < containingMethodCalls.size()) // iterate over all methods in threadMethods, even as new methods are being added to it
 				{
@@ -262,10 +257,10 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		while(addedNew)
 		{
 			addedNew = false;
-			Iterator it = runAtOnceCandidates.iterator();
+			Iterator<AbstractRuntimeThread> it = runAtOnceCandidates.iterator();
 			while(it.hasNext())
 			{
-				AbstractRuntimeThread someThread = (AbstractRuntimeThread) it.next();
+				AbstractRuntimeThread someThread = it.next();
 				SootMethod someStartMethod = someThread.getStartStmtMethod();
 				if(mayHappenInParallel(someStartMethod, someStartMethod))
 				{
@@ -281,10 +276,10 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		}
 		
 		// mark the remaining threads here as run-one-at-a-time
-		Iterator it = runAtOnceCandidates.iterator();
+		Iterator<AbstractRuntimeThread> it = runAtOnceCandidates.iterator();
 		while(it.hasNext())
 		{
-			AbstractRuntimeThread someThread = (AbstractRuntimeThread) it.next();
+			AbstractRuntimeThread someThread = it.next();
 			someThread.setRunsOneAtATime();
 		}
 	}
@@ -299,11 +294,11 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		int size = MHPLists.size();
 		for(int i = 0; i < size; i++)
 		{
-			if(((AbstractRuntimeThread) MHPLists.get(i)).containsMethod(m1))
+			if(MHPLists.get(i).containsMethod(m1))
 			{
 				for(int j = 0; j < size; j++)
 				{
-					if(((AbstractRuntimeThread) MHPLists.get(j)).containsMethod(m2) && i != j)
+					if(MHPLists.get(j).containsMethod(m2) && i != j)
 					{
 						return true;
 					}
@@ -320,7 +315,7 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 
 	public void printMhpSummary()
 	{
-		List threads = new ArrayList();
+		List<AbstractRuntimeThread> threads = new ArrayList<AbstractRuntimeThread>();
 		int size = MHPLists.size();
 		G.v().out.println("[mhp]");
 		for(int i = 0; i < size; i++)
@@ -328,7 +323,7 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 			if( !threads.contains(MHPLists.get(i)) )
 			{
 				G.v().out.println("[mhp] " + 
-					((AbstractRuntimeThread) MHPLists.get(i)).toString().replaceAll(
+					MHPLists.get(i).toString().replaceAll(
 						"\n", "\n[mhp] ").replaceAll(
 						">,",">\n[mhp]  "));
 				G.v().out.println("[mhp]");
@@ -337,14 +332,14 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		}
 	}
 	
-	public List getThreadClassList()
+	public List<SootClass> getThreadClassList()
 	{
-		List threadClasses = new ArrayList();
+		List<SootClass> threadClasses = new ArrayList<SootClass>();
 		int size = MHPLists.size();
 		for(int i = 0; i < size; i++)
 		{
-			AbstractRuntimeThread thread = (AbstractRuntimeThread) MHPLists.get(i);
-			Iterator threadRunMethodIt = thread.getRunMethods().iterator();
+			AbstractRuntimeThread thread = MHPLists.get(i);
+			Iterator<Object> threadRunMethodIt = thread.getRunMethods().iterator();
 			while(threadRunMethodIt.hasNext())
 			{
 				SootClass threadClass = ((SootMethod) threadRunMethodIt.next()).getDeclaringClass(); // what about subclasses???
@@ -355,9 +350,9 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		return threadClasses;
 	}
 	
-	public List getThreads()
+	public List<AbstractRuntimeThread> getThreads()
 	{
-		List threads = new ArrayList();
+		List<AbstractRuntimeThread> threads = new ArrayList<AbstractRuntimeThread>();
 		int size = MHPLists.size();
 		for(int i = 0; i < size; i++)
 		{

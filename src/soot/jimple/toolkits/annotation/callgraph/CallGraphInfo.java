@@ -24,11 +24,11 @@ import soot.*;
 
 public class CallGraphInfo {
 
-    private ArrayList inputs = new ArrayList();
-    private ArrayList outputs = new ArrayList();
+    private ArrayList<MethInfo> inputs = new ArrayList<MethInfo>();
+    private ArrayList<MethInfo> outputs = new ArrayList<MethInfo>();
     private SootMethod center;
 
-    public CallGraphInfo(SootMethod sm, ArrayList outputs, ArrayList inputs){
+    public CallGraphInfo(SootMethod sm, ArrayList<MethInfo> outputs, ArrayList<MethInfo> inputs){
         setCenter(sm);
         setOutputs(outputs);
         setInputs(inputs);
@@ -42,19 +42,19 @@ public class CallGraphInfo {
         return center;
     }
 
-    public ArrayList getInputs(){
+    public ArrayList<MethInfo> getInputs(){
         return inputs;
     }
 
-    public void setInputs(ArrayList list){
+    public void setInputs(ArrayList<MethInfo> list){
         inputs = list;
     }
 
-    public ArrayList getOutputs(){
+    public ArrayList<MethInfo> getOutputs(){
         return outputs;
     }
 
-    public void setOutputs(ArrayList list){
+    public void setOutputs(ArrayList<MethInfo> list){
         outputs = list;
     }
 

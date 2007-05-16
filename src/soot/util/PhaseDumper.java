@@ -27,17 +27,12 @@
 package soot.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
 import soot.Body;
 import soot.G;
-import soot.PhaseOptions;
 import soot.Printer;
 import soot.Scene;
 import soot.Singletons;
@@ -46,7 +41,6 @@ import soot.SootMethod;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalGraph;
 import soot.toolkits.graph.DirectedGraph;
-import soot.util.Chain;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
 
@@ -100,7 +94,7 @@ public class PhaseDumper {
 	    return phaseName;
 	}
     }
-    private PhaseStack phaseStack = new PhaseStack(); 
+    private final PhaseStack phaseStack = new PhaseStack(); 
     final static String allWildcard = "ALL";
 
 
@@ -197,7 +191,6 @@ public class PhaseDumper {
 	// We number output files to allow multiple graphs per phase.
 	File dir = makeDirectoryIfMissing(b);
 	final String prefix = dir.toString() + File.separatorChar + baseName;
-	String filename = null;
 	File file = null;
 	int fileNumber = 0;
 	do {
@@ -218,8 +211,8 @@ public class PhaseDumper {
 			    name.endsWith(DotGraph.DOT_EXTENSION);
 		    }
 		});
-	    for (int i = 0; i < toDelete.length ; i++) {
-		toDelete[i].delete();
+	    for (File element : toDelete) {
+		element.delete();
 	    }
 	} catch (java.io.IOException e) {
 	    // Don't abort execution because of an I/O error, but report
@@ -260,9 +253,8 @@ public class PhaseDumper {
 
     private void dumpAllBodies(String baseName, 
 				      boolean deleteGraphFiles) {
-	List classes = Scene.v().getClasses(SootClass.BODIES);
-	for (Iterator c = classes.iterator(); c.hasNext(); ) {
-	    SootClass cls = (SootClass) c.next();
+	List<SootClass> classes = Scene.v().getClasses(SootClass.BODIES);
+	for (SootClass cls : classes) {
 	    for (Iterator m = cls.getMethods().iterator(); m.hasNext(); ) {
 		SootMethod method = (SootMethod) m.next();
 		if (method.hasActiveBody()) {

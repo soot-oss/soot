@@ -27,7 +27,6 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -295,8 +294,6 @@ class TypeNode
 
   public TypeNode lca(TypeNode type) throws TypeException
   {
-    TypeNode initial = type;
-
     if(type == null)
       {
 	throw new InternalTypingException();

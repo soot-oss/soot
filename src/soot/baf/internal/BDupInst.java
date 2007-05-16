@@ -46,14 +46,14 @@ public abstract class BDupInst extends AbstractInst implements DupInst
     {
         int count = 0;
 
-        Iterator underTypesIt = getUnderTypes().iterator();
+        Iterator<Type> underTypesIt = getUnderTypes().iterator();
         while(underTypesIt.hasNext()) {
-            count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
+            count += AbstractJasminClass.sizeOfType(underTypesIt.next());
         }
 
-        Iterator opTypesIt = getOpTypes().iterator();
+        Iterator<Type> opTypesIt = getOpTypes().iterator();
         while(opTypesIt.hasNext()) {
-            count += JasminClass.sizeOfType(((Type) opTypesIt.next()));
+            count += AbstractJasminClass.sizeOfType(opTypesIt.next());
         }
         
         
@@ -71,14 +71,14 @@ public abstract class BDupInst extends AbstractInst implements DupInst
     {
         int count = 0;
 
-        Iterator underTypesIt = getUnderTypes().iterator();
+        Iterator<Type> underTypesIt = getUnderTypes().iterator();
         while(underTypesIt.hasNext()) {
-            count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
+            count += AbstractJasminClass.sizeOfType(underTypesIt.next());
         }
 
-        Iterator opTypesIt = getOpTypes().iterator();
+        Iterator<Type> opTypesIt = getOpTypes().iterator();
         while(opTypesIt.hasNext()) {                        
-            count += 2*JasminClass.sizeOfType(((Type) opTypesIt.next()));
+            count += 2*AbstractJasminClass.sizeOfType(opTypesIt.next());
         }                
         return count;
     }

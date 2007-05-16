@@ -30,7 +30,6 @@
 package soot.baf;
 
 import soot.util.*;
-import java.util.*;
 import soot.*;
 
 public class DoubleWordType extends Type

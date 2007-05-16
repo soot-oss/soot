@@ -30,7 +30,6 @@ import java.util.*;
 
 import soot.*;
 import soot.baf.*;
-import soot.tagkit.*;
 
 /**
  *   Example peephole that remove all checkcast operations.

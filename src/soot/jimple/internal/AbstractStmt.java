@@ -34,13 +34,11 @@ import soot.tagkit.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 public abstract class AbstractStmt extends AbstractUnit implements Stmt, ConvertToBaf
 {
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
 	Unit u = Baf.v().newNopInst();
         out.add(u);

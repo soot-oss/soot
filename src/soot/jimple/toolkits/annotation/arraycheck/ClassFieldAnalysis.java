@@ -29,10 +29,8 @@ import soot.options.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
-import soot.tagkit.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import java.io.*;
 import java.util.*;
 
 
@@ -41,15 +39,15 @@ public class ClassFieldAnalysis
     public ClassFieldAnalysis( Singletons.Global g ) {}
     public static ClassFieldAnalysis v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis(); }
 
-    private boolean final_in = true;
-    private boolean private_in = true;
+    private final boolean final_in = true;
+    private final boolean private_in = true;
 
     /* A map hold class object to other information
      * 
      * SootClass --> FieldInfoTable
      */
  
-    private Map classToFieldInfoMap = new HashMap();	
+    private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap = new HashMap<SootClass, Hashtable<SootField, IntValueContainer>>();	
   
     protected void internalTransform(SootClass c)
     {
@@ -63,13 +61,13 @@ public class ClassFieldAnalysis
 			       +start+" for "
 			       +c.getPackageName()+c.getName());
 	
-	Hashtable fieldInfoTable = new Hashtable();
+	Hashtable<SootField, IntValueContainer> fieldInfoTable = new Hashtable<SootField, IntValueContainer>();
 	classToFieldInfoMap.put(c, fieldInfoTable);
 	
 	/* Who is the candidate for analysis?
 	   Int, Array, field. Also it should be PRIVATE now.
 	*/
-	HashSet candidSet = new HashSet();
+	HashSet<SootField> candidSet = new HashSet<SootField>();
 
 	int arrayTypeFieldNum = 0;
 
@@ -134,12 +132,12 @@ public class ClassFieldAnalysis
     {
 	SootClass c = field.getDeclaringClass();
 
-	Hashtable fieldInfoTable = (Hashtable)classToFieldInfoMap.get(c);
+	Hashtable fieldInfoTable = classToFieldInfoMap.get(c);
 
 	if (fieldInfoTable == null)
 	{
 	    internalTransform(c);
-	    fieldInfoTable = (Hashtable)classToFieldInfoMap.get(c);
+	    fieldInfoTable = classToFieldInfoMap.get(c);
 	}
 	
 	return fieldInfoTable.get(field);
@@ -151,8 +149,8 @@ public class ClassFieldAnalysis
     */
 
     public void ScanMethod (SootMethod method, 
-				   Set candidates,
-				   Hashtable fieldinfo)
+				   Set<SootField> candidates,
+				   Hashtable<SootField, IntValueContainer> fieldinfo)
     {
 	if (!method.isConcrete())
 	    return;
@@ -195,7 +193,7 @@ public class ClassFieldAnalysis
 	   this.f, or other.f are treated as same because we summerize the field as a class's field. 
 	*/
 
-	HashMap stmtfield = new HashMap();
+	HashMap<Stmt, SootField> stmtfield = new HashMap<Stmt, SootField>();
 
 	{
 	    Iterator unitIt = body.getUnits().iterator();
@@ -255,7 +253,7 @@ public class ClassFieldAnalysis
 
 		    while (length.isBottom())
 		    {
-			List defs = localDefs.getDefsOfAt(local, usestmt);
+			List<Unit> defs = localDefs.getDefsOfAt(local, usestmt);
 			if (defs.size() == 1)
 			{
 			    usestmt = (DefinitionStmt)defs.get(0);
@@ -312,7 +310,7 @@ public class ClassFieldAnalysis
 		    /* it could be null */
 		    continue;
 
-		IntValueContainer oldv = (IntValueContainer)fieldinfo.get(which);
+		IntValueContainer oldv = fieldinfo.get(which);
 
 		/* the length is top, set the field to top */
 		if (length.isTop())

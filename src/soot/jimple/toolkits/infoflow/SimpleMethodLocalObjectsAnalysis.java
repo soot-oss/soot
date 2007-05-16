@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.infoflow;
 
 import soot.*;
+
 import java.util.*;
 import soot.toolkits.graph.*;
 
@@ -29,7 +30,7 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 		// Add a source for every parameter that is shared
 		for(int i = 0; i < method.getParameterCount(); i++) // no need to worry about return value... 
 		{
-			EquivalentValue paramEqVal = dfa.getNodeForParameterRef(method, i);
+			EquivalentValue paramEqVal = InfoFlowAnalysis.getNodeForParameterRef(method, i);
 			if(!cloa.parameterIsLocal(method, paramEqVal))
 			{
 				addToEntryInitialFlow(sharedDataSource, paramEqVal.getValue());
@@ -37,11 +38,8 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 			}
 		}
 		
-		// Add a source for every field that is shared (DOES THIS INCLUDE GLOBALS?)
-		for(Iterator it = cloa.getSharedFields().iterator(); it.hasNext();)
-		{
-			SootField sf = (SootField) it.next();
-			EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(method, sf);
+		for (SootField sf : cloa.getSharedFields()) {
+			EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, sf);
 			addToEntryInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
 			addToNewInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
 		}
@@ -65,8 +63,8 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 		
 		AbstractDataSource sharedDataSource = new AbstractDataSource(new String("SHARED"));
 		
-		List sharedRefs = context.getSharedRefs();
-		Iterator sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be treated as shared
+		List<Object> sharedRefs = context.getSharedRefs();
+		Iterator<Object> sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be treated as shared
 		while(sharedRefEqValIt.hasNext())
 		{
 			EquivalentValue refEqVal = (EquivalentValue) sharedRefEqValIt.next();

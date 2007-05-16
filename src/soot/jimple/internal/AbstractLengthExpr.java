@@ -29,7 +29,6 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 
 public abstract class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr
 {

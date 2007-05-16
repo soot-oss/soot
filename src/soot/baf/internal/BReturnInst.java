@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
 {
@@ -52,7 +51,7 @@ public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(((Type) getOpType()));
+        return AbstractJasminClass.sizeOfType((getOpType()));
     }
     
     public int getOutCount()

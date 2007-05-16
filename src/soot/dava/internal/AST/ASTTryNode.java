@@ -22,15 +22,14 @@ package soot.dava.internal.AST;
 
 import soot.*;
 import java.util.*;
-import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTTryNode extends ASTLabeledNode
 {
-    private List tryBody, catchList;
-    private Map exceptionMap, paramMap;
+    private List<Object> tryBody, catchList;
+    private Map<Object, Object> exceptionMap, paramMap;
     private container tryBodyContainer;
 
     public class container
@@ -47,26 +46,26 @@ public class ASTTryNode extends ASTLabeledNode
 	}
     }
 
-    public ASTTryNode( SETNodeLabel label, List tryBody, List catchList, Map exceptionMap, Map paramMap)
+    public ASTTryNode( SETNodeLabel label, List<Object> tryBody, List<Object> catchList, Map<Object, Object> exceptionMap, Map<Object, Object> paramMap)
     {
 	super( label);
 
 	this.tryBody = tryBody;
 	tryBodyContainer = new container( tryBody);
 
-	this.catchList = new ArrayList();
-	Iterator cit = catchList.iterator();
+	this.catchList = new ArrayList<Object>();
+	Iterator<Object> cit = catchList.iterator();
 	while (cit.hasNext())
 	    this.catchList.add( new container( cit.next()));
 	
-	this.exceptionMap = new HashMap();
+	this.exceptionMap = new HashMap<Object, Object>();
 	cit = this.catchList.iterator();
 	while (cit.hasNext()) {
 	    container c = (container) cit.next();
 	    this.exceptionMap.put( c, exceptionMap.get( c.o));
 	}
 
-	this.paramMap = new HashMap();
+	this.paramMap = new HashMap<Object, Object>();
 	cit = this.catchList.iterator();
 	while (cit.hasNext()) {
 	    container c = (container) cit.next();
@@ -84,16 +83,16 @@ public class ASTTryNode extends ASTLabeledNode
       Nomair A Naeem 21-FEB-2005
       used to support UselessLabeledBlockRemover
     */
-    public void replaceTryBody(List tryBody){
+    public void replaceTryBody(List<Object> tryBody){
 	this.tryBody = tryBody;
 	tryBodyContainer = new container( tryBody);
 	
-	List oldSubBodies=subBodies;
-	subBodies=new ArrayList();
+	List<Object> oldSubBodies=subBodies;
+	subBodies=new ArrayList<Object>();
 
 	subBodies.add( tryBodyContainer);
 
-	Iterator oldIt = oldSubBodies.iterator();
+	Iterator<Object> oldIt = oldSubBodies.iterator();
 	//discard the first since that was the old tryBodyContainer
 	oldIt.next();
 
@@ -105,9 +104,7 @@ public class ASTTryNode extends ASTLabeledNode
     protected void perform_AnalysisOnSubBodies( ASTAnalysis a)
     {
 	if (a instanceof TryContentsFinder) {
-	    TryContentsFinder tcf = (TryContentsFinder) a;
-
-	    Iterator sbit = subBodies.iterator();
+	    Iterator<Object> sbit = subBodies.iterator();
 	    while (sbit.hasNext()) {
 		container subBody = (container) sbit.next();
 
@@ -116,7 +113,7 @@ public class ASTTryNode extends ASTLabeledNode
 		    ASTNode n = (ASTNode) it.next();
 		    
 		    n.perform_Analysis( a);
-		    tcf.v().add_ExceptionSet( subBody, tcf.v().get_ExceptionSet( n));
+		    TryContentsFinder.v().add_ExceptionSet( subBody, TryContentsFinder.v().get_ExceptionSet( n));
 		}
 	    }
 
@@ -131,7 +128,7 @@ public class ASTTryNode extends ASTLabeledNode
 	return tryBody.isEmpty();
     }
 
-    public List get_TryBody()
+    public List<Object> get_TryBody()
     {
 	return tryBody;
     }
@@ -141,12 +138,12 @@ public class ASTTryNode extends ASTLabeledNode
 	return tryBodyContainer;
     }
 
-    public List get_CatchList()
+    public List<Object> get_CatchList()
     {
 	return catchList;
     }
 
-    public Map get_ExceptionMap()
+    public Map<Object, Object> get_ExceptionMap()
     {
 	return exceptionMap;
     }
@@ -156,15 +153,15 @@ public class ASTTryNode extends ASTLabeledNode
       Nomair A. Naeem 08-FEB-2005
       Needed for call from DepthFirstAdapter
     */
-    public Map get_ParamMap(){
+    public Map<Object, Object> get_ParamMap(){
 	return paramMap;
     }
 
-    public Set get_ExceptionSet()
+    public Set<Object> get_ExceptionSet()
     {
-	HashSet s = new HashSet();
+	HashSet<Object> s = new HashSet<Object>();
 
-	Iterator it = catchList.iterator();
+	Iterator<Object> it = catchList.iterator();
 	while (it.hasNext())
 	    s.add( exceptionMap.get( it.next()));
 
@@ -173,8 +170,8 @@ public class ASTTryNode extends ASTLabeledNode
 
     public Object clone()
     {
-	ArrayList newCatchList = new ArrayList();
-	Iterator it = catchList.iterator();
+	ArrayList<Object> newCatchList = new ArrayList<Object>();
+	Iterator<Object> it = catchList.iterator();
 	while (it.hasNext())
 	    newCatchList.add( ((container) it.next()).o);
 
@@ -200,7 +197,7 @@ public class ASTTryNode extends ASTLabeledNode
 
 
 
-	Iterator cit = catchList.iterator();
+	Iterator<Object> cit = catchList.iterator();
 	while (cit.hasNext()) {
 	    container catchBody = (container) cit.next();
 
@@ -217,7 +214,7 @@ public class ASTTryNode extends ASTLabeledNode
             up.newline();
 
             up.incIndent();
-            body_toString( up, (List) catchBody.o );
+            body_toString( up, (List<Object>) catchBody.o );
             up.decIndent();
 
             up.literal( "}" );
@@ -242,7 +239,7 @@ public class ASTTryNode extends ASTLabeledNode
 	b.append( "}");
 	b.append( NEWLINE);
 
-	Iterator cit = catchList.iterator();
+	Iterator<Object> cit = catchList.iterator();
 	while (cit.hasNext()) {
 	    container catchBody = (container) cit.next();
 
@@ -256,7 +253,7 @@ public class ASTTryNode extends ASTLabeledNode
 	    b.append( "{");
 	    b.append( NEWLINE);
 
-	    b.append( body_toString( (List) catchBody.o));
+	    b.append( body_toString( (List<Object>) catchBody.o));
 
 	    b.append( "}");
 	    b.append( NEWLINE);

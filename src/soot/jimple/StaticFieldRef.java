@@ -35,7 +35,6 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 public class StaticFieldRef implements FieldRef, ConvertToBaf
 {
@@ -104,7 +103,7 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
         return getField().equivHashCode();
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         Unit u = Baf.v().newStaticGetInst(fieldRef);
         out.add(u);

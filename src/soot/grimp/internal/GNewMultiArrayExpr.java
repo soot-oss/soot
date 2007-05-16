@@ -33,10 +33,6 @@ package soot.grimp.internal;
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
-import soot.jimple.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
-import soot.util.*;
 import java.util.*;
 
 public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr 

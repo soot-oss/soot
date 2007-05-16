@@ -38,8 +38,8 @@ import soot.*;
  */
 public class CodeAttribute extends JasminAttribute
 {
-    protected List mUnits;
-    protected List mTags;
+    protected List<Unit> mUnits;
+    protected List<Tag> mTags;
 
     private byte[] value;
     
@@ -54,7 +54,7 @@ public class CodeAttribute extends JasminAttribute
     }
 
   /** Create an attribute object with the name and lists of unit-tag pairs. */
-    public CodeAttribute(String name, List units, List tags)
+    public CodeAttribute(String name, List<Unit> units, List<Tag> tags)
     {
     	this.name = name;
 	this.mUnits = units;
@@ -98,8 +98,8 @@ public class CodeAttribute extends JasminAttribute
 	if (mTags.size() != mUnits.size())
 	    throw new RuntimeException("Sizes must match!");
 	
-	Iterator tagIt = mTags.iterator();
-	Iterator unitIt = mUnits.iterator();
+	Iterator<Tag> tagIt = mTags.iterator();
+	Iterator<Unit> unitIt = mUnits.iterator();
 
 	while (tagIt.hasNext())
 	{
@@ -118,10 +118,10 @@ public class CodeAttribute extends JasminAttribute
     {
 	List unitBoxes = new ArrayList(mUnits.size());
 	
-	Iterator it = mUnits.iterator();
+	Iterator<Unit> it = mUnits.iterator();
 	
 	while(it.hasNext()) {
-	    unitBoxes.add(Baf.v().newInstBox((Unit)it.next()));
+	    unitBoxes.add(Baf.v().newInstBox(it.next()));
 	}
 
 	return unitBoxes;
@@ -132,7 +132,7 @@ public class CodeAttribute extends JasminAttribute
 	if (Options.v().verbose())
 	    G.v().out.println("[] JasminAttribute decode...");
 
-	List attributeHunks = new LinkedList();
+	List<byte[]> attributeHunks = new LinkedList<byte[]>();
 	int attributeSize = 0;
 
 	StringTokenizer st = new StringTokenizer(attr, "%");
@@ -182,11 +182,11 @@ public class CodeAttribute extends JasminAttribute
 	    attributeValue[1] = (byte)(tablesize&0x0FF);
 	}
 	int index=2;
-	Iterator it = attributeHunks.iterator();
+	Iterator<byte[]> it = attributeHunks.iterator();
 	while(it.hasNext()) {
-	    byte[] hunk = (byte[]) it.next();
-	    for(int i = 0; i < hunk.length; i++) {
-		attributeValue[index++] = hunk[i];
+	    byte[] hunk = it.next();
+	    for (byte element : hunk) {
+		attributeValue[index++] = element;
 	    }
 	}
 

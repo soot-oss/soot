@@ -345,7 +345,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 		
 		for (Iterator keyIter = values.iterator(); keyIter.hasNext();) {
 			Value v = (Value) keyIter.next();
-			Set leftAndRight = new HashSet();
+			Set<Object> leftAndRight = new HashSet<Object>();
 			leftAndRight.add(left.get(v));
 			leftAndRight.add(right.get(v));			
 

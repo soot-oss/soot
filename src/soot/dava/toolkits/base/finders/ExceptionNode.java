@@ -21,17 +21,17 @@ package soot.dava.toolkits.base.finders;
 
 import soot.*;
 import java.util.*;
-import soot.dava.*;
 import soot.util.*;
 import soot.dava.internal.asg.*;
 
 public class ExceptionNode
 {
-    private IterableSet body, tryBody, catchBody;
+    private final IterableSet body;
+	private IterableSet tryBody, catchBody;
     private boolean dirty;
     private LinkedList exitList, catchList;
     private SootClass exception;
-    private HashMap catch2except;
+    private HashMap<IterableSet,SootClass> catch2except;
     private AugmentedStmt handlerAugmentedStmt;
 
     public ExceptionNode( IterableSet tryBody, SootClass exception, AugmentedStmt handlerAugmentedStmt)
@@ -245,7 +245,7 @@ public class ExceptionNode
 	    catchList = new LinkedList();
 	    catchList.addLast( catchBody);
 
-	    catch2except = new HashMap();
+	    catch2except = new HashMap<IterableSet,SootClass>();
 	    catch2except.put( catchBody, exception);
 	}
 
@@ -288,7 +288,7 @@ public class ExceptionNode
 	if (catch2except == null)
 	    return exception;
 
-	return (SootClass) catch2except.get( catchBody);
+	return catch2except.get( catchBody);
     }
 
     public void dump()

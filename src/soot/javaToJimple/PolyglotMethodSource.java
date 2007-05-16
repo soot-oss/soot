@@ -20,19 +20,22 @@
 package soot.javaToJimple;
 
 import java.util.*;
+
+import polyglot.ast.Block;
+import polyglot.ast.FieldDecl;
 import soot.*;
 
 public class PolyglotMethodSource implements MethodSource {
 
     private polyglot.ast.Block block;
     private List formals;
-    private ArrayList fieldInits;
-    private ArrayList staticFieldInits;
-    private ArrayList initializerBlocks;
-    private ArrayList staticInitializerBlocks;
+    private ArrayList<FieldDecl> fieldInits;
+    private ArrayList<FieldDecl> staticFieldInits;
+    private ArrayList<Block> initializerBlocks;
+    private ArrayList<Block> staticInitializerBlocks;
     private soot.Local outerClassThisInit;
     private boolean hasAssert = false;
-    private ArrayList finalsList;
+    private ArrayList<SootField> finalsList;
     private HashMap newToOuterMap;
     private AbstractJimpleBodyBuilder ajbb;
     
@@ -58,35 +61,35 @@ public class PolyglotMethodSource implements MethodSource {
         this.ajbb = ajbb;
     }
 
-    public void setFieldInits(ArrayList fieldInits){
+    public void setFieldInits(ArrayList<FieldDecl> fieldInits){
         this.fieldInits = fieldInits;
     }
     
-    public void setStaticFieldInits(ArrayList staticFieldInits){
+    public void setStaticFieldInits(ArrayList<FieldDecl> staticFieldInits){
         this.staticFieldInits = staticFieldInits;
     }
 
-    public ArrayList getFieldInits() {
+    public ArrayList<FieldDecl> getFieldInits() {
         return fieldInits;
     }
     
-    public ArrayList getStaticFieldInits() {
+    public ArrayList<FieldDecl> getStaticFieldInits() {
         return staticFieldInits;
     }
 
-    public void setStaticInitializerBlocks(ArrayList staticInits) {
+    public void setStaticInitializerBlocks(ArrayList<Block> staticInits) {
         staticInitializerBlocks = staticInits;
     }
     
-    public void setInitializerBlocks(ArrayList inits) {
+    public void setInitializerBlocks(ArrayList<Block> inits) {
         initializerBlocks = inits;
     }
 
-    public ArrayList getStaticInitializerBlocks() {
+    public ArrayList<Block> getStaticInitializerBlocks() {
         return staticInitializerBlocks;
     }
     
-    public ArrayList getInitializerBlocks() {
+    public ArrayList<Block> getInitializerBlocks() {
         return initializerBlocks;
     }
     
@@ -109,16 +112,16 @@ public class PolyglotMethodSource implements MethodSource {
     public void addAssertInits(soot.Body body){
         // if class is inner get desired assertion status from outer most class
         soot.SootClass assertStatusClass = body.getMethod().getDeclaringClass();
-        HashMap innerMap = soot.javaToJimple.InitialResolver.v().getInnerClassInfoMap();
+        HashMap<SootClass, InnerClassInfo> innerMap = soot.javaToJimple.InitialResolver.v().getInnerClassInfoMap();
         while ((innerMap != null) && (innerMap.containsKey(assertStatusClass))){
-            assertStatusClass = ((InnerClassInfo)innerMap.get(assertStatusClass)).getOuterClass();
+            assertStatusClass = innerMap.get(assertStatusClass).getOuterClass();
         }
 
         String paramName = assertStatusClass.getName();
         String fieldName = "class$"+soot.util.StringTools.replaceAll(assertStatusClass.getName(), ".", "$");
         
         if (assertStatusClass.isInterface()){
-            assertStatusClass = (soot.SootClass)InitialResolver.v().specialAnonMap().get(assertStatusClass);
+            assertStatusClass = InitialResolver.v().specialAnonMap().get(assertStatusClass);
         }
         
         // field ref
@@ -229,11 +232,11 @@ public class PolyglotMethodSource implements MethodSource {
         
     }
 
-    public void setFinalsList(ArrayList list){
+    public void setFinalsList(ArrayList<SootField> list){
         finalsList = list;
     }
 
-    public ArrayList getFinalsList(){
+    public ArrayList<SootField> getFinalsList(){
         return finalsList;
     }
 

@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** There should be at most one AnnotationDefault attribute in 
  * every method
  * indicating the default value of the element represented by the

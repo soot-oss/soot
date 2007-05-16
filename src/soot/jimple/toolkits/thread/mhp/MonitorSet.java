@@ -1,13 +1,7 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
-import soot.toolkits.scalar.*;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
-import soot.jimple.*;
 import soot.toolkits.scalar.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -42,8 +36,10 @@ public class MonitorSet extends ArraySparseSet{
 		return null;
 	}
 	
-	public Object clone(){
-		return super.clone();
+	public MonitorSet clone(){
+		MonitorSet newSet = new MonitorSet();
+		newSet.union(this);
+		return newSet;
 	}
 	/*public void copy(MonitorSet dest){
 	 System.out.println("====begin copy");

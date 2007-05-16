@@ -44,9 +44,9 @@ public class ValueGraph
     //            Affects fields whether of simple type or ref type
     //          - CONCURRENT writes?
 
-    protected Map localToNode;
-    protected Map nodeToLocal;
-    protected List nodeList;
+    protected Map<Value, Node> localToNode;
+    protected Map<Node, Value> nodeToLocal;
+    protected List<Node> nodeList;
     protected int currentNodeNumber;
     
     public ValueGraph(BlockGraph cfg)
@@ -54,9 +54,9 @@ public class ValueGraph
         if(!(cfg.getBody() instanceof ShimpleBody))
             throw new RuntimeException("ValueGraph requires SSA form");
 
-        localToNode = new HashMap();
-        nodeToLocal = new HashMap();
-        nodeList = new ArrayList();
+        localToNode = new HashMap<Value, Node>();
+        nodeToLocal = new HashMap<Node, Value>();
+        nodeList = new ArrayList<Node>();
         currentNodeNumber = 0;
         Orderer pto = new PseudoTopologicalOrderer();
         List blocks = pto.newList(cfg,false);
@@ -67,8 +67,7 @@ public class ValueGraph
                 handleStmt((Stmt) blockIt.next());
         }
 
-        for(Iterator nodesIt = nodeList.iterator(); nodesIt.hasNext();){
-            Node node = (Node) nodesIt.next();
+        for (Node node : nodeList) {
             node.patchStubs();
         }
     }
@@ -159,7 +158,7 @@ public class ValueGraph
                 Node nop1 = fetchNode(binop.getOp1());
                 Node nop2 = fetchNode(binop.getOp2());
 
-                List children = new ArrayList();
+                List<Node> children = new ArrayList<Node>();
                 children.add(nop1);
                 children.add(nop2);
 
@@ -177,7 +176,7 @@ public class ValueGraph
             public void handleUnop(UnopExpr unop)
             {
                 Node nop = fetchNode(unop.getOp());
-                List child = new SingletonList(nop);
+                List<Node> child = new SingletonList(nop);
                 setResult(new Node(unop, true, child));
             }
             
@@ -376,7 +375,7 @@ public class ValueGraph
                 Value op2 = new TypeValueWrapper(v.getCheckType());
                 Node nop2 = fetchNode(op2);
 
-                List children = new ArrayList();
+                List<Node> children = new ArrayList<Node>();
                 children.add(nop1);
                 children.add(nop2);
 
@@ -411,11 +410,11 @@ public class ValueGraph
 
             public void casePhiExpr(PhiExpr v)
             {
-                List children = new ArrayList();
-                Iterator argsIt = v.getValues().iterator();
+                List<Node> children = new ArrayList<Node>();
+                Iterator<Value> argsIt = v.getValues().iterator();
 
                 while(argsIt.hasNext()){
-                    Value arg = (Value) argsIt.next();
+                    Value arg = argsIt.next();
                     children.add(fetchNode(arg));
                 }
 
@@ -430,11 +429,11 @@ public class ValueGraph
 
     public Node getNode(Value local)
     {
-        return (Node) localToNode.get(local);
+        return localToNode.get(local);
     }
 
     // *** Check for non-determinism
-    public Collection getTopNodes()
+    public Collection<Node> getTopNodes()
     {
         return localToNode.values();
     }
@@ -477,7 +476,7 @@ public class ValueGraph
         protected Value node;
         protected String nodeLabel;
         protected boolean ordered;
-        protected List children;
+        protected List<Node> children;
 
         protected boolean stub = false;
         
@@ -496,10 +495,10 @@ public class ValueGraph
 
             // if any immediate children are stubs, patch them
             for(int i = 0; i < children.size(); i++){
-                Node child = (Node) children.get(i);
+                Node child = children.get(i);
 
                 if(child.isStub()){
-                    Node newChild = (Node) localToNode.get(child.node);
+                    Node newChild = localToNode.get(child.node);
                     if(newChild == null || newChild.isStub())
                         throw new RuntimeException("Assertion failed.");
                     children.set(i, newChild);
@@ -518,7 +517,7 @@ public class ValueGraph
             this(node, true, Collections.EMPTY_LIST);
         }
 
-        protected Node(Value node, boolean ordered, List children)
+        protected Node(Value node, boolean ordered, List<Node> children)
         {
             setNode(node);
             setOrdered(ordered);
@@ -540,7 +539,7 @@ public class ValueGraph
             this.ordered = ordered;
         }
 
-        protected void setChildren(List children)
+        protected void setChildren(List<Node> children)
         {
             this.children = children;
         }
@@ -599,7 +598,7 @@ public class ValueGraph
             return ordered;
         }
 
-        public List getChildren()
+        public List<Node> getChildren()
         {
             checkIfStub();
             return children;
@@ -624,7 +623,7 @@ public class ValueGraph
             
             tmp.append("\tNode " + getNodeNumber() + ": " + getLabel());
 
-            List children = getChildren();
+            List<Node> children = getChildren();
 
             if(!children.isEmpty()){
                 tmp.append(" [" +
@@ -632,7 +631,7 @@ public class ValueGraph
                 for(int i = 0; i < children.size(); i++){
                     if(i != 0)
                         tmp.append(", ");
-                    tmp.append(((Node) children.get(i)).getNodeNumber());
+                    tmp.append(children.get(i).getNodeNumber());
                 }
                 tmp.append("]");
             }

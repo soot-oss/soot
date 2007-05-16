@@ -30,9 +30,9 @@ import soot.options.*;
 import soot.*;
 import soot.util.*;
 import java.util.*;
+
 import soot.jimple.*;
 import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
 
 /**
  * "unrolls" the condition of while/for loops.<br>
@@ -53,13 +53,13 @@ public class LoopConditionUnroller extends BodyTransformer {
    * back-edges. The "visitedBlocks" is not enough, as Java Bytecodes migth not
    * be in tree-form.
    */
-  private Set visitingSuccs;
+  private Set<Block> visitingSuccs;
 
-  private Set visitedBlocks;
+  private Set<Block> visitedBlocks;
   private int maxSize;
   private Body body;
 
-  private Map unitsToTraps;
+  private Map<Unit, List> unitsToTraps;
 
   /**
    * unrolls conditions.
@@ -71,8 +71,8 @@ public class LoopConditionUnroller extends BodyTransformer {
       G.v().out.println("[" + body.getMethod().getName() +
                          "]     Unrolling Loop Conditions...");
 
-    visitingSuccs = new HashSet();
-    visitedBlocks = new HashSet();
+    visitingSuccs = new HashSet<Block>();
+    visitedBlocks = new HashSet<Block>();
     this.body = body;
     this.maxSize = PhaseOptions.getInt(options, "maxSize");
     
@@ -117,41 +117,6 @@ public class LoopConditionUnroller extends BodyTransformer {
   }
 
   /**
-   * inserts a Jimple<code>Goto</code> to <code> target, directly before
-   * <code>node</code> in the <code>unitChain</code> of the body.<br>
-   *
-   * @param node the <code>Goto</code> will be inserted just before this node.
-   * @param target is the Unit the <code>goto</code> will jump to.
-   * @return the newly inserted <code>Goto</code>
-   */
-  /*note, that this method has slightly more overhead than the insertGotoAfter*/
-  private Unit insertGotoBefore(Chain unitChain, Unit node, Unit target)
-  {
-    Unit newGoto = Jimple.v().newGotoStmt(target);
-    body.getUnits().insertBefore(newGoto, node);
-    newGoto.redirectJumpsToThisTo(node);
-    return newGoto;
-  }
-
-  /**
-   * takes <code>node</code> and redirects all branches to <code>oldTarget</code>
-   * to <code>newTarget</code>.
-   *
-   * @param node the Unit where we redirect
-   * @param oldTarget
-   * @param newTarget
-   **/
-  private void redirectBranch(Unit node, Unit oldTarget, Unit newTarget) {
-    Iterator targetIt = node.getUnitBoxes().iterator();
-    while (targetIt.hasNext()) {
-      UnitBox targetBox = (UnitBox)targetIt.next();
-      Unit target = (Unit)targetBox.getUnit();
-      if (target == oldTarget)
-        targetBox.setUnit(newTarget);
-    }
-  }
-
-  /**
    * "calculates" the length of the given block in Units.
    *
    * @param block
@@ -176,26 +141,26 @@ public class LoopConditionUnroller extends BodyTransformer {
    * this trap is only reported once (ie. is only once in the list).
    *
    * @return the map of units to changing traps.  */
-  private Map getTraps() {
+  private Map<Unit, List> getTraps() {
     /* if we already did the "calculation" return the cached result.*/
     if (unitsToTraps != null)
       return unitsToTraps;
-    unitsToTraps = new HashMap();
+    unitsToTraps = new HashMap<Unit, List>();
     Iterator trapsIt = body.getTraps().iterator();
     while (trapsIt.hasNext()) {
       Trap trap = (Trap)trapsIt.next();
       Unit beginUnit = trap.getBeginUnit();
-      List unitTraps = (List)unitsToTraps.get(beginUnit);
+      List<Trap> unitTraps = unitsToTraps.get(beginUnit);
       if (unitTraps == null) {
-        unitTraps = new ArrayList();
+        unitTraps = new ArrayList<Trap>();
         unitsToTraps.put(beginUnit, unitTraps);
       }
       unitTraps.add(trap);
       Unit endUnit = trap.getEndUnit();
       if (endUnit != beginUnit) {
-        unitTraps = (List)unitsToTraps.get(endUnit);
+        unitTraps = unitsToTraps.get(endUnit);
         if (unitTraps == null) {
-          unitTraps = new ArrayList();
+          unitTraps = new ArrayList<Trap>();
           unitsToTraps.put(endUnit, unitTraps);
         }
         unitTraps.add(trap);
@@ -216,9 +181,9 @@ public class LoopConditionUnroller extends BodyTransformer {
    * @param block the Block to clone.
    * @return the head of the copied block.  */
   private Unit copyBlock(Block block) {
-    Map traps = getTraps();
-    Set openedTraps = new HashSet();
-    Map copiedTraps = new HashMap();
+    Map<Unit, List> traps = getTraps();
+    Set<Trap> openedTraps = new HashSet<Trap>();
+    Map<Trap, Trap> copiedTraps = new HashMap<Trap, Trap>();
     Chain unitChain = body.getUnits();
 
     Unit tail = block.getTail();
@@ -239,7 +204,7 @@ public class LoopConditionUnroller extends BodyTransformer {
        * block. If a trap gets opened, but not closed, we only have to close it
        * at the end of the (original) block (as it will be open at the end of
        * the copied block.)*/
-      List currentTraps = (List)traps.get(currentUnit);
+      List currentTraps = traps.get(currentUnit);
       if (currentTraps != null) {
         Iterator trapIt = currentTraps.iterator();
         while(trapIt.hasNext()) {
@@ -255,7 +220,7 @@ public class LoopConditionUnroller extends BodyTransformer {
 
           }
           if (trap.getEndUnit() == currentUnit) {
-            Trap copiedTrap = (Trap)copiedTraps.get(trap);
+            Trap copiedTrap = copiedTraps.get(trap);
             if (copiedTrap == null) {
               /* trap has been opened before the current block */
               copiedTrap = (Trap)trap.clone();
@@ -272,9 +237,9 @@ public class LoopConditionUnroller extends BodyTransformer {
       }
     }
     /* close all open traps */
-    Iterator openedIterator = openedTraps.iterator();
+    Iterator<Trap> openedIterator = openedTraps.iterator();
     while(openedIterator.hasNext()) {      
-      ((Trap)openedIterator.next()).setEndUnit(last);
+      openedIterator.next().setEndUnit(last);
     }
     return copiedHead;
   }

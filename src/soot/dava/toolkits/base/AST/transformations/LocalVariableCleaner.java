@@ -28,7 +28,9 @@
 package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
+
 import java.util.*;
+
 import soot.jimple.*;
 import soot.util.Chain;
 //import soot.dava.internal.javaRep.*;
@@ -89,13 +91,13 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 		//get all local variables declared in this method
 		Iterator decIt = node.getDeclaredLocals().iterator();
 
-		ArrayList removeList = new ArrayList();
+		ArrayList<Local> removeList = new ArrayList<Local>();
 		while (decIt.hasNext()) {
 			//going through each local declared
 
 			Local var = (Local) decIt.next();
 
-			List defs = getDefs(var);
+			List<DefinitionStmt> defs = getDefs(var);
 
 			//if defs is 0 it means var never got defined
 			if (defs.size() == 0) {
@@ -105,10 +107,10 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 				//if a var is defined but not used then in some conditions we can remove it
 
 				//check that each def is removable
-				Iterator defIt = defs.iterator();
+				Iterator<DefinitionStmt> defIt = defs.iterator();
 
 				while (defIt.hasNext()) {
-					DefinitionStmt ds = (DefinitionStmt) defIt.next();
+					DefinitionStmt ds = defIt.next();
 
 					if (canRemoveDef(ds)) {
 						//if removeStmt is successful since something change we need to redo 
@@ -122,9 +124,9 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 		}//going through each stmt
 
 		//go through the removeList and remove all locals
-		Iterator remIt = removeList.iterator();
+		Iterator<Local> remIt = removeList.iterator();
 		while (remIt.hasNext()) {
-			Local removeLocal = (Local) remIt.next();
+			Local removeLocal = remIt.next();
 			node.removeDeclaredLocal(removeLocal);
 			
 			/*
@@ -186,11 +188,11 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 	/*
 	 * This method looks up all defs and returns those of this local
 	 */
-	public List getDefs(Local var) {
-		List toReturn = new ArrayList();
+	public List<DefinitionStmt> getDefs(Local var) {
+		List<DefinitionStmt> toReturn = new ArrayList<DefinitionStmt>();
 
-		HashMap dU = useDefs.getDUHashMap();
-		Iterator it = dU.keySet().iterator();
+		HashMap<Object, List> dU = useDefs.getDUHashMap();
+		Iterator<Object> it = dU.keySet().iterator();
 		while (it.hasNext()) {
 			DefinitionStmt s = (DefinitionStmt) it.next();
 			Value left = s.getLeftOp();
@@ -219,10 +221,10 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 		}
 		ASTStatementSequenceNode parentNode = (ASTStatementSequenceNode) parent;
 
-		ArrayList newSequence = new ArrayList();
-		List stmts = parentNode.getStatements();
+		ArrayList<Object> newSequence = new ArrayList<Object>();
+		List<Object> stmts = parentNode.getStatements();
 		int size = stmts.size();
-		Iterator it = stmts.iterator();
+		Iterator<Object> it = stmts.iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
 			Stmt s = as.get_Stmt();

@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 
 /** An entry in some code's exception table; describes an exception
  * handler and the code it protects.

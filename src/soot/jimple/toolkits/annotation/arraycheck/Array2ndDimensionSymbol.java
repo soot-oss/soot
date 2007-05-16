@@ -25,16 +25,15 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 import soot.*;
-import java.util.*;
 
-class Array2ndDimensionSymbol
+public class Array2ndDimensionSymbol
 {
     private Object var;
 
    
     public static Array2ndDimensionSymbol v(Object which)
     {
-   	Array2ndDimensionSymbol tdal = (Array2ndDimensionSymbol)G.v().Array2ndDimensionSymbol_pool.get(which);
+   	Array2ndDimensionSymbol tdal = G.v().Array2ndDimensionSymbol_pool.get(which);
 	if (tdal == null)
 	{
 	    tdal = new Array2ndDimensionSymbol(which);

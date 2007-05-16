@@ -18,9 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
 import soot.*;
-import java.util.*;
 
 /** Represents an allocation site node the represents a constant string.
  * @author Ondrej Lhotak

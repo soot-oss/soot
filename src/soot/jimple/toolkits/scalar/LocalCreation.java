@@ -40,7 +40,7 @@ public class LocalCreation {
   public static final String DEFAULT_PREFIX = "soot";
   private String prefix;
   private int counter;
-  private Set locals;
+  private Set<String> locals;
   private Chain localChain;
 
   /**
@@ -61,7 +61,7 @@ public class LocalCreation {
    * @param String prefix overrides the DEFAULT-PREFIX
    */
   public LocalCreation(Chain locals, String prefix) {
-    this.locals = new HashSet(locals.size());
+    this.locals = new HashSet<String>(locals.size());
     localChain = locals;
     Iterator it = locals.iterator();
     while (it.hasNext()) {

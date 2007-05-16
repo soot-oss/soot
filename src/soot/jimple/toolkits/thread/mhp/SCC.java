@@ -2,7 +2,6 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import soot.toolkits.graph.*;
-import soot.util.*;
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -19,17 +18,17 @@ import java.util.*;
 
 public class SCC{
 	
-	private Set gray;
+	private Set<Object> gray;
 //	private int time;
-	private LinkedList finishedOrder;
-	private List sccList;
+	private final LinkedList<Object> finishedOrder;
+	private final List<List<Object>> sccList;
 	
 	//    public SCC(Chain chain, DirectedGraph g){
 	public SCC(Iterator it, DirectedGraph g){
 		
-		gray = new HashSet();
-		finishedOrder = new LinkedList();
-		sccList	= new ArrayList();
+		gray = new HashSet<Object>();
+		finishedOrder = new LinkedList<Object>();
+		sccList	= new ArrayList<List<Object>>();
 		
 		// Visit each node
 		{
@@ -45,18 +44,18 @@ public class SCC{
 		}
 		
 		//Re-color all nodes white
-		gray = new HashSet();
+		gray = new HashSet<Object>();
 		
 		//visit nodes via tranpose edges according decreasing order of finish time of nodes
 		
 		{
 			
-			Iterator revNodeIt = finishedOrder.iterator();
+			Iterator<Object> revNodeIt = finishedOrder.iterator();
 			while (revNodeIt.hasNext()){
 				Object s =revNodeIt.next();
 				if (!gray.contains(s)){
 					
-					List scc = new ArrayList();
+					List<Object> scc = new ArrayList<Object>();
 					
 					visitRevNode(g, s, scc);
 					sccList.add(scc);
@@ -88,7 +87,7 @@ public class SCC{
 		
 	}
 	
-	private void visitRevNode(DirectedGraph g, Object s, List scc){
+	private void visitRevNode(DirectedGraph g, Object s, List<Object> scc){
 		
 		scc.add(s);
 		gray.add(s);
@@ -108,10 +107,10 @@ public class SCC{
 		}
 	}
 	
-	public List getSccList(){
-		return (List)sccList;
+	public List<List<Object>> getSccList(){
+		return sccList;
 	}
-	public LinkedList getFinishedOrder(){
-		return (LinkedList)finishedOrder;
+	public LinkedList<Object> getFinishedOrder(){
+		return finishedOrder;
 	}
 }

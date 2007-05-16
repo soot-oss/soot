@@ -26,8 +26,6 @@
 
 package soot.jimple.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
 import soot.toolkits.scalar.*;
 import java.util.*;
 
@@ -49,9 +47,9 @@ public class ToppedSet extends AbstractFlowSet
         underlyingSet = under;
     }
 
-    public Object clone()
+    public ToppedSet clone()
     {
-        ToppedSet newSet = new ToppedSet((FlowSet)underlyingSet.clone());
+        ToppedSet newSet = new ToppedSet(underlyingSet.clone());
         newSet.setTop(isTop());
         return newSet;
     }

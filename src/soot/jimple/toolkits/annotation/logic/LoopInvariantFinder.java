@@ -22,13 +22,14 @@ package soot.jimple.toolkits.annotation.logic;
 import soot.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
+
 import java.util.*;
+
 import soot.toolkits.scalar.*;
 import soot.tagkit.*;
 
 public class LoopInvariantFinder extends BodyTransformer {
 
-    private UnitGraph g;
     private ArrayList constants; 
 
     public LoopInvariantFinder(Singletons.Global g){}
@@ -46,16 +47,16 @@ public class LoopInvariantFinder extends BodyTransformer {
         LoopFinder lf = new LoopFinder();
         lf.internalTransform(b, phaseName, options);
 
-        HashMap loops = lf.loops();
+        HashMap<Stmt, List<Object>> loops = lf.loops();
         constants = new ArrayList();
         
         // no loop invariants if no loops
         if (loops.isEmpty()) return;
         
-        Iterator hIt = loops.keySet().iterator();
+        Iterator<Stmt> hIt = loops.keySet().iterator();
         while (hIt.hasNext()){
-            Stmt header = (Stmt)hIt.next();
-            List loopStmts = (List)loops.get(header);
+            Stmt header = hIt.next();
+            List loopStmts = loops.get(header);
             Iterator bIt = loopStmts.iterator();
             while (bIt.hasNext()){
                 Stmt tStmt = (Stmt)bIt.next();

@@ -68,7 +68,7 @@ public abstract class BlockGraph implements DirectedGraph
     {
         mBody = unitGraph.getBody();
         mUnits = mBody.getUnits();
-	Set leaders = computeLeaders(unitGraph);
+	Set<Unit> leaders = computeLeaders(unitGraph);
 	buildBlocks(leaders, unitGraph);
     }
 
@@ -116,12 +116,12 @@ public abstract class BlockGraph implements DirectedGraph
      * @return the {@link Set} of {@link Unit}s in <code>unitGraph</code> which
      * are block leaders.
      */
-    protected Set computeLeaders(UnitGraph unitGraph) {
+    protected Set<Unit> computeLeaders(UnitGraph unitGraph) {
 	Body body = unitGraph.getBody();
 	if (body != mBody) {
 	    throw new RuntimeException("BlockGraph.computeLeaders() called with a UnitGraph that doesn't match its mBody.");
 	}
-        Set leaders = new HashSet();
+        Set<Unit> leaders = new HashSet<Unit>();
 
 	// Trap handlers start new basic blocks, no matter how many
 	// predecessors they have.
@@ -177,7 +177,7 @@ public abstract class BlockGraph implements DirectedGraph
      * @return a {@link Map} from {@link Unit}s which begin or end a block
      *           to the block which contains them.
      */
-    protected Map buildBlocks(Set leaders, UnitGraph unitGraph) {
+    protected Map buildBlocks(Set<Unit> leaders, UnitGraph unitGraph) {
 	List blockList = new ArrayList(leaders.size());
 	Map unitToBlock = new HashMap(); // Maps head and tail units to 
 					 // their blocks, for building

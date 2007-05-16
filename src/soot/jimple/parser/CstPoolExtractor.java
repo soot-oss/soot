@@ -26,17 +26,11 @@
 
 package soot.jimple.parser;
 
-import soot.baf.*;
-import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 
-import soot.jimple.parser.parser.*;
-import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
 import soot.jimple.parser.analysis.*;
 
-import java.io.*;
 import java.util.*;
 
 

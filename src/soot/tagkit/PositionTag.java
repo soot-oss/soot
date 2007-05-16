@@ -29,10 +29,10 @@ package soot.tagkit;
 public class PositionTag implements Tag
 {
     /* it is a value representing end offset. */
-    private int endOffset;
+    private final int endOffset;
     
     /* it is a value representing start offset. */
-    private int startOffset;
+    private final int startOffset;
     
     public PositionTag(int start, int end)
     {

@@ -21,9 +21,7 @@ package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
 import java.util.*;
-import soot.dava.internal.SET.*;
 import soot.dava.internal.AST.*;
-import soot.dava.toolkits.base.AST.analysis.*;
 
 
 /*
@@ -36,18 +34,18 @@ public class EmptyElseRemover{
     public static void removeElseBody(ASTNode node,ASTIfElseNode ifElseNode ,int subBodyNumber, int nodeNumber){
 	if(!(node instanceof ASTIfElseNode)){
 	    //these are the nodes which always have one subBody
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size()!=1){
 		//there is something wrong
 		throw new RuntimeException("Please report this benchmark to the programmer");
 	    }
-	    List onlySubBody = (List)subBodies.get(0);
+	    List<Object> onlySubBody = (List<Object>)subBodies.get(0);
 
 	    /*
 	      The onlySubBody contains the ASTIfElseNode whose elsebody has to be removed
 	      at location given by the nodeNumber variable
 	    */
-	    List newBody = createNewNodeBody(onlySubBody,nodeNumber,ifElseNode);
+	    List<Object> newBody = createNewNodeBody(onlySubBody,nodeNumber,ifElseNode);
 	    if(newBody==null){
 		//something went wrong
 		return;
@@ -99,19 +97,19 @@ public class EmptyElseRemover{
 		//System.out.println("Error-------not modifying AST");
 		return;
 	    }
-	    List subBodies = node.get_SubBodies();
+	    List<Object> subBodies = node.get_SubBodies();
 	    if(subBodies.size()!=2){
 		//there is something wrong
 		throw new RuntimeException("Please report this benchmark to the programmer");
 	    }
 
-	    List toModifySubBody = (List)subBodies.get(subBodyNumber);
+	    List<Object> toModifySubBody = (List<Object>)subBodies.get(subBodyNumber);
 
 	    /*
 	      The toModifySubBody contains the ASTIfElseNode to be removed
 	      at location given by the nodeNumber variable
 	    */
-	    List newBody = createNewNodeBody(toModifySubBody,nodeNumber,ifElseNode);
+	    List<Object> newBody = createNewNodeBody(toModifySubBody,nodeNumber,ifElseNode);
 	    if(newBody==null){
 		//something went wrong
 		return;
@@ -120,13 +118,13 @@ public class EmptyElseRemover{
 		//the if body was modified
 		//System.out.println("REMOVED ELSE BODY");
 		G.v().ASTTransformations_modified = true;
-		((ASTIfElseNode)node).replaceBody(newBody,(List)subBodies.get(1));
+		((ASTIfElseNode)node).replaceBody(newBody,(List<Object>)subBodies.get(1));
 	    }
 	    else if(subBodyNumber==1){
 		//else body was modified
 		//System.out.println("REMOVED ELSE BODY");
 		G.v().ASTTransformations_modified = true;
-		((ASTIfElseNode)node).replaceBody((List)subBodies.get(0),newBody);
+		((ASTIfElseNode)node).replaceBody((List<Object>)subBodies.get(0),newBody);
 	    }
 	    else{//realllly shouldnt come here
 		//something bad is happening dont do nothin
@@ -142,12 +140,12 @@ public class EmptyElseRemover{
 
 
 
-    public static List createNewNodeBody(List oldSubBody,int nodeNumber,ASTIfElseNode ifElseNode){
+    public static List<Object> createNewNodeBody(List<Object> oldSubBody,int nodeNumber,ASTIfElseNode ifElseNode){
 	//create a new SubBody
-	List newSubBody = new ArrayList();
+	List<Object> newSubBody = new ArrayList<Object>();
 	
 	//this is an iterator of ASTNodes
-	Iterator it = oldSubBody.iterator();
+	Iterator<Object> it = oldSubBody.iterator();
 	
 	//copy to newSubBody all nodes until you get to nodeNumber
 	int index=0;
@@ -170,7 +168,7 @@ public class EmptyElseRemover{
 	    ASTIfElseNode toRemoveNode = (ASTIfElseNode)toRemove;
 
 	    //just double checking that this is a empty else node
-	    List elseBody = toRemoveNode.getElseBody();
+	    List<Object> elseBody = toRemoveNode.getElseBody();
 	    if(elseBody.size()!=0){
 		//something is wrong we cant remove a non empty elsebody
 		return null;

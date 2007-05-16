@@ -24,9 +24,6 @@
  */
 
 package soot.coffi;
-import soot.*;
-
-import java.io.*;
 
 /** Attribute that connects enclosing method attribute.
  * @see attribute_info

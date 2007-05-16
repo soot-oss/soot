@@ -26,10 +26,8 @@
 
 package soot.jimple.toolkits.scalar;
 import soot.options.*;
-import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
@@ -60,7 +58,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
 
         // Sigh.  check for name collisions.
         Iterator localsIt = b.getLocals().iterator();
-        HashSet localNames = new HashSet(b.getLocals().size());
+        HashSet<String> localNames = new HashSet<String>(b.getLocals().size());
         while (localsIt.hasNext())
         {
             localNames.add(((Local)localsIt.next()).getName());
@@ -95,7 +93,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
             {
                 Chain availExprs = ae.getAvailableEquivsBefore(s);
                 //G.v().out.println("availExprs: "+availExprs);
-                Value v = (Value)((AssignStmt)s).getRightOp();
+                Value v = ((AssignStmt)s).getRightOp();
                 EquivalentValue ev = new EquivalentValue(v);
 
                 if (availExprs.contains(ev))

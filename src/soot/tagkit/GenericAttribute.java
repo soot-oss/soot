@@ -28,11 +28,7 @@
 
 package soot.tagkit;
 
-import soot.*;
-
-
 import java.util.*;
-import javax.swing.*;
 
 
 /** Represents a general attribute which can be attached to
@@ -43,7 +39,7 @@ import javax.swing.*;
  */
 public class GenericAttribute implements Attribute
 {
-    private String mName;
+    private final String mName;
     private byte[] mValue;
     
     public GenericAttribute(String name, byte[] value)

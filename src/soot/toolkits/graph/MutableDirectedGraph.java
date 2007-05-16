@@ -27,7 +27,6 @@
 package soot.toolkits.graph;
 
 import java.util.*;
-import soot.*;
 
 
 
@@ -63,7 +62,7 @@ public interface MutableDirectedGraph extends DirectedGraph
     public boolean containsEdge(Object from, Object to);
 
     /** @return a list of the nodes that compose the graph. No ordering is implied.*/
-    public List getNodes();
+    public List<Object> getNodes();
 
     /**
      *  Adds a node to the graph. Initially the added node has no successors or predecessors.

@@ -24,7 +24,6 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
-import soot.util.*;
 import java.util.*;
 
 
@@ -78,18 +77,18 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 
     // we don't want the analysis to be conservative?
     // i.e. we don't want it to only care for locals
-    private  boolean isNotConservative = false;
+    private final  boolean isNotConservative = false;
     
     // do we want the analysis to handle if statements?
-    private  boolean isBranched = true;
+    private final  boolean isBranched = true;
     
     // do we want the analysis to care that f and g 
     // could be the same reference?
-    private  boolean careForAliases = false;
+    private final  boolean careForAliases = false;
     
     // do we want the analysis to care that a method 
     // call could have side effects?
-    private  boolean careForMethodCalls = true;
+    private final  boolean careForMethodCalls = true;
 
     // **** END OF COMPILATION OPTIONS *****
 
@@ -120,24 +119,24 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 
 
     // gen and preserve sets (for each statement)
-    protected Map unitToGenerateSet;
-    protected Map unitToPreserveSet;
+    protected Map<Unit, FlowSet> unitToGenerateSet;
+    protected Map<Unit, FlowSet> unitToPreserveSet;
 
     
     // sets of variables that need a null pointer check (for each statement)
-    protected Map unitToAnalyzedChecksSet;
-    protected Map unitToArrayRefChecksSet;
-    protected Map unitToInstanceFieldRefChecksSet;
-    protected Map unitToInstanceInvokeExprChecksSet;
-    protected Map unitToLengthExprChecksSet;
+    protected Map<Unit, HashSet<Value>> unitToAnalyzedChecksSet;
+    protected Map<Unit, HashSet<Value>> unitToArrayRefChecksSet;
+    protected Map<Unit, HashSet<Value>> unitToInstanceFieldRefChecksSet;
+    protected Map<Unit, HashSet<Value>> unitToInstanceInvokeExprChecksSet;
+    protected Map<Unit, HashSet<Value>> unitToLengthExprChecksSet;
 
 
     // keep track of the different kinds of reference types this analysis is working on
-    protected List refTypeLocals;
-    protected List refTypeInstFields;
-    protected List refTypeInstFieldBases;
-    protected List refTypeStaticFields;
-    protected List refTypeValues; // sum of all the above
+    protected List<EquivalentValue> refTypeLocals;
+    protected List<EquivalentValue> refTypeInstFields;
+    protected List<EquivalentValue> refTypeInstFieldBases;
+    protected List<EquivalentValue> refTypeStaticFields;
+    protected List<EquivalentValue> refTypeValues; // sum of all the above
 
 
     // used in flowThrough.
@@ -145,12 +144,12 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 
     // fast conversion from Value -> EquivalentValue
     //  because used in  methods
-    private  HashMap valueToEquivValue = new HashMap(2293, 0.7f);
+    private final  HashMap<Value, EquivalentValue> valueToEquivValue = new HashMap<Value, EquivalentValue>(2293, 0.7f);
 
     public  EquivalentValue getEquivalentValue(Value v)
     {
         if (valueToEquivValue.containsKey(v))
-            return (EquivalentValue) valueToEquivValue.get(v);
+            return valueToEquivValue.get(v);
         else {
             EquivalentValue ev = new EquivalentValue(v);
             valueToEquivValue.put(v, ev);
@@ -160,16 +159,16 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     
     // constant (r, v) pairs
     //  because used in  methods
-    private  HashMap kRefBotttomPairs = new HashMap(2293, 0.7f);
-    private  HashMap kRefNonNullPairs = new HashMap(2293, 0.7f);
-    private  HashMap kRefNullPairs = new HashMap(2293, 0.7f);
-    private  HashMap kRefTopPairs = new HashMap(2293, 0.7f);
+    private final  HashMap<EquivalentValue, RefIntPair> kRefBotttomPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
+    private final  HashMap<EquivalentValue, RefIntPair> kRefNonNullPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
+    private final  HashMap<EquivalentValue, RefIntPair> kRefNullPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
+    private final  HashMap<EquivalentValue, RefIntPair> kRefTopPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
 
     // make that (r, v) pairs are constants
     // i.e. the same r and v values always generate the same (r, v) object    
     public  RefIntPair getKRefIntPair(EquivalentValue r, int v)
     {
-        HashMap pairsMap = null;
+        HashMap<EquivalentValue, RefIntPair> pairsMap = null;
 
         if (v == kNonNull)
             pairsMap =  kRefNonNullPairs;
@@ -183,7 +182,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
             throw new RuntimeException("invalid constant ("+v+")");
         
         if (pairsMap.containsKey(r))
-            return (RefIntPair) pairsMap.get(r);
+            return pairsMap.get(r);
         else {
             RefIntPair pair = new RefIntPair(r, v, this);
             pairsMap.put(r, pair);
@@ -370,12 +369,12 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 
 
     // method to apply uAddTopToFlowSet to a whole list of references
-    private  final void uListAddTopToFlowSet(List refs, FlowSet genFS, FlowSet preFS)
+    private  final void uListAddTopToFlowSet(List<EquivalentValue> refs, FlowSet genFS, FlowSet preFS)
     {
-        Iterator it = refs.iterator();
+        Iterator<EquivalentValue> it = refs.iterator();
 
         while (it.hasNext()) {
-            uAddTopToFlowSet((EquivalentValue) it.next(), genFS, preFS);
+            uAddTopToFlowSet(it.next(), genFS, preFS);
         }
     } // end uListAddTopToFlowSet
 
@@ -411,11 +410,11 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     // those lists contains fields that can/need to be analyzed
     private void initRefTypeLists()
     {
-        refTypeLocals = new ArrayList();
-        refTypeInstFields = new ArrayList();
-        refTypeInstFieldBases = new ArrayList();
-        refTypeStaticFields = new ArrayList();
-        refTypeValues = new ArrayList();
+        refTypeLocals = new ArrayList<EquivalentValue>();
+        refTypeInstFields = new ArrayList<EquivalentValue>();
+        refTypeInstFieldBases = new ArrayList<EquivalentValue>();
+        refTypeStaticFields = new ArrayList<EquivalentValue>();
+        refTypeValues = new ArrayList<EquivalentValue>();
 
         // build list of locals
         Iterator it = ((UnitGraph)graph).getBody().getLocals().iterator();
@@ -521,7 +520,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         localUniverse = new ArrayFlowUniverse(universeArray);
         
         emptySet = new ArrayPackedSet(localUniverse);   
-        fullSet = (FlowSet) emptySet.clone();
+        fullSet = emptySet.clone();
         ((ArrayPackedSet) emptySet).complement(fullSet);
         
         tempFlowSet = (FlowSet) newInitialFlow();
@@ -534,14 +533,14 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         int cap = graph.size() * 2 + 1;
         float load = 0.7f;
         
-        unitToGenerateSet = new HashMap(cap, load);
-        unitToPreserveSet = new HashMap(cap, load);
+        unitToGenerateSet = new HashMap<Unit, FlowSet>(cap, load);
+        unitToPreserveSet = new HashMap<Unit, FlowSet>(cap, load);
         
-        unitToAnalyzedChecksSet = new HashMap(cap, load);
-        unitToArrayRefChecksSet = new HashMap(cap, load);
-        unitToInstanceFieldRefChecksSet = new HashMap(cap, load);
-        unitToInstanceInvokeExprChecksSet = new HashMap(cap, load);
-        unitToLengthExprChecksSet = new HashMap(cap, load);
+        unitToAnalyzedChecksSet = new HashMap<Unit, HashSet<Value>>(cap, load);
+        unitToArrayRefChecksSet = new HashMap<Unit, HashSet<Value>>(cap, load);
+        unitToInstanceFieldRefChecksSet = new HashMap<Unit, HashSet<Value>>(cap, load);
+        unitToInstanceInvokeExprChecksSet = new HashMap<Unit, HashSet<Value>>(cap, load);
+        unitToLengthExprChecksSet = new HashMap<Unit, HashSet<Value>>(cap, load);
         
         
         Iterator unitIt = graph.iterator();
@@ -550,14 +549,14 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
             
             Unit s = (Unit) unitIt.next();
             
-            FlowSet genSet = (FlowSet) emptySet.clone();
-            FlowSet preSet = (FlowSet) fullSet.clone();
+            FlowSet genSet = emptySet.clone();
+            FlowSet preSet = fullSet.clone();
             
-            HashSet analyzedChecksSet = new HashSet(5,  load);
-            HashSet arrayRefChecksSet = new HashSet(5,  load);
-            HashSet instanceFieldRefChecksSet = new HashSet(5,  load);
-            HashSet instanceInvokeExprChecksSet = new HashSet(5,  load);
-            HashSet lengthExprChecksSet = new HashSet(5,  load);
+            HashSet<Value> analyzedChecksSet = new HashSet<Value>(5,  load);
+            HashSet<Value> arrayRefChecksSet = new HashSet<Value>(5,  load);
+            HashSet<Value> instanceFieldRefChecksSet = new HashSet<Value>(5,  load);
+            HashSet<Value> instanceInvokeExprChecksSet = new HashSet<Value>(5,  load);
+            HashSet<Value> lengthExprChecksSet = new HashSet<Value>(5,  load);
             
             
             // *** KILL PHASE ***
@@ -578,10 +577,10 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                     // The LHS will certainly be a local.
                     // here, we kill "f.*".
 
-                    Iterator refTypeInstFieldsIt=refTypeInstFields.iterator();
+                    Iterator<EquivalentValue> refTypeInstFieldsIt=refTypeInstFields.iterator();
                     
                     while (refTypeInstFieldsIt.hasNext()) {
-                        EquivalentValue eifr = (EquivalentValue) refTypeInstFieldsIt.next();
+                        EquivalentValue eifr = refTypeInstFieldsIt.next();
                         InstanceFieldRef ifr = (InstanceFieldRef) eifr.getValue();
                         
                         if (ifr.getBase() == lhs) {
@@ -598,10 +597,10 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                     String lhsName = 
                         ((InstanceFieldRef) lhs).getField().getName();
                     
-                    Iterator refTypeInstFieldsIt = refTypeInstFields.iterator();
+                    Iterator<EquivalentValue> refTypeInstFieldsIt = refTypeInstFields.iterator();
                     
                     while (refTypeInstFieldsIt.hasNext()) {
-                        EquivalentValue eifr = (EquivalentValue) refTypeInstFieldsIt.next();
+                        EquivalentValue eifr = refTypeInstFieldsIt.next();
                         InstanceFieldRef ifr = (InstanceFieldRef) eifr.getValue();
                         
                         String name = ifr.getField().getName();
@@ -729,8 +728,8 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     {
         FlowSet in = (FlowSet) inValue;
         FlowSet out = tempFlowSet;
-        FlowSet pre = (FlowSet) unitToPreserveSet.get(stmt);
-        FlowSet gen = (FlowSet) unitToGenerateSet.get(stmt);
+        FlowSet pre = unitToPreserveSet.get(stmt);
+        FlowSet gen = unitToGenerateSet.get(stmt);
 
         // Perform perservation
         in.intersection(pre, out);
@@ -859,8 +858,8 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     {
         FlowSet inSet1 = (FlowSet) in1;
         FlowSet inSet2 = (FlowSet) in2;
-        FlowSet inSet1Copy = (FlowSet) inSet1.clone();
-        FlowSet inSet2Copy = (FlowSet) inSet2.clone();
+        FlowSet inSet1Copy = inSet1.clone();
+        FlowSet inSet2Copy = inSet2.clone();
         // we do that in case out is in1 or in2
 
         FlowSet outSet = (FlowSet) out;
@@ -868,9 +867,9 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         inSet1.intersection(inSet2, outSet);
         // first step, set out to the intersection of in1 & in2
         // but we are not over, the intersection doesn't handle the top & bottom cases
-        Iterator it = refTypeValues.iterator();
+        Iterator<EquivalentValue> it = refTypeValues.iterator();
         while (it.hasNext()) {
-            EquivalentValue r = (EquivalentValue) it.next();
+            EquivalentValue r = it.next();
             int refInfoIn1 = refInfo(r, inSet1Copy);
             int refInfoIn2 = refInfo(r, inSet2Copy);
             if (refInfoIn1 != refInfoIn2) {

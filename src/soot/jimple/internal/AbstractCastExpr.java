@@ -30,7 +30,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 import soot.grimp.PrecedenceTest;
@@ -128,7 +127,7 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
         ((ExprSwitch) sw).caseCastExpr(this);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         final Type toType = getCastType();
         final Type fromType = getOp().getType();

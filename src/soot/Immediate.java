@@ -19,8 +19,6 @@
 
 package soot;
 
-import soot.*;
-
 /** A local or constant.
  *  */
 public interface Immediate extends Value

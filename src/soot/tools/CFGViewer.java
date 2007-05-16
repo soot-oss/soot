@@ -26,24 +26,17 @@
 
 package soot.tools;
 
-import java.lang.reflect.Method;
 import java.util.*;
 
 import soot.*;
-import soot.baf.Baf;
-import soot.toolkits.exceptions.*;
 import soot.jimple.JimpleBody;
-import soot.grimp.Grimp;
-import soot.shimple.Shimple;
 import soot.toolkits.graph.*;
 import soot.options.Options;
 import soot.util.dot.DotGraph;
 import soot.util.cfgcmd.AltClassLoader;
 import soot.util.cfgcmd.CFGGraphType;
 import soot.util.cfgcmd.CFGIntermediateRep;
-import soot.util.cfgcmd.CFGOptionMatcher;
 import soot.util.cfgcmd.CFGToDotGraph;
-import soot.util.*;
 
 /**
  * A utility class for generating dot graph file for a control flow graph
@@ -65,7 +58,6 @@ public class CFGViewer extends BodyTransformer {
 
   private CFGGraphType graphtype;
   private CFGIntermediateRep ir;
-  private ThrowAnalysis throwAnalysis;
   private CFGToDotGraph drawer;
   private Map methodsToPrint;        // If the user specifies particular
 				     // methods to print, this is a map

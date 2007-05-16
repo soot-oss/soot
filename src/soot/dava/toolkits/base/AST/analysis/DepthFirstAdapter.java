@@ -255,8 +255,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 		/*
 		 Apply on init
 		 */
-		List init = node.getInit();
-		Iterator it = init.iterator();
+		List<Object> init = node.getInit();
+		Iterator<Object> it = init.iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
 			Stmt s = as.get_Stmt();
@@ -281,7 +281,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 		/*
 		 Apply on update
 		 */
-		List update = node.getUpdate();
+		List<Object> update = node.getUpdate();
 		it = update.iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
@@ -346,20 +346,20 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 		inASTTryNode(node);
 
 		//get try body 
-		List tryBody = node.get_TryBody();
-		Iterator it = tryBody.iterator();
+		List<Object> tryBody = node.get_TryBody();
+		Iterator<Object> it = tryBody.iterator();
 
 		//go over the ASTNodes in this tryBody and apply
 		while (it.hasNext())
 			((ASTNode) it.next()).apply(this);
 
-		Map exceptionMap = node.get_ExceptionMap();
-		Map paramMap = node.get_ParamMap();
+		Map<Object, Object> exceptionMap = node.get_ExceptionMap();
+		Map<Object, Object> paramMap = node.get_ParamMap();
 		//get catch list and apply on the following
 		// a, type of exception caught
 		// b, local of exception
 		// c, catchBody
-		List catchList = node.get_CatchList();
+		List<Object> catchList = node.get_CatchList();
 		Iterator itBody = null;
 		it = catchList.iterator();
 		while (it.hasNext()) {
@@ -439,8 +439,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 	public void caseASTAndCondition(ASTAndCondition ac) {
 		inASTAndCondition(ac);
 
-		((ASTCondition) (ac.getLeftOp())).apply(this);
-		((ASTCondition) (ac.getRightOp())).apply(this);
+		((ac.getLeftOp())).apply(this);
+		((ac.getRightOp())).apply(this);
 
 		outASTAndCondition(ac);
 	}
@@ -458,8 +458,8 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 	public void caseASTOrCondition(ASTOrCondition oc) {
 		inASTOrCondition(oc);
 
-		((ASTCondition) (oc.getLeftOp())).apply(this);
-		((ASTCondition) (oc.getRightOp())).apply(this);
+		((oc.getLeftOp())).apply(this);
+		((oc.getRightOp())).apply(this);
 
 		outASTOrCondition(oc);
 	}
@@ -481,7 +481,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 
 	public void normalRetrieving(ASTNode node) {
 		//from the Node get the subBodes
-		Iterator sbit = node.get_SubBodies().iterator();
+		Iterator<Object> sbit = node.get_SubBodies().iterator();
 		while (sbit.hasNext()) {
 			Object subBody = sbit.next();
 			Iterator it = ((List) subBody).iterator();
@@ -507,7 +507,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 
 	public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
 		inASTStatementSequenceNode(node);
-		Iterator it = node.getStatements().iterator();
+		Iterator<Object> it = node.getStatements().iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
 			Stmt s = as.get_Stmt();

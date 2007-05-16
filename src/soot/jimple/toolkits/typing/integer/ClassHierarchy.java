@@ -27,8 +27,6 @@
 package soot.jimple.toolkits.typing.integer;
 
 import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 /**
@@ -57,11 +55,6 @@ public class ClassHierarchy
   public final TypeNode R0_1 = new TypeNode(6, null); 		//eventually becomes boolean
   public final TypeNode R0_127 = new TypeNode(7, null); 	//eventually becomes byte
   public final TypeNode R0_32767 = new TypeNode(8, null);	//eventually becomes short 
-
-  private final TypeNode[] typeNodes =
-  {
-    BOOLEAN, BYTE, SHORT, CHAR, INT, TOP, R0_1, R0_127, R0_32767,
-  };
 
   private final boolean[][] ancestors_1 =
   {
@@ -168,7 +161,7 @@ public class ClassHierarchy
   };
   
   /** Map: Type -> TypeNode **/
-  private final HashMap typeNodeMap = new HashMap();
+  private final HashMap<Type,TypeNode> typeNodeMap = new HashMap();
   
   /** Get the type node for the given type. **/
   public TypeNode typeNode(Type type)
@@ -178,7 +171,7 @@ public class ClassHierarchy
 	throw new InternalTypingException();
       }
     
-    TypeNode typeNode = (TypeNode) typeNodeMap.get(type);
+    TypeNode typeNode = typeNodeMap.get(type);
 
     if(typeNode == null)
       {

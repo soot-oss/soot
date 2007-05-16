@@ -32,9 +32,7 @@
 package soot.coffi;
 import soot.*;
 
-import java.io.*;
 import java.util.StringTokenizer;
-import java.util.NoSuchElementException;
 
 /** Base abstract class for constant pool entries; includes some utility methods.
  * @see ClassFile#constant_pool

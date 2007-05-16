@@ -21,8 +21,7 @@ package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
 import java.util.*;
-import soot.dava.*;
-import soot.dava.internal.SET.*;
+
 import soot.dava.internal.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
@@ -68,13 +67,13 @@ public class ForLoopCreator extends DepthFirstAdapter{
 	}
 
 	//from the Node get the subBodes
-	Iterator sbit = node.get_SubBodies().iterator();
+	Iterator<Object> sbit = node.get_SubBodies().iterator();
 
 	//onlyASTIfElseNode has 2 subBodies but we need to deal with that
 	int subBodyNumber=0; 
 	while (sbit.hasNext()) {
-	    List subBody = (List)sbit.next();
-	    Iterator it = subBody.iterator();
+	    List<Object> subBody = (List<Object>)sbit.next();
+	    Iterator<Object> it = subBody.iterator();
 
 	    int nodeNumber=0;
 	    //go over the ASTNodes in this subBody and apply
@@ -94,13 +93,13 @@ public class ForLoopCreator extends DepthFirstAdapter{
 			    if(helper.checkPattern()){
 				//pattern matched
 				
-				List newBody = helper.createNewBody(subBody,nodeNumber);
+				List<Object> newBody = helper.createNewBody(subBody,nodeNumber);
 				if(newBody!= null){
 				    if(node instanceof ASTIfElseNode){
 					if(subBodyNumber==0){
 					    //the if body was modified
-					    List subBodies = node.get_SubBodies();
-					    List ifElseBody = (List)subBodies.get(1);
+					    List<Object> subBodies = node.get_SubBodies();
+					    List<Object> ifElseBody = (List<Object>)subBodies.get(1);
 					    ((ASTIfElseNode)node).replaceBody(newBody,ifElseBody);
 					    G.v().ASTTransformations_modified = true;
 					    //System.out.println("FOR LOOP CREATED");
@@ -108,8 +107,8 @@ public class ForLoopCreator extends DepthFirstAdapter{
 					}
 					else if(subBodyNumber==1){
 					    //else body was modified
-					    List subBodies = node.get_SubBodies();
-					    List ifBody = (List)subBodies.get(0);
+					    List<Object> subBodies = node.get_SubBodies();
+					    List<Object> ifBody = (List<Object>)subBodies.get(0);
 					    ((ASTIfElseNode)node).replaceBody(ifBody,newBody);
 					    G.v().ASTTransformations_modified = true;
 					    //System.out.println("FOR LOOP CREATED");
@@ -189,8 +188,8 @@ public class ForLoopCreator extends DepthFirstAdapter{
 	inASTTryNode(node);
 
 	//get try body 
-	List tryBody = node.get_TryBody();
-	Iterator it = tryBody.iterator();
+	List<Object> tryBody = node.get_TryBody();
+	Iterator<Object> it = tryBody.iterator();
 
 	int nodeNumber=0;
 	//go over the ASTNodes and apply
@@ -210,7 +209,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 			if(helper.checkPattern()){
 			    //pattern matched
 			    
-			    List newBody = helper.createNewBody(tryBody,nodeNumber);
+			    List<Object> newBody = helper.createNewBody(tryBody,nodeNumber);
 			    if(newBody!= null){
 				//something did not go wrong
 				node.replaceTryBody(newBody);
@@ -229,14 +228,14 @@ public class ForLoopCreator extends DepthFirstAdapter{
 
 
 
-	Map exceptionMap = node.get_ExceptionMap();
-	Map paramMap = node.get_ParamMap();
+	Map<Object, Object> exceptionMap = node.get_ExceptionMap();
+	Map<Object, Object> paramMap = node.get_ParamMap();
 	//get catch list and apply on the following
 	// a, type of exception caught
 	// b, local of exception
 	// c, catchBody
-	List catchList = node.get_CatchList();
-	Iterator itBody=null;
+	List<Object> catchList = node.get_CatchList();
+	Iterator<Object> itBody=null;
         it = catchList.iterator();
 	while (it.hasNext()) {
 	    ASTTryNode.container catchBody = (ASTTryNode.container)it.next();
@@ -252,7 +251,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 	    decideCaseExprOrRef(local);
 
 	    //apply on catchBody
-	    List body = (List)catchBody.o;
+	    List<Object> body = (List<Object>)catchBody.o;
 	    itBody = body.iterator();
 
 	    nodeNumber=0;
@@ -274,7 +273,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 			    if(helper.checkPattern()){
 				//pattern matched
 			    
-				List newBody = helper.createNewBody(body,nodeNumber);
+				List<Object> newBody = helper.createNewBody(body,nodeNumber);
 				if(newBody!= null){
 				    //something did not go wrong
 				    catchBody.replaceBody(newBody);
@@ -299,18 +298,18 @@ public class ForLoopCreator extends DepthFirstAdapter{
     private void dealWithSwitchNode(ASTSwitchNode node){
 	//do a depthfirst on elements of the switchNode
 
-	List indexList = node.getIndexList();
-	Map index2BodyList = node.getIndex2BodyList();
+	List<Object> indexList = node.getIndexList();
+	Map<Object, List<Object>> index2BodyList = node.getIndex2BodyList();
 
-	Iterator it = indexList.iterator();
+	Iterator<Object> it = indexList.iterator();
 	while (it.hasNext()) {//going through all the cases of the switch statement
 	    Object currentIndex = it.next();
-	    List body = (List) index2BodyList.get( currentIndex);
+	    List<Object> body = index2BodyList.get( currentIndex);
 	    
 	    if (body != null){
 		//this body is a list of ASTNodes 
 
-		Iterator itBody = body.iterator();
+		Iterator<Object> itBody = body.iterator();
 		int nodeNumber=0;
 		//go over the ASTNodes and apply
 		while (itBody.hasNext()){
@@ -330,7 +329,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 				if(helper.checkPattern()){
 				    //pattern matched
 				    
-				    List newBody = helper.createNewBody(body,nodeNumber);
+				    List<Object> newBody = helper.createNewBody(body,nodeNumber);
 				    if(newBody!= null){
 					//something did not go wrong
 

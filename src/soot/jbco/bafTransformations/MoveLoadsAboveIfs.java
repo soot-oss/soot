@@ -24,10 +24,7 @@ import java.util.*;
 import soot.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.Rand;
-import soot.jimple.IntConstant;
-import soot.jimple.Jimple;
 import soot.toolkits.graph.BriefUnitGraph;
-import soot.util.Chain;
 import soot.baf.internal.*;
 import soot.baf.*;
 
@@ -63,8 +60,8 @@ public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransfor
     
     BriefUnitGraph bug = new BriefUnitGraph(b);
     
-    ArrayList candidates = new ArrayList();
-    ArrayList visited = new ArrayList();
+    ArrayList<Unit> candidates = new ArrayList<Unit>();
+    ArrayList<Unit> visited = new ArrayList<Unit>();
     ArrayList worklist = new ArrayList();
     worklist.addAll(bug.getHeads());
     
@@ -92,7 +89,7 @@ public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransfor
     PatchingChain units = b.getUnits();
     
     for (int i = 0; i < candidates.size(); i++) {
-      Unit u = (Unit)candidates.get(i);
+      Unit u = candidates.get(i);
       List succs = bug.getSuccsOf(u);
       BLoadInst clone = (BLoadInst)((BLoadInst)succs.get(0)).clone();
      

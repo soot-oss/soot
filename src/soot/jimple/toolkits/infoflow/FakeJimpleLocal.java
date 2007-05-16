@@ -1,12 +1,7 @@
 package soot.jimple.toolkits.infoflow;
 
-import soot.tagkit.*;
 import soot.*;
-import soot.jimple.*;
 import soot.jimple.internal.*;
-import soot.baf.*;
-import soot.util.*;
-import java.util.*;
 
 public class FakeJimpleLocal extends JimpleLocal
 {

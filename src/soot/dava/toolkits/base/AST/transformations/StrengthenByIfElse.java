@@ -19,14 +19,12 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.analysis.*;
 
 /*
   Nomair A. Naeem 18-FEB-2005
@@ -69,9 +67,9 @@ public class StrengthenByIfElse{
       We know this method is called when there is a loop node which has a body
       consisting entirely of one ASTIfElseNode
     */
-    public static List getNewNode(ASTNode loopNode, ASTIfElseNode ifElseNode){
+    public static List<ASTNode> getNewNode(ASTNode loopNode, ASTIfElseNode ifElseNode){
 	//make sure that elsebody has only a stmtseq node
-	List elseBody = ((ASTIfElseNode)ifElseNode).getElseBody();
+	List<Object> elseBody = (ifElseNode).getElseBody();
 	if(elseBody.size()!=1){
 	    //this is more than one we need one stmtSeq Node
 	    return null;
@@ -82,8 +80,8 @@ public class StrengthenByIfElse{
 	    return null;
 	}
 
-	List statements = ((ASTStatementSequenceNode)tempNode).getStatements();
-	Iterator stmtIt = statements.iterator();
+	List<Object> statements = ((ASTStatementSequenceNode)tempNode).getStatements();
+	Iterator<Object> stmtIt = statements.iterator();
 	while(stmtIt.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)stmtIt.next();
 	    Stmt stmt = as.get_Stmt();
@@ -121,7 +119,7 @@ public class StrengthenByIfElse{
 			    if(newWhileNode == null){
 				return null;
 			    }
-			    List toReturn = new ArrayList();
+			    List<ASTNode> toReturn = new ArrayList<ASTNode>();
 			    toReturn.add(newWhileNode);
 
 			    			    
@@ -129,8 +127,8 @@ public class StrengthenByIfElse{
 			    if(statements.size()!=1){
 				//size 1 means that the only stmt is a break stmt
 
-				Iterator tempIt = statements.iterator();
-				List newStmts = new ArrayList();
+				Iterator<Object> tempIt = statements.iterator();
+				List<Object> newStmts = new ArrayList<Object>();
 				while(tempIt.hasNext()){
 				    Object tempStmt = tempIt.next();
 				    if(tempIt.hasNext()){
@@ -162,12 +160,12 @@ public class StrengthenByIfElse{
 		if(newWhileNode == null){
 		    return null;
 		}
-		List toReturn = new ArrayList();
+		List<ASTNode> toReturn = new ArrayList<ASTNode>();
 		toReturn.add(newWhileNode);
 
 		//  Add the statementSequenceNode AFTER the whileNode
-		Iterator tempIt = statements.iterator();
-		List newStmts = new ArrayList();
+		Iterator<Object> tempIt = statements.iterator();
+		List<Object> newStmts = new ArrayList<Object>();
 		while(tempIt.hasNext()){
 		    Object tempStmt = tempIt.next();
 		    newStmts.add(tempStmt);
@@ -196,7 +194,7 @@ public class StrengthenByIfElse{
 	    //not dealing with the case of ASTDoWhileNode 
 	    return null;
 	}
-	List loopBody = ifElseNode.getIfBody();
+	List<Object> loopBody = ifElseNode.getIfBody();
 	SETNodeLabel newLabel = ((ASTLabeledNode)loopNode).get_Label();
 			    
 	//make new ASTWhileNode

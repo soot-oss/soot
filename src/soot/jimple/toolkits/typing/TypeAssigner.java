@@ -29,8 +29,6 @@ package soot.jimple.toolkits.typing;
 import soot.*;
 import soot.options.*;
 import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
 import java.util.*;
 
 /**

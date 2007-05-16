@@ -32,10 +32,7 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
-import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 
 public class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr
 {

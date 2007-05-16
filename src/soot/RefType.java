@@ -28,8 +28,6 @@
 
 
 package soot;
-import soot.*;
-
 import soot.util.*;
 import java.util.*;
 
@@ -159,12 +157,12 @@ public class RefType extends RefLikeType implements Comparable
         {
             // Return least common superclass
             
-            SootClass thisClass = cm.getSootClass(((RefType) this).className);
+            SootClass thisClass = cm.getSootClass((this).className);
             SootClass otherClass = cm.getSootClass(((RefType) other).className);
             SootClass javalangObject = cm.getSootClass("java.lang.Object");
 
-            LinkedList thisHierarchy = new LinkedList();
-            LinkedList otherHierarchy = new LinkedList();
+            LinkedList<SootClass> thisHierarchy = new LinkedList<SootClass>();
+            LinkedList<SootClass> otherHierarchy = new LinkedList<SootClass>();
 
             // Build thisHierarchy
             {
@@ -203,7 +201,7 @@ public class RefType extends RefLikeType implements Comparable
                 while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() &&
                     otherHierarchy.getFirst() == thisHierarchy.getFirst())
                 {
-                    commonClass = (SootClass) otherHierarchy.removeFirst();
+                    commonClass = otherHierarchy.removeFirst();
                     thisHierarchy.removeFirst();
                 }
 

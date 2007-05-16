@@ -95,7 +95,6 @@ public class StmtRWSet extends RWSet {
 	    if( base == null ) return o.base == null;
 	    return Union.hasNonEmptyIntersection( base, o.base );
 	} else if( other instanceof MethodRWSet ) {
-	    MethodRWSet o = (MethodRWSet) other;
 	    if( base == null ) return other.getGlobals().contains( field );
 	    return Union.hasNonEmptyIntersection( base,
                     other.getBaseForField( field ) );

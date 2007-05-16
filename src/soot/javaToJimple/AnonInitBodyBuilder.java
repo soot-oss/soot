@@ -20,7 +20,11 @@
 package soot.javaToJimple;
 
 import soot.*;
+
 import java.util.*;
+
+import polyglot.ast.Block;
+import polyglot.ast.FieldDecl;
 
 public class AnonInitBodyBuilder extends JimpleBodyBuilder {
 
@@ -31,12 +35,12 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         lg = new LocalGenerator(body);
 
         AnonClassInitMethodSource acims = (AnonClassInitMethodSource) body.getMethod().getSource();
-        ArrayList fields = acims.getFinalsList();
+        ArrayList<SootField> fields = acims.getFinalsList();
         boolean inStaticMethod = acims.inStaticMethod();
         boolean isSubType = acims.isSubType();
         soot.Type superOuterType = acims.superOuterType();
         soot.Type thisOuterType = acims.thisOuterType();
-        ArrayList fieldInits = acims.getFieldInits();
+        ArrayList<FieldDecl> fieldInits = acims.getFieldInits();
         soot.Type outerClassType = acims.outerClassType();
         polyglot.types.ClassType polyglotType = acims.polyglotType();
         polyglot.types.ClassType anonType = acims.anonType();
@@ -145,11 +149,11 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         }
         if (fields != null){
             Iterator finalsIt = paramsForFinals.iterator();
-            Iterator fieldsIt = fields.iterator();
+            Iterator<SootField> fieldsIt = fields.iterator();
             while (finalsIt.hasNext() && fieldsIt.hasNext()){
             
                 soot.Local pLocal = (soot.Local)finalsIt.next();
-                soot.SootField pField = (soot.SootField)fieldsIt.next();
+                soot.SootField pField = fieldsIt.next();
             
                 soot.jimple.FieldRef pRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, pField.makeRef());
             
@@ -166,7 +170,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
             handleFieldInits(fieldInits);
         }
    
-        ArrayList staticBlocks = ((AnonClassInitMethodSource)body.getMethod().getSource()).getInitializerBlocks();
+        ArrayList<Block> staticBlocks = ((AnonClassInitMethodSource)body.getMethod().getSource()).getInitializerBlocks();
         if (staticBlocks != null){
             handleStaticBlocks(staticBlocks);
         }

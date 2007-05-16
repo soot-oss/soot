@@ -19,8 +19,6 @@
 
 package soot.xml;
 
-import soot.*;
-
 public class PosColorAttribute{
         
     private ColorAttribute color;

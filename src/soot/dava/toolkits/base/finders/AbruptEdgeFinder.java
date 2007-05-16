@@ -25,7 +25,6 @@ import soot.util.*;
 import soot.dava.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
-import soot.dava.internal.AST.*;
 import soot.dava.internal.javaRep.*;
 
 public class AbruptEdgeFinder implements FactFinder

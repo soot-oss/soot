@@ -36,7 +36,7 @@ import java.util.*;
  */  
 public class DotGraphNode implements Renderable{
   private String name;
-  private List attributes;
+  private List<DotGraphAttribute> attributes;
 
   public DotGraphNode(String name) {
     this.name = "\""+DotGraphUtility.replaceQuotes(name)+"\"";
@@ -68,7 +68,7 @@ public class DotGraphNode implements Renderable{
 
   public void setAttribute(String id, String value) {
     if (this.attributes == null) {
-      this.attributes = new LinkedList();
+      this.attributes = new LinkedList<DotGraphAttribute>();
     }
     
     this.setAttribute(new DotGraphAttribute(id, value));    
@@ -76,7 +76,7 @@ public class DotGraphNode implements Renderable{
 
   public void setAttribute(DotGraphAttribute attr) {
     if (this.attributes == null) {
-      this.attributes = new LinkedList();
+      this.attributes = new LinkedList<DotGraphAttribute>();
     }
     
     this.attributes.add(attr);    
@@ -86,8 +86,7 @@ public class DotGraphNode implements Renderable{
     StringBuffer line = new StringBuffer(this.getName());
     if (this.attributes != null) {
       line.append(" [");
-      for (Iterator attrIt = this.attributes.iterator(); attrIt.hasNext(); ) {
-	DotGraphAttribute attr = (DotGraphAttribute)attrIt.next();
+      for (DotGraphAttribute attr : this.attributes) {
 	line.append(attr.toString());
 	line.append(",");
       }

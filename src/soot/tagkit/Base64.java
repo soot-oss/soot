@@ -57,15 +57,15 @@ static public char[] encode(byte[] data)
         boolean quad = false;
         boolean trip = false;
 
-        int val = (0xFF & (int) data[i]);
+        int val = (0xFF & data[i]);
         val <<= 8;
         if ((i+1) < data.length) {
-            val |= (0xFF & (int) data[i+1]);
+            val |= (0xFF & data[i+1]);
             trip = true;
         }
         val <<= 8;
         if ((i+2) < data.length) {
-            val |= (0xFF & (int) data[i+2]);
+            val |= (0xFF & data[i+2]);
             quad = true;
         }
         out[index+3] = alphabet[(quad? (val & 0x3F): 64)];
@@ -100,9 +100,8 @@ static public byte[] decode(char[] data)
     //     just because of extraneous throw-away junk
 
     int tempLen = data.length;
-    for( int ix=0; ix<data.length; ix++ )
-    {
-        if( (data[ix] > 255) || codes[ data[ix] ] < 0 )
+    for (char element : data) {
+        if( (element > 255) || codes[ element ] < 0 )
             --tempLen;  // ignore non-valid chars and padding
     }
     // calculate required length:
@@ -122,10 +121,8 @@ static public byte[] decode(char[] data)
     int accum = 0;   // excess bits
     int index = 0;
 
-    // we now go through the entire array (NOT using the 'tempLen' value)
-    for (int ix=0; ix<data.length; ix++)
-    {
-        int value = (data[ix]>255)? -1: codes[ data[ix] ];
+    for (char element : data) {
+        int value = (element>255)? -1: codes[ element ];
 
         if ( value >= 0 )           // skip over non-code
         {
@@ -160,14 +157,14 @@ static public byte[] decode(char[] data)
 //
 // code characters for values 0..63
 //
-static private char[] alphabet =
+private static final char[] alphabet =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
         .toCharArray();
 
 //
 // lookup table for converting base64 characters to value in range 0..63
 //
-static private byte[] codes = new byte[256];
+private static final byte[] codes = new byte[256];
 static {
     for (int i=0; i<256; i++) codes[i] = -1;
     for (int i = 'A'; i <= 'Z'; i++) codes[i] = (byte)(     i - 'A');

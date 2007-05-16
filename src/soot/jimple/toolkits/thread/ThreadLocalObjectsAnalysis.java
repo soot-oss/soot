@@ -1,8 +1,8 @@
 package soot.jimple.toolkits.thread;
 
 import soot.*;
+
 import java.util.*;
-import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.infoflow.*;
 import soot.jimple.toolkits.thread.mhp.*;
 import soot.jimple.*;
@@ -14,7 +14,7 @@ import soot.jimple.*;
 public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 {
 	MhpTester mhp;
-	List threads;
+	List<AbstractRuntimeThread> threads;
 	InfoFlowAnalysis primitiveDfa;
 	static boolean printDebug = false;
 	
@@ -38,12 +38,12 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sc)
 	{
 		// find the right run methods to use for threads of type sc
-		List runMethods = new ArrayList();
-		Iterator threadsIt = threads.iterator();
+		List<SootMethod> runMethods = new ArrayList<SootMethod>();
+		Iterator<AbstractRuntimeThread> threadsIt = threads.iterator();
 		while(threadsIt.hasNext())
 		{
-			AbstractRuntimeThread thread = (AbstractRuntimeThread) threadsIt.next();
-			Iterator runMethodsIt = thread.getRunMethods().iterator();
+			AbstractRuntimeThread thread = threadsIt.next();
+			Iterator<Object> runMethodsIt = thread.getRunMethods().iterator();
 			while(runMethodsIt.hasNext())
 			{
 				SootMethod runMethod = (SootMethod) runMethodsIt.next();
@@ -68,11 +68,11 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 		
 		if(printDebug)
 			G.v().out.println("- " + localOrRef + " in " + sm + " is...");
-		Iterator threadsIt = threads.iterator();
+		Iterator<AbstractRuntimeThread> threadsIt = threads.iterator();
 		while(threadsIt.hasNext())
 		{
-			AbstractRuntimeThread thread = (AbstractRuntimeThread) threadsIt.next();
-			Iterator runMethodsIt = thread.getRunMethods().iterator();
+			AbstractRuntimeThread thread = threadsIt.next();
+			Iterator<Object> runMethodsIt = thread.getRunMethods().iterator();
 			while(runMethodsIt.hasNext())
 			{
 				SootMethod runMethod = (SootMethod) runMethodsIt.next();

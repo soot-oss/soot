@@ -18,15 +18,9 @@
  */
 
 package soot.jimple.spark.builder;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
-import soot.jimple.*;
 import soot.*;
-import soot.util.*;
 import soot.toolkits.scalar.Pair;
-import soot.jimple.spark.internal.*;
-import soot.jimple.toolkits.callgraph.Edge;
-import java.util.*;
 
 /** Factory for nodes not specific to a given method.
  * @author Ondrej Lhotak
@@ -122,8 +116,7 @@ public class GlobalNodeFactory {
     final public Node caseNewInstance( VarNode cls ) {
         if( cls instanceof ContextVarNode ) cls = pag.findLocalVarNode( cls.getVariable() );
 	VarNode local = pag.makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
-        for( Iterator clIt = Scene.v().dynamicClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+        for (SootClass cl : Scene.v().dynamicClasses()) {
             AllocNode site = pag.makeAllocNode( new Pair(cls, cl), cl.getType(), null );
             pag.addEdge( site, local );
         }

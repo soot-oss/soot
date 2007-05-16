@@ -25,12 +25,6 @@
 
 package soot.tagkit;
 
-
-import soot.*;
-import java.util.*;
-import javax.swing.*;
-import java.io.*;
-
 /** Default tag printer. */
 public class StdTagPrinter implements TagPrinter
 {

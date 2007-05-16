@@ -105,8 +105,8 @@ public class BitVector
     }
     public int hashCode() {
         long ret = 0;
-        for( int i = 0; i < bits.length; i++ ) {
-            ret ^= bits[i];
+        for (long element : bits) {
+            ret ^= element;
         }
         return (int) ( (ret >> 32) ^ ret );
     }
@@ -161,9 +161,7 @@ public class BitVector
 	public int cardinality()
 	{
 		int c = 0;
-		for (int i = 0; i < bits.length; ++i)
-		{
-			long v = bits[i];
+		for (long v : bits) {
 			while (v != 0)
 			{
 				v &= v - 1;
@@ -239,7 +237,7 @@ public class BitVector
     public boolean orAndAndNot(BitVector orset, BitVector andset, BitVector andnotset) {
         boolean ret = false;
         long[] a = null, b = null, c = null, d = null, e = null;
-        int al, bl, cl, dl, el;
+        int al, bl, cl, dl;
         a = this.bits;
         al = a.length;
         if( orset == null ) {
@@ -268,10 +266,6 @@ public class BitVector
         } else {
             e = a;
         }
-        el = e.length;
-
-        // INV: el >= bl
-
         int i = 0;
         long l;
 

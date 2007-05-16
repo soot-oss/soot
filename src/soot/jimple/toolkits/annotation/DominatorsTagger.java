@@ -24,10 +24,6 @@ import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.tagkit.*;
 import soot.jimple.*;
-import soot.options.*;
-import soot.util.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.jimple.toolkits.scalar.*;
 
 /** A body transformer that records avail expression 
  * information in tags.  - both pessimistic and optimistic options*/

@@ -31,7 +31,6 @@
 package soot.jimple.internal;
 
 import soot.*;
-import soot.jimple.*;
 
 public class JimpleLocalBox extends AbstractValueBox
 {

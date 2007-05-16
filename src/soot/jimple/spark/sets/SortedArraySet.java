@@ -18,10 +18,8 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
-import soot.jimple.spark.internal.*;
 import soot.util.*;
 import soot.Type;
 
@@ -42,7 +40,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
-        BitVector typeMask = ((TypeManager)pag.getTypeManager()).get( type );
+        BitVector typeMask = (pag.getTypeManager()).get( type );
         if( other instanceof SortedArraySet ) {
             SortedArraySet o = (SortedArraySet) other;
             Node[] mya = nodes;

@@ -119,10 +119,10 @@ class AbstractSootMethodRef implements SootMethodRef {
         }
         cl = declaringClass;
         while(true) {
-            LinkedList queue = new LinkedList();
+            LinkedList<SootClass> queue = new LinkedList<SootClass>();
             queue.addAll( cl.getInterfaces() );
             while( !queue.isEmpty() ) {
-                SootClass iface = (SootClass) queue.removeFirst();
+                SootClass iface = queue.removeFirst();
                 if(trace != null) trace.append(
                         "Looking in "+iface+" which has methods "+iface.getMethods()+"\n" );
                 if( iface.declaresMethod( getSubSignature() ) )

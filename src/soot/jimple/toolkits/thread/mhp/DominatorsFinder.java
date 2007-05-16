@@ -3,9 +3,6 @@ package soot.jimple.toolkits.thread.mhp;
 
 import soot.toolkits.scalar.*; 
 import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
-import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
-import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
 
@@ -21,11 +18,11 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class DominatorsFinder{
-	private Map unitToDominators;
-	private DirectedGraph peg;
+	private final Map<Object, FlowSet> unitToDominators;
+	private final DirectedGraph peg;
 	
 	DominatorsFinder(Chain chain, DirectedGraph pegGraph){
-		unitToDominators = new HashMap(); 
+		unitToDominators = new HashMap<Object, FlowSet>(); 
 		peg = pegGraph;
 		find(chain);
 		//testUnitToDominators();
@@ -107,24 +104,8 @@ public class DominatorsFinder{
 	public FlowSet getDominatorsOf(Object s){
 		if(!unitToDominators.containsKey(s))
 			throw new RuntimeException("Invalid stmt" + s);
-		return (FlowSet)unitToDominators.get(s);
+		return unitToDominators.get(s);
 		
-	}
-	
-	private void testUnitToDominators(){
-		System.out.println("=====test Dominators ");
-		Set maps = unitToDominators.entrySet();
-		for(Iterator iter=maps.iterator(); iter.hasNext();){
-			Map.Entry entry = (Map.Entry)iter.next();
-			JPegStmt key = (JPegStmt)entry.getKey();
-			Tag tag = (Tag)key.getTags().get(0);
-			System.out.println("---key=  "+tag+" "+key);
-			FlowSet  value  = (FlowSet)entry.getValue();
-			
-			System.out.println("---value=  "+value);
-			
-		}
-		System.out.println("=========unitToDominators--ends--------");	
 	}
 	
 }

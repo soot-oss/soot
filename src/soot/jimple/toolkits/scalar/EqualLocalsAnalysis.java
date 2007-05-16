@@ -1,17 +1,10 @@
 package soot.jimple.toolkits.scalar;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
 import soot.jimple.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
 
 // EqualLocalsAnalysis written by Richard L. Halpert, 2006-12-04
 // Finds equal/equavalent/aliasing locals to a given local at a given statement, on demand
@@ -42,7 +35,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 		doAnalysis();
 
 		List aliasList = new ArrayList();
-		aliasList.addAll(((FlowSet) getFlowBefore((Unit) s)).toList());
+		aliasList.addAll(((FlowSet) getFlowBefore(s)).toList());
 
 		if(aliasList.contains(new EquivalentValue(l)))
 			return aliasList;
@@ -69,7 +62,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 		in.copy(out);
 
 		// get list of definitions at this unit
-		List newDefs = new ArrayList();
+		List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
 		Iterator newDefBoxesIt = stmt.getDefBoxes().iterator();
 		while( newDefBoxesIt.hasNext() )
 		{
@@ -80,7 +73,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 		// generate a new list of aliases to it starting here
 		if( newDefs.contains(new EquivalentValue(l)) )
 		{
-			List existingDefStmts = new ArrayList();
+			List<Object> existingDefStmts = new ArrayList<Object>();
 			Iterator outIt = out.iterator();
 			while(outIt.hasNext())
 			{
@@ -89,7 +82,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 					existingDefStmts.add(o);
 			}
 			out.clear();
-			Iterator newDefsIt = newDefs.iterator();
+			Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
 			while(newDefsIt.hasNext())
 				out.add( newDefsIt.next() );
 			if( stmt instanceof DefinitionStmt )
@@ -100,7 +93,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 				}
 			}
 			
-			Iterator existingDefIt = existingDefStmts.iterator();
+			Iterator<Object> existingDefIt = existingDefStmts.iterator();
 			while(existingDefIt.hasNext())
 			{
 				Stmt s = (Stmt) existingDefIt.next();
@@ -136,13 +129,13 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 				{
 					if( out.contains( new EquivalentValue(((DefinitionStmt)stmt).getRightOp()) ) )
 					{
-						Iterator newDefsIt = newDefs.iterator();
+						Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
 						while(newDefsIt.hasNext())
 							out.add( newDefsIt.next() );
 					}
 					else
 					{
-						Iterator newDefsIt = newDefs.iterator();
+						Iterator<EquivalentValue> newDefsIt = newDefs.iterator();
 						while(newDefsIt.hasNext())
 							out.remove( newDefsIt.next() );
 					}

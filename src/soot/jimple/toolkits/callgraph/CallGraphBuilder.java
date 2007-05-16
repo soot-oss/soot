@@ -20,9 +20,7 @@
 package soot.jimple.toolkits.callgraph;
 import soot.*;
 import soot.options.*;
-import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 import soot.util.queue.*;
 
 /** Models the call graph.
@@ -31,11 +29,10 @@ import soot.util.queue.*;
 public final class CallGraphBuilder
 { 
     private PointsToAnalysis pa;
-    private CGOptions options;
-    private ReachableMethods reachables;
-    private boolean appOnly = false;
-    private OnFlyCallGraphBuilder ofcgb;
-    private CallGraph cg;
+    private final CGOptions options;
+    private final ReachableMethods reachables;
+    private final OnFlyCallGraphBuilder ofcgb;
+    private final CallGraph cg;
 
     public CallGraph getCallGraph() { return cg; }
     public ReachableMethods reachables() { return reachables; }
@@ -50,7 +47,7 @@ public final class CallGraphBuilder
         this.pa = pa;
         options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         if( options.all_reachable() ) {
-            List entryPoints = new ArrayList();
+            List<SootMethod> entryPoints = new ArrayList<SootMethod>();
             entryPoints.addAll( EntryPoints.v().all() );
             entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
             Scene.v().setEntryPoints( entryPoints );
@@ -73,11 +70,10 @@ public final class CallGraphBuilder
         options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         cg = new CallGraph();
         Scene.v().setCallGraph(cg);
-        List entryPoints = new ArrayList();
+        List<SootMethod> entryPoints = new ArrayList<SootMethod>();
         entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
         entryPoints.addAll( EntryPoints.v().implicit() );
         reachables = new ReachableMethods( cg, entryPoints );
-        appOnly = true;
         ContextManager cm = new ContextInsensitiveContextManager( cg );
         ofcgb = new OnFlyCallGraphBuilder( cm, reachables, true );
     }

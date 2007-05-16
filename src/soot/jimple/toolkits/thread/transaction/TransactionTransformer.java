@@ -6,20 +6,15 @@ import soot.*;
 import soot.util.Chain;
 import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
-import soot.jimple.toolkits.scalar.CommonPrecedingEqualValueAnalysis;
-import soot.jimple.toolkits.scalar.EqualUsesAnalysis;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.jimple.toolkits.thread.mhp.UnsynchronizedMhpAnalysis;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.infoflow.ClassInfoFlowAnalysis;
-import soot.jimple.toolkits.infoflow.InfoFlowAnalysis;
 import soot.jimple.toolkits.infoflow.SmartMethodInfoFlowAnalysis;
 import soot.jimple.toolkits.infoflow.SmartMethodLocalObjectsAnalysis;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.tagkit.LineNumberTag;
-import soot.jimple.toolkits.annotation.nullcheck.*;
 
 public class TransactionTransformer extends SceneTransformer
 {
@@ -148,8 +143,8 @@ public class TransactionTransformer extends SceneTransformer
     	// For all methods, run the intraprocedural analysis (TransactionAnalysis)
 		Date start = new Date();
     	G.v().out.println("[wjtp.tn] *** Find and Name Transactions *** " + start);
-    	Map methodToFlowSet = new HashMap();
-    	Map methodToExcUnitGraph = new HashMap();
+    	Map<SootMethod, FlowSet> methodToFlowSet = new HashMap<SootMethod, FlowSet>();
+    	Map<SootMethod, ExceptionalUnitGraph> methodToExcUnitGraph = new HashMap<SootMethod, ExceptionalUnitGraph>();
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (runAnalysisClassesIt.hasNext()) 
     	{
@@ -177,12 +172,12 @@ public class TransactionTransformer extends SceneTransformer
     	}    	
     	
     	// Create a composite list of all transactions
-    	List AllTransactions = new Vector();
-    	Collection AllFlowSets = methodToFlowSet.values();
-    	Iterator fsIt = AllFlowSets.iterator();
+    	List<Transaction> AllTransactions = new Vector<Transaction>();
+    	Collection<FlowSet> AllFlowSets = methodToFlowSet.values();
+    	Iterator<FlowSet> fsIt = AllFlowSets.iterator();
     	while(fsIt.hasNext())
     	{
-    		FlowSet fs = (FlowSet) fsIt.next();
+    		FlowSet fs = fsIt.next();
     		List fList = fs.toList();
     		for(int i = 0; i < fList.size(); i++)
     			AllTransactions.add(((TransactionFlowPair) fList.get(i)).tn);
@@ -215,15 +210,15 @@ public class TransactionTransformer extends SceneTransformer
     					pta, 
     					Scene.v().getCallGraph(), null, tlo);
     	}
-    	Iterator tnIt = AllTransactions.iterator();
+    	Iterator<Transaction> tnIt = AllTransactions.iterator();
     	while(tnIt.hasNext())
     	{
-    		Transaction tn = (Transaction) tnIt.next();
+    		Transaction tn = tnIt.next();
 //			Body b = tn.method.retrieveActiveBody();
 //			UnitGraph g = new ExceptionalUnitGraph(b);
-			UnitGraph g = (UnitGraph) methodToExcUnitGraph.get(tn.method);
+			UnitGraph g = methodToExcUnitGraph.get(tn.method);
 			LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-    		Iterator invokeIt = tn.invokes.iterator();
+    		Iterator<Object> invokeIt = tn.invokes.iterator();
     		while(invokeIt.hasNext())
     		{
     			Stmt stmt = (Stmt) invokeIt.next();
@@ -243,12 +238,12 @@ public class TransactionTransformer extends SceneTransformer
 				bothRW.union(stmtWrite);
        			tn.unitToRWSet.put(stmt, bothRW);
 
-				List usesList;
+				List<Object> usesList;
 				if(tn.unitToUses.containsKey(stmt))
-					usesList = (List) tn.unitToUses.get(stmt);
+					usesList = tn.unitToUses.get(stmt);
 				else
 				{
-					usesList = new ArrayList();
+					usesList = new ArrayList<Object>();
 					tn.unitToUses.put(stmt, usesList);
 				}
 
@@ -306,15 +301,15 @@ public class TransactionTransformer extends SceneTransformer
     	// Search for data dependencies between transactions, and split them into disjoint sets
     	G.v().out.println("[wjtp.tn] *** Calculate Locking Groups *** " + (new Date()));
     	int nextGroup = 1;
-    	List groups = new ArrayList();
+    	List<TransactionGroup> groups = new ArrayList<TransactionGroup>();
     	groups.add(new TransactionGroup(0)); // dummy group
     	if(optionOneGlobalLock) // use one group for all transactions
     	{
     		TransactionGroup onlyGroup = new TransactionGroup(nextGroup);
-	    	Iterator tnIt1 = AllTransactions.iterator();
+	    	Iterator<Transaction> tnIt1 = AllTransactions.iterator();
 	    	while(tnIt1.hasNext())
 	    	{
-	    		Transaction tn1 = (Transaction) tnIt1.next();
+	    		Transaction tn1 = tnIt1.next();
 	    		onlyGroup.add(tn1);
     		}
     		nextGroup++;
@@ -322,10 +317,10 @@ public class TransactionTransformer extends SceneTransformer
     	}
     	else // calculate separate groups for transactions
     	{
-	    	Iterator tnIt1 = AllTransactions.iterator();
+	    	Iterator<Transaction> tnIt1 = AllTransactions.iterator();
 	    	while(tnIt1.hasNext())
 	    	{
-	    		Transaction tn1 = (Transaction) tnIt1.next();
+	    		Transaction tn1 = tnIt1.next();
 	    		
 	    		// if this transaction has somehow already been marked for deletion
 	    		if(tn1.setNumber == -1)
@@ -341,10 +336,10 @@ public class TransactionTransformer extends SceneTransformer
 	    		}
 	    		else
 	    		{
-		        	Iterator tnIt2 = AllTransactions.iterator();
+		        	Iterator<Transaction> tnIt2 = AllTransactions.iterator();
 		    		while(tnIt2.hasNext())
 		    		{
-		    			Transaction tn2 = (Transaction) tnIt2.next();
+		    			Transaction tn2 = tnIt2.next();
 		    				    			
 		    			// check if this transactional region is going to be deleted
 		    			if(tn2.setNumber == -1)
@@ -503,10 +498,10 @@ public class TransactionTransformer extends SceneTransformer
 	    	lockOrder = new HashMutableDirectedGraph(); // start each iteration with a fresh graph
 			
 			// Assemble the partial ordering of locks
-	    	Iterator deadlockIt1 = AllTransactions.iterator();
+	    	Iterator<Transaction> deadlockIt1 = AllTransactions.iterator();
 	    	while(deadlockIt1.hasNext() && !foundDeadlock)
 	    	{
-	    		Transaction tn1 = (Transaction) deadlockIt1.next();
+	    		Transaction tn1 = deadlockIt1.next();
 	    		
 	    		// skip if unlocked
 	    		if( tn1.setNumber <= 0 )
@@ -521,22 +516,22 @@ public class TransactionTransformer extends SceneTransformer
 	    		// Get list of tn1's target methods
 	    		if(tn1.transitiveTargets == null)
 	    		{
-		    		tn1.transitiveTargets = new HashSet();
-		    		Iterator tn1InvokeIt = tn1.invokes.iterator();
+		    		tn1.transitiveTargets = new HashSet<MethodOrMethodContext>();
+		    		Iterator<Object> tn1InvokeIt = tn1.invokes.iterator();
 		    		while(tn1InvokeIt.hasNext())
 		    		{
 		    			Unit tn1Invoke = (Unit) tn1InvokeIt.next();
-		    			Iterator targetIt = tt.iterator(tn1Invoke);
+		    			Iterator<MethodOrMethodContext> targetIt = tt.iterator(tn1Invoke);
 		    			while(targetIt.hasNext())
 		    				tn1.transitiveTargets.add(targetIt.next());
 		    		}
 		    	}
 	    		
 	    		// compare to each other tn
-	    		Iterator deadlockIt2 = AllTransactions.iterator();
+	    		Iterator<Transaction> deadlockIt2 = AllTransactions.iterator();
 	    		while(deadlockIt2.hasNext() && !foundDeadlock)
 	    		{
-	    			Transaction tn2 = (Transaction) deadlockIt2.next();
+	    			Transaction tn2 = deadlockIt2.next();
 	    			
 	    			// skip if unlocked or in same set as tn1
 	    			if( tn2.setNumber <= 0 || tn2.setNumber == tn1.setNumber )
@@ -610,16 +605,16 @@ public class TransactionTransformer extends SceneTransformer
     		rws[group] = new CodeBlockRWSet();
 		if(!optionStaticLocks)
 		{
-	    	Iterator tnIt8 = AllTransactions.iterator();
+	    	Iterator<Transaction> tnIt8 = AllTransactions.iterator();
 	    	while(tnIt8.hasNext())
 	    	{
-	    		Transaction tn = (Transaction) tnIt8.next();
+	    		Transaction tn = tnIt8.next();
 	    		if(tn.setNumber <= 0)
 	    			continue;
-	    		Iterator EdgeIt = tn.edges.iterator();
+	    		Iterator<TransactionDataDependency> EdgeIt = tn.edges.iterator();
 	    		while(EdgeIt.hasNext())
 	    		{
-	    			TransactionDataDependency tdd = (TransactionDataDependency) EdgeIt.next();
+	    			TransactionDataDependency tdd = EdgeIt.next();
 		    		rws[tn.setNumber - 1].union(tdd.rw);
 	    		}
 	    	}
@@ -631,7 +626,7 @@ public class TransactionTransformer extends SceneTransformer
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
-				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+				TransactionGroup tnGroup = groups.get(group + 1);
 				tnGroup.isDynamicLock = false; // actually, unknown, so not necessary to set it
 				tnGroup.useDynamicLock = false; 
 				tnGroup.lockObject = null;
@@ -643,28 +638,27 @@ public class TransactionTransformer extends SceneTransformer
 			// initialize all groups to static
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
-				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+				TransactionGroup tnGroup = groups.get(group + 1);
 				tnGroup.isDynamicLock = false; // actually, unknown, so not necessary to set it
 				tnGroup.useDynamicLock = false;
 				tnGroup.lockObject = null;
 			}
 			
 			// for each transaction, check every def of the lock
-	    	Iterator tnAIt = AllTransactions.iterator();
+	    	Iterator<Transaction> tnAIt = AllTransactions.iterator();
 	    	while(tnAIt.hasNext())
 	    	{
-	    		Transaction tn = (Transaction) tnAIt.next();
+	    		Transaction tn = tnAIt.next();
 	    		if(tn.setNumber <= 0)
 	    			continue;
-	    		int group = tn.setNumber - 1;
-				ExceptionalUnitGraph egraph = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
+	    		ExceptionalUnitGraph egraph = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
 	    		SmartLocalDefs sld = new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph));
 	    		if(tn.origLock == null || !(tn.origLock instanceof Local)) // || tn.begin == null)
 	    			continue;
-	    		List rDefs = sld.getDefsOfAt( (Local) tn.origLock , tn.entermonitor );
+	    		List<Unit> rDefs = sld.getDefsOfAt( (Local) tn.origLock , tn.entermonitor );
 	    		if(rDefs == null)
 	    			continue;
-            	Iterator rDefsIt = rDefs.iterator();
+            	Iterator<Unit> rDefsIt = rDefs.iterator();
             	while (rDefsIt.hasNext())
             	{
 					Stmt next = (Stmt) rDefsIt.next();
@@ -708,7 +702,7 @@ public class TransactionTransformer extends SceneTransformer
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
-				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+				TransactionGroup tnGroup = groups.get(group + 1);
 
 				if(optionUseLocksets)
 				{
@@ -743,15 +737,15 @@ public class TransactionTransformer extends SceneTransformer
 		{
 			// For locksets, each entry is the RWSet of "one lock"
 			// If a pair of locks have intersecting RWSets, then they are considered to be the "same lock"
-			List lockRWSets = new ArrayList();
-			Map useToLockNum = new HashMap();
+			List<RWSet> lockRWSets = new ArrayList<RWSet>();
+			Map<Value, Integer> useToLockNum = new HashMap<Value, Integer>();
 
 			// For each transaction, if the group's R/Ws may be fields of the same object, 
 			// then check for the transaction if they must be fields of the same RUNTIME OBJECT
-	    	Iterator tnIt9 = AllTransactions.iterator();
+	    	Iterator<Transaction> tnIt9 = AllTransactions.iterator();
 	    	while(tnIt9.hasNext())
 	    	{
-	    		Transaction tn = (Transaction) tnIt9.next();
+	    		Transaction tn = tnIt9.next();
 				
 				int group = tn.setNumber - 1;
 				if(group < 0)
@@ -760,7 +754,7 @@ public class TransactionTransformer extends SceneTransformer
 				if(tn.group.useDynamicLock || tn.group.useLocksets) // if attempting to use a dynamic lock or locksets
 				{
 					// Get a list of contributing uses
-					Map unitToUses = new HashMap();
+					Map<Stmt, List<Value>> unitToUses = new HashMap<Stmt, List<Value>>();
 					Iterator entryIt = tn.unitToRWSet.entrySet().iterator();
 					while(entryIt.hasNext())
 					{
@@ -776,8 +770,8 @@ public class TransactionTransformer extends SceneTransformer
 							// this really ought to be done on a per-use basis, not per-unit
 							
 							// Get list of contributing uses from this unit
-							List allUses = (List) tn.unitToUses.get(s);
-							List contributingUses = new ArrayList();
+							List allUses = tn.unitToUses.get(s);
+							List<Value> contributingUses = new ArrayList<Value>();
 							if(s.containsFieldRef())
 								G.v().out.println("fieldRefRW: " + tasea.valueRWSet(s.getFieldRef(), tn.method, s));
 							for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
@@ -795,7 +789,7 @@ public class TransactionTransformer extends SceneTransformer
 									boolean foundLock = false;
 									for(int i = 0; i < lockRWSets.size(); i++)
 									{
-										RWSet lockRWSet = (RWSet) lockRWSets.get(i);
+										RWSet lockRWSet = lockRWSets.get(i);
 										if(valRW.hasNonEmptyIntersection(lockRWSet))
 										{
 											G.v().out.println("" + i + "\n\n");
@@ -888,7 +882,7 @@ public class TransactionTransformer extends SceneTransformer
 			boolean useGlobalLock[] = new boolean[nextGroup - 1];
 			for(int i = 1; i < nextGroup; i++)
 			{
-				TransactionGroup tnGroup = (TransactionGroup) groups.get(i);
+				TransactionGroup tnGroup = groups.get(i);
 				TransactionBodyTransformer.addedGlobalLockObj[i] = (!optionOneGlobalLock) && (tnGroup.useDynamicLock || tnGroup.useLocksets);
 				useGlobalLock[i - 1] = !tnGroup.useDynamicLock && !tnGroup.useLocksets;
 			}
@@ -906,7 +900,7 @@ public class TransactionTransformer extends SceneTransformer
 					{
 		    	    	Body b = method.getActiveBody();
 	    	    	
-	    		    	FlowSet fs = (FlowSet) methodToFlowSet.get(method);
+	    		    	FlowSet fs = methodToFlowSet.get(method);
 	    	    	
 	    	    		if(fs == null) // newly added methods have no flowset
 	    	    			continue;
@@ -932,23 +926,23 @@ public class TransactionTransformer extends SceneTransformer
     	return mhp.mayHappenInParallel(tn1.method, tn2.method);
     }
     
-    public void assignNamesToTransactions(List AllTransactions)
+    public void assignNamesToTransactions(List<Transaction> AllTransactions)
     {
        	// Give each method a unique, deterministic identifier
        	// Sort transactions into bins... one for each method name
        	
        	// Get list of method names
-    	List methodNamesTemp = new ArrayList();
-    	Iterator tnIt5 = AllTransactions.iterator();
+    	List<String> methodNamesTemp = new ArrayList<String>();
+    	Iterator<Transaction> tnIt5 = AllTransactions.iterator();
     	while (tnIt5.hasNext()) 
     	{
-    	    Transaction tn1 = (Transaction) tnIt5.next();
+    	    Transaction tn1 = tnIt5.next();
     	    String mname = tn1.method.getSignature(); //tn1.method.getSignature() + "." + tn1.method.getName();
     	    if(!methodNamesTemp.contains(mname))
     	    	methodNamesTemp.add(mname);
 		}
 		String methodNames[] = new String[1];
-		methodNames = (String []) methodNamesTemp.toArray(methodNames);
+		methodNames = methodNamesTemp.toArray(methodNames);
 		Arrays.sort(methodNames);
 
 		// Initialize method-named bins
@@ -964,10 +958,10 @@ public class TransactionTransformer extends SceneTransformer
 		}
 		
 		// Put transactions into bins
-    	Iterator tnIt0 = AllTransactions.iterator();
+    	Iterator<Transaction> tnIt0 = AllTransactions.iterator();
     	while(tnIt0.hasNext())
     	{
-    		Transaction tn1 = (Transaction) tnIt0.next();
+    		Transaction tn1 = tnIt0.next();
 			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());
 			identMatrix[methodNum][0]++;
 			identMatrix[methodNum][identMatrix[methodNum][0]] = tn1.IDNum;
@@ -982,27 +976,27 @@ public class TransactionTransformer extends SceneTransformer
 		}
 		
 		// Generate a name based on the bin number and location within the bin
-    	Iterator tnIt4 = AllTransactions.iterator();
+    	Iterator<Transaction> tnIt4 = AllTransactions.iterator();
     	while(tnIt4.hasNext())
     	{
-    		Transaction tn1 = (Transaction) tnIt4.next();
+    		Transaction tn1 = tnIt4.next();
 			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());
 			int tnNum = Arrays.binarySearch(identMatrix[methodNum], tn1.IDNum) - 1;
     		tn1.name = "m" + (methodNum < 10? "00" : (methodNum < 100? "0" : "")) + methodNum + "n" + (tnNum < 10? "0" : "") + tnNum;
     	}
 	}	
 
-	public void printGraph(Collection AllTransactions, List groups)
+	public void printGraph(Collection<Transaction> AllTransactions, List<TransactionGroup> groups)
 	{
 		G.v().out.println("[transaction-graph] strict graph transactions {\n[transaction-graph] start=1;");
 
 		for(int group = 0; group < groups.size(); group++)
 		{
 			boolean printedHeading = false;
-			Iterator tnIt = AllTransactions.iterator();
+			Iterator<Transaction> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = (Transaction) tnIt.next();
+				Transaction tn = tnIt.next();
 				if(tn.setNumber == group + 1)
 				{
 					if(!printedHeading)
@@ -1048,10 +1042,10 @@ public class TransactionTransformer extends SceneTransformer
 					else
 						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1];");
 
-					Iterator tnedgeit = tn.edges.iterator();
+					Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
 					while(tnedgeit.hasNext())
 					{
-						TransactionDataDependency edge = (TransactionDataDependency) tnedgeit.next();
+						TransactionDataDependency edge = tnedgeit.next();
 						Transaction tnedge = edge.other;
 						if(tnedge.setNumber == group + 1)
 							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
@@ -1064,11 +1058,10 @@ public class TransactionTransformer extends SceneTransformer
 		}
 
 		{
-			boolean printedHeading = false;
-			Iterator tnIt = AllTransactions.iterator();
+			Iterator<Transaction> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = (Transaction) tnIt.next();
+				Transaction tn = tnIt.next();
 				if(tn.setNumber == -1)
 				{
 					if(Scene.v().getReachableMethods().contains(tn.method))
@@ -1076,10 +1069,10 @@ public class TransactionTransformer extends SceneTransformer
 					else
 						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1];");
 				
-					Iterator tnedgeit = tn.edges.iterator();
+					Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
 					while(tnedgeit.hasNext())
 					{
-						TransactionDataDependency edge = (TransactionDataDependency) tnedgeit.next();
+						TransactionDataDependency edge = tnedgeit.next();
 						Transaction tnedge = edge.other;
 						if(tnedge.setNumber != tn.setNumber || tnedge.setNumber == -1)
 							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
@@ -1091,13 +1084,13 @@ public class TransactionTransformer extends SceneTransformer
 		G.v().out.println("[transaction-graph] }");
 	}	
 
-	public void printTable(Collection AllTransactions)
+	public void printTable(Collection<Transaction> AllTransactions)
 	{
 		G.v().out.println("[transaction-table] ");
-		Iterator tnIt7 = AllTransactions.iterator();
+		Iterator<Transaction> tnIt7 = AllTransactions.iterator();
 		while(tnIt7.hasNext())
 		{
-			Transaction tn = (Transaction) tnIt7.next();
+			Transaction tn = tnIt7.next();
 			G.v().out.println("[transaction-table] Transaction " + tn.name);
 			G.v().out.println("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
 			G.v().out.println("[transaction-table] Orig : " + tn.origLock);
@@ -1118,9 +1111,9 @@ public class TransactionTransformer extends SceneTransformer
 			else
 				G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] "); // label provided by previous print statement
 			G.v().out.print("Edges: (" + tn.edges.size() + ") "); // label provided by previous print statement
-			Iterator tnedgeit = tn.edges.iterator();
+			Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
 			while(tnedgeit.hasNext())
-				G.v().out.print(((TransactionDataDependency)tnedgeit.next()).other.name + " ");
+				G.v().out.print(tnedgeit.next().other.name + " ");
 			if(tn.group != null && tn.group.useLocksets)
 				G.v().out.println("\n[transaction-table] Locks: " + tn.lockset);
 			else
@@ -1129,19 +1122,19 @@ public class TransactionTransformer extends SceneTransformer
 		}
 	}
 	
-	public void printGroups(Collection AllTransactions, int nextGroup, List groups, RWSet rws[])
+	public void printGroups(Collection<Transaction> AllTransactions, int nextGroup, List<TransactionGroup> groups, RWSet rws[])
 	{
 			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
 			for(int group = 0; group < nextGroup - 1; group++)
     		{
-    			TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+    			TransactionGroup tnGroup = groups.get(group + 1);
     			G.v().out.print("Group " + (group + 1) + " ");
 				G.v().out.print("Locking: " + (tnGroup.useLocksets ? "using " : (tnGroup.isDynamicLock && tnGroup.useDynamicLock ? "Dynamic on " : "Static on ")) + (tnGroup.useLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
 				G.v().out.print("\n[transaction-groups]      : ");
-				Iterator tnIt = AllTransactions.iterator();
+				Iterator<Transaction> tnIt = AllTransactions.iterator();
 				while(tnIt.hasNext())
 				{
-					Transaction tn = (Transaction) tnIt.next();
+					Transaction tn = tnIt.next();
 					if(tn.setNumber == group + 1)
 						G.v().out.print(tn.name + " ");
 				}
@@ -1150,10 +1143,10 @@ public class TransactionTransformer extends SceneTransformer
 								(rws[group].size() == 0 ? "\n[transaction-groups] " : ""));
 	    	}
 			G.v().out.print("Erasing \n[transaction-groups]      : ");
-			Iterator tnIt = AllTransactions.iterator();
+			Iterator<Transaction> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = (Transaction) tnIt.next();
+				Transaction tn = tnIt.next();
 				if(tn.setNumber == -1)
 					G.v().out.print(tn.name + " ");
 			}

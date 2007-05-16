@@ -32,9 +32,8 @@ package soot.toolkits.scalar;
 import soot.options.*;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
+
 import soot.toolkits.graph.*;
 
 
@@ -43,8 +42,8 @@ import soot.toolkits.graph.*;
  */
 public class SimpleLiveLocals implements LiveLocals
 {
-    Map unitToLocalsAfter;
-    Map unitToLocalsBefore;
+    Map<Unit, List> unitToLocalsAfter;
+    Map<Unit, List> unitToLocalsBefore;
 
 
 
@@ -75,8 +74,8 @@ public class SimpleLiveLocals implements LiveLocals
 
         // Build unitToLocals map
         {
-            unitToLocalsAfter = new HashMap(graph.size() * 2 + 1, 0.7f);
-            unitToLocalsBefore = new HashMap(graph.size() * 2 + 1, 0.7f);
+            unitToLocalsAfter = new HashMap<Unit, List>(graph.size() * 2 + 1, 0.7f);
+            unitToLocalsBefore = new HashMap<Unit, List>(graph.size() * 2 + 1, 0.7f);
 
             Iterator unitIt = graph.iterator();
 
@@ -101,20 +100,20 @@ public class SimpleLiveLocals implements LiveLocals
 
     public List getLiveLocalsAfter(Unit s)
     {
-        return (List) unitToLocalsAfter.get(s);
+        return unitToLocalsAfter.get(s);
     }
     
     public List getLiveLocalsBefore(Unit s)
     {
-        return (List) unitToLocalsBefore.get(s);
+        return unitToLocalsBefore.get(s);
     }
 }
 
 class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
 {
     FlowSet emptySet;
-    Map unitToGenerateSet;
-    Map unitToKillSet;
+    Map<Unit, FlowSet> unitToGenerateSet;
+    Map<Unit, FlowSet> unitToKillSet;
 
     SimpleLiveLocalsAnalysis(UnitGraph g)
     {
@@ -127,7 +126,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
 
         // Create kill sets.
         {
-            unitToKillSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            unitToKillSet = new HashMap<Unit, FlowSet>(g.size() * 2 + 1, 0.7f);
 
             Iterator unitIt = g.iterator();
 
@@ -135,7 +134,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
             {
                 Unit s = (Unit) unitIt.next();
 
-                FlowSet killSet = (FlowSet) emptySet.clone();
+                FlowSet killSet = emptySet.clone();
 
                 Iterator boxIt = s.getDefBoxes().iterator();
 
@@ -153,7 +152,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
 
         // Create generate sets
         {
-            unitToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            unitToGenerateSet = new HashMap<Unit, FlowSet>(g.size() * 2 + 1, 0.7f);
 
             Iterator unitIt = g.iterator();
 
@@ -161,7 +160,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
             {
                 Unit s = (Unit) unitIt.next();
 
-                FlowSet genSet = (FlowSet) emptySet.clone();
+                FlowSet genSet = emptySet.clone();
 
                 Iterator boxIt = s.getUseBoxes().iterator();
 
@@ -205,10 +204,10 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
         // Perform kill
-            in.difference((FlowSet) unitToKillSet.get(unit), out);
+            in.difference(unitToKillSet.get(unit), out);
 
         // Perform generation
-            out.union((FlowSet) unitToGenerateSet.get(unit), out);
+            out.union(unitToGenerateSet.get(unit), out);
     }
 
     protected void merge(Object in1, Object in2, Object out)

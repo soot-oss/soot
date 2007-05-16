@@ -22,7 +22,7 @@ package soot.xml;
 public class StringAttribute {
 
     private String info;
-    private String analysisType;
+    private final String analysisType;
     
     public StringAttribute(String info, String type){
         this.info = info;

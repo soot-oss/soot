@@ -30,8 +30,6 @@
 package soot.baf;
 
 import soot.util.*;
-import java.util.*;
-import soot.*;
 
 public interface InstSwitch extends Switch
 {

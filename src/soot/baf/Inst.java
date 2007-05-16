@@ -26,8 +26,6 @@
 package soot.baf;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
 
 public interface Inst extends Unit
 {    

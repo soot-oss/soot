@@ -29,7 +29,7 @@ import java.util.Iterator;
  * TODO: Jalopy would be awesome here!!
  */
 public class DavaBuildFile {
-	public static void generate(PrintWriter out, ArrayList decompiledClasses){
+	public static void generate(PrintWriter out, ArrayList<String> decompiledClasses){
 		out.print("<project default=\"compile\" name=\"Build file for decompiled code\">\n");
 		out.print("	<description>\n");
 		out.print("  This is the build file produced by Dava for the decompiled code.\n");
@@ -82,9 +82,9 @@ public class DavaBuildFile {
 		out.print("		<arg value=\"java\" />\n");
 
 		
-		Iterator it = decompiledClasses.iterator();
+		Iterator<String> it = decompiledClasses.iterator();
 		while(it.hasNext()){
-			String temp = (String)it.next();
+			String temp = it.next();
 			if(temp.endsWith(".java")){
 				temp = temp.substring(0,temp.length()-5);
 			}

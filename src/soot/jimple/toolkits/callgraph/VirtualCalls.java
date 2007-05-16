@@ -32,7 +32,7 @@ public final class VirtualCalls
     public VirtualCalls( Singletons.Global g ) {}
     public static VirtualCalls v() { return G.v().soot_jimple_toolkits_callgraph_VirtualCalls(); }
 
-    private LargeNumberedMap typeToVtbl =
+    private final LargeNumberedMap typeToVtbl =
         new LargeNumberedMap( Scene.v().getTypeNumberer() );
 
     public SootMethod resolveSpecial( SpecialInvokeExpr iie, NumberedString subSig, SootMethod container ) {
@@ -62,7 +62,7 @@ public final class VirtualCalls
         }
         SootMethod ret = (SootMethod) vtbl.get( subSig );
         if( ret != null ) return ret;
-        SootClass cls = ((RefType)t).getSootClass();
+        SootClass cls = (t).getSootClass();
         if( cls.declaresMethod( subSig ) ) {
             SootMethod m = cls.getMethod( subSig );
             if( m.isConcrete() || m.isNative() ) {
@@ -77,7 +77,7 @@ public final class VirtualCalls
         return ret;
     }
 
-    private Map baseToSubTypes = new HashMap();
+    private final Map<Type,List<Type>> baseToSubTypes = new HashMap<Type,List<Type>>();
 
     public void resolve( Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
         resolve(t, declaredType, null, subSig, container, targets);
@@ -100,7 +100,7 @@ public final class VirtualCalls
         } else if( t instanceof AnySubType ) {
             RefType base = ((AnySubType)t).getBase();
 
-            List subTypes = (List) baseToSubTypes.get(base);
+            List subTypes = baseToSubTypes.get(base);
             if( subTypes != null ) {
                 for( Iterator stIt = subTypes.iterator(); stIt.hasNext(); ) {
                     final Type st = (Type) stIt.next();
@@ -113,14 +113,14 @@ public final class VirtualCalls
 
             subTypes.add(base);
 
-            LinkedList worklist = new LinkedList();
-            HashSet workset = new HashSet();
+            LinkedList<SootClass> worklist = new LinkedList<SootClass>();
+            HashSet<SootClass> workset = new HashSet<SootClass>();
             FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
             SootClass cl = base.getSootClass();
 
             if( workset.add( cl ) ) worklist.add( cl );
             while( !worklist.isEmpty() ) {
-                cl = (SootClass) worklist.removeFirst();
+                cl = worklist.removeFirst();
                 if( cl.isInterface() ) {
                     for( Iterator cIt = fh.getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
                         final SootClass c = (SootClass) cIt.next();

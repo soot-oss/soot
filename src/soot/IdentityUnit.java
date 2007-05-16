@@ -26,10 +26,6 @@
 
 package soot;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-
 /** A unit that assigns to a variable from one of {parameters, this, caughtexception}. */
 public interface IdentityUnit extends Unit
 { 

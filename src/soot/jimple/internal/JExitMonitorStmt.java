@@ -37,7 +37,6 @@ import java.util.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 
 public class JExitMonitorStmt extends AbstractStmt 
     implements ExitMonitorStmt
@@ -61,18 +60,18 @@ public class JExitMonitorStmt extends AbstractStmt
 
     public String toString()
     {
-        return Jimple.v().EXITMONITOR + " "  + opBox.getValue().toString();
+        return Jimple.EXITMONITOR + " "  + opBox.getValue().toString();
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().EXITMONITOR);
+        up.literal(Jimple.EXITMONITOR);
         up.literal(" ");
         opBox.toString(up);
     }
 
     public Value getOp()
     {
-        return (Value) opBox.getValue();
+        return opBox.getValue();
     }
 
     public void setOp(Value op)
@@ -101,7 +100,7 @@ public class JExitMonitorStmt extends AbstractStmt
 
     }    
 
-  public void convertToBaf(JimpleToBafContext context, List out)
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out)
   {
     ((ConvertToBaf)(getOp())).convertToBaf(context, out);
 

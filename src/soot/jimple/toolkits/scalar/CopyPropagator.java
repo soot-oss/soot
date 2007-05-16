@@ -72,7 +72,7 @@ public class CopyPropagator extends BodyTransformer
                 
         Chain units = stmtBody.getUnits();
 
-        Map localToDefCount = new HashMap();
+        Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>();
         
         // Count number of definitions for each local.
         {
@@ -90,7 +90,7 @@ public class CopyPropagator extends BodyTransformer
                     if(!localToDefCount.containsKey(l))
                         localToDefCount.put(l, new Integer(1));
                     else 
-                        localToDefCount.put(l, new Integer(((Integer) localToDefCount.get(l)).intValue() + 1));
+                        localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
                 }
                 
             }
@@ -127,7 +127,7 @@ public class CopyPropagator extends BodyTransformer
                         if(options.only_stack_locals() && !l.getName().startsWith("$"))
                             continue;
                             
-                        List defsOfUse = localDefs.getDefsOfAt(l, stmt);
+                        List<Unit> defsOfUse = localDefs.getDefsOfAt(l, stmt);
 
                         if(defsOfUse.size() == 1)
                         {
@@ -155,7 +155,7 @@ public class CopyPropagator extends BodyTransformer
                                         continue;
                                     }
 
-                                    List path = graph.getExtendedBasicBlockPathBetween(def, stmt);
+                                    List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, stmt);
                                     
                                     if(path == null)
                                     {
@@ -163,7 +163,7 @@ public class CopyPropagator extends BodyTransformer
                                         continue;
                                     }
                                      
-                                    Iterator pathIt = path.iterator();
+                                    Iterator<Unit> pathIt = path.iterator();
                                     
                                     // Skip first node
                                         pathIt.next();

@@ -26,9 +26,7 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 import soot.options.SparkOptions;
-import soot.options.Options;
 import soot.tagkit.*;
 
 /** Main entry point for Spark.
@@ -49,7 +47,7 @@ public class SparkTransformer extends SceneTransformer
         if( opts.pre_jimplify() ) b.preJimplify();
         if( opts.force_gc() ) doGC();
         Date startBuild = new Date();
-        final PAG pag = (PAG) b.setup( opts );
+        final PAG pag = b.setup( opts );
         b.build();
         Date endBuild = new Date();
         reportTime( "Pointer Assignment Graph", startBuild, endBuild );
@@ -173,7 +171,7 @@ public class SparkTransformer extends SceneTransformer
     }
     protected void addTags( PAG pag ) {
         final Tag unknown = new StringTag( "Untagged Spark node" );
-        final Map nodeToTag = pag.getNodeTags();
+        final Map<Node, Tag> nodeToTag = pag.getNodeTags();
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
             for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
@@ -186,7 +184,7 @@ public class SparkTransformer extends SceneTransformer
                         Value lhs = ((DefinitionStmt) s).getLeftOp();
                         VarNode v = null;
                         if( lhs instanceof Local ) {
-                            v = pag.findLocalVarNode( (Local) lhs );
+                            v = pag.findLocalVarNode( lhs );
                         } else if( lhs instanceof FieldRef ) {
                             v = pag.findGlobalVarNode( ((FieldRef) lhs).getField() );
                         }
@@ -197,16 +195,16 @@ public class SparkTransformer extends SceneTransformer
                                 addTag( s, n, nodeToTag, unknown );
                             }} );
                             Node[] simpleSources = pag.simpleInvLookup(v);
-                            for( int i=0; i < simpleSources.length; i++ ) {
-                                addTag( s, simpleSources[i], nodeToTag, unknown );
+                            for (Node element : simpleSources) {
+                                addTag( s, element, nodeToTag, unknown );
                             }
                             simpleSources = pag.allocInvLookup(v);
-                            for( int i=0; i < simpleSources.length; i++ ) {
-                                addTag( s, simpleSources[i], nodeToTag, unknown );
+                            for (Node element : simpleSources) {
+                                addTag( s, element, nodeToTag, unknown );
                             }
                             simpleSources = pag.loadInvLookup(v);
-                            for( int i=0; i < simpleSources.length; i++ ) {
-                                addTag( s, simpleSources[i], nodeToTag, unknown );
+                            for (Node element : simpleSources) {
+                                addTag( s, element, nodeToTag, unknown );
                             }
                         }
                     }
@@ -228,8 +226,8 @@ public class SparkTransformer extends SceneTransformer
         System.gc();
     }
 
-    protected void addTag( Host h, Node n, Map nodeToTag, Tag unknown ) {
-        if( nodeToTag.containsKey( n ) ) h.addTag( (Tag) nodeToTag.get(n) );
+    protected void addTag( Host h, Node n, Map<Node, Tag> nodeToTag, Tag unknown ) {
+        if( nodeToTag.containsKey( n ) ) h.addTag( nodeToTag.get(n) );
         else h.addTag( unknown );
     }
 
@@ -259,7 +257,7 @@ public class SparkTransformer extends SceneTransformer
             //    G.v().out.println( ""+v.getVariable()+" "+v.getMethod()+" "+set.size() );
             }
         }
-        for( Iterator anIt = pag.allocSourcesIterator(); anIt.hasNext(); ) {
+        for( Iterator<Object> anIt = pag.allocSourcesIterator(); anIt.hasNext(); ) {
             final AllocNode an = (AllocNode) anIt.next();
             for( Iterator adfIt = an.getFields().iterator(); adfIt.hasNext(); ) {
                 final AllocDotField adf = (AllocDotField) adfIt.next();
@@ -278,15 +276,15 @@ public class SparkTransformer extends SceneTransformer
         // Compute points-to set sizes of dereference sites BEFORE
         // trimming sets by declared type
         int[] deRefCounts = new int[30001];
-        for( Iterator vIt = pag.getDereferences().iterator(); vIt.hasNext(); ) {
-            final VarNode v = (VarNode) vIt.next();
+        for (VarNode v : pag.getDereferences()) {
             PointsToSetInternal set = v.getP2Set();
             int size = 0;
             if( set != null ) size = set.size();
             deRefCounts[size]++;
         }
         int total = 0;
-        for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
+        for (int element : deRefCounts)
+			total+= element;
         G.v().out.println( "Dereference counts BEFORE trimming (total = "+total+"):" );
         for( int i=0; i < deRefCounts.length; i++ ) {
             if( deRefCounts[i] > 0 ) {

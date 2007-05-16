@@ -20,28 +20,30 @@
 package soot.javaToJimple;
 import java.util.*;
 
+import polyglot.ast.Node;
+
 public class NestedClassListBuilder extends polyglot.visit.NodeVisitor {
 
-    private ArrayList classDeclsList;
-    private ArrayList anonClassBodyList;
-    private ArrayList nestedUsedList;
+    private final ArrayList<Node> classDeclsList;
+    private final ArrayList<Node> anonClassBodyList;
+    private final ArrayList<Node> nestedUsedList;
     
-    public ArrayList getClassDeclsList() {
+    public ArrayList<Node> getClassDeclsList() {
         return classDeclsList;
     }
     
-    public ArrayList getAnonClassBodyList() {
+    public ArrayList<Node> getAnonClassBodyList() {
         return anonClassBodyList;
     }
     
-    public ArrayList getNestedUsedList() {
+    public ArrayList<Node> getNestedUsedList() {
         return nestedUsedList;
     }
 
     public NestedClassListBuilder(){
-        classDeclsList = new ArrayList();
-        anonClassBodyList = new ArrayList();
-        nestedUsedList = new ArrayList();
+        classDeclsList = new ArrayList<Node>();
+        anonClassBodyList = new ArrayList<Node>();
+        nestedUsedList = new ArrayList<Node>();
     }
 
     public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {

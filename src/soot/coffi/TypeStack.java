@@ -53,7 +53,7 @@ class TypeStack
     {
         TypeStack newTypeStack = new TypeStack();
 
-        newTypeStack.types = (Type[]) types.clone();
+        newTypeStack.types = types.clone();
 
         return newTypeStack;
     }
@@ -120,8 +120,8 @@ class TypeStack
             if(otherStack.types.length != types.length)
                 return false;
 
-            for(int i = 0; i < types.length; i++)
-                if(!types[i].equals(otherStack.types[i]))
+            for (Type element : types)
+				if(!element.equals(element))
                     return false;
 
             return true;

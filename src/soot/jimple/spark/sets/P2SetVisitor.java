@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 
 /** Abstract base class for points-to set visitors used to enumerate

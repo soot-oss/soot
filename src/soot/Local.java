@@ -26,10 +26,7 @@
 
 package soot;
 
-import soot.*;
 import soot.util.*;
-import java.util.*;
-import java.io.*;
 
 /** A local variable, used within Body
  * classes.  Intermediate representations must use an implementation

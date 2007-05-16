@@ -34,8 +34,6 @@
  */
 
 package soot.util.dot;
-import soot.*;
-
 import java.io.*;
 import java.util.*;
 
@@ -50,11 +48,11 @@ public class DotGraph implements Renderable{
   private String  graphname;
   private boolean isSubGraph;
 
-  private HashMap nodes;
+  private HashMap<String, DotGraphNode> nodes;
   /* draw elements are sub graphs, edges, commands */
-  private List    drawElements;
+  private List<Renderable>    drawElements;
  
-  private List    attributes;
+  private List<DotGraphAttribute>    attributes;
 
   /**
    * The extension added to output files, exported so that
@@ -69,9 +67,9 @@ public class DotGraph implements Renderable{
   public DotGraph(String graphname) {
     this.graphname   = graphname;
     this.isSubGraph = false;
-    this.nodes      = new HashMap(100);
-    this.drawElements = new LinkedList();
-    this.attributes   = new LinkedList();
+    this.nodes      = new HashMap<String, DotGraphNode>(100);
+    this.drawElements = new LinkedList<Renderable>();
+    this.attributes   = new LinkedList<DotGraphAttribute>();
   }
   
   /**
@@ -133,7 +131,7 @@ public class DotGraph implements Renderable{
    * if there is no such node.
    */
   public DotGraphNode getNode(String name){
-      DotGraphNode node = (DotGraphNode)nodes.get(name);
+      DotGraphNode node = nodes.get(name);
       if (node == null) {
           node = new DotGraphNode(name);
           nodes.put(name, node);
@@ -247,16 +245,16 @@ public class DotGraph implements Renderable{
     }
 
     /* render graph attributes */
-    Iterator attrIt = this.attributes.iterator();
+    Iterator<DotGraphAttribute> attrIt = this.attributes.iterator();
     while (attrIt.hasNext()) {
-      DotGraphAttribute attr = (DotGraphAttribute)attrIt.next();
+      DotGraphAttribute attr = attrIt.next();
       DotGraphUtility.renderLine(out, attr.toString()+";", indent+4);
     }
 
     /* render elements */
-    Iterator elmntsIt = this.drawElements.iterator();
+    Iterator<Renderable> elmntsIt = this.drawElements.iterator();
     while (elmntsIt.hasNext()) {
-      Renderable element = (Renderable)elmntsIt.next();
+      Renderable element = elmntsIt.next();
       element.render(out, indent+4);
     }
 

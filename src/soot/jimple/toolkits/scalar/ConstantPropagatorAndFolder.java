@@ -72,7 +72,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
                 useBox = (ValueBox) useBoxIt.next();
                 if (useBox.getValue() instanceof Local) {
                     Local local = (Local) useBox.getValue();
-                    List defsOfUse = localDefs.getDefsOfAt(local, stmt);
+                    List<Unit> defsOfUse = localDefs.getDefsOfAt(local, stmt);
                     if (defsOfUse.size() == 1) {
                         DefinitionStmt defStmt =
                             (DefinitionStmt) defsOfUse.get(0);

@@ -19,20 +19,14 @@
 
 package soot;
 
-import soot.tagkit.*;
-import soot.util.*;
-import soot.xml.*;
 import java.util.*;
 import java.io.*;
 
 public class XMLAttributesPrinter {
 
 	
-	private String inFilename;
 	private String useFilename;
-	private SootClass sootClass;
 	private String outputDir;
-    private ArrayList attributes;
     
 	private void setOutputDir(String dir) {
 		outputDir = dir;
@@ -51,7 +45,6 @@ public class XMLAttributesPrinter {
 	}
 
 	private void initFile() {
-        attributes = new ArrayList();
 		try {
 		  streamOut = new FileOutputStream(getUseFilename());
 		  writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
@@ -101,34 +94,6 @@ public class XMLAttributesPrinter {
 	FileOutputStream streamOut = null;
 	PrintWriter writerOut = null;
 	
-	private int getJavaLnOfHost(Host h){
-		Iterator it = h.getTags().iterator();
-		while (it.hasNext()){
-			Tag t = (Tag)it.next();
-			//G.v().out.println(t.getClass().toString());
-			if (t instanceof SourceLnPosTag) {
-				//G.v().out.println("t is LineNumberTag");
-				return ((SourceLnPosTag)t).startLn();
-			}
-            else if (t instanceof LineNumberTag){
-                return (new Integer(((LineNumberTag)t).toString())).intValue();
-            }
-		}
-		return 0;
-	}
-	
-	private int getJimpleLnOfHost(Host h){
-		Iterator it = h.getTags().iterator();
-		while (it.hasNext()){
-			Tag t = (Tag)it.next();
-			if (t instanceof JimpleLineNumberTag) {
-				return ((JimpleLineNumberTag)t).getStartLineNumber();
-			}
-		}
-		return 0;
-	}
-
-
 	private void initAttributesDir() {
 	
 		StringBuffer sb = new StringBuffer();
@@ -150,13 +115,6 @@ public class XMLAttributesPrinter {
 		        }
 		}
 				
-	}
-
-	private String  formatForXML(String in) {
-		in = StringTools.replaceAll(in, "<", "&lt;");
-		in = StringTools.replaceAll(in, ">", "&gt;");
-		in = StringTools.replaceAll(in, "&", "&amp;");
-		return in;
 	}
 
 	private void createUseFilename() {

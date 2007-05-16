@@ -34,9 +34,7 @@ package soot.grimp;
 import soot.*;
 import soot.jimple.*;
 import soot.grimp.internal.*;
-import soot.util.*;
 import java.util.*;
-import java.io.*;
 
 /**
     The Grimp class contains all the constructors for the components of the Grimp
@@ -701,7 +699,7 @@ public class Grimp
 
     public UnitBox newStmtBox(Unit unit)
     {
-        return Jimple.v().newStmtBox((Stmt) unit);
+        return Jimple.v().newStmtBox(unit);
     }
 
     /** Carries out the mapping from other Value's to Grimp Value's */

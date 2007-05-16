@@ -98,7 +98,7 @@ public class PushLabeledBlockIn extends DepthFirstAdapter{
 
     public void outASTLabeledBlockNode(ASTLabeledBlockNode node){
 	String label = node.get_Label().toString();
-	List subBodies = (List)node.get_SubBodies();
+	List<Object> subBodies = node.get_SubBodies();
 	if(subBodies.size()!=1){
 	    return;
 	}
@@ -175,8 +175,8 @@ public class PushLabeledBlockIn extends DepthFirstAdapter{
     }
     private boolean replaceBreakLabels(ASTNode node,String toReplace, String replaceWith){
 	boolean toReturn=false;
-	List subBodies=node.get_SubBodies();
-	Iterator subIt = subBodies.iterator();
+	List<Object> subBodies=node.get_SubBodies();
+	Iterator<Object> subIt = subBodies.iterator();
 	while(subIt.hasNext()){
 	    List subBody=null;
 	    if(node instanceof ASTTryNode){
@@ -192,8 +192,8 @@ public class PushLabeledBlockIn extends DepthFirstAdapter{
 		//check if this is ASTStatementSequenceNode
 		if(temp instanceof ASTStatementSequenceNode){
 		    ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)temp;
-		    List statements = stmtSeq.getStatements();
-		    Iterator stmtIt = statements.iterator();
+		    List<Object> statements = stmtSeq.getStatements();
+		    Iterator<Object> stmtIt = statements.iterator();
 		    while(stmtIt.hasNext()){
 			AugmentedStmt as = (AugmentedStmt)stmtIt.next();
 			Stmt s = as.get_Stmt();
@@ -229,8 +229,8 @@ public class PushLabeledBlockIn extends DepthFirstAdapter{
 	    //check if this is ASTStatementSequenceNode
 	    if(temp instanceof ASTStatementSequenceNode){
 		ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)temp;
-		List statements = stmtSeq.getStatements();
-		Iterator stmtIt = statements.iterator();
+		List<Object> statements = stmtSeq.getStatements();
+		Iterator<Object> stmtIt = statements.iterator();
 		while(stmtIt.hasNext()){
 		    AugmentedStmt as = (AugmentedStmt)stmtIt.next();
 		    Stmt s = as.get_Stmt();
@@ -246,8 +246,8 @@ public class PushLabeledBlockIn extends DepthFirstAdapter{
 	    else{
 		//otherwise recursion
 		//getSubBodies
-		List subBodies=(List)temp.get_SubBodies();
-		Iterator subIt = subBodies.iterator();
+		List<Object> subBodies=temp.get_SubBodies();
+		Iterator<Object> subIt = subBodies.iterator();
 		while(subIt.hasNext()){
 
 

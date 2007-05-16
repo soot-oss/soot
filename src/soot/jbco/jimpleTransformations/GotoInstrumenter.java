@@ -21,7 +21,6 @@ package soot.jbco.jimpleTransformations;
 
 import soot.*;
 import soot.util.*;
-import soot.toolkits.graph.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.Rand;
 import soot.jimple.*;
@@ -118,16 +117,16 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     Unit u = first;
     do {
       Object toU[] = u.getBoxesPointingToThis().toArray();
-      for (int k = 0; k < toU.length; k++)
-        u.removeBoxPointingToThis((UnitBox)toU[k]);
+      for (Object element : toU)
+		u.removeBoxPointingToThis((UnitBox)element);
       
       // unit box targets stay with a unit even if the unit is removed.
       Unit u2 = (Unit)units.getSuccOf(u);
       units.remove(u);
       units.add(u);
       
-      for (int k = 0; k < toU.length; k++)
-        u.addBoxPointingToThis((UnitBox)toU[k]);
+      for (Object element : toU)
+		u.addBoxPointingToThis((UnitBox)element);
       
       u = u2;
     } while (++i < rand);

@@ -20,12 +20,10 @@
 package soot.jbco;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
-import soot.Pack;
 import soot.Transform;
 import soot.PackManager;
 import soot.PatchingChain;

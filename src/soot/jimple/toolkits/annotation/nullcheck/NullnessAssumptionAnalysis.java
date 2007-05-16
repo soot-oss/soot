@@ -22,7 +22,6 @@ package soot.jimple.toolkits.annotation.nullcheck;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -33,27 +32,14 @@ import soot.RefLikeType;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
-import soot.jimple.ClassConstant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.MonitorStmt;
-import soot.jimple.NewArrayExpr;
-import soot.jimple.NewExpr;
-import soot.jimple.NewMultiArrayExpr;
-import soot.jimple.NullConstant;
-import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
-import soot.jimple.StringConstant;
-import soot.jimple.ThisRef;
-import soot.jimple.internal.AbstractBinopExpr;
 import soot.jimple.internal.JCastExpr;
-import soot.jimple.internal.JEqExpr;
-import soot.jimple.internal.JIfStmt;
-import soot.jimple.internal.JInstanceOfExpr;
-import soot.jimple.internal.JNeExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 
@@ -190,13 +176,6 @@ public class NullnessAssumptionAnalysis  extends BackwardFlowAnalysis
 		return false;
 	}
 
-	private void handleInstanceOfExpression(JInstanceOfExpr expr,
-			AnalysisInfo in, AnalysisInfo out, AnalysisInfo outBranch) {
-		Value op = expr.getOp();
-		//if instanceof is expected to succeed, then programmer thinks we have a non-null value
-		outBranch.put(op,NON_NULL);
-	}
-
 	private void handleArrayRef(ArrayRef arrayRef, AnalysisInfo out) {
 		Value array = arrayRef.getBase();
 		//here we know that the array must point to an object, but the array value might be anything
@@ -278,7 +257,7 @@ public class NullnessAssumptionAnalysis  extends BackwardFlowAnalysis
 		
 		for (Iterator keyIter = values.iterator(); keyIter.hasNext();) {
 			Value v = (Value) keyIter.next();
-			Set leftAndRight = new HashSet();
+			Set<Object> leftAndRight = new HashSet<Object>();
 			leftAndRight.add(left.get(v));
 			leftAndRight.add(right.get(v));			
 

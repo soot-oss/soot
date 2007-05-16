@@ -65,7 +65,7 @@ public class Utf8_Enumeration implements Enumeration {
    public Utf8_Enumeration(byte b[]) {
       bytes = b;
       curindex = (short)2;
-      length = (short)(((((int)(bytes[0]))&0xff)<<8) + (((int)(bytes[1]))&0xff) + 2);
+      length = (short)(((((bytes[0]))&0xff)<<8) + (((bytes[1]))&0xff) + 2);
    }
    /** Resets this object to be an enumeration of the given Utf8 string.
     * @param b array of bytes in Utf8 format.
@@ -73,7 +73,7 @@ public class Utf8_Enumeration implements Enumeration {
    public void reset(byte b[]) {
       bytes = b;
       curindex = (short)2;
-      length = (short)(((((int)(bytes[0]))&0xff)<<8) + (((int)(bytes[1]))&0xff) + 2);
+      length = (short)(((((bytes[0]))&0xff)<<8) + (((bytes[1]))&0xff) + 2);
    }
 
    /** <i>true</i> if the entire string hasn't been enumerated yet. */
@@ -92,15 +92,15 @@ public class Utf8_Enumeration implements Enumeration {
       if ((b&((byte)0x80))==0) { // one-byte character
          c = b;
       } else if ((b&((byte)0xe0))==0xc0) { // two-byte character
-         c = ((int)(b&((byte)0x1f)))<<6;
+         c = ((b&((byte)0x1f)))<<6;
          b = bytes[curindex++];
-         c |= (int)(b&((byte)0x3f));
+         c |= (b&((byte)0x3f));
       } else {  // three-byte character
-         c = ((int)(b&((byte)0x0f)))<<12;
+         c = ((b&((byte)0x0f)))<<12;
          b = bytes[curindex++];
-         c |= ((int)(b&((byte)0x3f)))<<6;
+         c |= ((b&((byte)0x3f)))<<6;
          b = bytes[curindex++];
-         c |= (int)(b&((byte)0x3f));
+         c |= (b&((byte)0x3f));
       }
       return this;
    }

@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
 
 /** An interface for predicates on edges, used to specify which edges
  * should or shouldn't be included as part of a particular subgraph.

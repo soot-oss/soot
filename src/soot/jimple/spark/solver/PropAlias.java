@@ -18,15 +18,12 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
-import soot.jimple.spark.internal.*;
 import soot.*;
 import soot.util.*;
 import soot.util.queue.*;
 import java.util.*;
-import soot.options.SparkOptions;
 
 /** Propagates points-to sets along pointer assignment graph using a relevant
  * aliases.
@@ -34,10 +31,10 @@ import soot.options.SparkOptions;
  */
 
 public final class PropAlias extends Propagator {
-    protected final Set varNodeWorkList = new TreeSet();
-    protected Set aliasWorkList;
-    protected Set fieldRefWorkList = new HashSet();
-    protected Set outFieldRefWorkList = new HashSet();
+    protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
+    protected Set<VarNode> aliasWorkList;
+    protected Set<FieldRefNode> fieldRefWorkList = new HashSet<FieldRefNode>();
+    protected Set<FieldRefNode> outFieldRefWorkList = new HashSet<FieldRefNode>();
 
     public PropAlias( PAG pag ) {
         this.pag = pag;
@@ -48,16 +45,16 @@ public final class PropAlias extends Propagator {
     public final void propagate() {
         ofcg = pag.getOnFlyCallGraph();
         new TopoSorter( pag, false ).sort();
-        for( Iterator frIt = pag.loadSources().iterator(); frIt.hasNext(); ) {
-            final FieldRefNode fr = (FieldRefNode) frIt.next();
+        for (Object object : pag.loadSources()) {
+            final FieldRefNode fr = (FieldRefNode) object;
             fieldToBase.put( fr.getField(), fr.getBase() );
         }
-        for( Iterator frIt = pag.storeInvSources().iterator(); frIt.hasNext(); ) {
-            final FieldRefNode fr = (FieldRefNode) frIt.next();
+        for (Object object : pag.storeInvSources()) {
+            final FieldRefNode fr = (FieldRefNode) object;
             fieldToBase.put( fr.getField(), fr.getBase() );
         }
-	for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
-	    handleAllocNode( (AllocNode) it.next() );
+	for (Object object : pag.allocSources()) {
+	    handleAllocNode( (AllocNode) object );
 	}
 
         boolean verbose = pag.getOpts().verbose();
@@ -66,9 +63,9 @@ public final class PropAlias extends Propagator {
                 G.v().out.println( "Worklist has "+varNodeWorkList.size()+
                         " nodes." );
             }
-            aliasWorkList = new HashSet();
+            aliasWorkList = new HashSet<VarNode>();
             while( !varNodeWorkList.isEmpty() ) {
-                VarNode src = (VarNode) varNodeWorkList.iterator().next();
+                VarNode src = varNodeWorkList.iterator().next();
                 varNodeWorkList.remove( src );
                 aliasWorkList.add( src );
                 handleVarNode( src );
@@ -77,9 +74,8 @@ public final class PropAlias extends Propagator {
                 G.v().out.println( "Now handling field references" );
             }
 
-            for( Iterator srcIt = aliasWorkList.iterator(); srcIt.hasNext(); ) {
+            for (VarNode src : aliasWorkList) {
 
-                final VarNode src = (VarNode) srcIt.next();
                 for( Iterator srcFrIt = src.getAllFieldRefs().iterator(); srcFrIt.hasNext(); ) {
                     final FieldRefNode srcFr = (FieldRefNode) srcFrIt.next();
                     SparkField field = srcFr.getField();
@@ -104,8 +100,7 @@ public final class PropAlias extends Propagator {
                     }
                 }
             }
-            for( Iterator srcIt = fieldRefWorkList.iterator(); srcIt.hasNext(); ) {
-                final FieldRefNode src = (FieldRefNode) srcIt.next();
+            for (FieldRefNode src : fieldRefWorkList) {
                 for( Iterator dstIt = aliasEdges.get( src ).iterator(); dstIt.hasNext(); ) {
                     final FieldRefNode dst = (FieldRefNode) dstIt.next();
                     if( makeP2Set( dst ).addAll( src.getP2Set().getNewSet(), null ) ) {
@@ -114,21 +109,20 @@ public final class PropAlias extends Propagator {
                 }
                 src.getP2Set().flushNew();
             }
-            fieldRefWorkList = new HashSet();
-            for( Iterator srcIt = outFieldRefWorkList.iterator(); srcIt.hasNext(); ) {
-                final FieldRefNode src = (FieldRefNode) srcIt.next();
+            fieldRefWorkList = new HashSet<FieldRefNode>();
+            for (FieldRefNode src : outFieldRefWorkList) {
                 PointsToSetInternal set = getP2Set( src ).getNewSet();
                 if( set.isEmpty() ) continue;
                 Node[] targets = pag.loadLookup( src );
-                for( int i = 0; i < targets.length; i++ ) {
-                    VarNode target = (VarNode) targets[i];
+                for (Node element0 : targets) {
+                    VarNode target = (VarNode) element0;
                     if( target.makeP2Set().addAll( set, null ) ) {
                         addToWorklist( target );
                     }
                 }
                 getP2Set( src ).flushNew();
             }
-            outFieldRefWorkList = new HashSet();
+            outFieldRefWorkList = new HashSet<FieldRefNode>();
 	} while( !varNodeWorkList.isEmpty() );
     }
 
@@ -140,9 +134,9 @@ public final class PropAlias extends Propagator {
     protected final boolean handleAllocNode( AllocNode src ) {
 	boolean ret = false;
 	Node[] targets = pag.allocLookup( src );
-	for( int i = 0; i < targets.length; i++ ) {
-	    if( targets[i].makeP2Set().add( src ) ) {
-                addToWorklist( (VarNode) targets[i] );
+	for (Node element : targets) {
+	    if( element.makeP2Set().add( src ) ) {
+                addToWorklist( (VarNode) element );
                 ret = true;
             }
 	}
@@ -196,16 +190,16 @@ public final class PropAlias extends Propagator {
         }
 
 	Node[] simpleTargets = pag.simpleLookup( src );
-	for( int i = 0; i < simpleTargets.length; i++ ) {
-	    if( simpleTargets[i].makeP2Set().addAll( newP2Set, null ) ) {
-                addToWorklist( (VarNode) simpleTargets[i] );
+	for (Node element : simpleTargets) {
+	    if( element.makeP2Set().addAll( newP2Set, null ) ) {
+                addToWorklist( (VarNode) element );
                 ret = true;
             }
 	}
 
         Node[] storeTargets = pag.storeLookup( src );
-        for( int i = 0; i < storeTargets.length; i++ ) {
-            final FieldRefNode fr = (FieldRefNode) storeTargets[i];
+        for (Node element : storeTargets) {
+            final FieldRefNode fr = (FieldRefNode) element;
             if( fr.makeP2Set().addAll( newP2Set, null ) ) {
                 fieldRefWorkList.add( fr );
                 ret = true;

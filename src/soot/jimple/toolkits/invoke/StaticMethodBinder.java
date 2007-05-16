@@ -30,8 +30,6 @@ import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
 import java.util.*;
 import soot.util.*;
 
@@ -73,8 +71,8 @@ public class StaticMethodBinder extends SceneTransformer
 
                 JimpleBody b = (JimpleBody)container.getActiveBody();
                 
-                List unitList = new ArrayList(); unitList.addAll(b.getUnits());
-                Iterator unitIt = unitList.iterator();
+                List<Unit> unitList = new ArrayList<Unit>(); unitList.addAll(b.getUnits());
+                Iterator<Unit> unitIt = unitList.iterator();
 
                 while (unitIt.hasNext())
                 {
@@ -83,7 +81,7 @@ public class StaticMethodBinder extends SceneTransformer
                         continue;
 
 
-                    InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
+                    InvokeExpr ie = s.getInvokeExpr();
 
                     if (ie instanceof StaticInvokeExpr || 
                         ie instanceof SpecialInvokeExpr)
@@ -285,28 +283,6 @@ public class StaticMethodBinder extends SceneTransformer
                 }
             }
         }
-    }
-
-    private static boolean methodUsesThis(SootMethod m)
-    {
-        JimpleBody b = (JimpleBody)m.getActiveBody();
-        ExceptionalUnitGraph g = new ExceptionalUnitGraph(b);
-        LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-        LocalUses lu = new SimpleLocalUses(g, ld);
-
-        // Look for the first identity stmt assigning from @this.
-        {
-            Iterator unitsIt = b.getUnits().iterator();
-            while (unitsIt.hasNext())
-            {
-                Stmt s = (Stmt)unitsIt.next();
-                if (s instanceof IdentityStmt && 
-                    ((IdentityStmt)s).getRightOp() instanceof ThisRef)
-                    return lu.getUsesOf(s).size() != 0;
-            }
-        }
-
-        throw new RuntimeException("couldn't find identityref!");
     }
 }
 

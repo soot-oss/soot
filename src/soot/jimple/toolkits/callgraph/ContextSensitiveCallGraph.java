@@ -19,7 +19,6 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.jimple.*;
 import java.util.*;
 
 /** Represents a context-sensitive call graph for querying by client analyses.

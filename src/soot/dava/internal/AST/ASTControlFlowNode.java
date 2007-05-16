@@ -20,7 +20,6 @@
 
 package soot.dava.internal.AST;
 
-import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
@@ -80,8 +79,7 @@ public abstract class ASTControlFlowNode extends ASTLabeledNode
 	}
 
 	if (a instanceof TryContentsFinder) {
-	    TryContentsFinder tcf = (TryContentsFinder) a;
-	    tcf.v().add_ExceptionSet( this, tcf.v().remove_CurExceptionSet());
+	    TryContentsFinder.v().add_ExceptionSet( this, TryContentsFinder.v().remove_CurExceptionSet());
 	}
 
 	perform_AnalysisOnSubBodies( a);

@@ -30,7 +30,6 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -57,8 +56,8 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
                     getMethod().equals(ie.getMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
-            for (int i = 0; i < argBoxes.length; i++)
-                if (!(argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())))
+            for (ValueBox element : argBoxes)
+				if (!(element.getValue().equivTo(element.getValue())))
                     return false;
             return true;
         }
@@ -144,14 +143,13 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         return argCount;
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf)getBase()).convertToBaf(context, out);;
 
-       for(int i = 0; i < argBoxes.length; i++)
-        {
-            ((ConvertToBaf)(argBoxes[i].getValue())).convertToBaf(context, out);
-        }
+       for (ValueBox element : argBoxes) {
+	    ((ConvertToBaf)(element.getValue())).convertToBaf(context, out);
+	}
        
        Unit u;
        out.add(u = Baf.v().newInterfaceInvokeInst(methodRef, argCountOf(methodRef)));

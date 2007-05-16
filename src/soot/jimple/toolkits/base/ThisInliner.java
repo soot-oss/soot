@@ -56,7 +56,7 @@ public class ThisInliner extends BodyTransformer{
             //find identity stmt of original method
             IdentityStmt origIdStmt = findIdentityStmt(b);
            
-            HashMap oldStmtsToNew = new HashMap();
+            HashMap<Stmt, Stmt> oldStmtsToNew = new HashMap<Stmt, Stmt>();
             
             //System.out.println("locals: "+b.getLocals());
             Chain containerUnits = b.getUnits();
@@ -126,11 +126,11 @@ public class ThisInliner extends BodyTransformer{
             while (trapsIt.hasNext()){
                 Trap t = (Trap)trapsIt.next();
                 System.out.println("begin: "+t.getBeginUnit());
-                Stmt newBegin = (Stmt)oldStmtsToNew.get(t.getBeginUnit());
+                Stmt newBegin = oldStmtsToNew.get(t.getBeginUnit());
                 System.out.println("end: "+t.getEndUnit());
-                Stmt newEnd = (Stmt)oldStmtsToNew.get(t.getEndUnit());
+                Stmt newEnd = oldStmtsToNew.get(t.getEndUnit());
                 System.out.println("handler: "+t.getHandlerUnit());
-                Stmt newHandler = (Stmt)oldStmtsToNew.get(t.getHandlerUnit());
+                Stmt newHandler = oldStmtsToNew.get(t.getHandlerUnit());
 
                 if (newBegin == null || newEnd == null || newHandler == null)
                     throw new RuntimeException("couldn't map trap!");
@@ -144,7 +144,7 @@ public class ThisInliner extends BodyTransformer{
                 Stmt inlineeStmt = (Stmt)inlineeIt.next();
                 if (inlineeStmt instanceof GotoStmt){
                     System.out.println("inlinee goto target: "+((GotoStmt)inlineeStmt).getTarget());
-                    ((GotoStmt)oldStmtsToNew.get(inlineeStmt)).setTarget((Stmt)oldStmtsToNew.get(((GotoStmt)inlineeStmt).getTarget()));
+                    ((GotoStmt)oldStmtsToNew.get(inlineeStmt)).setTarget(oldStmtsToNew.get(((GotoStmt)inlineeStmt).getTarget()));
                 }
                        
             }

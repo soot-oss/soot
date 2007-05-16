@@ -2,17 +2,11 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import soot.*;
-import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.thread.mhp.findobject.AllocNodesFinder;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
-import soot.util.*;
 import java.util.*;
-import java.io.*;
 /**
  *
  */
@@ -50,16 +44,14 @@ public class MhpTransformer extends SceneTransformer{
 		long beginBuildPegTime = System.currentTimeMillis();
 		PegCallGraph pcg = new PegCallGraph(callGraph);	
 		MethodExtentBuilder meb = new MethodExtentBuilder(body, pcg, callGraph);     
-		Set methodsNeedingInlining = meb.getMethodsNeedingInlining();
+		Set<Object> methodsNeedingInlining = meb.getMethodsNeedingInlining();
 		Map synchObj = new HashMap();
 		Map allocNodeToObj = new HashMap();
 		AllocNodesFinder anf = new AllocNodesFinder(pcg, callGraph, pag);
-		Set multiObjAllocNodes = anf.getMultiRunAllocNodes();
 		ArrayList inlineSites = new ArrayList();
 		PegGraph pegGraph = buildPeg( callGraph, hierarchy, pag, methodsNeedingInlining, 
 			anf.getAllocNodes(), inlineSites, synchObj, anf.getMultiRunAllocNodes(), allocNodeToObj, body, sootMethod);	
 		MethodInliner.inline(inlineSites);
-		MonitorAnalysis a = new MonitorAnalysis(pegGraph );		
 		long buildPegDuration = (System.currentTimeMillis() - beginBuildPegTime );
 		System.err.println("Peg Duration: "+ buildPegDuration);
 		System.err.println("Time for building PEG: " + buildPegDuration/100 + "."
@@ -67,13 +59,10 @@ public class MhpTransformer extends SceneTransformer{
 		long beginMhpTime = System.currentTimeMillis();
 		long mhpAnalysisDuration = (System.currentTimeMillis() - beginMhpTime);
 		long beginSccTime = System.currentTimeMillis();	
-		CompactStronglyConnectedComponents cscc = new CompactStronglyConnectedComponents(pegGraph);
 		long sccDuration =  (System.currentTimeMillis() - beginSccTime);
 		long beginSeqTime = System.currentTimeMillis();
-		CompactSequentNodes csn = new CompactSequentNodes(pegGraph);
 		long seqDuration = (System.currentTimeMillis() - beginSeqTime);
 		long afterBeginMhpTime = System.currentTimeMillis();
-		MhpAnalysis mhpAnalysisAfter = new MhpAnalysis(pegGraph); 
 		mhpAnalysisDuration = (System.currentTimeMillis() - afterBeginMhpTime);		
 		long duration = (System.currentTimeMillis() - beginBuildPegTime);
 		System.err.println("Total time: " + duration );
@@ -82,7 +71,7 @@ public class MhpTransformer extends SceneTransformer{
 		System.err.println("after compacting mhp duration: "+mhpAnalysisDuration);
 	}
 	
-	protected static PegGraph buildPeg( CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set methodsNeedingInlining, Set allocNodes, List inlineSites, Map synchObj, Set multiRunAllocNodes, Map allocNodeToObj, Body body, 
+	protected static PegGraph buildPeg( CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set<Object> methodsNeedingInlining, Set<AllocNode> allocNodes, List inlineSites, Map synchObj, Set<AllocNode> multiRunAllocNodes, Map allocNodeToObj, Body body, 
 			SootMethod sm){
 		
 		PegGraph pG = new PegGraph( callGraph, hierarchy, pag, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, body,  sm, true,  false);

@@ -52,35 +52,35 @@ public class Arguments{
 		synchObj = so;
 	}
 	public static Map getSynchObj(){
-		return (Map)synchObj;
+		return synchObj;
 	}
 	public static Set getMultiRunAllocNodes(){
-		return (Set)multiRunAllocNodes;
+		return multiRunAllocNodes;
 	}
 	public static void setMultiRunAllocNodes(Set moan){
 		multiRunAllocNodes = moan;
 		
 	}
 	public static Set getAllocNodes(){
-		return (Set)allocNodes;
+		return allocNodes;
 	}
 	public static void setAllocNodes(Set an){
 		allocNodes = an;
 	}
 	protected static Set getSpecialJoin(){
-		return (Set)specialJoin;
+		return specialJoin;
 	}
 	protected static void setSpecialJoin(Set sj){
 		specialJoin = sj;
 	}
 	protected static Set getCanNotBeCompacted(){
-		return (Set)canNotBeCompacted;
+		return canNotBeCompacted;
 	}
 	protected static void setCanNotBeCompacted(Set cnbct){
 		canNotBeCompacted = cnbct;
 	}
 	protected static Set getThreadAllocSites(){
-		return (Set)threadAllocSites;
+		return threadAllocSites;
 	}
 	protected static Hierarchy getHierarchy(){
 		return hierarchy;   
@@ -101,56 +101,56 @@ public class Arguments{
 		pag = pa;
 	}
 	public static ArrayList getInlineSites(){
-		return (ArrayList)inlineSites;
+		return inlineSites;
 	}
 	public static  void setInlineSites(ArrayList is){
 		inlineSites = is;
 	}
 	protected static Set getMethodsNeedingInlining(){
-		return (Set)methodsNeedingInlining;
+		return methodsNeedingInlining;
 	}
 	public static  void setMethodsNeedingInlining(Set mne){
 		methodsNeedingInlining = mne;
 	}
 	protected static Map getAllocNodeToThread(){
-		return (Map)allocNodeToThread;
+		return allocNodeToThread;
 	}
 	protected static  void setAllocNodeToThread(Map antt){
 		allocNodeToThread = antt;
 	}
 	protected static Map getAllocNodeToObj(){
-		return (Map)allocNodeToObj;
+		return allocNodeToObj;
 	}
 	public static   void setAllocNodeToObj(Map anto){
 		allocNodeToObj = anto;
 	}
 	protected static Map getStartToThread(){
-		return (Map)startToThread;
+		return startToThread;
 	}
 	protected static  void setStartToThread(Map stt){
 		startToThread = stt;
 	}
 	protected static Map getNotifyAll(){
-		return (Map)notifyAll;
+		return notifyAll;
 	}
 	protected static  void setNotifyAll(Map na){
 		notifyAll = na;
 	}
 	protected static Map getUnitToSuccs(){
-		return (Map)unitToSuccs;
+		return unitToSuccs;
 	}
 	protected static  void setUnitToSuccs(Map uts){
 		unitToSuccs = uts;
 	}
 	protected static Map getUnitToPreds(){
-		return (Map)unitToPreds;
+		return unitToPreds;
 	}
 	protected static  void setUnitToPreds(Map utp){
 		unitToPreds= utp;
 	}
 	
 	protected static Map getJoinStmtToThread(){
-		return (Map)unitToPreds;
+		return unitToPreds;
 	}
 	protected static  void setJoinStmtToThread(Map utp){
 		joinStmtToThread = utp;

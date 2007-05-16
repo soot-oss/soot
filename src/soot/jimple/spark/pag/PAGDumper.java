@@ -19,7 +19,6 @@
 
 package soot.jimple.spark.pag;
 import java.util.*;
-import soot.jimple.spark.*;
 import soot.*;
 import soot.jimple.spark.sets.*;
 import java.io.*;
@@ -73,51 +72,51 @@ public class PAGDumper {
                 new TopoSorter( pag, false ).sort();
             }
             file.println( "Allocations:" );
-            for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
-                final AllocNode n = (AllocNode) nIt.next();
+            for (Object object : pag.allocSources()) {
+                final AllocNode n = (AllocNode) object;
                 if( n.getReplacement() != n ) continue;
                 Node[] succs = pag.allocLookup( n );
-                for( int i = 0; i < succs.length; i++ ) {
+                for (Node element0 : succs) {
                     dumpNode( n, file );
                     file.print( " ");
-                    dumpNode( succs[i], file );
+                    dumpNode( element0, file );
                     file.println( "");
                 }
             }
 
             file.println( "Assignments:" );
-            for( Iterator nIt = pag.simpleSources().iterator(); nIt.hasNext(); ) {
-                final VarNode n = (VarNode) nIt.next();
+            for (Object object : pag.simpleSources()) {
+                final VarNode n = (VarNode) object;
                 if( n.getReplacement() != n ) continue;
                 Node[] succs = pag.simpleLookup( n );
-                for( int i = 0; i < succs.length; i++ ) {
+                for (Node element0 : succs) {
                     dumpNode( n, file );
                     file.print( " ");
-                    dumpNode( succs[i], file );
+                    dumpNode( element0, file );
                     file.println( "");
                 }
             }
             
             file.println( "Loads:" );
-            for( Iterator nIt = pag.loadSources().iterator(); nIt.hasNext(); ) {
-                final FieldRefNode n = (FieldRefNode) nIt.next();
+            for (Object object : pag.loadSources()) {
+                final FieldRefNode n = (FieldRefNode) object;
                 Node[] succs = pag.loadLookup( n );
-                for( int i = 0; i < succs.length; i++ ) {
+                for (Node element0 : succs) {
                     dumpNode( n, file );
                     file.print( " ");
-                    dumpNode( succs[i], file );
+                    dumpNode( element0, file );
                     file.println( "");
                 }
             }
             file.println( "Stores:" );
-            for( Iterator nIt = pag.storeSources().iterator(); nIt.hasNext(); ) {
-                final VarNode n = (VarNode) nIt.next();
+            for (Object object : pag.storeSources()) {
+                final VarNode n = (VarNode) object;
                 if( n.getReplacement() != n ) continue;
                 Node[] succs = pag.storeLookup( n );
-                for( int i = 0; i < succs.length; i++ ) {
+                for (Node element0 : succs) {
                     dumpNode( n, file );
                     file.print( " ");
-                    dumpNode( succs[i], file );
+                    dumpNode( element0, file );
                     file.println( "");
                 }
             }
@@ -137,62 +136,59 @@ public class PAGDumper {
     protected PAG pag;
     protected String output_dir;
     protected int fieldNum = 0;
-    protected HashMap fieldMap = new HashMap();
+    protected HashMap<SparkField, Integer> fieldMap = new HashMap<SparkField, Integer>();
     protected ObjectNumberer root = new ObjectNumberer( null, 0 );
 
     protected void dumpTypes( PrintWriter file ) throws IOException {
-        HashSet declaredTypes = new HashSet();
-        HashSet actualTypes = new HashSet();
-        HashSet allFields = new HashSet();
+        HashSet<Type> declaredTypes = new HashSet<Type>();
+        HashSet<Type> actualTypes = new HashSet<Type>();
+        HashSet<SparkField> allFields = new HashSet<SparkField>();
         for( Iterator nIt = pag.getVarNodeNumberer().iterator(); nIt.hasNext(); ) {
             final Node n = (Node) nIt.next();
             Type t = n.getType();
             if( t != null ) declaredTypes.add( t );
         }
-        for( Iterator nIt = pag.loadSources().iterator(); nIt.hasNext(); ) {
-            final Node n = (Node) nIt.next();
+        for (Object object : pag.loadSources()) {
+            final Node n = (Node) object;
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             if( t != null ) declaredTypes.add( t );
             allFields.add( ((FieldRefNode) n ).getField() );
         }
-        for( Iterator nIt = pag.storeInvSources().iterator(); nIt.hasNext(); ) {
-            final Node n = (Node) nIt.next();
+        for (Object object : pag.storeInvSources()) {
+            final Node n = (Node) object;
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             if( t != null ) declaredTypes.add( t );
             allFields.add( ((FieldRefNode) n ).getField() );
         }
-        for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
-            final Node n = (Node) nIt.next();
+        for (Object object : pag.allocSources()) {
+            final Node n = (Node) object;
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             if( t != null ) actualTypes.add( t );
         }
-        HashMap typeToInt = new HashMap();
+        HashMap<Type, Integer> typeToInt = new HashMap<Type, Integer>();
         int nextint = 1;
-        for( Iterator it = declaredTypes.iterator(); it.hasNext(); ) {
-            typeToInt.put( it.next(), new Integer( nextint++ ) );
+        for (Type type : declaredTypes) {
+            typeToInt.put( type, new Integer( nextint++ ) );
         }
-        for( Iterator tIt = actualTypes.iterator(); tIt.hasNext(); ) {
-            final Type t = (Type) tIt.next();
+        for (Type t : actualTypes) {
             if( !typeToInt.containsKey( t ) ) {
                 typeToInt.put( t, new Integer( nextint++ ) );
             }
         }
         file.println( "Declared Types:" );
-        for( Iterator declTypeIt = declaredTypes.iterator(); declTypeIt.hasNext(); ) {
-            final Type declType = (Type) declTypeIt.next();
-            for( Iterator actTypeIt = actualTypes.iterator(); actTypeIt.hasNext(); ) {
-                final Type actType = (Type) actTypeIt.next();
+        for (Type declType : declaredTypes) {
+            for (Type actType : actualTypes) {
                 if( pag.getTypeManager().castNeverFails( actType, declType ) ) {
                     file.println( ""+typeToInt.get( declType )+" "+typeToInt.get( actType ) );
                 }
             }
         }
         file.println( "Allocation Types:" );
-        for( Iterator nIt = pag.allocSources().iterator(); nIt.hasNext(); ) {
-            final Node n = (Node) nIt.next();
+        for (Object object : pag.allocSources()) {
+            final Node n = (Node) object;
             if( n.getReplacement() != n ) continue;
             Type t = n.getType();
             dumpNode( n, file );
@@ -217,7 +213,7 @@ public class PAGDumper {
         }
     }
     protected int fieldToNum( SparkField f ) {
-        Integer ret = (Integer) fieldMap.get( f );
+        Integer ret = fieldMap.get( f );
         if( ret == null ) {
             ret = new Integer( ++ fieldNum );
             fieldMap.put( f, ret );
@@ -259,15 +255,15 @@ public class PAGDumper {
         Object o = null;
         int num = 0;
         int nextChildNum = 1;
-        HashMap children = null;
+        HashMap<Object, ObjectNumberer> children = null;
 
         ObjectNumberer( Object o, int num ) {
             this.o = o; this.num = num;
         }
 
         ObjectNumberer findOrAdd( Object child ) {
-            if( children == null ) children = new HashMap();
-            ObjectNumberer ret = (ObjectNumberer) children.get( child );
+            if( children == null ) children = new HashMap<Object, ObjectNumberer>();
+            ObjectNumberer ret = children.get( child );
             if( ret == null ) {
                 ret = new ObjectNumberer( child, nextChildNum++ );
                 children.put( child, ret );

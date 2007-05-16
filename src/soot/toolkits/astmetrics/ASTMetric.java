@@ -101,9 +101,9 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
 		if(className==null)
 			throw new RuntimeException("className is null");
 		
-		Iterator it = G.v().ASTMetricsData.iterator();
+		Iterator<ClassData> it = G.v().ASTMetricsData.iterator();
 		while(it.hasNext()){
-			ClassData tempData = (ClassData)it.next();
+			ClassData tempData = it.next();
 			
 			if(tempData.classNameEquals(className)){
 				return tempData;

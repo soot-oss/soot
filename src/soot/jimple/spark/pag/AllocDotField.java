@@ -18,8 +18,6 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
-import soot.*;
 
 /** Represents an alloc-site-dot-field node (Yellow) in the pointer
  * assignment graph.

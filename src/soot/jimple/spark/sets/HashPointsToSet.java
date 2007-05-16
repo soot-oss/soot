@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import java.util.*;
@@ -51,8 +50,8 @@ public final class HashPointsToSet extends PointsToSetInternal {
     }
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {
-        for( Iterator it = new ArrayList(s).iterator(); it.hasNext(); ) {
-            v.visit( (Node) it.next() );
+        for( Iterator<Node> it = new ArrayList<Node>(s).iterator(); it.hasNext(); ) {
+            v.visit( it.next() );
         }
         return v.getReturnValue();
     }
@@ -79,7 +78,7 @@ public final class HashPointsToSet extends PointsToSetInternal {
     /* End of public methods. */
     /* End of package methods. */
 
-    private HashSet s = new HashSet(4);
+    private final HashSet<Node> s = new HashSet<Node>(4);
     private PAG pag = null;
 }
 

@@ -71,13 +71,13 @@ public class LocalPacker extends BodyTransformer
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Packing locals...");
     
-        Map localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map<Local, Object> localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
             // A group represents a bunch of locals which may potentially intefere with each other
             // 2 separate groups can not possibly interfere with each other 
             // (coloring say ints and doubles)
             
-        Map groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map<Object, Integer> groupToColorCount = new HashMap<Object, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+        Map<Local, Integer> localToColor = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
         Map localToNewLocal;
         
         // Assign each local to a group, and set that group's color count to 0.
@@ -112,7 +112,7 @@ public class LocalPacker extends BodyTransformer
                     Local l = (Local) ((IdentityUnit) s).getLeftOp();
                     
                     Object group = localToGroup.get(l);
-                    int count = ((Integer) groupToColorCount.get(group)).intValue();
+                    int count = groupToColorCount.get(group).intValue();
                     
                     localToColor.put(l, new Integer(count));
                     
@@ -148,7 +148,7 @@ public class LocalPacker extends BodyTransformer
                 Local original = (Local) localIt.next();
                 
                 Object group = localToGroup.get(original);
-                int color = ((Integer) localToColor.get(original)).intValue();
+                int color = localToColor.get(original).intValue();
                 GroupIntPair pair = new GroupIntPair(group, color);
                 
                 Local newLocal;

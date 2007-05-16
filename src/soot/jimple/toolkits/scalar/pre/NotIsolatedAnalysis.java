@@ -28,10 +28,7 @@ package soot.jimple.toolkits.scalar.pre;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.jimple.*;
 import java.util.*;
-import soot.util.*;
 
 /** 
  * Performs a Not-Isolated-analysis on the given graph, which is basicly the
@@ -91,7 +88,6 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
   public NotIsolatedAnalysis(DirectedGraph dg, LatestComputation latest,
       Map equivRhsMap, BoundedFlowSet set) {
     super(dg);
-    UnitGraph g = (UnitGraph)dg;
     this.set = set;
     unitToGen = equivRhsMap;
     unitToLatest = latest;

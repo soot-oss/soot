@@ -24,7 +24,6 @@ import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
 import soot.*;
 import soot.jimple.*;
-import soot.grimp.internal.*;
 
 /*
   TO MAKE CODE EFFECIENT BLOCK THE ANALYSIS TO GOING INTO STATEMENTS

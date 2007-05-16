@@ -20,13 +20,10 @@
 package soot.jbco.jimpleTransformations;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import soot.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
-import java.util.regex.*;
 /**
  * @author Michael Batchelder 
  * 
@@ -53,8 +50,8 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
       {'_'}
   };
   
-  public static HashMap oldToNewClassNames = new HashMap();
-  public static HashMap newNameToClass = new HashMap();
+  public static HashMap<String, String> oldToNewClassNames = new HashMap<String, String>();
+  public static HashMap<String, SootClass> newNameToClass = new HashMap<String, SootClass>();
   
   protected void internalTransform(String phaseName, Map options)
   {
@@ -76,7 +73,7 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
       }
       
       String oldName = c.getName();
-      String newName = (String)oldToNewClassNames.get(oldName);
+      String newName = oldToNewClassNames.get(oldName);
       if (newName == null)
       {
         newName = getNewName(getNamePrefix(oldName));
@@ -137,8 +134,8 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
                 
                 if (!rt.getSootClass().isLibraryClass() && oldToNewClassNames.containsKey(rt.getClassName()))
                 {
-                  rt.setSootClass((SootClass)newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
-                  rt.setClassName((String)oldToNewClassNames.get(rt.getClassName()));
+                  rt.setSootClass(newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
+                  rt.setClassName(oldToNewClassNames.get(rt.getClassName()));
                 }
               }
               else if (v.getType() instanceof ArrayType)
@@ -148,7 +145,7 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
                 {
                   RefType rt = (RefType)at.baseType;
                   if (!rt.getSootClass().isLibraryClass() && oldToNewClassNames.containsKey(rt.getClassName()))
-                    rt.setSootClass((SootClass)newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
+                    rt.setSootClass(newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
                 }
               }
             }

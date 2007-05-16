@@ -24,8 +24,9 @@ import soot.toolkits.graph.*;
 
 class SwitchNodeGraph implements DirectedGraph
 {
-    private LinkedList body, heads, tails;
-    private HashMap binding;
+    private LinkedList body;
+	private final LinkedList heads, tails;
+    private final HashMap binding;
     
 
     public SwitchNodeGraph( List body)

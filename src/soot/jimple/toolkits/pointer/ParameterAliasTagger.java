@@ -21,6 +21,7 @@ package soot.jimple.toolkits.pointer;
 import soot.*;
 import soot.tagkit.*;
 import soot.jimple.*;
+
 import java.util.*;
 
 /** Adds colour tags to indicate potential aliasing between method parameters. */
@@ -32,7 +33,7 @@ public class ParameterAliasTagger extends BodyTransformer {
             Body b, String phaseName, Map options)
     {
         PointsToAnalysis pa = Scene.v().getPointsToAnalysis();
-        Set parms = new HashSet();
+        Set<IdentityStmt> parms = new HashSet<IdentityStmt>();
 
         for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
 
@@ -48,16 +49,16 @@ public class ParameterAliasTagger extends BodyTransformer {
 
         int colour = 0;
         while( !parms.isEmpty() ) {
-            fill( parms, (IdentityStmt) parms.iterator().next(), colour++, pa );
+            fill( parms, parms.iterator().next(), colour++, pa );
         }
     }
-    private void fill( Set parms, IdentityStmt parm, int colour, PointsToAnalysis pa ) {
+    private void fill( Set<IdentityStmt> parms, IdentityStmt parm, int colour, PointsToAnalysis pa ) {
         if( !parms.contains(parm) ) return;
         parm.getRightOpBox().addTag( new ColorTag(colour, "Parameter Alias") );
         parms.remove( parm );
         PointsToSet ps = pa.reachingObjects( (Local) parm.getLeftOp() );
-        for( Iterator parm2It = (new LinkedList(parms)).iterator(); parm2It.hasNext(); ) {
-            final IdentityStmt parm2 = (IdentityStmt) parm2It.next();
+        for( Iterator<IdentityStmt> parm2It = (new LinkedList<IdentityStmt>(parms)).iterator(); parm2It.hasNext(); ) {
+            final IdentityStmt parm2 = parm2It.next();
             if( ps.hasNonEmptyIntersection(
                         pa.reachingObjects( (Local) parm2.getLeftOp() ) ) ) {
                 fill( parms, parm2, colour, pa );

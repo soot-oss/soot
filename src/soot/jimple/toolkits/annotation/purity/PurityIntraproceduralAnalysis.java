@@ -29,7 +29,6 @@ package soot.jimple.toolkits.annotation.purity;
 import java.util.*;
 import java.io.File;
 import soot.*;
-import soot.util.*;
 import soot.util.dot.*;
 import soot.jimple.*;
 import soot.toolkits.scalar.*;
@@ -67,44 +66,6 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	PurityGraphBox src  = (PurityGraphBox)source;
 	PurityGraphBox dst  = (PurityGraphBox)dest;
 	dst.g = new PurityGraph(src.g);
-    }
-
-
-    /** 
-     * Returns the local variable that get the result of the method call,
-     *  or null if there is no return value or it is a primitive type.
-     */
-    private Local callExtractReturn(Stmt stmt)
-    {
-	if (!(stmt instanceof AssignStmt)) return null;
-	Local v = (Local)((AssignStmt)stmt).getLeftOp();
-	if (v.getType() instanceof RefLikeType) return v;
-	return null;
-    }
-
-    /**
-     * Returns the local variable containing the object on which the
-     * method is called, or null for a static method call.
-     */
-    private Local callExtractObj(Stmt stmt)
-    {
-	InvokeExpr e;
-	if (stmt instanceof InvokeStmt) e = ((InvokeStmt)stmt).getInvokeExpr();
-	else e = (InvokeExpr)((AssignStmt)stmt).getRightOp();
-	if (e instanceof StaticInvokeExpr) return null;
-	return (Local)((InstanceInvokeExpr)e).getBase();
-    }
-
-    /**
-     * Returns the List of Value corresponding the the arguments of
-     * the method call.
-     */
-    private List callExtractArgs(Stmt stmt)
-    {
- 	InvokeExpr e;
-	if (stmt instanceof InvokeStmt) e = ((InvokeStmt)stmt).getInvokeExpr();
-	else e = (InvokeExpr)((AssignStmt)stmt).getRightOp();
-	return e.getArgs();
     }
 
 
@@ -374,7 +335,7 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	dot.setGraphLabel(name);
 	dot.setGraphAttribute("compound","true");
 	dot.setGraphAttribute("rankdir","LR");
-	Map node = new HashMap();
+	Map<Unit, Integer> node = new HashMap<Unit, Integer>();
 	int id = 0;
 	Iterator it = graph.iterator();
 	while (it.hasNext()) {

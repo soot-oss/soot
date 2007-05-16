@@ -26,10 +26,10 @@
 
 package soot.jimple.parser;
 
+import soot.jimple.JimpleBody;
 import soot.jimple.parser.parser.*;
 import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
-import soot.jimple.parser.analysis.*;
 import java.io.*;
 import soot.util.*;
 import java.util.*;
@@ -74,7 +74,7 @@ public class Parse
         if(sc == null)
             w = new Walker(null);
         else {
-            w = new BodyExtractorWalker(sc, null, new HashMap());
+            w = new BodyExtractorWalker(sc, null, new HashMap<SootMethod, JimpleBody>());
         }
         
         tree.apply(w);          
@@ -87,7 +87,6 @@ public class Parse
               
 
     {
-    boolean debug = false;
     boolean verbose = false;
         InputStream inFile;
         
@@ -100,13 +99,11 @@ public class Parse
 
         Scene.v().setPhantomRefs(true);
 
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
+        for (String arg : args) {
             if (arg.startsWith("-")) {
                 arg = arg.substring(1);
-                if (arg.equals("d"))
-                    debug = true;
-                else if (arg.equals("v"))
+                if (arg.equals("d")) {
+				} else if (arg.equals("v"))
                     verbose = true;
             }
             else {

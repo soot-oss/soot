@@ -26,7 +26,6 @@
 
 package soot;
 
-import soot.util.*;
 import java.util.*;
 
 /** A trap (exception catcher), used within Body

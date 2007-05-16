@@ -1,17 +1,8 @@
 package soot.jimple.toolkits.thread;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.tagkit.*;
-import soot.jimple.internal.*;
-import soot.jimple.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
 
 // EncapsulatedObjectAnalysis written by Richard L. Halpert, 2006-12-26
 // Checks if all methods of a class are "object-pure", meaning that
@@ -20,14 +11,14 @@ import soot.toolkits.scalar.*;
 public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 {
 	List cachedClasses;
-	List objectPureMethods;
-	List objectPureInitMethods;
+	List<SootMethod> objectPureMethods;
+	List<SootMethod> objectPureInitMethods;
 	
 	public EncapsulatedObjectAnalysis()
 	{
 		cachedClasses = new ArrayList();
-		objectPureMethods = new ArrayList();
-		objectPureInitMethods = new ArrayList();
+		objectPureMethods = new ArrayList<SootMethod>();
+		objectPureInitMethods = new ArrayList<SootMethod>();
 	}
 	
 	public boolean isMethodPureOnObject(SootMethod sm)
@@ -37,7 +28,7 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 			SootMethod initMethod = null;
 			Collection methods = sm.getDeclaringClass().getMethods();
 			Iterator methodsIt = methods.iterator();
-			List mayBePureMethods = new ArrayList(methods.size());
+			List<SootMethod> mayBePureMethods = new ArrayList<SootMethod>(methods.size());
 			while(methodsIt.hasNext())
 			{
 				SootMethod method = (SootMethod) methodsIt.next();
@@ -78,7 +69,7 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 		return false;
 	}
 	
-	public List getObjectPureMethodsSoFar()
+	public List<SootMethod> getObjectPureMethodsSoFar()
 	{
 		return objectPureMethods;
 	}

@@ -20,20 +20,17 @@
 package soot.dava.toolkits.base.DavaMonitor;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class DavaMonitor
 {
-    private static DavaMonitor instance = new DavaMonitor();
+    private static final DavaMonitor instance = new DavaMonitor();
 
-    private HashMap ref, lockTable;
-    private LinkedList q;
+    private final HashMap<Object, Lock> ref, lockTable;
 
     private DavaMonitor() 
     {
-	ref = new HashMap( 1, 0.7f);
-	lockTable = new HashMap( 1, 0.7f);
-	q = new LinkedList();	
+	ref = new HashMap<Object, Lock>( 1, 0.7f);
+	lockTable = new HashMap<Object, Lock>( 1, 0.7f);
     }
 
     public static DavaMonitor v() { return instance; }
@@ -45,7 +42,7 @@ public class DavaMonitor
 	if (o == null)
 	    throw new NullPointerException();
 
-	Lock lock = (Lock) ref.get( o);
+	Lock lock = ref.get( o);
 
 	if (lock == null) {
 	    lock = new Lock();
@@ -76,7 +73,7 @@ public class DavaMonitor
 	    }
 	    
 	    currentThread = Thread.currentThread();
-	    lock = (Lock) lockTable.get( currentThread);
+	    lock = lockTable.get( currentThread);
 	}
 	
 	lock.deQ( currentThread);
@@ -90,7 +87,7 @@ public class DavaMonitor
 	if (o == null)
 	    throw new NullPointerException();
 
-	Lock lock = (Lock) ref.get( o);
+	Lock lock = ref.get( o);
 
 	if ((lock == null) || (lock.level == 0) || (lock.owner != Thread.currentThread()))
 	    throw new IllegalMonitorStateException();

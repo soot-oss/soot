@@ -27,9 +27,6 @@
 
 package soot.grimp;
 
-import soot.util.*;
-import java.util.*;
-import soot.*;
 import soot.jimple.*;
 
 public interface GrimpValueSwitch extends JimpleValueSwitch

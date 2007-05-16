@@ -74,7 +74,7 @@ public class PatchingChain extends AbstractCollection implements Chain
     }
 
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
-    public void insertAfter(List toInsert, Object point)
+    public void insertAfter(List<Unit> toInsert, Object point)
     {
         innerChain.insertAfter(toInsert, point);
     }
@@ -85,19 +85,19 @@ public class PatchingChain extends AbstractCollection implements Chain
     }
 
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
-    public void insertBefore(List toInsert, Object point)
+    public void insertBefore(List<Unit> toInsert, Object point)
     {
-        LinkedList backwardList = new LinkedList();
+        LinkedList<Unit> backwardList = new LinkedList<Unit>();
         // Insert toInsert backwards into the list
         {
-            Iterator it = toInsert.iterator();
+            Iterator<Unit> it = toInsert.iterator();
             
             while(it.hasNext())
                 backwardList.addFirst(it.next());
         }
                 
         Object previousPoint = point;
-        Iterator it = backwardList.iterator();
+        Iterator<Unit> it = backwardList.iterator();
         while (it.hasNext())
         {
             Object o = it.next();

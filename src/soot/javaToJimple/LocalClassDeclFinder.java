@@ -18,7 +18,6 @@
  */
 
 package soot.javaToJimple;
-import java.util.*;
 
 public class LocalClassDeclFinder extends polyglot.visit.NodeVisitor {
 

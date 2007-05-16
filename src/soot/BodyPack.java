@@ -26,7 +26,6 @@
 
 package soot;
 
-import soot.util.*;
 import java.util.*;
 import soot.toolkits.graph.interaction.*;
 import soot.options.*;

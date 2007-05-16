@@ -24,7 +24,6 @@ import soot.util.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.misc.*;
 
 public class SETIfElseNode extends SETDagNode
@@ -46,11 +45,11 @@ public class SETIfElseNode extends SETDagNode
     {
 	IterableSet c = new IterableSet();
 
-	IterableSet ifChain = (IterableSet) body2childChain.get( ifBody);
+	IterableSet ifChain = body2childChain.get( ifBody);
 	if (ifChain.isEmpty() == false)
 	    c.addAll( ((SETNode) ifChain.getLast()).get_NaturalExits());
 
-	IterableSet elseChain = (IterableSet) body2childChain.get( elseBody);
+	IterableSet elseChain = body2childChain.get( elseBody);
 	if (elseChain.isEmpty() == false)
 	    c.addAll( ((SETNode) elseChain.getLast()).get_NaturalExits());
 
@@ -59,14 +58,14 @@ public class SETIfElseNode extends SETDagNode
 
     public ASTNode emit_AST()
     {
-	List
-	    astBody0 = emit_ASTBody( (IterableSet) body2childChain.get( ifBody)),
-	    astBody1 = emit_ASTBody( (IterableSet) body2childChain.get( elseBody));
+	List<Object>
+	    astBody0 = emit_ASTBody( body2childChain.get( ifBody)),
+	    astBody1 = emit_ASTBody( body2childChain.get( elseBody));
 
 	ConditionExpr ce = (ConditionExpr) ((IfStmt) get_CharacterizingStmt().get_Stmt()).getCondition();
 
 	if (astBody0.isEmpty()) {
-	    List tbody = astBody0;
+	    List<Object> tbody = astBody0;
 	    astBody0 = astBody1;
 	    astBody1 = tbody;
 

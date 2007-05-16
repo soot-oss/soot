@@ -23,8 +23,6 @@ import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
-import soot.tagkit.*;
-import soot.jimple.*;
 
 public class ClinitElimTransformer extends BodyTransformer {
     

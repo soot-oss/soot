@@ -63,7 +63,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
     protected void doAnalysis()
     {
-        final Map numbers = new HashMap();
+        final Map<Object, Integer> numbers = new HashMap<Object, Integer>();
         Timers.v().orderComputation = new soot.Timer();
         Timers.v().orderComputation.start();
         List orderedUnits = constructOrderer().newList(graph,false);
@@ -71,12 +71,12 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
         new PseudoTopologicalOrderer().newList(graph,false);
         int i = 1;
         for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
-            final Object u = (Object) uIt.next();
+            final Object u = uIt.next();
             numbers.put(u, new Integer(i));
             i++;
         }
 
-        Collection changedUnits = constructWorklist(numbers);
+        Collection<Object> changedUnits = constructWorklist(numbers);
 
 
         // Set initial Flows and nodes to visit.
@@ -198,11 +198,11 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
         }
     }
     
-	protected Collection constructWorklist(final Map numbers) {
-		return new TreeSet( new Comparator() {
+	protected Collection<Object> constructWorklist(final Map<Object, Integer> numbers) {
+		return new TreeSet<Object>( new Comparator() {
             public int compare(Object o1, Object o2) {
-                Integer i1 = (Integer) numbers.get(o1);
-                Integer i2 = (Integer) numbers.get(o2);
+                Integer i1 = numbers.get(o1);
+                Integer i2 = numbers.get(o2);
                 return (i1.intValue() - i2.intValue());
             }
         } );

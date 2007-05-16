@@ -33,11 +33,6 @@ package soot.coffi;
 import soot.*;
 
 import java.io.*;
-import java.util.*;
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.*;
-import soot.*;
 
 /**
  * A ClassFile object represents the contents of a <tt>.class</tt> file.
@@ -256,13 +251,7 @@ public class ClassFile {
          } catch(FileNotFoundException ee) {
             G.v().out.println("Can't find " + fn);
             return false;
-         } catch(IOException ee) {
-            G.v().out.println("IOException with " + fn + ": " + ee.getMessage());
-            return false;
          }
-      } catch(IOException e) {
-         G.v().out.println("IOException with " + fn + ": " + e.getMessage());
-         return false;
       }
       d = new DataOutputStream(f);
       if (d==null) {
@@ -1263,18 +1252,15 @@ public class ClassFile {
 
       m.instructions = head;
 
-      // now also update LineNumberTable attribute by pointers instead of absolute addresses
-      for (int k=0; k<ca.attributes.length; k++)
-      {
-	  if (ca.attributes[k] instanceof LineNumberTable_attribute)
+      for (attribute_info element : ca.attributes) {
+	  if (element instanceof LineNumberTable_attribute)
 	  {
 	      LineNumberTable_attribute lntattr =
-		  (LineNumberTable_attribute)ca.attributes[k];
+		  (LineNumberTable_attribute)element;
 
-	      for (int l=0; l<lntattr.line_number_table.length; l++)
-	      {
-		  lntattr.line_number_table[l].start_inst =
-		      bc.locateInst(lntattr.line_number_table[l].start_pc);
+	      for (line_number_table_entry element0 : lntattr.line_number_table) {
+		  element0.start_inst =
+		      bc.locateInst(element0.start_pc);
 	      }
 	  }
       }

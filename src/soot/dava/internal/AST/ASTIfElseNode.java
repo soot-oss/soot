@@ -24,14 +24,13 @@ import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTIfElseNode extends ASTControlFlowNode
 {
-    private List ifBody, elseBody;
+    private List<Object> ifBody, elseBody;
 
-    public ASTIfElseNode( SETNodeLabel label, ConditionExpr condition, List ifBody, List elseBody)
+    public ASTIfElseNode( SETNodeLabel label, ConditionExpr condition, List<Object> ifBody, List<Object> elseBody)
     {
 	super( label, condition);
 	this.ifBody = ifBody;
@@ -46,7 +45,7 @@ public class ASTIfElseNode extends ASTControlFlowNode
       Needed because of change of grammar of condition being stored as a ASTCondition rather 
       than the ConditionExpr which was the case before
     */
-    public ASTIfElseNode( SETNodeLabel label, ASTCondition condition, List ifBody, List elseBody)
+    public ASTIfElseNode( SETNodeLabel label, ASTCondition condition, List<Object> ifBody, List<Object> elseBody)
     {
 	super( label, condition);
 	this.ifBody = ifBody;
@@ -60,10 +59,10 @@ public class ASTIfElseNode extends ASTControlFlowNode
       Nomair A. Naeem 19-FEB-2005
       Added to support aggregation of conditions
     */
-    public void replace(SETNodeLabel newLabel,ASTCondition newCond,List newBody,List bodyTwo){
+    public void replace(SETNodeLabel newLabel,ASTCondition newCond,List<Object> newBody,List<Object> bodyTwo){
 	this.ifBody=newBody;
 	this.elseBody=bodyTwo;
-	subBodies= new ArrayList();
+	subBodies= new ArrayList<Object>();
 	subBodies.add(newBody);
 	subBodies.add(bodyTwo);
 	set_Condition(newCond);
@@ -76,11 +75,11 @@ public class ASTIfElseNode extends ASTControlFlowNode
       Nomair A. Naeem 21-FEB-2005
       Added to support UselessLabelBlockRemover
     */
-    public void replaceBody(List ifBody,List elseBody){
+    public void replaceBody(List<Object> ifBody,List<Object> elseBody){
 	this.ifBody=ifBody;
 	this.elseBody=elseBody;
 
-	subBodies= new ArrayList();
+	subBodies= new ArrayList<Object>();
 	subBodies.add(ifBody);
 	subBodies.add(elseBody);
     }
@@ -90,10 +89,10 @@ public class ASTIfElseNode extends ASTControlFlowNode
       Nomair A. Naeem 21-FEB-2005
       Added to support OrAggregatorTwo
     */
-    public void replaceElseBody(List elseBody){
+    public void replaceElseBody(List<Object> elseBody){
 	this.elseBody=elseBody;
 
-	subBodies= new ArrayList();
+	subBodies= new ArrayList<Object>();
 	subBodies.add(ifBody);
 	subBodies.add(elseBody);
     }
@@ -103,11 +102,11 @@ public class ASTIfElseNode extends ASTControlFlowNode
       Nomair A. Naeem 21-FEB-05
       Used by OrAggregatorTwo
     */
-    public List getIfBody(){
+    public List<Object> getIfBody(){
 	return ifBody;
     }
 
-    public List getElseBody(){
+    public List<Object> getElseBody(){
 	return elseBody;
     }
 

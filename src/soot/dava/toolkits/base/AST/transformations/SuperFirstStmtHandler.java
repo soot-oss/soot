@@ -130,9 +130,6 @@ import soot.dava.internal.AST.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.analysis.*;
-import soot.dava.toolkits.base.AST.structuredAnalysis.DavaFlowSet;
-import soot.dava.toolkits.base.AST.structuredAnalysis.ReachingCopies;
-import soot.dava.toolkits.base.AST.structuredAnalysis.ReachingCopies.LocalPair;
 import soot.dava.toolkits.base.AST.traversals.*;
 
 
@@ -166,7 +163,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     ASTMethodNode newASTConstructorMethod=null; //only initialized by createNewASTConstructor
 
 
-    List mustInitialize;
+    List<Local> mustInitialize;
     int mustInitializeIndex=0;
 
     public SuperFirstStmtHandler(ASTMethodNode AST){
@@ -225,8 +222,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
      * looking for an init stmt
      */
     public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-    	List stmts = node.getStatements();
-    	Iterator it = stmts.iterator();
+    	List<Object> stmts = node.getStatements();
+    	Iterator<Object> it = stmts.iterator();
     	while(it.hasNext()){
     		AugmentedStmt as = (AugmentedStmt)it.next();
     		Unit u = as.get_Stmt();
@@ -334,9 +331,9 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
      */
     public void removeInit(){
     	//remove constructorUnit from originalASTMethod
-    	List newBody = new ArrayList();
+    	List<Object> newBody = new ArrayList<Object>();
 	
-    	List subBody = (List)originalASTMethod.get_SubBodies();
+    	List<Object> subBody = originalASTMethod.get_SubBodies();
     	if(subBody.size()!=1)
     		return;
 
@@ -356,10 +353,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     		//copy all stmts unless it is a constructorUnit
     		ASTStatementSequenceNode seqNode = (ASTStatementSequenceNode)node;
     		
-    		List newStmtList = new ArrayList();
+    		List<Object> newStmtList = new ArrayList<Object>();
 
-    		List stmts = seqNode.getStatements();
-    		Iterator it = stmts.iterator();
+    		List<Object> stmts = seqNode.getStatements();
+    		Iterator<Object> it = stmts.iterator();
     		while(it.hasNext()){
     			AugmentedStmt augStmt = (AugmentedStmt)it.next();
     			Stmt stmtTemp = augStmt.get_Stmt();
@@ -412,11 +409,11 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//create Invoke Stmt with tempExpr as the expression
 	GInvokeStmt s = new GInvokeStmt(tempExpr);
 	
-	originalDavaBody.set_ConstructorUnit((Unit)s);
+	originalDavaBody.set_ConstructorUnit(s);
 
 	//originalASTMethod has to be made empty
-	originalASTMethod.setDeclarations(new ASTStatementSequenceNode(new ArrayList()));
-	originalASTMethod.replaceBody(new ArrayList());
+	originalASTMethod.setDeclarations(new ASTStatementSequenceNode(new ArrayList<Object>()));
+	originalASTMethod.replaceBody(new ArrayList<Object>());
 	return true;
 
     }
@@ -496,7 +493,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     		tempArgList.add(arg);
     		
     		DVirtualInvokeExpr tempInvokeExpr = 	
-    			new DVirtualInvokeExpr(jimpleLocal,getMethodRef,tempArgList,new HashSet());
+    			new DVirtualInvokeExpr(jimpleLocal,getMethodRef,tempArgList,new HashSet<Object>());
 
     		//NECESASARY CASTING OR RETRIEVAL OF PRIM TYPES TO BE DONE HERE
     		Value toAddExpr = getProperCasting(tempType,tempInvokeExpr);
@@ -511,7 +508,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	//we are done with creating all necessary args to the virtualinvoke expr constructor
 
     	DVirtualInvokeExpr virtualInvoke = new DVirtualInvokeExpr(originalConstructorExpr.getBase(),superConstructor.makeRef(),
-    			argsForConstructor,new HashSet());
+    			argsForConstructor,new HashSet<Object>());
 
     	//set the constructors constructorExpr
     	newConstructorDavaBody.set_ConstructorExpr(virtualInvoke);
@@ -519,7 +516,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	//create Invoke Stmt with virtualInvoke as the expression
     	GInvokeStmt s = new GInvokeStmt(virtualInvoke);
     	
-    	newConstructorDavaBody.set_ConstructorUnit((Unit)s);
+    	newConstructorDavaBody.set_ConstructorUnit(s);
 
     	//return true if super call created
     	return true;
@@ -537,12 +534,6 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 			return new GCastExpr(tempInvokeExpr,tempType);
 		}
 		else if(tempType instanceof PrimType){
-			//The argument has a primType however get will return an object
-			//Cast to Wrapper class and then extract primtype
-			//System.out.println("This is a primType:"+tempType);
-			Type wrapperType=null;
-	
-	
 			PrimType t = (PrimType)tempType;
 			//BooleanType, ByteType, CharType, DoubleType, FloatType, IntType, LongType, ShortType
 			
@@ -554,7 +545,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 				tempMethod.setDeclaringClass(new SootClass("java.lang.Boolean"));
 
 				SootMethodRef tempMethodRef = tempMethod.makeRef();
-				return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+				return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
 			}
 			else if (t == ByteType.v()){
 				Value tempExpr = new GCastExpr(tempInvokeExpr,RefType.v("java.lang.Byte"));	
@@ -564,7 +555,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 				tempMethod.setDeclaringClass(new SootClass("java.lang.Byte"));
 
 				SootMethodRef tempMethodRef = tempMethod.makeRef(); 
-					return new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+					return new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
 			}
             else if (t == CharType.v()){
             	Value tempExpr = new GCastExpr(tempInvokeExpr,RefType.v("java.lang.Character"));
@@ -574,7 +565,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
             	tempMethod.setDeclaringClass(new SootClass("java.lang.Character"));
 
             	SootMethodRef tempMethodRef = tempMethod.makeRef(); 	
-            	return new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+            	return new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
             }
             else if (t == DoubleType.v()){
             	Value tempExpr = new GCastExpr(tempInvokeExpr,RefType.v("java.lang.Double"));
@@ -584,7 +575,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
             	tempMethod.setDeclaringClass(new SootClass("java.lang.Double"));
 
             	SootMethodRef tempMethodRef = tempMethod.makeRef();
-            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
             }
             else if (t == FloatType.v()){
             	Value tempExpr = new GCastExpr(tempInvokeExpr,RefType.v("java.lang.Float"));
@@ -594,7 +585,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
             	tempMethod.setDeclaringClass(new SootClass("java.lang.Float"));
             	
             	SootMethodRef tempMethodRef = tempMethod.makeRef();
-            	return new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+            	return new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
             }
             else if (t == IntType.v()){
             	Value tempExpr = new GCastExpr(tempInvokeExpr,RefType.v("java.lang.Integer"));
@@ -604,7 +595,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
             	tempMethod.setDeclaringClass(new SootClass("java.lang.Integer"));
 
             	SootMethodRef tempMethodRef = tempMethod.makeRef();
-            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
             }
             else if (t == LongType.v()){
             	Value tempExpr = new GCastExpr(tempInvokeExpr,RefType.v("java.lang.Long"));
@@ -614,7 +605,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
             	tempMethod.setDeclaringClass(new SootClass("java.lang.Long"));
 
             	SootMethodRef tempMethodRef = tempMethod.makeRef();
-            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
             }
             else if (t == ShortType.v()){
             	Value tempExpr = new GCastExpr(tempInvokeExpr,RefType.v("java.lang.Short"));
@@ -624,7 +615,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
             	tempMethod.setDeclaringClass(new SootClass("java.lang.Short"));
             	
             	SootMethodRef tempMethodRef = tempMethod.makeRef();
-            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
+            	return	new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet<Object>());
             }
             else {
             	throw new DecompilationException("Unhandle primType:"+tempType);
@@ -659,7 +650,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	//check whether there is something in side the ASTBody
     	//if its empty (maybe there were only declarations and that got removed
     	//then no point in creating the preInit method
-    	List subBodies = (List)newASTPreInitMethod.get_SubBodies();
+    	List<Object> subBodies = newASTPreInitMethod.get_SubBodies();
     	if(subBodies.size()!=1)
     		return false;
     	
@@ -679,10 +670,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     			break;
     		}
 
-    		List stmts = ((ASTStatementSequenceNode)tempNode).getStatements();		    
+    		List<Object> stmts = ((ASTStatementSequenceNode)tempNode).getStatements();		    
 
     		//all declaration stmts are allowed
-    		Iterator stmtIt = stmts.iterator();
+    		Iterator<Object> stmtIt = stmts.iterator();
     		while(stmtIt.hasNext()){
     			AugmentedStmt as = (AugmentedStmt)stmtIt.next();
     			Stmt s = as.get_Stmt();
@@ -712,8 +703,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
     public void createNewASTConstructor(ASTStatementSequenceNode initNode){
 
-    	List newConstructorBody = new ArrayList();
-    	List newStmts = new ArrayList();
+    	List<Object> newConstructorBody = new ArrayList<Object>();
+    	List<Object> newStmts = new ArrayList<Object>();
     	/*
     	 * add any definitions to live variables that might be in body X
     	 * 	
@@ -735,9 +726,9 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
     	//Iterator typeIt = argsTwoTypes.iterator();
     	if(mustInitialize != null){
-    		Iterator initIt = mustInitialize.iterator();
+    		Iterator<Local> initIt = mustInitialize.iterator();
     		while(initIt.hasNext()){
-    			Local initLocal = (Local)initIt.next();
+    			Local initLocal = initIt.next();
     			Type tempType = initLocal.getType();
 			
     			DIntConstant arg = DIntConstant.v(mustInitializeIndex,IntType.v());//takes care of the index
@@ -746,7 +737,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     			ArrayList tempArgList = new ArrayList();
     			tempArgList.add(arg);
     		
-    			DVirtualInvokeExpr tempInvokeExpr =	new DVirtualInvokeExpr(jimpleLocal,getMethodRef,tempArgList,new HashSet());
+    			DVirtualInvokeExpr tempInvokeExpr =	new DVirtualInvokeExpr(jimpleLocal,getMethodRef,tempArgList,new HashSet<Object>());
 
     			//NECESASARY CASTING OR RETRIEVAL OF PRIM TYPES TO BE DONE HERE
     			Value toAddExpr = getProperCasting(tempType,tempInvokeExpr);
@@ -760,7 +751,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	}
 	
     	//add any statements following the this.<init> statement
-    	Iterator it = initNode.getStatements().iterator();
+    	Iterator<Object> it = initNode.getStatements().iterator();
     	while(it.hasNext()){
     		AugmentedStmt augStmt = (AugmentedStmt)it.next();
     		Stmt stmtTemp = augStmt.get_Stmt();
@@ -782,11 +773,11 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 
 	//adding body Y now
-	List originalASTMethodSubBodies = (List)originalASTMethod.get_SubBodies();
+	List<Object> originalASTMethodSubBodies = originalASTMethod.get_SubBodies();
 	if(originalASTMethodSubBodies.size() != 1)
 	    throw new CorruptASTException("size of ASTMethodNode subBody not 1");
 
-	List oldASTBody = (List)originalASTMethodSubBodies.get(0);
+	List<Object> oldASTBody = (List<Object>)originalASTMethodSubBodies.get(0);
 
 	it = oldASTBody.iterator();
 	boolean sanity=false;
@@ -819,14 +810,14 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//setDeclarations in newNode
 	//The LocalVariableCleaner which is called in the end of DavaBody will clear up any declarations that are not required
 
-	List newConstructorDeclarations = new ArrayList();
-	Iterator originalDeclarationsIterator = originalASTMethod.getDeclarations().getStatements().iterator();
+	List<Object> newConstructorDeclarations = new ArrayList<Object>();
+	Iterator<Object> originalDeclarationsIterator = originalASTMethod.getDeclarations().getStatements().iterator();
 	while(originalDeclarationsIterator.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)originalDeclarationsIterator.next();
 	    DVariableDeclarationStmt varDecStmt = (DVariableDeclarationStmt)as.get_Stmt();
 	    newConstructorDeclarations.add(new AugmentedStmt((DVariableDeclarationStmt)varDecStmt.clone()));
 	}
-	ASTStatementSequenceNode newDecs = new ASTStatementSequenceNode(new ArrayList());
+	ASTStatementSequenceNode newDecs = new ASTStatementSequenceNode(new ArrayList<Object>());
 	if(newConstructorDeclarations.size()>0){
 	    newDecs = new ASTStatementSequenceNode(newConstructorDeclarations);
 	    //DONT FORGET TO SET THE DECLARATIONS IN THE METHOD ONCE IT IS CREATED
@@ -933,16 +924,16 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
      * Clone everything and copy only those which are needed in the newASTPreInitMethod
      */
     private void createNewASTPreInitMethod(ASTStatementSequenceNode initNode){	
-    	List newPreinitBody = new ArrayList();
+    	List<Object> newPreinitBody = new ArrayList<Object>();
     	//start adding ASTNodes into newPreinitBody from the originalASTMethod's body until we reach initNode
 
-    	List originalASTMethodSubBodies = (List)originalASTMethod.get_SubBodies();
+    	List<Object> originalASTMethodSubBodies = originalASTMethod.get_SubBodies();
     	if(originalASTMethodSubBodies.size() != 1)
     		throw new CorruptASTException("size of ASTMethodNode subBody not 1");
 
-    	List oldASTBody = (List)originalASTMethodSubBodies.get(0);
+    	List<Object> oldASTBody = (List<Object>)originalASTMethodSubBodies.get(0);
 
-    	Iterator it = oldASTBody.iterator();
+    	Iterator<Object> it = oldASTBody.iterator();
     	boolean sanity=false;
     	while(it.hasNext()){
     		//going through originalASTMethodNode's ASTNodes
@@ -972,7 +963,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
     	//at this moment newPreinitBody contains all of X except for any stmts above the this.init call in the stmtseq node
     	//copy those
-    	List newStmts = new ArrayList();
+    	List<Object> newStmts = new ArrayList<Object>();
 
     	it = initNode.getStatements().iterator();
     	while(it.hasNext()){
@@ -997,14 +988,14 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
     	//setDeclarations in newNode
     	//The LocalVariableCleaner which is called in the end of DavaBody will clear up any declarations that are not required
-    	List newPreinitDeclarations = new ArrayList();
-    	Iterator originalDeclarationsIterator = originalASTMethod.getDeclarations().getStatements().iterator();
+    	List<Object> newPreinitDeclarations = new ArrayList<Object>();
+    	Iterator<Object> originalDeclarationsIterator = originalASTMethod.getDeclarations().getStatements().iterator();
     	while(originalDeclarationsIterator.hasNext()){
     		AugmentedStmt as = (AugmentedStmt)originalDeclarationsIterator.next();
     		DVariableDeclarationStmt varDecStmt = (DVariableDeclarationStmt)as.get_Stmt();
     		newPreinitDeclarations.add(new AugmentedStmt((DVariableDeclarationStmt)varDecStmt.clone()));
     	}
-    	ASTStatementSequenceNode newDecs = new ASTStatementSequenceNode(new ArrayList());
+    	ASTStatementSequenceNode newDecs = new ASTStatementSequenceNode(new ArrayList<Object>());
     	if(newPreinitDeclarations.size()>0){
     		newDecs = new ASTStatementSequenceNode(newPreinitDeclarations);
     		//DONT FORGET TO SET THE DECLARATIONS IN THE METHOD ONCE IT IS CREATED
@@ -1175,7 +1166,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 
     private void createDavaStoreStmts(){
-    	List davaHandlerStmts = new ArrayList();
+    	List<Object> davaHandlerStmts = new ArrayList<Object>();
 
 
     	//create object of DavaSuperHandler handler
@@ -1257,10 +1248,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	/*
     	 * code to add defs
     	 */
-    	List uniqueLocals = addDefsToLiveVariables();
-    	Iterator localIt = uniqueLocals.iterator();
+    	List<Local> uniqueLocals = addDefsToLiveVariables();
+    	Iterator<Local> localIt = uniqueLocals.iterator();
     	while(localIt.hasNext()){
-    		Local local = (Local)localIt.next();
+    		Local local = localIt.next();
     		AugmentedStmt toAdd = createStmtAccordingToType(local.getType(),local,newLocal,getMethodRef);
 			davaHandlerStmts.add(toAdd);
     	}
@@ -1283,10 +1274,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 
     	//add to method body
-    	List subBodies = (List)newASTPreInitMethod.get_SubBodies();
+    	List<Object> subBodies = newASTPreInitMethod.get_SubBodies();
     	if(subBodies.size()!=1)
     		throw new CorruptASTException("ASTMethodNode does not have one subBody");
-    	List body = (List)subBodies.get(0);
+    	List<Object> body = (List<Object>)subBodies.get(0);
     	body.add(addedNode);
 
     	newASTPreInitMethod.replaceBody(body);
@@ -1420,25 +1411,25 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
      * newASTPreInitMethod at time of invocation just contains body X
      * find all defs for this body
      */
-    private List addDefsToLiveVariables(){
+    private List<Local> addDefsToLiveVariables(){
     	//get all defs within x
     	AllDefinitionsFinder finder = new AllDefinitionsFinder();
     	newASTPreInitMethod.apply(finder);
     	
-    	List allDefs = finder.getAllDefs();
+    	List<DefinitionStmt> allDefs = finder.getAllDefs();
     	
-    	List uniqueLocals = new ArrayList();
-    	List uniqueLocalDefs = new ArrayList();
+    	List<Local> uniqueLocals = new ArrayList<Local>();
+    	List<DefinitionStmt> uniqueLocalDefs = new ArrayList<DefinitionStmt>();
     	//remove any defs for fields, and any which are done multiple times
     	
-    	Iterator it = allDefs.iterator();
+    	Iterator<DefinitionStmt> it = allDefs.iterator();
     	while(it.hasNext()){
-    		DefinitionStmt s = (DefinitionStmt)it.next();
+    		DefinitionStmt s = it.next();
     		Value left = s.getLeftOp();
     		if(left instanceof Local){
-    			if(uniqueLocals.contains((Local)left)){
+    			if(uniqueLocals.contains(left)){
     				//a def for this local already encountered
-    				uniqueLocals.remove((Local)left);
+    				uniqueLocals.remove(left);
     				uniqueLocalDefs.remove(s);
     			}
     			else{
@@ -1455,10 +1446,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	ASTParentNodeFinder parentFinder = new ASTParentNodeFinder();
     	newASTPreInitMethod.apply(parentFinder);
     	
-    	List toRemoveDefs = new ArrayList();
+    	List<DefinitionStmt> toRemoveDefs = new ArrayList<DefinitionStmt>();
     	it  = uniqueLocalDefs.iterator();
     	while(it.hasNext()){
-    		DefinitionStmt s = (DefinitionStmt)it.next();
+    		DefinitionStmt s = it.next();
     		Object parent = parentFinder.getParentOf(s);
     		if(parent == null || (!(parent instanceof ASTStatementSequenceNode)) ){
     			//shouldnt happen but if it does add this s to toRemove list
@@ -1476,7 +1467,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 //    	remove any defs and corresponding locals if present in the toRemoveDefs list
     	it = toRemoveDefs.iterator();
     	while(it.hasNext()){
-    		DefinitionStmt s = (DefinitionStmt)it.next();
+    		DefinitionStmt s = it.next();
     		int index = uniqueLocalDefs.indexOf(s);
     		uniqueLocals.remove(index);
     		uniqueLocalDefs.remove(index);
@@ -1487,14 +1478,14 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
     	
     	//find all the uses of these definitions in the original method body
-    	toRemoveDefs = new ArrayList();
+    	toRemoveDefs = new ArrayList<DefinitionStmt>();
     	
     	ASTUsesAndDefs uDdU = new ASTUsesAndDefs(originalASTMethod);
     	originalASTMethod.apply(uDdU);
     	
     	it = uniqueLocalDefs.iterator();
     	while(it.hasNext()){
-    		DefinitionStmt s = (DefinitionStmt)it.next();
+    		DefinitionStmt s = it.next();
     		Object temp = uDdU.getDUChain(s);
     		
     		if(temp == null){
@@ -1530,7 +1521,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	//remove any defs and corresponding locals if present in the toRemoveDefs list
     	it = toRemoveDefs.iterator();
     	while(it.hasNext()){
-    		DefinitionStmt s = (DefinitionStmt)it.next();
+    		DefinitionStmt s = it.next();
     		int index = uniqueLocalDefs.indexOf(s);
     		uniqueLocals.remove(index);
     		uniqueLocalDefs.remove(index);
@@ -1550,7 +1541,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	tempArgList.add(tempVal);
 	
     	DVirtualInvokeExpr tempInvokeExpr = 	
-    		new DVirtualInvokeExpr(newLocal,getMethodRef,tempArgList,new HashSet());
+    		new DVirtualInvokeExpr(newLocal,getMethodRef,tempArgList,new HashSet<Object>());
 	
     	//create Invoke Stmt with virtualInvoke as the expression
     	GInvokeStmt s = new GInvokeStmt(tempInvokeExpr);

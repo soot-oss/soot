@@ -28,8 +28,6 @@
 
 package soot;
 
-import soot.util.*;
-import java.util.*;
 import java.io.*;
 
 /** A box which can contain units. 

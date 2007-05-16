@@ -53,15 +53,15 @@ public class CPApplication extends DepthFirstAdapter{
 	CP cp = null;
 	String className = null;
 	
-	public CPApplication(ASTMethodNode AST, HashMap constantValueFields, HashMap classNameFieldNameToSootFieldMapping){
+	public CPApplication(ASTMethodNode AST, HashMap<String, Object> constantValueFields, HashMap<String, SootField> classNameFieldNameToSootFieldMapping){
 		className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
-		cp = new CP((ASTMethodNode)AST,constantValueFields, classNameFieldNameToSootFieldMapping);
+		cp = new CP(AST,constantValueFields, classNameFieldNameToSootFieldMapping);
 	}
 
-	public CPApplication(boolean verbose,ASTMethodNode AST,HashMap constantValueFields, HashMap classNameFieldNameToSootFieldMapping){
+	public CPApplication(boolean verbose,ASTMethodNode AST,HashMap<String, Object> constantValueFields, HashMap<String, SootField> classNameFieldNameToSootFieldMapping){
 		super(verbose);
 		className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
-		cp = new CP((ASTMethodNode)AST,constantValueFields, classNameFieldNameToSootFieldMapping);
+		cp = new CP(AST,constantValueFields, classNameFieldNameToSootFieldMapping);
 	}
 
 	
@@ -136,7 +136,7 @@ public class CPApplication extends DepthFirstAdapter{
 		 * For the init part we should actually use 
 		 * the before set for each init stmt
 		 */
-		Iterator it = node.getInit().iterator();
+		Iterator<Object> it = node.getInit().iterator();
 		while(it.hasNext()){
 			AugmentedStmt as = (AugmentedStmt)it.next();
 			Stmt s = as.get_Stmt();    
@@ -377,8 +377,8 @@ public class CPApplication extends DepthFirstAdapter{
 	
 	
     public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-    	List statements = node.getStatements();
-    	Iterator it = statements.iterator();
+    	List<Object> statements = node.getStatements();
+    	Iterator<Object> it = statements.iterator();
     	
     	while(it.hasNext()){
     	    AugmentedStmt as = (AugmentedStmt)it.next();

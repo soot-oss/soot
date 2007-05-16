@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BXorInst extends AbstractOpTypeInst implements XorInst
 {
@@ -59,12 +58,12 @@ public class BXorInst extends AbstractOpTypeInst implements XorInst
 
     public int getInMachineCount()
     {
-        return 2 * JasminClass.sizeOfType(getOpType());
+        return 2 * AbstractJasminClass.sizeOfType(getOpType());
     }
 
     public int getOutMachineCount()
     {
-        return 1 * JasminClass.sizeOfType(getOpType());
+        return 1 * AbstractJasminClass.sizeOfType(getOpType());
     }
     
     public final String getName() { return "xor"; }

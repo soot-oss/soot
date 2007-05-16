@@ -67,7 +67,6 @@ import soot.dava.internal.javaRep.DStaticInvokeExpr;
 import soot.dava.internal.javaRep.DThisRef;
 import soot.dava.internal.javaRep.DVirtualInvokeExpr;
 import soot.dava.toolkits.base.AST.UselessTryRemover;
-import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.transformations.ASTCleaner;
 import soot.dava.toolkits.base.AST.transformations.ASTCleanerTwo;
 import soot.dava.toolkits.base.AST.transformations.AndAggregator;
@@ -83,7 +82,6 @@ import soot.dava.toolkits.base.AST.transformations.OrAggregatorFour;
 import soot.dava.toolkits.base.AST.transformations.OrAggregatorOne;
 import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
 import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
-import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
 import soot.dava.toolkits.base.AST.transformations.ShortcutArrayInit;
 import soot.dava.toolkits.base.AST.transformations.ShortcutIfGenerator;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
@@ -91,8 +89,6 @@ import soot.dava.toolkits.base.AST.transformations.NewStringBufferSimplification
 import soot.dava.toolkits.base.AST.transformations.TypeCastingError;
 import soot.dava.toolkits.base.AST.transformations.UselessAbruptStmtRemover;
 import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
-import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
-import soot.dava.toolkits.base.AST.traversals.ASTUsesAndDefs;
 import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
 import soot.dava.toolkits.base.AST.traversals.CopyPropagation;
 import soot.dava.toolkits.base.finders.AbruptEdgeFinder;
@@ -105,8 +101,6 @@ import soot.dava.toolkits.base.finders.SwitchFinder;
 import soot.dava.toolkits.base.finders.SynchronizedBlockFinder;
 import soot.dava.toolkits.base.misc.MonitorConverter;
 import soot.dava.toolkits.base.misc.ThrowNullConverter;
-import soot.dava.toolkits.base.renamer.Renamer;
-import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.grimp.GrimpBody;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.ArrayRef;
@@ -153,6 +147,7 @@ import soot.jimple.internal.JimpleLocal;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.util.IterableSet;
+import soot.util.Switchable;
 
 
 /*
@@ -191,7 +186,7 @@ public class DavaBody extends Body {
 	public boolean DEBUG = false;
 	private Map pMap;
 
-	private HashSet consumedConditions, thisLocals;
+	private HashSet<Object> consumedConditions, thisLocals;
 
 	private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
 	
@@ -213,8 +208,8 @@ public class DavaBody extends Body {
 		super(m);
 
 		pMap = new HashMap();
-		consumedConditions = new HashSet();
-		thisLocals = new HashSet();
+		consumedConditions = new HashSet<Object>();
+		thisLocals = new HashSet<Object>();
 		synchronizedBlockFacts = new IterableSet();
 		exceptionFacts = new IterableSet();
 		monitorFacts = new IterableSet();
@@ -254,7 +249,7 @@ public class DavaBody extends Body {
 		pMap = map;
 	}
 
-	public HashSet get_ThisLocals() {
+	public HashSet<Object> get_ThisLocals() {
 		return thisLocals;
 	}
 
@@ -267,7 +262,7 @@ public class DavaBody extends Body {
 		return controlLocal;
 	}
 
-	public Set get_ConsumedConditions() {
+	public Set<Object> get_ConsumedConditions() {
 		return consumedConditions;
 	}
 
@@ -335,7 +330,7 @@ public class DavaBody extends Body {
 				AbruptEdgeFinder.v().find(this, asg, SET);
 			} catch (RetriggerAnalysisException rae) {
 				SET = new SETTopNode(asg.get_ChainView());
-				consumedConditions = new HashSet();
+				consumedConditions = new HashSet<Object>();
 				continue;
 			}
 			break;
@@ -681,8 +676,8 @@ public class DavaBody extends Body {
 		 */
 
 		{
-			HashMap bindings = new HashMap();
-			HashMap reverse_binding = new HashMap();
+			HashMap<Switchable, Switchable> bindings = new HashMap<Switchable, Switchable>();
+			HashMap<Unit, Unit> reverse_binding = new HashMap<Unit, Unit>();
 
 			Iterator it = grimpBody.getUnits().iterator();
 
@@ -715,7 +710,7 @@ public class DavaBody extends Body {
 					ts.setDefaultTarget((Unit) bindings.get(original_switch
 							.getDefaultTarget()));
 
-					LinkedList new_target_list = new LinkedList();
+					LinkedList<Unit> new_target_list = new LinkedList<Unit>();
 
 					int target_count = ts.getHighIndex() - ts.getLowIndex() + 1;
 					for (int i = 0; i < target_count; i++)

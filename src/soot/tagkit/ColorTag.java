@@ -26,8 +26,6 @@
 
 package soot.tagkit;
 
-import soot.*;
-
 public class ColorTag implements Tag
 {
     /* it is a value representing red. */

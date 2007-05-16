@@ -23,7 +23,7 @@ public class InfoFlowAnalysis
 	boolean includeInnerFields;
 	boolean printDebug;
 
-	Map classToClassInfoFlowAnalysis;
+	Map<SootClass, ClassInfoFlowAnalysis> classToClassInfoFlowAnalysis;
 	
 	public InfoFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields)
 	{
@@ -35,7 +35,7 @@ public class InfoFlowAnalysis
 		this.includePrimitiveInfoFlow = includePrimitiveDataFlow;
 		this.includeInnerFields = includeInnerFields;
 		this.printDebug = printDebug;
-		classToClassInfoFlowAnalysis = new HashMap();
+		classToClassInfoFlowAnalysis = new HashMap<SootClass, ClassInfoFlowAnalysis>();
 	}
 	
 	public boolean includesPrimitiveInfoFlow()
@@ -91,7 +91,7 @@ public class InfoFlowAnalysis
 			ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(sc, this);
 			classToClassInfoFlowAnalysis.put(sc, cdfa);
 		}
-		return (ClassInfoFlowAnalysis) classToClassInfoFlowAnalysis.get(sc);
+		return classToClassInfoFlowAnalysis.get(sc);
 	}
 	
 	public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(SootMethod sm)
@@ -250,8 +250,6 @@ public class InfoFlowAnalysis
 		
 	public static void printGraphToDotFile(String filename, DirectedGraph graph, String graphname, boolean onePage)
 	{
-		int sequence=0;
-		
 		// this makes the node name unique
 		nodecount = 0; // reset node counter first.
 		Hashtable nodeindex = new Hashtable(graph.size());

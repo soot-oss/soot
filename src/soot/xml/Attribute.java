@@ -21,14 +21,13 @@ package soot.xml;
 
 import java.util.*;
 import java.io.*;
-import soot.*;
 import soot.tagkit.*;
 import soot.util.*;
 
 public class Attribute {
     
     //private ColorAttribute color;
-    private ArrayList colors;
+    private ArrayList<ColorAttribute> colors;
     private int jimpleStartPos;
     private int jimpleEndPos;
     private int javaStartPos;
@@ -38,13 +37,13 @@ public class Attribute {
     private int jimpleStartLn;
     private int jimpleEndLn;
 
-    public ArrayList colors(){
+    public ArrayList<ColorAttribute> colors(){
         return colors;
     }
 
     public void addColor(ColorAttribute ca){
         if (colors == null){
-            colors = new ArrayList();
+            colors = new ArrayList<ColorAttribute>();
         }
         colors.add(ca);
     }
@@ -126,19 +125,19 @@ public class Attribute {
         else return false;
     }
 
-    ArrayList texts;
-    ArrayList links;
+    ArrayList<StringAttribute> texts;
+    ArrayList<LinkAttribute> links;
 
     public void addText(StringAttribute s){
         if (texts == null) {
-            texts = new ArrayList();
+            texts = new ArrayList<StringAttribute>();
         }
         texts.add(s);
     }
 
     public void addLink(LinkAttribute la){
         if (links == null) {
-            links = new ArrayList();
+            links = new ArrayList<LinkAttribute>();
         }
         links.add(la);
     }
@@ -247,23 +246,23 @@ public class Attribute {
         writerOut.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
         writerOut.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");
         if (colors != null){
-            Iterator cIt = colors.iterator();
+            Iterator<ColorAttribute> cIt = colors.iterator();
             while (cIt.hasNext()){
-                ColorAttribute ca = (ColorAttribute)cIt.next();
+                ColorAttribute ca = cIt.next();
                 writerOut.println("<color r=\""+ca.red()+"\" g=\""+ca.green()+"\" b=\""+ca.blue()+"\" fg=\""+ca.fg()+"\" aType=\""+ca.analysisType()+"\"/>");
             }
         }
         if (texts != null){
-            Iterator textsIt = texts.iterator();
+            Iterator<StringAttribute> textsIt = texts.iterator();
             while (textsIt.hasNext()){
-                StringAttribute sa = (StringAttribute)textsIt.next();
+                StringAttribute sa = textsIt.next();
                 writerOut.println("<text info=\""+sa.info()+"\" aType=\""+sa.analysisType()+"\"/>");
             }
         }
         if (links != null){
-            Iterator linksIt = links.iterator();
+            Iterator<LinkAttribute> linksIt = links.iterator();
             while (linksIt.hasNext()){
-                LinkAttribute la = (LinkAttribute)linksIt.next();
+                LinkAttribute la = linksIt.next();
                 writerOut.println("<link label=\""+formatForXML(la.info())+"\" jmpLink=\""+la.jimpleLink()+"\" srcLink=\""+la.javaLink()+"\" clssNm=\""+la.className()+"\" aType=\""+la.analysisType()+"\"/>");
             }
         }

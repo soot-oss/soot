@@ -19,7 +19,6 @@
 
 package soot.dava.internal.SET;
 
-import java.util.*;
 import soot.util.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
@@ -39,12 +38,15 @@ public class SETTopNode extends SETNode
 
     public ASTNode emit_AST()
     {
-	return new ASTMethodNode( emit_ASTBody( (IterableSet) body2childChain.get( subBodies.get(0))));
+	return new ASTMethodNode( emit_ASTBody( body2childChain.get( subBodies.get(0))));
     }
 
     public AugmentedStmt get_EntryStmt()
     {
-	return (AugmentedStmt) ((SETNode) body2childChain.get( subBodies.get(0))).get_EntryStmt();
+    	throw new RuntimeException("Not implemented.");
+    	//FIXME the following turned out to be ill-typed after applying type inference for generics
+    	//body2childChain maps to IterableSet !
+    	//return (AugmentedStmt) ((SETNode) body2childChain.get( subBodies.get(0))).get_EntryStmt();
     }
 
     protected boolean resolve( SETNode parent)

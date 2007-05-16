@@ -256,7 +256,7 @@ public class SharedListSet extends PointsToSetInternal
 	}
 	
 	//Holds pairs of (Node, ListNode)
-	private class Pair
+	public class Pair
 	{
 		public Node first;
 		public ListNode second;
@@ -281,7 +281,7 @@ public class SharedListSet extends PointsToSetInternal
 	//It's a bit confusing because there are nodes in the list and nodes in the PAG.
 	//Node means a node in the PAG, ListNode is for nodes in the list (each of which
 	//contains a Node as its data)
-	private class ListNode
+	public class ListNode
 	{
 		private Node elem;
 		private ListNode next = null;
@@ -317,7 +317,7 @@ public class SharedListSet extends PointsToSetInternal
 	private ListNode makeNode(Node elem, ListNode next)
 	{
 		Pair p = new Pair(elem, next);
-		ListNode retVal = (ListNode)(AllSharedListNodes.v().allNodes.get(p));
+		ListNode retVal = (AllSharedListNodes.v().allNodes.get(p));
 		if (retVal == null)
 		//if it's not an existing node
 		{

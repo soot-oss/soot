@@ -33,7 +33,6 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 
 public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
 {
@@ -43,11 +42,11 @@ public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
 
     public String toString()
     {
-        return Jimple.v().BREAKPOINT;
+        return Jimple.BREAKPOINT;
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().BREAKPOINT);
+        up.literal(Jimple.BREAKPOINT);
     }
     
     public void apply(Switch sw)

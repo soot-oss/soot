@@ -20,6 +20,7 @@
 package soot.jimple.toolkits.callgraph;
 
 import soot.*;
+
 import java.util.*;
 import soot.options.CGOptions;
 
@@ -41,8 +42,7 @@ public class CallGraphPack extends RadioScenePack
         ClinitElimTransformer trimmer = new ClinitElimTransformer();
 
         if( options.trim_clinit() ) {
-            for( Iterator clIt = Scene.v().getClasses(SootClass.BODIES).iterator(); clIt.hasNext(); ) {
-                final SootClass cl = (SootClass) clIt.next();
+            for (SootClass cl : Scene.v().getClasses(SootClass.BODIES)) {
                 for( Iterator mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
                     final SootMethod m = (SootMethod) mIt.next();
                     if( m.isConcrete() && m.hasActiveBody() ) {

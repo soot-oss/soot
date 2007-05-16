@@ -23,15 +23,12 @@ package soot.dava.internal.AST;
 import soot.*;
 import java.util.*;
 import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTLabeledBlockNode extends ASTLabeledNode
 {
-    private List body;
-    private SETNodeLabel label;
-    
-    public ASTLabeledBlockNode( SETNodeLabel label, List body){
+    private List<Object> body;
+    public ASTLabeledBlockNode( SETNodeLabel label, List<Object> body){
 	super( label);
 	this.body = body;
 	
@@ -42,9 +39,9 @@ public class ASTLabeledBlockNode extends ASTLabeledNode
       Nomair A Naeem 20-FEB-2005
       Added for OrAggregatorOne/UselessLabeledBlockRemover
     */
-    public void replaceBody(List body){
+    public void replaceBody(List<Object> body){
 	this.body=body;
-	subBodies=new ArrayList();
+	subBodies=new ArrayList<Object>();
 	subBodies.add(body);
     }
 

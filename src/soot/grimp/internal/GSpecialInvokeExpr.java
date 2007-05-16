@@ -34,10 +34,6 @@ package soot.grimp.internal;
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
-import soot.jimple.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
-import soot.util.*;
 import java.util.*;
 
 public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
@@ -45,8 +41,8 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
 {
     public GSpecialInvokeExpr(Value base, SootMethodRef methodRef, List args)
     {
-        super((ExprBox)Grimp.v().newObjExprBox(base), methodRef, 
-             (ExprBox[]) new ExprBox[args.size()]);
+        super(Grimp.v().newObjExprBox(base), methodRef, 
+             new ExprBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));

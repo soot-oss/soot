@@ -8,7 +8,7 @@ class TransactionGroup
 	int groupNum; 
 	
 	// Information about the group members
-	List transactions;
+	List<Transaction> transactions;
 
 	// Information about the selected lock(s)
 	public boolean isDynamicLock; // is lockObject actually dynamic? or is it a static ref?
@@ -19,7 +19,7 @@ class TransactionGroup
 	public TransactionGroup(int groupNum)
 	{
 		this.groupNum = groupNum;
-		this.transactions = new ArrayList();
+		this.transactions = new ArrayList<Transaction>();
 		
 		this.isDynamicLock = false;
 		this.useDynamicLock = false;
@@ -45,7 +45,7 @@ class TransactionGroup
 		return transactions.contains(tn);
 	}
 	
-	public Iterator iterator()
+	public Iterator<Transaction> iterator()
 	{
 		return transactions.iterator();
 	}
@@ -55,10 +55,10 @@ class TransactionGroup
 		if(other == this)
 			return;
 			
-		Iterator tnIt = other.transactions.iterator();
+		Iterator<Transaction> tnIt = other.transactions.iterator();
 		while(tnIt.hasNext())
 		{
-			Transaction tn = (Transaction) tnIt.next();
+			Transaction tn = tnIt.next();
 			add(tn);
 		}
 		other.transactions.clear();

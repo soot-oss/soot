@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** There should be exactly one Exceptions attribute in every method,
  * indicating the types of exceptions the method might throw.
  * @see attribute_info

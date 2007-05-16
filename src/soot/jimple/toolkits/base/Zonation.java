@@ -37,12 +37,12 @@ import java.util.*;
 public class Zonation
 {
     private int zoneCount;
-    private Map unitToZone;
+    private Map<Unit, Zone> unitToZone;
     
     public Zonation(StmtBody body)
     {
         Chain units = body.getUnits();
-        Map unitToTrapBoundaries = new HashMap();
+        Map<Unit, ArrayList> unitToTrapBoundaries = new HashMap<Unit, ArrayList>();
         
         // Initialize each unit to an empty set
         {
@@ -64,22 +64,22 @@ public class Zonation
             {
                 Trap t = (Trap) trapIt.next();
                 
-                List boundary = (List) unitToTrapBoundaries.get(t.getBeginUnit());
+                List<Trap> boundary = unitToTrapBoundaries.get(t.getBeginUnit());
                 boundary.add(t);
                 
-                boundary = (List) unitToTrapBoundaries.get(t.getEndUnit());
+                boundary = unitToTrapBoundaries.get(t.getEndUnit());
                 boundary.add(t);
             }
         }
         
         // Traverse units, assigning each to a zone
         {
-            Map trapListToZone = new HashMap(10, 0.7f);
-            List currentTraps = new ArrayList();
+            Map<List, Zone> trapListToZone = new HashMap<List, Zone>(10, 0.7f);
+            List<Trap> currentTraps = new ArrayList<Trap>();
             Zone currentZone;
             
             zoneCount = 0;
-            unitToZone = new HashMap(units.size() * 2 + 1, 0.7f);
+            unitToZone = new HashMap<Unit, Zone>(units.size() * 2 + 1, 0.7f);
                         
             // Initialize first empty zone
                 currentZone = new Zone("0");
@@ -93,7 +93,7 @@ public class Zonation
                 
                 // Process trap boundaries
                 {
-                    List trapBoundaries = (List) unitToTrapBoundaries.get(u);
+                    List trapBoundaries = unitToTrapBoundaries.get(u);
 
                     if(trapBoundaries.size() != 0)
                     {                        
@@ -110,7 +110,7 @@ public class Zonation
                         }
                                           
                         if(trapListToZone.containsKey(currentTraps))
-                            currentZone = (Zone) trapListToZone.get(currentTraps);
+                            currentZone = trapListToZone.get(currentTraps);
                         else
                         {   
                             // Create a new zone
@@ -132,7 +132,7 @@ public class Zonation
     
     public Zone getZoneOf(Unit u)
     {
-        Zone z = (Zone) unitToZone.get(u);
+        Zone z = unitToZone.get(u);
         
         if(z == null)
             throw new RuntimeException("null zone!");

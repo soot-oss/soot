@@ -1,10 +1,6 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
-import soot.tagkit.*;
-import soot.util.*;
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -20,12 +16,12 @@ import java.util.*;
 
 public class LoopBodyFinder{
 	
-	private Stack stack = new Stack();   
-	private Set loops = new HashSet();
-	LoopBodyFinder(Map backEdges, DirectedGraph g){
+	private final Stack<Object> stack = new Stack<Object>();   
+	private final Set<Set<Object>> loops = new HashSet<Set<Object>>();
+	LoopBodyFinder(Map<Object, Object> backEdges, DirectedGraph g){
 		findLoopBody(backEdges, g);
 	}
-	private void findLoopBody(Map backEdges, DirectedGraph g){
+	private void findLoopBody(Map<Object, Object> backEdges, DirectedGraph g){
 		Set maps = backEdges.entrySet();
 		for(Iterator iter=maps.iterator(); iter.hasNext();){
 			Map.Entry entry = (Map.Entry)iter.next();
@@ -33,15 +29,15 @@ public class LoopBodyFinder{
 			//Tag tag = (Tag)key.getTags().get(0);
 			// System.out.println("---key=  "+tag+" "+key);
 			Object  head  = entry.getValue();
-			Set loopBody = finder(tail, head, g); 
+			Set<Object> loopBody = finder(tail, head, g); 
 			loops.add(loopBody);
 		}
 		
 	}
 	
 	
-	private Set finder(Object tail, Object head, DirectedGraph g){
-		Set loop = new HashSet();
+	private Set<Object> finder(Object tail, Object head, DirectedGraph g){
+		Set<Object> loop = new HashSet<Object>();
 		stack.empty();
 		loop.add(head);
 		insert(tail, loop);
@@ -53,16 +49,16 @@ public class LoopBodyFinder{
 				insert(pred, loop);
 			}
 		}
-		return (Set)loop;
+		return loop;
 	}
 	
-	private void insert(Object m, Set loop){
+	private void insert(Object m, Set<Object> loop){
 		if (!loop.contains(m)){
 			loop.add(m);
 			stack.push(m);
 		}
 	}
-	public Set getLoopBody(){
-		return (Set)loops;
+	public Set<Set<Object>> getLoopBody(){
+		return loops;
 	}
 }

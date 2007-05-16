@@ -25,8 +25,6 @@
 
 
 package soot.util;
-import soot.*;
-
 import java.io.*;
 
 /** A FilterReader which catches escaped characters (<code>\\unnnn</code>) in the

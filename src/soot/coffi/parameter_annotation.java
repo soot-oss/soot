@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** 
  * There can be several parameter annotations in each 
  * Parameter Visibility attribute 

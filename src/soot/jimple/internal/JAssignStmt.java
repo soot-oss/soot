@@ -34,7 +34,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -222,7 +221,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
         ((StmtSwitch) sw).caseAssignStmt(this);
     }
 
-    public void convertToBaf(final JimpleToBafContext context, final List out)
+    public void convertToBaf(final JimpleToBafContext context, final List<Unit> out)
     {
         final Value lvalue = this.getLeftOp();
         final Value rvalue = this.getRightOp();
@@ -287,11 +286,6 @@ public class JAssignStmt extends AbstractDefinitionStmt
 		    }
 		    
                     out.add(u);
-                }
-                
-                public void defaultCase(Value v)
-                {
-                    throw new RuntimeException("Can't store in value " + v);
                 }
                 
                 public void caseInstanceFieldRef(InstanceFieldRef v)

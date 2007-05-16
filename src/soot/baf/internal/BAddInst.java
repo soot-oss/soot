@@ -32,7 +32,6 @@ package soot.baf.internal;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BAddInst extends AbstractOpTypeInst implements AddInst
 {
@@ -53,7 +52,7 @@ public class BAddInst extends AbstractOpTypeInst implements AddInst
 
     public int getInMachineCount()
     {
-        return 2 * JasminClass.sizeOfType(getOpType());
+        return 2 * AbstractJasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()
@@ -63,7 +62,7 @@ public class BAddInst extends AbstractOpTypeInst implements AddInst
 
     public int getOutMachineCount()
     {
-        return 1 * JasminClass.sizeOfType(getOpType());
+        return 1 * AbstractJasminClass.sizeOfType(getOpType());
     }
     
     public final String getName() { return "add"; }

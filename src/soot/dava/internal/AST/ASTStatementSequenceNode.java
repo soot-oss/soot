@@ -22,16 +22,15 @@ package soot.dava.internal.AST;
 
 import soot.*;
 import java.util.*;
-import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTStatementSequenceNode extends ASTNode
 {
-    private List statementSequence;
+    private List<Object> statementSequence;
 
-    public ASTStatementSequenceNode( List statementSequence)
+    public ASTStatementSequenceNode( List<Object> statementSequence)
     {
 	super();
 
@@ -47,19 +46,18 @@ public class ASTStatementSequenceNode extends ASTNode
     {
 	if (a.getAnalysisDepth() > ASTAnalysis.ANALYSE_AST) {
 
-	    Iterator it = statementSequence.iterator();
+	    Iterator<Object> it = statementSequence.iterator();
 	    while (it.hasNext())
 		ASTWalker.v().walk_stmt( a, ((AugmentedStmt) it.next()).get_Stmt());
 	}
 
 	if (a instanceof TryContentsFinder) {
-	    TryContentsFinder tcf = (TryContentsFinder) a;
-	    tcf.v().add_ExceptionSet( this, tcf.v().remove_CurExceptionSet());
+	    TryContentsFinder.v().add_ExceptionSet( this, TryContentsFinder.v().remove_CurExceptionSet());
 	}
     }
 
     public void toString( UnitPrinter up ) {
-    	Iterator it = statementSequence.iterator();
+    	Iterator<Object> it = statementSequence.iterator();
     	while (it.hasNext()) {
                 AugmentedStmt as = (AugmentedStmt) it.next();
     	    //System.out.println("Stmt is:"+as.get_Stmt());
@@ -76,7 +74,7 @@ public class ASTStatementSequenceNode extends ASTNode
     {
 	StringBuffer b = new StringBuffer();
 
-	Iterator it = statementSequence.iterator();
+	Iterator<Object> it = statementSequence.iterator();
 	while (it.hasNext()) {
 	    b.append( ((Unit) ((AugmentedStmt) it.next()).get_Stmt()).toString());
 	    b.append( ";");
@@ -92,7 +90,7 @@ public class ASTStatementSequenceNode extends ASTNode
       Part of Visitor Design Implementation for AST
       See: soot.dava.toolkits.base.AST.analysis For details
     */
-    public List getStatements(){
+    public List<Object> getStatements(){
 	return statementSequence;
     }
 
@@ -106,7 +104,7 @@ public class ASTStatementSequenceNode extends ASTNode
     /*
       Nomair A. Naeem added 3-MAY-05
     */
-    public void setStatements(List statementSequence){
+    public void setStatements(List<Object> statementSequence){
 	this.statementSequence=statementSequence;
     }
 }

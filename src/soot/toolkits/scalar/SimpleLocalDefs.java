@@ -31,7 +31,6 @@
 package soot.toolkits.scalar;
 import soot.options.*;
 
-import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.*;
 import soot.util.*;
@@ -47,7 +46,7 @@ import java.util.*;
  */
 public class SimpleLocalDefs implements LocalDefs
 {
-    Map localUnitPairToDefs;
+    Map<LocalUnitPair, List> localUnitPairToDefs;
 
 
     /**
@@ -76,7 +75,7 @@ public class SimpleLocalDefs implements LocalDefs
         {
             Iterator unitIt = g.iterator();
 
-            localUnitPairToDefs = new HashMap(g.size() * 2 + 1, 0.7f);
+            localUnitPairToDefs = new HashMap<LocalUnitPair, List>(g.size() * 2 + 1, 0.7f);
 
             while(unitIt.hasNext())
                 {
@@ -95,7 +94,7 @@ public class SimpleLocalDefs implements LocalDefs
 
                                     if(!localUnitPairToDefs.containsKey(pair))
                                         {
-                                            IntPair intPair = (IntPair) analysis.localToIntPair.get(l);
+                                            IntPair intPair = analysis.localToIntPair.get(l);
 					    
                                             ArrayPackedSet value = (ArrayPackedSet) analysis.getFlowBefore(s);
 
@@ -123,11 +122,11 @@ public class SimpleLocalDefs implements LocalDefs
     {
         return localUnitPairToDefs.containsKey( new LocalUnitPair(l,s) );
     }
-    public List getDefsOfAt(Local l, Unit s)
+    public List<Unit> getDefsOfAt(Local l, Unit s)
     {
         LocalUnitPair pair = new LocalUnitPair(l, s);
 
-        List toReturn = (List) localUnitPairToDefs.get(pair);
+        List<Unit> toReturn = localUnitPairToDefs.get(pair);
         
         if(toReturn == null)
             throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + 
@@ -246,8 +245,8 @@ class IntPair
 class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet;
-    Map localToPreserveSet;
-    Map localToIntPair;
+    Map<Local, BoundedFlowSet> localToPreserveSet;
+    Map<Local, IntPair> localToIntPair;
 
     public LocalDefsFlowAnalysis(UnitGraph g)
     {
@@ -261,7 +260,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
         // Create a list of all the definitions and group defs of the same local together
         {
-            Map localToDefList = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
+            Map<Local, ArrayList> localToDefList = new HashMap<Local, ArrayList>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
 
             // Initialize the set of defs for each local to empty
             {
@@ -291,7 +290,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                             
                             if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
                                 Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
-                                List l = (List) localToDefList.get(defLocal);
+                                List<Unit> l = localToDefList.get(defLocal);
                             
                                 if(l == null)
                                     throw new RuntimeException("local " + defLocal + " is used but not declared!");
@@ -310,14 +309,14 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
                 int startPos = 0;
 
-                localToIntPair = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
+                localToIntPair = new HashMap<Local, IntPair>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
 
                 // For every local, add all its defs
                 {
                     while(it.hasNext())
                         {
                             Local l = (Local) it.next();
-                            Iterator jt = ((List) localToDefList.get(l)).iterator();
+                            Iterator jt = localToDefList.get(l).iterator();
 
                             int endPos = startPos - 1;
 
@@ -344,8 +343,8 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
         // Create the preserve sets for each local.
         {
-            Map localToKillSet = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
-            localToPreserveSet = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
+            Map<Local, FlowSet> localToKillSet = new HashMap<Local, FlowSet>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
+            localToPreserveSet = new HashMap<Local, BoundedFlowSet>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
 
             Chain locals = g.getBody().getLocals();
 
@@ -361,22 +360,20 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                     }
             }
 
-            // Add every definition of this local
-            for(int i = 0; i < defs.length; i++)
-                {
-                    Unit s = (Unit) defs[i];
-                    
-                    List defBoxes = s.getDefBoxes();
-                    if(!(defBoxes.size() ==1)) 
-                        throw new RuntimeException("SimpleLocalDefs: invalid number of def boxes");
-                            
-                    if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
-                        Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
-                        BoundedFlowSet killSet = (BoundedFlowSet) localToKillSet.get(defLocal);
-                        killSet.add(s, killSet);
-                        
-                    }
-                }
+            for (Object element : defs) {
+			    Unit s = (Unit) element;
+			    
+			    List defBoxes = s.getDefBoxes();
+			    if(!(defBoxes.size() ==1)) 
+			        throw new RuntimeException("SimpleLocalDefs: invalid number of def boxes");
+			            
+			    if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
+			        Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
+			        BoundedFlowSet killSet = (BoundedFlowSet) localToKillSet.get(defLocal);
+			        killSet.add(s, killSet);
+			        
+			    }
+			}
             
             // Store complement
             {
@@ -432,7 +429,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                 Local defLocal = (Local) value;
             
                 // Perform kill on value
-                in.intersection((FlowSet) localToPreserveSet.get(defLocal), out);
+                in.intersection(localToPreserveSet.get(defLocal), out);
 
                 // Perform generation
                 out.add(unit, out);

@@ -36,15 +36,10 @@ import soot.dava.internal.AST.ASTUnconditionalLoopNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DAbruptStmt;
-import soot.dava.internal.javaRep.DVariableDeclarationStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 import soot.dava.toolkits.base.AST.traversals.LabelToNodeMapper;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.InvokeStmt;
-import soot.jimple.ReturnStmt;
 import soot.jimple.Stmt;
-import soot.jimple.ThrowStmt;
 
 /*
  * It has been seen that a lot of times there are break statements targeting
@@ -91,7 +86,7 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
 	
 	
 	public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
-		Iterator it = node.getStatements().iterator();
+		Iterator<Object> it = node.getStatements().iterator();
 		AugmentedStmt remove = null;
 		ASTLabeledNode target=null;
 		while (it.hasNext()) {
@@ -174,7 +169,7 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
 		}//end of while going through the statement sequence
 		
 		if(remove != null){
-			List stmts = node.getStatements();
+			List<Object> stmts = node.getStatements();
 			stmts.remove(remove);
 			if(DEBUG)
 				System.out.println("\tRemoved abrupt stmt");
@@ -195,8 +190,8 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
 	}
 
 	public boolean checkChildLastInParent(ASTNode child, ASTNode parent){
-		List subBodies = parent.get_SubBodies();
-		Iterator it = subBodies.iterator();
+		List<Object> subBodies = parent.get_SubBodies();
+		Iterator<Object> it = subBodies.iterator();
 		
 		while(it.hasNext()){
 			List subBody = null;

@@ -22,6 +22,7 @@ package soot.dava.internal.AST;
 
 import soot.*;
 import java.util.*;
+
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
@@ -30,10 +31,10 @@ import soot.dava.toolkits.base.AST.analysis.*;
 public class ASTSwitchNode extends ASTLabeledNode
 {
     private ValueBox keyBox;
-    private List indexList;
-    private Map index2BodyList;
+    private List<Object> indexList;
+    private Map<Object, List<Object>> index2BodyList;
 
-    public ASTSwitchNode( SETNodeLabel label, Value key, List indexList, Map index2BodyList)
+    public ASTSwitchNode( SETNodeLabel label, Value key, List<Object> indexList, Map<Object, List<Object>> index2BodyList)
     {
 	super( label);
 
@@ -41,9 +42,9 @@ public class ASTSwitchNode extends ASTLabeledNode
 	this.indexList = indexList;
 	this.index2BodyList = index2BodyList;
 
-	Iterator it = indexList.iterator();
+	Iterator<Object> it = indexList.iterator();
 	while (it.hasNext()) {
-	    List body = (List) index2BodyList.get( it.next());
+	    List body = index2BodyList.get( it.next());
 	    
 	    if (body != null)
 		subBodies.add( body);
@@ -54,21 +55,21 @@ public class ASTSwitchNode extends ASTLabeledNode
       Nomair A. Naeem 22-FEB-2005
       Added for ASTCleaner
     */
-    public List getIndexList(){
+    public List<Object> getIndexList(){
 	return indexList;
     }
 
-    public Map getIndex2BodyList(){
+    public Map<Object, List<Object>> getIndex2BodyList(){
 	return index2BodyList;
     }
 
-    public void replaceIndex2BodyList(Map index2BodyList){
+    public void replaceIndex2BodyList(Map<Object, List<Object>> index2BodyList){
 	this.index2BodyList=index2BodyList;
 
-	subBodies = new ArrayList();
-	Iterator it = indexList.iterator();
+	subBodies = new ArrayList<Object>();
+	Iterator<Object> it = indexList.iterator();
 	while (it.hasNext()) {
-	    List body = (List) index2BodyList.get( it.next());
+	    List body = index2BodyList.get( it.next());
 	    
 	    if (body != null)
 		subBodies.add( body);
@@ -105,8 +106,7 @@ public class ASTSwitchNode extends ASTLabeledNode
 	ASTWalker.v().walk_value( a, get_Key());
 
 	if (a instanceof TryContentsFinder) {
-	    TryContentsFinder tcf = (TryContentsFinder) a;
-	    tcf.v().add_ExceptionSet( this, tcf.v().remove_CurExceptionSet());
+	    TryContentsFinder.v().add_ExceptionSet( this, TryContentsFinder.v().remove_CurExceptionSet());
 	}
   
 	perform_AnalysisOnSubBodies( a);
@@ -127,7 +127,7 @@ public class ASTSwitchNode extends ASTLabeledNode
         up.literal( "{" );
         up.newline();
 
-	Iterator it = indexList.iterator();
+	Iterator<Object> it = indexList.iterator();
 	while (it.hasNext()) {
 	    
 	    Object index = it.next();
@@ -146,7 +146,7 @@ public class ASTSwitchNode extends ASTLabeledNode
             up.literal( ":" );
             up.newline();
 
-	    List subBody = (List) index2BodyList.get( index);
+	    List<Object> subBody = index2BodyList.get( index);
 
 	    if (subBody != null) {
                 up.incIndent();
@@ -177,7 +177,7 @@ public class ASTSwitchNode extends ASTLabeledNode
 	b.append( "{");
 	b.append( NEWLINE);
 
-	Iterator it = indexList.iterator();
+	Iterator<Object> it = indexList.iterator();
 	while (it.hasNext()) {
 	    
 	    Object index = it.next();
@@ -195,7 +195,7 @@ public class ASTSwitchNode extends ASTLabeledNode
 	    b.append( ":");
 	    b.append( NEWLINE);
 
-	    List subBody = (List) index2BodyList.get( index);
+	    List<Object> subBody = index2BodyList.get( index);
 
 	    if (subBody != null) {
 		b.append( body_toString(subBody));

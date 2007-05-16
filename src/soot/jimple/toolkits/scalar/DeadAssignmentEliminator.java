@@ -61,8 +61,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
         if(Options.v().time())
             Timers.v().deadCodeTimer.start();
 
-        Set essentialStmts = new HashSet();
-        LinkedList toVisit = new LinkedList();
+        Set<Stmt> essentialStmts = new HashSet<Stmt>();
+        LinkedList<Stmt> toVisit = new LinkedList<Stmt>();
         Chain units = b.getUnits();
         
         // Make a first pass through the statements, noting 
@@ -163,7 +163,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
             
             while(!toVisit.isEmpty())
             {
-                Stmt s = (Stmt) toVisit.removeFirst();
+                Stmt s = toVisit.removeFirst();
                 Iterator boxIt = s.getUseBoxes().iterator();
                                 
                 while(boxIt.hasNext())
@@ -172,7 +172,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
                     
                     if(box.getValue() instanceof Local)
                     {
-                        Iterator defIt = defs.getDefsOfAt(
+                        Iterator<Unit> defIt = defs.getDefsOfAt(
                             (Local) box.getValue(), s).iterator();
                         
                         while(defIt.hasNext())
@@ -229,7 +229,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
                     s.containsInvokeExpr())
                 {
                     Local l = (Local) ((AssignStmt) s).getLeftOp();
-                    InvokeExpr e = (InvokeExpr) s.getInvokeExpr();
+                    InvokeExpr e = s.getInvokeExpr();
                     
                     // Just find one use of l which is essential 
                     {   

@@ -20,12 +20,10 @@
 package soot.jimple.toolkits.annotation.qualifiers;
 
 import soot.*;
+
 import java.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 import soot.tagkit.*;
 import soot.jimple.*;
-import soot.util.queue.*;
 import soot.jimple.toolkits.callgraph.*;
 
 /** a scene transformer that add tags to indicate the tightest qualifies 
@@ -41,8 +39,8 @@ public class TightestQualifiersTagger extends SceneTransformer {
     public final static int RESULT_PROTECTED = 2;
     public final static int RESULT_PRIVATE = 3;
     
-    private HashMap methodResultsMap = new HashMap();
-    private HashMap fieldResultsMap = new HashMap();
+    private final HashMap<SootMethod, Integer> methodResultsMap = new HashMap<SootMethod, Integer>();
+    private final HashMap<SootField, Integer> fieldResultsMap = new HashMap<SootField, Integer>();
     private MethodToContexts methodToContexts;
 
     protected void internalTransform(String phaseName, Map options){
@@ -64,10 +62,10 @@ public class TightestQualifiersTagger extends SceneTransformer {
             }
         }
 
-        Iterator methStatIt = methodResultsMap.keySet().iterator();
+        Iterator<SootMethod> methStatIt = methodResultsMap.keySet().iterator();
         while (methStatIt.hasNext()) {
-            SootMethod meth = (SootMethod)methStatIt.next();
-            int result = ((Integer)methodResultsMap.get(meth)).intValue();
+            SootMethod meth = methStatIt.next();
+            int result = methodResultsMap.get(meth).intValue();
             String sRes = "Public";
             if (result == RESULT_PUBLIC){
                 sRes = "Public";
@@ -229,7 +227,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
             methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
         }
         else {
-            if (((Integer)methodResultsMap.get(sm)).intValue() != RESULT_PUBLIC){
+            if (methodResultsMap.get(sm).intValue() != RESULT_PUBLIC){
                 methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
             }
         }
@@ -240,7 +238,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
             methodResultsMap.put(sm, new Integer(RESULT_PACKAGE));
         }
         else {
-            if (((Integer)methodResultsMap.get(sm)).intValue() == RESULT_PRIVATE){
+            if (methodResultsMap.get(sm).intValue() == RESULT_PRIVATE){
                 methodResultsMap.put(sm, new Integer(RESULT_PACKAGE));
             }
         }
@@ -279,10 +277,10 @@ public class TightestQualifiersTagger extends SceneTransformer {
             }
         }
         
-        Iterator fieldStatIt = fieldResultsMap.keySet().iterator();
+        Iterator<SootField> fieldStatIt = fieldResultsMap.keySet().iterator();
         while (fieldStatIt.hasNext()) {
-            SootField f = (SootField)fieldStatIt.next();
-            int result = ((Integer)fieldResultsMap.get(f)).intValue();
+            SootField f = fieldStatIt.next();
+            int result = fieldResultsMap.get(f).intValue();
             String sRes = "Public";
             if (result == RESULT_PUBLIC){
                 sRes = "Public";
@@ -430,7 +428,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
             fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
         }
         else {
-            if (((Integer)fieldResultsMap.get(sf)).intValue() != RESULT_PUBLIC){
+            if (fieldResultsMap.get(sf).intValue() != RESULT_PUBLIC){
                 fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
             }
         }
@@ -441,7 +439,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
             fieldResultsMap.put(sf, new Integer(RESULT_PACKAGE));
         }
         else {
-            if (((Integer)fieldResultsMap.get(sf)).intValue() == RESULT_PRIVATE){
+            if (fieldResultsMap.get(sf).intValue() == RESULT_PRIVATE){
                 fieldResultsMap.put(sf, new Integer(RESULT_PACKAGE));
             }
         }

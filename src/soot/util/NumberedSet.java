@@ -85,8 +85,7 @@ public final class NumberedSet {
             bits = new BitVector( uniSize );
             Numberable[] oldArray = array;
             array = null;
-            for( int i = 0; i < oldArray.length; i++ ) {
-                Numberable element = oldArray[i];
+            for (Numberable element : oldArray) {
                 if( element != null ) {
                     bits.set( element.getNumber() );
                 }
@@ -94,8 +93,7 @@ public final class NumberedSet {
         } else {
             Numberable[] oldArray = array;
             array = new Numberable[array.length*2];
-            for( int i = 0; i < oldArray.length; i++ ) {
-                Numberable element = oldArray[i];
+            for (Numberable element : oldArray) {
                 if( element != null ) {
                     array[findPosition(element)] = element;
                 }

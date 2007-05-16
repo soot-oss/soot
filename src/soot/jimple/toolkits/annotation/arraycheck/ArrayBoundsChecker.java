@@ -28,7 +28,6 @@ import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
-import soot.toolkits.graph.*;
 import soot.util.*;
 import soot.tagkit.*;
 import soot.jimple.toolkits.annotation.tags.*;
@@ -114,7 +113,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 	   
                 if (stmt.containsArrayRef())
                 {
-                    ArrayRef aref = (ArrayRef)stmt.getArrayRef();
+                    ArrayRef aref = stmt.getArrayRef();
                     
                     {
                         WeightedDirectedSparseGraph vgraph = 

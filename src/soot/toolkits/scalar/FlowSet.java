@@ -27,8 +27,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
 
 /**
@@ -44,7 +42,7 @@ public interface FlowSet {
   /**
    * Clones the current FlowSet.
    */
-  public Object clone();
+  public FlowSet clone();
 
   /** 
    * returns an empty set, most often more efficient than:

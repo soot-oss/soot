@@ -24,7 +24,6 @@ import soot.*;
 import soot.baf.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
-import soot.util.*;
 
 /**
  * @author Michael Batchelder
@@ -61,18 +60,18 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     // TODO: introduce if-jsr opaque jumps that never happen?
 
     boolean fallsthrough = false;
-    HashMap trapsToHandler = new HashMap();
+    HashMap<Trap,Unit> trapsToHandler = new HashMap<Trap,Unit>();
     Iterator it = b.getTraps().iterator();
     while (it.hasNext()) {
       Trap t = (Trap) it.next();
       trapsToHandler.put(t, t.getHandlerUnit());
     }
 
-    ArrayList targets = new ArrayList();
+    ArrayList<Unit> targets = new ArrayList<Unit>();
     ArrayList seenUts = new ArrayList();
-    HashMap switches = new HashMap();
-    HashMap switchDefs = new HashMap();
-    HashMap ignoreJumps = new HashMap();
+    HashMap<Unit,List<Unit>> switches = new HashMap<Unit,List<Unit>>();
+    HashMap<Unit,Unit> switchDefs = new HashMap<Unit,Unit>();
+    HashMap<TargetArgInst,Unit> ignoreJumps = new HashMap<TargetArgInst,Unit>();
     PatchingChain u = b.getUnits();
     it = u.snapshotIterator();
     while (it.hasNext()) {
@@ -107,9 +106,9 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     }
 
     it = u.snapshotIterator();
-    ArrayList processedLabels = new ArrayList();
-    HashMap builtJsrs = new HashMap();
-    HashMap popsBuilt = new HashMap();
+    ArrayList<Unit> processedLabels = new ArrayList<Unit>();
+    HashMap<Unit, JSRInst> builtJsrs = new HashMap<Unit, JSRInst>();
+    HashMap<Unit,Unit> popsBuilt = new HashMap<Unit,Unit>();
     Unit prev = null;
     while (it.hasNext()) {
       Unit unit = (Unit) it.next();
@@ -134,7 +133,6 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
       prev = unit;
     }
 
-    HashMap popsToTargs = new HashMap();
     it = u.snapshotIterator();
     while (it.hasNext()) {
       Unit unit = (Unit) it.next();
@@ -148,10 +146,10 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
         if (!popsBuilt.containsKey(tu))
           throw new RuntimeException("It appears a target was found that was not updated with a POP.\n\"This makes no sense,\" said the bug as it flew through the code.");
 
-        JSRInst ji = (JSRInst) builtJsrs.get(popsBuilt.get(tu));
+        JSRInst ji = builtJsrs.get(popsBuilt.get(tu));
         if (BodyBuilder.isBafIf(unit)) {
           if (Rand.getInt(10) > weight) {
-            ti.setTarget((Unit) popsBuilt.get(tu));
+            ti.setTarget(popsBuilt.get(tu));
           } else if (ji != null) {
             ti.setTarget(ji);
           } else {
@@ -167,9 +165,9 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
             if (Rand.getInt(10) < weight)
               ((GotoInst) unit).setTarget(ji);
             else
-              ((GotoInst) unit).setTarget((Unit) popsBuilt.get(tu));
+              ((GotoInst) unit).setTarget(popsBuilt.get(tu));
           } else {
-            ((GotoInst) unit).setTarget((Unit) popsBuilt.get(tu));
+            ((GotoInst) unit).setTarget(popsBuilt.get(tu));
           }
         }
       }
@@ -178,14 +176,14 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     it = trapsToHandler.keySet().iterator();
     while (it.hasNext()) {
       Trap t = (Trap) it.next();
-      t.setHandlerUnit((Unit) trapsToHandler.get(t));
+      t.setHandlerUnit(trapsToHandler.get(t));
     }
 
     it = ignoreJumps.keySet().iterator();
     while (it.hasNext()) {
       TargetArgInst ti = (TargetArgInst) it.next();
       if (popsBuilt.containsKey(ti.getTarget()))
-        ti.setTarget((Unit) popsBuilt.get(ti.getTarget()));
+        ti.setTarget(popsBuilt.get(ti.getTarget()));
     }
 
     targets.clear();
@@ -209,21 +207,21 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     it = switches.keySet().iterator();
     while (it.hasNext()) {
       Unit sw = (Unit) it.next();
-      List targs = (List) switches.get(sw);
+      List<Unit> targs = switches.get(sw);
 
       for (int i = 0; i < targs.size(); i++) {
         if (Rand.getInt(10) > weight)
           continue;
 
-        Unit unit = (Unit) targs.get(i);
-        Unit ji = (Unit) builtJsrs.get(unit);
+        Unit unit = targs.get(i);
+        Unit ji = builtJsrs.get(unit);
         if (ji != null)
           targs.set(i, ji);
       }
 
-      Unit def = (Unit) switchDefs.get(sw);
+      Unit def = switchDefs.get(sw);
       if (Rand.getInt(10) < weight && builtJsrs.get(def) != null)
-        def = (Unit) builtJsrs.get(def);
+        def = builtJsrs.get(def);
 
       if (sw instanceof TableSwitchInst) {
         ((TableSwitchInst) sw).setTargets(targs);

@@ -28,10 +28,7 @@
 
 
 package soot;
-import soot.*;
-
 import soot.util.*;
-import java.util.*;
 
 /**
  *   Soot representation of the Java built-in type 'long'. Implemented as

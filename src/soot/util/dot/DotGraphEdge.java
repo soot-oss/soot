@@ -36,7 +36,7 @@ import java.util.*;
 public class DotGraphEdge implements Renderable {
   private boolean isDirected;
   private DotGraphNode start, end;
-  private List attributes;
+  private List<DotGraphAttribute> attributes;
 
   /**
    * Draws a directed edge.
@@ -96,7 +96,7 @@ public class DotGraphEdge implements Renderable {
    */
   public void setAttribute(DotGraphAttribute attr) {
     if (this.attributes == null) {
-      this.attributes = new LinkedList();
+      this.attributes = new LinkedList<DotGraphAttribute>();
     }
     
     this.attributes.add(attr);    
@@ -110,9 +110,9 @@ public class DotGraphEdge implements Renderable {
     if (this.attributes != null) {
       
       line.append(" [");
-      Iterator attrIt = this.attributes.iterator();
+      Iterator<DotGraphAttribute> attrIt = this.attributes.iterator();
       while (attrIt.hasNext()) {
-	DotGraphAttribute attr = (DotGraphAttribute)attrIt.next();
+	DotGraphAttribute attr = attrIt.next();
 	line.append(attr.toString());
 	line.append(",");
       }

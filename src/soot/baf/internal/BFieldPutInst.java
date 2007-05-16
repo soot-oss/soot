@@ -32,9 +32,7 @@ package soot.baf.internal;
 
 import soot.*;
 import soot.baf.*;
-import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 public class BFieldPutInst extends AbstractInst implements FieldPutInst
 {
@@ -65,7 +63,7 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
 
     public int getInMachineCount()
     {
-        return JasminClass.sizeOfType(fieldRef.type()) + 1;
+        return AbstractJasminClass.sizeOfType(fieldRef.type()) + 1;
     }
 
     public int getOutMachineCount()

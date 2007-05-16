@@ -18,9 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
 import soot.*;
-import java.util.*;
 
 /** Represents a simple variable node with context.
  * @author Ondrej Lhotak

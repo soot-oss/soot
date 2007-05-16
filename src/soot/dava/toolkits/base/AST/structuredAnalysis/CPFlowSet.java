@@ -1,6 +1,8 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 import soot.dava.DecompilationException;
 import soot.dava.toolkits.base.AST.structuredAnalysis.CPVariable;
@@ -47,10 +49,10 @@ public class CPFlowSet extends DavaFlowSet{
          * anything which is in these lists is not being cloned so care should be taken to not modify
          * any value... c
          */
-        breakList = (HashMap)other.breakList.clone();
-        continueList = (HashMap)other.continueList.clone();
-        implicitBreaks = (HashMap)other.implicitBreaks.clone();
-        implicitContinues = (HashMap)other.implicitContinues.clone();
+        breakList = (HashMap<Serializable, List<DavaFlowSet>>)other.breakList.clone();
+        continueList = (HashMap<Serializable, List<DavaFlowSet>>)other.continueList.clone();
+        implicitBreaks = (HashMap<Serializable, List<DavaFlowSet>>)other.implicitBreaks.clone();
+        implicitContinues = (HashMap<Serializable, List<DavaFlowSet>>)other.implicitContinues.clone();
 
 	}
 	
@@ -412,7 +414,7 @@ public class CPFlowSet extends DavaFlowSet{
 
 
 
-    public Object clone(){
+    public CPFlowSet clone(){
     	
     	return new CPFlowSet(this);
     }

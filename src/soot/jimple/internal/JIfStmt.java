@@ -34,7 +34,6 @@ import soot.*;
 import soot.tagkit.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -80,15 +79,15 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         String target = "(branch)";
         if(!t.branches())
             target = t.toString();
-        return Jimple.v().IF + " "  + getCondition().toString() + " " + Jimple.v().GOTO + " "  + target;
+        return Jimple.IF + " "  + getCondition().toString() + " " + Jimple.GOTO + " "  + target;
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().IF);
+        up.literal(Jimple.IF);
         up.literal(" ");
         conditionBox.toString(up);
         up.literal(" ");
-        up.literal(Jimple.v().GOTO);
+        up.literal(Jimple.GOTO);
         up.literal(" ");
         targetBox.toString(up);
     }
@@ -142,7 +141,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         ((StmtSwitch) sw).caseIfStmt(this);
     }    
 
-    public void convertToBaf(final JimpleToBafContext context, final List out)
+    public void convertToBaf(final JimpleToBafContext context, final List<Unit> out)
     {
         Value cond = getCondition();
 
@@ -222,11 +221,6 @@ public class JIfStmt extends AbstractStmt implements IfStmt
                     {
 			add(Baf.v().newIfGeInst(Baf.v().newPlaceholderInst(getTarget())));
                     }
-        
-                    public void defaultCase(Value v)
-                    {
-                        throw new RuntimeException("invalid condition " + v);
-                    }
                 });               
                  
                 return;
@@ -276,11 +270,6 @@ public class JIfStmt extends AbstractStmt implements IfStmt
                     public void caseGeExpr(GeExpr expr)
                     {
 			add(Baf.v().newIfLeInst(Baf.v().newPlaceholderInst(getTarget())));
-                    }
-        
-                    public void defaultCase(Value v)
-                    {
-                        throw new RuntimeException("invalid condition " + v);
                     }
                 });               
                  

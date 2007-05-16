@@ -27,7 +27,6 @@
 package soot.toolkits.graph;
 
 import java.util.*;
-import java.io.*;
 import soot.*;
 import soot.jimple.Stmt;
 import soot.baf.Inst;
@@ -103,12 +102,12 @@ public class ArrayRefBlockGraph extends BlockGraph
      * @return the {@link Set} of {@link Unit}s in <tt>unitGraph</tt> which
      * are block leaders.
      */
-    protected Set computeLeaders(UnitGraph unitGraph) {
+    protected Set<Unit> computeLeaders(UnitGraph unitGraph) {
 	Body body = unitGraph.getBody();
 	if (body != mBody) {
 	    throw new RuntimeException("ArrayRefBlockGraph.computeLeaders() called with a UnitGraph that doesn't match its mBody.");
 	}
-        Set leaders = super.computeLeaders(unitGraph);
+        Set<Unit> leaders = super.computeLeaders(unitGraph);
 
 	for (Iterator it = body.getUnits().iterator(); it.hasNext(); ) {
 	    Unit unit = (Unit) it.next();

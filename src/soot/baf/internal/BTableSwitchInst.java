@@ -53,8 +53,8 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         {
             unitBoxes = new ArrayList();
 
-            for(int i = 0; i < targetBoxes.length; i++)
-                unitBoxes.add(targetBoxes[i]);
+            for (UnitBox element : targetBoxes)
+				unitBoxes.add(element);
 
             unitBoxes.add(defaultTargetBox);
             unitBoxes = Collections.unmodifiableList(unitBoxes);
@@ -64,8 +64,8 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
     public Object clone() 
     {        
         List list = new ArrayList();
-        for(int i =0; i< targetBoxes.length; i++) {
-            list.add(targetBoxes[i].getUnit());
+        for (UnitBox element : targetBoxes) {
+            list.add(element.getUnit());
         }
     
         return new  BTableSwitchInst(defaultTargetBox.getUnit(), lowIndex, highIndex, list);                
@@ -129,10 +129,10 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         targetBoxes[index].setUnit(target);
     }
 
-    public void setTargets(List targets)
+    public void setTargets(List<Unit> targets)
     {
         for(int i = 0; i < targets.size(); i++)
-            targetBoxes[i].setUnit((Unit) targets.get(i));
+            targetBoxes[i].setUnit(targets.get(i));
     }
 
     public UnitBox getTargetBox(int index)
@@ -144,8 +144,8 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
     {
         List targets = new ArrayList();
 
-        for(int i = 0; i < targetBoxes.length; i++)
-            targets.add(targetBoxes[i].getUnit());
+        for (UnitBox element : targetBoxes)
+			targets.add(element.getUnit());
 
         return targets;
     }

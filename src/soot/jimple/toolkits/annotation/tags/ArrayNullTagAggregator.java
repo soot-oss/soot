@@ -21,7 +21,6 @@ package soot.jimple.toolkits.annotation.tags;
 
 
 import soot.*;
-import java.util.*;
 import soot.baf.*;
 
 import soot.tagkit.*;

@@ -47,6 +47,7 @@ import soot.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
+
 import soot.toolkits.graph.interaction.*;
 import soot.options.*;
 
@@ -64,25 +65,25 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
     }
 
     // Accumulate the previous afterFlow sets.
-    private void accumulateAfterFlowSets(Unit s, Object[] flowRepositories, List previousAfterFlows)
+    private void accumulateAfterFlowSets(Unit s, Object[] flowRepositories, List<Object> previousAfterFlows)
     {
         int repCount = 0;
         
         previousAfterFlows.clear();
         if (s.fallsThrough())
         {
-            copy(((List) unitToAfterFallFlow.get(s)).get(0), flowRepositories[repCount]);
+            copy(unitToAfterFallFlow.get(s).get(0), flowRepositories[repCount]);
             previousAfterFlows.add(flowRepositories[repCount++]);
         }
         
         if (s.branches())
         {
-            List l = (List)(unitToAfterBranchFlow.get(s));
+            List l = (unitToAfterBranchFlow.get(s));
             Iterator it = l.iterator();
 
             while (it.hasNext())
             {
-                Object fs = (Object) (it.next());
+                Object fs = (it.next());
                 copy(fs, flowRepositories[repCount]);
                 previousAfterFlows.add(flowRepositories[repCount++]);
             }
@@ -92,7 +93,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
     protected void doAnalysis()
     {
-        final Map numbers = new HashMap();
+        final Map<Unit, Integer> numbers = new HashMap<Unit, Integer>();
         List orderedUnits = new PseudoTopologicalOrderer().newList(graph,false);
         {
             int i = 1;
@@ -103,15 +104,15 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
             }
         }
 
-        TreeSet changedUnits = new TreeSet( new Comparator() {
+        TreeSet<Unit> changedUnits = new TreeSet<Unit>( new Comparator() {
             public int compare(Object o1, Object o2) {
-                Integer i1 = (Integer) numbers.get(o1);
-                Integer i2 = (Integer) numbers.get(o2);
+                Integer i1 = numbers.get(o1);
+                Integer i2 = numbers.get(o2);
                 return (i1.intValue() - i2.intValue());
             }
         } );
 
-        Map unitToIncomingFlowSets = new HashMap(graph.size() * 2 + 1, 0.7f);
+        Map<Unit, ArrayList> unitToIncomingFlowSets = new HashMap<Unit, ArrayList>(graph.size() * 2 + 1, 0.7f);
         List heads = graph.getHeads();
         int numNodes = graph.size();
         int numComputations = 0;
@@ -145,43 +146,42 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
                 if (s.fallsThrough())
                 {
-                    ArrayList fl = new ArrayList();
+                    ArrayList<Object> fl = new ArrayList<Object>();
 
-                    fl.add((Object) (newInitialFlow()));
+                    fl.add((newInitialFlow()));
                     unitToAfterFallFlow.put(s, fl);
 
 		    Unit succ=(Unit) sl.getSuccOf(s);
 		    // it's possible for someone to insert some (dead) 
 		    // fall through code at the very end of a method body
 		    if(succ!=null) {
-			List l = (List) 
-			    (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
+			List<Object> l = (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
 			l.addAll(fl);
 		    }
                 }
                 else
-                    unitToAfterFallFlow.put(s, new ArrayList());
+                    unitToAfterFallFlow.put(s, new ArrayList<Object>());
 
                 if (s.branches())
                 {
-                    ArrayList l = new ArrayList();
-                    List incList;
+                    ArrayList<Object> l = new ArrayList<Object>();
+                    List<Object> incList;
                     Iterator boxIt = s.getUnitBoxes().iterator();
 
                     while (boxIt.hasNext())
                     {
-                        Object f = (Object) (newInitialFlow());
+                        Object f = (newInitialFlow());
 
                         l.add(f);
                         Unit ss = ((UnitBox) (boxIt.next())).getUnit();
-                        incList = (List) (unitToIncomingFlowSets.get(ss));
+                        incList = (unitToIncomingFlowSets.get(ss));
                                           
                         incList.add(f);
                     }
                     unitToAfterBranchFlow.put(s, l);
                 }
                 else
-                    unitToAfterBranchFlow.put(s, new ArrayList());
+                    unitToAfterBranchFlow.put(s, new ArrayList<Object>());
 
                 if (s.getUnitBoxes().size() > maxBranchSize)
                     maxBranchSize = s.getUnitBoxes().size();
@@ -213,20 +213,20 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
         // Perform fixed point flow analysis
         {
-            List previousAfterFlows = new ArrayList(); 
-            List afterFlows = new ArrayList();
+            List<Object> previousAfterFlows = new ArrayList<Object>(); 
+            List<Object> afterFlows = new ArrayList<Object>();
             Object[] flowRepositories = new Object[maxBranchSize+1];
             for (int i = 0; i < maxBranchSize+1; i++)
-                flowRepositories[i] = (Object) newInitialFlow();
+                flowRepositories[i] = newInitialFlow();
             Object[] previousFlowRepositories = new Object[maxBranchSize+1];
             for (int i = 0; i < maxBranchSize+1; i++)
-                previousFlowRepositories[i] = (Object) newInitialFlow();
+                previousFlowRepositories[i] = newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
                 Object beforeFlow;
 
-                Unit s = (Unit) changedUnits.first();
+                Unit s = changedUnits.first();
                 changedUnits.remove(s);
                 boolean isHead = heads.contains(s);
 
@@ -234,7 +234,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
                 // Compute and store beforeFlow
                 {
-                    List preds = (List) (unitToIncomingFlowSets.get(s));
+                    List preds = (unitToIncomingFlowSets.get(s));
 
                     beforeFlow = unitToBeforeFlow.get(s);
 

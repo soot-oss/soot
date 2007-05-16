@@ -33,7 +33,6 @@ package soot.jimple.internal;
 import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 abstract public class AbstractJimpleFloatBinopExpr
@@ -51,7 +50,7 @@ abstract public class AbstractJimpleFloatBinopExpr
         this.op2Box = op2Box;
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
         ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);

@@ -24,8 +24,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -36,7 +34,6 @@ import soot.G;
 import soot.IntType;
 import soot.LongType;
 import soot.Modifier;
-import soot.PhaseOptions;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
@@ -119,9 +116,9 @@ public class DavaPrinter {
                     importList = importList.union(((DavaBody) dm.getActiveBody()).getImportList());
                 }
 
-                Iterator eit = dm.getExceptions().iterator();
+                Iterator<SootClass> eit = dm.getExceptions().iterator();
                 while (eit.hasNext()) {
-                    String thrownPackage =((SootClass) eit.next()).toString();
+                    String thrownPackage =eit.next().toString();
                     if(!importList.contains(thrownPackage))
                     	importList.add(thrownPackage);
                     

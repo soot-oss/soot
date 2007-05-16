@@ -28,8 +28,6 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
-import soot.baf.*;
-import soot.util.*;
 import java.util.*;
 
 public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr 
@@ -59,10 +57,9 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
         list.addAll(baseBox.getValue().getUseBoxes());
         list.add(baseBox);
 
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            list.addAll(argBoxes[i].getValue().getUseBoxes());
-            list.add(argBoxes[i]);
+        for (ValueBox element : argBoxes) {
+            list.addAll(element.getValue().getUseBoxes());
+            list.add(element);
             
         }
         

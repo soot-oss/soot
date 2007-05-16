@@ -20,18 +20,20 @@
 package soot.javaToJimple;
 import java.util.*;
 
+import polyglot.ast.ClassDecl;
+
 public class ClassDeclFinder extends polyglot.visit.NodeVisitor {
 
-    private ArrayList declsFound;
+    private final ArrayList<ClassDecl> declsFound;
 
     
-    public ArrayList declsFound(){
+    public ArrayList<ClassDecl> declsFound(){
         return declsFound;
     }
     
 
     public ClassDeclFinder(){
-        declsFound = new ArrayList();
+        declsFound = new ArrayList<ClassDecl>();
     }
 
     public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {

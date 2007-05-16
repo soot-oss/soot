@@ -20,14 +20,10 @@
 package soot.jbco.jimpleTransformations;
 
 import java.util.*;
-import java.util.regex.Pattern;
-
 import soot.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
 import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
 
 /**
  * @author Michael Batchelder
@@ -53,7 +49,7 @@ public class MethodRenamer extends SceneTransformer  implements IJbcoTransform {
   private static final char stringChars[][] = { { 'S', '5', '$' },
       { 'l', '1', 'I' }, { '_' } };
   public static Vector  namesToNotRename = new Vector();
-  public static HashMap oldToNewMethodNames = new HashMap();
+  public static HashMap<String, String> oldToNewMethodNames = new HashMap<String, String>();
   private static Hierarchy hierarchy;
 
   protected void internalTransform(String phaseName, Map options) {
@@ -71,7 +67,7 @@ public class MethodRenamer extends SceneTransformer  implements IJbcoTransform {
     Iterator it = scene.getApplicationClasses().iterator();
     while (it.hasNext()) {
       SootClass c = (SootClass) it.next();
-      Vector fields = new Vector();
+      Vector<String> fields = new Vector<String>();
       Iterator fIt = c.getFields().iterator();
       while (fIt.hasNext()) {
         fields.add(((SootField) fIt.next()).getName());
@@ -86,9 +82,9 @@ public class MethodRenamer extends SceneTransformer  implements IJbcoTransform {
           continue;
 
         boolean rename = true;
-        Iterator cIt = hierarchy.getSuperclassesOfIncluding(c.getSuperclass()).iterator();
+        Iterator<SootClass> cIt = hierarchy.getSuperclassesOfIncluding(c.getSuperclass()).iterator();
         while (cIt.hasNext()) {
-          SootClass _c = (SootClass) cIt.next();
+          SootClass _c = cIt.next();
           if (_c.declaresMethod(subSig)
               && hierarchy.isVisible(c, _c.getMethod(subSig))
               && _c.isLibraryClass()) {
@@ -101,11 +97,11 @@ public class MethodRenamer extends SceneTransformer  implements IJbcoTransform {
 
         if (rename) {
           // TODO: This is flawed since it all methods of a similar name will get same name
-          String newName = (String) oldToNewMethodNames.get(m.getName());
+          String newName = oldToNewMethodNames.get(m.getName());
           if (newName == null) {
             if (fields.size() > 0) {
               int rand = Rand.getInt(fields.size());
-              newName = (String) fields.remove(rand);
+              newName = fields.remove(rand);
               if (oldToNewMethodNames.containsValue(newName))
                 newName = getNewName();
             } else {
@@ -151,7 +147,7 @@ public class MethodRenamer extends SceneTransformer  implements IJbcoTransform {
             } catch (Exception e) {}
 
             SootMethodRef r = ie.getMethodRef();
-            String newName = (String) oldToNewMethodNames.get(r.name());
+            String newName = oldToNewMethodNames.get(r.name());
             if (newName == null)
               continue;
 
@@ -218,9 +214,9 @@ public class MethodRenamer extends SceneTransformer  implements IJbcoTransform {
     {
       return false; // skip constructors for now
     } else { 
-      Iterator cIt = hierarchy.getSuperclassesOfIncluding(c.getSuperclass()).iterator();
+      Iterator<SootClass> cIt = hierarchy.getSuperclassesOfIncluding(c.getSuperclass()).iterator();
       while (cIt.hasNext()) {
-        SootClass _c = (SootClass) cIt.next();
+        SootClass _c = cIt.next();
         if (_c.isLibraryClass() && _c.declaresMethod(subSig)
           && hierarchy.isVisible(c, _c.getMethod(subSig)) )
         {

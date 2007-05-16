@@ -28,8 +28,6 @@ package soot.toolkits.graph;
 
 
 import java.util.*;
-import soot.*;
-import soot.util.*;
 
 
 
@@ -43,7 +41,7 @@ import soot.util.*;
 public class MemoryEfficientGraph extends HashMutableDirectedGraph
 {
 
-    HashMap self = new HashMap();
+    HashMap<Object, Object> self = new HashMap<Object, Object>();
 
     public void addNode(Object o) {
         super.addNode(o);

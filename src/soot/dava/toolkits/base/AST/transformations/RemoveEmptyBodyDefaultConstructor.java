@@ -34,7 +34,7 @@ public class RemoveEmptyBodyDefaultConstructor{
 		debug("\n\nRemoveEmptyBodyDefaultConstructor----"+s.getName());
 		List methods = s.getMethods();
 		Iterator it = methods.iterator();
-		List constructors = new ArrayList();
+		List<SootMethod> constructors = new ArrayList<SootMethod>();
 		
 		while(it.hasNext()){
 			SootMethod method = (SootMethod)it.next();
@@ -52,7 +52,7 @@ public class RemoveEmptyBodyDefaultConstructor{
 		}
 		
 		//only one constructor check its default (no arguments)
-		SootMethod constructor = (SootMethod)constructors.get(0);
+		SootMethod constructor = constructors.get(0);
 		if(constructor.getParameterCount()!=0){
 			//can only deal with default constructors
 			debug("constructor is not the default constructor");
@@ -81,7 +81,7 @@ public class RemoveEmptyBodyDefaultConstructor{
 		ASTMethodNode methodNode = (ASTMethodNode)AST;
 		debug("got methodnode check body is empty and super has nothing in it");
 		
-		List subBodies = methodNode.get_SubBodies();
+		List<Object> subBodies = methodNode.get_SubBodies();
 		if(subBodies.size()!=1){
 			debug("Method node does not have one subBody!!!");
 			return;

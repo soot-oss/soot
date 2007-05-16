@@ -32,7 +32,8 @@ public class AugmentedStmt
     public List bpreds, bsuccs, cpreds, csuccs;
     public SETNode myNode;
 
-    private IterableSet dominators, reachers;
+    private final IterableSet dominators;
+	private IterableSet reachers;
     private Stmt s;
 
 

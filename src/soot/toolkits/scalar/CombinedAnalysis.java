@@ -19,9 +19,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.toolkits.graph.*;
-import soot.*;
-
 
 /**
  *   Analysis that computes live locals, local defs, and local uses all at once.

@@ -24,7 +24,6 @@
  */
 
 package soot.tagkit;
-import soot.*;
 
 
 /** Represents a tag that just has a string to be printed with the code.

@@ -19,12 +19,7 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
 /**
@@ -35,7 +30,7 @@ import soot.toolkits.scalar.*;
 public class MHGDominatorsFinder implements DominatorsFinder
 {
     protected DirectedGraph graph;
-    protected Map nodeToDominators;
+    protected Map<Object, ArraySparseSet> nodeToDominators;
 
     public MHGDominatorsFinder(DirectedGraph graph)
     {
@@ -66,7 +61,7 @@ public class MHGDominatorsFinder implements DominatorsFinder
     public List getDominators(Object node)
     {
         // non-backed list since FlowSet is an ArrayPackedFlowSet
-        return ((FlowSet) nodeToDominators.get(node)).toList();
+        return nodeToDominators.get(node).toList();
     }
 
     public Object getImmediateDominator(Object node)
@@ -123,13 +118,13 @@ class MHGDominatorsAnalysis
     DirectedGraph graph;
     List heads;
     ArraySparseSet fullSet;
-    Map nodeToFlowSet;
+    Map<Object, ArraySparseSet> nodeToFlowSet;
     
     public MHGDominatorsAnalysis(DirectedGraph graph)
     {
         this.graph = graph;
         heads = graph.getHeads();
-        nodeToFlowSet = new HashMap();
+        nodeToFlowSet = new HashMap<Object, ArraySparseSet>();
 
         fullSet = new ArraySparseSet();
         for(Iterator i = graph.iterator(); i.hasNext();)
@@ -163,11 +158,11 @@ class MHGDominatorsAnalysis
                     predsIntersect.union(fullSet, predsIntersect);
 
                 for(Iterator j = graph.getPredsOf(o).iterator(); j.hasNext();){
-                    ArraySparseSet predSet = (ArraySparseSet) nodeToFlowSet.get(j.next());
+                    ArraySparseSet predSet = nodeToFlowSet.get(j.next());
                     predsIntersect.intersection(predSet, predsIntersect);
                 }
 
-                ArraySparseSet oldSet = (ArraySparseSet) nodeToFlowSet.get(o);
+                ArraySparseSet oldSet = nodeToFlowSet.get(o);
                 ArraySparseSet newSet = new ArraySparseSet();
                 newSet.add(o);
                 newSet.union(predsIntersect, newSet);

@@ -5,18 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import soot.G;
 import soot.Local;
 import soot.SootClass;
 import soot.Type;
-import soot.dava.internal.AST.ASTIfElseNode;
-import soot.dava.internal.AST.ASTIfNode;
-import soot.dava.internal.AST.ASTLabeledBlockNode;
 import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.AST.ASTStatementSequenceNode;
 import soot.dava.internal.AST.ASTSwitchNode;
 import soot.dava.internal.AST.ASTTryNode;
-import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.structuredAnalysis.UnreachableCodeFinder;
@@ -48,9 +43,9 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 	}
 
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-		List toRemove = new ArrayList();
-		List stmts = node.getStatements();
-		Iterator it = stmts.iterator();
+		List<Object> toRemove = new ArrayList<Object>();
+		List<Object> stmts = node.getStatements();
+		Iterator<Object> it = stmts.iterator();
 		while(it.hasNext()){
 			AugmentedStmt as = (AugmentedStmt)it.next();
 			Stmt s = as.get_Stmt();
@@ -75,15 +70,15 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
   	}
 
     	//from the Node get the subBodes
-    	List toReturn = new ArrayList();
-		Iterator sbit = node.get_SubBodies().iterator();
+    	List<ASTNode> toReturn = new ArrayList<ASTNode>();
+		Iterator<Object> sbit = node.get_SubBodies().iterator();
 		while (sbit.hasNext()) {
 			Object subBody = sbit.next();
-			Iterator it = ((List) subBody).iterator();
+			Iterator<ASTNode> it = ((List<ASTNode>) subBody).iterator();
 
 			//go over the ASTNodes in this subBody and apply
 			while (it.hasNext()) {
-				ASTNode temp = (ASTNode) it.next();
+				ASTNode temp = it.next();
 				if(!codeFinder.isConstructReachable(temp)){
 					//System.out.println("-------------------------A child of node of type "+node.getClass()+" whose type is "+temp.getClass()+" is unreachable");
 					toReturn.add(temp);
@@ -115,11 +110,11 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 	//TODO
 	public void caseASTTryNode(ASTTryNode node) {
 		//get try body 
-		List tryBody = node.get_TryBody();
-		Iterator it = tryBody.iterator();
+		List<Object> tryBody = node.get_TryBody();
+		Iterator<Object> it = tryBody.iterator();
 
 		//go over the ASTNodes in this tryBody and apply
-		List toReturn = new ArrayList();
+		List<Object> toReturn = new ArrayList<Object>();
 		while (it.hasNext()){
 	    	ASTNode temp = (ASTNode) it.next();
 	    	if(!codeFinder.isConstructReachable(temp)){
@@ -140,14 +135,14 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 		
 		
 		
-		Map exceptionMap = node.get_ExceptionMap();
-		Map paramMap = node.get_ParamMap();
+		Map<Object, Object> exceptionMap = node.get_ExceptionMap();
+		Map<Object, Object> paramMap = node.get_ParamMap();
 		//get catch list and apply on the following
 		// a, type of exception caught
 		// b, local of exception
 		// c, catchBody
-		List catchList = node.get_CatchList();
-		Iterator itBody = null;
+		List<Object> catchList = node.get_CatchList();
+		Iterator<Object> itBody = null;
 		it = catchList.iterator();
 		while (it.hasNext()) {
 			ASTTryNode.container catchBody = (ASTTryNode.container) it.next();
@@ -166,8 +161,8 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 			decideCaseExprOrRef(local);
 
 			//apply on catchBody
-			List body = (List) catchBody.o;
-			toReturn = new ArrayList();
+			List<Object> body = (List<Object>) catchBody.o;
+			toReturn = new ArrayList<Object>();
 			itBody = body.iterator();
 			while (itBody.hasNext()) {
 		    	ASTNode temp = (ASTNode) itBody.next();
@@ -196,20 +191,20 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
     	//System.out.println("dealing with SwitchNode");
     	//do a depthfirst on elements of the switchNode
 
-    	List indexList = node.getIndexList();
-    	Map index2BodyList = node.getIndex2BodyList();
+    	List<Object> indexList = node.getIndexList();
+    	Map<Object, List<Object>> index2BodyList = node.getIndex2BodyList();
 
-    	Iterator it = indexList.iterator();
+    	Iterator<Object> it = indexList.iterator();
     	while (it.hasNext()) {//going through all the cases of the switch statement
     	    Object currentIndex = it.next();
-    	    List body = (List) index2BodyList.get( currentIndex);
+    	    List body = index2BodyList.get( currentIndex);
     	    
     	    if (body == null)
     	    	continue;
     	    
     	    //this body is a list of ASTNodes 
 
-    	    List toReturn = new ArrayList();
+    	    List<ASTNode> toReturn = new ArrayList<ASTNode>();
     	    Iterator itBody = body.iterator();
     	    //go over the ASTNodes and apply
     	    while (itBody.hasNext()){
@@ -226,7 +221,7 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 				}
 			}
 			
-    	    Iterator newit = toReturn.iterator();
+    	    Iterator<ASTNode> newit = toReturn.iterator();
 			while(newit.hasNext()){
 				//System.out.println("Removed");
 				body.remove(newit.next());

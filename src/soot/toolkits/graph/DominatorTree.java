@@ -19,13 +19,7 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.jimple.*;
-import soot.options.*;
 import java.util.*;
-import soot.util.*;
 
 /**
  * Constructs a dominator tree structure from the given
@@ -121,11 +115,11 @@ public class DominatorTree
      * DirectedGraph and returns a list of the corresponding
      * DominatorNodes.
      **/
-    public List getPredsOf(DominatorNode node)
+    public List<DominatorNode> getPredsOf(DominatorNode node)
     {
         List preds = graph.getPredsOf(node.getGode());
 
-        List predNodes = new ArrayList();
+        List<DominatorNode> predNodes = new ArrayList<DominatorNode>();
         
         for(Iterator predsIt = preds.iterator(); predsIt.hasNext();){
             Object pred = predsIt.next();
@@ -139,11 +133,11 @@ public class DominatorTree
      * Finds all the successors of node in the original DirectedGraph
      * and returns a list of the corresponding DominatorNodes.
      **/
-    public List getSuccsOf(DominatorNode node)
+    public List<DominatorNode> getSuccsOf(DominatorNode node)
     {
         List succs = graph.getSuccsOf(node.getGode());
 
-        List succNodes = new ArrayList();
+        List<DominatorNode> succNodes = new ArrayList<DominatorNode>();
         
         for(Iterator succsIt = succs.iterator(); succsIt.hasNext();){
             Object succ = succsIt.next();

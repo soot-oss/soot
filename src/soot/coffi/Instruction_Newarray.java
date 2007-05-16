@@ -30,7 +30,6 @@
 
 
 package soot.coffi;
-import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>
@@ -73,7 +72,7 @@ class Instruction_Newarray extends Instruction {
    public Instruction_Newarray() { super((byte)ByteCode.NEWARRAY); name = "newarray"; }
    public String toString(cp_info constant_pool[]) {
       String args;
-      switch((int)atype) {
+      switch(atype) {
       case T_BOOLEAN: args = "boolean"; break;
       case T_CHAR: args = "char"; break;
       case T_FLOAT: args = "float"; break;

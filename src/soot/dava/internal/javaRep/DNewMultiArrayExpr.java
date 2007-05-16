@@ -20,9 +20,9 @@
 package soot.dava.internal.javaRep;
 
 import soot.*;
+
 import java.util.*;
 import soot.grimp.*;
-import soot.jimple.*;
 import soot.jimple.internal.*;
 
 public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr
@@ -51,9 +51,9 @@ public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr
 	up.literal( "new" );
         up.literal( " " );
         up.type( getBaseType().baseType );
-        for( int i = 0; i < sizeBoxes.length; i++ ) {
+        for (ValueBox element : sizeBoxes) {
             up.literal( "[" );
-            sizeBoxes[i].toString( up );
+            element.toString( up );
             up.literal( "]" );
         }
 

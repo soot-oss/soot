@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.infoflow;
 
 import soot.*;
+
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
@@ -18,8 +19,8 @@ public class ClassInfoFlowAnalysis
 	SootClass sootClass;
 	InfoFlowAnalysis dfa; // used to access the data flow analyses of other classes
 	
-	Map methodToInfoFlowAnalysis;
-	Map methodToInfoFlowSummary;
+	Map<SootMethod, SmartMethodInfoFlowAnalysis> methodToInfoFlowAnalysis;
+	Map<SootMethod, MutableDirectedGraph> methodToInfoFlowSummary;
 	
 	public static int methodCount = 0;
 	
@@ -27,8 +28,8 @@ public class ClassInfoFlowAnalysis
 	{
 		 this.sootClass = sootClass;
 		 this.dfa = dfa;
-		 methodToInfoFlowAnalysis = new HashMap();
-		 methodToInfoFlowSummary = new HashMap();
+		 methodToInfoFlowAnalysis = new HashMap<SootMethod, SmartMethodInfoFlowAnalysis>();
+		 methodToInfoFlowSummary = new HashMap<SootMethod, MutableDirectedGraph>();
 		 
 //		 doSimpleConservativeDataFlowAnalysis();
 	}
@@ -64,7 +65,7 @@ public class ClassInfoFlowAnalysis
 			}
 		}
 
-		return (SmartMethodInfoFlowAnalysis) methodToInfoFlowAnalysis.get(method);
+		return methodToInfoFlowAnalysis.get(method);
 	}
 	
 	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod method) { return getMethodInfoFlowSummary(method, true); }
@@ -96,7 +97,7 @@ public class ClassInfoFlowAnalysis
 			}
 		}
 
-		return (MutableDirectedGraph) methodToInfoFlowSummary.get(method);
+		return methodToInfoFlowSummary.get(method);
 	}
 	
 /*	public void doFixedPointDataFlowAnalysis()
@@ -170,7 +171,7 @@ public class ClassInfoFlowAnalysis
 			
 		Body b = sm.retrieveActiveBody();
 		UnitGraph g = new ExceptionalUnitGraph(b);
-		HashSet fieldsStaticsParamsAccessed = new HashSet();		
+		HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();		
 
 		// Get list of fields, globals, and parameters that are accessed
 		Iterator stmtIt = g.iterator();
@@ -184,7 +185,7 @@ public class ClassInfoFlowAnalysis
 				if( ir instanceof ParameterRef )
 				{
 					ParameterRef pr = (ParameterRef) ir;
-					fieldsStaticsParamsAccessed.add(dfa.getNodeForParameterRef(sm, pr.getIndex()));
+					fieldsStaticsParamsAccessed.add(InfoFlowAnalysis.getNodeForParameterRef(sm, pr.getIndex()));
 				}
 			}
 			if(s.containsFieldRef())
@@ -195,7 +196,7 @@ public class ClassInfoFlowAnalysis
 					// This should be added to the list of fields accessed
 					// static fields "belong to everyone"
 					StaticFieldRef sfr = (StaticFieldRef) ref;
-					fieldsStaticsParamsAccessed.add(dfa.getNodeForFieldRef(sm, sfr.getField()));
+					fieldsStaticsParamsAccessed.add(InfoFlowAnalysis.getNodeForFieldRef(sm, sfr.getField()));
 				}
 				else if( ref instanceof InstanceFieldRef )
 				{
@@ -206,7 +207,7 @@ public class ClassInfoFlowAnalysis
 					if(base instanceof Local)
 					{
 						if( dfa.includesInnerFields() || ((!sm.isStatic()) && base.equivTo(b.getThisLocal())) )
-							fieldsStaticsParamsAccessed.add(dfa.getNodeForFieldRef(sm, ifr.getField()));
+							fieldsStaticsParamsAccessed.add(InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField()));
 		            }
 				}
 			}
@@ -214,7 +215,7 @@ public class ClassInfoFlowAnalysis
 		
 		// Each accessed field, global, and parameter becomes a node in the graph
 		MutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
-		Iterator accessedIt1 = fieldsStaticsParamsAccessed.iterator();
+		Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
 			Object o = accessedIt1.next();
@@ -225,7 +226,7 @@ public class ClassInfoFlowAnalysis
 		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			EquivalentValue parameterRefEqVal = dfa.getNodeForParameterRef(sm, i);
+			EquivalentValue parameterRefEqVal = InfoFlowAnalysis.getNodeForParameterRef(sm, i);
 			if(!dataFlowGraph.containsNode(parameterRefEqVal))
 				dataFlowGraph.addNode(parameterRefEqVal);
 		}
@@ -236,7 +237,7 @@ public class ClassInfoFlowAnalysis
 			SootField sf = (SootField) it.next();
 			if(sf.isStatic() || !sm.isStatic())
 			{
-				EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
+				EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
 				if(!dataFlowGraph.containsNode(fieldRefEqVal))
 					dataFlowGraph.addNode(fieldRefEqVal);
 			}
@@ -254,7 +255,7 @@ public class ClassInfoFlowAnalysis
 				SootField scField = (SootField) scFieldsIt.next();
 				if(scField.isStatic() || !sm.isStatic())
 				{
-					EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField);
+					EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
 					if(!dataFlowGraph.containsNode(fieldRefEqVal))
 						dataFlowGraph.addNode(fieldRefEqVal);
 				}
@@ -267,15 +268,15 @@ public class ClassInfoFlowAnalysis
 		if(sm.getReturnType() != VoidType.v())
 		{
 			returnValueRef = new ParameterRef(sm.getReturnType(), -1);
-			dataFlowGraph.addNode(dfa.getNodeForReturnRef(sm));
+			dataFlowGraph.addNode(InfoFlowAnalysis.getNodeForReturnRef(sm));
 		}
 		
 //		ThisRef thisRef = null;
 		if(!sm.isStatic())
 		{
 //			thisRef = new ThisRef(sootClass.getType());
-			dataFlowGraph.addNode(dfa.getNodeForThisRef(sm));
-			fieldsStaticsParamsAccessed.add(dfa.getNodeForThisRef(sm));
+			dataFlowGraph.addNode(InfoFlowAnalysis.getNodeForThisRef(sm));
+			fieldsStaticsParamsAccessed.add(InfoFlowAnalysis.getNodeForThisRef(sm));
 		}
 		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
@@ -287,7 +288,7 @@ public class ClassInfoFlowAnalysis
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
 			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow())
 				continue;
-			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
+			Iterator<EquivalentValue> accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
 				Object s = accessedIt2.next();
@@ -302,7 +303,7 @@ public class ClassInfoFlowAnalysis
 					dataFlowGraph.addEdge(r, s);
 			}
 			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow()))
-				dataFlowGraph.addEdge(r, dfa.getNodeForReturnRef(sm));
+				dataFlowGraph.addEdge(r, InfoFlowAnalysis.getNodeForReturnRef(sm));
 		}
 		
 		return dataFlowGraph;
@@ -311,13 +312,13 @@ public class ClassInfoFlowAnalysis
 	/** Does not require the method to have a body */
 	public MutableDirectedGraph triviallyConservativeInfoFlowAnalysis(SootMethod sm)
 	{
-		HashSet fieldsStaticsParamsAccessed = new HashSet();
+		HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
 		
 		// Add all of the nodes necessary to ensure that this is a complete data flow graph
 		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			EquivalentValue parameterRefEqVal = dfa.getNodeForParameterRef(sm, i);
+			EquivalentValue parameterRefEqVal = InfoFlowAnalysis.getNodeForParameterRef(sm, i);
 			fieldsStaticsParamsAccessed.add(parameterRefEqVal);
 		}
 		
@@ -327,7 +328,7 @@ public class ClassInfoFlowAnalysis
 			SootField sf = (SootField) it.next();
 			if(sf.isStatic() || !sm.isStatic())
 			{
-				EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
+				EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
 				fieldsStaticsParamsAccessed.add(fieldRefEqVal);
 			}
 		}
@@ -344,7 +345,7 @@ public class ClassInfoFlowAnalysis
 				SootField scField = (SootField) scFieldsIt.next();
 				if(scField.isStatic() || !sm.isStatic())
 				{
-					EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField);
+					EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
 					fieldsStaticsParamsAccessed.add(fieldRefEqVal);
 				}
 	        }
@@ -355,7 +356,7 @@ public class ClassInfoFlowAnalysis
 
 		// Each field, global, and parameter becomes a node in the graph
 		MutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
-		Iterator accessedIt1 = fieldsStaticsParamsAccessed.iterator();
+		Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
 			Object o = accessedIt1.next();
@@ -367,15 +368,15 @@ public class ClassInfoFlowAnalysis
 		if(sm.getReturnType() != VoidType.v())
 		{
 			returnValueRef = new ParameterRef(sm.getReturnType(), -1);
-			dataFlowGraph.addNode(dfa.getNodeForReturnRef(sm));
+			dataFlowGraph.addNode(InfoFlowAnalysis.getNodeForReturnRef(sm));
 		}
 		
 		ThisRef thisRef = null;
 		if(!sm.isStatic())
 		{
 			thisRef = new ThisRef(sootClass.getType());
-			dataFlowGraph.addNode(dfa.getNodeForThisRef(sm));
-			fieldsStaticsParamsAccessed.add(dfa.getNodeForThisRef(sm));
+			dataFlowGraph.addNode(InfoFlowAnalysis.getNodeForThisRef(sm));
+			fieldsStaticsParamsAccessed.add(InfoFlowAnalysis.getNodeForThisRef(sm));
 		}
 		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
@@ -387,7 +388,7 @@ public class ClassInfoFlowAnalysis
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
 			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow() )
 				continue;
-			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
+			Iterator<EquivalentValue> accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
 				Object s = accessedIt2.next();
@@ -400,7 +401,7 @@ public class ClassInfoFlowAnalysis
 					dataFlowGraph.addEdge(r, s);
 			}
 			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow()) )
-				dataFlowGraph.addEdge(r, dfa.getNodeForReturnRef(sm));
+				dataFlowGraph.addEdge(r, InfoFlowAnalysis.getNodeForReturnRef(sm));
 		}
 		
 		return dataFlowGraph;

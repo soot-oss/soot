@@ -18,9 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
 import soot.*;
-import java.util.*;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph
  * that is not associated with any particular method invocation.

@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.infoflow;
 
 import soot.*;
+
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
@@ -24,10 +25,10 @@ public class LocalObjectsAnalysis
 	UseFinder uf;
 	CallGraph cg;
 
-	Map classToClassLocalObjectsAnalysis;
+	Map<SootClass, ClassLocalObjectsAnalysis> classToClassLocalObjectsAnalysis;
 	
 	Map mergedContextsCache;
-	Map mloaCache;
+	Map<SootMethod, SmartMethodLocalObjectsAnalysis> mloaCache;
 	
 	public LocalObjectsAnalysis(InfoFlowAnalysis dfa)
 	{
@@ -35,9 +36,9 @@ public class LocalObjectsAnalysis
 		this.uf = new UseFinder();
 		this.cg = Scene.v().getCallGraph();
 		
-		classToClassLocalObjectsAnalysis = new HashMap();
+		classToClassLocalObjectsAnalysis = new HashMap<SootClass, ClassLocalObjectsAnalysis>();
 		mergedContextsCache = new HashMap();
-		mloaCache = new HashMap();
+		mloaCache = new HashMap<SootMethod, SmartMethodLocalObjectsAnalysis>();
 	}
 	
 	public ClassLocalObjectsAnalysis getClassLocalObjectsAnalysis(SootClass sc)
@@ -47,7 +48,7 @@ public class LocalObjectsAnalysis
 			ClassLocalObjectsAnalysis cloa = newClassLocalObjectsAnalysis(this, dfa, uf, sc);
 			classToClassLocalObjectsAnalysis.put(sc, cloa);
 		}
-		return (ClassLocalObjectsAnalysis) classToClassLocalObjectsAnalysis.get(sc);
+		return classToClassLocalObjectsAnalysis.get(sc);
 	}
 	
 	// meant to be overridden by specialty local objects analyses
@@ -145,7 +146,7 @@ public class LocalObjectsAnalysis
 			
 			if(ifr.getBase() == thisLocal)
 			{
-				boolean isLocal = mergedContext.isFieldLocal(dfa.getNodeForFieldRef(sm, ifr.getField()));
+				boolean isLocal = mergedContext.isFieldLocal(InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField()));
 				if(dfa.printDebug())
 				{
 					if(isLocal)
@@ -269,7 +270,7 @@ public class LocalObjectsAnalysis
 		return true;
 	}
 */
-	Map rmCache = new HashMap();
+	Map<SootMethod, ReachableMethods> rmCache = new HashMap<SootMethod, ReachableMethods>();
 	
 	public CallChain getNextCallChainBetween(SootMethod start, SootMethod goal, List previouslyFound)
 	{
@@ -280,10 +281,10 @@ public class LocalObjectsAnalysis
 		// CACHEABLE?
 		ReachableMethods rm = null;
 		if(rmCache.containsKey(start))
-			rm = (ReachableMethods) rmCache.get(start);
+			rm = rmCache.get(start);
 		else
 		{
-			List entryPoints = new ArrayList();
+			List<SootMethod> entryPoints = new ArrayList<SootMethod>();
 			entryPoints.add(start);
 			rm = new ReachableMethods(cg, entryPoints);
 			rm.update();
@@ -534,204 +535,15 @@ public class LocalObjectsAnalysis
 	}
 */
 
-	private CallLocalityContext getContextAtEndOfCallChain(CallLocalityContext startingContext, SootMethod startingMethod, List callChain)
-	{
-		CallLocalityContext containingContext = null;
-		CallLocalityContext callingContext = startingContext;
-		SootMethod containingMethod = null;
-		SootMethod callingMethod = startingMethod;
-		
-		// each call is a pair: invoke expression and the method it calls
-		
-		Iterator callIt = callChain.iterator();
-		// for later calls, we must find out if the base object and parameters are local to the calling method based on whether its base object and parameters were local to the containing method
-		while(callIt.hasNext())
-		{
-			// calling method and calling context from last iteration now become containing method and containing context
-			containingMethod = callingMethod;
-			containingContext = callingContext;
-			
-			// get new calling method and calling context
-			Edge e = (Edge) callIt.next();
-			InvokeExpr ie = e.srcStmt().getInvokeExpr();
-			callingMethod = e.tgt();
-			callingContext = new CallLocalityContext(dfa.getMethodInfoFlowSummary(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
-			
-			// We will use the containing context that we have to determine if base/args are local
-			if(callingMethod.isConcrete())
-			{
-				Body b = containingMethod.retrieveActiveBody();
-				
-				SmartMethodLocalObjectsAnalysis mloa = null;
-//				Pair mloaKey = new Pair(containingMethod, containingContext);
-				if( mloaCache.containsKey(containingMethod) )
-				{
-					mloa = (SmartMethodLocalObjectsAnalysis) mloaCache.get(containingMethod);
-//					G.v().out.println("        Retrieved mloa for " + containingMethod.getName() + " on Call Chain: ");
-				}
-				else
-				{		
-					UnitGraph g = new ExceptionalUnitGraph(b);
-					mloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
-//					G.v().out.println("        Caching mloa (smdfa " + SmartMethodInfoFlowAnalysis.counter + 
-//						" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + containingMethod.getName() + " on Call Chain:");
-					mloaCache.put(containingMethod, mloa);
-				}
-			
-				// check base
-				if(ie instanceof InstanceInvokeExpr)
-				{
-					InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-					if( !containingMethod.isStatic() && iie.getBase().equivTo(b.getThisLocal()) )
-					{
-						// calling another method on same object... basically copy the previous context
-						Iterator localRefsIt = containingContext.getLocalRefs().iterator();
-						while(localRefsIt.hasNext())
-						{
-							EquivalentValue rEqVal = (EquivalentValue) localRefsIt.next();
-							Ref r = (Ref) rEqVal.getValue();
-							if(r instanceof InstanceFieldRef)
-							{
-								EquivalentValue newRefEqVal = dfa.getNodeForFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
-								if(callingContext.containsField(newRefEqVal)) // if not, then we're probably calling a parent class's method, so some fields are missing
-									callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method getting called
-							}
-							else if(r instanceof ThisRef)
-								callingContext.setThisLocal();
-						}
-					}
-					else if(mloa.isObjectLocal(iie.getBase(), containingContext))
-					{
-						// calling a method on a local object
-						callingContext.setAllFieldsLocal();
-						callingContext.setThisLocal();
-					}
-					else
-					{
-						// calling a method on a shared object
-						callingContext.setAllFieldsShared();
-						callingContext.setThisShared();
-					}
-				}
-				else
-				{
-					callingContext.setAllFieldsShared();
-					callingContext.setThisShared();
-				}
-				
-				// check args
-				for(int param = 0; param < ie.getArgCount(); param++)
-				{
-					if(mloa.isObjectLocal(ie.getArg(param), containingContext))
-						callingContext.setParamLocal(param);
-					else
-						callingContext.setParamShared(param);
-				}
-			}
-			else
-			{
-				// The only conservative solution for a bodyless method is to assume everything is shared
-				callingContext.setAllFieldsShared();
-				callingContext.setThisShared();				
-				callingContext.setAllParamsShared();
-			}
-			if(dfa.printDebug())
-				G.v().out.println("      " + callingMethod.getName() + " " + callingContext.toShortString());
-		}
-		return callingContext;
-	}
-	
-	private CallLocalityContext getInitialContext(SootMethod startingMethod, Edge e)
-	{
-		// get first calling method and calling context
-		InvokeExpr ie = e.srcStmt().getInvokeExpr();
-		SootMethod callingMethod = e.tgt();
-//		if(dfa.getMethodDataFlowGraph(callingMethod) == null)
-//			throw new RuntimeException("Data Flow Graph not found for " + callingMethod);
-//		if(dfa.getMethodDataFlowGraph(callingMethod).getNodes().size() == 0)
-//			throw new RuntimeException("Data Flow Graph with no nodes found for " + callingMethod);
-		CallLocalityContext callingContext = new CallLocalityContext(dfa.getMethodInfoFlowSummary(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
-		
-		// check base
-		if(ie instanceof InstanceInvokeExpr)
-		{
-			InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-			if( !startingMethod.isStatic() && iie.getBase().equivTo(startingMethod.retrieveActiveBody().getThisLocal()) )
-			{
-				// calling another method on same object... basically copy the previous context
-				ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(startingMethod.getDeclaringClass());
-				CallLocalityContext containingContext = cloa.getContextFor(startingMethod);
-
-				Iterator localRefsIt = containingContext.getLocalRefs().iterator();
-				while(localRefsIt.hasNext())
-				{
-					EquivalentValue rEqVal = (EquivalentValue) localRefsIt.next();
-					Ref r = (Ref) rEqVal.getValue();
-					if(r instanceof InstanceFieldRef)
-					{
-						EquivalentValue newRefEqVal = dfa.getNodeForFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
-						if(callingContext.containsField(newRefEqVal)) // if not, then we're probably calling a parent class's method, so some fields are missing
-							callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method getting called
-					}
-					else if(r instanceof ThisRef)
-						callingContext.setThisLocal();
-				}
-			}
-			else if(isObjectLocalToParent(iie.getBase(), startingMethod))
-			{
-				callingContext.setAllFieldsLocal();
-				callingContext.setThisLocal();
-			}
-			else
-			{
-				callingContext.setAllFieldsShared();
-				callingContext.setThisShared();
-			}
-		}
-		else
-		{
-			callingContext.setAllFieldsShared();
-			callingContext.setThisShared();
-		}
-		
-		// check args
-		for(int param = 0; param < ie.getArgCount(); param++)
-		{
-			if(isObjectLocalToParent(ie.getArg(param), startingMethod))
-				callingContext.setParamLocal(param);
-			else
-				callingContext.setParamShared(param);
-		}
-		return callingContext;
-	}
-	
-	private CallLocalityContext getContextViaCallChain(SootMethod startingMethod, List callChain) // destroys callChain
-	{
-		// SHOULD PERFORM CACHING, since it's likely that we'll ask about several values in the same method
-		
-	
-		// Get context and method from the first call
-		Edge e = (Edge) callChain.get(0);
-		CallLocalityContext callContext = getInitialContext(startingMethod, e); // gets calllocalitycontext of first call
-		SootMethod callMethod = e.tgt();
-		if(dfa.printDebug())
-			G.v().out.println("      " + callMethod.getName() + " " + callContext.toShortString());
-		
-		// Remove the first call, and get context at end of chain (method is sm)
-		callChain.remove(0);
-		CallLocalityContext endContext = getContextAtEndOfCallChain(callContext, callMethod, callChain);
-		return endContext;
-	}
-	
 	// returns a list of all methods that can be invoked on an object of type sc
-	public List getAllMethodsForClass(SootClass sootClass)
+	public List<SootMethod> getAllMethodsForClass(SootClass sootClass)
 	{
 		// Determine which methods are reachable in this program
 		ReachableMethods rm = Scene.v().getReachableMethods();
 
 		// Get list of reachable methods declared in this class
 		// Also get list of fields declared in this class
-		List scopeMethods = new ArrayList();
+		List<SootMethod> scopeMethods = new ArrayList<SootMethod>();
 		Iterator scopeMethodsIt = sootClass.methodIterator();
 		while(scopeMethodsIt.hasNext())
 		{

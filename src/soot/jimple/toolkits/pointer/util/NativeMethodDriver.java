@@ -32,9 +32,7 @@ import soot.jimple.toolkits.pointer.nativemethods.*;
 import java.util.*;
 
 public class NativeMethodDriver {
-    private NativeHelper helper;
     public NativeMethodDriver( NativeHelper helper ) {
-        this.helper = helper;
         cnameToSim.put("java.lang.Object", new JavaLangObjectNative(helper));
         cnameToSim.put("java.lang.System", new JavaLangSystemNative(helper));
         cnameToSim.put("java.lang.Runtime", new JavaLangRuntimeNative(helper));
@@ -114,8 +112,8 @@ public class NativeMethodDriver {
                        new SunMiscSignalHandlerNative(helper));
     }
 
-  private HashMap cnameToSim = new HashMap(100);
-  private boolean DEBUG = false;
+  private final HashMap<String,NativeMethodClass> cnameToSim = new HashMap<String,NativeMethodClass>(100);
+  private final boolean DEBUG = false;
 
   /**
    * The entry point of native method simulation.
@@ -132,7 +130,7 @@ public class NativeMethodDriver {
 				ReferenceVariable params[]) {
 
     String cname = method.getDeclaringClass().getName();
-    NativeMethodClass clsSim = (NativeMethodClass)cnameToSim.get(cname);
+    NativeMethodClass clsSim = cnameToSim.get(cname);
 
 //    G.v().out.println(method.toString());
     if (clsSim == null) {

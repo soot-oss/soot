@@ -30,7 +30,6 @@
 package soot.jimple;
 
 import soot.*;
-import soot.util.*;
 import java.util.*;
 
 public interface TableSwitchStmt extends Stmt
@@ -48,7 +47,7 @@ public interface TableSwitchStmt extends Stmt
     public List getTargets();
     public Unit getTarget(int index);
     public void setTarget(int index, Unit target);
-    public void setTargets(List targets);
+    public void setTargets(List<Unit> targets);
     public UnitBox getTargetBox(int index);
 }
 

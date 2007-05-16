@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
 
 /** A predicate that accepts edges that are the result of an explicit invoke.
  * @author Ondrej Lhotak

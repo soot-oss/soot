@@ -31,8 +31,6 @@
 package soot.jimple;
 
 import soot.*;
-import soot.util.*;
-import java.util.*;
 
 public interface Ref extends Value
 {

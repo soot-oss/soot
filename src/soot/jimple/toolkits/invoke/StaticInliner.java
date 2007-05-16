@@ -28,11 +28,9 @@ import soot.options.*;
 
 import soot.*;
 import soot.jimple.*;
-import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.toolkits.graph.*;
+import soot.tagkit.Host;
 import java.util.*;
-import soot.util.*;
 
 /** Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites. */
 public class StaticInliner extends SceneTransformer
@@ -59,19 +57,19 @@ public class StaticInliner extends SceneTransformer
         CallGraph cg = Scene.v().getCallGraph();
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
-        ArrayList sitesToInline = new ArrayList();
+        ArrayList<List<Host>> sitesToInline = new ArrayList<List<Host>>();
 
         computeAverageMethodSizeAndSaveOriginalSizes();
         // Visit each potential site in reverse pseudo topological order.
         {
             TopologicalOrderer orderer = new TopologicalOrderer(cg);
             orderer.go();
-            List order = orderer.order();
-            ListIterator it = order.listIterator(order.size());
+            List<SootMethod> order = orderer.order();
+            ListIterator<SootMethod> it = order.listIterator(order.size());
     
             while (it.hasPrevious())
             {
-                SootMethod container = (SootMethod)it.previous();
+                SootMethod container = it.previous();
                 if( methodToOriginalSize.get(container) == null ) continue;
     
                 if (!container.isConcrete())
@@ -82,8 +80,8 @@ public class StaticInliner extends SceneTransformer
     
                 JimpleBody b = (JimpleBody)container.retrieveActiveBody();
                     
-                List unitList = new ArrayList(); unitList.addAll(b.getUnits());
-                Iterator unitIt = unitList.iterator();
+                List<Unit> unitList = new ArrayList<Unit>(); unitList.addAll(b.getUnits());
+                Iterator<Unit> unitIt = unitList.iterator();
     
                 while (unitIt.hasNext())
                 {
@@ -103,7 +101,7 @@ public class StaticInliner extends SceneTransformer
                     if(!InlinerSafetyManager.ensureInlinability(target, s, container, modifierOptions))
                         continue;
                         
-                    List l = new ArrayList();
+                    List<Host> l = new ArrayList<Host>();
                     l.add(target); l.add(s); l.add(container);
                     
                     sitesToInline.add(l);
@@ -115,10 +113,10 @@ public class StaticInliner extends SceneTransformer
         // expansion rates.
         {
 
-            Iterator sitesIt = sitesToInline.iterator();
+            Iterator<List<Host>> sitesIt = sitesToInline.iterator();
             while (sitesIt.hasNext())
             {
-                List l = (List)sitesIt.next();
+                List l = sitesIt.next();
                 SootMethod inlinee = (SootMethod)l.get(0);
                 int inlineeSize = ((JimpleBody)(inlinee.retrieveActiveBody())).getUnits().size();
 
@@ -134,7 +132,7 @@ public class StaticInliner extends SceneTransformer
                     continue;
 
                 if (inlineeSize + containerSize > 
-                         expansionFactor * ((Integer)methodToOriginalSize.get(container)).intValue())
+                         expansionFactor * methodToOriginalSize.get(container).intValue())
                     continue;
 
                 if(InlinerSafetyManager.ensureInlinability(inlinee, invokeStmt, container, modifierOptions))
@@ -150,9 +148,7 @@ public class StaticInliner extends SceneTransformer
         }
     }
 
-    private HashMap methodToOriginalSize = new HashMap();
-    private int avgSize = 0;
-
+    private final HashMap<SootMethod, Integer> methodToOriginalSize = new HashMap<SootMethod, Integer>();
     private void computeAverageMethodSizeAndSaveOriginalSizes()
     {
         long sum = 0, count = 0;
@@ -177,7 +173,6 @@ public class StaticInliner extends SceneTransformer
         }
         if (count == 0)
             return;
-        avgSize = (int)(sum/count);
     }
 }
 

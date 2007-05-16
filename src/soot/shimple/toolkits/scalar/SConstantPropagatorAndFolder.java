@@ -87,7 +87,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
      * locals given a mapping.  Notice that we use the Shimple
      * implementation of LocalDefs and LocalUses.
      **/
-    protected void propagateResults(Map localToConstant)
+    protected void propagateResults(Map<Local, Constant> localToConstant)
     {
         Chain units = sb.getUnits();
         Chain locals = sb.getLocals();
@@ -97,7 +97,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
         Iterator localsIt = locals.iterator();
         while(localsIt.hasNext()){
             Local local = (Local) localsIt.next();
-            Constant constant = (Constant) localToConstant.get(local);
+            Constant constant = localToConstant.get(local);
             
             if(constant instanceof MetaConstant)
                 continue;
@@ -141,12 +141,12 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
     /**
      * Removes the given list of fall through IfStmts from the body.
      **/
-    protected void removeStmts(List deadStmts)
+    protected void removeStmts(List<IfStmt> deadStmts)
     {
         Chain units = sb.getUnits();
-        Iterator deadIt = deadStmts.iterator();
+        Iterator<IfStmt> deadIt = deadStmts.iterator();
         while(deadIt.hasNext()){
-            Unit dead = (Unit) deadIt.next();
+            Unit dead = deadIt.next();
             units.remove(dead);
             dead.clearUnitBoxes();
         }
@@ -156,15 +156,15 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
      * Replaces conditional branches by unconditional branches as
      * given by the mapping.
      **/
-    protected void replaceStmts(Map stmtsToReplace)
+    protected void replaceStmts(Map<Stmt, GotoStmt> stmtsToReplace)
     {
         Chain units = sb.getUnits();
-        Iterator stmtsIt = stmtsToReplace.keySet().iterator();
+        Iterator<Stmt> stmtsIt = stmtsToReplace.keySet().iterator();
         while(stmtsIt.hasNext()){
             // important not to call clearUnitBoxes() on booted since
             // replacement uses the same UnitBox
-            Unit booted = (Unit) stmtsIt.next();
-            Unit replacement = (Unit) stmtsToReplace.get(booted);
+            Unit booted = stmtsIt.next();
+            Unit replacement = stmtsToReplace.get(booted);
             units.swapWith(booted, replacement);
         }
     }
@@ -216,24 +216,24 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
      * A mapping of the locals to their current assumed constant value
      * (which may be Top or Bottom).
      **/
-    protected Map localToConstant;
+    protected Map<Local, Constant> localToConstant;
 
     /**
      * A map from conditional branches to their possible replacement 
      * unit, an unconditional branch.
      **/
-    protected Map stmtToReplacement;
+    protected Map<Stmt, GotoStmt> stmtToReplacement;
 
     /**
      * A list of IfStmts that always fall through.
      **/
-    protected List deadStmts;
+    protected List<IfStmt> deadStmts;
 
 
     /**
      * Returns the localToConstant map.
      **/
-    public Map getResults()
+    public Map<Local, Constant> getResults()
     {
         return localToConstant;
     }
@@ -241,7 +241,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     /**
      * Returns the list of fall through IfStmts.
      **/
-    public List getDeadStmts()
+    public List<IfStmt> getDeadStmts()
     {
         return deadStmts;
     }
@@ -250,7 +250,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
      * Returns a Map from conditional branches to the unconditional branches
      * that can replace them.
      **/
-    public Map getStmtsToReplace()
+    public Map<Stmt, GotoStmt> getStmtsToReplace()
     {
         return stmtToReplacement;
     }
@@ -259,15 +259,15 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     {
         super(graph);
         emptySet = new ArraySparseSet();
-        stmtToReplacement = new HashMap();
-        deadStmts = new ArrayList();
+        stmtToReplacement = new HashMap<Stmt, GotoStmt>();
+        deadStmts = new ArrayList<IfStmt>();
         
         // initialise localToConstant map -- assume all scalars are
         // constant (Top)
         {
             Chain locals = graph.getBody().getLocals();
             Iterator localsIt = locals.iterator();
-            localToConstant = new HashMap(graph.size() * 2 + 1, 0.7f);
+            localToConstant = new HashMap<Local, Constant>(graph.size() * 2 + 1, 0.7f);
 
             while(localsIt.hasNext()){
                 Local local = (Local) localsIt.next();
@@ -345,7 +345,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
      **/
     protected void flowThrough(Object in, Unit s, List fallOut, List branchOuts)
     {
-        FlowSet fin = (FlowSet) ((FlowSet)in).clone();
+        FlowSet fin = ((FlowSet)in).clone();
 
         // not reachable
         if(fin.isEmpty())
@@ -572,7 +572,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
      **/
     protected boolean merge(Local local, Constant constant)
     {
-        Constant current = (Constant) localToConstant.get(local);
+        Constant current = localToConstant.get(local);
 
         if(current instanceof BottomConstant) 
             return false;

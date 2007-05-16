@@ -33,16 +33,14 @@ package soot.jimple.internal;
 import soot.*;
 import soot.tagkit.*;
 import soot.jimple.*;
-import soot.util.*;
 import soot.baf.*;
-import soot.jimple.*;
 import java.util.*;
 
 public class JNewExpr extends AbstractNewExpr implements ConvertToBaf
 {
     public JNewExpr(RefType type) { this.type = type; }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
 	Unit u;
         out.add(u = Baf.v().newNewInst(getBaseType()));

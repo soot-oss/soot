@@ -31,16 +31,17 @@ import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
 import java.util.*;
+
 import soot.util.*;
 
 /** Provides an user-interface for the AvailableExpressionsAnalysis class.
  * Returns, for each statement, the list of expressions available before and after it. */
 public class FastAvailableExpressions implements AvailableExpressions
 {
-    Map unitToPairsAfter;
-    Map unitToPairsBefore;
-    Map unitToEquivsAfter;
-    Map unitToEquivsBefore;
+    Map<Unit, List<UnitValueBoxPair>> unitToPairsAfter;
+    Map<Unit, List<UnitValueBoxPair>> unitToPairsBefore;
+    Map<Unit, Chain> unitToEquivsAfter;
+    Map<Unit, Chain> unitToEquivsBefore;
 
     /** Wrapper for AvailableExpressionsAnalysis. */ 
     public FastAvailableExpressions(Body b, SideEffectTester st)
@@ -55,10 +56,10 @@ public class FastAvailableExpressions implements AvailableExpressions
 
         // Build unitToExprs map
         {
-            unitToPairsAfter = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-            unitToPairsBefore = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-            unitToEquivsAfter = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-            unitToEquivsBefore = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
+            unitToPairsAfter = new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
+            unitToPairsBefore = new HashMap<Unit, List<UnitValueBoxPair>>(b.getUnits().size() * 2 + 1, 0.7f);
+            unitToEquivsAfter = new HashMap<Unit, Chain>(b.getUnits().size() * 2 + 1, 0.7f);
+            unitToEquivsBefore = new HashMap<Unit, Chain>(b.getUnits().size() * 2 + 1, 0.7f);
 
             Iterator unitIt = b.getUnits().iterator();
 
@@ -68,8 +69,8 @@ public class FastAvailableExpressions implements AvailableExpressions
  
                 FlowSet set = (FlowSet) analysis.getFlowBefore(s);
 
-                List pairsBefore = new ArrayList();
-                List pairsAfter = new ArrayList();
+                List<UnitValueBoxPair> pairsBefore = new ArrayList<UnitValueBoxPair>();
+                List<UnitValueBoxPair> pairsAfter = new ArrayList<UnitValueBoxPair>();
 
                 Chain equivsBefore = new HashChain();
                 Chain equivsAfter = new HashChain();
@@ -125,25 +126,25 @@ public class FastAvailableExpressions implements AvailableExpressions
     /** Returns a List containing the UnitValueBox pairs corresponding to expressions available before u. */
     public List getAvailablePairsBefore(Unit u)
     {
-        return (List)unitToPairsBefore.get(u);
+        return unitToPairsBefore.get(u);
     }
 
     /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available before u. */
     public Chain getAvailableEquivsBefore(Unit u)
     {
-        return (Chain)unitToEquivsBefore.get(u);
+        return unitToEquivsBefore.get(u);
     }
 
     /** Returns a List containing the EquivalentValue corresponding to expressions available after u. */
     public List getAvailablePairsAfter(Unit u)
     {
-        return (List)unitToPairsAfter.get(u);
+        return unitToPairsAfter.get(u);
     }
 
     /** Returns a List containing the UnitValueBox pairs corresponding to expressions available after u. */
     public Chain getAvailableEquivsAfter(Unit u)
     {
-        return (Chain)unitToEquivsAfter.get(u);
+        return unitToEquivsAfter.get(u);
     }
 }
 

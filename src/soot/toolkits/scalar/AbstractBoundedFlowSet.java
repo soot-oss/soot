@@ -26,10 +26,6 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-
 /** 
  * provides functional code for most of the methods. Subclasses are invited to
  * provide a more efficient version. Most often this will be done in the

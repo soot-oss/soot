@@ -18,8 +18,6 @@
  */
 
 package soot;
-import java.util.*;
-import soot.util.*;
 
 /** Representation of a reference to a field as it appears in a class file.
  * Note that the field directly referred to may not actually exist; the

@@ -18,7 +18,6 @@
  */
 
 package soot;
-import soot.jimple.*;
 import java.util.*;
 import soot.tagkit.*;
 
@@ -27,8 +26,7 @@ import soot.tagkit.*;
  */
 public class AttributesUnitPrinter {
 
-    private int startOffset;
-	private Stack startOffsets;
+    private Stack<Integer> startOffsets;
 	private int endOffset;
 	private int startStmtOffset;
     private int startLn;
@@ -56,14 +54,14 @@ public class AttributesUnitPrinter {
 	}
     public void startValueBox( ValueBox u ) {
 		if (startOffsets == null) {
-			startOffsets = new Stack();
+			startOffsets = new Stack<Integer>();
 		}
         startOffsets.push(new Integer(output().length() - lastNewline));
     }
     public void endValueBox( ValueBox u ) {
         endOffset = output().length() - lastNewline;
         if (hasColorTag(u)) {
-			u.addTag(new PositionTag(((Integer)startOffsets.pop()).intValue(), endOffset));
+			u.addTag(new PositionTag(startOffsets.pop().intValue(), endOffset));
 		}
     }
 

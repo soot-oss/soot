@@ -20,8 +20,6 @@
 package soot.jbco.jimpleTransformations;
 
 import java.util.*;
-import java.util.regex.Pattern;
-
 import soot.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
@@ -54,10 +52,10 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 	  };
   
   public static Vector  namesToNotRename = new Vector();
-  public static Hashtable oldToNewFieldNames = new Hashtable();
-  public static Hashtable opaquePreds1ByClass = new Hashtable();
-  public static Hashtable opaquePreds2ByClass = new Hashtable();
-  public static ArrayList sootFieldsRenamed = new ArrayList();
+  public static Hashtable<String, String> oldToNewFieldNames = new Hashtable<String, String>();
+  public static Hashtable<SootClass, SootField> opaquePreds1ByClass = new Hashtable<SootClass, SootField>();
+  public static Hashtable<SootClass, SootField> opaquePreds2ByClass = new Hashtable<SootClass, SootField>();
+  public static ArrayList<SootField> sootFieldsRenamed = new ArrayList<SootField>();
   public static SootField opaquePairs[][] = null;
   public static int	  handedOutPairs[] = null;
   public static int	  handedOutRunPairs[] = null;
@@ -167,7 +165,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
               
               String oldName = sfr.name();
               String fullName = sfr.declaringClass().getName() + '.' + oldName;
-              String newName = (String)oldToNewFieldNames.get(oldName);
+              String newName = oldToNewFieldNames.get(oldName);
               if (newName == null || namesToNotRename.contains(fullName)) 
                 continue;
               
@@ -241,7 +239,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     if (sootFieldsRenamed.contains(f)) 
       return;
     
-    String newName = (String)oldToNewFieldNames.get(f.getName());
+    String newName = oldToNewFieldNames.get(f.getName());
     if (newName == null)
     {
       newName = getNewName();
@@ -330,13 +328,13 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     }
     
     int lowValue = 99999;
-    ArrayList available = new ArrayList();
-    for (int i = 0; i < handedOutPairs.length; i++)
-      if (lowValue>handedOutPairs[i]) lowValue = handedOutPairs[i];
+    ArrayList<Integer> available = new ArrayList<Integer>();
+    for (int element : handedOutPairs)
+		if (lowValue>element) lowValue = element;
     for (int i = 0; i < handedOutPairs.length; i++)
       if (handedOutPairs[i] == lowValue) available.add(new Integer(i));
       
-    Integer index = (Integer)available.get(Rand.getInt(available.size()));
+    Integer index = available.get(Rand.getInt(available.size()));
     handedOutPairs[index.intValue()]++;
     
     return opaquePairs[index.intValue()];
@@ -349,14 +347,14 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     }
     
     int lowValue = 99999;
-    ArrayList available = new ArrayList();
-    for (int i = 0; i < handedOutRunPairs.length; i++)
-      if (lowValue>handedOutRunPairs[i]) lowValue = handedOutRunPairs[i];
+    ArrayList<Integer> available = new ArrayList<Integer>();
+    for (int element : handedOutRunPairs)
+		if (lowValue>element) lowValue = element;
     if (lowValue>2) return -1;
     for (int i = 0; i < handedOutRunPairs.length; i++)
       if (handedOutRunPairs[i] == lowValue) available.add(new Integer(i));
       
-    Integer index = (Integer)available.get(Rand.getInt(available.size()));
+    Integer index = available.get(Rand.getInt(available.size()));
 	   
     return index.intValue();
   }

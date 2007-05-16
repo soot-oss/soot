@@ -22,7 +22,6 @@ package soot.toolkits.graph;
 
 import java.util.*;
 import soot.*;
-import java.io.*;
 
 /**
  *  <p>Represents a CFG where the nodes are {@link Block}s and the

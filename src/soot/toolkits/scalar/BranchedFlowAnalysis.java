@@ -37,7 +37,6 @@ package soot.toolkits.scalar;
 
 import soot.*;
 import soot.toolkits.graph.*;
-import soot.util.*;
 import java.util.*;
 
 /** Abstract class providing functionality for branched flow analysis.
@@ -50,15 +49,15 @@ import java.util.*;
 public abstract class BranchedFlowAnalysis extends AbstractFlowAnalysis
 {
     /** Maps graph nodes to OUT sets. */
-    protected Map unitToAfterFallFlow;
-    protected Map unitToAfterBranchFlow;
+    protected Map<Unit, ArrayList<Object>> unitToAfterFallFlow;
+    protected Map<Unit, ArrayList<Object>> unitToAfterBranchFlow;
 
     public BranchedFlowAnalysis(UnitGraph graph)
     {
         super(graph);
 
-        unitToAfterFallFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
-        unitToAfterBranchFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
+        unitToAfterFallFlow = new HashMap<Unit, ArrayList<Object>>(graph.size() * 2 + 1, 0.7f);
+        unitToAfterBranchFlow = new HashMap<Unit, ArrayList<Object>>(graph.size() * 2 + 1, 0.7f);
     }
 
     /** Given the merge of the <code>in</code> sets, 
@@ -69,7 +68,7 @@ public abstract class BranchedFlowAnalysis extends AbstractFlowAnalysis
 
     public Object getFallFlowAfter(Unit s)
     {
-        List fl = (List) unitToAfterFallFlow.get(s);
+        List fl = unitToAfterFallFlow.get(s);
 
         if (fl.isEmpty())
             return newInitialFlow();
@@ -80,7 +79,7 @@ public abstract class BranchedFlowAnalysis extends AbstractFlowAnalysis
 
     public List getBranchFlowAfter(Unit s)
     {
-        return (List) (unitToAfterBranchFlow.get(s));
+        return (unitToAfterBranchFlow.get(s));
     }
 
     public Object getFlowBefore(Unit s)

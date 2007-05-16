@@ -71,9 +71,9 @@ class Info {
       if (psave > 0)
         ps.println("<INFO>   Private renaming: " + psave);
       ps.println("<INFO>  Total savings: " + total);
-      double d = (((double)total)*100000.0)/((double)flength);
+      double d = ((total)*100000.0)/(flength);
       int x = (int)d;
-      d = ((double)x)/1000.0;
+      d = (x)/1000.0;
       ps.println("<INFO>          ratio: " + d + "%");
     }
   }

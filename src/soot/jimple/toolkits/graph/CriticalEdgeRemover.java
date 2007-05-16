@@ -31,8 +31,8 @@ import soot.options.*;
 import soot.*;
 import soot.util.*;
 import java.util.*;
+
 import soot.jimple.*;
-import soot.jimple.internal.*;
 
 /**
  * removes all critical edges.<br>
@@ -111,7 +111,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
     Iterator targetIt = node.getUnitBoxes().iterator();
     while (targetIt.hasNext()) {
       UnitBox targetBox = (UnitBox)targetIt.next();
-      Unit target = (Unit)targetBox.getUnit();
+      Unit target = targetBox.getUnit();
       if (target == oldTarget)
         targetBox.setUnit(newTarget);
     }
@@ -135,7 +135,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
   private void removeCriticalEdges(Body b) {
     Chain unitChain = b.getUnits();
     int size = unitChain.size();
-    Map predecessors = new HashMap(2 * size + 1, 0.7f);
+    Map<Unit, List> predecessors = new HashMap<Unit, List>(2 * size + 1, 0.7f);
 
     /* First get the predecessors of each node (although direct predecessors are
      * predecessors too, we'll not include them in the lists) */
@@ -147,9 +147,9 @@ public class CriticalEdgeRemover extends BodyTransformer {
         Iterator succsIt = currentUnit.getUnitBoxes().iterator();
         while (succsIt.hasNext()) {
           Unit target = ((UnitBox)succsIt.next()).getUnit();
-          List predList = (List)predecessors.get(target);
+          List<Unit> predList = predecessors.get(target);
           if (predList == null) {
-            predList = new ArrayList();
+            predList = new ArrayList<Unit>();
             predList.add(currentUnit);
             predecessors.put(target, predList);
           } else
@@ -172,7 +172,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
         directPredecessor = currentUnit;
         currentUnit = (Unit)unitIt.next();
 
-        List predList = (List)predecessors.get(currentUnit);
+        List predList = predecessors.get(currentUnit);
         int nbPreds = (predList == null)? 0: predList.size();
         if (directPredecessor != null && directPredecessor.fallsThrough())
           nbPreds++;

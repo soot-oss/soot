@@ -29,8 +29,6 @@
 
 package soot.jimple;
 
-import soot.*;
-
 public abstract class AbstractStmtSwitch implements StmtSwitch
 {
     Object result;

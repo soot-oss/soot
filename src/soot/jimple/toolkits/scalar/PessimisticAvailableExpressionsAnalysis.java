@@ -26,12 +26,7 @@
 
 package soot.jimple.toolkits.scalar;
 import soot.*;
-import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.pointer.*;
-import java.util.*;
-import soot.util.*;
 
 /** Implements an available expressions analysis on local variables. 
  * pessimistic analysis - for teaching 621*/

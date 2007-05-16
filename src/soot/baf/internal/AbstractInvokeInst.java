@@ -30,7 +30,6 @@
 package soot.baf.internal;
 
 import soot.*;
-import soot.baf.*;
 import java.util.*;
 
 abstract class AbstractInvokeInst extends AbstractInst
@@ -90,7 +89,7 @@ abstract class AbstractInvokeInst extends AbstractInst
     
     Iterator it = getMethodRef().parameterTypes().iterator();
     while(it.hasNext()) {
-      count += JasminClass.sizeOfType((Type) it.next());            
+      count += AbstractJasminClass.sizeOfType((Type) it.next());            
     }
     return count;
   }
@@ -101,7 +100,7 @@ abstract class AbstractInvokeInst extends AbstractInst
     if(getMethodRef().returnType() instanceof VoidType) 
       return 0;
     else
-      return JasminClass.sizeOfType(getMethodRef().returnType());
+      return AbstractJasminClass.sizeOfType(getMethodRef().returnType());
   } 
 
   public boolean containsInvokeExpr() { return true; }

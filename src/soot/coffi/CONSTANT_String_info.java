@@ -31,8 +31,6 @@
 
 package soot.coffi;
 
-import java.io.*;
-
 /** A constant pool entry of type CONSTANT_String.
  * @see cp_info
  * @author Clark Verbrugge

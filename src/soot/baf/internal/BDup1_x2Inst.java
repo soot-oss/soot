@@ -36,9 +36,9 @@ import java.util.*;
 
 public class BDup1_x2Inst extends BDupInst implements Dup1_x2Inst
 {
-    private Type mOpType;
-    private Type mUnder1Type;
-    private Type mUnder2Type;
+    private final Type mOpType;
+    private final Type mUnder1Type;
+    private final Type mUnder2Type;
 
     public BDup1_x2Inst(Type aOpType, Type aUnder1Type, Type aUnder2Type)
     {
@@ -62,16 +62,16 @@ public class BDup1_x2Inst extends BDupInst implements Dup1_x2Inst
         return mUnder2Type;
     }
 
-    public List getOpTypes()
+    public List<Type> getOpTypes()
     {
-        List res =  new ArrayList();
+        List<Type> res =  new ArrayList<Type>();
         res.add(mOpType);
         return res;
     }
     
-    public List getUnderTypes()
+    public List<Type> getUnderTypes()
     {
-        List res =  new ArrayList();
+        List<Type> res =  new ArrayList<Type>();
         res.add(mUnder1Type);
         res.add(mUnder2Type);
         return res;

@@ -34,7 +34,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -69,11 +68,11 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
         String target = "(branch)";
         if(!t.branches())
             target = t.toString();
-        return Jimple.v().GOTO + " [?= " + target + "]";
+        return Jimple.GOTO + " [?= " + target + "]";
     }
     
     public void toString(UnitPrinter up) {
-        up.literal(Jimple.v().GOTO);
+        up.literal(Jimple.GOTO);
         up.literal(" ");
         targetBox.toString(up);
     }
@@ -103,7 +102,7 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
         ((StmtSwitch) sw).caseGotoStmt(this);
     }    
     
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
 	Unit u;
         out.add(u = Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget())));

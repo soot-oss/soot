@@ -18,7 +18,6 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.jimple.spark.*;
 import soot.*;
 import java.util.*;
 

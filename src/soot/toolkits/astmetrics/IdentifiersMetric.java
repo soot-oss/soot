@@ -22,7 +22,6 @@ package soot.toolkits.astmetrics;
 import soot.G;
 import soot.options.*;
 import polyglot.ast.*;
-import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 
 import java.util.*;
@@ -41,10 +40,10 @@ public class IdentifiersMetric extends ASTMetric {
   
   
   int dictionarySize = 0;
-  ArrayList dictionary;
+  ArrayList<String> dictionary;
   
   //cache of names so no recomputation
-  HashMap names;
+  HashMap<String, Double> names;
   /**
    * @param astNode
    * 
@@ -89,8 +88,8 @@ public class IdentifiersMetric extends ASTMetric {
   private void initializeDictionary() {
     String line;
     BufferedReader br;
-    dictionary = new ArrayList();
-    names = new HashMap();
+    dictionary = new ArrayList<String>();
+    names = new HashMap<String, Double>();
     
     InputStream is = ClassLoader.getSystemResourceAsStream("mydict.txt");
     if (is != null)
@@ -121,14 +120,14 @@ public class IdentifiersMetric extends ASTMetric {
   }
   
   private void addWord(String word) {
-    if (dictionarySize == 0 || word.compareTo((String)dictionary.get(dictionarySize - 1)) > 0) {
+    if (dictionarySize == 0 || word.compareTo(dictionary.get(dictionarySize - 1)) > 0) {
       dictionary.add(word);
     } else {
       int i = 0;
-	  while (i < dictionarySize && word.compareTo((String)dictionary.get(i)) > 0)
+	  while (i < dictionarySize && word.compareTo(dictionary.get(i)) > 0)
 	    i++;
 	  
-	  if (word.compareTo((String)dictionary.get(i)) == 0) 
+	  if (word.compareTo(dictionary.get(i)) == 0) 
 	    return;
 	  
 	  dictionary.add(i,word);
@@ -179,17 +178,16 @@ public class IdentifiersMetric extends ASTMetric {
     
     if (name!=null)
     {
-      nameComplexity += (double) (multiplier * computeNameComplexity(name));
+      nameComplexity += (multiplier * computeNameComplexity(name));
     }
 	return enter(n);
   }
 
   private double computeNameComplexity(String name) {
     if (names.containsKey(name))
-      return ((Double)names.get(name)).doubleValue();
+      return names.get(name).doubleValue();
     
-    int index = 0;
-    ArrayList strings = new ArrayList();
+    ArrayList<String> strings = new ArrayList<String>();
     
     // throw out non-alpha characters
     String tmp = "";
@@ -206,10 +204,10 @@ public class IdentifiersMetric extends ASTMetric {
     if (tmp.length()>0)
       strings.add(tmp);
     
-    ArrayList tokens = new ArrayList();
+    ArrayList<String> tokens = new ArrayList<String>();
     for (int i = 0; i < strings.size(); i++)
     {
-      tmp = (String)strings.get(i);
+      tmp = strings.get(i);
       while (tmp.length() > 0) {
         int caps = countCaps(tmp);
         if (caps == 0)
@@ -251,7 +249,7 @@ public class IdentifiersMetric extends ASTMetric {
         words++;
       
     if (words>0)
-      complexity = ((double)tokens.size()) / words;
+      complexity = (tokens.size()) / words;
     
     names.put(name,new Double(complexity + computeCharComplexity(name)));
     
@@ -275,31 +273,10 @@ public class IdentifiersMetric extends ASTMetric {
     double complexity = lng - count;
     
     if (complexity > 0)
-      return (((double)lng) / complexity);
-    else return (double)lng;
+      return ((lng) / complexity);
+    else return lng;
   }
   
-  
-  /*
-   * @author Michael Batchelder 
-   * 
-   * Created on 6-Mar-2006
-   * 
-   * @param	name	string to parse
-   * @return		number of leading non-alpha chars
-   */
-  private int countNonAlphas(String name) {
-    int chars = 0;
-    while (chars < name.length()) {
-      char c = name.charAt(chars);
-      if ((c < 65 || c > 90) && (c < 97 || c > 122)) 
-        chars++;
-      else 
-        break;
-    }
-    
-    return chars;
-  }
   
   /*
    * @author Michael Batchelder 

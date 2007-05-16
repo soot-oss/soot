@@ -18,17 +18,15 @@
  */
 
 package soot.jimple.spark.pag;
-import java.util.*;
 import soot.*;
 import soot.toolkits.scalar.Pair;
-import soot.jimple.spark.*;
 
 /** Represents a method parameter.
  * @author Ondrej Lhotak
  */
 public class Parm implements SparkField {
-    private int index;
-    private SootMethod method;
+    private final int index;
+    private final SootMethod method;
     private Parm( SootMethod m, int i ) {
         index = i;
         method = m;
@@ -36,7 +34,7 @@ public class Parm implements SparkField {
     }
     public static Parm v( SootMethod m, int index ) {
         Pair p = new Pair( m, new Integer(index) );
-        Parm ret = (Parm) G.v().Parm_pairToElement.get( p );
+        Parm ret = G.v().Parm_pairToElement.get( p );
         if( ret == null ) {
             G.v().Parm_pairToElement.put( p, ret = new Parm( m, index ) );
         }

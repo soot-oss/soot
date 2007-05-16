@@ -19,12 +19,7 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.util.*;
 import java.util.*;
-import soot.jimple.*;
-import soot.options.*;
-import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
 /**
@@ -37,7 +32,7 @@ import soot.toolkits.scalar.*;
 public class SimpleDominatorsFinder implements DominatorsFinder
 {
     protected DirectedGraph graph;
-    protected Map nodeToDominators;
+    protected Map<Object, FlowSet> nodeToDominators;
 
     /**
      * Compute dominators for provided singled-headed directed graph.
@@ -53,7 +48,7 @@ public class SimpleDominatorsFinder implements DominatorsFinder
 
         // build node to dominators map
         {
-            nodeToDominators = new HashMap(graph.size() * 2 + 1, 0.7f);
+            nodeToDominators = new HashMap<Object, FlowSet>(graph.size() * 2 + 1, 0.7f);
             
             for(Iterator nodeIt = graph.iterator(); nodeIt.hasNext();) {
                 Object node = nodeIt.next();
@@ -71,7 +66,7 @@ public class SimpleDominatorsFinder implements DominatorsFinder
     public List getDominators(Object node)
     {
         // non-backed list since FlowSet is an ArrayPackedFlowSet
-        return ((FlowSet) nodeToDominators.get(node)).toList();
+        return nodeToDominators.get(node).toList();
     }
 
     public Object getImmediateDominator(Object node)
@@ -126,7 +121,7 @@ public class SimpleDominatorsFinder implements DominatorsFinder
 class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet;
-    Map nodeToGenerateSet;
+    Map<Object, FlowSet> nodeToGenerateSet;
     
     SimpleDominatorsAnalysis(DirectedGraph graph)
     {
@@ -145,11 +140,11 @@ class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
 
         // pre-compute generate sets
         {
-            nodeToGenerateSet = new HashMap(graph.size() * 2 + 1, 0.7f);
+            nodeToGenerateSet = new HashMap<Object, FlowSet>(graph.size() * 2 + 1, 0.7f);
 
             for(Iterator nodeIt = graph.iterator(); nodeIt.hasNext();){
                 Object s = nodeIt.next();
-                FlowSet genSet = (FlowSet) emptySet.clone();
+                FlowSet genSet = emptySet.clone();
                 genSet.add(s, genSet);
                 nodeToGenerateSet.put(s, genSet);
             }
@@ -192,7 +187,7 @@ class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
         // Perform generation
-        in.union((FlowSet) nodeToGenerateSet.get(block), out);
+        in.union(nodeToGenerateSet.get(block), out);
     }
 
     /**

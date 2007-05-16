@@ -23,14 +23,14 @@ import java.util.*;
 import soot.*;
 
 public class heuristicSet {
-	HashMap set;
+	HashMap<Local, heuristicTuple> set;
 
 	public heuristicSet() {
-		set = new HashMap();
+		set = new HashMap<Local, heuristicTuple>();
 	}
 
 	private heuristicTuple getTuple(Local var) {
-		return (heuristicTuple) set.get(var);
+		return set.get(var);
 	}
 
 	public void add(Local var, int bits) {
@@ -43,7 +43,7 @@ public class heuristicSet {
 		retrieved.addCastString(castString);
 	}
 	
-	public List getCastStrings(Local var){
+	public List<String> getCastStrings(Local var){
 		heuristicTuple retrieved = getTuple(var);
 		return retrieved.getCastStrings();
 	}
@@ -53,7 +53,7 @@ public class heuristicSet {
 		retrieved.setFieldName(fieldName);
 	}
 
-	public List getFieldName(Local var) {
+	public List<String> getFieldName(Local var) {
 		heuristicTuple retrieved = getTuple(var);
 		return retrieved.getFieldName();
 	}
@@ -63,7 +63,7 @@ public class heuristicSet {
 		retrieved.setObjectClassName(objectClassName);
 	}
 
-	public List getObjectClassName(Local var) {
+	public List<String> getObjectClassName(Local var) {
 		heuristicTuple retrieved = getTuple(var);
 		return retrieved.getObjectClassName();
 	}
@@ -73,7 +73,7 @@ public class heuristicSet {
 		retrieved.setMethodName(methodName);
 	}
 
-	public List getMethodName(Local var) {
+	public List<String> getMethodName(Local var) {
 		heuristicTuple retrieved = getTuple(var);
 		return retrieved.getMethodName();
 	}
@@ -94,17 +94,17 @@ public class heuristicSet {
 	}
 
 	public void print() {
-		Iterator it = set.keySet().iterator();
+		Iterator<Local> it = set.keySet().iterator();
 		while (it.hasNext()) {
 			Object local = it.next();
-			heuristicTuple temp = (heuristicTuple) set.get(local);
+			heuristicTuple temp = set.get(local);
 			String tuple = temp.getPrint();
 			System.out.println(local + "  " + tuple + " DefinedType: "
 					+ ((Local) local).getType());
 		}
 	}
 
-	public Iterator getLocalsIterator() {
+	public Iterator<Local> getLocalsIterator() {
 		return set.keySet().iterator();
 	}
 	

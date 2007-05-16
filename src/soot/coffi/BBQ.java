@@ -32,7 +32,6 @@
 package soot.coffi;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /** A queue of BasicBlocks.
@@ -41,7 +40,7 @@ import java.util.NoSuchElementException;
  */
 final class BBQ {
 
-   private ArrayList q = new ArrayList();
+   private final ArrayList<BasicBlock> q = new ArrayList<BasicBlock>();
 
    /** Adds a block to the end of the queue, but only if its <i>inq</i> flag is false.
     * @param b the Basic Block in question.
@@ -63,7 +62,7 @@ final class BBQ {
       if(q.size()==0)
          throw new
             NoSuchElementException("Pull from empty BBQ");
-      BasicBlock b = (BasicBlock)(q.get(0));
+      BasicBlock b = (q.get(0));
       q.remove(0);
       b.inq = false;
       return b;
@@ -87,8 +86,8 @@ final class BBQ {
    /** Empties the queue of all blocks (and resets their <i>inq</i> flags). */
    public void clear() {
       BasicBlock b;
-      for (Iterator e = q.iterator();e.hasNext();) {
-         b = (BasicBlock)(e.next());
+      for (BasicBlock basicBlock : q) {
+         b = (basicBlock);
          b.inq = false;
       }
       q.clear();

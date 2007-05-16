@@ -18,7 +18,6 @@
  */
 
 package soot;
-import soot.jimple.*;
 import java.util.*;
 
 /** Keeps track of the various contexts associated with each method.
@@ -26,11 +25,11 @@ import java.util.*;
  */
 public final class MethodToContexts
 { 
-    private Map map = new HashMap();
+    private final Map<SootMethod, List> map = new HashMap<SootMethod, List>();
     public void add( MethodOrMethodContext momc ) {
         SootMethod m = momc.method();
-        List l = (List) map.get(m);
-        if( l == null ) map.put(m, l = new ArrayList() );
+        List<MethodOrMethodContext> l = map.get(m);
+        if( l == null ) map.put(m, l = new ArrayList<MethodOrMethodContext>() );
         l.add(momc);
     }
     public MethodToContexts() {
@@ -45,7 +44,7 @@ public final class MethodToContexts
         }
     }
     public List get( SootMethod m ) {
-        List ret = (List) map.get(m);
+        List ret = map.get(m);
         if( ret == null ) ret = new ArrayList();
         return ret;
     }

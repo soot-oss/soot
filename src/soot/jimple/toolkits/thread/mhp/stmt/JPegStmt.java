@@ -34,11 +34,7 @@ package soot.jimple.toolkits.thread.mhp.stmt;
 
 import soot.tagkit.*;
 import soot.*;
-import soot.jimple.*;
-import soot.baf.*;
-import soot.util.*;
 import soot.toolkits.graph.*;
-import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -107,7 +103,7 @@ public abstract class JPegStmt extends AbstractHost
 	}
 	protected void setUnitGraph(UnitGraph ug)
 	{
-		unitGraph = unitGraph;
+		unitGraph = ug;
 	}
 	public UnitGraph getUnitGraph()
 	{

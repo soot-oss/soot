@@ -26,6 +26,7 @@
 
 package soot.toolkits.scalar;
 
+import soot.jimple.Stmt;
 import soot.toolkits.graph.*;
 import java.util.*;
 
@@ -36,16 +37,16 @@ import java.util.*;
 public abstract class FlowAnalysis extends AbstractFlowAnalysis
 {
     /** Maps graph nodes to OUT sets. */
-    protected Map unitToAfterFlow;
+    protected Map<Object, Object> unitToAfterFlow;
 
     /** Filtered: Maps graph nodes to OUT sets. */
-    protected Map filterUnitToAfterFlow;
+    protected Map<Stmt, HashMap> filterUnitToAfterFlow;
 
     /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
     public FlowAnalysis(DirectedGraph graph)
     {
         super(graph);
-        unitToAfterFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
+        unitToAfterFlow = new HashMap<Object, Object>(graph.size() * 2 + 1, 0.7f);
     }
 
     /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code> (or in to out, depending on direction).

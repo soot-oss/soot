@@ -29,8 +29,8 @@ public class Heap
         public int key(Object o);
     }
     final Keys keys;
-    final ArrayList list = new ArrayList();
-    final HashSet contents = new HashSet();
+    final ArrayList<Object> list = new ArrayList<Object>();
+    final HashSet<Object> contents = new HashSet<Object>();
     private int size;
     public int size() { return size; }
     public boolean isEmpty() { return size <= 0; }

@@ -24,10 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import soot.BooleanType;
-import soot.G;
-import soot.Local;
-import soot.SootClass;
-import soot.Type;
 import soot.Value;
 import soot.dava.internal.AST.ASTCondition;
 import soot.dava.internal.AST.ASTControlFlowNode;
@@ -44,7 +40,6 @@ import soot.dava.internal.AST.ASTSwitchNode;
 import soot.dava.internal.AST.ASTTryNode;
 import soot.dava.internal.AST.ASTUnaryCondition;
 import soot.dava.internal.AST.ASTWhileNode;
-import soot.dava.internal.SET.SETNodeLabel;
 import soot.dava.internal.javaRep.DIntConstant;
 import soot.dava.internal.javaRep.DNotExpr;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
@@ -79,7 +74,7 @@ public class EliminateConditions extends DepthFirstAdapter {
 	
 	ASTParentNodeFinder finder;
 	ASTMethodNode AST;
-	List bodyContainingNode=null;
+	List<Object> bodyContainingNode=null;
 	
 	
 	public EliminateConditions(ASTMethodNode AST) {
@@ -107,7 +102,7 @@ public class EliminateConditions extends DepthFirstAdapter {
 			return;
 		}
 		//from the Node get the subBodes
-		Iterator sbit = node.get_SubBodies().iterator();
+		Iterator<Object> sbit = node.get_SubBodies().iterator();
 		while (sbit.hasNext()) {
 		    List subBody = (List)sbit.next();
 		    Iterator it = subBody.iterator();
@@ -183,13 +178,13 @@ public class EliminateConditions extends DepthFirstAdapter {
 			return null;
 			
 		ASTNode parent = (ASTNode)temp;
-		List subBodies = parent.get_SubBodies();
-		Iterator it = subBodies.iterator();
+		List<Object> subBodies = parent.get_SubBodies();
+		Iterator<Object> it = subBodies.iterator();
 			
 
 		int index=-1;
 		while(it.hasNext()){
-			bodyContainingNode = (List)it.next();
+			bodyContainingNode = (List<Object>)it.next();
 			index = bodyContainingNode.indexOf(node);
 			if(index<0){
 				bodyContainingNode=null;
@@ -289,7 +284,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     		
     	ASTTryNode parent = (ASTTryNode)temp;
     		
-    	List tryBody = parent.get_TryBody();
+    	List<Object> tryBody = parent.get_TryBody();
     		
     	int index = tryBody.indexOf(node);
     	if(index>=0){
@@ -298,12 +293,12 @@ public class EliminateConditions extends DepthFirstAdapter {
     		return new Boolean(trueOrFalse);
     	}
     			
-    	List catchList = parent.get_CatchList();
-    	Iterator it = catchList.iterator();
+    	List<Object> catchList = parent.get_CatchList();
+    	Iterator<Object> it = catchList.iterator();
     	while (it.hasNext()) {
     		ASTTryNode.container catchBody = (ASTTryNode.container)it.next();
     		
-    		List body = (List)catchBody.o;
+    		List<Object> body = (List<Object>)catchBody.o;
     		index = body.indexOf(node);
     		if(index>=0){
     			//bound the body containing Node
@@ -326,7 +321,7 @@ public class EliminateConditions extends DepthFirstAdapter {
 		modified=false;
     	inASTTryNode(node);
     	//get try body iterator 
-    	Iterator it = node.get_TryBody().iterator();
+    	Iterator<Object> it = node.get_TryBody().iterator();
     		
     	Boolean returned=null;
     	ASTNode temp=null;
@@ -352,7 +347,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     	// a, type of exception caught  ......... NO NEED
     	// b, local of exception ............... NO NEED
     	// c, catchBody
-    	List catchList = node.get_CatchList();
+    	List<Object> catchList = node.get_CatchList();
     	Iterator itBody=null;
     	it = catchList.iterator();
     	while (it.hasNext()) {
@@ -409,7 +404,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     				//notice that its okkay to put a labeled block since other transformations might remove it
     				String label = ((ASTLabeledNode)temp).get_Label().toString();
     				if(label != null){
-    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List)temp.get_SubBodies().get(0)  );
+    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List<Object>)temp.get_SubBodies().get(0)  );
     					bodyContainingNode.add(index,labeledNode);
     				}
     				else{ 	   				
@@ -427,7 +422,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     				//notice that its okkay to put a labeled block since other transformations might remove it
     				String label = ((ASTLabeledNode)temp).get_Label().toString();
     				if(label != null){
-    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List)temp.get_SubBodies().get(0)  );
+    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List<Object>)temp.get_SubBodies().get(0)  );
     					bodyContainingNode.add(index,labeledNode);
     				}
     				else{ 	   				
@@ -439,7 +434,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     				//notice that its okkay to put a labeled block since other transformations might remove it
     				String label = ((ASTLabeledNode)temp).get_Label().toString();
     				if(label != null){
-    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List)temp.get_SubBodies().get(1)  );
+    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List<Object>)temp.get_SubBodies().get(1)  );
     					bodyContainingNode.add(index,labeledNode);
     				}
     				else{ 	   				
@@ -477,14 +472,14 @@ public class EliminateConditions extends DepthFirstAdapter {
     
     
     public void dealWithSwitchNode(ASTSwitchNode node){
-		List indexList = node.getIndexList();
-		Map index2BodyList = node.getIndex2BodyList();
+		List<Object> indexList = node.getIndexList();
+		Map<Object, List<Object>> index2BodyList = node.getIndex2BodyList();
 
-		Iterator it = indexList.iterator();
+		Iterator<Object> it = indexList.iterator();
 		while (it.hasNext()) {
 			// going through all the cases of the switch statement
 		    Object currentIndex = it.next();
-		    List body = (List) index2BodyList.get( currentIndex);
+		    List body = index2BodyList.get( currentIndex);
 		    
 		    if (body != null){
 			// this body is a list of ASTNodes

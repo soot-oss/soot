@@ -26,18 +26,18 @@ class Lock
     public Thread owner;
     public int level;
 
-    private LinkedList q;
+    private final LinkedList<Thread> q;
 
     Lock()
     {
 	level = 0;
 	owner = null;
-	q = new LinkedList();
+	q = new LinkedList<Thread>();
     }
 
     public Thread nextThread()
     {
-	return (Thread) q.getFirst();
+	return q.getFirst();
     }
 
     public Thread deQ( Thread t) throws IllegalMonitorStateException
@@ -45,7 +45,7 @@ class Lock
 	if (t != q.getFirst())
 	    throw new IllegalMonitorStateException();
 
-	return (Thread) q.removeFirst();
+	return q.removeFirst();
     }
 
     public void enQ( Thread t)

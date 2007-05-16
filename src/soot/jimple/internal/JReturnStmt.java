@@ -35,7 +35,6 @@ import soot.tagkit.*;
 
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -60,11 +59,11 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
 
     public String toString()
     {
-        return Jimple.v().RETURN + " "  + returnValueBox.getValue().toString();
+        return Jimple.RETURN + " "  + returnValueBox.getValue().toString();
     }
     
     public void toString( UnitPrinter up) {
-        up.literal(Jimple.v().RETURN);
+        up.literal(Jimple.RETURN);
         up.literal(" ");
         returnValueBox.toString(up);
     }
@@ -99,7 +98,7 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
         ((StmtSwitch) sw).caseReturnStmt(this);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
        

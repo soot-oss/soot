@@ -20,7 +20,6 @@
 package soot.jimple.toolkits.thread.transaction;
 
 import java.util.*;
-import soot.*;
 import soot.jimple.toolkits.callgraph.*;
 
 /** A predicate that accepts edges that are not part of the class library and do not have a source statement that falls inside a transaction.
@@ -28,10 +27,10 @@ import soot.jimple.toolkits.callgraph.*;
  */
 public class TransactionVisibleEdgesPred implements EdgePredicate
 {
-	Collection tns;
+	Collection<Transaction> tns;
 	Transaction exemptTn;
 	
-	public TransactionVisibleEdgesPred(Collection tns)
+	public TransactionVisibleEdgesPred(Collection<Transaction> tns)
 	{
 		this.tns = tns;
 	}
@@ -78,10 +77,10 @@ public class TransactionVisibleEdgesPred implements EdgePredicate
 		// one transaction is exempt - so that we may analyze calls within it
 	    if(tns != null)
 	    {
-			Iterator tnIt = tns.iterator();
+			Iterator<Transaction> tnIt = tns.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = (Transaction) tnIt.next();
+				Transaction tn = tnIt.next();
 				if(tn != exemptTn && tn.units.contains(e.srcStmt())) // if this method call originates inside a transaction...
 				{
 					return false; // ignore it
