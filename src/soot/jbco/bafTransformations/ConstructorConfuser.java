@@ -49,6 +49,7 @@ public class ConstructorConfuser extends BodyTransformer implements
     out.println("Constructor methods have been jumbled: " + count);
   }
 
+  @SuppressWarnings("fallthrough")
   protected void internalTransform(Body b, String phaseName, Map options) {
     if (!b.getMethod().getSubSignature().equals("void <init>()")) return;
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
