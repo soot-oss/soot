@@ -81,6 +81,10 @@ Feng Qian (fqian@sable.mcgill.ca)
 
 Ganesh Sittampalam (ganesh@earth.li>
    - contributed to resolver redesign
+
+Manu Sridharan (manu_s@eecs.berkeley.edu)
+   - demand-driven client-driven refinement-based context-sensitive points-to
+     analysis (PLDI '06)
     
 Vijay Sundaresan (vijay@sable.mcgill.ca)
     - first implementation of inlining and devirtualization
@@ -122,6 +126,3 @@ To:
       with Jasmin, a Java bytecode assembler. 
 
     - Our users for their patience and continuing support! 
-
-
-
