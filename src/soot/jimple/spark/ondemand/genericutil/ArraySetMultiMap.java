@@ -1,5 +1,4 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
  * Copyright (C) 2007 Manu Sridharan
  *
  * This library is free software; you can redistribute it and/or
@@ -17,31 +16,43 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.toolkits.scalar;
+package soot.jimple.spark.ondemand.genericutil;
 
-/** Just a pair of arbitrary objects.
- * 
- * @author Ondrej Lhotak
- * @author Manu Sridharan (genericized it)
- */
-public class Pair<T, U>
-{
-    public Pair( T o1, U o2 ) { this.o1 = o1; this.o2 = o2; }
-    public int hashCode() {
-        return o1.hashCode() + o2.hashCode();
-    }
-    public boolean equals( Object other ) {
-        if( other instanceof Pair) {
-            Pair p = (Pair) other;
-            return o1.equals( p.o1 ) && o2.equals( p.o2 );
-        } else return false;
-    }
-    public String toString() {
-        return "Pair "+o1+","+o2;
-    }
-    public T getO1() { return o1; }
-    public U getO2() { return o2; }
+import java.util.Collection;
+import java.util.Set;
 
-    protected T o1;
-    protected U o2;
+public class ArraySetMultiMap<K, V> extends AbstractMultiMap<K, V> {
+
+  public static final ArraySetMultiMap EMPTY = new ArraySetMultiMap<Object, Object>() {
+
+    public boolean put(Object key, Object val) {
+      throw new RuntimeException();
+    }
+
+    public boolean putAll(Object key, Collection<? extends Object> vals) {
+      throw new RuntimeException();
+    }
+
+  };
+
+  public ArraySetMultiMap() {
+    super(false);
+  }
+
+  public ArraySetMultiMap(boolean create) {
+    super(create);
+  }
+
+  @Override
+  protected Set<V> createSet() {
+    return new ArraySet<V>();
+  }
+
+  protected Set<V> emptySet() {
+    return ArraySet.<V> empty();
+  }
+
+  public ArraySet<V> get(K key) {
+    return (ArraySet<V>) super.get(key);
+  }
 }

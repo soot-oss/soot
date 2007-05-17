@@ -2054,6 +2054,20 @@ cryptic statistics about the size of the points-to sets computed.
         </long_desc>
 						</boolopt>
 					</section>
+					<section>
+						<name>Context-sensitive refinement</name>
+						<boolopt>
+							<name>Demand-driven refinement-based context-sensitive points-to analysis</name>
+							<alias>cs-demand</alias>
+							<default>false</default>
+							<short_desc>After running Spark, refine points-to sets on demand with context information</short_desc>
+							<long_desc>
+When this option is set to true, Manu Sridharan's demand-driven,
+refinement-based points-to analysis (PLDI 06) is applied after Spark
+was run.
+        					</long_desc>
+						</boolopt>
+					</section>
 				</sub_phase>
 				<sub_phase>
 					<name>Paddle</name>

@@ -364,6 +364,19 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "set-mass" );
     }
     
+    /** Demand-driven refinement-based context-sensitive points-to analysis --
+    
+     * After running Spark, refine points-to sets on demand with 
+     * context information.
+    
+     * When this option is set to true, Manu Sridharan's 
+     * demand-driven, refinement-based points-to analysis (PLDI 06) is 
+     * applied after Spark was run. 					
+     */
+    public boolean cs_demand() {
+        return soot.PhaseOptions.getBoolean( options, "cs-demand" );
+    }
+    
     public static final int propagator_iter = 1;
     public static final int propagator_worklist = 2;
     public static final int propagator_cycle = 3;

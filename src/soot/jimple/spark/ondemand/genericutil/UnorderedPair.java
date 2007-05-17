@@ -1,5 +1,4 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
  * Copyright (C) 2007 Manu Sridharan
  *
  * This library is free software; you can redistribute it and/or
@@ -17,31 +16,44 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.toolkits.scalar;
+package soot.jimple.spark.ondemand.genericutil;
 
-/** Just a pair of arbitrary objects.
- * 
- * @author Ondrej Lhotak
- * @author Manu Sridharan (genericized it)
- */
-public class Pair<T, U>
-{
-    public Pair( T o1, U o2 ) { this.o1 = o1; this.o2 = o2; }
-    public int hashCode() {
-        return o1.hashCode() + o2.hashCode();
-    }
-    public boolean equals( Object other ) {
-        if( other instanceof Pair) {
-            Pair p = (Pair) other;
-            return o1.equals( p.o1 ) && o2.equals( p.o2 );
-        } else return false;
-    }
-    public String toString() {
-        return "Pair "+o1+","+o2;
-    }
-    public T getO1() { return o1; }
-    public U getO2() { return o2; }
 
-    protected T o1;
-    protected U o2;
+public class UnorderedPair<U,V> {
+
+	public U o1;
+	public V o2;
+	
+	public UnorderedPair(U o1, V o2) {
+		this.o1 = o1;
+		this.o2 = o2;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		if (obj != null && obj.getClass() == UnorderedPair.class) {
+			UnorderedPair u = (UnorderedPair) obj;
+			return (u.o1.equals(o1) && u.o2.equals(o2))
+					|| (u.o1.equals(o2) && u.o2.equals(o1));
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return o1.hashCode() + o2.hashCode();
+	}
+
+	public String toString() {
+		return "{" + o1.toString() + ", " + o2.toString() + "}";
+	}
+
 }

@@ -1575,7 +1575,8 @@ public class Options extends OptionsBase {
                 +padOpt( "class-method-var (true)", "In dump, label variables by class and method" )
                 +padOpt( "dump-answer (false)", "Dump computed reaching types for comparison with other solvers" )
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
-                +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" );
+                +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
+                +padOpt( "cs-demand (false)", "After running Spark, refine points-to sets on demand with context information" );
     
         if( phaseName.equals( "cg.paddle" ) )
             return "Phase "+phaseName+":\n"+
@@ -2411,7 +2412,8 @@ public class Options extends OptionsBase {
                 +"class-method-var "
                 +"dump-answer "
                 +"add-tags "
-                +"set-mass ";
+                +"set-mass "
+                +"cs-demand ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""
@@ -2975,7 +2977,8 @@ public class Options extends OptionsBase {
               +"class-method-var:true "
               +"dump-answer:false "
               +"add-tags:false "
-              +"set-mass:false ";
+              +"set-mass:false "
+              +"cs-demand:false ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""

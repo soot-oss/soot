@@ -1,5 +1,4 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
  * Copyright (C) 2007 Manu Sridharan
  *
  * This library is free software; you can redistribute it and/or
@@ -17,31 +16,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.toolkits.scalar;
+package soot.jimple.spark.ondemand.genericutil;
 
-/** Just a pair of arbitrary objects.
- * 
- * @author Ondrej Lhotak
- * @author Manu Sridharan (genericized it)
+/**
+ * A simple interface for defining a function that maps objects.
  */
-public class Pair<T, U>
-{
-    public Pair( T o1, U o2 ) { this.o1 = o1; this.o2 = o2; }
-    public int hashCode() {
-        return o1.hashCode() + o2.hashCode();
-    }
-    public boolean equals( Object other ) {
-        if( other instanceof Pair) {
-            Pair p = (Pair) other;
-            return o1.equals( p.o1 ) && o2.equals( p.o2 );
-        } else return false;
-    }
-    public String toString() {
-        return "Pair "+o1+","+o2;
-    }
-    public T getO1() { return o1; }
-    public U getO2() { return o2; }
+public interface Mapper<T,U> {
+    public U map(T obj_);
+ }
 
-    protected T o1;
-    protected U o2;
-}

@@ -32,6 +32,7 @@ import soot.util.*;
 import soot.util.queue.*;
 import soot.options.SparkOptions;
 import soot.tagkit.*;
+import soot.toolkits.scalar.Pair;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -729,6 +730,8 @@ public class PAG implements PointsToAnalysis {
                 thiz = thiz.getReplacement();
 
                 addEdge( parm, thiz );
+                callAssigns.put(ie, new Pair(parm, thiz));
+                callToMethod.put(ie, srcmpag.getMethod());
 
                 if( e.srcUnit() instanceof AssignStmt ) {
                     AssignStmt as = (AssignStmt) e.srcUnit();
@@ -742,6 +745,8 @@ public class PAG implements PointsToAnalysis {
                     lhs = lhs.getReplacement();
 
                     addEdge( ret, lhs );
+                    callAssigns.put(ie, new Pair(ret, lhs));
+                    callToMethod.put(ie, srcmpag.getMethod());
                 }
             } else if( e.kind() == Kind.FINALIZE ) {
                 Node srcThis = srcmpag.nodeFactory().caseThis();
@@ -774,6 +779,8 @@ public class PAG implements PointsToAnalysis {
                     asLHS = asLHS.getReplacement();
                     addEdge( newObject, asLHS);
                 }
+                callAssigns.put(s.getInvokeExpr(), new Pair(newObject, initThis));
+                callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
             } else {
                 throw new RuntimeException( "Unhandled edge "+e );
             }
@@ -793,6 +800,7 @@ public class PAG implements PointsToAnalysis {
         MethodNodeFactory srcnf = srcmpag.nodeFactory();
         MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
         InvokeExpr ie = s.getInvokeExpr();
+        boolean virtualCall = callAssigns.containsKey(ie);
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
             Value arg = ie.getArg( i );
@@ -808,6 +816,9 @@ public class PAG implements PointsToAnalysis {
             parm = parm.getReplacement();
 
             addEdge( argNode, parm );
+            callAssigns.put(ie, new Pair(argNode, parm));
+            callToMethod.put(ie, srcmpag.getMethod());
+            
         }
         if( ie instanceof InstanceInvokeExpr ) {
             InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
@@ -820,6 +831,11 @@ public class PAG implements PointsToAnalysis {
             thisRef = tgtmpag.parameterize( thisRef, tgtContext );
             thisRef = thisRef.getReplacement();
             addEdge( baseNode, thisRef );
+            callAssigns.put(ie, new Pair(baseNode, thisRef));
+            callToMethod.put(ie, srcmpag.getMethod());
+            if (virtualCall && !virtualCallsToReceivers.containsKey(ie)) {
+                virtualCallsToReceivers.put(ie, baseNode);
+            }
         }
         if( s instanceof AssignStmt ) {
             Value dest = ( (AssignStmt) s ).getLeftOp();
@@ -834,6 +850,8 @@ public class PAG implements PointsToAnalysis {
                 retNode = retNode.getReplacement();
 
                 addEdge( retNode, destNode );
+                callAssigns.put(ie, new Pair(retNode, destNode));
+                callToMethod.put(ie, srcmpag.getMethod());
             }
         }
     }
@@ -891,5 +909,9 @@ public class PAG implements PointsToAnalysis {
     public GlobalNodeFactory nodeFactory() { return nodeFactory; }
     public NativeMethodDriver nativeMethodDriver;
 
+    public HashMultiMap /* InvokeExpr -> Set[Pair] */ callAssigns = new HashMultiMap();
+    public Map<InvokeExpr, SootMethod> callToMethod = new HashMap<InvokeExpr, SootMethod>(); 
+    public Map<InvokeExpr, Node> virtualCallsToReceivers = new HashMap<InvokeExpr, Node>();
+    
 }
 

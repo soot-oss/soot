@@ -1192,6 +1192,12 @@ public class AntTask extends MatchingTask {
             addArg("set-mass:"+(arg?"true":"false"));
           }
       
+          public void setcs_demand(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("cs-demand:"+(arg?"true":"false"));
+          }
+      
           public void setpropagator(String arg) {
             addArg("-p");
             addArg("cg.spark");

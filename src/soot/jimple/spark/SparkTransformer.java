@@ -20,6 +20,7 @@
 package soot.jimple.spark;
 import soot.*;
 import soot.jimple.spark.builder.*;
+import soot.jimple.spark.ondemand.DemandCSPointsTo;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.solver.*;
 import soot.jimple.spark.sets.*;
@@ -168,7 +169,17 @@ public class SparkTransformer extends SceneTransformer
         if( opts.add_tags() ) {
             addTags( pag );
         }
+
+        if(opts.cs_demand()) {
+        		//replace by demand-driven refinement-based context-sensitive analysis
+        		Date startOnDemand = new Date();
+        		PointsToAnalysis onDemandAnalysis = DemandCSPointsTo.makeDefault();
+        		Date endOndemand = new Date();
+        		reportTime( "Initialized on-demand refinement-based context-sensitive analysis", startOnDemand, endOndemand );
+        		Scene.v().setPointsToAnalysis(onDemandAnalysis);
+        }
     }
+    
     protected void addTags( PAG pag ) {
         final Tag unknown = new StringTag( "Untagged Spark node" );
         final Map<Node, Tag> nodeToTag = pag.getNodeTags();

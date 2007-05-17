@@ -53,6 +53,11 @@ public class Parm implements SparkField {
     public final void setNumber(int number) {
         this.number = number;
     }
+    
+    public int getIndex() {
+      return index;
+    }
+    
     private int number = 0;
 
 }

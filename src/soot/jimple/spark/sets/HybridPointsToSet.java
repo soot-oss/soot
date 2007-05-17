@@ -22,6 +22,8 @@ import soot.jimple.spark.internal.*;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.util.*;
+import soot.RefType;
+import soot.Scene;
 import soot.Type;
 
 /** Hybrid implementation of points-to set, which uses an explicit array for
@@ -276,5 +278,49 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     private BitVector bits = null;
     private PAG pag;
     private boolean empty = true;
+
+    private static final RefType OBJECT_TYPE = Scene.v().getRefType(
+    "java.lang.Object");
+    static {
+      if (OBJECT_TYPE == null) {
+        throw new RuntimeException();
+      }
+    }
+
+    public static HybridPointsToSet intersection(final HybridPointsToSet set1,
+        final HybridPointsToSet set2, PAG pag) {
+    final HybridPointsToSet ret = new HybridPointsToSet(OBJECT_TYPE, pag);
+    BitVector s1Bits = set1.bits;
+    BitVector s2Bits = set2.bits;
+    if (s1Bits == null || s2Bits == null) {
+        if (s1Bits != null) {
+            // set2 is smaller
+            set2.forall(new P2SetVisitor() {
+                @Override
+                public void visit(Node n) {
+                    if (set1.contains(n))
+                        ret.add(n);
+                }
+            });                
+        } else {
+            // set1 smaller, or both small
+            set1.forall(new P2SetVisitor() {
+                @Override
+                public void visit(Node n) {
+                    if (set2.contains(n))
+                        ret.add(n);
+                }
+            });                                
+        }
+    } else {
+        // both big; do bit-vector operation
+        // potential issue: if intersection is small, might
+        // use inefficient bit-vector operations later
+        ret.bits = BitVector.and(s1Bits, s2Bits);
+        ret.empty = false;
+    }
+    return ret;
+}
+    
 }
 
