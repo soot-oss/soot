@@ -27,6 +27,7 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
+import soot.options.Options;
 import soot.util.*;
 import java.util.*;
 
@@ -732,7 +733,7 @@ class TypeVariable implements Comparable
 	  {
 	    if(var.type() == null) {
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!G.v().isJ2ME) {
+	      if (!Options.v().j2me()) {
 		var.addChild(resolver.typeVariable(resolver.hierarchy().CLONEABLE));
 		var.addChild(resolver.typeVariable(resolver.hierarchy().SERIALIZABLE));
 	      }
@@ -742,7 +743,7 @@ class TypeVariable implements Comparable
 	  {
 	    if(var.type() == null) {
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!G.v().isJ2ME) {
+	      if (!Options.v().j2me()) {
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), var.depth())));
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), var.depth())));
 	      }

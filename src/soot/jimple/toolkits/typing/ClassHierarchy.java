@@ -27,6 +27,8 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
+import soot.options.Options;
+
 import java.util.*;
 
 /**
@@ -72,7 +74,7 @@ public class ClassHierarchy
 
     // hack for J2ME library which does not have Cloneable and Serializable
     // reported by Stephen Chen
-    if (!G.v().isJ2ME) {
+    if (!Options.v().j2me()) {
       CLONEABLE = typeNode(RefType.v("java.lang.Cloneable"));
       SERIALIZABLE = typeNode(RefType.v("java.io.Serializable"));
     } else {

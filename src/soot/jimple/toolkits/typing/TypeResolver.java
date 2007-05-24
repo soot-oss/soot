@@ -28,6 +28,8 @@ package soot.jimple.toolkits.typing;
 
 import soot.*;
 import soot.jimple.*;
+import soot.options.Options;
+
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
@@ -157,7 +159,7 @@ public class TypeResolver
     typeVariable(NULL);
     
     // hack for J2ME library, reported by Stephen Cheng 
-    if (!G.v().isJ2ME) {
+    if (!Options.v().j2me()) {
       typeVariable(hierarchy.CLONEABLE);
       typeVariable(hierarchy.SERIALIZABLE);
     }
@@ -379,7 +381,7 @@ public class TypeResolver
 
     if(max > 1) {
       // hack for J2ME library, reported by Stephen Cheng 
-      if (!G.v().isJ2ME) {
+      if (!Options.v().j2me()) {
 	typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), max - 1));
 	typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), max - 1));
       }

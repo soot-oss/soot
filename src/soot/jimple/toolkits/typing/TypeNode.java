@@ -27,6 +27,7 @@
 package soot.jimple.toolkits.typing;
 
 import soot.*;
+import soot.options.Options;
 import soot.util.*;
 import java.util.*;
 
@@ -157,7 +158,7 @@ class TypeNode
 	      plist.add(hierarchy.OBJECT);
 
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!G.v().isJ2ME) {
+	      if (!Options.v().j2me()) {
 		plist.add(hierarchy.CLONEABLE);
 		plist.add(hierarchy.SERIALIZABLE);
 	      }
@@ -169,7 +170,7 @@ class TypeNode
 	      plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1)));
 
 	      // hack for J2ME library, reported by Stephen Cheng
-	      if (!G.v().isJ2ME) {
+	      if (!Options.v().j2me()) {
 		plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
 		plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
 	      }
@@ -188,7 +189,7 @@ class TypeNode
 	  plist.add(hierarchy.OBJECT);
 
 	  // hack for J2ME library, reported by Stephen Cheng
-	  if (!G.v().isJ2ME) {
+	  if (!Options.v().j2me()) {
 	    plist.add(hierarchy.CLONEABLE);
 	    plist.add(hierarchy.SERIALIZABLE);
 	  }
@@ -199,7 +200,7 @@ class TypeNode
 	{
 	  plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1)));
 	  // hack for J2ME library, reported by Stephen Cheng
-	  if (!G.v().isJ2ME) {
+	  if (!Options.v().j2me()) {
 	    plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
 	    plist.add(hierarchy.typeNode(ArrayType.v(hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
 	  }

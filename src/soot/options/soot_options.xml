@@ -383,6 +383,16 @@ structures to provide a significant performance benefit, but has
 not yet been thoroughly tested.
 </long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Use J2ME mode</name>
+			<alias>j2me</alias>
+			<default>false</default>
+			<short_desc>Use J2ME mode; changes assignment of types</short_desc>
+			<long_desc>
+Use J2ME mode. J2ME does not have class Cloneable nor Serializable, so we have
+to change type assignment to not refer to those classes.			
+</long_desc>
+		</boolopt>
 		<stropt>
 			<name>Main Class</name>
 			<alias>main-class</alias>
