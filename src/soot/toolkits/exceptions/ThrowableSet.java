@@ -20,6 +20,8 @@
 package soot.toolkits.exceptions;
 
 import soot.*;
+import soot.options.Options;
+
 import java.util.*;
 
 /**
@@ -234,7 +236,8 @@ public final class ThrowableSet {
 	    // UnsupportedClassVersionError, explicitly.  This is a
 	    // hack to allow Soot to analyze older class libraries 
 	    // (UnsupportedClassVersionError was added in JDK 1.2).
-	    resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
+	    if(!Options.v().j2me()) 
+	    	resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
 	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
 	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IncompatibleClassChangeError"));
 	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.LinkageError"));
