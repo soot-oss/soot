@@ -776,7 +776,9 @@ public class TransactionTransformer extends SceneTransformer
 								G.v().out.println("fieldRefRW: " + tasea.valueRWSet(s.getFieldRef(), tn.method, s));
 							for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
 							{
-								Value v = (Value) usesIt.next();
+								Value vEqVal = (Value) usesIt.next();
+								Value v = ((vEqVal instanceof EquivalentValue) ? ((EquivalentValue) vEqVal).getValue() : vEqVal);
+								
 								RWSet valRW = tasea.valueRWSet(v, tn.method, s);
 								G.v().out.println("v: " + v);
 								G.v().out.println("RW: " + valRW + "groupRW: " + rws[group]);
