@@ -31,7 +31,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		// analysis is done on-demand, not now
 	}
 
-	public List getLocksetOf(Map<Stmt, List<Value>> unitToUses, Stmt begin)
+	public List<EquivalentValue> getLocksetOf(Map<Stmt, List<Value>> unitToUses, Stmt begin)
 	{
 		this.unitToUses = unitToUses;
 		this.begin = begin;
@@ -42,12 +42,12 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		if(lostObjects)
 			return null;
 				
-		List lockset = new ArrayList();
+		List<EquivalentValue> lockset = new ArrayList<EquivalentValue>();
 		HashMap results = (HashMap) getFlowBefore(begin);
 		if(results == null)
 			throw new RuntimeException("Why is getFlowBefore null???");
 		for(Iterator resultsIt = results.keySet().iterator(); resultsIt.hasNext(); ) 
-			lockset.add(resultsIt.next());
+			lockset.add((EquivalentValue) resultsIt.next());
 
 		return lockset;
 	}
@@ -73,27 +73,28 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		{
 			Object key = tmpKeyIt.next();
 			Object value = tmpMap.get(key);
-		//  if the key ISN'T in outMap, add it
+			//  if the key ISN'T in outMap, add it
 			if(!outMap.containsKey(key))
 			{
 				outMap.put(key, value);
 			}
-		//  if the key IS in outMap with the same value, do nothing
-		//  if the key IS in outMap with a different outvalue,
+			//  if the key IS in outMap with the same value, do nothing
+			//  if the key IS in outMap with a different outvalue,
 			else if(outMap.get(key) != tmpMap.get(key))
 			{
 				Object outvalue = outMap.get(key);
-		for (Object element : outMap.entrySet()) {
+				for(Object element : outMap.entrySet())
+				{
 					Map.Entry entry = (Map.Entry) element;
-		//          if the value == outvalue, change it to tmpvalue
+					// if the value == outvalue, change it to tmpvalue
 					if(entry.getValue() == outvalue)
 						entry.setValue(value);
 				}
-		//   	for each tmpentry in tmpMap // deals with groups that already were merged
-				for(Iterator tmpEntryIt = tmpMap.entrySet().iterator(); tmpEntryIt.hasNext(); )
+				// for each tmpentry in tmpMap // deals with groups that already were merged
+				for(Object element : tmpMap.entrySet())
 				{
-					Map.Entry entry = (Map.Entry) tmpEntryIt.next();
-		//     		if the value == outvalue, change it to tmpvalue
+					Map.Entry entry = (Map.Entry) element;
+					// if the value == outvalue, change it to tmpvalue
 					if(entry.getValue() == outvalue)
 						entry.setValue(value);
 				}
@@ -110,8 +111,6 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		Map<EquivalentValue, Object> out = (Map<EquivalentValue, Object>) outValue;
 		Stmt stmt = (Stmt) unit;
 		
-//		out.clear();
-//		out.putAll(in);
 		merge(in, ((HashMap<EquivalentValue, Object>) out).clone(), out);
 		
 		// If this statement contains a use
@@ -171,7 +170,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 						if(rvalue.getValue() instanceof Local || rvalue.getValue() instanceof FieldRef || rvalue.getValue() instanceof ArrayRef)
 							out.put(rvalue, lvaluevalue);
 						else
-							throw new RuntimeException("Lost Object (assigned unacceptable value) at " + stmt + " in " + out.toString());
+//							throw new RuntimeException("Lost Object (assigned unacceptable value) at " + stmt + " in " + out.toString());
+							G.v().out.println("Lost Object (assigned unacceptable value) at " + stmt + " in " + out.toString());
 	//						lostObjects = true;
 					}
 					out.remove(lvalue);

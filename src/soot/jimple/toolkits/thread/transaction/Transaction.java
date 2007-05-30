@@ -3,9 +3,7 @@ package soot.jimple.toolkits.thread.transaction;
 import java.util.*;
 
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
-import soot.MethodOrMethodContext;
-import soot.SootMethod;
-import soot.Value;
+import soot.*;
 
 class Transaction extends LockRegion
 {
@@ -36,7 +34,7 @@ class Transaction extends LockRegion
 	// Locking Information
 	public Value lockObject;
 	public Value lockObjectArrayIndex;
-	public List lockset;
+	public List<EquivalentValue> lockset;
 	
 	Transaction(boolean wholeMethod, SootMethod method, int nestLevel)
 	{

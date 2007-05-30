@@ -277,6 +277,11 @@ public class Options extends OptionsBase {
             )
                 use_old_type_assigner = true;
   
+            else if( false 
+            || option.equals( "j2me" )
+            )
+                j2me = true;
+  
             else if( false
             || option.equals( "main-class" )
             ) {
@@ -954,6 +959,10 @@ public class Options extends OptionsBase {
     private boolean use_old_type_assigner = false;
     public void set_use_old_type_assigner( boolean setting ) { use_old_type_assigner = setting; }
   
+    public boolean j2me() { return j2me; }
+    private boolean j2me = false;
+    public void set_j2me( boolean setting ) { j2me = setting; }
+  
     public String main_class() { return main_class; }
     public void set_main_class( String setting ) { main_class = setting; }
     private String main_class = "";
@@ -1119,6 +1128,7 @@ public class Options extends OptionsBase {
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +padOpt(" -use-old-type-assigner", "Use old type assigner - may be slower" )
++padOpt(" -j2me", "Use J2ME mode; changes assignment of types" )
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
 +"\nOutput Options:\n"
       

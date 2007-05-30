@@ -210,6 +210,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-use-old-type-assigner");
         }
   
+        public void setj2me(boolean arg) {
+            if(arg) addArg("-j2me");
+        }
+  
         public void setmain_class(String arg) {
             addArg("-main-class");
             addArg(arg);

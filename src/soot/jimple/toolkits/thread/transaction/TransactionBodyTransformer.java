@@ -345,7 +345,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						units.insertBefore(newExitmonitor, exitmonitor);
 						// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 						units.remove(exitmonitor);
-						clr.exceptionalEnd = new Pair(clr.end.getO1(), newExitmonitor);
+						clr.exceptionalEnd = new Pair(clr.exceptionalEnd.getO1(), newExitmonitor);
 					}
 					else
 					{
@@ -476,8 +476,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 	}
 	
 	static int lockNumber = 0;
-	Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<EquivalentValue, StaticFieldRef>();
-	public Value getLockFor(EquivalentValue lockEqVal)
+	static Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<EquivalentValue, StaticFieldRef>();
+	static public Value getLockFor(EquivalentValue lockEqVal)
 	{
 		Value lock = lockEqVal.getValue();
 		

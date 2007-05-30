@@ -13,6 +13,7 @@ import soot.jimple.toolkits.infoflow.ClassInfoFlowAnalysis;
 import soot.jimple.toolkits.infoflow.SmartMethodInfoFlowAnalysis;
 import soot.jimple.toolkits.infoflow.SmartMethodLocalObjectsAnalysis;
 import soot.jimple.spark.pag.*;
+import soot.jimple.spark.sets.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 
@@ -735,10 +736,9 @@ public class TransactionTransformer extends SceneTransformer
 		// Find runtime lock objects (if using dynamic locks or locksets)
 		if(!optionLeaveOriginalLocks)
 		{
-			// For locksets, each entry is the RWSet of "one lock"
-			// If a pair of locks have intersecting RWSets, then they are considered to be the "same lock"
-			List<RWSet> lockRWSets = new ArrayList<RWSet>();
-			Map<Value, Integer> useToLockNum = new HashMap<Value, Integer>();
+			// Data structures for determining lock numbers
+			List<PointsToSetInternal> lockPTSets = new ArrayList<PointsToSetInternal>();
+			Map<Value, Integer> lockToLockNum = new HashMap<Value, Integer>();
 
 			// For each transaction, if the group's R/Ws may be fields of the same object, 
 			// then check for the transaction if they must be fields of the same RUNTIME OBJECT
@@ -771,58 +771,39 @@ public class TransactionTransformer extends SceneTransformer
 							
 							// Get list of contributing uses from this unit
 							List allUses = tn.unitToUses.get(s);
-							List<Value> contributingUses = new ArrayList<Value>();
-							if(s.containsFieldRef())
-								G.v().out.println("fieldRefRW: " + tasea.valueRWSet(s.getFieldRef(), tn.method, s));
+							List<Value> contributingUses = new ArrayList<Value>();								
 							for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
 							{
 								Value vEqVal = (Value) usesIt.next();
 								Value v = ((vEqVal instanceof EquivalentValue) ? ((EquivalentValue) vEqVal).getValue() : vEqVal);
 								
-								RWSet valRW = tasea.valueRWSet(v, tn.method, s);
-								G.v().out.println("v: " + v);
-								G.v().out.println("RW: " + valRW + "groupRW: " + rws[group]);
-								if(	valRW != null && valRW.hasNonEmptyIntersection(rws[group]) )
+								if(s.containsFieldRef())
 								{
-									G.v().out.print("CONTRIBUTES! num=");
-									contributingUses.add(v);
-									
-									// figure out which "lock" this use belongs to
-									boolean foundLock = false;
-									for(int i = 0; i < lockRWSets.size(); i++)
+									FieldRef fr = s.getFieldRef();
+									if(fr instanceof InstanceFieldRef)
 									{
-										RWSet lockRWSet = lockRWSets.get(i);
-										if(valRW.hasNonEmptyIntersection(lockRWSet))
-										{
-											G.v().out.println("" + i + "\n\n");
-											useToLockNum.put(v, new Integer(i));
-											lockRWSet.union(valRW);
-											foundLock = true;
-											break;
-										}
-									}
-									if(!foundLock)
-									{
-										G.v().out.println("" + lockRWSets.size() + "\n\n");
-										useToLockNum.put(v, new Integer(lockRWSets.size()));
-										RWSet lockRWSet = new CodeBlockRWSet();
-										lockRWSets.add(lockRWSet);
-										lockRWSet.union(valRW);
+										if(((InstanceFieldRef) fr).getBase() == v)
+											v = fr;
 									}
 								}
-								else
-									G.v().out.println("DOESN'T contribute!\n\n");
-							}
-							if(contributingUses.size() == 0)
-							{
-								
+								RWSet valRW = tasea.valueRWSet(v, tn.method, s);
+//								G.v().out.println("v: " + v);
+//								G.v().out.println("RW: " + valRW + "groupRW: " + rws[group]);
+								if(	valRW != null && valRW.hasNonEmptyIntersection(rws[group]) )
+								{
+//									G.v().out.print("CONTRIBUTES!\n\n");
+									contributingUses.add(vEqVal);
+									
+								}
+//								else
+//									G.v().out.println("DOESN'T contribute!\n\n");
 							}
 							unitToUses.put(s, contributingUses);
 						}
 					}
 					
 					// Get list of objects (FieldRef or Local) to be locked (lockset analysis)
-					if(optionUseLocksets) G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
+//					if(optionUseLocksets) G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
 					LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
 					tn.lockset = la.getLocksetOf(unitToUses, tn.beginning);
 					
@@ -830,9 +811,53 @@ public class TransactionTransformer extends SceneTransformer
 					// TODO check for nullness
 					if(optionUseLocksets)
 					{
-						G.v().out.println("  " + (tn.lockset == null ? "FAILURE" : tn.lockset.toString()));
+//						G.v().out.println("  " + (tn.lockset == null ? "FAILURE" : tn.lockset.toString()));
 						if(tn.lockset == null)
 							tn.group.useLocksets = false;
+						else
+						{
+							// Figure out the lock number for each lock
+							for( EquivalentValue lockEqVal : tn.lockset )
+							{
+								Value lock = lockEqVal.getValue();
+								
+								// Get reaching objects for this lock
+								PointsToSetInternal lockPT;
+								if(lock instanceof Local)
+									lockPT = (PointsToSetInternal) pta.reachingObjects((Local) lock);
+								else if(lock instanceof StaticFieldRef)
+									lockPT = (PointsToSetInternal) pta.reachingObjects(((FieldRef) lock).getField());
+								else if(lock instanceof InstanceFieldRef)
+									lockPT = (PointsToSetInternal) pta.reachingObjects((Local) ((InstanceFieldRef) lock).getBase(), ((FieldRef) lock).getField());
+								else
+									lockPT = null;
+									
+								// Assign an existing lock number if possible
+								boolean foundLock = false;
+								for(int i = 0; i < lockPTSets.size(); i++)
+								{
+									PointsToSetInternal otherLockPT = lockPTSets.get(i);
+									if(lockPT.hasNonEmptyIntersection(otherLockPT))
+									{
+										G.v().out.println("Lock: " + lock + " num: " + i);
+										lockToLockNum.put(lock, new Integer(i));
+										otherLockPT.addAll(lockPT, null);
+										foundLock = true;
+										break;
+									}
+								}
+								
+								// Assign a brand new lock number otherwise
+								if(!foundLock)
+								{
+									G.v().out.println("Lock: " + lock + " num: " + lockPTSets.size());
+									lockToLockNum.put(lock, new Integer(lockPTSets.size()));
+									PointsToSetInternal otherLockPT = new HashPointsToSet(lockPT.getType(), (PAG) pta);
+									lockPTSets.add(otherLockPT);
+									otherLockPT.addAll(lockPT, null);
+								}
+							}
+						}
 					}
 					else
 					{
@@ -871,7 +896,7 @@ public class TransactionTransformer extends SceneTransformer
 		// Print table of transaction information
 		if(optionPrintTable)
 		{
-			printTable(AllTransactions);			
+			printTable(AllTransactions);
 			printGroups(AllTransactions, nextGroup, groups, rws);
 		}
 
@@ -1117,7 +1142,10 @@ public class TransactionTransformer extends SceneTransformer
 			while(tnedgeit.hasNext())
 				G.v().out.print(tnedgeit.next().other.name + " ");
 			if(tn.group != null && tn.group.useLocksets)
+			{
 				G.v().out.println("\n[transaction-table] Locks: " + tn.lockset);
+				
+			}
 			else
 				G.v().out.println("\n[transaction-table] Lock : " + (tn.setNumber == -1 ? "-" : (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) )));
 			G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");

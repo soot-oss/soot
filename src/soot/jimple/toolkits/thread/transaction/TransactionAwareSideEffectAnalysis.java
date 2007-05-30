@@ -224,31 +224,38 @@ public class TransactionAwareSideEffectAnalysis {
 		return null;
 	}
 	
-	public RWSet approximatedReadSet( SootMethod method, Stmt stmt, Value specialRead, SootMethod target)
+	public RWSet approximatedReadSet( SootMethod method, Stmt stmt, Value specialRead, SootMethod otarget)
 	{// used for stmts with method calls where the effect of the method call should be approximated by 0 or 1 reads (plus reads of all args)
-		RWSet ret = new SiteRWSet();
+		RWSet ret = new CodeBlockRWSet();
 		if(specialRead != null)
 		{
 			if( specialRead instanceof Local )
 			{
 				Local vLocal = (Local) specialRead;
 				PointsToSet base = pa.reachingObjects( vLocal );
-				CodeBlockRWSet sSet = new CodeBlockRWSet();
 				// Should actually get a list of fields of this object that are read/written
 				// make fake RW set of <base, all fields> (use a special class)
 				// intersect with the REAL RW set of this stmt
-				RWSet targetRW = nonTransitiveReadSet(target);
-				if(targetRW != null)
+				Iterator<MethodOrMethodContext> targets = normaltt.iterator( stmt );
+				while( targets.hasNext() )
 				{
-					for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+					SootMethod target = (SootMethod) targets.next();
+					if(target.isConcrete())
 					{
-						Object field = fieldsIt.next();
-						PointsToSet targetBase = targetRW.getBaseForField(field);
-						if(base.hasNonEmptyIntersection(targetBase))
-							sSet.addFieldRef(base, field); // should use intersection of bases!!!
+						RWSet targetRW = new CodeBlockRWSet();
+		//				targetRW.union(nonTransitiveWriteSet(target));
+						targetRW.union(nonTransitiveReadSet(target));
+						if(targetRW != null)
+						{
+							for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+							{
+								Object field = fieldsIt.next();
+								PointsToSet targetBase = targetRW.getBaseForField(field);
+								if(base.hasNonEmptyIntersection(targetBase))
+									ret.addFieldRef(base, field); // should use intersection of bases!!!
+							}
+						}
 					}
-	//				sSet.addFieldRef( base, new WholeObject(vLocal.getType()) ); // we approximate that it's not a specific field, but the whole object
-					ret.union(sSet);
 				}
 			}
 			else if( specialRead instanceof FieldRef)
@@ -332,59 +339,12 @@ public class TransactionAwareSideEffectAnalysis {
 						
 						// Add base object to read set
 						ret = approximatedReadSet(method, stmt, base, target);
-/*
-						ret = new SiteRWSet();
-		            	List rDefs = new ArrayList();
-		            	rDefs.addAll( sld.getDefsOfAt( base , (Unit) stmt ));
-		            	for(int i = 0; i < rDefs.size(); i++) // TODO: is it possible that there's an infinite loop here?
-		            	{
-		            		Stmt rDef = (Stmt) rDefs.get(i);
-		            		if(rDef instanceof DefinitionStmt)
-		            		{
-		            			Value r = ((DefinitionStmt) rDef).getRightOp();
-		            			Value l = ((DefinitionStmt) rDef).getLeftOp();
-
-		            			// If the rvalue is a local, we can find THAT local's defs
-		            			if(r instanceof Local)
-			            			rDefs.addAll(sld.getDefsOfAt( (Local) r , (Unit) rDef ));
-			            		// If the rvalue is a field ref, add it to the read set
-			            		else if(r instanceof FieldRef)
-			            		{
-			            			ret.union(approximatedReadSet(method, stmt, r));
-			            		}	
-			            		// If the rvalue is something else, add the lvalue to the read set
-			            		else
-			            		{
-			            			ret.union(approximatedReadSet(method, stmt, l));
-			            		}
-		            		}
-		            	}
-*/
-//		            	while (rDefsIt.hasNext())
-//		            	{
-//		                	Stmt next = (Stmt) rDefsIt.next();
-//		                	if(next instanceof DefinitionStmt)
-//							{
-//		    					ret = approximatedReadSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() );
-//							}
-//						}
 					}
 					else
 					{
 						ret = approximatedReadSet(method, stmt, null, null);
 					}
 				}
-/*				else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				// This shouldn't happen because all graylisted methods should be by explicit invoke statement only
-    				// approximatedReadSet() should be called instead
-    			}
-    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-					     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-				{
-    				// No read set
-				}
-*/
 				else
 				{// note that all library functions have already been filtered out (by name) via the filter
 				 // passed to the TransitiveTargets constructor.
@@ -442,31 +402,38 @@ public class TransactionAwareSideEffectAnalysis {
 		return null;
 	}
 	
-	public RWSet approximatedWriteSet( SootMethod method, Stmt stmt, Value v, SootMethod target )
+	public RWSet approximatedWriteSet( SootMethod method, Stmt stmt, Value v, SootMethod otarget )
 	{// used for stmts with method calls where the effect of the method call should be approximated by 0 or 1 writes
-		RWSet ret = new SiteRWSet();
+		RWSet ret = new CodeBlockRWSet();
 		if(v != null)
 		{
 			if( v instanceof Local )
 			{
 				Local vLocal = (Local) v;
 				PointsToSet base = pa.reachingObjects( vLocal );
-				CodeBlockRWSet sSet = new CodeBlockRWSet();
 				// Should actually get a list of fields of this object that are read/written
 				// make fake RW set of <base, all fields> (use a special class)
 				// intersect with the REAL RW set of this stmt
-				RWSet targetRW = nonTransitiveWriteSet(target);
-				if(targetRW != null)
+				Iterator<MethodOrMethodContext> targets = normaltt.iterator( stmt );
+				while( targets.hasNext() )
 				{
-					for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+					SootMethod target = (SootMethod) targets.next();
+					if(target.isConcrete())
 					{
-						Object field = fieldsIt.next();
-						PointsToSet targetBase = targetRW.getBaseForField(field);
-						if(base.hasNonEmptyIntersection(targetBase))
-							sSet.addFieldRef(base, field); // should use intersection of bases!!!
+						RWSet targetRW = new CodeBlockRWSet();
+						targetRW.union(nonTransitiveWriteSet(target));
+						targetRW.union(nonTransitiveReadSet(target));
+						if(targetRW != null)
+						{
+							for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+							{
+								Object field = fieldsIt.next();
+								PointsToSet targetBase = targetRW.getBaseForField(field);
+								if(base.hasNonEmptyIntersection(targetBase))
+									ret.addFieldRef(base, field); // should use intersection of bases!!!
+							}
+						}
 					}
-	//				sSet.addFieldRef( base, new WholeObject(vLocal.getType()) ); // we approximate not a specific field, but the whole object
-					ret.union(sSet);
 				}
 			}
 			else if( v instanceof FieldRef)
@@ -531,60 +498,12 @@ public class TransactionAwareSideEffectAnalysis {
 						
 						// Add base object to write set
 						ret = approximatedWriteSet(method, stmt, base, target);
-/*
-						ret = new SiteRWSet();
-		            	List rDefs = new ArrayList();
-		            	rDefs.addAll( sld.getDefsOfAt( base , stmt ));
-		            	for(int i = 0; i < rDefs.size(); i++)
-		            	{
-		            		Stmt rDef = (Stmt) rDefs.get(i);
-		            		if(rDef instanceof DefinitionStmt)
-		            		{
-		            			Value r = ((DefinitionStmt) rDef).getRightOp();
-		            			Value l = ((DefinitionStmt) rDef).getLeftOp();
-		            			
-		            			// If the rvalue is a local, we can find THAT local's defs
-		            			if(r instanceof Local)
-			            			rDefs.addAll(sld.getDefsOfAt( (Local)r , (Unit) rDef ));
-			            		// If the rvalue is a field ref, add it to the write set
-			            		else if(r instanceof FieldRef)
-			            			ret.union(approximatedWriteSet(method, stmt, r, target));
-			            		// If the rvalue is something else, add the lvalue to the write set
-			            		else
-			            			ret.union(approximatedWriteSet(method, stmt, l, target));
-		            		}
-		            	}
-*/
-//		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
-//		            	while (rDefsIt.hasNext())
-//		            	{
-//		                	Stmt next = (Stmt) rDefsIt.next();
-//		                	if(next instanceof DefinitionStmt)
-//							{
-//		    					ret = approximatedWriteSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase());
-//							}
-//						}
 					}
 					else
 					{
 						ret = approximatedWriteSet(method, stmt, null, null);
 					}
 				}
-/*
-				else if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				// No write set
-    			}
-    			else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				// No write set
-    			}
-    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-					     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-				{
-    				// No write set
-				}
-*/
 				else
 				{
 					RWSet ntw = nonTransitiveWriteSet(target);
@@ -643,11 +562,6 @@ public class TransactionAwareSideEffectAnalysis {
 				return null;
 		}
 		
-//		if(tlo != null && 
-//			(( v instanceof InstanceFieldRef && tlo.isObjectThreadLocal(((InstanceFieldRef)v).getBase(), m) ) ||
-//			 ( v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef)v).getBase(), m) )))
-//			return null;
-		
 		if( v instanceof InstanceFieldRef ) {
 			InstanceFieldRef ifr = (InstanceFieldRef) v;
 			PointsToSet base = pa.reachingObjects( (Local) ifr.getBase() );
@@ -675,21 +589,28 @@ public class TransactionAwareSideEffectAnalysis {
 			// Should actually get a list of fields of this object that are read/written
 			// make fake RW set of <base, all fields> (use a special class)
 			// intersect with the REAL RW set of this stmt
-			Iterator<MethodOrMethodContext> targets = tt.iterator( s );
+			Iterator<MethodOrMethodContext> targets = normaltt.iterator( s );
 			while( targets.hasNext() )
 			{
 				SootMethod target = (SootMethod) targets.next();
-				RWSet targetRW = new CodeBlockRWSet();
-				targetRW.union(nonTransitiveWriteSet(target));
-				targetRW.union(nonTransitiveReadSet(target));
-				for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+				if(target.isConcrete())
 				{
-					Object field = fieldsIt.next();
-					PointsToSet targetBase = targetRW.getBaseForField(field);
-					if(base.hasNonEmptyIntersection(targetBase))
-						ret.addFieldRef(base, field); // should use intersection of bases!!!
+					RWSet targetRW = new CodeBlockRWSet();
+					targetRW.union(nonTransitiveWriteSet(target));
+					targetRW.union(nonTransitiveReadSet(target));
+					for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+					{
+						Object field = fieldsIt.next();
+						PointsToSet targetBase = targetRW.getBaseForField(field);
+						if(base.hasNonEmptyIntersection(targetBase))
+							ret.addFieldRef(base, field); // should use intersection of bases!!!
+					}
 				}
 			}
+		}
+		else
+		{
+			throw new RuntimeException("Unknown type of value, can't find RWSet: " + v);
 		}
 		return ret;
 	}
