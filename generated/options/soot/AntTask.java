@@ -165,6 +165,10 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
+        public void setprepend_classpath(boolean arg) {
+            if(arg) addArg("-prepend-classpath");
+        }
+  
         public void setprocess_dir(Path arg) {
             if(process_dir == null )
                 process_dir = new Path(getProject());

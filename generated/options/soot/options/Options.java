@@ -179,6 +179,12 @@ public class Options extends OptionsBase {
                 }
             }
   
+            else if( false 
+            || option.equals( "pp" )
+            || option.equals( "prepend-classpath" )
+            )
+                prepend_classpath = true;
+  
             else if( false
             || option.equals( "process-dir" )
             ) {
@@ -929,6 +935,10 @@ public class Options extends OptionsBase {
     public String soot_classpath() { return soot_classpath; }
     public void set_soot_classpath( String setting ) { soot_classpath = setting; }
     private String soot_classpath = "";
+    public boolean prepend_classpath() { return prepend_classpath; }
+    private boolean prepend_classpath = false;
+    public void set_prepend_classpath( boolean setting ) { prepend_classpath = setting; }
+  
     public List process_dir() { 
         if( process_dir == null )
             return java.util.Collections.EMPTY_LIST;
@@ -1118,6 +1128,7 @@ public class Options extends OptionsBase {
 +"\nInput Options:\n"
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
++padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
 +padOpt(" -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -ast-metrics", "Compute AST Metrics if performing java to jimple" )
 +padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )

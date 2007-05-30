@@ -264,6 +264,21 @@ followed <var>java.home</var><tt>/lib/rt.jar</tt>, where
 separator.</p>
 </long_desc>
 		</stropt>
+		<boolopt>
+			<name>Prepend classpath</name>
+			<alias>pp</alias>
+			<alias>prepend-classpath</alias>
+			<short_desc>Prepend the given soot classpath to the default classpath.</short_desc>
+			<long_desc>
+<p>
+Instead of replacing the default soot classpath with the classpath given on the command line,
+prepent it with that classpath.
+The default classpath holds whatever is set in the CLASSPATH environment variable,
+followed by rt.jar (resolved through the JAVA_HOME environemt vatiable).
+If whole-program mode is enabled, jce.jar is also appended in the end.
+</p>
+</long_desc>
+		</boolopt>
 		<listopt>
 			<name>Process Directories</name>
 			<alias>process-dir</alias>

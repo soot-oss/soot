@@ -154,14 +154,36 @@ public class Scene  //extends AbstractHost
             String optionscp = Options.v().soot_classpath();
             if( optionscp.length() > 0 )
                 sootClassPath = optionscp;
+
+            String defaultSootClassPath = defaultClassPath();
+	
+	        //if no classpath is given on the command line, take the default
+	        if( sootClassPath == null ) {
+	        	sootClassPath = defaultSootClassPath;
+	        } else {
+	        	//if one is given...
+	            if(Options.v().prepend_classpath()) {
+	            	//if the prepend flag is set, append the default classpath
+	            	sootClassPath += File.pathSeparator + defaultSootClassPath;
+	            } 
+	            //else, leave it as it is
+	        }        
         }
-        if( sootClassPath == null ) {
-            sootClassPath = System.getProperty("java.class.path")+File.pathSeparator+
-                System.getProperty("java.home")+File.separator+
-                "lib"+File.separator+"rt.jar";
-        }
+
         return sootClassPath;
     }
+    
+	public String defaultClassPath() {
+		String defaultSootClassPath = System.getProperty("java.class.path")+File.pathSeparator+
+			System.getProperty("java.home")+File.separator+"lib"+File.separator+"rt.jar";
+		if(Options.v().whole_program()) {
+			//add jce.jar, which is necessary for whole program mode
+			//(java.security.Signature from rt.jar import javax.crypto.Cipher from jce.jar            	
+			defaultSootClassPath += File.pathSeparator+
+				System.getProperty("java.home")+File.separator+"lib"+File.separator+"jce.jar";
+		}
+		return defaultSootClassPath;
+	}
 
 
     private int stateCount;
