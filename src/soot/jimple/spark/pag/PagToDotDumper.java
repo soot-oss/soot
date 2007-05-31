@@ -20,15 +20,13 @@
 package soot.jimple.spark.pag;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-
-
-
 
 import soot.SootField;
 import soot.SootMethod;
@@ -45,10 +43,6 @@ public class PagToDotDumper {
 	public static final int TRACE_MAX_LVL = 99;
 	private PAG pag;
 
-	private PrintStream ps;
-
-	private Node curNode;
-
 	private HashMap<Node, Node[]> vmatches;
 
 	private HashMap<Node, Node[]> invVmatches;
@@ -59,22 +53,6 @@ public class PagToDotDumper {
 		this.invVmatches = new HashMap<Node, Node[]>();
 	}
 	
-	public void debugEmptyP2Sets() {
-		traceNode("java.util.Hashtable$ValueCollection", "contains","r0");
-
-		if (false) {
-			for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter
-					.hasNext();) {
-				VarNode vNode = (VarNode) iter.next();
-
-				if (vNode.getP2Set().isEmpty()) {
-					System.err.println(vNode);
-					System.err.println(vNode.getP2Set());
-				}
-			}
-		}
-	}
-
 	/**
 	 * Build vmatchEdges and store them in vmatches field
 	 *  
@@ -169,7 +147,7 @@ public class PagToDotDumper {
 	 * @param node
 	 * @return
 	 */
-	public static String translateEdge(Node src, Node dest, String label) {
+	private static String translateEdge(Node src, Node dest, String label) {
 		return makeNodeName(src) + " -> " + makeNodeName(dest) + " [label=\""
 				+ label + "\"];";
 	}
@@ -179,11 +157,15 @@ public class PagToDotDumper {
             return !(n instanceof AllocNode) && n.getP2Set().isEmpty();
         }
     };
+    
 	/**
-	 * @param node
-	 * @return
+     * Generate a node declaration for a dot file.
+	 * @param node the node
+     * @param p a predicate over nodes, which, if true, will
+     * cause the node to appear red
+	 * @return the appropriate {@link String} for the dot file
 	 */
-	public static String translateLabel(Node n, Predicate<Node> p) {
+	public static String makeDotNodeLabel(Node n, Predicate<Node> p) {
 		String color = "";
 		String label;
 
@@ -203,7 +185,7 @@ public class PagToDotDumper {
 	}
 
 	private static String translateLabel(Node n) { 
-	    return translateLabel(n, emptyP2SetPred);
+	    return makeDotNodeLabel(n, emptyP2SetPred);
 	}
 	/**
 	 * @param lvNode
@@ -217,33 +199,8 @@ public class PagToDotDumper {
 						cName) && lvNode.getMethod().getName().equals(mName);
 	}
 
-	public static String format(LocalVarNode v) {
-		return v.getVariable().toString();
-	}
 
-	public void printOneNodeByID(int id) {
-		buildVmatchEdges();
-
-		for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter
-				.hasNext();) {
-			Node n = (Node) iter.next();
-
-			if (n.getNumber() == id) {
-				printOneNode((VarNode) n);
-			}
-		}
-		
-	}
 	
-	public void printOneAllocNodeByID(int id) {
-		for (Iterator iter = pag.getAllocNodeNumberer().iterator(); iter.hasNext(); ) {
-			final AllocNode n = (AllocNode) iter.next();
-			if (n.getNumber() == id) {
-				System.err.println(id + ": " + n.getNewExpr().toString());	
-			}
-		}
-	}
-
 	private void printOneNode(VarNode node) {
 		PrintStream ps = System.err;
 
@@ -280,69 +237,67 @@ public class PagToDotDumper {
 
 	}
 
-	public void dumpP2Set(String fName, String cName, String mName) {
+    /**
+     * dumps the points-to sets for all locals in a method in a 
+     * dot representation.  The graph has edges from each local to
+     * all {@link AllocNode}s in its points-to set
+     * @param fName a name for the output file
+     * @param mName the name of the method whose locals should
+     * be dumped
+     * @throws FileNotFoundException if unable to output to specified
+     * file 
+     */
+	public void dumpP2SetsForLocals(String fName, String mName) throws FileNotFoundException {
 
-		PrintStream ps;
-
-		try {
 			FileOutputStream fos = new FileOutputStream(new File(fName));
-			ps = new PrintStream(fos);
+			PrintStream ps = new PrintStream(fos);
 			ps.println("digraph G {");
 
-			dumpLocalP2Set(cName, mName, ps);
+			dumpLocalP2Set(mName, ps);
 
 			ps.print("}");
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
-	private void dumpLocalP2Set(String cName, String mName, final PrintStream ps) {
+	private void dumpLocalP2Set(String mName, final PrintStream ps) {
 
-		this.ps = ps;
 		for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter
 				.hasNext();) {
 			VarNode vNode = (VarNode) iter.next();
 
 			if (vNode instanceof LocalVarNode) {
 				final LocalVarNode lvNode = (LocalVarNode) vNode;
-				curNode = lvNode;
-
 				if (lvNode.getMethod() != null
 						&& lvNode.getMethod().getName().equals(mName)) {
 
 					ps.println("\t" + makeNodeName(lvNode) + " [label=\""
 							+ makeLabel(lvNode) + "\"];");
-					lvNode.getP2Set().forall(new P2SetToDotPrinter());
+					lvNode.getP2Set().forall(new P2SetToDotPrinter(lvNode, ps));
 
 				}
 			}
 		}
 	}
 
-	public void dumpPAG(String cName, String mName) {
-		String mName2 = mName;
-		if (mName.indexOf('<') == 0)
-			mName2 = mName.substring(1, mName.length() - 1);
-		dumpPAG(cName + "." + mName2 + ".dot", cName, mName);
-	}
-
-	public void dumpPAG(String fName, String cName, String mName) {
+    /**
+     * Dump the PAG for some method in the program in
+     * dot format
+     * @param fName The filename for the output
+     * @param cName The name of the declaring class for the method
+     * @param mName The name of the method
+     * @throws FileNotFoundException if output file cannot be written
+     */
+	public void dumpPAGForMethod(String fName, String cName, String mName) throws FileNotFoundException {
 		PrintStream ps;
 
-		try {
-			FileOutputStream fos = new FileOutputStream(new File(fName));
-			ps = new PrintStream(fos);
-			ps.println("digraph G {");
-			ps.println("\trankdir=LR;");
-			dumpLocalPAG(cName, mName, ps);
+		FileOutputStream fos = new FileOutputStream(new File(fName));
+		ps = new PrintStream(fos);
+		ps.println("digraph G {");
+		ps.println("\trankdir=LR;");
+		dumpLocalPAG(cName, mName, ps);
+		
+		ps.print("}");
 
-			ps.print("}");
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void dumpLocalPAG(String cName, String mName, final PrintStream ps) {
@@ -433,7 +388,7 @@ public class PagToDotDumper {
 		String fName = "trace." + id + ".dot";
 		try {
 			FileOutputStream fos = new FileOutputStream(new File(fName));
-			ps = new PrintStream(fos);
+			PrintStream ps = new PrintStream(fos);
 			ps.println("digraph G {");
 
 			// iterate over all variable nodes
@@ -565,36 +520,6 @@ public class PagToDotDumper {
 				trace((VarNode) succs[i], ps, visitedNodes, level-1);
 			}
 		}
-		//		succs = pag.loadInvLookup(node);
-		//		for (int i = 0; i < succs.length; i++) {
-		//			if (visitedNodes.contains(succs[i]))
-		//				continue;
-		//			final FieldRefNode frNode = (FieldRefNode) succs[i];
-		//			// ps.println("\t" + translateLabel(frNode));
-		//			// print edge
-		//			ps.println("\t"
-		//					+ translateEdge(node, frNode.getBase(), "getfield\\n"
-		//							+ frNode.getField()));
-		//			visitedNodes.add(frNode.getBase());
-		//			trace(frNode.getBase(), ps, visitedNodes);
-		//		}
-		//
-		//		succs = pag.storeLookup(node);
-		//
-		//		for (int i = 0; i < succs.length; i++) {
-		//			if (visitedNodes.contains(succs[i]))
-		//				continue;
-		//			final FieldRefNode frNode = (FieldRefNode) succs[i];
-		//			// ps.println("\t" + translateLabel(frNode.getBase()));
-		//			// print edge
-		//			ps.println("\t"
-		//					+ translateEdge(frNode.getBase(), node, "putfield\\n"
-		//							+ frNode.getField()));
-		//
-		//			visitedNodes.add(frNode.getBase());
-		//			trace(frNode.getBase(), ps, visitedNodes);
-		//		}
-
 	}
 
 	public static String makeNodeName(Node n) {
@@ -638,6 +563,14 @@ public class PagToDotDumper {
 
 	class P2SetToDotPrinter extends P2SetVisitor {
 
+      private final Node curNode;
+      
+      private final PrintStream ps;
+      P2SetToDotPrinter(Node curNode, PrintStream ps) {
+        this.curNode = curNode;
+        this.ps = ps;
+      }
+      
 		public void visit(Node n) {
 			ps.println("\t" + makeNodeName(n) + " [label=\""
 					+ makeLabel((AllocNode) n) + "\"];");

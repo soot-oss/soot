@@ -112,7 +112,7 @@ public class DotPointerGraph {
 
 		};
 		for (Node node : nodes) {
-			pw.println(PagToDotDumper.translateLabel(node, falsePred));
+			pw.println(PagToDotDumper.makeDotNodeLabel(node, falsePred));
 		}
 		for (String edge : edges) {
 			pw.println(edge);
