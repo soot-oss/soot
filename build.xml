@@ -22,6 +22,8 @@
         	<compilerarg value="-Xlint:all"/>
         	<compilerarg value="-Xlint:-unchecked"/>
         	<compilerarg value="-Xlint:-serial"/>
+        	<compilerarg value="-Xlint:-dep-ann"/>
+        	<compilerarg value="-Xlint:-cast"/>
         	<classpath>
         		<pathelement location="classes"/>
         		<pathelement location="${polyglot.jar}"/>
