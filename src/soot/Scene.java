@@ -135,6 +135,9 @@ public class Scene  //extends AbstractHost
     
     public SootClass getMainClass()
     {
+        if(mainClass == null) {
+        	setMainClassFromOptions();
+        }
         if(mainClass == null)
             throw new RuntimeException("There is no main class set!");
             
@@ -920,7 +923,6 @@ public class Scene  //extends AbstractHost
         }
 
         prepareClasses();
-        setMainClassFromOptions();
         setDoneResolving();
     }
 
