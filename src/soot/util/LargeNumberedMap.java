@@ -18,6 +18,7 @@
  */
 
 package soot.util;
+import java.util.*;
 
 /** A java.util.Map-like map with Numberable objects as the keys.
  * This one is designed for maps close to the size of the universe.
