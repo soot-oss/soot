@@ -50,6 +50,23 @@ public final class LargeNumberedMap {
         if( i >= values.length ) return null;
         return values[ i ];
     }
+    public Iterator keyIterator() {
+        return new Iterator() {
+            int cur = 0;
+            private void advance() {
+                while(cur < values.length && values[cur] == null) cur++;
+            }
+            public boolean hasNext() {
+                advance();
+                return cur < values.length;
+            }
+            public Object next() {
+                if(!hasNext()) throw new NoSuchElementException();
+                return universe.get(cur++);
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
 
     /* Private stuff. */
 

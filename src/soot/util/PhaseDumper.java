@@ -234,7 +234,7 @@ public class PhaseDumper {
     // safe to assume it will be accessed by only a single thread.
     private boolean alreadyDumping = false;
     
-    private void dumpBody(Body b, String baseName) {
+    public void dumpBody(Body b, String baseName) {
 	try {
 	    alreadyDumping = true;
 	    java.io.PrintWriter out = openBodyFile(b, baseName);
