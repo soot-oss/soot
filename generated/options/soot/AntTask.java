@@ -1269,6 +1269,12 @@ public class AntTask extends MatchingTask {
             addArg("profile:"+(arg?"true":"false"));
           }
       
+          public void setverbosegc(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("verbosegc:"+(arg?"true":"false"));
+          }
+      
           public void setignore_types(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");

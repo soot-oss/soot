@@ -85,6 +85,16 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "profile" );
     }
     
+    /** Verbose GC --
+    
+     * Print memory usage at each BDD garbage collection..
+    
+     * Print memory usage at each BDD garbage collection. 
+     */
+    public boolean verbosegc() {
+        return soot.PhaseOptions.getBoolean( options, "verbosegc" );
+    }
+    
     /** Ignore Types Entirely --
     
      * Make Paddle completely ignore declared types of variables.

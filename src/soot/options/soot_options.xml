@@ -2239,6 +2239,15 @@ to be used in Paddle.
 Turns on JeddProfiler for profiling BDD operations.
         </long_desc>
 						</boolopt>
+						<boolopt>
+							<name>Verbose GC</name>
+							<alias>verbosegc</alias>
+							<default>false</default>
+                                                        <short_desc>Print memory usage at each BDD garbage collection.</short_desc>
+							<long_desc>
+Print memory usage at each BDD garbage collection.
+        </long_desc>
+						</boolopt>
 						<multiopt>
 							<name>Worklist Implementation</name>
 							<alias>q</alias>

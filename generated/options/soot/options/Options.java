@@ -1626,6 +1626,7 @@ public class Options extends OptionsBase {
                 +padOpt( "order (32)", "" )
                 +padOpt( "dynamic-order", "" )
                 +padOpt( "profile (false)", "Profile BDDs using JeddProfiler" )
+                +padOpt( "verbosegc (false)", "Print memory usage at each BDD garbage collection." )
                 +padOpt( "q", "Select queue implementation" )
                 +padVal( "auto (default)", "Select queue implementation based on bdd option" )
                 
@@ -2445,6 +2446,7 @@ public class Options extends OptionsBase {
                 +"order "
                 +"dynamic-order "
                 +"profile "
+                +"verbosegc "
                 +"q "
                 +"backend "
                 +"ignore-types "
@@ -3009,6 +3011,7 @@ public class Options extends OptionsBase {
               +"bdd:false "
               +"order:32 "
               +"profile:false "
+              +"verbosegc:false "
               +"q:auto "
               +"backend:auto "
               +"ignore-types:false "
