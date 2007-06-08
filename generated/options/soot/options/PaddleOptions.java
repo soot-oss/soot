@@ -339,6 +339,20 @@ public class PaddleOptions
         return soot.PhaseOptions.getInt( options, "order" );
     }
     
+    /** BDD Nodes --
+    
+     * Number of BDD nodes to allocate (0=unlimited).
+    
+     * This option specifies the number of BDD nodes to be used by the 
+     * BDD backend. A value of 0 causes the backend to start with one 
+     * million nodes, and allocate more as required. A value other than 
+     * zero causes the backend to start with the specified size, and 
+     * prevents it from ever allocating any more nodes. 
+     */
+    public int bdd_nodes() {
+        return soot.PhaseOptions.getInt( options, "bdd-nodes" );
+    }
+    
     /** Context length (k) --
     
      * .

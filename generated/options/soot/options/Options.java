@@ -1653,6 +1653,7 @@ public class Options extends OptionsBase {
                 
                 +padVal( "none", "No BDDs" )
                 
+                +padOpt( "bdd-nodes (0)", "Number of BDD nodes to allocate (0=unlimited)" )
                 +padOpt( "ignore-types (false)", "Make Paddle completely ignore declared types of variables" )
                 +padOpt( "pre-jimplify (false)", "Jimplify all methods before starting Paddle" )
                 +padOpt( "context", "Select context-sensitivity level" )
@@ -2449,6 +2450,7 @@ public class Options extends OptionsBase {
                 +"verbosegc "
                 +"q "
                 +"backend "
+                +"bdd-nodes "
                 +"ignore-types "
                 +"pre-jimplify "
                 +"context "
@@ -3014,6 +3016,7 @@ public class Options extends OptionsBase {
               +"verbosegc:false "
               +"q:auto "
               +"backend:auto "
+              +"bdd-nodes:0 "
               +"ignore-types:false "
               +"pre-jimplify:false "
               +"context:insens "

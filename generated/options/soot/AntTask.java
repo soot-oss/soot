@@ -1407,6 +1407,12 @@ public class AntTask extends MatchingTask {
             addArg("backend:"+arg);
           }
       
+          public void setbdd_nodes(String arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("bdd-nodes:"+arg);
+          }
+      
           public void setcontext(String arg) {
             addArg("-p");
             addArg("cg.paddle");

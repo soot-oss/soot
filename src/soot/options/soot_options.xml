@@ -2366,6 +2366,18 @@ Don't use any BDD backend. Any attempted use of BDDs will cause Paddle to crash.
 This option tells Paddle which implementation of BDDs to use.
         </long_desc>
 						</multiopt>
+						<intopt>
+							<name>BDD Nodes</name>
+							<alias>bdd-nodes</alias>
+							<default>0</default>
+                                                        <short_desc>Number of BDD nodes to allocate (0=unlimited)</short_desc>
+							<long_desc>
+This option specifies the number of BDD nodes to be used by the BDD backend.
+A value of 0 causes the backend to start with one million nodes, and allocate
+more as required. A value other than zero causes the backend to start with
+the specified size, and prevents it from ever allocating any more nodes.
+        </long_desc>
+						</intopt>
 						<boolopt>
 							<name>Ignore Types Entirely</name>
 							<alias>ignore-types</alias>
