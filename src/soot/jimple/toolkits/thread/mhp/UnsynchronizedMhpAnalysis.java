@@ -10,6 +10,7 @@ import soot.jimple.toolkits.thread.AbstractRuntimeThread;
 import soot.jimple.toolkits.thread.mhp.findobject.AllocNodesFinder;
 import soot.jimple.toolkits.thread.mhp.findobject.MultiRunStatementsFinder;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
+import soot.jimple.spark.ondemand.DemandCSPointsTo;
 import soot.jimple.spark.pag.*;
 import soot.options.SparkOptions;
 import java.util.*;
@@ -45,6 +46,10 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		SootMethod mainMethod = Scene.v().getMainClass().getMethodByName("main");
 
 		PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
+		if (pta instanceof DemandCSPointsTo) {
+			DemandCSPointsTo demandCSPointsTo = (DemandCSPointsTo) pta;
+			pta = demandCSPointsTo.getPAG();
+		}		
 		if (!(pta instanceof PAG))
 		{
 		   throw new RuntimeException("You must use Spark for points-to analysis when computing MHP information!");

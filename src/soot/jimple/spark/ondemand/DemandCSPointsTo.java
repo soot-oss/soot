@@ -2043,4 +2043,11 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	public PointsToSet reachingObjectsOfArrayElement(PointsToSet s) {
 		throw new UnsupportedOperationException();
 	}
+
+	/**
+	 * @return returns the (SPARK) pointer assignment graph
+	 */
+	public PAG getPAG() {
+		return pag;
+	}
 }

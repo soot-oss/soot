@@ -11,7 +11,7 @@ import soot.jimple.*;
 // Runs LocalObjectsAnalysis for the special case where we want to know
 // if a reference is local to all threads from which it is reached.
 
-public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
+public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements IThreadLocalObjectsAnalysis 
 {
 	MhpTester mhp;
 	List<AbstractRuntimeThread> threads;
