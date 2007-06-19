@@ -193,6 +193,24 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
     }
     
     /**
+     * Returns true if this analysis has any information about local l
+     * at statement s (i.e. it is not {@link #UNKNOWN}).
+     * In particular, it is safe to pass in locals/statements that are not
+     * even part of the right method. In those cases <code>false</code>
+     * will be returned.
+     * Permits s to be <code>null</code>, in which case <code>false</code> will be returned.
+     */
+    public boolean hasInfoOn(Local l, Stmt s) {
+    	HashMap flowBefore = (HashMap) getFlowBefore(s);
+    	if(flowBefore==null) {
+    		return false;
+    	} else {
+    		Object info = flowBefore.get(l);
+    		return info!=null && info!=UNKNOWN;
+    	}
+    }
+    
+    /**
      * @return true if values of l1 (at s1) and l2 (at s2) have the
      * exact same object IDs, i.e. at statement s1 the variable l1 must point to the same object
      * as l2 at s2.
