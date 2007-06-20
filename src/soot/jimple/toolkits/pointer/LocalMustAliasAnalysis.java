@@ -63,7 +63,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
     
     protected List<Local> locals;
 
-    protected Map<Integer,Integer> numbering = new HashMap<Integer, Integer>();
+    protected Map<Object,Integer> numbering = new HashMap<Object, Integer>();
     
     protected int nextNumber = 1;
     
@@ -199,12 +199,11 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
         } else  if(ln==UNKNOWN) {
         	return UNKNOWN.toString();
         }
-        int hashCode = System.identityHashCode(ln);
-        Integer number = numbering.get(hashCode);
+        Integer number = numbering.get(ln);
         int num;
         if(number==null) {
         	num = nextNumber++;
-        	numbering.put(hashCode, num);
+        	numbering.put(ln, num);
         } else {
         	num = number;
         }
