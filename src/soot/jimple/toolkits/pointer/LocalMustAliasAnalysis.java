@@ -28,7 +28,9 @@ import soot.Local;
 import soot.RefLikeType;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.CastExpr;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.ParameterRef;
@@ -123,10 +125,16 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
             Value lhs = ds.getLeftOp();
             Value rhs = ds.getRightOp();
 
+            if (rhs instanceof CastExpr) {
+				CastExpr castExpr = (CastExpr) rhs;
+            	rhs = castExpr.getOp();
+            }
+            
             if (lhs instanceof Local && lhs.getType() instanceof RefLikeType) {
                 if (rhs instanceof NewExpr ||
                     rhs instanceof InvokeExpr || 
                     rhs instanceof ParameterRef || 
+                    rhs instanceof FieldRef || 
                     rhs instanceof ThisRef) {
                     // use the newexpr, invokeexpr, parameterref,
                     // or thisref as an ID; this should be OK for
@@ -171,14 +179,17 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
     
     /**
      * Returns a string (natural number) representation of the instance key associated with l
-     * at statement s or <code>null</code> if there is no such key associated or the value of l at s is {@link #UNKNOWN}. 
+     * at statement s or <code>null</code> if there is no such key associated or <code>UNKNOWN</code> if 
+     * the value of l at s is {@link #UNKNOWN}. 
      * @param l any local of the associated method
      * @param s the statement at which to check
      */
     public String instanceKeyString(Local l, Stmt s) {
         Object ln = ((HashMap)getFlowBefore(s)).get(l);
-        if(ln==null || ln==UNKNOWN) {
+        if(ln==null) {
         	return null;
+        } else  if(ln==UNKNOWN) {
+        	return UNKNOWN.toString();
         }
         int hashCode = System.identityHashCode(ln);
         Integer number = numbering.get(hashCode);
