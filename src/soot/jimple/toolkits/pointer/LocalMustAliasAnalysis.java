@@ -138,7 +138,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
                     rhs instanceof ThisRef) {
                 	
                 	Object oldRhs = in.get(lhs);
-                	if(rhs==oldRhs) {
+                	if(rhs==oldRhs || oldRhs==UNKNOWN) {
                 		//if we have already assigned that exact same expression (not that this implies
                 		//that it was also at the exact same statement) to that lhs previously,
                 		//this means that we are in a loop and now want to assign it again;
