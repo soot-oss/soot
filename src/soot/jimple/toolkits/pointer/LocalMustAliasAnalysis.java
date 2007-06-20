@@ -136,10 +136,22 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
                     rhs instanceof ParameterRef || 
                     rhs instanceof FieldRef || 
                     rhs instanceof ThisRef) {
-                    // use the newexpr, invokeexpr, parameterref,
-                    // or thisref as an ID; this should be OK for
-                    // must-alias analysis.
-                    out.put(lhs, rhs);
+                	
+                	Object oldRhs = in.get(lhs);
+                	if(rhs==oldRhs) {
+                		//if we have already assigned that exact same expression (not that this implies
+                		//that it was also at the exact same statement) to that lhs previously,
+                		//this means that we are in a loop and now want to assign it again;
+                		//if this is the case, we have to assign UNKNOWN because we do not know for sure whether
+                		//or not we get the same object on multiple consecutive assignments of the same expression;
+                		//in particular this might mean that mustAlias(l,s,l,s) might be UNKNOWN if s:l=expr is in a loop                		
+                		out.put(lhs, UNKNOWN);
+                	} else {
+	                    // use the newexpr, invokeexpr, parameterref,
+	                    // or thisref as an ID; this should be OK for
+	                    // must-alias analysis.
+	                    out.put(lhs, rhs);
+                	}
                 } else if (rhs instanceof Local) {
                     out.put(lhs, in.get(rhs));
                 } else out.put(lhs, UNKNOWN);
@@ -157,12 +169,12 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
         }
     }
 
-    /** Initial conservative value: objects have unknown definition. */
+    /** Initial aggressive value: objects have no definitions. */
     protected Object entryInitialFlow()
     {
         HashMap m = new HashMap();
         for (Local l : (Collection<Local>) locals) {
-            m.put(l, UNKNOWN);
+            m.put(l, NOTHING);
         }
         return m;
     }
@@ -170,11 +182,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
     /** Initial aggressive value: objects have no definitions. */
     protected Object newInitialFlow()
     {
-        HashMap m = new HashMap();
-        for (Local l : (Collection<Local>) locals) {
-            m.put(l, NOTHING);
-        }
-        return m;
+    	return entryInitialFlow();
     }
     
     /**
