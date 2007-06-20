@@ -54,8 +54,10 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * */
 public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
 {
-    private static final Object UNKNOWN = new Object() {
-    	public String toString() { return "UNKNOWN"; }
+	public static final String UNKNOWN_LABEL = "UNKNOWN";
+	
+	private static final Object UNKNOWN = new Object() {
+    	public String toString() { return UNKNOWN_LABEL; }
     };
     private static final Object NOTHING = new Object() {
     	public String toString() { return "NOTHING"; }
