@@ -155,6 +155,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		int tempNum = 1;
 		// Iterate through all of the transactions in the current method
 		Iterator fsIt = fs.iterator();
+		Stmt assignLocalLockStmt = null;
 		while(fsIt.hasNext())
 		{
 			Transaction tn = ((TransactionFlowPair) fsIt.next()).tn;
@@ -182,7 +183,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						if(!b.getLocals().contains(lockObj[tn.setNumber]))
 							b.getLocals().add(lockObj[tn.setNumber]);
 						
-						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
+						assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
 						if(tn.wholeMethod)
 							units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
 						else
@@ -207,7 +208,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						b.getLocals().add(lockLocal);
 					
 						// make it refer to the right lock object
-						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockLocal, lock);
+						assignLocalLockStmt = Jimple.v().newAssignStmt(lockLocal, lock);
 						if(tn.entermonitor != null)
 							units.insertBefore(assignLocalLockStmt, tn.entermonitor);
 						else
@@ -252,7 +253,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					if(!addedLocalLockObj[tn.setNumber])
 						b.getLocals().add(lockObj[tn.setNumber]);
 					addedLocalLockObj[tn.setNumber] = true;
-					Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
+					assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
 									Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef()));
 					if(tn.wholeMethod)
 						units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
@@ -273,7 +274,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					// Remove old prep stmt
 					if( clr.prepStmt != null )
 					{
-						units.remove(clr.prepStmt);
+//						units.remove(clr.prepStmt);
 					}
 					
 					// Reuse old entermonitor or insert new one, and insert prep
@@ -347,7 +348,17 @@ public class TransactionBodyTransformer extends BodyTransformer
 					{
 						Stmt exitmonitor = (Stmt) clr.exceptionalEnd.getO2();
 						
-						units.insertBefore(newExitmonitor, exitmonitor);
+						if(assignLocalLockStmt != null)
+						{
+							Stmt tmp = (Stmt) assignLocalLockStmt.clone();
+							units.insertBefore(tmp, exitmonitor);
+							units.insertBefore(newExitmonitor, tmp);
+						}
+						else
+						{
+							units.insertBefore(newExitmonitor, exitmonitor);
+						}
+							
 						// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 						units.remove(exitmonitor);
 						clr.exceptionalEnd = new Pair(clr.exceptionalEnd.getO1(), newExitmonitor);
@@ -364,7 +375,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						{
 							for (Pair earlyEnd : clr.earlyEnds) {
 								Stmt end = (Stmt) earlyEnd.getO1();
-								if( lastEnd == null || units.follows(end, lastEnd) )
+								if( lastEnd == null || (units.contains(lastEnd) && units.contains(end) && units.follows(end, lastEnd)) )
 									lastEnd = end;
 							}
 						}
@@ -455,7 +466,15 @@ public class TransactionBodyTransformer extends BodyTransformer
 	       						clo,
 	       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
 	       						Collections.EMPTY_LIST));
-		            units.insertBefore(newNotify, sNotify);
+					if(assignLocalLockStmt != null)
+					{
+						Stmt tmp = (Stmt) assignLocalLockStmt.clone();
+		       			units.insertBefore(tmp, sNotify);
+			            units.insertBefore(newNotify, tmp);
+			        }
+			        else
+			        	units.insertBefore(newNotify, sNotify);
+			        	
 					redirectTraps(b, sNotify, newNotify);
 					units.remove(sNotify);
 				}
@@ -466,6 +485,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 				{
 					Stmt sWait = (Stmt) waitsIt.next();
 					((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(clo); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
+					if(assignLocalLockStmt != null)
+						units.insertBefore((Stmt) assignLocalLockStmt.clone(), sWait);
 	//				Stmt newWait = 
 	//					Jimple.v().newInvokeStmt(
 	//         				Jimple.v().newVirtualInvokeExpr(
