@@ -160,6 +160,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 			Transaction tn = ((TransactionFlowPair) fsIt.next()).tn;
 			if(tn.setNumber == -1)
 				continue; // this tn should be deleted... for now just skip it!
+				
+			if(tn.wholeMethod)
+			{			
+				thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) ); // remove synchronized modifier for this method
+			}
 
 			Local clo = null; // depends on type of locking
 			LockRegion clr = null; // current lock region

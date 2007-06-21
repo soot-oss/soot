@@ -224,7 +224,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return null;
 	}
 	
-	public RWSet approximatedReadSet( SootMethod method, Stmt stmt, Value specialRead, SootMethod otarget)
+	public RWSet approximatedReadSet( SootMethod method, Stmt stmt, Value specialRead, boolean allFields)
 	{// used for stmts with method calls where the effect of the method call should be approximated by 0 or 1 reads (plus reads of all args)
 		RWSet ret = new CodeBlockRWSet();
 		if(specialRead != null)
@@ -233,26 +233,43 @@ public class TransactionAwareSideEffectAnalysis {
 			{
 				Local vLocal = (Local) specialRead;
 				PointsToSet base = pa.reachingObjects( vLocal );
-				// Should actually get a list of fields of this object that are read/written
-				// make fake RW set of <base, all fields> (use a special class)
-				// intersect with the REAL RW set of this stmt
-				Iterator<MethodOrMethodContext> targets = normaltt.iterator( stmt );
-				while( targets.hasNext() )
+				if(allFields)
 				{
-					SootMethod target = (SootMethod) targets.next();
-					if(target.isConcrete())
+					// This ought to be done for each possible type in base (base.possibleTypes())
+					SootClass baseTypeClass = ((RefType) vLocal.getType()).getSootClass();
+					List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
+					for(SootClass baseClass : baseClasses)
 					{
-						RWSet targetRW = new CodeBlockRWSet();
-		//				targetRW.union(nonTransitiveWriteSet(target));
-						targetRW.union(nonTransitiveReadSet(target));
-						if(targetRW != null)
+						for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
 						{
-							for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+							SootField baseField = (SootField) baseFieldIt.next();
+							ret.addFieldRef( base, baseField );
+						}
+					}
+				}
+				else
+				{
+					// Should actually get a list of fields of this object that are read/written
+					// make fake RW set of <base, all fields> (use a special class)
+					// intersect with the REAL RW set of this stmt
+					Iterator<MethodOrMethodContext> targets = normaltt.iterator( stmt );
+					while( targets.hasNext() )
+					{
+						SootMethod target = (SootMethod) targets.next();
+						if(target.isConcrete())
+						{
+							RWSet targetRW = new CodeBlockRWSet();
+			//				targetRW.union(nonTransitiveWriteSet(target));
+							targetRW.union(nonTransitiveReadSet(target));
+							if(targetRW != null)
 							{
-								Object field = fieldsIt.next();
-								PointsToSet targetBase = targetRW.getBaseForField(field);
-								if(base.hasNonEmptyIntersection(targetBase))
-									ret.addFieldRef(base, field); // should use intersection of bases!!!
+								for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+								{
+									Object field = fieldsIt.next();
+									PointsToSet targetBase = targetRW.getBaseForField(field);
+									if(base.hasNonEmptyIntersection(targetBase))
+										ret.addFieldRef(base, field); // should use intersection of bases!!!
+								}
 							}
 						}
 					}
@@ -338,11 +355,20 @@ public class TransactionAwareSideEffectAnalysis {
 						}
 						
 						// Add base object to read set
-						ret = approximatedReadSet(method, stmt, base, target);
+	            		String InvokeSig = target.getSubSignature();
+	            		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
+	            			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
+	            		{
+	            			ret = approximatedReadSet(method, stmt, base, true);
+	            		}
+	            		else
+	            		{
+							ret = approximatedReadSet(method, stmt, base, false);
+						}
 					}
 					else
 					{
-						ret = approximatedReadSet(method, stmt, null, null);
+						ret = approximatedReadSet(method, stmt, null, false);
 					}
 				}
 				else
@@ -402,7 +428,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return null;
 	}
 	
-	public RWSet approximatedWriteSet( SootMethod method, Stmt stmt, Value v, SootMethod otarget )
+	public RWSet approximatedWriteSet( SootMethod method, Stmt stmt, Value v, boolean allFields )
 	{// used for stmts with method calls where the effect of the method call should be approximated by 0 or 1 writes
 		RWSet ret = new CodeBlockRWSet();
 		if(v != null)
@@ -411,26 +437,42 @@ public class TransactionAwareSideEffectAnalysis {
 			{
 				Local vLocal = (Local) v;
 				PointsToSet base = pa.reachingObjects( vLocal );
-				// Should actually get a list of fields of this object that are read/written
-				// make fake RW set of <base, all fields> (use a special class)
-				// intersect with the REAL RW set of this stmt
-				Iterator<MethodOrMethodContext> targets = normaltt.iterator( stmt );
-				while( targets.hasNext() )
+				if(allFields)
 				{
-					SootMethod target = (SootMethod) targets.next();
-					if(target.isConcrete())
+					SootClass baseTypeClass = ((RefType) v.getType()).getSootClass();
+					List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
+					for(SootClass baseClass : baseClasses)
 					{
-						RWSet targetRW = new CodeBlockRWSet();
-						targetRW.union(nonTransitiveWriteSet(target));
-						targetRW.union(nonTransitiveReadSet(target));
-						if(targetRW != null)
+						for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
 						{
-							for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+							SootField baseField = (SootField) baseFieldIt.next();
+							ret.addFieldRef( base, baseField );
+						}
+					}
+				}
+				else
+				{
+					// Should actually get a list of fields of this object that are read/written
+					// make fake RW set of <base, all fields> (use a special class)
+					// intersect with the REAL RW set of this stmt
+					Iterator<MethodOrMethodContext> targets = normaltt.iterator( stmt );
+					while( targets.hasNext() )
+					{
+						SootMethod target = (SootMethod) targets.next();
+						if(target.isConcrete())
+						{
+							RWSet targetRW = new CodeBlockRWSet();
+							targetRW.union(nonTransitiveWriteSet(target));
+							targetRW.union(nonTransitiveReadSet(target));
+							if(targetRW != null)
 							{
-								Object field = fieldsIt.next();
-								PointsToSet targetBase = targetRW.getBaseForField(field);
-								if(base.hasNonEmptyIntersection(targetBase))
-									ret.addFieldRef(base, field); // should use intersection of bases!!!
+								for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
+								{
+									Object field = fieldsIt.next();
+									PointsToSet targetBase = targetRW.getBaseForField(field);
+									if(base.hasNonEmptyIntersection(targetBase))
+										ret.addFieldRef(base, field); // should use intersection of bases!!!
+								}
 							}
 						}
 					}
@@ -497,11 +539,20 @@ public class TransactionAwareSideEffectAnalysis {
 							uses.add(base);
 						
 						// Add base object to write set
-						ret = approximatedWriteSet(method, stmt, base, target);
+	            		String InvokeSig = target.getSubSignature();
+	            		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
+	            			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
+	            		{
+							ret = approximatedWriteSet(method, stmt, base, true);
+		            	}
+		            	else
+		            	{
+		            		ret = approximatedWriteSet(method, stmt, base, false);
+		            	}
 					}
 					else
 					{
-						ret = approximatedWriteSet(method, stmt, null, null);
+						ret = approximatedWriteSet(method, stmt, null, false);
 					}
 				}
 				else

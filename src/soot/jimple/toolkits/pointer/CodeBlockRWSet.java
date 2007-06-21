@@ -39,17 +39,25 @@ public class CodeBlockRWSet extends MethodRWSet
 			for (Object element : fields.keySet()) {
 				final Object field = element;
 				ret.append( "[Field: "+field+" ");
-				PointsToSetInternal base = (PointsToSetInternal) fields.get(field);
-				base.forall( 
-					new P2SetVisitor() 
-					{
-    					public void visit( Node n )
-    					{
-        					ret.append(n.getNumber() + " ");
-    					}
-					}
-				);
-				ret.append("]\n");
+				Object baseObj = fields.get(field);
+				if(baseObj instanceof PointsToSetInternal)
+				{
+					PointsToSetInternal base = (PointsToSetInternal) fields.get(field);
+					base.forall( 
+						new P2SetVisitor() 
+						{
+	    					public void visit( Node n )
+	    					{
+	        					ret.append(n.getNumber() + " ");
+	    					}
+						}
+					);
+					ret.append("]\n");
+				}
+				else
+				{
+					ret.append(baseObj);
+				}
 				empty = false;
 			}
 		}
