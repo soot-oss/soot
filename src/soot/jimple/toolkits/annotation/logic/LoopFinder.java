@@ -49,14 +49,14 @@ public class LoopFinder extends BodyTransformer {
             Stmt s = (Stmt)stmtsIt.next();
 
             List succs = g.getSuccsOf(s);
-            FlowSet dominators = (FlowSet)a.getFlowAfter(s);
+            FlowSet dominatees = (FlowSet)a.getFlowAfter(s);
 
             ArrayList<Stmt> backEdges = new ArrayList<Stmt>();
 
             Iterator succsIt = succs.iterator();
             while (succsIt.hasNext()){
                 Stmt succ = (Stmt)succsIt.next();
-                if (dominators.contains(succ)){
+                if (dominatees.contains(succ)){
                     backEdges.add(succ);
                 }
             }
