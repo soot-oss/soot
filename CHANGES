@@ -6,6 +6,7 @@ Improvements and API changes in version 2.2.5 (To come)
    See http://doi.acm.org/10.1145/1133255.1134027 for details.
    It can be activated via: -p cg.spark cs-demand:true    
 3. Added local must-alias and not-may alias analyses. See package soot.jimple.toolkits.pointer.
+4. Updated NullnessAnalysis for better performance. Thanks to Julian Tibble! 
 
 Improvements and API changes in version 2.2.4
 
