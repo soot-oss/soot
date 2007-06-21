@@ -1,5 +1,6 @@
 /* NullnessAnalysis
  * Copyright (C) 2006 Eric Bodden
+ * Copyright (C) 2007 Julian Tibble
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,12 +21,8 @@
 package soot.jimple.toolkits.annotation.nullcheck;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import soot.Immediate;
 import soot.Local;
@@ -44,7 +41,6 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NewMultiArrayExpr;
 import soot.jimple.NullConstant;
-import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
@@ -65,25 +61,63 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
  * This class replaces {@link BranchedRefVarsAnalysis} which is known to have bugs.
  *
  * @author Eric Bodden
+ * @author Julian Tibble
  */
 public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 {
-	protected final static Object BOTTOM = new Object() {
-		public String toString() {return "bottom";}
-	};
+	/**
+	 * The analysis info is a simple mapping of type {@link Value} to
+	 * any of the constants BOTTOM, NON_NULL, NULL or TOP.
+	 * This class returns BOTTOM by default.
+	 * 
+	 * @author Julian Tibble
+	 */
+	protected class AnalysisInfo extends java.util.BitSet
+	{
+		public AnalysisInfo() {
+			super(used);
+		}
 
-	protected final static Object NULL = new Object() {
-		public String toString() {return "null";}
-	};
+		public AnalysisInfo(AnalysisInfo other) {
+			super(used);
+			or(other);
+		}
 
-	protected final static Object NON_NULL = new Object() {
-		public String toString() {return "non-null";}
-	};
+		public int get(Value key)
+		{
+			if (!valueToIndex.containsKey(key))
+				return BOTTOM;
 
-	protected final static Object TOP = new Object() {
-		public String toString() {return "top";}
-	};
+			int index = valueToIndex.get(key);
+			int result = get(index) ? 2 : 0;
+			result += get(index + 1) ? 1 : 0;
+
+			return result;
+		}
+		
+		public void put(Value key, int val)
+		{
+			int index;
+			if (!valueToIndex.containsKey(key)) {
+				index = used;
+				used += 2;
+				valueToIndex.put(key, index);
+			} else {
+				index = valueToIndex.get(key);
+			}
+			set(index, (val & 2) == 2);
+			set(index + 1, (val & 1) == 1);
+		}
+	}
+
+	protected final static int BOTTOM = 0;
+	protected final static int NULL = 1;
+	protected final static int NON_NULL = 2;
+	protected final static int TOP = 3;
 	
+	protected final HashMap<Value,Integer> valueToIndex = new HashMap<Value,Integer>();
+	protected int used = 0;
+
 	/**
 	 * Creates a new analysis for the given graph/
 	 * @param graph any unit graph
@@ -97,6 +131,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts) {
 		AnalysisInfo in = (AnalysisInfo) flowin;
 		AnalysisInfo out = new AnalysisInfo(in);
@@ -118,68 +153,41 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 			out.put(monitorStmt.getOp(), NON_NULL);
 		}
 		
-		//if we have an array ref, set the info for this ref to TOP,
-		//cause we need to be conservative here
+		// if we have an array ref, set the base to non-null
 		if(s.containsArrayRef()) {
 			ArrayRef arrayRef = s.getArrayRef();
 			handleArrayRef(arrayRef,out);
 		}
-		//same for field refs, but also set the receiver object to non-null, if there is one
+		// for field refs, set the receiver object to non-null, if there is one
 		if(s.containsFieldRef()) {
 			FieldRef fieldRef = s.getFieldRef();
 			handleFieldRef(fieldRef, out);
 		}
-		//same for invoke expr., also set the receiver object to non-null, if there is one
+		// for invoke expr, set the receiver object to non-null, if there is one
 		if(s.containsInvokeExpr()) {
 			InvokeExpr invokeExpr = s.getInvokeExpr();
 			handleInvokeExpr(invokeExpr, out);
 		}
 		
-		//allow sublasses to define certain values as always-non-null
-		for (Iterator outIter = out.entrySet().iterator(); outIter.hasNext();) {
-			Entry entry = (Entry) outIter.next();
-			Value v = (Value) entry.getKey();
-			if(isAlwaysNonNull(v)) {
-				entry.setValue(NON_NULL);
-			}
-		}
-		
 		//if we have a definition (assignment) statement to a ref-like type, handle it,
-		//i.e. assign it the info of the rhs, except the following special cases:
-		// x=null, assign NULL
-		// x=@this or x= new... assign NON_NULL
-		// x=@param_i, assign TOP
+		//i.e. assign it TOP, except in the following special cases:
+		// x=null,               assign NULL
+		// x=@this or x= new...  assign NON_NULL
+		// x=y,                  copy the info for y (for locals x,y)
 		if(s instanceof DefinitionStmt) {
-			//need to copy the current out set because we need to assign under this assumption;
-			//so this copy becomes the in-set to handleRefTypeAssignment
-			AnalysisInfo temp = new AnalysisInfo(out);
 			DefinitionStmt defStmt = (DefinitionStmt) s;
 			if(defStmt.getLeftOp().getType() instanceof RefLikeType) {
-				handleRefTypeAssignment(defStmt, temp, out);
+				handleRefTypeAssignment(defStmt, out);
 			}
 		}
 		
-		//safe memory by only retaining information about locals
-		for (Iterator outIter = out.keySet().iterator(); outIter.hasNext();) {
-			Value v = (Value) outIter.next();
-			if(!(v instanceof Local)) {
-				outIter.remove();
-			}
-		}
-		for (Iterator outBranchIter = outBranch.keySet().iterator(); outBranchIter.hasNext();) {
-			Value v = (Value) outBranchIter.next();
-			if(!(v instanceof Local)) {
-				outBranchIter.remove();
-			}
-		}
-
 		// now copy the computed info to all successors
-        for( Iterator it = fallOut.iterator(); it.hasNext(); ) {
-            copy( out, it.next() );
-        }
-        for( Iterator it = branchOuts.iterator(); it.hasNext(); ) {
-            copy( outBranch, it.next() );
-        }
+		for( Iterator it = fallOut.iterator(); it.hasNext(); ) {
+			copy( out, it.next() );
+		}
+		for( Iterator it = branchOuts.iterator(); it.hasNext(); ) {
+			copy( outBranch, it.next() );
+		}
 	}
 	
 	/**
@@ -256,9 +264,8 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 
 	private void handleArrayRef(ArrayRef arrayRef, AnalysisInfo out) {
 		Value array = arrayRef.getBase();
-		//here we know that the array must point to an object, but the array value might be anything
+		//here we know that the array must point to an object
 		out.put(array, NON_NULL);
-		out.put(arrayRef, TOP);
 	}
 
 	private void handleFieldRef(FieldRef fieldRef,
@@ -269,8 +276,6 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 			Value base = instanceFieldRef.getBase();
 			out.put(base,NON_NULL);
 		}
-		//but the referenced object might point to everything
-		out.put(fieldRef, TOP);
 	}
 
 	private void handleInvokeExpr(InvokeExpr invokeExpr,AnalysisInfo out) {
@@ -280,12 +285,9 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 			Value base = instanceInvokeExpr.getBase();
 			out.put(base,NON_NULL);
 		}
-		//but the returned object might point to everything
-		out.put(invokeExpr, TOP);
 	}
 
-	private void handleRefTypeAssignment(DefinitionStmt assignStmt,
-			AnalysisInfo rhsInfo, AnalysisInfo out) {
+	private void handleRefTypeAssignment(DefinitionStmt assignStmt, AnalysisInfo out) {
 		Value left = assignStmt.getLeftOp();
 		Value right = assignStmt.getRightOp();
 		
@@ -295,31 +297,31 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 			right = castExpr.getOp();
 		}
 		
-		if(right instanceof NewExpr || right instanceof NewArrayExpr
+		//if we have a definition (assignment) statement to a ref-like type, handle it,
+		if ( isAlwaysNonNull(right)
+		|| right instanceof NewExpr || right instanceof NewArrayExpr
 		|| right instanceof NewMultiArrayExpr || right instanceof ThisRef
 		|| right instanceof StringConstant || right instanceof ClassConstant) {
 			//if we assign new... or @this, the result is non-null
-			rhsInfo.put(right,NON_NULL);
-		} else if(right instanceof ParameterRef) {
-			//if we assign a parameter, we don't know anything
-			rhsInfo.put(right,TOP);
+			out.put(left,NON_NULL);
 		} else if(right==NullConstant.v()) {
 			//if we assign null, well, it's null
-			rhsInfo.put(right, NULL);
+			out.put(left, NULL);
+		} else if(left instanceof Local && right instanceof Local) {
+			out.put(left, out.get(right));
+		} else {
+			out.put(left, TOP);
 		}
-		
-		//assign from rhs to lhs
-		out.put(left,rhsInfo.get(right));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected void copy(Object source, Object dest) {
-		Map s = (Map) source;
-		Map d = (Map) dest;
+		AnalysisInfo s = (AnalysisInfo) source;
+		AnalysisInfo d = (AnalysisInfo) dest;
 		d.clear();
-		d.putAll(s);
+		d.or(s);
 	}
 
 	/**
@@ -333,44 +335,10 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	 * {@inheritDoc}
 	 */
 	protected void merge(Object in1, Object in2, Object out) {
-		AnalysisInfo left = (AnalysisInfo) in1;
-		AnalysisInfo right = (AnalysisInfo) in2;
-		AnalysisInfo res = (AnalysisInfo) out;
-		
-		Set values = new HashSet();
-		values.addAll(left.keySet());
-		values.addAll(right.keySet());
-		
-		res.clear();
-		
-		for (Iterator keyIter = values.iterator(); keyIter.hasNext();) {
-			Value v = (Value) keyIter.next();
-			Set<Object> leftAndRight = new HashSet<Object>();
-			leftAndRight.add(left.get(v));
-			leftAndRight.add(right.get(v));			
-
-			Object result;
-			//TOP stays TOP
-			if(leftAndRight.contains(TOP)) {
-				result = TOP;
-			} else if(leftAndRight.contains(NON_NULL)) {
-				if(leftAndRight.contains(NULL)) {
-					//NULL and NON_NULL merges to TOP
-					result = TOP;
-				} else {
-					//NON_NULL and NON_NULL stays NON_NULL 
-					result = NON_NULL;
-				}
-			} else if(leftAndRight.contains(NULL)) {
-				//NULL and NULL stays NULL 
-				result = NULL;
-			} else {
-				//only BOTTOM remains 
-				result = BOTTOM;
-			}
-			
-			res.put(v, result);
-		}
+		AnalysisInfo outflow = (AnalysisInfo) out;
+		outflow.clear();
+		outflow.or((AnalysisInfo) in1);
+		outflow.or((AnalysisInfo) in2);
 	}
 
 	/**
@@ -403,34 +371,4 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 		AnalysisInfo ai = (AnalysisInfo) getFlowBefore(s);
 		return ai.get(i)==NON_NULL;
 	}
-
-	/**
-	 * The analysis info is a simple mapping of type {@link Value} to
-	 * any of the constants BOTTOM, NON_NULL, NULL or TOP.
-	 * This class returns BOTTOM by default.
-	 * 
-	 * @author Eric Bodden
-	 */
-	protected static class AnalysisInfo extends HashMap {
-		
-		public AnalysisInfo() {
-			super();
-		}
-
-		public AnalysisInfo(Map m) {
-			super(m);
-		}
-
-		public Object get(Object key) {
-			Object object = super.get(key);
-			if(object==null) {
-				return BOTTOM;
-			}
-			return object;
-		}
-		
-	}
-
-
 }
-
