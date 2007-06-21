@@ -47,7 +47,7 @@ public class LoopInvariantFinder extends BodyTransformer {
         LoopFinder lf = new LoopFinder();
         lf.internalTransform(b, phaseName, options);
 
-        HashMap<Stmt, List<Stmt>> loops = lf.loops();
+        Map<Stmt, List<Stmt>> loops = lf.loops();
         constants = new ArrayList();
         
         // no loop invariants if no loops

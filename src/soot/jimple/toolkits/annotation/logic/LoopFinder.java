@@ -33,7 +33,7 @@ public class LoopFinder extends BodyTransformer {
 
     private HashMap<Stmt, List<Stmt>> loops;
 
-    public HashMap<Stmt, List<Stmt>> loops(){
+    public Map<Stmt, List<Stmt>> loops(){
         return loops;
     }
     
