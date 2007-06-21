@@ -78,23 +78,7 @@ public class LoopFinder extends BodyTransformer {
                 }
             }
         }
-        
-        //print loops found
-        int colorId = 0;
-        Iterator<Stmt> printIt = loops.keySet().iterator();
-        while (printIt.hasNext()){
-            Stmt h = printIt.next();
-            //System.out.println("FOUND LOOP: Header: "+h+" Body: "+loops.get(h));
 
-            // tag loop stmts with colors
-            
-            /*Iterator bIt = ((List)loops.get(h)).iterator();
-            while (bIt.hasNext()){
-                tagLoopStmt((Stmt)bIt.next(), colorId);
-            }*/
-
-            colorId++;
-        }
     }
     
 
