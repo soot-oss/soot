@@ -47,7 +47,7 @@ public class LoopInvariantFinder extends BodyTransformer {
         LoopFinder lf = new LoopFinder();
         lf.internalTransform(b, phaseName, options);
 
-        HashMap<Stmt, List<Object>> loops = lf.loops();
+        HashMap<Stmt, List<Stmt>> loops = lf.loops();
         constants = new ArrayList();
         
         // no loop invariants if no loops
@@ -56,10 +56,10 @@ public class LoopInvariantFinder extends BodyTransformer {
         Iterator<Stmt> hIt = loops.keySet().iterator();
         while (hIt.hasNext()){
             Stmt header = hIt.next();
-            List loopStmts = loops.get(header);
-            Iterator bIt = loopStmts.iterator();
+            List<Stmt> loopStmts = loops.get(header);
+            Iterator<Stmt> bIt = loopStmts.iterator();
             while (bIt.hasNext()){
-                Stmt tStmt = (Stmt)bIt.next();
+                Stmt tStmt = bIt.next();
                 //System.out.println("will test stmt: "+tStmt+" for loop header: "+header);
                 //System.out.println("will test with loop stmts: "+loopStmts);
                 handleLoopBodyStmt(tStmt, nset, loopStmts);

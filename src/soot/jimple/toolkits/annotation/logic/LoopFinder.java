@@ -31,9 +31,9 @@ public class LoopFinder extends BodyTransformer {
 
     private UnitGraph g;
 
-    private HashMap<Stmt, List<Object>> loops;
+    private HashMap<Stmt, List<Stmt>> loops;
 
-    public HashMap<Stmt, List<Object>> loops(){
+    public HashMap<Stmt, List<Stmt>> loops(){
         return loops;
     }
     
@@ -42,7 +42,7 @@ public class LoopFinder extends BodyTransformer {
         g = new ExceptionalUnitGraph(b);
         DominatorAnalysis a = new DominatorAnalysis(g);
         
-        loops = new HashMap<Stmt, List<Object>>();
+        loops = new HashMap<Stmt, List<Stmt>>();
         
         Iterator stmtsIt = b.getUnits().iterator();
         while (stmtsIt.hasNext()){
@@ -64,13 +64,13 @@ public class LoopFinder extends BodyTransformer {
             Iterator<Stmt> headersIt = backEdges.iterator();
             while (headersIt.hasNext()){
                 Stmt header = headersIt.next();
-                List<Object> loopBody = getLoopBodyFor(header, s);
+                List<Stmt> loopBody = getLoopBodyFor(header, s);
 
                 // for now just print out loops as sets of stmts
                 //System.out.println("FOUND LOOP: Header: "+header+" Body: "+loopBody);
                 if (loops.containsKey(header)){
                     // merge bodies
-                    List<Object> lb1 = loops.get(header);
+                    List<Stmt> lb1 = loops.get(header);
                     loops.put(header, union(lb1, loopBody));
                 }
                 else {
@@ -98,9 +98,9 @@ public class LoopFinder extends BodyTransformer {
     }
     
 
-    private List<Object> getLoopBodyFor(Stmt header, Stmt node){
+    private List<Stmt> getLoopBodyFor(Stmt header, Stmt node){
     
-        ArrayList<Object> loopBody = new ArrayList<Object>();
+        ArrayList<Stmt> loopBody = new ArrayList<Stmt>();
         Stack stack = new Stack();
 
         loopBody.add(header);
@@ -122,10 +122,10 @@ public class LoopFinder extends BodyTransformer {
         return loopBody;
     }
 
-    private List<Object> union(List<Object> l1, List<Object> l2){
-        Iterator<Object> it = l2.iterator();
+    private List<Stmt> union(List<Stmt> l1, List<Stmt> l2){
+        Iterator<Stmt> it = l2.iterator();
         while (it.hasNext()){
-            Object next = it.next();
+            Stmt next = it.next();
             if (!l1.contains(next)){
                 l1.add(next);
             }
