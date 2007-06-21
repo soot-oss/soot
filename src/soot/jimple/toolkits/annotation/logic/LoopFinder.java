@@ -84,7 +84,7 @@ public class LoopFinder extends BodyTransformer {
         Iterator<Stmt> printIt = loops.keySet().iterator();
         while (printIt.hasNext()){
             Stmt h = printIt.next();
-            System.out.println("FOUND LOOP: Header: "+h+" Body: "+loops.get(h));
+            //System.out.println("FOUND LOOP: Header: "+h+" Body: "+loops.get(h));
 
             // tag loop stmts with colors
             
