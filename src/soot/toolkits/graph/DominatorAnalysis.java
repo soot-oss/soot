@@ -21,6 +21,8 @@ package soot.toolkits.graph;
 
 import soot.*;
 import java.util.*;
+
+import soot.jimple.Stmt;
 import soot.toolkits.scalar.*;
 
 // STEP 1: What are we computing?
@@ -153,6 +155,13 @@ public class DominatorAnalysis extends ForwardFlowAnalysis {
     {
         return allNodes.clone();
     }
+    
+	/**
+	 * Returns true if s post-dominates t.
+	 */
+	public boolean dominates(Stmt s, Stmt t) {
+		return ((FlowSet)getFlowBefore(t)).contains(s);
+	}
         
 
 }
