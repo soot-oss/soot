@@ -35,6 +35,9 @@ import soot.toolkits.scalar.*;
 // FORWARDS
 //
 //
+/**
+ * @deprecated use {@link MHGPostDominatorsFinder} instead
+ */
 public class PostDominatorAnalysis extends BackwardFlowAnalysis {
 
     private UnitGraph g;

@@ -35,6 +35,9 @@ import soot.toolkits.scalar.*;
 // FORWARDS
 //
 //
+/**
+ * @deprecated use {@link MHGDominatorsFinder} instead
+ */
 public class DominatorAnalysis extends ForwardFlowAnalysis {
 
     private UnitGraph g;

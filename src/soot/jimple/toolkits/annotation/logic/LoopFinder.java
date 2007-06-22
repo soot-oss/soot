@@ -19,13 +19,20 @@
 
 package soot.jimple.toolkits.annotation.logic;
 
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
-import java.util.*;
-
-import soot.toolkits.scalar.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.jimple.Stmt;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.MHGDominatorsFinder;
+import soot.toolkits.graph.UnitGraph;
 
 public class LoopFinder extends BodyTransformer {
 
@@ -40,7 +47,7 @@ public class LoopFinder extends BodyTransformer {
     protected void internalTransform (Body b, String phaseName, Map options){
     
         g = new ExceptionalUnitGraph(b);
-        DominatorAnalysis a = new DominatorAnalysis(g);
+        MHGDominatorsFinder a = new MHGDominatorsFinder(g);
         
         loops = new HashMap<Stmt, List<Stmt>>();
         
@@ -49,7 +56,7 @@ public class LoopFinder extends BodyTransformer {
             Stmt s = (Stmt)stmtsIt.next();
 
             List succs = g.getSuccsOf(s);
-            FlowSet dominaters = (FlowSet)a.getFlowAfter(s);
+            Collection dominaters = (Collection)a.getDominators(s);
 
             ArrayList<Stmt> backEdges = new ArrayList<Stmt>();
 
