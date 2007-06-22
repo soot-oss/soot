@@ -404,6 +404,10 @@ public class TransactionBodyTransformer extends BodyTransformer
 						b.getLocals().add(throwableLocal);
 						// Add stmts
 						Stmt newCatch = Jimple.v().newIdentityStmt(throwableLocal, Jimple.v().newCaughtExceptionRef());
+						if(clr.last == null)
+							throw new RuntimeException("WHY IS clr.last NULL???");
+						if(newCatch == null)
+							throw new RuntimeException("WHY IS newCatch NULL???");
 						units.insertAfter(newCatch, clr.last);
 						units.insertAfter(newExitmonitor, newCatch);
 						Stmt newThrow = Jimple.v().newThrowStmt(throwableLocal);
