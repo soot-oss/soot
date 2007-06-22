@@ -19,40 +19,99 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.toolkits.scalar.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * Dominators finder for multi-headed graph.
+  * Calculate dominators for basic blocks.
+ * <p> Uses the algorithm contained in Dragon book, pg. 670-1.
+ * <pre>
+ *       D(n0) := { n0 }
+ *       for n in N - { n0 } do D(n) := N;
+ *       while changes to any D(n) occur do
+ *         for n in N - {n0} do
+ *             D(n) := {n} U (intersect of D(p) over all predecessors p of n)
+ * </pre>
  *
  * @author Navindra Umanee
+ * @author Eric Bodden
  **/
 public class MHGDominatorsFinder implements DominatorsFinder
 {
     protected DirectedGraph graph;
-    protected Map<Object, ArraySparseSet> nodeToDominators;
+    protected HashSet fullSet;
+    protected List heads;
+    protected Map<Object, Set> nodeToFlowSet;
 
     public MHGDominatorsFinder(DirectedGraph graph)
     {
-        //if(Options.v().verbose())
-        //G.v().out.println("[" + graph.getBody().getMethod().getName() +
-        //"]     Finding Dominators...");
-
         this.graph = graph;
-        MHGDominatorsAnalysis analysis = new MHGDominatorsAnalysis(graph);
-        analysis.doAnalysis();
-        nodeToDominators = analysis.nodeToFlowSet;
-        /*
-        for(Iterator i = nodeToDominators.keySet().iterator(); i.hasNext();){
-            Object key = i.next();
-            System.out.println(key + " is dominated by: ");
-            for(Iterator j = ((FlowSet)nodeToDominators.get(key)).iterator(); j.hasNext();)
-                System.out.println(j.next());
-            System.out.println();
-        }
-        */
+        doAnalysis();
     }
 
+    protected void doAnalysis()
+    {
+        heads = graph.getHeads();
+        nodeToFlowSet = new HashMap<Object, Set>();
+    
+        //build full set
+        fullSet = new HashSet();
+        for(Iterator i = graph.iterator(); i.hasNext();)
+            fullSet.add(i.next());
+        
+        //set up domain for intersection: head nodes are only dominated by themselves,
+        //other nodes are dominated by everything else
+        for(Iterator i = graph.iterator(); i.hasNext();){
+            Object o = i.next();
+            if(heads.contains(o)){
+                Set self = new HashSet();
+                self.add(o);
+                nodeToFlowSet.put(o, self);
+            }
+            else{
+                nodeToFlowSet.put(o, fullSet);
+            }
+        }
+    
+        boolean changed = true;
+        do{
+            changed = false;
+            for(Iterator i = graph.iterator(); i.hasNext();){
+                Object o = i.next();
+    
+                //set up domain for intersection: head nodes are only dominated by themselves,
+                //other nodes are dominated by everything else
+                Set predsIntersect;
+                if(heads.contains(o)) {
+                    predsIntersect = new HashSet();
+                    predsIntersect.add(o);
+                }
+                else
+                    predsIntersect = new HashSet(fullSet);
+    
+                //intersect over all predecessors
+                for(Iterator j = graph.getPredsOf(o).iterator(); j.hasNext();){
+                    Set predSet = nodeToFlowSet.get(j.next());
+                    predsIntersect.retainAll(predSet);
+                }
+    
+                Set oldSet = nodeToFlowSet.get(o);
+                //each node dominates itself
+                predsIntersect.add(o);
+                if(!predsIntersect.equals(oldSet)){
+                    nodeToFlowSet.put(o, predsIntersect);
+                    changed = true;
+                }
+            }
+        } while(changed);
+    }
+    
     public DirectedGraph getGraph()
     {
         return graph;
@@ -61,7 +120,7 @@ public class MHGDominatorsFinder implements DominatorsFinder
     public List getDominators(Object node)
     {
         // non-backed list since FlowSet is an ArrayPackedFlowSet
-        return nodeToDominators.get(node).toList();
+        return new ArrayList(nodeToFlowSet.get(node));
     }
 
     public Object getImmediateDominator(Object node)
@@ -85,8 +144,7 @@ public class MHGDominatorsFinder implements DominatorsFinder
                 immediateDominator = dominator;
         }
 
-        if(immediateDominator == null)
-            throw new RuntimeException("Assertion failed.");
+        assert immediateDominator!=null;
         
         return immediateDominator;
     }
@@ -100,77 +158,5 @@ public class MHGDominatorsFinder implements DominatorsFinder
     {
         return getDominators(node).containsAll(dominators);
     }
-}
 
-/**
- * Calculate dominators for basic blocks.
- * <p> Uses the algorithm contained in Dragon book, pg. 670-1.
- * <pre>
- *       D(n0) := { n0 }
- *       for n in N - { n0 } do D(n) := N;
- *       while changes to any D(n) occur do
- *         for n in N - {n0} do
- *             D(n) := {n} U (intersect of D(p) over all predecessors p of n)
- * </pre>
- **/
-class MHGDominatorsAnalysis
-{
-    DirectedGraph graph;
-    List heads;
-    ArraySparseSet fullSet;
-    Map<Object, ArraySparseSet> nodeToFlowSet;
-    
-    public MHGDominatorsAnalysis(DirectedGraph graph)
-    {
-        this.graph = graph;
-        heads = graph.getHeads();
-        nodeToFlowSet = new HashMap<Object, ArraySparseSet>();
-
-        fullSet = new ArraySparseSet();
-        for(Iterator i = graph.iterator(); i.hasNext();)
-            fullSet.add(i.next());
-        
-        for(Iterator i = graph.iterator(); i.hasNext();){
-            Object o = i.next();
-            if(heads.contains(o)){
-                ArraySparseSet self = new ArraySparseSet();
-                self.add(o);
-                nodeToFlowSet.put(o, self);
-            }
-            else{
-                nodeToFlowSet.put(o, fullSet.clone());
-            }
-        }
-    }
-
-    public void doAnalysis()
-    {
-        boolean change = true;
-        while(change){
-            change = false;
-            for(Iterator i = graph.iterator(); i.hasNext();){
-                Object o = i.next();
-
-                ArraySparseSet predsIntersect = new ArraySparseSet();
-                if(heads.contains(o))
-                    predsIntersect.add(o);
-                else
-                    predsIntersect.union(fullSet, predsIntersect);
-
-                for(Iterator j = graph.getPredsOf(o).iterator(); j.hasNext();){
-                    ArraySparseSet predSet = nodeToFlowSet.get(j.next());
-                    predsIntersect.intersection(predSet, predsIntersect);
-                }
-
-                ArraySparseSet oldSet = nodeToFlowSet.get(o);
-                ArraySparseSet newSet = new ArraySparseSet();
-                newSet.add(o);
-                newSet.union(predsIntersect, newSet);
-                if(!newSet.equals(oldSet)){
-                    nodeToFlowSet.put(o, newSet);
-                    change = true;
-                }
-            }
-        }
-    }
 }
