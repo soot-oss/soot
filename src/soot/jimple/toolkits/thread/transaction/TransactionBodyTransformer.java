@@ -394,7 +394,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 									lastEnd = end;
 							}
 						}
-						if(clr.last == null)
+						if(clr.last == null || !units.contains(clr.last))
 							clr.last = lastEnd; // last stmt and last end are the same
 						if( lastEnd == null )
 							throw new RuntimeException("Lock Region has no ends!  Where should we put the exception handling???");
