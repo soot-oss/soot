@@ -235,15 +235,25 @@ public class TransactionAwareSideEffectAnalysis {
 				PointsToSet base = pa.reachingObjects( vLocal );
 				if(allFields)
 				{
-					// This ought to be done for each possible type in base (base.possibleTypes())
-					SootClass baseTypeClass = ((RefType) vLocal.getType()).getSootClass();
-					List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
-					for(SootClass baseClass : baseClasses)
+					Set possibleTypes = base.possibleTypes();
+					for(Iterator pTypeIt = possibleTypes.iterator(); pTypeIt.hasNext(); )
 					{
-						for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+						Type pType = (Type) pTypeIt.next();
+						if(pType instanceof RefType)
 						{
-							SootField baseField = (SootField) baseFieldIt.next();
-							ret.addFieldRef( base, baseField );
+							SootClass baseTypeClass = ((RefType) pType).getSootClass();
+							if(!baseTypeClass.isInterface())
+							{
+								List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
+								for(SootClass baseClass : baseClasses)
+								{
+									for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+									{
+										SootField baseField = (SootField) baseFieldIt.next();
+										ret.addFieldRef( base, baseField );
+									}
+								}
+							}
 						}
 					}
 				}
@@ -439,14 +449,25 @@ public class TransactionAwareSideEffectAnalysis {
 				PointsToSet base = pa.reachingObjects( vLocal );
 				if(allFields)
 				{
-					SootClass baseTypeClass = ((RefType) v.getType()).getSootClass();
-					List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
-					for(SootClass baseClass : baseClasses)
+					Set possibleTypes = base.possibleTypes();
+					for(Iterator pTypeIt = possibleTypes.iterator(); pTypeIt.hasNext(); )
 					{
-						for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+						Type pType = (Type) pTypeIt.next();
+						if(pType instanceof RefType)
 						{
-							SootField baseField = (SootField) baseFieldIt.next();
-							ret.addFieldRef( base, baseField );
+							SootClass baseTypeClass = ((RefType) pType).getSootClass();
+							if(!baseTypeClass.isInterface())
+							{
+								List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
+								for(SootClass baseClass : baseClasses)
+								{
+									for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+									{
+										SootField baseField = (SootField) baseFieldIt.next();
+										ret.addFieldRef( base, baseField );
+									}
+								}
+							}
 						}
 					}
 				}
