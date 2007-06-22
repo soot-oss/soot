@@ -89,6 +89,20 @@ public class LoopNestTree extends TreeSet<Pair<Stmt,List<Stmt>>> {
 		Map<Stmt, List<Stmt>> headToLoop = loopFinder.loops();
 		return headToLoop;
 	}
+    
+    public boolean hasNestedLoops() {
+        //TODO could be speeded up by just comparing two consecutive
+        //loops returned by the iterator
+        LoopNestTreeComparator comp = new LoopNestTreeComparator();
+        for (Pair<Stmt, List<Stmt>> loop1 : this) {
+            for (Pair<Stmt, List<Stmt>> loop2 : this) {
+                if(comp.compare(loop1, loop2)!=0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 	
 
 }
