@@ -155,7 +155,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		int tempNum = 1;
 		// Iterate through all of the transactions in the current method
 		Iterator fsIt = fs.iterator();
-		Stmt assignLocalLockStmt = null;
+		Stmt newPrep = null;
 		while(fsIt.hasNext())
 		{
 			Transaction tn = ((TransactionFlowPair) fsIt.next()).tn;
@@ -183,11 +183,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 						if(!b.getLocals().contains(lockObj[tn.setNumber]))
 							b.getLocals().add(lockObj[tn.setNumber]);
 						
-						assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
+						newPrep = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
 						if(tn.wholeMethod)
-							units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
+							units.insertBeforeNoRedirect(newPrep, firstUnit);
 						else
-							units.insertBefore(assignLocalLockStmt, tn.entermonitor);
+							units.insertBefore(newPrep, tn.entermonitor);
 						clo = lockObj[tn.setNumber];
 					}
 					else if(lock instanceof Local)
@@ -208,11 +208,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 						b.getLocals().add(lockLocal);
 					
 						// make it refer to the right lock object
-						assignLocalLockStmt = Jimple.v().newAssignStmt(lockLocal, lock);
+						newPrep = Jimple.v().newAssignStmt(lockLocal, lock);
 						if(tn.entermonitor != null)
-							units.insertBefore(assignLocalLockStmt, tn.entermonitor);
+							units.insertBefore(newPrep, tn.entermonitor);
 						else
-							units.insertBeforeNoRedirect(assignLocalLockStmt, tn.beginning);
+							units.insertBeforeNoRedirect(newPrep, tn.beginning);
 							
 						// use it as the lock
 						clo = lockLocal;
@@ -253,12 +253,12 @@ public class TransactionBodyTransformer extends BodyTransformer
 					if(!addedLocalLockObj[tn.setNumber])
 						b.getLocals().add(lockObj[tn.setNumber]);
 					addedLocalLockObj[tn.setNumber] = true;
-					assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
+					newPrep = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
 									Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef()));
 					if(tn.wholeMethod)
-						units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
+						units.insertBeforeNoRedirect(newPrep, firstUnit);
 					else
-						units.insertBefore(assignLocalLockStmt, tn.entermonitor);
+						units.insertBefore(newPrep, tn.entermonitor);
 					clo = lockObj[tn.setNumber];
 					clr = tn;
 					moreLocks = false;
@@ -307,6 +307,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 						Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
 						if( exitmonitor != null )
 						{
+							if(newPrep != null)
+							{
+								Stmt tmp = (Stmt) newPrep.clone();
+								units.insertBefore(tmp, exitmonitor);
+							}
 							units.insertBefore(newExitmonitor, exitmonitor);
 							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 							units.remove(exitmonitor);
@@ -314,6 +319,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 						}
 						else
 						{
+							if(newPrep != null)
+							{
+								Stmt tmp = (Stmt) newPrep.clone();
+								units.insertBefore(tmp, earlyEnd);
+							}
 							units.insertBefore(newExitmonitor, earlyEnd);
 							newEarlyEnds.add(new Pair(earlyEnd, newExitmonitor));
 						}
@@ -328,6 +338,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 						{
 							Stmt exitmonitor = (Stmt) clr.end.getO2();
 
+							if(newPrep != null)
+							{
+								Stmt tmp = (Stmt) newPrep.clone();
+								units.insertBefore(tmp, exitmonitor);
+							}
 							units.insertBefore(newExitmonitor, exitmonitor);
 							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 							units.remove(exitmonitor);
@@ -335,6 +350,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 						}
 						else
 						{
+							if(newPrep != null)
+							{
+								Stmt tmp = (Stmt) newPrep.clone();
+								units.insertBefore(tmp, clr.after);
+							}
 							units.insertBefore(newExitmonitor, clr.after); // steal jumps to end, send them to monitorexit
 							Stmt newGotoStmt = Jimple.v().newGotoStmt(clr.after);
 							units.insertBeforeNoRedirect(newGotoStmt, clr.after);
@@ -348,18 +368,13 @@ public class TransactionBodyTransformer extends BodyTransformer
 					{
 						Stmt exitmonitor = (Stmt) clr.exceptionalEnd.getO2();
 						
-						if(assignLocalLockStmt != null)
+						if(newPrep != null)
 						{
-							Stmt tmp = (Stmt) assignLocalLockStmt.clone();
+							Stmt tmp = (Stmt) newPrep.clone();
 							units.insertBefore(tmp, exitmonitor);
-							units.insertBefore(newExitmonitor, tmp);
 						}
-						else
-						{
-							units.insertBefore(newExitmonitor, exitmonitor);
-						}
+						units.insertBefore(newExitmonitor, exitmonitor);
 							
-						// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 						units.remove(exitmonitor);
 						clr.exceptionalEnd = new Pair(clr.exceptionalEnd.getO1(), newExitmonitor);
 					}
@@ -466,9 +481,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 	       						clo,
 	       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
 	       						Collections.EMPTY_LIST));
-					if(assignLocalLockStmt != null)
+					if(newPrep != null)
 					{
-						Stmt tmp = (Stmt) assignLocalLockStmt.clone();
+						Stmt tmp = (Stmt) newPrep.clone();
 		       			units.insertBefore(tmp, sNotify);
 			            units.insertBefore(newNotify, tmp);
 			        }
@@ -485,8 +500,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 				{
 					Stmt sWait = (Stmt) waitsIt.next();
 					((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(clo); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
-					if(assignLocalLockStmt != null)
-						units.insertBefore((Stmt) assignLocalLockStmt.clone(), sWait);
+					if(newPrep != null)
+						units.insertBefore((Stmt) newPrep.clone(), sWait);
 	//				Stmt newWait = 
 	//					Jimple.v().newInvokeStmt(
 	//         				Jimple.v().newVirtualInvokeExpr(
