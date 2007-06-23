@@ -27,6 +27,11 @@ Chris Goard (cgoard@sable.mcgill.ca)
     - general bug fixes, hacks
     - documentation
 
+Richard Halpert (rhalpe@sable.mcgill.ca)
+    - lock allocation
+    - thread-based side effect analysis
+    - may-happen-in-parallel (MHP) analysis
+
 Laurie Hendren (hendren@sable.mcgill.ca)
     - project advisor
 
@@ -54,17 +59,24 @@ Ondrej Lhotak (olhota@sable.mcgill.ca)
     - Spark
     - call graph re-implementation
 
+Lin Li (lli31@sable.mcgill.ca)
+    - may-happen-in-parallel (MHP) analysis
+
 Florian Loitsch (florian@loitsch.net)
     - PRE re-implementation
 
 Jerome Miecznikowski (jerome@sable.mcgill.ca)
     - Dava decompiler
 
-Antoine Miné (Antoine.Mine@ens.fr)
+Antoine Mine (Antoine.Mine@ens.fr)
     - purity analysis 
     
 Nomair Naeem (nomain.naeem@mail.mcgill.ca)
     - Dava decompiler
+
+Chris Pickett (cpicke@sable.mcgill.ca)
+    - documentation
+    - minor Jasmin fixes
 
 Patrice Pominville (patrice@sable.mcgill.ca)
     - Soot infrastructure
