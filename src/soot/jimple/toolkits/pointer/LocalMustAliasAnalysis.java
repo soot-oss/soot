@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2007 Patrick Lam
+ * Copyright (C) 2007 Eric Bodden
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
+import org.omg.CORBA.UNKNOWN;
 
 import soot.Local;
 import soot.RefLikeType;
@@ -43,14 +45,10 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * variables (at two potentially different program points) must point
  * to the same object.
  *
- * The underlying abstraction is that of definition expressions.
- * When a local variable is assigned to, the analysis tracks the source
- * of the value (a NewExpr, InvokeExpr, or ParameterRef). If two
- * variables have the same source, then they are equal.
- *
- * This is like constant propagation on abstract objects.
+ * The underlying abstraction is based on global value numbering.
  * 
  * @author Patrick Lam
+ * @author Eric Bodden
  * */
 public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
 {
@@ -65,8 +63,6 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
     
     protected List<Local> locals;
 
-    protected Map<Object,Integer> numbering = new HashMap<Object, Integer>();
-    
     protected int nextNumber = 1;
     
 
@@ -91,7 +87,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
 
         for (Local l : locals) {
             Object i1 = inMap1.get(l), i2 = inMap2.get(l);
-            if (i1 == i2) 
+            if (i1.equals(i2)) 
                 outMap.put(l, i1);
             else if (i1 == NOTHING)
             	outMap.put(l, i2);
@@ -138,22 +134,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
                     rhs instanceof ParameterRef || 
                     rhs instanceof FieldRef || 
                     rhs instanceof ThisRef) {
-                	
-                	Object oldRhs = in.get(lhs);
-                	if(rhs==oldRhs || oldRhs==UNKNOWN) {
-                		//if we have already assigned that exact same expression (not that this implies
-                		//that it was also at the exact same statement) to that lhs previously,
-                		//this means that we are in a loop and now want to assign it again;
-                		//if this is the case, we have to assign UNKNOWN because we do not know for sure whether
-                		//or not we get the same object on multiple consecutive assignments of the same expression;
-                		//in particular this might mean that mustAlias(l,s,l,s) might be UNKNOWN if s:l=expr is in a loop                		
-                		out.put(lhs, UNKNOWN);
-                	} else {
-	                    // use the newexpr, invokeexpr, parameterref,
-	                    // or thisref as an ID; this should be OK for
-	                    // must-alias analysis.
-	                    out.put(lhs, rhs);
-                	}
+                    //expression could have changed, hence assign a fresh number
+                    //(thisref and parameterref cannot actually change but whatever...)
+                    out.put(lhs, nextNumber++);
                 } else if (rhs instanceof Local) {
                     out.put(lhs, in.get(rhs));
                 } else out.put(lhs, UNKNOWN);
@@ -171,20 +154,24 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
         }
     }
 
-    /** Initial aggressive value: objects have no definitions. */
+    /** Initial most conservative value: has to be {@link UNKNOWN} (top). */
     protected Object entryInitialFlow()
+    {
+        HashMap m = new HashMap();
+        for (Local l : (Collection<Local>) locals) {
+            m.put(l, UNKNOWN);
+        }
+        return m;
+    }
+
+    /** Initial bottom value: objects have no definitions. */
+    protected Object newInitialFlow()
     {
         HashMap m = new HashMap();
         for (Local l : (Collection<Local>) locals) {
             m.put(l, NOTHING);
         }
         return m;
-    }
-
-    /** Initial aggressive value: objects have no definitions. */
-    protected Object newInitialFlow()
-    {
-    	return entryInitialFlow();
     }
     
     /**
@@ -201,15 +188,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
         } else  if(ln==UNKNOWN) {
         	return UNKNOWN.toString();
         }
-        Integer number = numbering.get(ln);
-        int num;
-        if(number==null) {
-        	num = nextNumber++;
-        	numbering.put(ln, num);
-        } else {
-        	num = number;
-        }
-        return Integer.toString(num);
+        return ln.toString();
     }
     
     /**
