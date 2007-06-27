@@ -57,13 +57,13 @@ public abstract class Body extends AbstractHost implements Serializable
     protected transient SootMethod method = null;
 
     /** The chain of locals for this Body. */
-    protected Chain localChain = new HashChain();
+    protected Chain<Local> localChain = new HashChain<Local>();
 
     /** The chain of traps for this Body. */
-    protected Chain trapChain = new HashChain();
+    protected Chain<Trap> trapChain = new HashChain<Trap>();
 
     /** The chain of units for this Body. */
-    protected PatchingChain unitChain = new PatchingChain(new HashChain());
+    protected PatchingChain<Unit> unitChain = new PatchingChain<Unit>(new HashChain());
 
     /** Creates a deep copy of this Body. */
     abstract public Object clone();
@@ -149,8 +149,8 @@ public abstract class Body extends AbstractHost implements Serializable
         // Clone local units.
         it = b.getLocals().iterator();
         while(it.hasNext()) {
-            Value original = (Value) it.next();
-            Value copy = (Value) original.clone();
+            Local original = (Local) it.next();
+            Local copy = (Local) original.clone();
 
             // Add cloned unit to our trap list.
             localChain.addLast(copy);
@@ -365,7 +365,7 @@ public abstract class Body extends AbstractHost implements Serializable
      *  @see PatchingChain
      *  @see Unit
      */
-    public PatchingChain getUnits()
+    public PatchingChain<Unit> getUnits()
     {
         return unitChain;
     }

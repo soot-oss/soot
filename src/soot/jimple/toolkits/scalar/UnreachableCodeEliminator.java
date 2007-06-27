@@ -92,7 +92,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
             // 3799th level.
 
             if (!body.getUnits().isEmpty()) {
-                LinkedList<Object> startPoints = new LinkedList<Object>();
+                LinkedList<Unit> startPoints = new LinkedList<Unit>();
                 startPoints.addLast(body.getUnits().getFirst());
 
                 visitStmts(startPoints);
@@ -147,17 +147,17 @@ public class UnreachableCodeEliminator extends BodyTransformer
             
     } // pruneUnreachables
 
-        private void visitStmts(LinkedList<Object> st) {
+        private void visitStmts(LinkedList<Unit> st) {
 
             // Do DFS of the unit graph, starting from the passed nodes.
 
             while (!st.isEmpty()) {
-                Object stmt = st.removeLast();
+                Unit stmt = st.removeLast();
                 if (!visited.contains(stmt)) {
                     visited.add(stmt);
-                    Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();
+                    Iterator<Unit> succIt = stmtGraph.getSuccsOf(stmt).iterator();
                     while (succIt.hasNext()) {
-                        Object o = succIt.next();
+                        Unit o = succIt.next();
                         if (!visited.contains(o))
                             st.addLast(o);
                     }

@@ -26,27 +26,30 @@
 
 package soot.toolkits.scalar;
 
-import soot.jimple.Stmt;
-import soot.toolkits.graph.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.Orderer;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
 
 /** An abstract class providing a framework for carrying out dataflow analysis.
  * Subclassing either BackwardFlowAnalysis or ForwardFlowAnalysis and providing
  * implementations for the abstract methods will allow Soot to compute the
  * corresponding flow analysis. */
-public abstract class FlowAnalysis extends AbstractFlowAnalysis
+public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 {
     /** Maps graph nodes to OUT sets. */
-    protected Map<Object, Object> unitToAfterFlow;
+    protected Map<N, A> unitToAfterFlow;
 
     /** Filtered: Maps graph nodes to OUT sets. */
-    protected Map<Stmt, HashMap> filterUnitToAfterFlow;
+    protected Map<N, A> filterUnitToAfterFlow;
 
     /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
-    public FlowAnalysis(DirectedGraph graph)
+    public FlowAnalysis(DirectedGraph<N> graph)
     {
         super(graph);
-        unitToAfterFlow = new HashMap<Object, Object>(graph.size() * 2 + 1, 0.7f);
+        unitToAfterFlow = new HashMap<N, A>(graph.size() * 2 + 1, 0.7f);
     }
 
     /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code> (or in to out, depending on direction).
@@ -59,10 +62,10 @@ public abstract class FlowAnalysis extends AbstractFlowAnalysis
      * of the flow function (i.e. it is the "out" set in a forward
      * analysis and the "in" set in a backward analysis).
      * */
-    protected abstract void flowThrough(Object in, Object d, Object out);
+    protected abstract void flowThrough(A in, N d, A out);
 
     /** Accessor function returning value of OUT set for s. */
-    public Object getFlowAfter(Object s)
+    public A getFlowAfter(N s)
     {
         return unitToAfterFlow.get(s);
     }

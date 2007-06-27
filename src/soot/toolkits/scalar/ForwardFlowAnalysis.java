@@ -38,10 +38,10 @@ import soot.toolkits.graph.interaction.*;
  *   required by all ForwardFlowAnalyses.
  *  
  */
-public abstract class ForwardFlowAnalysis extends FlowAnalysis
+public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
 {
     /** Construct the analysis from a DirectedGraph representation of a Body. */
-    public ForwardFlowAnalysis(DirectedGraph graph)
+    public ForwardFlowAnalysis(DirectedGraph<N> graph)
     {
         super(graph);
     }
@@ -53,31 +53,31 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
     protected void doAnalysis()
     {
-        final Map<Object, Integer> numbers = new HashMap<Object, Integer>();
+        final Map<N, Integer> numbers = new HashMap<N, Integer>();
         Timers.v().orderComputation = new soot.Timer();
         Timers.v().orderComputation.start();
         List orderedUnits = constructOrderer().newList(graph,false);
         Timers.v().orderComputation.end();
         int i = 1;
-        for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
-            final Object u = uIt.next();
+        for( Iterator<N> uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
+            final N u = uIt.next();
             numbers.put(u, new Integer(i));
             i++;
         }
 
-        Collection<Object> changedUnits = constructWorklist(numbers);
+        Collection<N> changedUnits = constructWorklist(numbers);
 
-        List heads = graph.getHeads();
+        List<N> heads = graph.getHeads();
         int numNodes = graph.size();
         int numComputations = 0;
         
         // Set initial values and nodes to visit.
         {
-            Iterator it = graph.iterator();
+            Iterator<N> it = graph.iterator();
 
             while(it.hasNext())
             {
-                Object s = it.next();
+                N s = it.next();
 
                 changedUnits.add(s);
 
@@ -89,10 +89,10 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         // Feng Qian: March 07, 2002
         // Set initial values for entry points
         {
-            Iterator it = heads.iterator();
+            Iterator<N> it = heads.iterator();
             
             while (it.hasNext()) {
-                Object s = it.next();
+                N s = it.next();
                 // this is a forward flow analysis
                 unitToBeforeFlow.put(s, entryInitialFlow());
             }
@@ -100,15 +100,15 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         
         // Perform fixed point flow analysis
         {
-            Object previousAfterFlow = newInitialFlow();
+            A previousAfterFlow = newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
-                Object beforeFlow;
-                Object afterFlow;
+                A beforeFlow;
+                A afterFlow;
 
                 //get the first object
-                Object s = changedUnits.iterator().next();
+                N s = changedUnits.iterator().next();
                 changedUnits.remove(s);
                 boolean isHead = heads.contains(s);
 
@@ -116,7 +116,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
                 // Compute and store beforeFlow
                 {
-                    List preds = graph.getPredsOf(s);
+                    List<N> preds = graph.getPredsOf(s);
 
                     beforeFlow = unitToBeforeFlow.get(s);
                     
@@ -130,7 +130,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
                         while(predIt.hasNext())
                         {
-                            Object otherBranchFlow = unitToAfterFlow.get(predIt.next());
+                            A otherBranchFlow = unitToAfterFlow.get(predIt.next());
                             merge(beforeFlow, otherBranchFlow);
                         }
                     }
@@ -144,7 +144,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                     afterFlow = unitToAfterFlow.get(s);
                     if (Options.v().interactive_mode()){
                         
-                        Object savedInfo = newInitialFlow();
+                        A savedInfo = newInitialFlow();
                         if (filterUnitToBeforeFlow != null){
                             savedInfo = filterUnitToBeforeFlow.get(s);
                             copy(filterUnitToBeforeFlow.get(s), savedInfo);
@@ -160,7 +160,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                     }
                     flowThrough(beforeFlow, s, afterFlow);
                     if (Options.v().interactive_mode()){
-                        Object aSavedInfo = newInitialFlow();
+                        A aSavedInfo = newInitialFlow();
                         if (filterUnitToAfterFlow != null){
                             aSavedInfo = filterUnitToAfterFlow.get(s);
                             copy(filterUnitToAfterFlow.get(s), aSavedInfo);
@@ -177,11 +177,11 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                 // Update queue appropriately
                     if(!afterFlow.equals(previousAfterFlow))
                     {
-                        Iterator succIt = graph.getSuccsOf(s).iterator();
+                        Iterator<N> succIt = graph.getSuccsOf(s).iterator();
 
                         while(succIt.hasNext())
                         {
-                            Object succ = succIt.next();
+                            N succ = succIt.next();
                             
                             changedUnits.add(succ);
                         }
@@ -196,8 +196,8 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         Timers.v().totalFlowComputations += numComputations;
     }
     
-	protected Collection<Object> constructWorklist(final Map<Object, Integer> numbers) {
-		return new TreeSet<Object>( new Comparator() {
+	protected Collection<N> constructWorklist(final Map<N, Integer> numbers) {
+		return new TreeSet<N>( new Comparator() {
             public int compare(Object o1, Object o2) {
                 Integer i1 = numbers.get(o1);
                 Integer i2 = numbers.get(o2);

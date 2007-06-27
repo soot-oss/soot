@@ -32,26 +32,27 @@ import java.util.*;
 
 /**
  *   Defines the notion of a directed graph.
+ *   @param N node type
  */
-public interface DirectedGraph
+public interface DirectedGraph<N>
 {
     /** 
      *  Returns a list of entry points for this graph.
      */
-    public List getHeads();
+    public List<N> getHeads();
 
     /** Returns a list of exit points for this graph. */
-    public List getTails();
+    public List<N> getTails();
 
     /** 
      *  Returns a list of predecessors for the given node in the graph.
      */
-    public List getPredsOf(Object s);
+    public List<N> getPredsOf(N s);
 
     /**
      *  Returns a list of successors for the given node in the graph.
      */
-    public List getSuccsOf(Object s);
+    public List<N> getSuccsOf(N s);
 
     /**
      *  Returns the node count for this graph.

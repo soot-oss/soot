@@ -46,29 +46,29 @@ import java.util.*;
  * propagating information past a statement like <code>if(x &gt;
  * 0)</code>: one successor has <code>x &gt; 0</code> while the other
  * successor has <code>x &le; 0</code>. */
-public abstract class BranchedFlowAnalysis extends AbstractFlowAnalysis
+public abstract class BranchedFlowAnalysis<N extends Unit,A> extends AbstractFlowAnalysis<N,A>
 {
     /** Maps graph nodes to OUT sets. */
-    protected Map<Unit, ArrayList<Object>> unitToAfterFallFlow;
-    protected Map<Unit, ArrayList<Object>> unitToAfterBranchFlow;
+    protected Map<Unit, ArrayList<A>> unitToAfterFallFlow;
+    protected Map<Unit, ArrayList<A>> unitToAfterBranchFlow;
 
-    public BranchedFlowAnalysis(UnitGraph graph)
+    public BranchedFlowAnalysis(DirectedGraph<N> graph)
     {
         super(graph);
 
-        unitToAfterFallFlow = new HashMap<Unit, ArrayList<Object>>(graph.size() * 2 + 1, 0.7f);
-        unitToAfterBranchFlow = new HashMap<Unit, ArrayList<Object>>(graph.size() * 2 + 1, 0.7f);
+        unitToAfterFallFlow = new HashMap<Unit, ArrayList<A>>(graph.size() * 2 + 1, 0.7f);
+        unitToAfterBranchFlow = new HashMap<Unit, ArrayList<A>>(graph.size() * 2 + 1, 0.7f);
     }
 
     /** Given the merge of the <code>in</code> sets, 
      * compute the <code>fallOut</code> and <code>branchOuts</code>
      * set for <code>s</code>. */
-    protected abstract void flowThrough(Object in, Unit s, 
-                                        List fallOut, List branchOuts);
+    protected abstract void flowThrough(A in, Unit s, 
+                                        List<A> fallOut, List<A> branchOuts);
 
-    public Object getFallFlowAfter(Unit s)
+    public A getFallFlowAfter(Unit s)
     {
-        List fl = unitToAfterFallFlow.get(s);
+        List<A> fl = unitToAfterFallFlow.get(s);
 
         if (fl.isEmpty())
             return newInitialFlow();
@@ -77,12 +77,12 @@ public abstract class BranchedFlowAnalysis extends AbstractFlowAnalysis
     }
 
 
-    public List getBranchFlowAfter(Unit s)
+    public List<A> getBranchFlowAfter(Unit s)
     {
         return (unitToAfterBranchFlow.get(s));
     }
 
-    public Object getFlowBefore(Unit s)
+    public A getFlowBefore(Unit s)
     {
         return unitToBeforeFlow.get(s);
     }

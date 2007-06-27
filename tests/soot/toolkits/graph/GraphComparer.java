@@ -631,9 +631,9 @@ public class GraphComparer {
 		return false;
 	    }
 
-	    for (Iterator tailIt = exceptional.getTails().iterator(); 
+	    for (Iterator<Unit> tailIt = exceptional.getTails().iterator(); 
 		 tailIt.hasNext(); ) {
-		Object tail = tailIt.next();
+		Unit tail = tailIt.next();
 		if ((! cOrT.getTails().contains(tail)) &&
 		    (! trappedReturnOrThrow(tail))) {
 		    if (Options.v().verbose()) 
@@ -723,7 +723,7 @@ public class GraphComparer {
 	 * @return <tt>true</tt> if <tt>node</tt> is a return instruction
 	 * which has a trap handler as its successor in <tt>cOrT</tt>.\
 	 */
-	protected boolean trappedReturnOrThrow(Object node) {
+	protected boolean trappedReturnOrThrow(Unit node) {
 	    if (! ((node instanceof soot.jimple.ReturnStmt) ||
 		   (node instanceof soot.jimple.ReturnVoidStmt) ||
 		   (node instanceof soot.baf.ReturnInst) ||

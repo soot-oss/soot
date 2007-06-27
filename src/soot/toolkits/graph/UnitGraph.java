@@ -47,7 +47,7 @@ import soot.options.Options;
  *  CFGs for specific purposes.</p>
  */
 
-public abstract class UnitGraph implements DirectedGraph
+public abstract class UnitGraph implements DirectedGraph<Unit>
 {
     List heads;
     List tails;
@@ -188,8 +188,8 @@ public abstract class UnitGraph implements DirectedGraph
      * 
      * @param map      The map whose values are to be made unmodifiable.
      */
-    protected static void makeMappedListsUnmodifiable(Map<Object,List> map) {
-	for (Entry<Object, List> entry : map.entrySet()) {
+    protected static void makeMappedListsUnmodifiable(Map<?,List<Unit>> map) {
+	for (Entry<?, List<Unit>> entry : map.entrySet()) {
 	    List value = entry.getValue();
 	    if (value.size() == 0) {
 		entry.setValue(Collections.EMPTY_LIST);
@@ -389,7 +389,7 @@ public abstract class UnitGraph implements DirectedGraph
         return tails;
     }
 
-    public List getPredsOf(Object u)
+    public List<Unit> getPredsOf(Unit u)
     {
         if(!unitToPreds.containsKey(u)) 
 	    throw new NoSuchElementException("Invalid unit " + u);
@@ -397,7 +397,7 @@ public abstract class UnitGraph implements DirectedGraph
         return (List) unitToPreds.get(u);
     }
 
-    public List getSuccsOf(Object u)
+    public List<Unit> getSuccsOf(Unit u)
     {
 		List l = (List) unitToSuccs.get(u);
         if (l == null) throw new RuntimeException("Invalid unit " + u);

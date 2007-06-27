@@ -26,32 +26,35 @@
 
 package soot.toolkits.scalar;
 
-import soot.toolkits.graph.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import soot.jimple.Stmt;
-import soot.options.*;
-import soot.toolkits.graph.interaction.*;
+import soot.options.Options;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.interaction.InteractionHandler;
 
 /** An abstract class providing a metaframework for carrying out
  * dataflow analysis.  This class provides common methods and fields
  * required by the BranchedFlowAnalysis and FlowAnalysis abstract classes.
+ * @param <N> node type of the directed graph
+ * @param <A> abstraction type
  */
-public abstract class AbstractFlowAnalysis
+public abstract class AbstractFlowAnalysis<N,A>
 {
     /** Maps graph nodes to IN sets. */
-    protected Map<Object, Object> unitToBeforeFlow;
+    protected Map<N, A> unitToBeforeFlow;
 
     /** Filtered: Maps graph nodes to IN sets. */
-    protected Map<Stmt, HashMap> filterUnitToBeforeFlow;
+    protected Map<Stmt,A> filterUnitToBeforeFlow;
 
     /** The graph being analysed. */
-    protected DirectedGraph graph;
+    protected DirectedGraph<N> graph;
 
     /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
-    public AbstractFlowAnalysis(DirectedGraph graph)
+    public AbstractFlowAnalysis(DirectedGraph<N> graph)
     {
-        unitToBeforeFlow = new HashMap<Object, Object>(graph.size() * 2 + 1, 0.7f);
+        unitToBeforeFlow = new HashMap<N,A>(graph.size() * 2 + 1, 0.7f);
         this.graph = graph;
         if (Options.v().interactive_mode()){
             InteractionHandler.v().handleCfgEvent(graph);
@@ -62,17 +65,12 @@ public abstract class AbstractFlowAnalysis
      * Returns the flow object corresponding to the initial values for
      * each graph node. 
      */
-    protected abstract Object newInitialFlow();
+    protected abstract A newInitialFlow();
 
     /**
      * Returns the initial flow value for entry/exit graph nodes.
      */
-    protected abstract Object entryInitialFlow();
-
-    /**
-     * We hereby retract the API for customizeInitialFlowGraph().
-     */
-    protected final void customizeInitialFlowGraph() {}
+    protected abstract A entryInitialFlow();
 
     /**
      * Determines whether <code>entryInitialFlow()</code>
@@ -87,23 +85,23 @@ public abstract class AbstractFlowAnalysis
      * The behavior of this function depends on the implementation ( it may be necessary to check whether
      * <code>in1</code> and <code>in2</code> are equal or aliased ). 
      * Used by the doAnalysis method. */
-    protected abstract void merge(Object in1, Object in2, Object out);
+    protected abstract void merge(A in1, A in2, Object out);
 
     /** Creates a copy of the <code>source</code> flow object in <code>dest</code>. */
-    protected abstract void copy(Object source, Object dest);
+    protected abstract void copy(A source, A dest);
 
     /** Carries out the actual flow analysis.  
      * Typically called from a concrete FlowAnalysis's constructor.*/
     protected abstract void doAnalysis();
 
     /** Accessor function returning value of IN set for s. */
-    public Object getFlowBefore(Object s)
+    public Object getFlowBefore(N s)
     {
         return unitToBeforeFlow.get(s);
     }
 
-    protected void merge(Object inout, Object in) {
-        Object tmp = newInitialFlow();
+    protected void merge(A inout, A in) {
+        A tmp = newInitialFlow();
         merge(inout, in, tmp);
         copy(tmp, inout);
     }

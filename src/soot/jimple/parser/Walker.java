@@ -488,7 +488,7 @@ public class Walker extends DepthFirstAdapter
             for(int i = 0; i < size; i++) {
 		Object o =  mProductions.removeLast();
                 if(o  instanceof Unit) {
-                    jBody.getUnits().addFirst(o);
+                    jBody.getUnits().addFirst((Unit) o);
                     lastStmt = (Unit)  o;
                 }
                 else if(o instanceof String) {

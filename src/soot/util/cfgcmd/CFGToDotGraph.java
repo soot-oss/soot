@@ -341,8 +341,8 @@ public class CFGToDotGraph {
       String junk = namer.getName(nodesIt.next());
     }
 
-    for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
-	Object node = nodesIt.next();
+    for (Iterator<Unit> nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
+	Unit node = nodesIt.next();
 
       canvas.drawNode(namer.getName(node));
 

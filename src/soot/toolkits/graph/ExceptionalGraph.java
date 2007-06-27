@@ -33,6 +33,8 @@ package soot.toolkits.graph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.Body;
 import soot.Trap;
+import soot.Unit;
+
 import java.util.List;
 import java.util.Collection;
 import soot.toolkits.exceptions.ThrowableSet;
@@ -41,8 +43,9 @@ import soot.toolkits.exceptions.ThrowableSet;
 /**
  *  <p>Defines the interface for navigating a control flow graph which
  *  distinguishes exceptional control flow.</p>
+ *  @param N node type
  */
-public interface ExceptionalGraph extends DirectedGraph
+public interface ExceptionalGraph<N extends Unit> extends DirectedGraph<N>
 {
     /**
      * <p>Data structure to represent the fact that
@@ -61,7 +64,7 @@ public interface ExceptionalGraph extends DirectedGraph
      * <code>a</code> fails to execute, execution may proceed
      * to <code>b</code> instead.</p>
      */
-    public interface ExceptionDest {
+    public interface ExceptionDest<N> {
 
 	/**
 	 * Returns the trap corresponding to this destination.
@@ -97,7 +100,7 @@ public interface ExceptionalGraph extends DirectedGraph
 	// implement, and return an instance of that, rather than
 	// an Object.  We chose Object because that's what DirectedGraph
 	// deals in.
-	public Object getHandlerNode();
+	public N getHandlerNode();
     }
 
 
@@ -118,7 +121,7 @@ public interface ExceptionalGraph extends DirectedGraph
      * @return a {@link List} of the nodes in this graph from which
      *         there is an unexceptional edge to <code>n</code>.
      */
-    public List getUnexceptionalPredsOf(Object n);
+    public List<N> getUnexceptionalPredsOf(N n);
 
 
     /**
@@ -130,7 +133,7 @@ public interface ExceptionalGraph extends DirectedGraph
      * @return a {@link List} of nodes in this graph to which 
      *         there is an unexceptional edge from <code>n</code>.
      */
-    public List getUnexceptionalSuccsOf(Object n);
+    public List<N> getUnexceptionalSuccsOf(N n);
 
 
     /**
@@ -142,7 +145,7 @@ public interface ExceptionalGraph extends DirectedGraph
      * @return a {@link List} of nodes in this graph from which 
      *         there is an exceptional edge to <code>n</code>.
      */
-    public List getExceptionalPredsOf(Object n);
+    public List<N> getExceptionalPredsOf(N n);
 
 
     /**
@@ -154,7 +157,7 @@ public interface ExceptionalGraph extends DirectedGraph
      * @return a {@link List} of nodes in this graph to which 
      *         there is an exceptional edge from <code>n</code>.
      */
-    public List getExceptionalSuccsOf(Object n);
+    public List<N> getExceptionalSuccsOf(N n);
 
 
     /**
@@ -169,5 +172,5 @@ public interface ExceptionalGraph extends DirectedGraph
      *	       the traps and handlers, if any, which catch the exceptions
      *	       which may be thrown by <code>n</code>.
      */
-    public Collection getExceptionDests(Object n);
+    public Collection<N> getExceptionDests(N n);
 }

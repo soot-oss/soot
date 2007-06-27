@@ -52,7 +52,7 @@ import soot.toolkits.graph.interaction.*;
 import soot.options.*;
 
 /** Abstract class providing an engine for branched forward flow analysis. */
-public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
+public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysis<Unit, A>
 {
     public ForwardBranchedFlowAnalysis(UnitGraph graph)
     {
@@ -65,7 +65,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
     }
 
     // Accumulate the previous afterFlow sets.
-    private void accumulateAfterFlowSets(Unit s, Object[] flowRepositories, List<Object> previousAfterFlows)
+    private void accumulateAfterFlowSets(Unit s, A[] flowRepositories, List<Object> previousAfterFlows)
     {
         int repCount = 0;
         
@@ -78,12 +78,12 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         
         if (s.branches())
         {
-            List l = (unitToAfterBranchFlow.get(s));
-            Iterator it = l.iterator();
+            List<A> l = (unitToAfterBranchFlow.get(s));
+            Iterator<A> it = l.iterator();
 
             while (it.hasNext())
             {
-                Object fs = (it.next());
+                A fs = (it.next());
                 copy(fs, flowRepositories[repCount]);
                 previousAfterFlows.add(flowRepositories[repCount++]);
             }
@@ -146,7 +146,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
                 if (s.fallsThrough())
                 {
-                    ArrayList<Object> fl = new ArrayList<Object>();
+                    ArrayList<A> fl = new ArrayList<A>();
 
                     fl.add((newInitialFlow()));
                     unitToAfterFallFlow.put(s, fl);
@@ -160,17 +160,17 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 		    }
                 }
                 else
-                    unitToAfterFallFlow.put(s, new ArrayList<Object>());
+                    unitToAfterFallFlow.put(s, new ArrayList<A>());
 
                 if (s.branches())
                 {
-                    ArrayList<Object> l = new ArrayList<Object>();
-                    List<Object> incList;
+                    ArrayList<A> l = new ArrayList<A>();
+                    List<A> incList;
                     Iterator boxIt = s.getUnitBoxes().iterator();
 
                     while (boxIt.hasNext())
                     {
-                        Object f = (newInitialFlow());
+                        A f = (newInitialFlow());
 
                         l.add(f);
                         Unit ss = ((UnitBox) (boxIt.next())).getUnit();
@@ -181,7 +181,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                     unitToAfterBranchFlow.put(s, l);
                 }
                 else
-                    unitToAfterBranchFlow.put(s, new ArrayList<Object>());
+                    unitToAfterBranchFlow.put(s, new ArrayList<A>());
 
                 if (s.getUnitBoxes().size() > maxBranchSize)
                     maxBranchSize = s.getUnitBoxes().size();
@@ -191,10 +191,10 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         // Feng Qian: March 07, 2002
         // init entry points
         {
-            Iterator it = heads.iterator();
+            Iterator<Unit> it = heads.iterator();
 
             while (it.hasNext()) {
-                Object s = it.next();
+                Unit s = it.next();
                 // this is a forward flow analysis
                 unitToBeforeFlow.put(s, entryInitialFlow());
             }
@@ -215,16 +215,16 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         {
             List<Object> previousAfterFlows = new ArrayList<Object>(); 
             List<Object> afterFlows = new ArrayList<Object>();
-            Object[] flowRepositories = new Object[maxBranchSize+1];
+            A[] flowRepositories = (A[]) new Object[maxBranchSize+1];
             for (int i = 0; i < maxBranchSize+1; i++)
                 flowRepositories[i] = newInitialFlow();
-            Object[] previousFlowRepositories = new Object[maxBranchSize+1];
+            A[] previousFlowRepositories = (A[])new Object[maxBranchSize+1];
             for (int i = 0; i < maxBranchSize+1; i++)
                 previousFlowRepositories[i] = newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
-                Object beforeFlow;
+                A beforeFlow;
 
                 Unit s = changedUnits.first();
                 changedUnits.remove(s);
@@ -234,7 +234,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
                 // Compute and store beforeFlow
                 {
-                    List preds = (unitToIncomingFlowSets.get(s));
+                    List<A> preds = unitToIncomingFlowSets.get(s);
 
                     beforeFlow = unitToBeforeFlow.get(s);
 
@@ -242,14 +242,14 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                         copy(preds.get(0), beforeFlow);
                     else if(preds.size() != 0)
                     {
-                        Iterator predIt = preds.iterator();
+                        Iterator<A> predIt = preds.iterator();
 
                         copy(predIt.next(), beforeFlow);
 
                         while(predIt.hasNext())
                         {
-                            Object otherBranchFlow = predIt.next();
-                            Object newBeforeFlow = newInitialFlow();
+                            A otherBranchFlow = predIt.next();
+                            A newBeforeFlow = newInitialFlow();
                             merge(beforeFlow, otherBranchFlow, newBeforeFlow);
                             copy(newBeforeFlow, beforeFlow);
                         }
@@ -261,10 +261,10 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
                 // Compute afterFlow and store it.
                 {
-                    Object afterFallFlow = unitToAfterFallFlow.get(s);
-                    Object afterBranchFlow = unitToAfterBranchFlow.get(s);
+                    ArrayList<A> afterFallFlow = unitToAfterFallFlow.get(s);
+                    ArrayList<A> afterBranchFlow = unitToAfterBranchFlow.get(s);
                     if (Options.v().interactive_mode()){
-                        Object savedFlow = newInitialFlow();
+                        A savedFlow = newInitialFlow();
                         copy(beforeFlow, savedFlow);
                         FlowInfo fi = new FlowInfo(savedFlow, s, true);
                         if (InteractionHandler.v().getStopUnitList() != null && InteractionHandler.v().getStopUnitList().contains(s)){

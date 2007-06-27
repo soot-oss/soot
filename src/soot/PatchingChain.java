@@ -32,9 +32,9 @@ import soot.util.*;
  * and handles patching to deal with element insertions and removals.
  * This is done by calling Unit.redirectJumpsToThisTo at strategic
  * times. */
-public class PatchingChain extends AbstractCollection implements Chain 
+public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E> 
 {
-    protected Chain innerChain;
+    protected Chain<E> innerChain;
 
     /** Constructs a PatchingChain from the given Chain. */
     public PatchingChain(Chain aChain)
@@ -55,59 +55,59 @@ public class PatchingChain extends AbstractCollection implements Chain
     }
     
     /** Adds the given object to this Chain. */
-    public boolean add(Object o)
+    public boolean add(E o)
     {
         return innerChain.add(o);
     }
 
     /** Replaces <code>out</code> in the Chain by <code>in</code>. */
-    public void swapWith(Object out, Object in)
+    public void swapWith(E out, E in)
     {
         insertBefore(in, out);
         remove(out);
     }
 
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
-    public void insertAfter(Object toInsert, Object point)
+    public void insertAfter(E toInsert, E point)
     {
         innerChain.insertAfter(toInsert, point);
     }
 
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
-    public void insertAfter(List<Unit> toInsert, Object point)
+    public void insertAfter(List<E> toInsert, E point)
     {
         innerChain.insertAfter(toInsert, point);
     }
     
-    public void insertAfter(Chain toInsert, Object point)
+    public void insertAfter(Chain toInsert, E point)
     {
         innerChain.insertAfter(toInsert, point);
     }
 
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
-    public void insertBefore(List<Unit> toInsert, Object point)
+    public void insertBefore(List<E> toInsert, E point)
     {
-        LinkedList<Unit> backwardList = new LinkedList<Unit>();
+        LinkedList<E> backwardList = new LinkedList<E>();
         // Insert toInsert backwards into the list
         {
-            Iterator<Unit> it = toInsert.iterator();
+            Iterator<E> it = toInsert.iterator();
             
             while(it.hasNext())
                 backwardList.addFirst(it.next());
         }
                 
-        Object previousPoint = point;
-        Iterator<Unit> it = backwardList.iterator();
+        E previousPoint = point;
+        Iterator<E> it = backwardList.iterator();
         while (it.hasNext())
         {
-            Object o = it.next();
+            E o = it.next();
             insertBefore(o, previousPoint);
             previousPoint = o;
         }
     }
     
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
-    public void insertBefore(Chain toInsert, Object point)
+    public void insertBefore(Chain toInsert, E point)
     {
         LinkedList backwardList = new LinkedList();
         // Insert toInsert backwards into the list
@@ -118,31 +118,31 @@ public class PatchingChain extends AbstractCollection implements Chain
                 backwardList.addFirst(it.next());
         }
                 
-        Object previousPoint = point;
-        Iterator it = backwardList.iterator();
+        E previousPoint = point;
+        Iterator<E> it = backwardList.iterator();
         while (it.hasNext())
         {
-            Object o = it.next();
+            E o = it.next();
             insertBefore(o, previousPoint);
             previousPoint = o;
         }
     }
 
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
-    public void insertBefore(Object toInsert, Object point)
+    public void insertBefore(E toInsert, E point)
     {
         ((Unit) point).redirectJumpsToThisTo((Unit) toInsert);
         innerChain.insertBefore(toInsert, point);
     }
     
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code> WITHOUT redirecting jumps. */
-    public void insertBeforeNoRedirect(Object toInsert, Object point)
+    public void insertBeforeNoRedirect(E toInsert, E point)
     {
         innerChain.insertBefore(toInsert, point);
     }
 
     /** Returns true if object <code>a</code> follows object <code>b</code> in the Chain. */
-    public boolean follows(Object a, Object b)
+    public boolean follows(E a, E b)
     {
         return innerChain.follows(a,b);
     }
@@ -156,8 +156,8 @@ public class PatchingChain extends AbstractCollection implements Chain
         {
             Unit successor;
             
-            if((successor = (Unit)getSuccOf(obj)) == null)
-                successor = (Unit)getPredOf(obj); 
+            if((successor = (Unit)getSuccOf((E) obj)) == null)
+                successor = (Unit)getPredOf((E) obj); 
 		// Note that redirecting to the last unit in the method 
 		// like this is probably incorrect when dealing with a Trap.
 	        // I.e., let's say that the final unit in the method used to
@@ -183,13 +183,13 @@ public class PatchingChain extends AbstractCollection implements Chain
     }
 
     /** Adds the given object at the beginning of the Chain. */
-    public void addFirst(Object u)
+    public void addFirst(E u)
     {
         innerChain.addFirst(u);
     }
     
     /** Adds the given object at the end of the Chain. */
-    public void addLast(Object u)
+    public void addLast(E u)
     {
         innerChain.addLast(u);
     }
@@ -207,29 +207,29 @@ public class PatchingChain extends AbstractCollection implements Chain
     }
     
     /** Returns the first object in this Chain. */
-    public Object getFirst() { return innerChain.getFirst(); }
+    public E getFirst() { return innerChain.getFirst(); }
 
     /** Returns the last object in this Chain. */
-    public Object getLast() { return innerChain.getLast(); }
+    public E getLast() { return innerChain.getLast(); }
     
     /** Returns the object immediately following <code>point</code>. */
-    public Object getSuccOf(Object point){return innerChain.getSuccOf(point);}
+    public E getSuccOf(E point){return innerChain.getSuccOf(point);}
 
     /** Returns the object immediately preceding <code>point</code>. */
-    public Object getPredOf(Object point){return innerChain.getPredOf(point);}
+    public E getPredOf(E point){return innerChain.getPredOf(point);}
 
     protected class PatchingIterator implements Iterator
     {
-        protected Iterator innerIterator = null;
-        protected Object lastObject;
+        protected Iterator<E> innerIterator = null;
+        protected E lastObject;
         protected boolean state = false;
 
         protected PatchingIterator (Chain innerChain) { innerIterator = innerChain.iterator(); }
-        protected PatchingIterator (Chain innerChain, Object u) { innerIterator = innerChain.iterator(u); }
-        protected PatchingIterator (Chain innerChain, Object head, Object tail) { innerIterator = innerChain.iterator(head, tail); }
+        protected PatchingIterator (Chain innerChain, E u) { innerIterator = innerChain.iterator(u); }
+        protected PatchingIterator (Chain innerChain, E head, E tail) { innerIterator = innerChain.iterator(head, tail); }
 
         public boolean hasNext() { return innerIterator.hasNext(); }
-        public Object next() { lastObject = innerIterator.next(); state = true; return lastObject; }
+        public E next() { lastObject = innerIterator.next(); state = true; return lastObject; }
         public void remove() 
         { 
             if (!state)
@@ -260,20 +260,20 @@ public class PatchingChain extends AbstractCollection implements Chain
      * if the underlying Chain is modified during iteration.
      * Do not use this to remove elements which have not yet been
      * iterated over! */
-    public Iterator snapshotIterator() 
+    public Iterator<E> snapshotIterator() 
     {
-        List l = new ArrayList(); l.addAll(this);
+        List<E> l = new ArrayList<E>(); l.addAll(this);
         return l.iterator();
     }
    
     /** Returns an iterator over this Chain. */
-    public Iterator iterator() { return new PatchingIterator(innerChain); }
+    public Iterator<E> iterator() { return new PatchingIterator(innerChain); }
 
     /** Returns an iterator over this Chain, starting at the given object. */
-    public Iterator iterator(Object u) { return new PatchingIterator(innerChain, u); }
+    public Iterator<E> iterator(E u) { return new PatchingIterator(innerChain, u); }
 
     /** Returns an iterator over this Chain, starting at head and reaching tail (inclusive). */
-    public Iterator iterator(Object head, Object tail) { return new PatchingIterator(innerChain, head, tail); }
+    public Iterator<E> iterator(E head, E tail) { return new PatchingIterator(innerChain, head, tail); }
 
     /** Returns the size of this Chain. */
     public int size(){return innerChain.size(); }

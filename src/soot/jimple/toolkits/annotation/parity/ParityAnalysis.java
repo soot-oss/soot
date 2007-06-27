@@ -322,7 +322,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
             Stmt s = filterIt.next();
             HashMap allData = (HashMap)unitToBeforeFlow.get(s);
             
-            HashMap filterData = filterUnitToBeforeFlow.get(s);
+            HashMap filterData = (HashMap) filterUnitToBeforeFlow.get(s);
 
             filterUnitToBeforeFlow.put(s, updateFilter(allData, filterData));
             
@@ -333,7 +333,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     
         HashMap allData = (HashMap)unitToAfterFlow.get(s);
             
-        HashMap filterData = filterUnitToAfterFlow.get(s);
+        HashMap filterData = (HashMap) filterUnitToAfterFlow.get(s);
 
         filterUnitToAfterFlow.put(s, updateFilter(allData, filterData));
             

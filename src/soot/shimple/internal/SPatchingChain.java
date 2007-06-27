@@ -31,7 +31,7 @@ import java.util.*;
  * @author Navindra Umanee
  * @see soot.PatchingChain
  **/
-public class SPatchingChain extends PatchingChain
+public class SPatchingChain extends PatchingChain<Unit>
 {
     /**
      * Needed to find non-trapped Units of the body.
@@ -48,13 +48,13 @@ public class SPatchingChain extends PatchingChain
             debug |= ((ShimpleBody)aBody).getOptions().debug();
     }
 
-    public boolean add(Object o)
+    public boolean add(Unit o)
     {
         processPhiNode(o);
         return super.add(o);
     }
 
-    public void swapWith(Object out, Object in)
+    public void swapWith(Unit out, Unit in)
     {
         // Ensure that branching statements are swapped correctly.
         // The normal swapWith implementation would still work
@@ -68,7 +68,7 @@ public class SPatchingChain extends PatchingChain
         super.remove(out);
     }
     
-    public void insertAfter(Object toInsert, Object point)
+    public void insertAfter(Unit toInsert, Unit point)
     {
         // important to do these before the patching, so that
         // computeNeedsPatching works properly
@@ -99,9 +99,9 @@ public class SPatchingChain extends PatchingChain
             
             /* handle each UnitBox individually */
 
-            Object[] boxes = unit.getBoxesPointingToThis().toArray();
+            Unit[] boxes = (Unit[]) unit.getBoxesPointingToThis().toArray(new Unit[0]);
 
-            for (Object element : boxes) {
+            for (Unit element : boxes) {
                 UnitBox ub = (UnitBox) element;
 
                 if(ub.getUnit() != unit)
@@ -152,37 +152,41 @@ public class SPatchingChain extends PatchingChain
         }
     }
 
-    public void insertAfter(List<Unit> toInsert, Object point)
+    public void insertAfter(List<Unit> toInsert, Unit point)
     {
-        processPhiNode(toInsert);
+        for (Unit unit : toInsert) {
+            processPhiNode(unit);
+        }
         super.insertAfter(toInsert, point);
     }
     
-    public void insertBefore(List<Unit> toInsert, Object point)
+    public void insertBefore(List<Unit> toInsert, Unit point)
+    {
+        for (Unit unit : toInsert) {
+            processPhiNode(unit);
+        }
+        super.insertBefore(toInsert, point);
+    }
+
+    public void insertBefore(Unit toInsert, Unit point)
     {
         processPhiNode(toInsert);
         super.insertBefore(toInsert, point);
     }
 
-    public void insertBefore(Object toInsert, Object point)
-    {
-        processPhiNode(toInsert);
-        super.insertBefore(toInsert, point);
-    }
-
-    public void addFirst(Object u)
+    public void addFirst(Unit u)
     {
         processPhiNode(u);
         super.addFirst(u);
     }
     
-    public void addLast(Object u)
+    public void addLast(Unit u)
     {
         processPhiNode(u);
         super.addLast(u);
     }
 
-    public boolean remove(Object obj)
+    public boolean remove(Unit obj)
     {
         if(contains(obj)){
             Shimple.redirectToPreds(body, (Unit)obj);
@@ -204,7 +208,7 @@ public class SPatchingChain extends PatchingChain
     protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
     
-    protected void processPhiNode(Object o)
+    protected void processPhiNode(Unit o)
     {
         Unit phiNode = (Unit) o;
         PhiExpr phi = Shimple.getPhiExpr(phiNode);
@@ -291,7 +295,7 @@ public class SPatchingChain extends PatchingChain
             // this is not triggered since u would fall through in that
             // case.)
             if(!u.fallsThrough() || trackedBranchTargets.contains(u)){
-                Iterator boxesIt = trackedPhiToBoxes.values().iterator();
+                Iterator<UnitBox> boxesIt = trackedPhiToBoxes.values().iterator();
                 while(boxesIt.hasNext()){
                     SUnitBox box = getSBox(boxesIt.next());
                     boxToNeedsPatching.put(box, Boolean.FALSE);
@@ -305,7 +309,7 @@ public class SPatchingChain extends PatchingChain
             // we found one of the Phi nodes pointing to a Unit
             Set boxes = trackedPhiToBoxes.get(u);
             if(boxes != null){
-                Iterator boxesIt = boxes.iterator();
+                Iterator<UnitBox> boxesIt = boxes.iterator();
                 while(boxesIt.hasNext()){
                     SUnitBox box = getSBox(boxesIt.next());
 
@@ -319,7 +323,7 @@ public class SPatchingChain extends PatchingChain
         }
 
         // after the iteration, the rest do not fall through
-        Iterator boxesIt = trackedPhiToBoxes.values().iterator();
+        Iterator<UnitBox> boxesIt = trackedPhiToBoxes.values().iterator();
         while(boxesIt.hasNext()){
             SUnitBox box = getSBox(boxesIt.next());
             boxToNeedsPatching.put(box, Boolean.FALSE);
@@ -327,7 +331,7 @@ public class SPatchingChain extends PatchingChain
         }
     }
 
-    protected SUnitBox getSBox(Object box)
+    protected SUnitBox getSBox(UnitBox box)
     {
         if(!(box instanceof SUnitBox))
             throw new RuntimeException("Shimple box not an SUnitBox?");
@@ -342,12 +346,12 @@ public class SPatchingChain extends PatchingChain
             super(innerChain);
         }
 
-        SPatchingIterator(Chain innerChain, Object u)
+        SPatchingIterator(Chain innerChain, Unit u)
         {
             super(innerChain, u);
         }
 
-        SPatchingIterator(Chain innerChain, Object head, Object tail)
+        SPatchingIterator(Chain innerChain, Unit head, Unit tail)
         {
             super(innerChain, head, tail);
         }
@@ -377,12 +381,12 @@ public class SPatchingChain extends PatchingChain
         return new SPatchingIterator(innerChain);
     }
 
-    public Iterator iterator(Object u)
+    public Iterator iterator(Unit u)
     {
         return new SPatchingIterator(innerChain, u);
     }
 
-    public Iterator iterator(Object head, Object tail)
+    public Iterator iterator(Unit head, Unit tail)
     {
         return new SPatchingIterator(innerChain, head, tail);
     }

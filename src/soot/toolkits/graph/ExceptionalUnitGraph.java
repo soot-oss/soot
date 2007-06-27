@@ -82,9 +82,9 @@ import soot.jimple.NewExpr;
  *  whether or not there is an edge from the excepting
  *  <code>Unit</code> itself to the handler <code>Unit</code>.</p>
  */
-public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
+public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<Unit>
 {
-    protected Map unitToUnexceptionalSuccs; // If there are no Traps within
+    protected Map<Unit,List<Unit>> unitToUnexceptionalSuccs; // If there are no Traps within
     protected Map unitToUnexceptionalPreds; // the method, these will be the
 					    // same maps as unitToSuccs and
 					    // unitToPreds.
@@ -791,7 +791,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
      *	       the traps, if any, which catch the exceptions
      *	       which may be thrown by <code>u</code>.
      */
-    public Collection getExceptionDests(Object u) {
+    public Collection<Unit> getExceptionDests(Unit u) {
 	Collection result = (Collection) unitToExceptionDests.get(u);
 	if (result == null) {
 	    result = new LinkedList();
@@ -840,7 +840,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
     }
 
 
-    public List getUnexceptionalPredsOf(Object u) {
+    public List<Unit> getUnexceptionalPredsOf(Unit u) {
 	if (!unitToUnexceptionalPreds.containsKey(u))
 	    throw new RuntimeException("Invalid unit " + u);
 
@@ -848,7 +848,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
     }
 
 
-    public List getUnexceptionalSuccsOf(Object u) {
+    public List<Unit> getUnexceptionalSuccsOf(Unit u) {
 	if (!unitToUnexceptionalSuccs.containsKey(u))
 	    throw new RuntimeException("Invalid unit " + u);
 
@@ -856,7 +856,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
     }
 
 
-    public List getExceptionalPredsOf(Object  u) {
+    public List<Unit> getExceptionalPredsOf(Unit u) {
 	if (!unitToExceptionalPreds.containsKey(u)) {
 	    return Collections.EMPTY_LIST;
 	} else {
@@ -865,7 +865,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
     }
 
 
-    public List getExceptionalSuccsOf(Object u) {
+    public List<Unit> getExceptionalSuccsOf(Unit u) {
 	if (!unitToExceptionalSuccs.containsKey(u)) {
 	    return Collections.EMPTY_LIST;
 	} else {
