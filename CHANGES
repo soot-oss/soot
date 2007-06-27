@@ -6,7 +6,10 @@ Improvements and API changes in version 2.2.5 (To come)
    See http://doi.acm.org/10.1145/1133255.1134027 for details.
    It can be activated via: -p cg.spark cs-demand:true    
 3. Added local must-alias and not-may alias analyses. See package soot.jimple.toolkits.pointer.
-4. Updated NullnessAnalysis for better performance. Thanks to Julian Tibble! 
+4. Updated NullnessAnalysis for better performance. Thanks to Julian Tibble!
+5. The flow analysis framework is now generic. One can explicitly declare the type of the abstraction and
+   that is used for the fixed point iteration and the node type for the graph that is iterated over.
+   This avoids a lot of casting one had to do in the past. 
 
 Improvements and API changes in version 2.2.4
 
