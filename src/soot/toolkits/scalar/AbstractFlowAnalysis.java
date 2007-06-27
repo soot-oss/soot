@@ -95,7 +95,7 @@ public abstract class AbstractFlowAnalysis<N,A>
     protected abstract void doAnalysis();
 
     /** Accessor function returning value of IN set for s. */
-    public Object getFlowBefore(N s)
+    public A getFlowBefore(N s)
     {
         return unitToBeforeFlow.get(s);
     }
