@@ -85,7 +85,7 @@ public abstract class AbstractFlowAnalysis<N,A>
      * The behavior of this function depends on the implementation ( it may be necessary to check whether
      * <code>in1</code> and <code>in2</code> are equal or aliased ). 
      * Used by the doAnalysis method. */
-    protected abstract void merge(A in1, A in2, Object out);
+    protected abstract void merge(A in1, A in2, A out);
 
     /** Creates a copy of the <code>source</code> flow object in <code>dest</code>. */
     protected abstract void copy(A source, A dest);
