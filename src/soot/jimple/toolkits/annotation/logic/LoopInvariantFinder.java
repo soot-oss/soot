@@ -47,16 +47,17 @@ public class LoopInvariantFinder extends BodyTransformer {
         LoopFinder lf = new LoopFinder();
         lf.internalTransform(b, phaseName, options);
 
-        Map<Stmt, List<Stmt>> loops = lf.loops();
+        Collection<Loop> loops = lf.loops();
         constants = new ArrayList();
         
         // no loop invariants if no loops
         if (loops.isEmpty()) return;
         
-        Iterator<Stmt> hIt = loops.keySet().iterator();
-        while (hIt.hasNext()){
-            Stmt header = hIt.next();
-            List<Stmt> loopStmts = loops.get(header);
+        Iterator<Loop> lIt = loops.iterator();
+        while (lIt.hasNext()){
+            Loop loop = lIt.next();
+            Stmt header = loop.getHead();
+            Collection<Stmt> loopStmts = loop.getLoopStatements();
             Iterator<Stmt> bIt = loopStmts.iterator();
             while (bIt.hasNext()){
                 Stmt tStmt = bIt.next();
@@ -67,7 +68,7 @@ public class LoopInvariantFinder extends BodyTransformer {
         }
     }
 
-    private void handleLoopBodyStmt(Stmt s, NaiveSideEffectTester nset, List loopStmts){
+    private void handleLoopBodyStmt(Stmt s, NaiveSideEffectTester nset, Collection<Stmt> loopStmts){
         // need to do some checks for arrays - when there is an multi-dim array
         // --> for defs there is a get of one of the dims that claims to be 
         // loop invariant

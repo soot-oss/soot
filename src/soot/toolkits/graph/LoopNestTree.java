@@ -18,15 +18,14 @@
  */
 package soot.toolkits.graph;
 
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 import soot.Body;
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.annotation.logic.Loop;
 import soot.jimple.toolkits.annotation.logic.LoopFinder;
-import soot.toolkits.scalar.Pair;
 
 /**
  * A loop nesting tree, implemented as a tree-map.
@@ -36,20 +35,20 @@ import soot.toolkits.scalar.Pair;
  *
  * @author Eric Bodden
  */
-public class LoopNestTree extends TreeSet<Pair<Stmt,List<Stmt>>> {
+public class LoopNestTree extends TreeSet<Loop> {
 	
 	/**
 	 * Comparator, stating that a loop l1 is smaller than a loop l2 if l2 contains all statements of l1.
 	 *
 	 * @author Eric Bodden
 	 */
-	private static class LoopNestTreeComparator implements Comparator<Pair<Stmt,List<Stmt>>> {
+	private static class LoopNestTreeComparator implements Comparator<Loop> {
 
-		public int compare(Pair<Stmt, List<Stmt>> loop1, Pair<Stmt, List<Stmt>> loop2) {
-			List<Stmt> stmts1 = loop1.getO2();
-			List<Stmt> stmts2 = loop2.getO2();
+		public int compare(Loop loop1, Loop loop2) {
+			Collection<Stmt> stmts1 = loop1.getLoopStatements();
+            Collection<Stmt> stmts2 = loop2.getLoopStatements();
 			if(stmts1.equals(stmts2)) {
-				assert loop1.getO1().equals(loop2.getO1()); //should really have the same head then
+				assert loop1.getHead().equals(loop2.getHead()); //should really have the same head then
 				//equal (same) loops
 				return 0;
 			} else if(stmts1.containsAll(stmts2)) {
@@ -74,28 +73,26 @@ public class LoopNestTree extends TreeSet<Pair<Stmt,List<Stmt>>> {
 	/**
 	 * Builds a loop nest tree from a mapping from loop headers to statements in the loop.
 	 */
-	public LoopNestTree(Map<Stmt,List<Stmt>> headToLoop) {
+	public LoopNestTree(Collection<Loop> loops) {
 		super(new LoopNestTreeComparator());
-		
-		for (Map.Entry<Stmt,List<Stmt>> entry : headToLoop.entrySet()) {
-			add(new Pair<Stmt,List<Stmt>>(entry.getKey(),entry.getValue()));
-		}		
+
+        addAll(loops);
 	}
 
-	private static Map<Stmt, List<Stmt>> computeLoops(Body b) {
+	private static Collection<Loop> computeLoops(Body b) {
 		LoopFinder loopFinder = new LoopFinder();
 		loopFinder.transform(b);
 		
-		Map<Stmt, List<Stmt>> headToLoop = loopFinder.loops();
-		return headToLoop;
+		Collection<Loop> loops = loopFinder.loops();
+		return loops;
 	}
     
     public boolean hasNestedLoops() {
         //TODO could be speeded up by just comparing two consecutive
         //loops returned by the iterator
         LoopNestTreeComparator comp = new LoopNestTreeComparator();
-        for (Pair<Stmt, List<Stmt>> loop1 : this) {
-            for (Pair<Stmt, List<Stmt>> loop2 : this) {
+        for (Loop loop1 : this) {
+            for (Loop loop2 : this) {
                 if(comp.compare(loop1, loop2)!=0) {
                     return true;
                 }

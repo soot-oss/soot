@@ -22,6 +22,7 @@ package soot.jimple.toolkits.annotation.logic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,12 @@ public class LoopFinder extends BodyTransformer {
 
     private HashMap<Stmt, List<Stmt>> loops;
 
-    public Map<Stmt, List<Stmt>> loops(){
-        return loops;
+    public Collection<Loop> loops(){
+        Collection<Loop> result = new HashSet<Loop>();
+        for (Map.Entry<Stmt,List<Stmt>> entry : loops.entrySet()) {
+            result.add(new Loop(entry.getKey(),entry.getValue(),g));
+        }
+        return result;
     }
     
     protected void internalTransform (Body b, String phaseName, Map options){
