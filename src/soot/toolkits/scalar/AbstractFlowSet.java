@@ -184,7 +184,7 @@ public abstract class AbstractFlowSet implements FlowSet {
 			Object o = iter.next();
 			result = PRIME * result + o.hashCode();
 		}
-		return hashCode();
+		return result;
 	}
 
   public String toString() {
