@@ -87,6 +87,14 @@ public class Loop {
     }
 
     /**
+     * Returns <code>true</code> if this loop has a single exit statement.
+     * @see #getLoopExits()
+     */
+    public boolean hasSingleExit() {
+        return getLoopExits().size()==1;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
