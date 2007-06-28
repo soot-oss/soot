@@ -79,7 +79,7 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
         innerChain.insertAfter(toInsert, point);
     }
     
-    public void insertAfter(Chain toInsert, E point)
+    public void insertAfter(Chain<E> toInsert, E point)
     {
         innerChain.insertAfter(toInsert, point);
     }
@@ -107,7 +107,7 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
     }
     
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
-    public void insertBefore(Chain toInsert, E point)
+    public void insertBefore(Chain<E> toInsert, E point)
     {
         LinkedList backwardList = new LinkedList();
         // Insert toInsert backwards into the list
