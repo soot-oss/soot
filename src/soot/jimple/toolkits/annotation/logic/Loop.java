@@ -20,6 +20,8 @@ package soot.jimple.toolkits.annotation.logic;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 import soot.Unit;
 import soot.jimple.Stmt;
@@ -35,15 +37,41 @@ import soot.toolkits.graph.UnitGraph;
 public class Loop {
     
     protected final Stmt header;
-    protected final Collection<Stmt> loopStatements;
+    protected final List<Stmt> loopStatements;
     protected final UnitGraph g;
     protected Collection<Stmt> loopExists;
 
-    Loop(Stmt header, Collection<Stmt> loopStatements, UnitGraph g) {
+    /**
+     * Creates a new loop. Expects that the loop statements are ordered according to the
+     * loop structure with the loop header being the last statement. {@link LoopFinder} will
+     * normally guarantee this.
+     * @param header the loop header
+     * @param loopStatements an ordered list of loop statements, ending with the header
+     * @param g the unit graph according to which the loop exists
+     */
+    Loop(Stmt header, List<Stmt> loopStatements, UnitGraph g) {
         this.header = header;
-        this.loopStatements = loopStatements;
         this.g = g;
-        assert loopStatements.contains(header);       
+
+        //put header to the top
+        loopStatements.remove(header);
+        loopStatements.add(0, header);
+        
+        //check for right order
+        boolean hasRightOrder = true;
+        Iterator<Stmt> stmtIter = loopStatements.iterator();
+        Stmt curr = stmtIter.next();
+        while(stmtIter.hasNext()) {
+            Stmt next = stmtIter.next();
+            if(!g.getSuccsOf(curr).contains(next)) {
+                hasRightOrder = false;
+                break;
+            }
+            curr = next;
+        }
+        assert hasRightOrder;
+
+        this.loopStatements = loopStatements;
     }
 
     /**
@@ -54,9 +82,11 @@ public class Loop {
     }
 
     /**
-     * @return all statements of the loop, including the header
+     * @return all statements of the loop, including the header;
+     * the header will be the first element returned and then the
+     * other statements follow in the natural ordering of the loop
      */
-    public Collection<Stmt> getLoopStatements() {
+    public List<Stmt> getLoopStatements() {
         return loopStatements;
     }
     
@@ -76,6 +106,22 @@ public class Loop {
             }
         }
         return loopExists;
+    }
+    
+    /**
+     * Computes all targets of the given loop exit, i.e. statements that the exit jumps to but which are not
+     * part of this loop.
+     */
+    public Collection<Stmt> targetsOfLoopExit(Stmt loopExit) {
+        assert getLoopExits().contains(loopExit);
+        List<Unit> succs = g.getSuccsOf(loopExit);
+        Collection<Stmt> res = new HashSet<Stmt>();
+        for (Unit u : succs) {
+            Stmt s = (Stmt)u;
+            res.add(s);            
+        }
+        res.removeAll(loopStatements);
+        return res;
     }
     
     /**
