@@ -40,17 +40,17 @@ import java.io.*;
 public interface Unit extends Switchable, Host, Serializable, Context
 {
     /** Returns a list of Boxes containing Values used in this Unit. */
-    public List getUseBoxes();
+    public List<ValueBox> getUseBoxes();
 
     /** Returns a list of Boxes containing Values defined in this Unit. */
-    public List getDefBoxes();
+    public List<ValueBox> getDefBoxes();
 
     /** Returns a list of Boxes containing Units defined in this Unit; typically
      * branch targets. */
-    public List getUnitBoxes();
+    public List<UnitBox> getUnitBoxes();
 
     /** Returns a list of Boxes pointing to this Unit. */
-    public List getBoxesPointingToThis();
+    public List<UnitBox> getBoxesPointingToThis();
     /** Adds a box to the list returned by getBoxesPointingToThis. */
     public void addBoxPointingToThis( UnitBox b );
     /** Removes a box from the list returned by getBoxesPointingToThis. */
