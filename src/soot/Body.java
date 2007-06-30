@@ -690,6 +690,8 @@ public abstract class Body extends AbstractHost implements Serializable
         ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
         PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
         Printer.v().printTo(this, writerOut);
+        writerOut.flush();
+        writerOut.close();
         return streamOut.toString();
     }
 }
