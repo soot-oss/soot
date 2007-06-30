@@ -33,8 +33,10 @@ import soot.tagkit.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
 import java.io.*;
+
 import soot.toolkits.scalar.*;
 import soot.toolkits.exceptions.*;
 import soot.options.*;
@@ -678,6 +680,17 @@ public abstract class Body extends AbstractHost implements Serializable
 		}
 	    }
 	}
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        ByteArrayOutputStream streamOut = new ByteArrayOutputStream();
+        PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
+        Printer.v().printTo(this, writerOut);
+        return streamOut.toString();
     }
 }
 
