@@ -37,6 +37,7 @@ import soot.toolkits.graph.UnitGraph;
 public class Loop {
     
     protected final Stmt header;
+    protected final Stmt backJump;
     protected final List<Stmt> loopStatements;
     protected final UnitGraph g;
     protected Collection<Stmt> loopExists;
@@ -70,6 +71,10 @@ public class Loop {
             curr = next;
         }
         assert hasRightOrder;
+        
+        //last statement
+        this.backJump = loopStatements.get(loopStatements.size()-1);
+        assert this.backJump.branches(); //must be a goto or if statement
 
         this.loopStatements = loopStatements;
     }
@@ -79,6 +84,13 @@ public class Loop {
      */
     public Stmt getHead() {
         return header;
+    }
+
+    /**
+     * Returns the statement that jumps back to the head, thereby constituing the loop.
+     */
+    public Stmt getBackJumpStmt() {
+        return backJump;
     }
 
     /**
