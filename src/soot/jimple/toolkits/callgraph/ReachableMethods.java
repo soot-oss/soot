@@ -30,16 +30,16 @@ import soot.util.queue.*;
 public class ReachableMethods
 { 
     private CallGraph cg;
-    private Iterator edgeSource;
-    private final ChunkedQueue reachables = new ChunkedQueue();
+    private Iterator<Edge> edgeSource;
+    private final ChunkedQueue<MethodOrMethodContext> reachables = new ChunkedQueue<MethodOrMethodContext>();
     private final Set<MethodOrMethodContext> set = new HashSet<MethodOrMethodContext>();
-    private QueueReader unprocessedMethods;
-    private final QueueReader allReachables = reachables.reader();
+    private QueueReader<MethodOrMethodContext> unprocessedMethods;
+    private final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
     private Filter filter;
-    public ReachableMethods( CallGraph graph, Iterator entryPoints ) {
+    public ReachableMethods( CallGraph graph, Iterator<MethodOrMethodContext> entryPoints ) {
         this( graph, entryPoints, null );
     }
-    public ReachableMethods( CallGraph graph, Iterator entryPoints, Filter filter ) {
+    public ReachableMethods( CallGraph graph, Iterator<MethodOrMethodContext> entryPoints, Filter filter ) {
         this.filter = filter;
         this.cg = graph;
         addMethods( entryPoints );
@@ -47,10 +47,10 @@ public class ReachableMethods
         this.edgeSource = graph.listener();
         if( filter != null ) this.edgeSource = filter.wrap( this.edgeSource );
     }
-    public ReachableMethods( CallGraph graph, Collection<SootMethod> entryPoints ) {
+    public ReachableMethods( CallGraph graph, Collection<MethodOrMethodContext> entryPoints ) {
     	this(graph, entryPoints.iterator());
     }
-    private void addMethods( Iterator methods ) {
+    private void addMethods( Iterator<MethodOrMethodContext> methods ) {
         while( methods.hasNext() )
             addMethod( (MethodOrMethodContext) methods.next() );
     }
@@ -68,7 +68,7 @@ public class ReachableMethods
         }
         while(unprocessedMethods.hasNext()) {
             MethodOrMethodContext m = (MethodOrMethodContext) unprocessedMethods.next();
-            Iterator targets = cg.edgesOutOf( m );
+            Iterator<Edge> targets = cg.edgesOutOf( m );
             if( filter != null ) targets = filter.wrap( targets );
             addMethods( new Targets( targets ) );
         }
@@ -76,14 +76,14 @@ public class ReachableMethods
     /** Returns a QueueReader object containing all methods found reachable
      * so far, and which will be informed of any new methods that are later
      * found to be reachable. */
-    public QueueReader listener() {
-        return (QueueReader) allReachables.clone();
+    public QueueReader<MethodOrMethodContext> listener() {
+        return allReachables.clone();
     }
     /** Returns a QueueReader object which will contain ONLY NEW methods
      * which will be found to be reachable, but not those that have already
      * been found to be reachable.
      */
-    public QueueReader newListener() {
+    public QueueReader<MethodOrMethodContext> newListener() {
         return reachables.reader();
     }
     /** Returns true iff method is reachable. */

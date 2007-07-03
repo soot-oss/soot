@@ -27,7 +27,8 @@ package soot.util.queue;
  * <b>after</b> the QueueReader was created.
  * @author Ondrej Lhotak
  */
-public final class ChunkedQueue
+@SuppressWarnings("unchecked")
+public final class ChunkedQueue<E>
 { 
     static Object NULL_CONST = new Object();
     private static final int LENGTH = 60;
@@ -38,8 +39,8 @@ public final class ChunkedQueue
         index = 0;
     }
     /** Add an object to the queue. */
-    public void add( Object o ) {
-        if( o == null ) o = NULL_CONST;
+	public void add( E o ) {
+        if( o == null ) o = (E)NULL_CONST;
         if( index == LENGTH - 1 ) {
             Object[] temp = new Object[LENGTH];
             q[index] = temp;
@@ -49,8 +50,8 @@ public final class ChunkedQueue
         q[index++] = o;
     }
     /** Create reader which will read objects from the queue. */
-    public QueueReader reader() {
-        return new QueueReader( q, index );
+    public QueueReader<E> reader() {
+        return new QueueReader<E>( (E[])q, index );
     }
 }
 

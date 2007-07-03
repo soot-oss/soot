@@ -18,10 +18,23 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
-import soot.options.*;
-import java.util.*;
-import soot.util.queue.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import soot.EntryPoints;
+import soot.G;
+import soot.Local;
+import soot.MethodOrMethodContext;
+import soot.PhaseOptions;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Type;
+import soot.options.CGOptions;
+import soot.util.queue.QueueReader;
 
 /** Models the call graph.
  * @author Ondrej Lhotak
@@ -70,7 +83,7 @@ public final class CallGraphBuilder
         options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         cg = new CallGraph();
         Scene.v().setCallGraph(cg);
-        List<SootMethod> entryPoints = new ArrayList<SootMethod>();
+        List<MethodOrMethodContext> entryPoints = new ArrayList<MethodOrMethodContext>();
         entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
         entryPoints.addAll( EntryPoints.v().implicit() );
         reachables = new ReachableMethods( cg, entryPoints );

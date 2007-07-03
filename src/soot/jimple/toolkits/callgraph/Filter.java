@@ -24,15 +24,15 @@ import java.util.*;
  * predicate.
  * @author Ondrej Lhotak
  */
-public class Filter implements Iterator
+public class Filter implements Iterator<Edge>
 { 
-    private Iterator source;
+    private Iterator<Edge> source;
     private EdgePredicate pred;
     private Edge next = null;
     public Filter( EdgePredicate pred ) {
         this.pred = pred;
     }
-    public Iterator wrap( Iterator source ) {
+    public Iterator<Edge> wrap( Iterator<Edge> source ) {
         this.source = source;
         advance();
         return this;
@@ -49,8 +49,8 @@ public class Filter implements Iterator
     public boolean hasNext() {
         return next != null;
     }
-    public Object next() {
-        Object ret = next;
+    public Edge next() {
+        Edge ret = next;
         advance();
         return ret;
     }

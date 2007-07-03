@@ -28,34 +28,36 @@ import java.util.*;
  * <b>after</b> the QueueReader was created.
  * @author Ondrej Lhotak
  */
-public class QueueReader implements java.util.Iterator
+public class QueueReader<E> implements java.util.Iterator<E>
 { 
-    private Object[] q;
+    private E[] q;
     private int index;
-    QueueReader( Object[] q, int index ) {
+    QueueReader( E[] q, int index ) {
         this.q = q;
         this.index = index;
     }
     /** Returns (and removes) the next object in the queue, or null if
      * there are none. */
-    public final Object next() {
+    @SuppressWarnings("unchecked")
+	public final E next() {
         if( q[index] == null ) throw new NoSuchElementException();
         if( index == q.length - 1 ) {
-            q = (Object[]) q[index];
+            q = (E[]) q[index];
             index = 0;
             if( q[index] == null ) throw new NoSuchElementException();
         }
-        Object ret = q[index];
+        E ret = q[index];
         if( ret == ChunkedQueue.NULL_CONST ) ret = null;
         index++;
         return ret;
     }
 
     /** Returns true iff there is currently another object in the queue. */
-    public final boolean hasNext() {
+    @SuppressWarnings("unchecked")
+	public final boolean hasNext() {
         if (q[index] == null) return false;
         if (index == q.length - 1) {
-            q = (Object[]) q[index];
+            q = (E[]) q[index];
             index = 0;
             if (q[index] == null) return false;
         }
@@ -66,8 +68,8 @@ public class QueueReader implements java.util.Iterator
         throw new UnsupportedOperationException();
     }
 
-    public final Object clone() {
-        return new QueueReader( q, index );
+    public final QueueReader<E> clone() {
+        return new QueueReader<E>( q, index );
     }
 }
 

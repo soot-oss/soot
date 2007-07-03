@@ -68,12 +68,12 @@ public class Scene  //extends AbstractHost
     }
     public static Scene  v() { return G.v().soot_Scene (); }
 
-    Chain classes = new HashChain();
-    Chain applicationClasses = new HashChain();
-    Chain libraryClasses = new HashChain();
-    Chain phantomClasses = new HashChain();
+    Chain<SootClass> classes = new HashChain<SootClass>();
+    Chain<SootClass> applicationClasses = new HashChain<SootClass>();
+    Chain<SootClass> libraryClasses = new HashChain<SootClass>();
+    Chain<SootClass> phantomClasses = new HashChain<SootClass>();
     
-    private final Map nameToClass = new HashMap();
+    private final Map<String,Type> nameToClass = new HashMap<String,Type>();
 
     ArrayNumberer kindNumberer = new ArrayNumberer();
     ArrayNumberer typeNumberer = new ArrayNumberer();
@@ -95,10 +95,6 @@ public class Scene  //extends AbstractHost
 
     boolean allowsPhantomRefs = false;
 
-    // temporary for testing cfgs in plugin
-    
-    public ArrayList cfgList = new ArrayList();
-    
     SootClass mainClass;
     String sootClassPath = null;
 
@@ -110,13 +106,13 @@ public class Scene  //extends AbstractHost
         mainClass = m;
     }
     
-    Set reservedNames = new HashSet();
+    Set<String> reservedNames = new HashSet<String>();
     
     /**
         Returns a set of tokens which are reserved.  Any field, class, method, or local variable with such a name will be quoted.
      */
      
-    public Set getReservedNames()
+    public Set<String> getReservedNames()
     {
         return reservedNames;
     }
@@ -411,7 +407,7 @@ public class Scene  //extends AbstractHost
      * Returns an backed chain of the classes in this manager.
      */
      
-    public Chain getClasses()
+    public Chain<SootClass> getClasses()
     {
         return classes;
     }
@@ -422,7 +418,7 @@ public class Scene  //extends AbstractHost
      * Returns a chain of the application classes in this scene.
      * These classes are the ones which can be freely analysed & modified.
      */
-    public Chain getApplicationClasses()
+    public Chain<SootClass> getApplicationClasses()
     {
         return applicationClasses;
     }
@@ -431,7 +427,7 @@ public class Scene  //extends AbstractHost
      * Returns a chain of the library classes in this scene.
      * These classes can be analysed but not modified.
      */
-    public Chain getLibraryClasses()
+    public Chain<SootClass> getLibraryClasses()
     {
         return libraryClasses;
     }
@@ -440,12 +436,12 @@ public class Scene  //extends AbstractHost
      * Returns a chain of the phantom classes in this scene.
      * These classes are referred to by other classes, but cannot be loaded.
      */
-    public Chain getPhantomClasses()
+    public Chain<SootClass> getPhantomClasses()
     {
         return phantomClasses;
     }
 
-    Chain getContainingChain(SootClass c)
+    Chain<SootClass> getContainingChain(SootClass c)
     {
         if (c.isApplicationClass())
             return getApplicationClasses();
@@ -649,7 +645,7 @@ public class Scene  //extends AbstractHost
     public ReachableMethods getReachableMethods() {
         if( reachableMethods == null ) {
             reachableMethods = new ReachableMethods(
-                    getCallGraph(), getEntryPoints() );
+                    getCallGraph(), new ArrayList<MethodOrMethodContext>(getEntryPoints()) );
         }
         reachableMethods.update();
         return reachableMethods;
@@ -734,7 +730,7 @@ public class Scene  //extends AbstractHost
 
     private void setReservedNames()
     {
-        Set rn = getReservedNames();        
+        Set<String> rn = getReservedNames();        
         rn.add("newarray");
         rn.add("newmultiarray");
         rn.add("nop");
@@ -772,7 +768,7 @@ public class Scene  //extends AbstractHost
         rn.add("synchronized");
         rn.add("transient");
         rn.add("volatile");
-	rn.add("interface");
+        rn.add("interface");
         rn.add("void");
         rn.add("short");
         rn.add("int");
@@ -791,15 +787,15 @@ public class Scene  //extends AbstractHost
         rn.add("throws");
         rn.add("null");
         rn.add("from");
-	rn.add("to");
+        rn.add("to");
     }
 
-    private final Set[]/*<String>*/ basicclasses=new Set[4];
+    private final Set<String>[] basicclasses=new Set[4];
 
     private void addSootBasicClasses() {
-        basicclasses[SootClass.HIERARCHY] = new HashSet();
-        basicclasses[SootClass.SIGNATURES] = new HashSet();
-        basicclasses[SootClass.BODIES] = new HashSet();
+        basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
+        basicclasses[SootClass.SIGNATURES] = new HashSet<String>();
+        basicclasses[SootClass.BODIES] = new HashSet<String>();
 
 	addBasicClass("java.lang.Object");
 	addBasicClass("java.lang.Class", SootClass.SIGNATURES);
@@ -905,7 +901,7 @@ public class Scene  //extends AbstractHost
     public void loadNecessaryClasses() {
 	loadBasicClasses();
 
-        Iterator it = Options.v().classes().iterator();
+        Iterator<String> it = Options.v().classes().iterator();
 
         while (it.hasNext()) {
             String name = (String) it.next();
@@ -914,7 +910,7 @@ public class Scene  //extends AbstractHost
 
         loadDynamicClasses();
 
-        for( Iterator pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
+        for( Iterator<String> pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             for (String cl : SourceLocator.v().getClassesUnder(path)) {
@@ -931,13 +927,13 @@ public class Scene  //extends AbstractHost
         HashSet<String> dynClasses = new HashSet<String>();
         dynClasses.addAll(Options.v().dynamic_class());
 
-        for( Iterator pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
+        for( Iterator<String> pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             dynClasses.addAll(SourceLocator.v().getClassesUnder(path));
         }
 
-        for( Iterator pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
+        for( Iterator<String> pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
 
             final String pkg = (String) pkgIt.next();
             dynClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
@@ -955,7 +951,7 @@ public class Scene  //extends AbstractHost
      */
     private void prepareClasses() {
 
-        LinkedList excludedPackages = new LinkedList();
+        LinkedList<String> excludedPackages = new LinkedList<String>();
         if (Options.v().exclude() != null)
             excludedPackages.addAll(Options.v().exclude());
 
@@ -986,14 +982,14 @@ public class Scene  //extends AbstractHost
                     s.setApplicationClass();
                     continue;
                 }
-                for( Iterator pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
+                for( Iterator<String> pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
                     final String pkg = (String) pkgIt.next();
                     if (s.isApplicationClass()
                     && s.getPackageName().startsWith(pkg)) {
                             s.setLibraryClass();
                     }
                 }
-                for( Iterator pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
+                for( Iterator<String> pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
                     final String pkg = (String) pkgIt.next();
                     if (s.getPackageName().startsWith(pkg))
                         s.setApplicationClass();
@@ -1006,13 +1002,13 @@ public class Scene  //extends AbstractHost
         }
     }
 
-    ArrayList pkgList;
+    ArrayList<String> pkgList;
 
-    public void setPkgList(ArrayList list){
+    public void setPkgList(ArrayList<String> list){
         pkgList = list;
     }
 
-    public ArrayList getPkgList(){
+    public ArrayList<String> getPkgList(){
         return pkgList;
     }
 
@@ -1021,7 +1017,7 @@ public class Scene  //extends AbstractHost
     public SootMethodRef makeMethodRef( 
             SootClass declaringClass,
             String name,
-            List/*Type*/ parameterTypes,
+            List<Type> parameterTypes,
             Type returnType,
             boolean isStatic ) {
         return new AbstractSootMethodRef(declaringClass, name, parameterTypes,
@@ -1031,7 +1027,7 @@ public class Scene  //extends AbstractHost
     /** Create an unresolved reference to a constructor. */
     public SootMethodRef makeConstructorRef( 
             SootClass declaringClass,
-            List/*Type*/ parameterTypes) {
+            List<Type> parameterTypes) {
         return makeMethodRef(declaringClass, SootMethod.constructorName, 
                                          parameterTypes, VoidType.v(), false );
     }
@@ -1049,7 +1045,7 @@ public class Scene  //extends AbstractHost
      * the level specified. */
     public List/*SootClass*/<SootClass> getClasses(int desiredLevel) {
         List<SootClass> ret = new ArrayList<SootClass>();
-        for( Iterator clIt = getClasses().iterator(); clIt.hasNext(); ) {
+        for( Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
             final SootClass cl = (SootClass) clIt.next();
             if( cl.resolvingLevel() >= desiredLevel ) ret.add(cl);
         }
@@ -1065,7 +1061,7 @@ public class Scene  //extends AbstractHost
             setMainClass(getSootClass(Options.v().main_class()));
         } else {        	
         	// try to infer a main class if none is given 
-        	for (Iterator classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
+        	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
                     SootClass c = (SootClass) classIter.next();
                     if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {

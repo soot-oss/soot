@@ -284,7 +284,7 @@ public class LocalObjectsAnalysis
 			rm = rmCache.get(start);
 		else
 		{
-			List<SootMethod> entryPoints = new ArrayList<SootMethod>();
+			List<MethodOrMethodContext> entryPoints = new ArrayList<MethodOrMethodContext>();
 			entryPoints.add(start);
 			rm = new ReachableMethods(cg, entryPoints);
 			rm.update();

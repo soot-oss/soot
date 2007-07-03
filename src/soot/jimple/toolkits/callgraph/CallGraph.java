@@ -30,9 +30,9 @@ import java.util.*;
 public class CallGraph
 { 
     protected Set<Edge> edges = new HashSet<Edge>();
-    protected ChunkedQueue stream = new ChunkedQueue();
-    protected QueueReader reader = stream.reader();
-    protected Map<MethodOrMethodContext,Edge> srcMethodToEdge = new HashMap();
+    protected ChunkedQueue<Edge> stream = new ChunkedQueue<Edge>();
+    protected QueueReader<Edge> reader = stream.reader();
+    protected Map<MethodOrMethodContext,Edge> srcMethodToEdge = new HashMap<MethodOrMethodContext, Edge>();
     protected Map<Unit, Edge> srcUnitToEdge = new HashMap<Unit, Edge>();
     protected Map<MethodOrMethodContext, Edge> tgtToEdge = new HashMap<MethodOrMethodContext, Edge>();
     protected Edge dummy = new Edge( null, null, null, Kind.INVALID );
@@ -101,14 +101,14 @@ public class CallGraph
 
     /** Returns an iterator over all methods that are the sources of at least
      * one edge. */
-    public Iterator sourceMethods() {
+    public Iterator<MethodOrMethodContext> sourceMethods() {
         return srcMethodToEdge.keySet().iterator();
     }
     /** Returns an iterator over all edges that have u as their source unit. */
-    public Iterator edgesOutOf( Unit u ) {
+    public Iterator<Edge> edgesOutOf( Unit u ) {
         return new TargetsOfUnitIterator( u );
     }
-    class TargetsOfUnitIterator implements Iterator {
+    class TargetsOfUnitIterator implements Iterator<Edge> {
         private Edge position = null;
         private Unit u;
         TargetsOfUnitIterator( Unit u ) {
@@ -122,7 +122,7 @@ public class CallGraph
             if( position.kind() == Kind.INVALID ) return false;
             return true;
         }
-        public Object next() {
+        public Edge next() {
             Edge ret = position;
             position = position.nextByUnit();
             return ret;
@@ -132,10 +132,10 @@ public class CallGraph
         }
     }
     /** Returns an iterator over all edges that have m as their source method. */
-    public Iterator edgesOutOf( MethodOrMethodContext m ) {
+    public Iterator<Edge> edgesOutOf( MethodOrMethodContext m ) {
         return new TargetsOfMethodIterator( m );
     }
-    class TargetsOfMethodIterator implements Iterator {
+    class TargetsOfMethodIterator implements Iterator<Edge> {
         private Edge position = null;
         private MethodOrMethodContext m;
         TargetsOfMethodIterator( MethodOrMethodContext m ) {
@@ -149,7 +149,7 @@ public class CallGraph
             if( position.kind() == Kind.INVALID ) return false;
             return true;
         }
-        public Object next() {
+        public Edge next() {
             Edge ret = position;
             position = position.nextBySrc();
             return ret;
@@ -159,10 +159,10 @@ public class CallGraph
         }
     }
     /** Returns an iterator over all edges that have m as their target method. */
-    public Iterator edgesInto( MethodOrMethodContext m ) {
+    public Iterator<Edge> edgesInto( MethodOrMethodContext m ) {
         return new CallersOfMethodIterator( m );
     }
-    class CallersOfMethodIterator implements Iterator {
+    class CallersOfMethodIterator implements Iterator<Edge> {
         private Edge position = null;
         private MethodOrMethodContext m;
         CallersOfMethodIterator( MethodOrMethodContext m ) {
@@ -176,7 +176,7 @@ public class CallGraph
             if( position.kind() == Kind.INVALID ) return false;
             return true;
         }
-        public Object next() {
+        public Edge next() {
             Edge ret = position;
             position = position.nextByTgt();
             return ret;
@@ -188,17 +188,17 @@ public class CallGraph
     /** Returns a QueueReader object containing all edges added so far, and
      * which will be informed of any new edges that are later added to
      * the graph. */
-    public QueueReader listener() {
-        return (QueueReader) reader.clone();
+    public QueueReader<Edge> listener() {
+        return reader.clone();
     }
     /** Returns a QueueReader object which will contain ONLY NEW edges
      * which will be added to the graph.
      */
-    public QueueReader newListener() {
+    public QueueReader<Edge> newListener() {
         return stream.reader();
     }
     public String toString() {
-        QueueReader reader = listener();
+        QueueReader<Edge> reader = listener();
         StringBuffer out = new StringBuffer();
         while(reader.hasNext()) {
             Edge e = (Edge) reader.next();
