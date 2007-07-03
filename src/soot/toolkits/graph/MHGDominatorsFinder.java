@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2005 Navindra Umanee <navindra@cs.mcgill.ca>
+ * Copyright (C) 2007 Eric Bodden
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,13 +21,13 @@
 package soot.toolkits.graph;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
   * Calculate dominators for basic blocks.
@@ -38,6 +39,9 @@ import java.util.Set;
  *         for n in N - {n0} do
  *             D(n) := {n} U (intersect of D(p) over all predecessors p of n)
  * </pre>
+ * 2007/07/03 - updated to use {@link BitSet}s instead of {@link HashSet}s, as the most expensive
+ * operation in this algorithm used to be cloning of the fullSet, which is very cheap
+ * for {@link BitSet}s.
  *
  * @author Navindra Umanee
  * @author Eric Bodden
@@ -45,9 +49,12 @@ import java.util.Set;
 public class MHGDominatorsFinder implements DominatorsFinder
 {
     protected DirectedGraph graph;
-    protected HashSet fullSet;
+    protected BitSet fullSet;
     protected List heads;
-    protected Map<Object, Set> nodeToFlowSet;
+    protected Map<Object,BitSet> nodeToFlowSet;
+    protected Map<Object,Integer> nodeToIndex;
+    protected Map<Integer,Object> indexToNode;
+    protected int lastIndex = 0;
 
     public MHGDominatorsFinder(DirectedGraph graph)
     {
@@ -58,20 +65,21 @@ public class MHGDominatorsFinder implements DominatorsFinder
     protected void doAnalysis()
     {
         heads = graph.getHeads();
-        nodeToFlowSet = new HashMap<Object, Set>();
+        nodeToFlowSet = new HashMap<Object, BitSet>();
+        nodeToIndex = new HashMap<Object, Integer>();
+        indexToNode = new HashMap<Integer, Object>();
     
         //build full set
-        fullSet = new HashSet();
-        for(Iterator i = graph.iterator(); i.hasNext();)
-            fullSet.add(i.next());
+        fullSet = new BitSet(graph.size());
+        fullSet.flip(0, graph.size()-1);//set all to true
         
         //set up domain for intersection: head nodes are only dominated by themselves,
         //other nodes are dominated by everything else
         for(Iterator i = graph.iterator(); i.hasNext();){
             Object o = i.next();
             if(heads.contains(o)){
-                Set self = new HashSet();
-                self.add(o);
+                BitSet self = new BitSet();
+                self.set(indexOf(self));
                 nodeToFlowSet.put(o, self);
             }
             else{
@@ -87,29 +95,41 @@ public class MHGDominatorsFinder implements DominatorsFinder
     
                 //set up domain for intersection: head nodes are only dominated by themselves,
                 //other nodes are dominated by everything else
-                Set predsIntersect;
+                BitSet predsIntersect;
                 if(heads.contains(o)) {
-                    predsIntersect = new HashSet();
-                    predsIntersect.add(o);
+                    predsIntersect = new BitSet();
+                    predsIntersect.set(indexOf(o));
                 }
                 else
-                    predsIntersect = new HashSet(fullSet);
+                    //this clone() is fast on BitSets (opposed to on HashSets)
+                    predsIntersect = (BitSet) fullSet.clone();
     
                 //intersect over all predecessors
                 for(Iterator j = graph.getPredsOf(o).iterator(); j.hasNext();){
-                    Set predSet = nodeToFlowSet.get(j.next());
-                    predsIntersect.retainAll(predSet);
+                    BitSet predSet = nodeToFlowSet.get(j.next());
+                    predsIntersect.and(predSet);
                 }
     
-                Set oldSet = nodeToFlowSet.get(o);
+                BitSet oldSet = nodeToFlowSet.get(o);
                 //each node dominates itself
-                predsIntersect.add(o);
+                predsIntersect.set(indexOf(o));
                 if(!predsIntersect.equals(oldSet)){
                     nodeToFlowSet.put(o, predsIntersect);
                     changed = true;
                 }
             }
         } while(changed);
+    }
+    
+    protected int indexOf(Object o) {
+        Integer index = nodeToIndex.get(o);
+        if(index==null) {
+            index = lastIndex;
+            nodeToIndex.put(o,index);
+            indexToNode.put(index,o);
+            lastIndex++;
+        }
+        return index;
     }
     
     public DirectedGraph getGraph()
@@ -119,8 +139,15 @@ public class MHGDominatorsFinder implements DominatorsFinder
     
     public List getDominators(Object node)
     {
-        // non-backed list since FlowSet is an ArrayPackedFlowSet
-        return new ArrayList(nodeToFlowSet.get(node));
+        //reconstruct list of dominators from bitset
+        List result = new ArrayList();
+        BitSet bitSet = nodeToFlowSet.get(node);
+        for(int i=0;i<bitSet.length();i++) {
+            if(bitSet.get(i)) {
+                result.add(indexToNode.get(i));
+            }
+        }
+        return result;
     }
 
     public Object getImmediateDominator(Object node)
