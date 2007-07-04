@@ -31,22 +31,23 @@ import java.util.*;
 /** 
  * Provides an implementation of a flow universe, wrapping collections.
  */
-public class CollectionFlowUniverse implements FlowUniverse {
-  Set elements;
+public class CollectionFlowUniverse<E> implements FlowUniverse<E> {
+  Set<E> elements;
 
-  public CollectionFlowUniverse(Collection elements) {
-    this.elements = new HashSet(elements);
+  public CollectionFlowUniverse(Collection<E> elements) {
+    this.elements = new HashSet<E>(elements);
   }
 
   public int size() {
     return elements.size();
   }
 
-  public Iterator iterator() {
+  public Iterator<E> iterator() {
     return elements.iterator();
   }
 
-  public Object[] toArray() {
-    return elements.toArray();
+  @SuppressWarnings("unchecked")
+  public E[] toArray() {
+    return (E[]) elements.toArray();
   }
 }

@@ -32,28 +32,28 @@ import java.util.*;
  * gives an injection of Objects to ints. Different instances of
  * <code>ObjectIntMap</code> may map different ints to the same object.
  */
-class ObjectIntMapper {
-  private Vector<Object> intToObjects;
+public class ObjectIntMapper<E> {
+  private Vector<E> intToObjects;
   private int counter;
-  private Map<Object, Integer> objectToInts;
+  private Map<E, Integer> objectToInts;
   
   public ObjectIntMapper() {
-    intToObjects = new Vector<Object>();
-    objectToInts = new HashMap<Object, Integer>();
+    intToObjects = new Vector<E>();
+    objectToInts = new HashMap<E, Integer>();
     counter = 0;
   }
 
-  public ObjectIntMapper(FlowUniverse flowUniverse) {
+  public ObjectIntMapper(FlowUniverse<E> flowUniverse) {
     this(flowUniverse.iterator(), flowUniverse.size());
   }
 
-  public ObjectIntMapper(Collection collection) {
+  public ObjectIntMapper(Collection<E> collection) {
     this(collection.iterator(), collection.size());
   }
 
-  private ObjectIntMapper(Iterator it, int initSize) {
-    intToObjects = new Vector<Object>(initSize);
-    objectToInts = new HashMap<Object, Integer>(initSize);
+  private ObjectIntMapper(Iterator<E> it, int initSize) {
+    intToObjects = new Vector<E>(initSize);
+    objectToInts = new HashMap<E, Integer>(initSize);
     counter = 0;
     while (it.hasNext())
       add(it.next());
@@ -63,8 +63,8 @@ class ObjectIntMapper {
    * adds <code>o</code> into the map. no test are made, if it is already in the
    * map.
    */
-  private int add(Object o) {
-    objectToInts.put(o, new Integer(counter));
+  public int add(E o) {
+    objectToInts.put(o, counter);
     intToObjects.add(o);
     return counter++;
   }
@@ -77,9 +77,9 @@ class ObjectIntMapper {
    * @param o
    * @return <code>o</code>'s mapping
    */
-  public int getInt(Object o) {
+  public int getInt(E o) {
     Integer i = objectToInts.get(o);
-    if (i != null) return i.intValue();
+    if (i != null) return i;
     return add(o);
   }
 

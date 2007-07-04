@@ -31,10 +31,10 @@ import java.util.*;
 /** 
  * Provides an implementation of a flow universe, wrapping arrays.
  */
-public class ArrayFlowUniverse implements FlowUniverse {
-  Object[] elements;
+public class ArrayFlowUniverse<E> implements FlowUniverse<E> {
+  E[] elements;
 
-  public ArrayFlowUniverse(Object[] elements) {
+  public ArrayFlowUniverse(E[] elements) {
     this.elements = elements;
   }
 
@@ -42,11 +42,11 @@ public class ArrayFlowUniverse implements FlowUniverse {
     return elements.length;
   }
 
-  public Iterator iterator() {
+  public Iterator<E> iterator() {
     return Arrays.asList(elements).iterator();
   }
 
-  public Object[] toArray() {
+  public E[] toArray() {
     return elements;
   }
 }

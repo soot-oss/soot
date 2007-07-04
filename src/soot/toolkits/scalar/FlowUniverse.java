@@ -32,7 +32,7 @@ import java.util.*;
  * Provides an interface of a flow universe, used by an implementation 
  * of BoundedFlowSet to do complementation.
  */
-public interface FlowUniverse {
+public interface FlowUniverse<E> {
 
   /**
    * returns the number of elements of the universe.
@@ -46,7 +46,7 @@ public interface FlowUniverse {
    *
    * @return an Iterator over the elements.
    */
-  public Iterator iterator();
+  public Iterator<E> iterator();
 
   /**
    * returns the elements of the universe in form of an array.<br>
@@ -55,5 +55,5 @@ public interface FlowUniverse {
    *
    * @return the elements of the universe.
    */
-  public Object[] toArray();
+  public E[] toArray();
 }
