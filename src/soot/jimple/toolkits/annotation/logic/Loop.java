@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import soot.Unit;
-import soot.UnitBox;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 
@@ -46,30 +45,22 @@ public class Loop {
      * Creates a new loop. Expects that the last statement in the list is the loop head
      * and the second-last statement is the back-jump to the head. {@link LoopFinder} will
      * normally guarantee this.
-     * @param header the loop header
+     * @param head the loop header
      * @param loopStatements an ordered list of loop statements, ending with the header
      * @param g the unit graph according to which the loop exists
      */
-    Loop(Stmt header, List<Stmt> loopStatements, UnitGraph g) {
-        this.header = header;
+    Loop(Stmt head, List<Stmt> loopStatements, UnitGraph g) {
+        this.header = head;
         this.g = g;
 
         //put header to the top
-        loopStatements.remove(header);
-        loopStatements.add(0, header);
+        loopStatements.remove(head);
+        loopStatements.add(0, head);
         
         //last statement
         this.backJump = loopStatements.get(loopStatements.size()-1);
-        assert this.backJump.branches(); //must be a goto or if statement
         
-        boolean branchesToHead = false;
-        for (UnitBox box : this.backJump.getUnitBoxes()) {
-            if(box.getUnit()==header) {
-                branchesToHead = true;
-                break;
-            }
-        }
-        assert branchesToHead; //must branch back to the head
+        assert g.getSuccsOf(this.backJump).contains(head); //must branch back to the head
 
         this.loopStatements = loopStatements;
     }
