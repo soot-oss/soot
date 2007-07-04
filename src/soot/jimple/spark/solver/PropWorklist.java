@@ -21,6 +21,7 @@ package soot.jimple.spark.solver;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
+import soot.util.IdentityHashSet;
 import soot.util.queue.*;
 import java.util.*;
 
@@ -72,7 +73,7 @@ public final class PropWorklist extends Propagator {
 	    for (Object object : pag.loadSources()) {
                 handleFieldRefNode( (FieldRefNode) object, edgesToPropagate );
 	    }
-            HashSet<PointsToSetInternal> nodesToFlush = new HashSet<PointsToSetInternal>();
+	        IdentityHashSet<PointsToSetInternal> nodesToFlush = new IdentityHashSet<PointsToSetInternal>();
             for (Object[] pair : edgesToPropagate) {
                 PointsToSetInternal nDotF = (PointsToSetInternal) pair[0];
 		PointsToSetInternal newP2Set = nDotF.getNewSet();
