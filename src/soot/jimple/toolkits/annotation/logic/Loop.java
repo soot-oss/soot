@@ -20,10 +20,10 @@ package soot.jimple.toolkits.annotation.logic;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.Unit;
+import soot.UnitBox;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 
@@ -43,8 +43,8 @@ public class Loop {
     protected Collection<Stmt> loopExists;
 
     /**
-     * Creates a new loop. Expects that the loop statements are ordered according to the
-     * loop structure with the loop header being the last statement. {@link LoopFinder} will
+     * Creates a new loop. Expects that the last statement in the list is the loop head
+     * and the second-last statement is the back-jump to the head. {@link LoopFinder} will
      * normally guarantee this.
      * @param header the loop header
      * @param loopStatements an ordered list of loop statements, ending with the header
@@ -58,25 +58,18 @@ public class Loop {
         loopStatements.remove(header);
         loopStatements.add(0, header);
         
-        //check for right order
-        boolean hasRightOrder = true;
-        Iterator<Stmt> stmtIter = loopStatements.iterator();
-        Stmt curr = stmtIter.next();
-        while(stmtIter.hasNext()) {
-            Stmt next = stmtIter.next();
-            List<Unit> succs = g.getSuccsOf(curr);
-			if(!succs.contains(next)
-			&& !succs.contains(header)) { //might be intermediate jumps back to the header in case of "continue"
-                hasRightOrder = false;
-                break;
-            }
-            curr = next;
-        }
-        assert hasRightOrder;
-        
         //last statement
         this.backJump = loopStatements.get(loopStatements.size()-1);
         assert this.backJump.branches(); //must be a goto or if statement
+        
+        boolean branchesToHead = false;
+        for (UnitBox box : this.backJump.getUnitBoxes()) {
+            if(box.getUnit()==header) {
+                branchesToHead = true;
+                break;
+            }
+        }
+        assert branchesToHead; //must branch back to the head
 
         this.loopStatements = loopStatements;
     }
