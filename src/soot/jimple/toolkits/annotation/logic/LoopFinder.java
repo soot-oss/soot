@@ -30,6 +30,7 @@ import java.util.Stack;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.Unit;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.MHGDominatorsFinder;
@@ -56,16 +57,16 @@ public class LoopFinder extends BodyTransformer {
         
         loops = new HashMap<Stmt, List<Stmt>>();
         
-        Iterator stmtsIt = b.getUnits().iterator();
+        Iterator<Unit> stmtsIt = b.getUnits().iterator();
         while (stmtsIt.hasNext()){
             Stmt s = (Stmt)stmtsIt.next();
 
-            List succs = g.getSuccsOf(s);
-            Collection dominaters = (Collection)a.getDominators(s);
+            List<Unit> succs = g.getSuccsOf(s);
+            Collection<Unit> dominaters = (Collection<Unit>)a.getDominators(s);
 
             ArrayList<Stmt> headers = new ArrayList<Stmt>();
 
-            Iterator succsIt = succs.iterator();
+            Iterator<Unit> succsIt = succs.iterator();
             while (succsIt.hasNext()){
                 Stmt succ = (Stmt)succsIt.next();
                 if (dominaters.contains(succ)){
@@ -98,7 +99,7 @@ public class LoopFinder extends BodyTransformer {
     private List<Stmt> getLoopBodyFor(Stmt header, Stmt node){
     
         ArrayList<Stmt> loopBody = new ArrayList<Stmt>();
-        Stack stack = new Stack();
+        Stack<Unit> stack = new Stack<Unit>();
 
         loopBody.add(header);
         stack.push(node);
@@ -109,15 +110,15 @@ public class LoopFinder extends BodyTransformer {
                 // add next to loop body
                 loopBody.add(0, next);
                 // put all preds of next on stack
-                Iterator it = g.getPredsOf(next).iterator();
+                Iterator<Unit> it = g.getPredsOf(next).iterator();
                 while (it.hasNext()){
                     stack.push(it.next());
                 }
             }
         }
         
-        assert loopBody.get(0)==header;
-        assert loopBody.get(loopBody.size()-1)==node;
+        assert loopBody.get(loopBody.size()-2)==node;
+        assert loopBody.get(loopBody.size()-1)==header;
         
         return loopBody;
     }
