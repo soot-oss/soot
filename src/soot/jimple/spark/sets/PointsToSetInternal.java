@@ -186,7 +186,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
 			}
 			
 		};
-		
+		this.forall(visitor);
 		return visitor.intValue;
 	}
 	
