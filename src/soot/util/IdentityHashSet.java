@@ -27,13 +27,14 @@ import java.util.Set;
  * Implements a hashset with comparison over identity.
  * @author Eric Bodden
  */
-public class IdentityHashSet extends AbstractSet implements Set {
+public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 
-    protected IdentityHashMap delegate;
+    protected IdentityHashMap<E,E> delegate;
     
     /**
      * Creates a new, empty IdentityHashSet. 
      */
+    @SuppressWarnings("unchecked")
     public IdentityHashSet() {
         delegate = new IdentityHashMap();
     }
@@ -55,14 +56,14 @@ public class IdentityHashSet extends AbstractSet implements Set {
     /**
      * {@inheritDoc}
      */
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
         return delegate.keySet().iterator();
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean add(Object o) {
+    public boolean add(E o) {
         return delegate.put(o, o)==null;
     }
 
