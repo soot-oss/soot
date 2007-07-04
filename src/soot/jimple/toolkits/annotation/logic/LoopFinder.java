@@ -63,17 +63,18 @@ public class LoopFinder extends BodyTransformer {
             List succs = g.getSuccsOf(s);
             Collection dominaters = (Collection)a.getDominators(s);
 
-            ArrayList<Stmt> backEdges = new ArrayList<Stmt>();
+            ArrayList<Stmt> headers = new ArrayList<Stmt>();
 
             Iterator succsIt = succs.iterator();
             while (succsIt.hasNext()){
                 Stmt succ = (Stmt)succsIt.next();
                 if (dominaters.contains(succ)){
-                    backEdges.add(succ);
+                	//header succeeds and dominates s, we have a loop
+                    headers.add(succ);
                 }
             }
 
-            Iterator<Stmt> headersIt = backEdges.iterator();
+            Iterator<Stmt> headersIt = headers.iterator();
             while (headersIt.hasNext()){
                 Stmt header = headersIt.next();
                 List<Stmt> loopBody = getLoopBodyFor(header, s);
@@ -114,7 +115,10 @@ public class LoopFinder extends BodyTransformer {
                 }
             }
         }
-
+        
+        assert loopBody.get(0)==header;
+        assert loopBody.get(loopBody.size()-1)==node;
+        
         return loopBody;
     }
 

@@ -64,7 +64,9 @@ public class Loop {
         Stmt curr = stmtIter.next();
         while(stmtIter.hasNext()) {
             Stmt next = stmtIter.next();
-            if(!g.getSuccsOf(curr).contains(next)) {
+            List<Unit> succs = g.getSuccsOf(curr);
+			if(!succs.contains(next)
+			&& !succs.contains(header)) { //might be intermediate jumps back to the header in case of "continue"
                 hasRightOrder = false;
                 break;
             }
