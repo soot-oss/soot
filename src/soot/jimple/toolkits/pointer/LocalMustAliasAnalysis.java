@@ -55,10 +55,10 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
 {
 	public static final String UNKNOWN_LABEL = "UNKNOWN";
 	
-	private static final Object UNKNOWN = new Object() {
+	protected static final Object UNKNOWN = new Object() {
     	public String toString() { return UNKNOWN_LABEL; }
     };
-    private static final Object NOTHING = new Object() {
+    protected static final Object NOTHING = new Object() {
     	public String toString() { return "NOTHING"; }
     };
     
