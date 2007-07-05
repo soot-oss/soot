@@ -39,7 +39,9 @@ public class CallLocalityContext
 				return;
 			}
 		}
-		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
+		nodes.add(fieldRef);
+		isNodeLocal.add(Boolean.TRUE);
+//		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
 //		return false;
 	}
 	
@@ -55,6 +57,8 @@ public class CallLocalityContext
 				return;
 			}
 		}
+		nodes.add(fieldRef);
+		isNodeLocal.add(Boolean.FALSE);
 		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
 //		return false;
 	}
