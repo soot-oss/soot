@@ -19,6 +19,7 @@
 
 package soot.jimple.spark.sets;
 import soot.jimple.ClassConstant;
+import soot.jimple.spark.SparkTransformer;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.*;
 import soot.util.BitVector;
@@ -177,6 +178,10 @@ public abstract class PointsToSetInternal implements PointsToSet {
 	 * {@inheritDoc}
 	 */
 	public int hashCode() {
+	    if(SparkTransformer.v().isActive()) {
+	        throw new RuntimeException("hashCode() was called on PointsToSetInternal during execution of Spark! This is a bug. Please report.");
+	    }
+	    
 		P2SetVisitorInt visitor = new P2SetVisitorInt(1) {
 
 			final int PRIME = 31;
@@ -194,6 +199,9 @@ public abstract class PointsToSetInternal implements PointsToSet {
      * {@inheritDoc}
      */
     public boolean equals(Object other) {
+        if(SparkTransformer.v().isActive()) {
+            throw new RuntimeException("equals(Object) was called on PointsToSetInternal during execution of Spark! This is a bug. Please report.");
+        }
     	if(this==other) {
     		return true;
     	}

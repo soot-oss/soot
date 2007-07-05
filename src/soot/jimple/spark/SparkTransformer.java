@@ -35,11 +35,14 @@ import soot.tagkit.*;
  */
 public class SparkTransformer extends SceneTransformer
 { 
+    private boolean isActive = false;
+
     public SparkTransformer( Singletons.Global g ) {}
     public static SparkTransformer v() { return G.v().soot_jimple_spark_SparkTransformer(); }
 
     protected void internalTransform( String phaseName, Map options )
     {
+        isActive = true;
         SparkOptions opts = new SparkOptions( options );
         final String output_dir = SourceLocator.v().getOutputDir();
 
@@ -129,7 +132,10 @@ public class SparkTransformer extends SceneTransformer
 		{
 			if (AllSharedHybridNodes.v().lookupMap.map[i] != null)
 			{
-				ListIterator li = AllSharedHybridNodes.v().lookupMap.map[i].listIterator();
+				ListIterator li = AllSharedHybridNodes.v().lookupMap.m
+        final Propagator[] propagator = new Propagator[1];
+        switch( opts.propagator() ) {
+            case SparkOptions.propagator_iter:ap[i].listIterator();
 				while (li.hasNext())
 				{
 					li.next();
@@ -178,6 +184,8 @@ public class SparkTransformer extends SceneTransformer
         		reportTime( "Initialized on-demand refinement-based context-sensitive analysis", startOnDemand, endOndemand );
         		Scene.v().setPointsToAnalysis(onDemandAnalysis);
         }
+        
+        isActive = false;
     }
     
     protected void addTags( PAG pag ) {
@@ -364,6 +372,10 @@ public class SparkTransformer extends SceneTransformer
             }
         }
         */
+    }
+    
+    public boolean isActive() {
+        return isActive;
     }
 }
 
