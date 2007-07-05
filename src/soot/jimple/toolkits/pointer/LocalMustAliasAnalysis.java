@@ -30,6 +30,7 @@ import soot.Local;
 import soot.RefLikeType;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.ArrayRef;
 import soot.jimple.CastExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
@@ -133,7 +134,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
                     rhs instanceof InvokeExpr || 
                     rhs instanceof ParameterRef || 
                     rhs instanceof FieldRef || 
-                    rhs instanceof ThisRef) {
+                    rhs instanceof ThisRef ||
+                    rhs instanceof ArrayRef) {
                     //expression could have changed, hence assign a fresh number
                     //(thisref and parameterref cannot actually change but whatever...)
                     out.put(lhs, nextNumber++);
