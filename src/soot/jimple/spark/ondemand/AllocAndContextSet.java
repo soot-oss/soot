@@ -24,10 +24,11 @@ import soot.PointsToSet;
 import soot.jimple.spark.ondemand.genericutil.ArraySet;
 import soot.jimple.spark.ondemand.genericutil.ImmutableStack;
 import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
-public final class AllocAndContextSet extends ArraySet<AllocAndContext> implements PointsToSet {
+public final class AllocAndContextSet extends ArraySet<AllocAndContext> implements EqualsSupportingPointsToSet {
 
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     if (other instanceof AllocAndContextSet) {
@@ -79,5 +80,44 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
 
   public Set possibleTypes() {
     throw new UnsupportedOperationException();
+  }
+  
+  /**
+   * Computes a hash code based on the contents of the points-to set.
+   * Note that hashCode() is not overwritten on purpose.
+   * This is because Spark relies on comparison by object identity.
+   */
+  public int pointsToSetHashCode() {
+      final int PRIME = 31;
+      int result = 1;
+      for (AllocAndContext elem : this) {
+          result = PRIME * result + elem.hashCode();
+      }
+      return result;
+  }
+  
+  /**
+   * Returns <code>true</code> if and only if other holds the same alloc nodes as this.
+   * Note that equals() is not overwritten on purpose.
+   * This is because Spark relies on comparison by object identity.
+   */
+  public boolean pointsToSetEquals(Object other) {
+      if(this==other) {
+          return true;
+      }
+      if(!(other instanceof AllocAndContextSet)) {
+          return false;
+      }
+      AllocAndContextSet otherPts = (AllocAndContextSet) other;
+      
+      //both sets are equal if they are supersets of each other 
+      return superSetOf(otherPts, this) && superSetOf(this, otherPts);        
+  }
+  
+  /**
+   * Returns <code>true</code> if <code>onePts</code> is a (non-strict) superset of <code>otherPts</code>.
+   */
+  private boolean superSetOf(AllocAndContextSet onePts, final AllocAndContextSet otherPts) {
+      return onePts.containsAll(otherPts);
   }
 }

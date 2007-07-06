@@ -29,7 +29,7 @@ import java.util.*;
 /** Abstract base class for implementations of points-to sets.
  * @author Ondrej Lhotak
  */
-public abstract class PointsToSetInternal implements PointsToSet {
+public abstract class PointsToSetInternal implements PointsToSet, EqualsSupportingPointsToSet {
     /** Adds contents of other minus the contents of exclude into this set;
      * returns true if this set changed. */
     public boolean addAll( PointsToSetInternal other,
@@ -175,13 +175,9 @@ public abstract class PointsToSetInternal implements PointsToSet {
     }
     
 	/**
-	 * {@inheritDoc}
-	 */
-	public int hashCode() {
-	    if(SparkTransformer.v().isActive()) {
-	        throw new RuntimeException("hashCode() was called on PointsToSetInternal during execution of Spark! This is a bug. Please report.");
-	    }
-	    
+     * {@inheritDoc}
+     */
+	public int pointsToSetHashCode() {
 		P2SetVisitorInt visitor = new P2SetVisitorInt(1) {
 
 			final int PRIME = 31;
@@ -198,10 +194,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
 	/**
      * {@inheritDoc}
      */
-    public boolean equals(Object other) {
-        if(SparkTransformer.v().isActive()) {
-            throw new RuntimeException("equals(Object) was called on PointsToSetInternal during execution of Spark! This is a bug. Please report.");
-        }
+    public boolean pointsToSetEquals(Object other) {
     	if(this==other) {
     		return true;
     	}
@@ -211,8 +204,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
     	PointsToSetInternal otherPts = (PointsToSetInternal) other;
     	
     	//both sets are equal if they are supersets of each other 
-    	return superSetOf(otherPts, this) && superSetOf(this, otherPts);
-    	
+    	return superSetOf(otherPts, this) && superSetOf(this, otherPts);    	
     }
     
 	/**
@@ -235,7 +227,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
 	 *
 	 * @author Eric Bodden
 	 */
-	protected abstract class P2SetVisitorDefaultTrue extends P2SetVisitor {
+	public static abstract class P2SetVisitorDefaultTrue extends P2SetVisitor {
 		
 		public P2SetVisitorDefaultTrue() {
 			returnValue = true;
@@ -248,11 +240,11 @@ public abstract class PointsToSetInternal implements PointsToSet {
 	 *
 	 * @author Eric Bodden
 	 */
-	protected abstract class P2SetVisitorInt extends P2SetVisitor {
+	public static abstract class P2SetVisitorInt extends P2SetVisitor {
 		
-		int intValue;
+		protected int intValue;
 		
-		P2SetVisitorInt(int i) {
+		public P2SetVisitorInt(int i) {
 			intValue = 1;
 		}
 		

@@ -255,6 +255,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	protected Map<VarContextAndUp, Map<AllocAndContext, CallingContextSet>> upContextCache = new HashMap<VarContextAndUp, Map<AllocAndContext, CallingContextSet>>();
 
 	protected final ValidMatches vMatches;
+	
+	protected Map<Local,PointsToSet> reachingObjectsCache;
 
 	public DemandCSPointsTo(ContextSensitiveInfo csInfo, PAG pag) {
 		this(csInfo, pag, DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES);
@@ -271,40 +273,46 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		this.maxNodesPerPass = maxTraversal / maxPasses;
 		this.fieldCheckHeuristic = HeuristicType.getHeuristic(
 				HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
+		this.reachingObjectsCache = new HashMap<Local, PointsToSet>();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public PointsToSet reachingObjects(Local l) {
-		VarNode v = pag.findLocalVarNode(l);
-		doPointsTo = true;
-		numPasses = 0;
-		PointsToSet ret = null;
-		while (true) {
-			numPasses++;
-			if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
-				break;
-			}
-			if (numPasses > maxPasses) {
-				break;
-			}
-			if (DEBUG) {
-				G.v().out.println("PASS " + numPasses);
-				G.v().out.println(fieldCheckHeuristic);
-			}
-			clearState();
-			pointsTo = new AllocAndContextSet();
-			try {
-				refineP2Set(new VarAndContext(v, EMPTY_CALLSTACK), null);
-				ret = pointsTo;
-			} catch (TerminateEarlyException e) {
-			}
-			if (!fieldCheckHeuristic.runNewPass()) {
-				break;
-			}
-		}
-		return ret == null ? new WrappedPointsToSet(v.getP2Set()) : ret;
+	public PointsToSet reachingObjects(Local l) {	
+	    PointsToSet cachedResult = reachingObjectsCache.get(l);
+	    if(cachedResult==null) {
+    		VarNode v = pag.findLocalVarNode(l);
+    		doPointsTo = true;
+    		numPasses = 0;
+    		PointsToSet ret = null;
+    		while (true) {
+    			numPasses++;
+    			if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
+    				break;
+    			}
+    			if (numPasses > maxPasses) {
+    				break;
+    			}
+    			if (DEBUG) {
+    				G.v().out.println("PASS " + numPasses);
+    				G.v().out.println(fieldCheckHeuristic);
+    			}
+    			clearState();
+    			pointsTo = new AllocAndContextSet();
+    			try {
+    				refineP2Set(new VarAndContext(v, EMPTY_CALLSTACK), null);
+    				ret = pointsTo;
+    			} catch (TerminateEarlyException e) {
+    			}
+    			if (!fieldCheckHeuristic.runNewPass()) {
+    				break;
+    			}
+    		}
+    		cachedResult =  ret == null ? new WrappedPointsToSet(v.getP2Set()) : ret;
+    		reachingObjectsCache.put(l, cachedResult);
+	    } 
+	    return cachedResult;
 	}
 
 	protected boolean callEdgeInSCC(AssignEdge assignEdge) {
