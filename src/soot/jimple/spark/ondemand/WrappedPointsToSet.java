@@ -21,9 +21,10 @@ package soot.jimple.spark.ondemand;
 import java.util.Set;
 
 import soot.PointsToSet;
+import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
-public class WrappedPointsToSet implements PointsToSet {
+public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
   
   final PointsToSetInternal wrapped;
 
@@ -94,5 +95,30 @@ public class WrappedPointsToSet implements PointsToSet {
 		return wrapped.hashCode();
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean pointsToSetEquals(Object other) {
+        if(!(other instanceof EqualsSupportingPointsToSet)) {
+            return false;
+        }
+        EqualsSupportingPointsToSet otherPts = (EqualsSupportingPointsToSet) unwrapIfNecessary(other);
+        return wrapped.pointsToSetEquals(otherPts);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int pointsToSetHashCode() {
+        return wrapped.pointsToSetHashCode();
+    }
+
+    protected Object unwrapIfNecessary(Object obj) {
+        if(obj instanceof WrappedPointsToSet) {
+            WrappedPointsToSet wrapper = (WrappedPointsToSet) obj;
+            obj = wrapper.wrapped;
+        }
+        return obj;
+    }
 
 }

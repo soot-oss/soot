@@ -49,6 +49,10 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
      */
     @Override
     public boolean equals(Object obj) {
+        if(this==obj || this.pts==obj) {
+            return true;
+        }
+        
         //unwrap other
         obj = unwrapIfNecessary(obj);       
         //delegate
