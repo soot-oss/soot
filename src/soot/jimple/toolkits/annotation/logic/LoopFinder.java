@@ -117,7 +117,7 @@ public class LoopFinder extends BodyTransformer {
             }
         }
         
-        assert loopBody.get(loopBody.size()-2)==node || (node==header && loopBody.size()==1);
+        assert (node==header && loopBody.size()==1) || loopBody.get(loopBody.size()-2)==node;
         assert loopBody.get(loopBody.size()-1)==header;
         
         return loopBody;
