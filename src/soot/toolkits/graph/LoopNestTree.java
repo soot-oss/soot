@@ -58,8 +58,10 @@ public class LoopNestTree extends TreeSet<Loop> {
 				//1 subset of 2
 				return -1;
 			} 
-			//overlap (?) or disjoint: just return 0 as order does not matter
-			return 0;
+			//overlap (?) or disjoint: order does not matter;
+			//however we must *not* return 0 as this would only keep one of the two loops;
+			//hence, return 1
+			return 1;
 		}
 	}
 
