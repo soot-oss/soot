@@ -112,18 +112,13 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
             }
             
             if (lhs instanceof Local && lhs.getType() instanceof RefLikeType) {
-                if (rhs instanceof NewExpr ||
-                    rhs instanceof InvokeExpr || 
-                    rhs instanceof ParameterRef || 
-                    rhs instanceof FieldRef || 
-                    rhs instanceof ThisRef ||
-                    rhs instanceof ArrayRef) {
-                    //expression could have changed, hence assign a fresh number
+                if (rhs instanceof Local) {
+                    out.put((Local) lhs, in.get(rhs));
+                } else {
+                	//expression could have changed, hence assign a fresh number
                     //(thisref and parameterref cannot actually change but whatever...)
                     out.put((Local) lhs, nextNumber++);
-                } else if (rhs instanceof Local) {
-                    out.put((Local) lhs, in.get(rhs));
-                } else out.put((Local) lhs, UNKNOWN);
+                }
             }
         }
     }
