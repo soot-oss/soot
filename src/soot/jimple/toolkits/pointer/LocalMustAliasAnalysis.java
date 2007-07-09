@@ -102,12 +102,14 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
             Value rhs = ds.getRightOp();
 
             if (rhs instanceof CastExpr) {
+            	//un-box casted value
 				CastExpr castExpr = (CastExpr) rhs;
             	rhs = castExpr.getOp();
             }
             
             if (lhs instanceof Local && lhs.getType() instanceof RefLikeType) {
                 if (rhs instanceof Local) {
+                	//local-assignment - must be aliased...
                     out.put((Local) lhs, in.get(rhs));
                 } else if(rhs instanceof ThisRef) {
                 	//ThisRef can never change; assign unique number
@@ -120,6 +122,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
                     out.put((Local) lhs, nextNumber++);
                 }
             }
+        } else {
+        	//which other kind of statement has def-boxes? hopefully none...
+        	assert s.getDefBoxes().isEmpty();
         }
     }
 
