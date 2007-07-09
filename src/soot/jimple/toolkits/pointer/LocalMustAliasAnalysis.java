@@ -29,12 +29,8 @@ import soot.Local;
 import soot.RefLikeType;
 import soot.Unit;
 import soot.Value;
-import soot.jimple.ArrayRef;
 import soot.jimple.CastExpr;
 import soot.jimple.DefinitionStmt;
-import soot.jimple.FieldRef;
-import soot.jimple.InvokeExpr;
-import soot.jimple.NewExpr;
 import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
@@ -65,7 +61,6 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
 
     protected int nextNumber = 1;
     
-
     public LocalMustAliasAnalysis(UnitGraph g)
     {
         super(g);
@@ -114,16 +109,31 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
             if (lhs instanceof Local && lhs.getType() instanceof RefLikeType) {
                 if (rhs instanceof Local) {
                     out.put((Local) lhs, in.get(rhs));
+                } else if(rhs instanceof ThisRef) {
+                	//ThisRef can never change; assign unique number
+                	out.put((Local) lhs, thisRefNumber());
+                } else if(rhs instanceof ParameterRef) {
+                	//ParameterRef can never change; assign unique number
+                	out.put((Local) lhs, parameterRefNumber((ParameterRef) rhs));
                 } else {
                 	//expression could have changed, hence assign a fresh number
-                    //(thisref and parameterref cannot actually change but whatever...)
                     out.put((Local) lhs, nextNumber++);
                 }
             }
         }
     }
 
-    protected void copy(HashMap<Local,Object> sourceMap, HashMap<Local,Object> destMap)
+    private int thisRefNumber() {
+    	//unique number for ThisRef (must be <1)
+		return 0;
+	}
+
+    private int parameterRefNumber(ParameterRef r) {
+    	//unique number for ParameterRef[i] (must be <0)
+		return 0 - r.getIndex();
+	}
+
+	protected void copy(HashMap<Local,Object> sourceMap, HashMap<Local,Object> destMap)
     {
         destMap.clear();
         destMap.putAll(sourceMap);
