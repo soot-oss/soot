@@ -125,9 +125,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
 
     protected void copy(HashMap<Local,Object> sourceMap, HashMap<Local,Object> destMap)
     {
-        for (Local l : (Collection<Local>) locals) {
-            destMap.put (l, sourceMap.get(l));
-        }
+        destMap.clear();
+        destMap.putAll(sourceMap);
     }
 
     /** Initial most conservative value: has to be {@link UNKNOWN} (top). */
