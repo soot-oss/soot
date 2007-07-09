@@ -20,8 +20,10 @@
 package soot.jimple.toolkits.pointer;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.omg.CORBA.UNKNOWN;
 
@@ -59,6 +61,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
     
     protected List<Local> locals;
 
+    protected transient Map<Value,Integer> rhsToNumber;
+    
     protected int nextNumber = 1;
     
     public LocalMustAliasAnalysis(UnitGraph g)
@@ -71,7 +75,12 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
                 this.locals.add(l);
         }
 
+        this.rhsToNumber = new IdentityHashMap<Value, Integer>();
+        
         doAnalysis();
+        
+        //not needed any more
+        this.rhsToNumber = null;
     }
 
     protected void merge(HashMap<Local,Object> inMap1, HashMap<Local,Object> inMap2, HashMap<Local,Object> outMap)
@@ -118,14 +127,23 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
                 	//ParameterRef can never change; assign unique number
                 	out.put((Local) lhs, parameterRefNumber((ParameterRef) rhs));
                 } else {
-                	//expression could have changed, hence assign a fresh number
-                    out.put((Local) lhs, nextNumber++);
+                	//assign number for expression
+                    out.put((Local) lhs, numberOf(rhs));
                 }
             }
         } else {
         	//which other kind of statement has def-boxes? hopefully none...
         	assert s.getDefBoxes().isEmpty();
         }
+    }
+
+    private Object numberOf(Value rhs) {
+        Integer num = rhsToNumber.get(rhs);
+        if(num==null) {
+            num = nextNumber++;
+            rhsToNumber.put(rhs, num);
+        }        
+        return num;
     }
 
     private int thisRefNumber() {

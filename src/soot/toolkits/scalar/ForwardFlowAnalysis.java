@@ -40,25 +40,11 @@ import soot.toolkits.graph.interaction.*;
  */
 public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
 {
-    protected final boolean compareFlowBefore;
-
     /** Construct the analysis from a DirectedGraph representation of a Body.
-     * @param compareFlowBefore if <code>true</code>, a node is only processed if its
-     * before-flow changed in comparison to the one from the last iteration
-     * */
-    public ForwardFlowAnalysis(DirectedGraph<N> graph, boolean compareFlowBefore)
-    {
-        super(graph);
-        this.compareFlowBefore = compareFlowBefore;
-    }
-
-    /** Construct the analysis from a DirectedGraph representation of a Body.
-     * Before-flows are not compared.
-     * @see #ForwardFlowAnalysis(DirectedGraph, boolean)
      */
     public ForwardFlowAnalysis(DirectedGraph<N> graph)
     {
-        this(graph,false);
+        super(graph);
     }
 
     protected boolean isForward()
@@ -116,7 +102,6 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
         // Perform fixed point flow analysis
         {
             A previousAfterFlow = newInitialFlow();
-            A previousBeforeFlow = newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
@@ -129,8 +114,6 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
                 boolean isHead = heads.contains(s);
 
                 copy(unitToAfterFlow.get(s), previousAfterFlow);
-                if(compareFlowBefore)
-                    copy(unitToBeforeFlow.get(s), previousBeforeFlow);
 
                 // Compute and store beforeFlow
                 {
@@ -157,10 +140,9 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
                     		merge(beforeFlow, entryInitialFlow());
                     	}
                 
-                afterFlow = unitToAfterFlow.get(s);
-                if(!compareFlowBefore || !beforeFlow.equals(previousBeforeFlow)) 
                 {
                     // Compute afterFlow and store it.
+                    afterFlow = unitToAfterFlow.get(s);
                     if (Options.v().interactive_mode()){
                         
                         A savedInfo = newInitialFlow();
@@ -206,7 +188,7 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
                         }
                     }
                 }
-}
+            }
         
         // G.v().out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
         //    " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
