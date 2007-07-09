@@ -42,7 +42,7 @@ import java.util.*;
 public interface Host
 {
     /** Gets a list of tags associated with the current object. */
-    public List getTags();
+    public List<Tag> getTags();
     
     /** Returns the tag with the given name. */
     public Tag getTag(String aName);

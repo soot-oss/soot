@@ -743,7 +743,7 @@ public class DavaBody extends Body {
 			while (it.hasNext()) {
 				Local original = (Local) it.next();
 
-				Value copy = Dava.v().newLocal(original.getName(),
+				Local copy = Dava.v().newLocal(original.getName(),
 						original.getType());
 
 				getLocals().addLast(copy);

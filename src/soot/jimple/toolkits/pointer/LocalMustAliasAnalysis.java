@@ -28,6 +28,7 @@ import org.omg.CORBA.UNKNOWN;
 
 import soot.Local;
 import soot.RefLikeType;
+import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
@@ -51,7 +52,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * @author Patrick Lam
  * @author Eric Bodden
  * */
-public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
+public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Local,Object>>
 {
 	public static final String UNKNOWN_LABEL = "UNKNOWN";
 	
@@ -80,12 +81,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
         doAnalysis();
     }
 
-    protected void merge(Object in1, Object in2, Object o)
+    protected void merge(HashMap<Local,Object> inMap1, HashMap<Local,Object> inMap2, HashMap<Local,Object> outMap)
     {
-        HashMap inMap1 = (HashMap) in1;
-        HashMap inMap2 = (HashMap) in2;
-        HashMap outMap = (HashMap) o;
-
         for (Local l : locals) {
             Object i1 = inMap1.get(l), i2 = inMap2.get(l);
             if (i1.equals(i2)) 
@@ -100,16 +97,11 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
     }
     
 
-    protected void flowThrough(Object inValue, Object unit,
-            Object outValue)
-    {
-        HashMap     in  = (HashMap) inValue;
-        HashMap     out = (HashMap) outValue;
-        Stmt    s   = (Stmt)    unit;
-
+    protected void flowThrough(HashMap<Local,Object> in, Unit u, HashMap<Local,Object> out) {
+    	Stmt s = (Stmt)u;
         out.clear();
 
-        List<Local> preserve = new ArrayList();
+        List<Local> preserve = new ArrayList<Local>();
         preserve.addAll(locals);
         for (ValueBox vb : (Collection<ValueBox>)s.getDefBoxes()) {
             preserve.remove(vb.getValue());
@@ -138,28 +130,25 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
                     rhs instanceof ArrayRef) {
                     //expression could have changed, hence assign a fresh number
                     //(thisref and parameterref cannot actually change but whatever...)
-                    out.put(lhs, nextNumber++);
+                    out.put((Local) lhs, nextNumber++);
                 } else if (rhs instanceof Local) {
-                    out.put(lhs, in.get(rhs));
-                } else out.put(lhs, UNKNOWN);
+                    out.put((Local) lhs, in.get(rhs));
+                } else out.put((Local) lhs, UNKNOWN);
             }
         }
     }
 
-    protected void copy(Object source, Object dest)
+    protected void copy(HashMap<Local,Object> sourceMap, HashMap<Local,Object> destMap)
     {
-        HashMap sourceMap = (HashMap) source;
-        HashMap destMap   = (HashMap) dest;
-            
         for (Local l : (Collection<Local>) locals) {
             destMap.put (l, sourceMap.get(l));
         }
     }
 
     /** Initial most conservative value: has to be {@link UNKNOWN} (top). */
-    protected Object entryInitialFlow()
+    protected HashMap<Local,Object> entryInitialFlow()
     {
-        HashMap m = new HashMap();
+    	HashMap<Local,Object> m = new HashMap<Local,Object>();
         for (Local l : (Collection<Local>) locals) {
             m.put(l, UNKNOWN);
         }
@@ -167,9 +156,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
     }
 
     /** Initial bottom value: objects have no definitions. */
-    protected Object newInitialFlow()
+    protected HashMap<Local,Object> newInitialFlow()
     {
-        HashMap m = new HashMap();
+    	HashMap<Local,Object> m = new HashMap<Local,Object>();
         for (Local l : (Collection<Local>) locals) {
             m.put(l, NOTHING);
         }
@@ -184,7 +173,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
      * @param s the statement at which to check
      */
     public String instanceKeyString(Local l, Stmt s) {
-        Object ln = ((HashMap)getFlowBefore(s)).get(l);
+        Object ln = getFlowBefore(s).get(l);
         if(ln==null) {
         	return null;
         } else  if(ln==UNKNOWN) {
@@ -202,7 +191,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
      * Permits s to be <code>null</code>, in which case <code>false</code> will be returned.
      */
     public boolean hasInfoOn(Local l, Stmt s) {
-    	HashMap flowBefore = (HashMap) getFlowBefore(s);
+    	HashMap<Local,Object> flowBefore = getFlowBefore(s);
     	if(flowBefore==null) {
     		return false;
     	} else {
@@ -217,8 +206,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis
      * as l2 at s2.
      */
     public boolean mustAlias(Local l1, Stmt s1, Local l2, Stmt s2) {
-        Object l1n = ((HashMap)getFlowBefore(s1)).get(l1);
-        Object l2n = ((HashMap)getFlowBefore(s2)).get(l2);
+        Object l1n = getFlowBefore(s1).get(l1);
+        Object l2n = getFlowBefore(s2).get(l2);
 
         if (l1n == UNKNOWN || l2n == UNKNOWN)
             return false;

@@ -29,17 +29,39 @@
 
 package soot;
 
-import soot.tagkit.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
-import java.io.*;
-
-import soot.toolkits.scalar.*;
-import soot.toolkits.exceptions.*;
-import soot.options.*;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.ParameterRef;
+import soot.jimple.ThisRef;
+import soot.options.Options;
+import soot.tagkit.AbstractHost;
+import soot.tagkit.CodeAttribute;
+import soot.tagkit.Tag;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.InitAnalysis;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SmartLocalDefs;
+import soot.util.Chain;
+import soot.util.EscapedWriter;
+import soot.util.HashChain;
 
 
 /**
@@ -65,7 +87,7 @@ public abstract class Body extends AbstractHost implements Serializable
     protected Chain<Trap> trapChain = new HashChain<Trap>();
 
     /** The chain of units for this Body. */
-    protected PatchingChain<Unit> unitChain = new PatchingChain<Unit>(new HashChain());
+    protected PatchingChain<Unit> unitChain = new PatchingChain<Unit>(new HashChain<Unit>());
 
     /** Creates a deep copy of this Body. */
     abstract public Object clone();
@@ -116,80 +138,86 @@ public abstract class Body extends AbstractHost implements Serializable
     {
         HashMap<Object, Object> bindings = new HashMap<Object, Object>();
 
-        Iterator it = b.getUnits().iterator();
-
-        // Clone units in body's statement list
-        while(it.hasNext()) {
-            Unit original = (Unit) it.next();
-            Unit copy = (Unit) original.clone();
-
-            copy.addAllTagsOf(original);
-
-            // Add cloned unit to our unitChain.
-            unitChain.addLast(copy);
-
-            // Build old <-> new map to be able to patch up references to other units
-            // within the cloned units. (these are still refering to the original
-            // unit objects).
-            bindings.put(original, copy);
+        {
+	        Iterator<Unit> it = b.getUnits().iterator();
+	
+	        // Clone units in body's statement list
+	        while(it.hasNext()) {
+	            Unit original = it.next();
+	            Unit copy = (Unit) original.clone();
+	
+	            copy.addAllTagsOf(original);
+	
+	            // Add cloned unit to our unitChain.
+	            unitChain.addLast(copy);
+	
+	            // Build old <-> new map to be able to patch up references to other units
+	            // within the cloned units. (these are still refering to the original
+	            // unit objects).
+	            bindings.put(original, copy);
+	        }
         }
 
-        // Clone trap units.
-        it = b.getTraps().iterator();
-        while(it.hasNext()) {
-            Trap original = (Trap) it.next();
-            Trap copy = (Trap) original.clone();
+        {
+	        // Clone trap units.
+	        Iterator<Trap> it = b.getTraps().iterator();
+	        while(it.hasNext()) {
+	            Trap original = it.next();
+	            Trap copy = (Trap) original.clone();
+	
+	            // Add cloned unit to our trap list.
+	            trapChain.addLast(copy);
+	
+	            // Store old <-> new mapping.
+	            bindings.put(original, copy);
+	        }
+        }
 
-            // Add cloned unit to our trap list.
-            trapChain.addLast(copy);
+        {
+	        // Clone local units.
+	        Iterator<Local> it = b.getLocals().iterator();
+	        while(it.hasNext()) {
+	            Local original = it.next();
+	            Local copy = (Local) original.clone();
+	
+	            // Add cloned unit to our trap list.
+	            localChain.addLast(copy);
+	
+	            // Build old <-> new mapping.
+	            bindings.put(original, copy);
+	        }
+        }
 
-            // Store old <-> new mapping.
-            bindings.put(original, copy);
+        {
+	        // Patch up references within units using our (old <-> new) map.
+	        Iterator<UnitBox> it = getAllUnitBoxes().iterator();
+	        while(it.hasNext()) {
+	            UnitBox box = it.next();
+	            Unit newObject, oldObject = box.getUnit();
+	
+	            // if we have a reference to an old object, replace it
+	            // it's clone.
+	            if( (newObject = (Unit)  bindings.get(oldObject)) != null )
+	                box.setUnit(newObject);
+	
+	        }
         }
 
 
-        // Clone local units.
-        it = b.getLocals().iterator();
-        while(it.hasNext()) {
-            Local original = (Local) it.next();
-            Local copy = (Local) original.clone();
-
-            // Add cloned unit to our trap list.
-            localChain.addLast(copy);
-
-            // Build old <-> new mapping.
-            bindings.put(original, copy);
-        }
-
-
-
-        // Patch up references within units using our (old <-> new) map.
-        it = getAllUnitBoxes().iterator();
-        while(it.hasNext()) {
-            UnitBox box = (UnitBox) it.next();
-            Unit newObject, oldObject = box.getUnit();
-
-            // if we have a reference to an old object, replace it
-            // it's clone.
-            if( (newObject = (Unit)  bindings.get(oldObject)) != null )
-                box.setUnit(newObject);
-
-        }
-
-
-
-        // backpatching all local variables.
-        it = getUseBoxes().iterator();
-        while(it.hasNext()) {
-            ValueBox vb = (ValueBox) it.next();
-            if(vb.getValue() instanceof Local)
-                vb.setValue((Value) bindings.get(vb.getValue()));
-        }
-        it = getDefBoxes().iterator();
-        while(it.hasNext()) {
-            ValueBox vb = (ValueBox) it.next();
-            if(vb.getValue() instanceof Local)
-                vb.setValue((Value) bindings.get(vb.getValue()));
+        {
+	        // backpatching all local variables.
+	        Iterator<ValueBox> it = getUseBoxes().iterator();
+	        while(it.hasNext()) {
+	            ValueBox vb = it.next();
+	            if(vb.getValue() instanceof Local)
+	                vb.setValue((Value) bindings.get(vb.getValue()));
+	        }
+	        it = getDefBoxes().iterator();
+	        while(it.hasNext()) {
+	            ValueBox vb = it.next();
+	            if(vb.getValue() instanceof Local)
+	                vb.setValue((Value) bindings.get(vb.getValue()));
+	        }
         }
         return bindings;
     }
@@ -213,14 +241,14 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that a ValueBox is not used in more than one place. */
     public void validateValueBoxes()
     {
-        List l = getUseAndDefBoxes();
+        List<ValueBox> l = getUseAndDefBoxes();
         for( int i = 0; i < l.size(); i++ ) {
             for( int j = 0; j < l.size(); j++ ) {
                 if( i == j ) continue;
                 if( l.get(i) == l.get(j) ) {
                     System.err.println("Aliased value box : "+l.get(i)+" in "+getMethod());
-                    for( Iterator uIt = getUnits().iterator(); uIt.hasNext(); ) {
-                        final Unit u = (Unit) uIt.next();
+                    for( Iterator<Unit> uIt = getUnits().iterator(); uIt.hasNext(); ) {
+                        final Unit u = uIt.next();
                         System.err.println(""+u);
                     }
                     throw new RuntimeException("Aliased value box : "+l.get(i)+" in "+getMethod());
@@ -232,14 +260,13 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
     public void validateLocals()
     {
-        Iterator it;
-        it = getUseBoxes().iterator();
+        Iterator<ValueBox> it = getUseBoxes().iterator();
         while(it.hasNext()){
-            validateLocal( (ValueBox) it.next() );
+            validateLocal( it.next() );
         }
         it = getDefBoxes().iterator();
         while(it.hasNext()){
-            validateLocal( (ValueBox) it.next() );
+            validateLocal( it.next() );
         }
     }
     private void validateLocal( ValueBox vb ) {
@@ -254,10 +281,10 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that the begin, end and handler units of each trap are in this body. */
     public void validateTraps()
     {
-        Iterator it = getTraps().iterator();
+        Iterator<Trap> it = getTraps().iterator();
         while (it.hasNext())
         {
-            Trap t = (Trap)it.next();
+            Trap t = it.next();
             if (!unitChain.contains(t.getBeginUnit()))
                 throw new RuntimeException("begin not in chain"+" in "+getMethod());
 
@@ -272,10 +299,10 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that the UnitBoxes of this Body all point to a Unit contained within this body. */
     public void validateUnitBoxes()
     {
-        Iterator it = getAllUnitBoxes().iterator();
+        Iterator<UnitBox> it = getAllUnitBoxes().iterator();
         while (it.hasNext())
         {
-            UnitBox ub = (UnitBox)it.next();
+            UnitBox ub = it.next();
             if (!unitChain.contains(ub.getUnit()))
                 throw new RuntimeException
                     ("Unitbox points outside unitChain! to unit : "+ub.getUnit()+" in "+getMethod());
@@ -288,22 +315,22 @@ public abstract class Body extends AbstractHost implements Serializable
         UnitGraph g = new ExceptionalUnitGraph(this);
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
-        Iterator unitsIt = getUnits().iterator();
+        Iterator<Unit> unitsIt = getUnits().iterator();
         while (unitsIt.hasNext())
         {
-            Unit u = (Unit) unitsIt.next();
-            Iterator useBoxIt = u.getUseBoxes().iterator();
+            Unit u = unitsIt.next();
+            Iterator<ValueBox> useBoxIt = u.getUseBoxes().iterator();
             while (useBoxIt.hasNext())
             {
-                Value v = ((ValueBox)useBoxIt.next()).getValue();
+                Value v = (useBoxIt.next()).getValue();
                 if (v instanceof Local)
                 {
                     // This throws an exception if there is
                     // no def already; we check anyhow.
                     List<Unit> l = ld.getDefsOfAt((Local)v, u);
                     if (l.size() == 0){
-                        for( Iterator uuIt = getUnits().iterator(); uuIt.hasNext(); ) {
-                            final Unit uu = (Unit) uuIt.next();
+                        for( Iterator<Unit> uuIt = getUnits().iterator(); uuIt.hasNext(); ) {
+                            final Unit uu = uuIt.next();
                             System.err.println(""+uu);
                         }
                         throw new RuntimeException("no defs for value: "+v+"!"+" in "+getMethod());
@@ -314,19 +341,19 @@ public abstract class Body extends AbstractHost implements Serializable
     }
 
     /** Returns a backed chain of the locals declared in this Body. */
-    public Chain getLocals() {return localChain;}
+    public Chain<Local> getLocals() {return localChain;}
 
     /** Returns a backed view of the traps found in this Body. */
-    public Chain getTraps() {return trapChain;}
+    public Chain<Trap> getTraps() {return trapChain;}
 
     /** Return LHS of the first identity stmt assigning from \@this. **/
     public Local getThisLocal()
     {
-        Iterator unitsIt = getUnits().iterator();
+        Iterator<Unit> unitsIt = getUnits().iterator();
 
         while (unitsIt.hasNext())
         {
-            Unit s = (Unit)unitsIt.next();
+            Unit s = unitsIt.next();
             if (s instanceof IdentityStmt &&
                 ((IdentityStmt)s).getRightOp() instanceof ThisRef)
                 return (Local)(((IdentityStmt)s).getLeftOp());
@@ -338,10 +365,10 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Return LHS of the first identity stmt assigning from \@parameter i. **/
     public Local getParameterLocal(int i)
     {
-        Iterator unitsIt = getUnits().iterator();
+        Iterator<Unit> unitsIt = getUnits().iterator();
         while (unitsIt.hasNext())
         {
-            Unit s = (Unit)unitsIt.next();
+            Unit s = unitsIt.next();
             if (s instanceof IdentityStmt &&
                 ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
             {
@@ -389,29 +416,29 @@ public abstract class Body extends AbstractHost implements Serializable
      * @see Unit#getUnitBoxes()
      * @see soot.shimple.PhiExpr#getUnitBoxes()
      **/
-    public List getAllUnitBoxes()
+    public List<UnitBox> getAllUnitBoxes()
     {
-        ArrayList unitBoxList = new ArrayList();
+        ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
         {
-            Iterator it = unitChain.iterator();
+            Iterator<Unit> it = unitChain.iterator();
             while(it.hasNext()) {
-                Unit item = (Unit) it.next();
+                Unit item = it.next();
                 unitBoxList.addAll(item.getUnitBoxes());
             }
         }
 
         {
-            Iterator it = trapChain.iterator();
+            Iterator<Trap> it = trapChain.iterator();
             while(it.hasNext()) {
-                Trap item = (Trap) it.next();
+                Trap item = it.next();
                 unitBoxList.addAll(item.getUnitBoxes());
             }
         }
 
         {
-            Iterator it = getTags().iterator();
+            Iterator<Tag> it = getTags().iterator();
             while(it.hasNext()) {
-                Tag t = (Tag) it.next();
+                Tag t = it.next();
                 if( t instanceof CodeAttribute)
                     unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
             }
@@ -440,13 +467,13 @@ public abstract class Body extends AbstractHost implements Serializable
      * @see Unit#getUnitBoxes()
      * @see soot.shimple.PhiExpr#getUnitBoxes()
      **/
-    public List getUnitBoxes(boolean branchTarget)
+    public List<UnitBox> getUnitBoxes(boolean branchTarget)
     {
-        ArrayList unitBoxList = new ArrayList();
+        ArrayList<UnitBox> unitBoxList = new ArrayList<UnitBox>();
         {
-            Iterator it = unitChain.iterator();
+            Iterator<Unit> it = unitChain.iterator();
             while(it.hasNext()) {
-                Unit item = (Unit) it.next();
+                Unit item = it.next();
                 if(branchTarget){
                     if(item.branches())
                         unitBoxList.addAll(item.getUnitBoxes());
@@ -459,17 +486,17 @@ public abstract class Body extends AbstractHost implements Serializable
         }
 
         {
-            Iterator it = trapChain.iterator();
+            Iterator<Trap> it = trapChain.iterator();
             while(it.hasNext()) {
-                Trap item = (Trap) it.next();
+                Trap item = it.next();
                 unitBoxList.addAll(item.getUnitBoxes());
             }
         }
 
         {
-            Iterator it = getTags().iterator();
+            Iterator<Tag> it = getTags().iterator();
             while(it.hasNext()) {
-                Tag t = (Tag) it.next();
+                Tag t = it.next();
                 if( t instanceof CodeAttribute)
                     unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
             }
@@ -492,13 +519,13 @@ public abstract class Body extends AbstractHost implements Serializable
      *   @see Value
      *
      */
-    public List getUseBoxes()
+    public List<ValueBox> getUseBoxes()
     {
-        ArrayList useBoxList = new ArrayList();
+        ArrayList<ValueBox> useBoxList = new ArrayList<ValueBox>();
 
-        Iterator it = unitChain.iterator();
+        Iterator<Unit> it = unitChain.iterator();
         while(it.hasNext()) {
-            Unit item = (Unit) it.next();
+            Unit item = it.next();
             useBoxList.addAll(item.getUseBoxes());
         }
         return useBoxList;
@@ -517,13 +544,13 @@ public abstract class Body extends AbstractHost implements Serializable
      *   @see ValueBox
      *   @see Value
      */
-    public List getDefBoxes()
+    public List<ValueBox> getDefBoxes()
     {
-        ArrayList defBoxList = new ArrayList();
+        ArrayList<ValueBox> defBoxList = new ArrayList<ValueBox>();
 
-        Iterator it = unitChain.iterator();
+        Iterator<Unit> it = unitChain.iterator();
         while(it.hasNext()) {
-            Unit item = (Unit) it.next();
+            Unit item = it.next();
             defBoxList.addAll(item.getDefBoxes());
         }
         return defBoxList;
@@ -540,13 +567,13 @@ public abstract class Body extends AbstractHost implements Serializable
      *   @see ValueBox
      *   @see Value
      */
-    public List getUseAndDefBoxes()
+    public List<ValueBox> getUseAndDefBoxes()
     {
-        ArrayList useAndDefBoxList = new ArrayList();
+        ArrayList<ValueBox> useAndDefBoxList = new ArrayList<ValueBox>();
 
-        Iterator it = unitChain.iterator();
+        Iterator<Unit> it = unitChain.iterator();
         while(it.hasNext()) {
-            Unit item = (Unit) it.next();
+            Unit item = it.next();
             useAndDefBoxList.addAll(item.getUseBoxes());
             useAndDefBoxList.addAll(item.getDefBoxes());
         }
@@ -554,22 +581,22 @@ public abstract class Body extends AbstractHost implements Serializable
     }
 
     private void checkLocals() {
-	Chain locals=getLocals();
+	Chain<Local> locals=getLocals();
 
-	Iterator it=locals.iterator();
+	Iterator<Local> it=locals.iterator();
 	while(it.hasNext()) {
-	    Local l=(Local) it.next();
+	    Local l=it.next();
 	    if(l.getType() instanceof VoidType) 
 		throw new RuntimeException("Local "+l+" in "+method+" defined with void type");
 	}
     }
 
     private void checkTypes() {
-	Chain units=getUnits();
+	Chain<Unit> units=getUnits();
 
-	Iterator it=units.iterator();
+	Iterator<Unit> it=units.iterator();
 	while(it.hasNext()) {
-	    Unit stmt=(Unit) (it.next());
+	    Unit stmt=(it.next());
 	    InvokeExpr iexpr=null;
 
 	    String errorSuffix=" at "+stmt+" in "+getMethod();
@@ -654,8 +681,9 @@ public abstract class Body extends AbstractHost implements Serializable
 	throw new RuntimeException("Warning: Bad types"+errorSuffix+" in "+getMethod());
     }
 
-    public void checkInit() {
-	Chain units=getUnits();
+    @SuppressWarnings("unchecked")
+	public void checkInit() {
+	Chain<Unit> units=getUnits();
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
 	    (this, PedanticThrowAnalysis.v(), false);
 
@@ -663,14 +691,14 @@ public abstract class Body extends AbstractHost implements Serializable
 	Scene.v().releaseActiveHierarchy();
 
         InitAnalysis analysis=new InitAnalysis(g);
-	Iterator it=units.iterator();
+	Iterator<Unit> it=units.iterator();
 	while(it.hasNext()) {
-	    Unit s=(Unit) (it.next());
+	    Unit s=(it.next());
 	    FlowSet init=(FlowSet) analysis.getFlowBefore(s);
-	    List uses=s.getUseBoxes();
-	    Iterator usesIt=uses.iterator();
+	    List<ValueBox> uses=s.getUseBoxes();
+	    Iterator<ValueBox> usesIt=uses.iterator();
 	    while(usesIt.hasNext()) {
-		Value v=((ValueBox) (usesIt.next())).getValue();
+		Value v=((usesIt.next())).getValue();
 		if(v instanceof Local) {
 		    Local l=(Local) v;
 		    if(!init.contains(l))

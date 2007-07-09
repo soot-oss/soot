@@ -114,9 +114,9 @@ public class CodeAttribute extends JasminAttribute
     }
 
   /** Returns a list of unit boxes that have tags attached. */
-    public List getUnitBoxes()
+    public List<UnitBox> getUnitBoxes()
     {
-	List unitBoxes = new ArrayList(mUnits.size());
+	List<UnitBox> unitBoxes = new ArrayList<UnitBox>(mUnits.size());
 	
 	Iterator<Unit> it = mUnits.iterator();
 	

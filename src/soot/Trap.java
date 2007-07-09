@@ -77,7 +77,7 @@ public interface Trap extends UnitBoxOwner
     public UnitBox getHandlerUnitBox();
 
     /** Returns the boxes for first, last and handler units. */
-    public List getUnitBoxes();
+    public List<UnitBox> getUnitBoxes();
 
     /** Returns the exception being caught. */
     public SootClass getException();

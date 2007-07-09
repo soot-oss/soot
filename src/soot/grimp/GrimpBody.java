@@ -69,12 +69,12 @@ public class GrimpBody extends StmtBody
         else
             throw new RuntimeException("Can only construct GrimpBody's from JimpleBody's (for now)");
 
-        Iterator it = jBody.getLocals().iterator();
-        while (it.hasNext())
-            getLocals().add(((it.next())));
+        Iterator<Local> localIt = jBody.getLocals().iterator();
+        while (localIt.hasNext())
+            getLocals().add(((localIt.next())));
             //            getLocals().add(((Local)(it.next())).clone());
 
-        it = jBody.getUnits().iterator();
+        Iterator<Unit> it = jBody.getUnits().iterator();
 
         final HashMap<Stmt, Stmt> oldToNew = new HashMap<Stmt, Stmt>(getUnits().size() * 2 + 1, 0.7f);
         LinkedList updates = new LinkedList();
@@ -221,10 +221,10 @@ public class GrimpBody extends StmtBody
             });
         }
 
-        it = jBody.getTraps().iterator();
-        while (it.hasNext())
+        Iterator<Trap> trapIt = jBody.getTraps().iterator();
+        while (trapIt.hasNext())
         {
-            Trap oldTrap = (Trap)(it.next());
+            Trap oldTrap = trapIt.next();
             getTraps().add(Grimp.v().newTrap
                            (oldTrap.getException(),
                             (oldToNew.get(oldTrap.getBeginUnit())),

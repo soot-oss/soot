@@ -25,7 +25,10 @@
 
 package soot.tagkit;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 // extended by SootClass, SootField, SootMethod, Scene
 
@@ -37,12 +40,12 @@ import java.util.*;
 public  class AbstractHost implements Host 
 {
     // avoid creating an empty list for each element, when it is not used
-    // use lazy instantation (in addTag) instead
-    private final static List emptyList = Collections.EMPTY_LIST;
-    private List mTagList = emptyList;
+    // use lazy instantiation (in addTag) instead
+    private final static List<Tag> emptyList = Collections.emptyList();
+    private List<Tag> mTagList = emptyList;
     
     /** get the list of tags. This list should not be modified! */
-    public List getTags()
+    public List<Tag> getTags()
     {
         return mTagList;
     }
@@ -60,9 +63,9 @@ public  class AbstractHost implements Host
     private int searchForTag(String aName) 
     {
         int i = 0;
-        Iterator it = mTagList.iterator();
+        Iterator<Tag> it = mTagList.iterator();
         while(it.hasNext()) {
-            Tag tag = (Tag) it.next();
+            Tag tag = it.next();
             if(tag.getName().equals(aName))
                 return i;
             i++;
@@ -75,7 +78,7 @@ public  class AbstractHost implements Host
     {      
         int tagIndex;
         if((tagIndex = searchForTag(aName)) != -1) {
-            return (Tag) mTagList.get(tagIndex);
+            return mTagList.get(tagIndex);
         }
         
 				return null;
@@ -91,7 +94,7 @@ public  class AbstractHost implements Host
     public void addTag(Tag t)
     {
         if (mTagList == emptyList) 
-            mTagList = new ArrayList(1);
+            mTagList = new ArrayList<Tag>(1);
         mTagList.add(t);
     }
 
@@ -102,8 +105,8 @@ public  class AbstractHost implements Host
 
     /** Adds all the tags from h to this host. */
     public void addAllTagsOf( Host h ) {
-        for( Iterator tIt = h.getTags().iterator(); tIt.hasNext(); ) {
-            final Tag t = (Tag) tIt.next();
+        for( Iterator<Tag> tIt = h.getTags().iterator(); tIt.hasNext(); ) {
+            final Tag t = tIt.next();
             addTag( t );
         }
     }

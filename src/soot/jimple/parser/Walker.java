@@ -479,7 +479,7 @@ public class Walker extends DepthFirstAdapter
         if(node.getCatchClause() != null) {
             int size = node.getCatchClause().size();
             for(int i =0; i < size; i++)             
-		jBody.getTraps().addFirst(mProductions.removeLast());
+		jBody.getTraps().addFirst((Trap)mProductions.removeLast());
         }
                                 
         if(node.getStatement() != null) {
@@ -504,7 +504,7 @@ public class Walker extends DepthFirstAdapter
         if(node.getDeclaration() != null) {
             int size = node.getDeclaration().size();
             for(int i = 0; i < size; i++) {
-		List localList = (List) mProductions.removeLast();
+		List<Local> localList = (List<Local>) mProductions.removeLast();
                 
                 int listSize = localList.size();
                 for(int j = listSize-1; j>=0; j--)
