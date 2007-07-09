@@ -40,10 +40,25 @@ import soot.toolkits.graph.interaction.*;
  */
 public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
 {
-    /** Construct the analysis from a DirectedGraph representation of a Body. */
-    public ForwardFlowAnalysis(DirectedGraph<N> graph)
+    protected final boolean compareFlowBefore;
+
+    /** Construct the analysis from a DirectedGraph representation of a Body.
+     * @param compareFlowBefore if <code>true</code>, a node is only processed if its
+     * before-flow changed in comparison to the one from the last iteration
+     * */
+    public ForwardFlowAnalysis(DirectedGraph<N> graph, boolean compareFlowBefore)
     {
         super(graph);
+        this.compareFlowBefore = compareFlowBefore;
+    }
+
+    /** Construct the analysis from a DirectedGraph representation of a Body.
+     * Before-flows are not compared.
+     * @see #ForwardFlowAnalysis(DirectedGraph, boolean)
+     */
+    public ForwardFlowAnalysis(DirectedGraph<N> graph)
+    {
+        this(graph,false);
     }
 
     protected boolean isForward()
@@ -56,7 +71,7 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
         final Map<N, Integer> numbers = new HashMap<N, Integer>();
         Timers.v().orderComputation = new soot.Timer();
         Timers.v().orderComputation.start();
-        List orderedUnits = constructOrderer().newList(graph,false);
+        List<N> orderedUnits = constructOrderer().newList(graph,false);
         Timers.v().orderComputation.end();
         int i = 1;
         for( Iterator<N> uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
@@ -101,6 +116,7 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
         // Perform fixed point flow analysis
         {
             A previousAfterFlow = newInitialFlow();
+            A previousBeforeFlow = newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
@@ -113,6 +129,8 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
                 boolean isHead = heads.contains(s);
 
                 copy(unitToAfterFlow.get(s), previousAfterFlow);
+                if(compareFlowBefore)
+                    copy(unitToBeforeFlow.get(s), previousBeforeFlow);
 
                 // Compute and store beforeFlow
                 {
@@ -124,7 +142,7 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
                         copy(unitToAfterFlow.get(preds.get(0)), beforeFlow);
                     else if(preds.size() != 0)
                     {
-                        Iterator predIt = preds.iterator();
+                        Iterator<N> predIt = preds.iterator();
 
                         copy(unitToAfterFlow.get(predIt.next()), beforeFlow);
 
@@ -138,10 +156,11 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
                     if(isHead && preds.size() != 0)
                     		merge(beforeFlow, entryInitialFlow());
                     	}
-                    
-                // Compute afterFlow and store it.
+                
+                afterFlow = unitToAfterFlow.get(s);
+                if(!compareFlowBefore || !beforeFlow.equals(previousBeforeFlow)) 
                 {
-                    afterFlow = unitToAfterFlow.get(s);
+                    // Compute afterFlow and store it.
                     if (Options.v().interactive_mode()){
                         
                         A savedInfo = newInitialFlow();
@@ -197,8 +216,8 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
     }
     
 	protected Collection<N> constructWorklist(final Map<N, Integer> numbers) {
-		return new TreeSet<N>( new Comparator() {
-            public int compare(Object o1, Object o2) {
+		return new TreeSet<N>( new Comparator<N>() {
+            public int compare(N o1, N o2) {
                 Integer i1 = numbers.get(o1);
                 Integer i2 = numbers.get(o2);
                 return (i1.intValue() - i2.intValue());
