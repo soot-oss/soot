@@ -63,7 +63,7 @@ public interface DirectedGraph<N>
      *  Returns an iterator for the nodes in this graph. No specific ordering
      *  of the nodes is guaranteed.
      */
-    public Iterator iterator();
+    public Iterator<N> iterator();
 }
 
  
