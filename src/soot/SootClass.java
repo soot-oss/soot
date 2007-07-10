@@ -390,16 +390,16 @@ public class SootClass extends AbstractHost implements Numberable
      * Returns an iterator over the methods in this class.
      */
 
-    public Iterator methodIterator()
+    public Iterator<SootMethod> methodIterator()
     {
         checkLevel(SIGNATURES);
         return methodList.iterator();
     }
 
-    public List getMethods() {
+    public List<SootMethod> getMethods() {
         checkLevel(SIGNATURES);
-        ArrayList ret = new ArrayList();
-        for( Iterator it = methodIterator(); it.hasNext(); )
+        ArrayList<SootMethod> ret = new ArrayList<SootMethod>();
+        for( Iterator<SootMethod> it = methodIterator(); it.hasNext(); )
             ret.add( it.next() );
         return ret;
     }
