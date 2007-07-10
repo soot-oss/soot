@@ -906,14 +906,14 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
         while(it.hasNext()) {
             Unit u = (Unit) it.next();
             
-            buf.append("// preds: "+getPredsOf(u)+"\n");
-            buf.append("// unexceptional preds: "+getUnexceptionalPredsOf(u)+"\n");
-            buf.append("// exceptional preds: "+getExceptionalPredsOf(u)+"\n");
+            buf.append("  preds: "+getPredsOf(u)+"\n");
+            buf.append("  unexceptional preds: "+getUnexceptionalPredsOf(u)+"\n");
+            buf.append("  exceptional preds: "+getExceptionalPredsOf(u)+"\n");
             buf.append(u.toString() + '\n');
-	    buf.append("// exception destinations: "+getExceptionDests(u)+"\n");
-            buf.append("// unexceptional succs: "+getUnexceptionalPredsOf(u)+"\n");
-            buf.append("// exceptional succs: "+getExceptionalPredsOf(u)+"\n");
-            buf.append("// succs "+getSuccsOf(u)+"\n");
+	        buf.append("  exception destinations: "+getExceptionDests(u)+"\n");
+            buf.append("  unexceptional succs: "+getUnexceptionalSuccsOf(u)+"\n");
+            buf.append("  exceptional succs: "+getExceptionalSuccsOf(u)+"\n");
+            buf.append("  succs "+getSuccsOf(u)+"\n\n");
         }
         
         return buf.toString();
