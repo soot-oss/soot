@@ -379,12 +379,12 @@ public abstract class UnitGraph implements DirectedGraph<Unit>
 
 
     /* DirectedGraph implementation */
-    public List getHeads()
+    public List<Unit> getHeads()
     {
         return heads;
     }
 
-    public List getTails()
+    public List<Unit> getTails()
     {
         return tails;
     }
@@ -409,7 +409,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit>
         return unitChain.size();
     }  
 
-    public Iterator iterator()
+    public Iterator<Unit> iterator()
     {
         return unitChain.iterator();
     }
