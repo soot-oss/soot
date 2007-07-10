@@ -719,11 +719,11 @@ public abstract class Body extends AbstractHost implements Serializable
         PrintWriter writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
         try { 
             Printer.v().printTo(this, writerOut);
-            writerOut.flush();
-            writerOut.close();
         } catch (RuntimeException e) {
             e.printStackTrace(writerOut);
         }
+        writerOut.flush();
+        writerOut.close();
         return streamOut.toString();
     }
 }
