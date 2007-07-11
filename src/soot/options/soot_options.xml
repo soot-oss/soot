@@ -4013,7 +4013,8 @@ locations in the original bytecode.
 Replaces statements 'if(x!=null) goto y' with 'goto y' if x is
 known to be non-null or with 'nop' if it is known to be null,
 etc. Generates dead code and is hence followed by unreachable
-code elimination.
+code elimination. Disabled by default because it can be
+expensive on methods with many locals.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
