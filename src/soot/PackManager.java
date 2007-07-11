@@ -789,6 +789,9 @@ public class PackManager {
                 m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
                 PackManager.v().getPack("bop").apply(m.getActiveBody());
                 PackManager.v().getPack("tag").apply(m.getActiveBody());
+                if( Options.v().validate() ) {
+                    m.getActiveBody().validate();
+                }
             }
         }
             
