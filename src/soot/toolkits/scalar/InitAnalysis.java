@@ -1,6 +1,7 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2004 Ganesh Sittampalam
- *
+ * Copyright (C) 2007 Eric Bodden
+ * 
  * This compiler is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -19,69 +20,75 @@
 
 package soot.toolkits.scalar;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import soot.toolkits.graph.*;
+import java.util.Iterator;
+import java.util.List;
 
-/** An analysis to check whether or not local variables have been
- *  initialised.
- *  @author Ganesh Sittampalam
+import soot.Local;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.toolkits.graph.UnitGraph;
+import soot.util.Chain;
+
+/**
+ * An analysis to check whether or not local variables have been initialised.
+ * 
+ * @author Ganesh Sittampalam
+ * @author Eric Bodden
  */
 public class InitAnalysis extends ForwardFlowAnalysis {
     FlowSet allLocals;
 
     public InitAnalysis(UnitGraph g) {
-	super(g);
-	Chain locs=g.getBody().getLocals();
-	allLocals=new ArraySparseSet();
-	Iterator it=locs.iterator();
-	while(it.hasNext()) {
-	    Local loc=(Local) it.next();
-	    allLocals.add(loc);
-	}
+        super(g);
+        Chain locs = g.getBody().getLocals();
+        allLocals = new ArraySparseSet();
+        Iterator it = locs.iterator();
+        while (it.hasNext()) {
+            Local loc = (Local) it.next();
+            allLocals.add(loc);
+        }
 
-	doAnalysis();
+        doAnalysis();
     }
 
     protected Object entryInitialFlow() {
-	return new ArraySparseSet();
+        return new ArraySparseSet();
     }
+
     protected Object newInitialFlow() {
-	FlowSet ret=new ArraySparseSet();
-	allLocals.copy(ret);
-	return ret;
+        FlowSet ret = new ArraySparseSet();
+        allLocals.copy(ret);
+        return ret;
     }
 
-    protected void flowThrough(Object in,Object unit,Object out) {
-	FlowSet inSet=(FlowSet) in;
-	FlowSet outSet=(FlowSet) out;
-	Unit s=(Unit) unit;
+    protected void flowThrough(Object in, Object unit, Object out) {
+        FlowSet inSet = (FlowSet) in;
+        FlowSet outSet = (FlowSet) out;
+        Unit s = (Unit) unit;
 
-	inSet.copy(outSet);
+        inSet.copy(outSet);
 
-	if(s instanceof DefinitionStmt) {
-	    DefinitionStmt ds=(DefinitionStmt) s;
-	    if(ds.getLeftOp() instanceof Local) {
-		Local l=(Local) ds.getLeftOp();
-		outSet.add(l);
-	    }
-	} 
+        List<ValueBox> defBoxes = s.getDefBoxes();
+        for (ValueBox defBox : defBoxes) {
+            Value lhs = defBox.getValue();
+            if (lhs instanceof Local) {
+                outSet.add(lhs);
+            }
+        }
     }
 
-    protected void merge(Object in1,Object in2,Object out) {
-	FlowSet outSet=(FlowSet) out;
-	FlowSet inSet1=(FlowSet) in1;
-	FlowSet inSet2=(FlowSet) in2;
-	inSet1.intersection(inSet2,outSet);
+    protected void merge(Object in1, Object in2, Object out) {
+        FlowSet outSet = (FlowSet) out;
+        FlowSet inSet1 = (FlowSet) in1;
+        FlowSet inSet2 = (FlowSet) in2;
+        inSet1.intersection(inSet2, outSet);
     }
 
-    protected void copy(Object source,Object dest) {
-	FlowSet sourceSet=(FlowSet) source;
-	FlowSet destSet=(FlowSet) dest;
-	sourceSet.copy(destSet);
+    protected void copy(Object source, Object dest) {
+        FlowSet sourceSet = (FlowSet) source;
+        FlowSet destSet = (FlowSet) dest;
+        sourceSet.copy(destSet);
     }
-	
 
 }
