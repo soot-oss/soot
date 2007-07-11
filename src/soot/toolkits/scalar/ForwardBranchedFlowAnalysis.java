@@ -51,7 +51,9 @@ import java.util.*;
 import soot.toolkits.graph.interaction.*;
 import soot.options.*;
 
-/** Abstract class providing an engine for branched forward flow analysis. */
+/** Abstract class providing an engine for branched forward flow analysis.
+ *  WARNING: This does not handle exceptional flow as branches! 
+ * */
 public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysis<Unit, A>
 {
     public ForwardBranchedFlowAnalysis(UnitGraph graph)
