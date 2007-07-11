@@ -48,7 +48,12 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  */
 public class LocalNotMayAliasAnalysis extends ForwardFlowAnalysis
 {
-    protected static final Object UNKNOWN = new Object();
+    protected static final Object UNKNOWN = new Object() {
+        public String toString() {
+            return "UNKNOWN";
+        }
+    };
+    
     protected List<Local> locals;
 
     public LocalNotMayAliasAnalysis(UnitGraph g)
