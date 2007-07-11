@@ -4006,6 +4006,24 @@ locations in the original bytecode.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
+					<name>Null Check Eliminator</name>
+					<alias>jop.nce</alias>
+					<short_desc>Null Check Eliminator</short_desc>
+					<long_desc>
+Replaces statements 'if(x!=null) goto y' with 'goto y' if x is
+known to be non-null or with 'nop' if it is known to be null,
+etc. Generates dead code and is hence followed by unreachable
+code elimination.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                        <default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
 					<name>Unreachable Code Eliminator 1</name>
 					<alias>jop.uce1</alias>
 					<short_desc>Unreachable code eliminator, pass 1</short_desc>
