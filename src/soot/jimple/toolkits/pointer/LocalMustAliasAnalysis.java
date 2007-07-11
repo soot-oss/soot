@@ -86,6 +86,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
         
         //not needed any more
         this.rhsToNumber = null;
+        this.mergeToNumber = null;
     }
 
     protected void merge(HashMap<Local,Object> inMap1, HashMap<Local,Object> inMap2, HashMap<Local,Object> outMap)
