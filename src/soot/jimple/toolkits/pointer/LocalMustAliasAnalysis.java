@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.omg.CORBA.UNKNOWN;
 
@@ -38,6 +37,7 @@ import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.util.IdentityHashSet;
 
 /** LocalMustAliasAnalysis attempts to determine if two local
  * variables (at two potentially different program points) must point
@@ -61,8 +61,12 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
     
     protected List<Local> locals;
 
-    protected transient Map<Value,Integer> rhsToNumber;
+    /** maps from right-hand side expressions (non-locals) to value numbers */
+    protected transient IdentityHashMap<Value,Integer> rhsToNumber;
     
+    /** maps from a merge point (set of containers for analysis information) to value numbers */
+    protected transient HashMap<IdentityHashSet<HashMap<Local,Object>>,Integer> mergeToNumber;
+
     protected int nextNumber = 1;
     
     public LocalMustAliasAnalysis(UnitGraph g)
@@ -76,6 +80,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
         }
 
         this.rhsToNumber = new IdentityHashMap<Value, Integer>();
+        this.mergeToNumber = new HashMap<IdentityHashSet<HashMap<Local,Object>>,Integer>();
         
         doAnalysis();
         
@@ -93,8 +98,32 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
             	outMap.put(l, i2);
             else if (i2 == NOTHING)
             	outMap.put(l, i1);
-            else
-                outMap.put(l, UNKNOWN);
+            else {
+                /* Merging two different values is tricky...
+                 * A naive approach would be to assign UNKNOWN. However, that would lead to imprecision in the following case:
+                 * 
+                 * x = null;
+                 * if(p) x = new X();
+                 * y = x;
+                 * z = x;
+                 *
+                 * Even though it is obvious that after this block y and z are aliased, both would be UNKNOWN :-(
+                 * Hence, when merging the numbers for the two branches (null, new X()), we assign a value number that is unique
+                 * to that merge location. Consequently, both y and z is assigned that same number!
+                 * In the following it is important that we use an IdentityHashSet because we want the number to be unique to the
+                 * location. Using a normal HashSet would make it unique to the contents.
+                 * (Eric)  
+                 */
+                IdentityHashSet<HashMap<Local,Object>> unorderedPair = new IdentityHashSet<HashMap<Local,Object>>();
+                unorderedPair.add(inMap1);
+                unorderedPair.add(inMap2);
+                Integer number = mergeToNumber.get(unorderedPair);
+                if(number==null) {
+                    number = nextNumber++;
+                    mergeToNumber.put(unorderedPair, number);
+                }
+                outMap.put(l, number);
+            }
         }
     }
     
@@ -128,7 +157,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
                 	out.put((Local) lhs, parameterRefNumber((ParameterRef) rhs));
                 } else {
                 	//assign number for expression
-                    out.put((Local) lhs, numberOf(rhs));
+                    out.put((Local) lhs, numberOfRhs(rhs));
                 }
             }
         } else {
@@ -137,7 +166,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
         }
     }
 
-    private Object numberOf(Value rhs) {
+    private Object numberOfRhs(Value rhs) {
         Integer num = rhsToNumber.get(rhs);
         if(num==null) {
             num = nextNumber++;
