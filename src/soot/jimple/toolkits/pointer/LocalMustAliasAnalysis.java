@@ -24,8 +24,6 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.omg.CORBA.UNKNOWN;
-
 import soot.Local;
 import soot.RefLikeType;
 import soot.Unit;
@@ -37,7 +35,7 @@ import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-import soot.util.IdentityHashSet;
+import soot.toolkits.scalar.BinaryIdentitySet;
 
 /** LocalMustAliasAnalysis attempts to determine if two local
  * variables (at two potentially different program points) must point
@@ -65,7 +63,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
     protected transient IdentityHashMap<Value,Integer> rhsToNumber;
     
     /** maps from a merge point (set of containers for analysis information) to value numbers */
-    protected transient HashMap<IdentityHashSet<HashMap<Local,Object>>,Integer> mergeToNumber;
+    protected transient HashMap<BinaryIdentitySet<HashMap<Local,Object>>,Integer> mergeToNumber;
 
     protected int nextNumber = 1;
     
@@ -80,7 +78,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
         }
 
         this.rhsToNumber = new IdentityHashMap<Value, Integer>();
-        this.mergeToNumber = new HashMap<IdentityHashSet<HashMap<Local,Object>>,Integer>();
+        this.mergeToNumber = new HashMap<BinaryIdentitySet<HashMap<Local,Object>>,Integer>();
         
         doAnalysis();
         
@@ -115,9 +113,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Loc
                  * location. Using a normal HashSet would make it unique to the contents.
                  * (Eric)  
                  */
-                IdentityHashSet<HashMap<Local,Object>> unorderedPair = new IdentityHashSet<HashMap<Local,Object>>();
-                unorderedPair.add(inMap1);
-                unorderedPair.add(inMap2);
+                BinaryIdentitySet<HashMap<Local,Object>> unorderedPair =
+                    new BinaryIdentitySet<HashMap<Local,Object>>(inMap1,inMap2);
                 Integer number = mergeToNumber.get(unorderedPair);
                 if(number==null) {
                     number = nextNumber++;

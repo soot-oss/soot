@@ -17,7 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.toolkits.pointer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +27,6 @@ import java.util.Set;
 import soot.Local;
 import soot.RefLikeType;
 import soot.Value;
-import soot.ValueBox;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.NewExpr;
 import soot.jimple.Stmt;
@@ -96,16 +94,7 @@ public class LocalNotMayAliasAnalysis extends ForwardFlowAnalysis
         Stmt    s   = (Stmt)    unit;
 
         out.clear();
-
-        List<Local> preserve = new ArrayList();
-        preserve.addAll(locals);
-        for (ValueBox vb : (Collection<ValueBox>)s.getDefBoxes()) {
-            preserve.remove(vb.getValue());
-        }
-
-        for (Local l : preserve) {
-            out.put(l, in.get(l));
-        }
+        out.putAll(in);
 
         if (s instanceof DefinitionStmt) {
             DefinitionStmt ds = (DefinitionStmt) s;
@@ -128,9 +117,7 @@ public class LocalNotMayAliasAnalysis extends ForwardFlowAnalysis
         HashMap sourceMap = (HashMap) source;
         HashMap destMap   = (HashMap) dest;
             
-        for (Local l : (Collection<Local>) locals) {
-            destMap.put (l, sourceMap.get(l));
-        }
+        destMap.putAll(sourceMap);
     }
 
     protected Object entryInitialFlow()
