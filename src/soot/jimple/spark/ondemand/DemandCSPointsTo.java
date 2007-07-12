@@ -190,9 +190,22 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
 	protected static final int DEFAULT_MAX_TRAVERSAL = 75000;
 
+	/**
+	 * if <code>true</code>, refine the pre-computed call graph
+	 */
+	private boolean refineCallGraph = true;
+	
 	protected static final ImmutableStack<Integer> EMPTY_CALLSTACK = ImmutableStack.<Integer> emptyStack();
 
-	/**
+	public boolean isRefineCallGraph() {
+    return refineCallGraph;
+  }
+
+  public void setRefineCallGraph(boolean refineCallGraph) {
+    this.refineCallGraph = refineCallGraph;
+  }
+
+  /**
 	 * Make a default analysis. Assumes Spark has already run.
 	 * 
 	 * @return
@@ -1681,10 +1694,10 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		final NumberedString methodSig = invokedMethod
 				.getNumberedSubSignature();
 		final Set<SootMethod> allTargets = csInfo.getCallSiteTargets(callSite);
-		// if (doPointsTo) {
-		// callGraphStack.pop();
-		// return allTargets;
-		// }
+		if (!refineCallGraph) {
+		 callGraphStack.pop();
+		 return allTargets;
+		}
 		if (DEBUG_VIRT) {
 			debugPrint("refining call to " + invokedMethod + " on " + receiver
 					+ " " + origContext);
