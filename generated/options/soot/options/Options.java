@@ -1266,6 +1266,7 @@ public class Options extends OptionsBase {
         +padVal("jop.cpf", "Constant propagator and folder")
         +padVal("jop.cbf", "Conditional branch folder")
         +padVal("jop.dae", "Dead assignment eliminator")
+        +padVal("jop.nce", "Null Check Eliminator")
         +padVal("jop.uce1", "Unreachable code eliminator, pass 1")
         +padVal("jop.ubf1", "Unconditional branch folder, pass 1")
         +padVal("jop.uce2", "Unreachable code eliminator, pass 2")
@@ -1963,6 +1964,12 @@ public class Options extends OptionsBase {
                 +padOpt( "only-tag (false)", "" )
                 +padOpt( "only-stack-locals (false)", "" );
     
+        if( phaseName.equals( "jop.nce" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nReplaces statements 'if(x!=null) goto y' with 'goto y' if x is \nknown to be non-null or with 'nop' if it is known to be null, \netc. Generates dead code and is hence followed by unreachable \ncode elimination. Disabled by default because it can be \nexpensive on methods with many locals. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
         if( phaseName.equals( "jop.uce1" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Unreachable Code Eliminator removes unreachable code and \ntraps whose catch blocks are empty. "
@@ -2622,6 +2629,10 @@ public class Options extends OptionsBase {
                 +"only-tag "
                 +"only-stack-locals ";
     
+        if( phaseName.equals( "jop.nce" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "jop.uce1" ) )
             return ""
                 +"enabled "
@@ -3188,6 +3199,10 @@ public class Options extends OptionsBase {
               +"only-tag:false "
               +"only-stack-locals:false ";
     
+        if( phaseName.equals( "jop.nce" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "jop.uce1" ) )
             return ""
               +"enabled:true "
@@ -3454,6 +3469,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jop.cpf" ) ) return;
         if( phaseName.equals( "jop.cbf" ) ) return;
         if( phaseName.equals( "jop.dae" ) ) return;
+        if( phaseName.equals( "jop.nce" ) ) return;
         if( phaseName.equals( "jop.uce1" ) ) return;
         if( phaseName.equals( "jop.ubf1" ) ) return;
         if( phaseName.equals( "jop.uce2" ) ) return;
@@ -3619,6 +3635,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jop.cbf" );
         if( !PackManager.v().hasPhase( "jop.dae" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jop.dae" );
+        if( !PackManager.v().hasPhase( "jop.nce" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.nce" );
         if( !PackManager.v().hasPhase( "jop.uce1" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jop.uce1" );
         if( !PackManager.v().hasPhase( "jop.ubf1" ) )
