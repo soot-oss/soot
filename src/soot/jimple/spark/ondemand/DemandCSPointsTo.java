@@ -197,14 +197,6 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	
 	protected static final ImmutableStack<Integer> EMPTY_CALLSTACK = ImmutableStack.<Integer> emptyStack();
 
-	public boolean isRefineCallGraph() {
-    return refineCallGraph;
-  }
-
-  public void setRefineCallGraph(boolean refineCallGraph) {
-    this.refineCallGraph = refineCallGraph;
-  }
-
   /**
 	 * Make a default analysis. Assumes Spark has already run.
 	 * 
@@ -271,6 +263,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	
 	protected Map<Local,PointsToSet> reachingObjectsCache;
 
+    protected boolean useCache;
+
 	public DemandCSPointsTo(ContextSensitiveInfo csInfo, PAG pag) {
 		this(csInfo, pag, DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES);
 	}
@@ -287,13 +281,17 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		this.fieldCheckHeuristic = HeuristicType.getHeuristic(
 				HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
 		this.reachingObjectsCache = new HashMap<Local, PointsToSet>();
+        this.useCache = true;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public PointsToSet reachingObjects(Local l) {	
-	    PointsToSet cachedResult = reachingObjectsCache.get(l);
+	    PointsToSet cachedResult = null;
+	    if(useCache) {
+	        reachingObjectsCache.get(l);
+	    }
 	    if(cachedResult==null) {
     		VarNode v = pag.findLocalVarNode(l);
     		doPointsTo = true;
@@ -2071,4 +2069,40 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	public PAG getPAG() {
 		return pag;
 	}
+	
+	/**
+	 * @return <code>true</code> is caching is enabled
+	 */
+	public boolean usesCache() {
+	    return useCache;
+	}
+	
+	/**
+	 * enables caching 
+	 */
+	public void enableCache() {
+	    useCache = true;
+	}
+	
+	/**
+	 * disables caching
+	 */
+	public void disableCache() {
+	    useCache = false;
+	}
+	
+	/**
+	 * clears the cache
+	 */
+	public void clearCache() {
+	    reachingObjectsCache.clear();
+	}
+
+    public boolean isRefineCallGraph() {
+        return refineCallGraph;
+    }
+
+    public void setRefineCallGraph(boolean refineCallGraph) {
+        this.refineCallGraph = refineCallGraph;
+    }
 }
