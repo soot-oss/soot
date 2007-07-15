@@ -290,7 +290,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	public PointsToSet reachingObjects(Local l) {	
 	    PointsToSet cachedResult = null;
 	    if(useCache) {
-	        reachingObjectsCache.get(l);
+	        cachedResult = reachingObjectsCache.get(l);
 	    }
 	    if(cachedResult==null) {
     		VarNode v = pag.findLocalVarNode(l);
