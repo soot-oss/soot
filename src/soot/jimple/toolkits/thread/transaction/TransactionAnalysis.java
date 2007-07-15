@@ -326,12 +326,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 					CodeBlockRWSet bothRW = new CodeBlockRWSet();
 					bothRW.union(stmtRead);
 					bothRW.union(stmtWrite);
-					if(bothRW.size() > 0)
-					{
-						G.v().out.print("Read: " + stmtRead);
-						G.v().out.print("Write: " + stmtWrite);
-						G.v().out.println("Both: " + bothRW + "\n\n\n");
-					}
         			tn.unitToRWSet.put(unit, bothRW);
 	
 					List<Object> usesList;

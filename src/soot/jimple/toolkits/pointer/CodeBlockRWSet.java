@@ -42,7 +42,7 @@ public class CodeBlockRWSet extends MethodRWSet
 				Object baseObj = fields.get(field);
 				if(baseObj instanceof PointsToSetInternal)
 				{
-					PointsToSetInternal base = (PointsToSetInternal) fields.get(field);
+/*					PointsToSetInternal base = (PointsToSetInternal) fields.get(field);
 					base.forall( 
 						new P2SetVisitor() 
 						{
@@ -52,11 +52,11 @@ public class CodeBlockRWSet extends MethodRWSet
 	    					}
 						}
 					);
-					ret.append("]\n");
+*/					ret.append(((PointsToSetInternal)baseObj).size() + " Nodes]\n");
 				}
 				else
 				{
-					ret.append(baseObj);
+					ret.append(baseObj + "]\n");
 				}
 				empty = false;
 			}
@@ -70,7 +70,7 @@ public class CodeBlockRWSet extends MethodRWSet
 				empty = false;
 			}
 		}
-		if(empty) ret.append("empty\n");
+		if(empty) ret.append("[emptyset]\n");
 		return ret.toString();
     }
 
@@ -144,6 +144,12 @@ public class CodeBlockRWSet extends MethodRWSet
 		return ret;
     }
     
+    public boolean containsField( Object field )
+    {
+    	if(fields == null) return false;
+    	return fields.containsKey(field);
+    }
+    
     public CodeBlockRWSet intersection( MethodRWSet other )
     {// May run slowly... O(n^2)
 		CodeBlockRWSet ret = new CodeBlockRWSet();
@@ -172,13 +178,13 @@ public class CodeBlockRWSet extends MethodRWSet
 				{
 					PointsToSet pts1 = getBaseForField( field );
 					PointsToSet pts2 = other.getBaseForField( field );
-			    	if( pts1.hasNonEmptyIntersection(pts2) )
+					if(pts1 instanceof FullObjectSet)
+						ret.addFieldRef(pts2, field);
+					else if(pts2 instanceof FullObjectSet)
+						ret.addFieldRef(pts1, field);
+					else if( pts1.hasNonEmptyIntersection(pts2) )
 					{
-						if(pts1 instanceof FullObjectSet)
-							ret.addFieldRef(pts2, field);
-						else if(pts2 instanceof FullObjectSet)
-							ret.addFieldRef(pts1, field);
-						else if((pts1 instanceof PointsToSetInternal) && (pts2 instanceof PointsToSetInternal))
+						if((pts1 instanceof PointsToSetInternal) && (pts2 instanceof PointsToSetInternal))
 						{
 							final PointsToSetInternal pti1 = (PointsToSetInternal) pts1;
 							final PointsToSetInternal pti2 = (PointsToSetInternal) pts2;
@@ -232,6 +238,7 @@ public class CodeBlockRWSet extends MethodRWSet
 //					}
 //				}
 //			);
+			// NOTE: this line makes unsafe assumptions about the PTA
 			PointsToSetInternal newpti = new HashPointsToSet(((PointsToSetInternal)otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
 			base = newpti;
 			fields.put( field, base );

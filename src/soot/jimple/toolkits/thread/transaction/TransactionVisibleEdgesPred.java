@@ -63,16 +63,20 @@ public class TransactionVisibleEdgesPred implements EdgePredicate
     		e.tgt().toString().endsWith("boolean equals(java.lang.Object)>"))
     		return false;
 
-		// Remove anything called inside a class in java.util
-		// the source call will be conservatively simulated as a read and a write to the receiving object
-		if(srcClass.startsWith("java.util"))
+		// Remove anything in java.util
+		// these calls will be treated as a non-transitive RW to the receiving object
+		if(tgtClass.startsWith("java.util") || srcClass.startsWith("java.util"))
 			return false;
 			
-		// Remove anything called inside a class in java.lang
-		// the source call will be conservatively (?) simulated as a read and a write to the receiving object
-		if(srcClass.startsWith("java.lang"))
+		// Remove anything in java.lang
+		// these calls will be treated as a non-transitive RW to the receiving object
+		if(tgtClass.startsWith("java.lang") || srcClass.startsWith("java.lang"))
 			return false;
+			
+		if(tgtClass.startsWith("java"))
+			return false; // filter out the rest!
     		
+		// I THINK THIS CHUNK IS JUST NOT NEEDED... TODO: REMOVE IT
 		// Remove Calls from within a transaction
 		// one transaction is exempt - so that we may analyze calls within it
 	    if(tns != null)
