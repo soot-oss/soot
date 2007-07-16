@@ -288,15 +288,15 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 * {@inheritDoc}
 	 */
 	public PointsToSet reachingObjects(Local l) {	
-	    PointsToSet cachedResult = null;
+	    PointsToSet result = null;
 	    if(useCache) {
-	        cachedResult = reachingObjectsCache.get(l);
+	        result = reachingObjectsCache.get(l);
 	    }
-	    if(cachedResult==null) {
+	    if(result==null) {
     		VarNode v = pag.findLocalVarNode(l);
     		doPointsTo = true;
     		numPasses = 0;
-    		PointsToSet ret = null;
+    		PointsToSet contextSensitiveResult = null;
     		while (true) {
     			numPasses++;
     			if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
@@ -313,17 +313,26 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     			pointsTo = new AllocAndContextSet();
     			try {
     				refineP2Set(new VarAndContext(v, EMPTY_CALLSTACK), null);
-    				ret = pointsTo;
+    				contextSensitiveResult = pointsTo;
     			} catch (TerminateEarlyException e) {
     			}
     			if (!fieldCheckHeuristic.runNewPass()) {
     				break;
     			}
     		}
-    		cachedResult =  ret == null ? new WrappedPointsToSet(v.getP2Set()) : ret;
-    		reachingObjectsCache.put(l, cachedResult);
+    		if(contextSensitiveResult == null ) {
+    		    result = new WrappedPointsToSet(v.getP2Set());
+    		} else {
+    		    result = contextSensitiveResult;    		    
+                /*
+                 * FIXME There is currently a bug here: The analysis will sometimes report
+                 * different results for queries on the very same local! (e.g. pmd/HasNext)
+                 * Hence cache the result only if we actually got a good one, i.e. with context.
+                 */                
+                reachingObjectsCache.put(l, result);
+    		}
 	    } 
-	    return cachedResult;
+	    return result;
 	}
 
 	protected boolean callEdgeInSCC(AssignEdge assignEdge) {
