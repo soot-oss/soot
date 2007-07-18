@@ -109,4 +109,12 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
         }
         return obj;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return pts.toString();
+    }
 }
