@@ -61,8 +61,10 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.EmptyPointsToSet;
+import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.HybridPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetEqualsWrapper;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.toolkits.scalar.Pair;
@@ -181,7 +183,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		}
 	}
 
-	protected static final boolean DEBUG = false;
+	public static boolean DEBUG = false;
 
 	protected static final int DEBUG_NESTING = 15;
 
@@ -296,6 +298,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 * {@inheritDoc}
 	 */
 	public PointsToSet reachingObjects(Local l) {	
+	    System.err.println(l);
 	    PointsToSet result = reachingObjectsCache.get(l);
 	    if(result==null) {
     		result = computeReachingObjects(l);
@@ -303,8 +306,24 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
                 reachingObjectsCache.put(l, result);
     		}
 	    } 	    
+	    assert consistentResult(l,result);
 	    return result;
 	}
+
+    /**
+     * Returns <code>false</code> if an inconsistent computation occurred, i.e. if result
+     * differs from the result computed by {@link #computeReachingObjects(Local)} on l.
+     */
+    private boolean consistentResult(Local l, PointsToSet result) {
+        PointsToSet result2 = computeReachingObjects(l);
+        if(!(result instanceof EqualsSupportingPointsToSet) || !(result2 instanceof EqualsSupportingPointsToSet)) {
+            //cannot compare, assume everything is fine
+            return true;
+        }
+        EqualsSupportingPointsToSet eq1 = (EqualsSupportingPointsToSet) result;
+        EqualsSupportingPointsToSet eq2 = (EqualsSupportingPointsToSet) result2;
+        return new PointsToSetEqualsWrapper(eq1).equals(new PointsToSetEqualsWrapper(eq2)); 
+    }
 
     /**
      * Computes the possibly refined set of reaching objects for l.
@@ -2139,6 +2158,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
     public void setRefineCallGraph(boolean refineCallGraph) {
         this.refineCallGraph = refineCallGraph;
+        clearCache();
     }
 
     public HeuristicType getHeuristicType() {
@@ -2147,5 +2167,6 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
     public void setHeuristicType(HeuristicType heuristicType) {
       this.heuristicType = heuristicType;
+      clearCache();
     }
 }
