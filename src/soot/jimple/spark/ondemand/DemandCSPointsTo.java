@@ -305,23 +305,18 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
      * Computes the possibly refined set of reaching objects for l.
      */
     protected PointsToSet computeReachingObjects(Local l) {
-        PointsToSet result;
         VarNode v = pag.findLocalVarNode(l);
 		if (v == null) {
+		  //no reaching objects
 		  return EmptyPointsToSet.v();
 		}
-        // must reset the refinement heuristic for each query
-        this.fieldCheckHeuristic = HeuristicType.getHeuristic(
-            HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
-        doPointsTo = true;
-        numPasses = 0;
         PointsToSet contextSensitiveResult = computeRefinedReachingObjects(v);
         if(contextSensitiveResult == null ) {
-            result = new WrappedPointsToSet(v.getP2Set());
+            //had to abort; return Spark's points-to set in a wrapper
+            return new WrappedPointsToSet(v.getP2Set());
         } else {
-            result = contextSensitiveResult;    		    
+            return contextSensitiveResult;    		    
         }
-        return result;
     }
 
     /**
@@ -329,6 +324,11 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
      * Returns <code>null</code> if refinement failed.
      */
     protected PointsToSet computeRefinedReachingObjects(VarNode v) {
+        // must reset the refinement heuristic for each query
+        this.fieldCheckHeuristic = HeuristicType.getHeuristic(
+            HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
+        doPointsTo = true;
+        numPasses = 0;
         PointsToSet contextSensitiveResult = null;
         while (true) {
         	numPasses++;
