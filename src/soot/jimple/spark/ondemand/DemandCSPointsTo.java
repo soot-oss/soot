@@ -272,7 +272,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
 	protected final ValidMatches vMatches;
 	
-	protected Map<Local,PointsToSet> reachingObjectsCache;
+	protected Map<Local,PointsToSet> reachingObjectsCache, reachingObjectsCacheNoCGRefinement;
 
     protected boolean useCache;
 
@@ -291,6 +291,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		this.maxNodesPerPass = maxTraversal / maxPasses;
 		this.heuristicType = HeuristicType.INCR;
 		this.reachingObjectsCache = new HashMap<Local, PointsToSet>();
+		this.reachingObjectsCacheNoCGRefinement = new HashMap<Local, PointsToSet>();
         this.useCache = true;
 	}
 
@@ -299,11 +300,18 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 */
 	public PointsToSet reachingObjects(Local l) {	
 	    System.err.println(l);
-	    PointsToSet result = reachingObjectsCache.get(l);
+	    PointsToSet result;
+        Map<Local, PointsToSet> cache;
+	    if(refineCallGraph) {  //we use different caches for different settings  
+            cache = reachingObjectsCache;
+	    } else {
+            cache = reachingObjectsCacheNoCGRefinement;
+	    }
+        result = cache.get(l);           
 	    if(result==null) {
     		result = computeReachingObjects(l);
     		if(useCache) {
-                reachingObjectsCache.put(l, result);
+	            cache.put(l, result);
     		}
 	    } 	    
 	    assert consistentResult(l,result);
@@ -2150,6 +2158,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 */
 	public void clearCache() {
 	    reachingObjectsCache.clear();
+        reachingObjectsCacheNoCGRefinement.clear();
 	}
 
     public boolean isRefineCallGraph() {
@@ -2158,7 +2167,6 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
     public void setRefineCallGraph(boolean refineCallGraph) {
         this.refineCallGraph = refineCallGraph;
-        clearCache();
     }
 
     public HeuristicType getHeuristicType() {
