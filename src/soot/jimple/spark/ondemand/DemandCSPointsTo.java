@@ -60,6 +60,7 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.EmptyPointsToSet;
 import soot.jimple.spark.sets.HybridPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
@@ -128,6 +129,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		final VarNode var;
 
 		public VarAndContext(VarNode var, ImmutableStack<Integer> context) {
+		    assert var != null;
+		    assert context != null;
 			this.var = var;
 			this.context = context;
 		}
@@ -294,6 +297,12 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	    }
 	    if(result==null) {
     		VarNode v = pag.findLocalVarNode(l);
+    		if (v == null) {
+    		  return EmptyPointsToSet.v();
+    		}
+    		// must reset the refinement heuristic for each query
+    		this.fieldCheckHeuristic = HeuristicType.getHeuristic(
+    		    HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
     		doPointsTo = true;
     		numPasses = 0;
     		PointsToSet contextSensitiveResult = null;
