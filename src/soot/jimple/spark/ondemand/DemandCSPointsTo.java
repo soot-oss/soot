@@ -299,7 +299,6 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 * {@inheritDoc}
 	 */
 	public PointsToSet reachingObjects(Local l) {	
-	    System.err.println(l);
 	    PointsToSet result;
         Map<Local, PointsToSet> cache;
 	    if(refineCallGraph) {  //we use different caches for different settings  
