@@ -230,10 +230,16 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
 	protected final ContextSensitiveInfo csInfo;
 
+	/**
+	 * if <code>true</code>, compute full points-to set for queried
+	 * variable
+	 */
 	protected boolean doPointsTo;
 
 	protected FieldCheckHeuristic fieldCheckHeuristic;
 
+	protected HeuristicType heuristicType;
+	
 	protected final FieldToEdgesMap fieldToLoads;
 
 	protected final FieldToEdgesMap fieldToStores;
@@ -281,8 +287,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		this.vMatches = new ValidMatches(pag, fieldToStores);
 		this.maxPasses = maxPasses;
 		this.maxNodesPerPass = maxTraversal / maxPasses;
-		this.fieldCheckHeuristic = HeuristicType.getHeuristic(
-				HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
+		this.heuristicType = HeuristicType.INCR;
 		this.reachingObjectsCache = new HashMap<Local, PointsToSet>();
         this.useCache = true;
 	}
@@ -326,7 +331,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
     protected PointsToSet computeRefinedReachingObjects(VarNode v) {
         // must reset the refinement heuristic for each query
         this.fieldCheckHeuristic = HeuristicType.getHeuristic(
-            HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
+            heuristicType, pag.getTypeManager(), getMaxPasses());
         doPointsTo = true;
         numPasses = 0;
         PointsToSet contextSensitiveResult = null;
@@ -2134,5 +2139,13 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
     public void setRefineCallGraph(boolean refineCallGraph) {
         this.refineCallGraph = refineCallGraph;
+    }
+
+    public HeuristicType getHeuristicType() {
+      return heuristicType;
+    }
+
+    public void setHeuristicType(HeuristicType heuristicType) {
+      this.heuristicType = heuristicType;
     }
 }
