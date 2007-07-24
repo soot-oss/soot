@@ -291,58 +291,70 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 * {@inheritDoc}
 	 */
 	public PointsToSet reachingObjects(Local l) {	
-	    PointsToSet result = null;
-	    if(useCache) {
-	        result = reachingObjectsCache.get(l);
-	    }
+	    PointsToSet result = reachingObjectsCache.get(l);
 	    if(result==null) {
-    		VarNode v = pag.findLocalVarNode(l);
-    		if (v == null) {
-    		  return EmptyPointsToSet.v();
-    		}
-    		// must reset the refinement heuristic for each query
-    		this.fieldCheckHeuristic = HeuristicType.getHeuristic(
-    		    HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
-    		doPointsTo = true;
-    		numPasses = 0;
-    		PointsToSet contextSensitiveResult = null;
-    		while (true) {
-    			numPasses++;
-    			if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
-    				break;
-    			}
-    			if (numPasses > maxPasses) {
-    				break;
-    			}
-    			if (DEBUG) {
-    				G.v().out.println("PASS " + numPasses);
-    				G.v().out.println(fieldCheckHeuristic);
-    			}
-    			clearState();
-    			pointsTo = new AllocAndContextSet();
-    			try {
-    				refineP2Set(new VarAndContext(v, EMPTY_CALLSTACK), null);
-    				contextSensitiveResult = pointsTo;
-    			} catch (TerminateEarlyException e) {
-    			}
-    			if (!fieldCheckHeuristic.runNewPass()) {
-    				break;
-    			}
-    		}
-    		if(contextSensitiveResult == null ) {
-    		    result = new WrappedPointsToSet(v.getP2Set());
-    		} else {
-    		    result = contextSensitiveResult;    		    
-                /*
-                 * FIXME There is currently a bug here: The analysis will sometimes report
-                 * different results for queries on the very same local! (e.g. pmd/HasNext)
-                 * Hence cache the result only if we actually got a good one, i.e. with context.
-                 */                
+    		result = computeReachingObjects(l);
+    		if(useCache) {
                 reachingObjectsCache.put(l, result);
     		}
-	    } 
+	    } 	    
 	    return result;
 	}
+
+    /**
+     * Computes the possibly refined set of reaching objects for l.
+     */
+    protected PointsToSet computeReachingObjects(Local l) {
+        PointsToSet result;
+        VarNode v = pag.findLocalVarNode(l);
+		if (v == null) {
+		  return EmptyPointsToSet.v();
+		}
+        // must reset the refinement heuristic for each query
+        this.fieldCheckHeuristic = HeuristicType.getHeuristic(
+            HeuristicType.INCR, pag.getTypeManager(), getMaxPasses());
+        doPointsTo = true;
+        numPasses = 0;
+        PointsToSet contextSensitiveResult = computeRefinedReachingObjects(v);
+        if(contextSensitiveResult == null ) {
+            result = new WrappedPointsToSet(v.getP2Set());
+        } else {
+            result = contextSensitiveResult;    		    
+        }
+        return result;
+    }
+
+    /**
+     * Computes the refined set of reaching objects for l.
+     * Returns <code>null</code> if refinement failed.
+     */
+    protected PointsToSet computeRefinedReachingObjects(VarNode v) {
+        PointsToSet contextSensitiveResult = null;
+        while (true) {
+        	numPasses++;
+        	if (DEBUG_PASS != -1 && numPasses > DEBUG_PASS) {
+        		break;
+        	}
+        	if (numPasses > maxPasses) {
+        		break;
+        	}
+        	if (DEBUG) {
+        		G.v().out.println("PASS " + numPasses);
+        		G.v().out.println(fieldCheckHeuristic);
+        	}
+        	clearState();
+        	pointsTo = new AllocAndContextSet();
+        	try {
+        		refineP2Set(new VarAndContext(v, EMPTY_CALLSTACK), null);
+        		contextSensitiveResult = pointsTo;
+        	} catch (TerminateEarlyException e) {
+        	}
+        	if (!fieldCheckHeuristic.runNewPass()) {
+        		break;
+        	}
+        }
+        return contextSensitiveResult;
+    }
 
 	protected boolean callEdgeInSCC(AssignEdge assignEdge) {
 		boolean sameSCCAlready = false;
