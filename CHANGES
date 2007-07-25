@@ -15,7 +15,7 @@ Improvements and API changes in version 2.2.5 (To come)
    This lead to a five-fold slowdown on the points-to analyses and potentially wrong results.
    The bug has now been fixed by modifying the propagator algorithm. Original speed was restored.  
 
-Improvements and API changes in version 2.2.4
+Improvements and API changes in version 2.2.4 (Fri, Apr 27, 2007)
 
 1. Soot is now able to infer a main-class if no main-class attribute is given.
 2. soot.jimple.toolkits.annotation.nullcheck.BranchedRefVarsAnalysis has been deprecated
