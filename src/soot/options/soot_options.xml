@@ -274,7 +274,7 @@ separator.</p>
 Instead of replacing the default soot classpath with the classpath given on the command line,
 prepent it with that classpath.
 The default classpath holds whatever is set in the CLASSPATH environment variable,
-followed by rt.jar (resolved through the JAVA\_HOME environment variable).
+followed by rt.jar (resolved through the JAVA-UNDERSCORE-HOME environment variable).
 If whole-program mode is enabled, jce.jar is also appended in the end.
 </p>
 </long_desc>
