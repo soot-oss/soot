@@ -59,7 +59,7 @@ public class ClassInfoFlowAnalysis
 				methodToInfoFlowAnalysis.put(method, smdfa);
 				methodToInfoFlowSummary.remove(method);
 				methodToInfoFlowSummary.put(method, smdfa.getMethodInfoFlowSummary());
-
+				return smdfa;
 //				G.v().out.println(method + " has SMART infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}

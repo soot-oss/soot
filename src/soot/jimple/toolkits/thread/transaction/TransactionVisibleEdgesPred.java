@@ -75,6 +75,9 @@ public class TransactionVisibleEdgesPred implements EdgePredicate
 			
 		if(tgtClass.startsWith("java"))
 			return false; // filter out the rest!
+			
+		if(e.tgt().isSynchronized())
+			return false;
     		
 		// I THINK THIS CHUNK IS JUST NOT NEEDED... TODO: REMOVE IT
 		// Remove Calls from within a transaction

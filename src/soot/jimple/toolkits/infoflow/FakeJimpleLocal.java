@@ -11,6 +11,7 @@ public class FakeJimpleLocal extends JimpleLocal
     public FakeJimpleLocal(String name, Type t, Local realLocal)
     {
     	super(name, t);
+    	this.realLocal = realLocal;
     }
 
     /** Returns true if the given object is structurally equal to this one. */

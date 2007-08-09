@@ -32,6 +32,11 @@ class TransactionGroup
 		return groupNum;
 	}
 	
+	public int size()
+	{
+		return transactions.size();
+	}
+	
 	public void add(Transaction tn)
 	{
 		tn.setNumber = groupNum;

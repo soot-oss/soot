@@ -161,34 +161,42 @@ public class TransactionAwareSideEffectAnalysis {
 						if(ie instanceof InstanceInvokeExpr)
 							base = (Local)((InstanceInvokeExpr) ie).getBase();
 
-						// add its approximated read set to read
-	            		RWSet r;
-//	            		String InvokeSig = calledMethod.getSubSignature();
-//	            		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
-//	            			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
-//							r = approximatedReadSet(method, s, base, true);
-//						else
-							r = approximatedReadSet(method, s, base, true);
-						if( read == null ) read = new CodeBlockRWSet();
-						if( r != null )
-							read.union( r );
+						if(tlo == null || base == null || !tlo.isObjectThreadLocal(base, method) )
+						{
+							// add its approximated read set to read
+		            		RWSet r;
+	//	            		String InvokeSig = calledMethod.getSubSignature();
+	//	            		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
+	//	            			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
+	//							r = approximatedReadSet(method, s, base, true);
+	//						else
+								r = approximatedReadSet(method, s, base, true);
+							if( read == null ) read = new CodeBlockRWSet();
+							if( r != null )
+								read.union( r );
 
-						// add its approximated write set to write
-						RWSet w;
-//	            		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
-//	            			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
-//							w = approximatedWriteSet(method, s, base, true);
-//						else
-							w = approximatedWriteSet(method, s, base, true);
-						if( write == null ) write = new CodeBlockRWSet();
-						if( w != null )
-							write.union( w );
+							// add its approximated write set to write
+							RWSet w;
+	//	            		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
+	//	            			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
+	//							w = approximatedWriteSet(method, s, base, true);
+	//						else
+								w = approximatedWriteSet(method, s, base, true);
+							if( write == null ) write = new CodeBlockRWSet();
+							if( w != null )
+								write.union( w );
+						}
 					}
 				}
 			}
 		}
 		methodToNTReadSet.put( method, read );
 		methodToNTWriteSet.put( method, write );
+	}
+	
+	public void setExemptTransaction( Transaction tn )
+	{
+		tve.setExemptTransaction(tn);
 	}
 	
 	public RWSet nonTransitiveReadSet( SootMethod method ) {
@@ -285,12 +293,16 @@ public class TransactionAwareSideEffectAnalysis {
 						if(!baseTypeClass.isInterface())
 						{
 							List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
-							for(SootClass baseClass : baseClasses)
+							if(!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass()))
 							{
-								for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+								for(SootClass baseClass : baseClasses)
 								{
-									SootField baseField = (SootField) baseFieldIt.next();
-									ret.addFieldRef( base, baseField );
+									for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+									{
+										SootField baseField = (SootField) baseFieldIt.next();
+										if(!baseField.isStatic())
+											ret.addFieldRef( base, baseField );
+									}
 								}
 							}
 						}
@@ -356,7 +368,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet readSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld, HashSet uses )
+	public RWSet readSet( SootMethod method, Stmt stmt, Transaction tn, HashSet uses )
 	{
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
@@ -438,19 +450,10 @@ public class TransactionAwareSideEffectAnalysis {
 				else
 				{// note that all library functions have already been filtered out (by name) via the filter
 				 // passed to the TransitiveTargets constructor.
-//	            	G.v().out.println("Target   : " + target.toString());
 					RWSet ntr = nonTransitiveReadSet(target);
 					if( ntr != null ) {
-//						if(ntr.getFields().size() == 0)
-//						{
-							// if this read set consists only of globals, just add them to the uses for this stmt
-//							uses.addAll(ntr.getGlobals()); // these are static SootFields, not StaticFieldRefs!!!
-//						}
-//						else
-//						{
-							uses.clear();
-							inaccessibleUses = true; // can we improve lockset discovery? perhaps by using InfoFlow?
-//						}
+//						uses.clear();
+//						inaccessibleUses = true;
 						ret.union( ntr );
 					}
 				}
@@ -489,16 +492,25 @@ public class TransactionAwareSideEffectAnalysis {
 				if(ie instanceof InstanceInvokeExpr)
 					base = (Local)((InstanceInvokeExpr) ie).getBase();
 
-				// add its approximated read set to read
-				RWSet r;
-//	            String InvokeSig = calledMethod.getSubSignature();
-//        		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
-//        			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
-//					r = approximatedReadSet(method, stmt, base, true);
-//				else
-					r = approximatedReadSet(method, stmt, base, true);
-				if( r != null )
-					ret.union( r );
+				if(tlo == null || base == null || !tlo.isObjectThreadLocal(base, method) )
+				{
+					// add its approximated read set to read
+					RWSet r;
+	//	            String InvokeSig = calledMethod.getSubSignature();
+	//        		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
+	//        			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
+	//					r = approximatedReadSet(method, stmt, base, true);
+	//				else
+						r = approximatedReadSet(method, stmt, base, true);
+					if( r != null )
+						ret.union( r );
+					
+					int argCount = stmt.getInvokeExpr().getArgCount();
+					for(int i = 0; i < argCount; i++)
+						uses.add( ie.getArg(i) );
+					if( base != null )
+						uses.add( base );
+				}
 			}
 		}
 
@@ -536,12 +548,16 @@ public class TransactionAwareSideEffectAnalysis {
 						if(!baseTypeClass.isInterface())
 						{
 							List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
-							for(SootClass baseClass : baseClasses)
+							if(!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass()))
 							{
-								for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+								for(SootClass baseClass : baseClasses)
 								{
-									SootField baseField = (SootField) baseFieldIt.next();
-									ret.addFieldRef( base, baseField );
+									for(Iterator baseFieldIt = baseClass.getFields().iterator(); baseFieldIt.hasNext(); )
+									{
+										SootField baseField = (SootField) baseFieldIt.next();
+										if(!baseField.isStatic())
+											ret.addFieldRef( base, baseField );
+									}
 								}
 							}
 						}
@@ -602,7 +618,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet writeSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld, Set uses )
+	public RWSet writeSet( SootMethod method, Stmt stmt, Transaction tn, Set uses )
 	{
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
@@ -673,8 +689,8 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					RWSet ntw = nonTransitiveWriteSet(target);
 					if( ntw != null ) {
-						uses.clear();
-						inaccessibleUses = true;
+//						inaccessibleUses = true;
+//						uses.clear();
 						ret.union( ntw );
 					}
 				}
@@ -714,23 +730,29 @@ public class TransactionAwareSideEffectAnalysis {
 				if(ie instanceof InstanceInvokeExpr)
 					base = (Local)((InstanceInvokeExpr) ie).getBase();
 
-				// add its approximated read set to read
-				RWSet w;
-//	            String InvokeSig = calledMethod.getSubSignature();
-//        		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
-//        			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
-//					w = approximatedWriteSet(method, stmt, base, true);
-//				else
-					w = approximatedWriteSet(method, stmt, base, true);
-				if( w != null )
-					ret.union( w );
+				if(tlo == null || base == null || !tlo.isObjectThreadLocal(base, method) )
+				{
+					// add its approximated read set to read
+					RWSet w;
+	//	            String InvokeSig = calledMethod.getSubSignature();
+	//        		if( InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()") || 
+	//        			InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
+	//					w = approximatedWriteSet(method, stmt, base, true);
+	//				else
+						w = approximatedWriteSet(method, stmt, base, true);
+					if( w != null )
+						ret.union( w );
+					
+					if( base != null )
+						uses.add( base );
+				}
 			}
 		}
 
 		return ret;
 	}
 	
-	public RWSet valueRWSet( Value v, SootMethod m, Stmt s )
+	public RWSet valueRWSet( Value v, SootMethod m, Stmt s, Transaction tn )
 	{
 		RWSet ret = null;
 		
@@ -777,31 +799,27 @@ public class TransactionAwareSideEffectAnalysis {
 			Local vLocal = (Local) v;
 			PointsToSet base = pa.reachingObjects( vLocal );
 			ret = new CodeBlockRWSet();
+			CodeBlockRWSet stmtRW = new CodeBlockRWSet();
+			RWSet rSet = readSet(m, s, tn, new HashSet());
+			if(rSet != null)
+				stmtRW.union(rSet);
+			RWSet wSet = writeSet(m, s, tn, new HashSet());
+			if(wSet != null)
+				stmtRW.union(wSet);
 			// Should actually get a list of fields of this object that are read/written
 			// make fake RW set of <base, all fields> (use a special class)
 			// intersect with the REAL RW set of this stmt
-			Iterator<MethodOrMethodContext> targets = normaltt.iterator( s );
-			while( targets.hasNext() )
+			for(Iterator fieldsIt = stmtRW.getFields().iterator(); fieldsIt.hasNext(); )
 			{
-				SootMethod target = (SootMethod) targets.next();
-				if(target.isConcrete())
-				{
-					RWSet targetRW = new CodeBlockRWSet();
-					targetRW.union(nonTransitiveWriteSet(target));
-					targetRW.union(nonTransitiveReadSet(target));
-					for(Iterator fieldsIt = targetRW.getFields().iterator(); fieldsIt.hasNext(); )
-					{
-						Object field = fieldsIt.next();
-						PointsToSet targetBase = targetRW.getBaseForField(field);
-						if(base.hasNonEmptyIntersection(targetBase))
-							ret.addFieldRef(base, field); // should use intersection of bases!!!
-					}
-				}
+				Object field = fieldsIt.next();
+				PointsToSet fieldBase = stmtRW.getBaseForField(field);
+				if(base.hasNonEmptyIntersection(fieldBase))
+					ret.addFieldRef(base, field); // should use intersection of bases!!!
 			}
 		}
 		else
 		{
-			throw new RuntimeException("Unknown type of value, can't find RWSet: " + v);
+			return null;
 		}
 		return ret;
 	}
@@ -836,7 +854,15 @@ public class TransactionAwareSideEffectAnalysis {
 		
 		if( v instanceof InstanceFieldRef ) {
 			InstanceFieldRef ifr = (InstanceFieldRef) v;
-			PointsToSet base = pa.reachingObjects( (Local) ifr.getBase() );
+			Local baseLocal = (Local) ifr.getBase();
+			PointsToSet base = pa.reachingObjects( baseLocal );
+			if(baseLocal.getType() instanceof RefType)
+			{
+				SootClass baseClass = ((RefType) baseLocal.getType()).getSootClass();
+				if(Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
+					baseClass, RefType.v("java.lang.Exception").getSootClass()))
+					return null;
+			}
 			ret = new StmtRWSet();
 			ret.addFieldRef( base, ifr.getField() );
 		}

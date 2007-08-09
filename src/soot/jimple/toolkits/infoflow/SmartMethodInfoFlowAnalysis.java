@@ -253,6 +253,7 @@ public class SmartMethodInfoFlowAnalysis
 				EquivalentValue v = (EquivalentValue) vHolder.get(0); // get the one and only
 				if(!visitedSinks.contains(v))
 				{
+//					Set<EquivalentValue> 
 					ret.addAll(sourcesOf(v, visitedSinks, visitedSinks)); // these nodes are really to be marked as sinks, not sources
 				}
 			}

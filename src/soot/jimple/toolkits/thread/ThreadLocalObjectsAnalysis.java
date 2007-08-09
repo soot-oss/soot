@@ -33,6 +33,21 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 		fieldCache = new HashMap();
 		invokeCache = new HashMap();
 	}
+	
+	// Forces the majority of computation to take place immediately, rather than on-demand
+	// might occasionally compute more than is necessary
+	public void precompute()
+	{
+		for(AbstractRuntimeThread thread : threads)
+		{
+			for(Object item : thread.getRunMethods())
+			{
+				SootMethod runMethod = (SootMethod) item;
+				if(runMethod.getDeclaringClass().isApplicationClass())
+					getClassLocalObjectsAnalysis(runMethod.getDeclaringClass());
+			}
+		}
+	}
 
 	// override
 	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sc)

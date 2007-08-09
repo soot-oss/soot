@@ -74,8 +74,29 @@ public class ClassLocalObjectsAnalysis
 		this.localInnerFields = null;
 		this.sharedInnerFields = null;
 		
+		if(true) // verbose)
+		{
+			G.v().out.println("[local-objects] Analyzing local objects for " + sootClass);
+			G.v().out.println("[local-objects]   preparing class             " + new Date());
+		}
 		prepare();
+		
+		if(true) // verbose)
+		{
+			G.v().out.println("[local-objects]   analyzing class             " + new Date());
+		}
 		doAnalysis();
+		
+		if(true) // verbose)
+		{
+			G.v().out.println("[local-objects]   propagating over call graph " + new Date());
+		}
+		propagate();
+
+    	if(true)
+    	{
+    		G.v().out.println("[local-objects]   finished at " + new Date());
+    	}		
 	}
 	
 	private void prepare()
@@ -469,11 +490,9 @@ public class ClassLocalObjectsAnalysis
 					G.v().out.println("                  " + sharedToPrint);
 			}
 		}
-
-		precomputeLocalityContexts();
 	}
 	
-	private void precomputeLocalityContexts()
+	private void propagate()
 	{
 		// Initialize worklist
 		ArrayList<SootMethod> worklist = new ArrayList<SootMethod>();

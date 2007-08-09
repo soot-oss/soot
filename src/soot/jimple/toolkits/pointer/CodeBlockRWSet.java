@@ -52,7 +52,9 @@ public class CodeBlockRWSet extends MethodRWSet
 	    					}
 						}
 					);
-*/					ret.append(((PointsToSetInternal)baseObj).size() + " Nodes]\n");
+*/					
+					int baseSize = ((PointsToSetInternal)baseObj).size();
+					ret.append(baseSize + (baseSize == 1 ? " Node]\n" : " Nodes]\n"));
 				}
 				else
 				{
@@ -228,36 +230,10 @@ public class CodeBlockRWSet extends MethodRWSet
 			return false;
 		if( base == null )
 		{			
-//			final PointsToSetInternal newpti = new HashPointsToSet(((PointsToSetInternal)otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
-//			otherBase.forall(
-//				new P2SetVisitor() 
-//				{
-//					public void visit( Node n )
-//					{
-//						newpti.add(n);
-//					}
-//				}
-//			);
 			// NOTE: this line makes unsafe assumptions about the PTA
 			PointsToSetInternal newpti = new HashPointsToSet(((PointsToSetInternal)otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
 			base = newpti;
 			fields.put( field, base );
-/*			u = G.v().Union_factory.newUnion();
-			if( base != null)
-				u.addAll( base );
-			fields.put( field, u );
-			if( base == null )
-				addedField( fields.size() );
-			ret = true;
-			if( fields.keySet().size() > MAX_SIZE )
-			{
-				fields = null;
-				isFull = true;
-				if( true )    
-					throw new RuntimeException( "attempt to add more than "+MAX_SIZE+" fields into "+this );
-				return true;
-			}
-*/
 		} 
 		
 		ret = ((PointsToSetInternal)base).addAll((PointsToSetInternal) otherBase, null) | ret;

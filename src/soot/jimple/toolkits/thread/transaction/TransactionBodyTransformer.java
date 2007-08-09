@@ -528,6 +528,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 		
 		if( lock instanceof InstanceFieldRef )
 			return lock;
+			
+		if( lock instanceof ArrayRef ) // it would be better to lock the array ref for each value of the index!
+			return ((ArrayRef) lock).getBase();
 		
 		if( lock instanceof Local )
 			return lock;
@@ -600,7 +603,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 	    	return actualLockSfr;
 		}
 
-		throw new RuntimeException("Unknown type of lock (" + lock + "): expected FieldRef or Local");
+		throw new RuntimeException("Unknown type of lock (" + lock + "): expected FieldRef, ArrayRef, or Local");
 	}
 	
 /*

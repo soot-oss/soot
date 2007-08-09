@@ -21,7 +21,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     Chain units;
 	SootMethod method;
 	ExceptionalUnitGraph egraph;
-	LocalDefs sld;
 	LocalUses slu;
 	TransactionAwareSideEffectAnalysis tasea;
 //	SideEffectAnalysis sea;
@@ -47,8 +46,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		else
 			egraph = new ExceptionalUnitGraph(b);
 				
-		sld = new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph));
-		slu = new SimpleLocalUses(egraph, sld);
+		slu = new SimpleLocalUses(egraph, new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph)));
 		
 		if( G.v().Union_factory == null ) {
 		    G.v().Union_factory = new UnionFactory() {
@@ -234,8 +232,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		            	// Debug Output
 	            		if(optionPrintDebug)
 	            		{
-							stmtRead = tasea.readSet(tn.method, stmt, tn, sld, new HashSet());
-							stmtWrite = tasea.writeSet(tn.method, stmt, tn, sld, new HashSet());
+							stmtRead = tasea.readSet(tn.method, stmt, tn, new HashSet());
+							stmtWrite = tasea.writeSet(tn.method, stmt, tn, new HashSet());
 
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
@@ -293,8 +291,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	{
             		// Add this unit's read and write sets to this transactional region
             		HashSet uses = new HashSet();
-	               	stmtRead = tasea.readSet( method, stmt, tn, sld, uses );
-		           	stmtWrite = tasea.writeSet( method, stmt, tn, sld, uses );
+	               	stmtRead = tasea.readSet( method, stmt, tn, uses );
+		           	stmtWrite = tasea.writeSet( method, stmt, tn, uses );
 
     		   		tn.read.union(stmtRead);
         			tn.write.union(stmtWrite);
@@ -323,6 +321,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			        		G.v().out.print( "0" );
 			        	G.v().out.print("] ");
 					}
+/*
 					CodeBlockRWSet bothRW = new CodeBlockRWSet();
 					bothRW.union(stmtRead);
 					bothRW.union(stmtWrite);
@@ -343,7 +342,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 						if(!usesList.contains(use))
 							usesList.add(use);
 					}
-
+*/
         		}
 			}
         }
