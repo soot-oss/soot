@@ -860,7 +860,7 @@ public class TransactionTransformer extends SceneTransformer
 									for(int i = 0; i < lockPTSets.size(); i++)
 									{
 										PointsToSetInternal otherLockPT = lockPTSets.get(i);
-										if(lockPT.hasNonEmptyIntersection(otherLockPT))
+										if(lockPT.hasNonEmptyIntersection(otherLockPT)) // will never happen for empty, negative numbered sets
 										{
 											G.v().out.println("[wjtp.tn] Lock: num " + i + " type " + lock.getType() + " obj " + lock);
 											lockToLockNum.put(lock, new Integer(i));
@@ -891,7 +891,7 @@ public class TransactionTransformer extends SceneTransformer
 									}
 									else
 									{
-										Integer lockNum = new Integer(lockPTSets.size());
+										Integer lockNum = new Integer(-lockPTSets.size()); // negative indicates a static lock
 										G.v().out.println("[wjtp.tn] Lock: num " + lockNum + " type " + lock.getType() + " obj " + lock);
 										lockToLockNum.put(lockEqVal, lockNum);
 										lockToLockNum.put(lock, lockNum);
@@ -900,7 +900,7 @@ public class TransactionTransformer extends SceneTransformer
 									}
 								}
 							}
-							
+
 						}
 					}
 					else
@@ -920,6 +920,20 @@ public class TransactionTransformer extends SceneTransformer
 							// If it's the best lock we've found in the group yet, use it for display
 							if(tn.group.lockObject == null || tn.lockObject instanceof Ref)
 								tn.group.lockObject = tn.lockObject;
+						}
+					}
+				}
+			}
+			if(optionUseLocksets)
+			{
+				for(int i = 0; i < lockPTSets.size(); i++)
+				{
+					PointsToSetInternal pts = lockPTSets.get(i);
+					if(pts.size() == 1)
+					{
+						for(Object e : lockToLockNum.entrySet())
+						{
+							
 						}
 					}
 				}
