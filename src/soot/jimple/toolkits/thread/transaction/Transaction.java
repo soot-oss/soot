@@ -90,4 +90,9 @@ class Transaction extends LockRegion
 	{
 		return new Transaction(this);
 	}
+	
+	public String toString()
+	{
+		return name;
+	}
 }

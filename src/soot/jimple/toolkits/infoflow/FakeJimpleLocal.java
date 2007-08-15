@@ -3,15 +3,31 @@ package soot.jimple.toolkits.infoflow;
 import soot.*;
 import soot.jimple.internal.*;
 
+// A wrapper for a JimpleLocal that defines equivalence and equality
+// as having the same name and type.  This is useful for comparing
+// InstanceFieldRefs and ArrayRefs from different parts of a program
+// (without removing the FieldRef part, which is not a Jimple Value).
+// FakeJimpleLocal can also hold a real JimpleLocal
+// and some additional object, which together can make it easier to
+// later reconstruct the original piece of Jimple code, or to construct
+// a new meaningful piece of Jimple code base on this one.
+
 public class FakeJimpleLocal extends JimpleLocal
 {
 	Local realLocal;
+	Object info; // whatever you want to attach to it...
 	
     /** Constructs a FakeJimpleLocal of the given name and type. */
     public FakeJimpleLocal(String name, Type t, Local realLocal)
     {
+    	this(name, t, realLocal, null);
+    }
+    
+    public FakeJimpleLocal(String name, Type t, Local realLocal, Object info)
+    {
     	super(name, t);
     	this.realLocal = realLocal;
+    	this.info = info;
     }
 
     /** Returns true if the given object is structurally equal to this one. */
@@ -47,6 +63,16 @@ public class FakeJimpleLocal extends JimpleLocal
     public Local getRealLocal()
     {
     	return realLocal;
+    }
+    
+    public Object getInfo()
+    {
+    	return info;
+    }
+    
+    public void setInfo(Object o)
+    {
+    	info = o;
     }
 }
 

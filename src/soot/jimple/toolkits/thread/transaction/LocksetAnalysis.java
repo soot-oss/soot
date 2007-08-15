@@ -320,6 +320,10 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		}
 		else if( lock instanceof InstanceFieldRef )
 		{
+			// Step 0: redirect fakejimplelocals to this
+			if(((InstanceFieldRef)lock).getBase() instanceof FakeJimpleLocal)
+				((FakeJimpleLocal)((InstanceFieldRef)lock).getBase()).setInfo(this);
+				
 			// Step 1: make sure base is accessible (process it)
 			// Step 2: get the group number (here) for the base
 			EquivalentValue baseEqVal = la.baseFor((Ref)lock);
@@ -358,6 +362,12 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		}
 		else if( lock instanceof ArrayRef )
 		{
+			// Step 0: redirect fakejimplelocals to this
+			if(((ArrayRef)lock).getBase() instanceof FakeJimpleLocal)
+				((FakeJimpleLocal)((ArrayRef)lock).getBase()).setInfo(this);
+			if(((ArrayRef)lock).getIndex() instanceof FakeJimpleLocal)
+				((FakeJimpleLocal)((ArrayRef)lock).getIndex()).setInfo(this);
+
 			// Step 1: make sure base is accessible (process it)
 			// Step 2: get the group number (here) for the base
 			EquivalentValue baseEqVal = la.baseFor((Ref)lock);
@@ -569,7 +579,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 						Local oldbase = (Local) ifr.getBase();
 						if(!(oldbase instanceof FakeJimpleLocal))
 						{
-							Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase);
+							Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
 							Value node = Jimple.v().newInstanceFieldRef(newbase, ifr.getField().makeRef());
 							EquivalentValue nodeEqVal = new EquivalentValue( node ); // fake thisLocal
 							
@@ -583,8 +593,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 						Value oldindex = ar.getIndex();
 						if(!(oldbase instanceof FakeJimpleLocal))
 						{
-							Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase);
-							Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex) : oldindex;
+							Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
+							Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this) : oldindex;
 							Value node = Jimple.v().newArrayRef(newbase, newindex);
 							EquivalentValue nodeEqVal = new EquivalentValue( node ); // fake thisLocal
 
@@ -623,7 +633,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 				Local oldbase = (Local) ifr.getBase();
 				if(!(oldbase instanceof FakeJimpleLocal))
 				{
-					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase);
+					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
 					Value node = Jimple.v().newInstanceFieldRef(newbase, ifr.getField().makeRef());
 					EquivalentValue nodeEqVal = new EquivalentValue( node ); // fake thisLocal
 
@@ -637,8 +647,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 				Value oldindex = ar.getIndex();
 				if(!(oldbase instanceof FakeJimpleLocal))
 				{
-					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase);
-					Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex) : oldindex;
+					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
+					Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this) : oldindex;
 					Value node = Jimple.v().newArrayRef(newbase, newindex);
 					EquivalentValue nodeEqVal = new EquivalentValue( node ); // fake thisLocal
 
@@ -656,7 +666,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 				Local oldbase = (Local) ifr.getBase();
 				if(!(oldbase instanceof FakeJimpleLocal))
 				{
-					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase);
+					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
 					Value node = Jimple.v().newInstanceFieldRef(newbase, ifr.getField().makeRef());
 					EquivalentValue nodeEqVal = new EquivalentValue( node ); // fake thisLocal
 
@@ -670,8 +680,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 				Value oldindex = ar.getIndex();
 				if(!(oldbase instanceof FakeJimpleLocal))
 				{
-					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase);
-					Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex) : oldindex;
+					Local newbase = new FakeJimpleLocal("fakethis", oldbase.getType(), oldbase, this);
+					Value newindex = (oldindex instanceof Local) ? new FakeJimpleLocal("fakeindex", oldindex.getType(), (Local) oldindex, this) : oldindex;
 					Value node = Jimple.v().newArrayRef(newbase, newindex);
 					EquivalentValue nodeEqVal = new EquivalentValue( node ); // fake thisLocal
 

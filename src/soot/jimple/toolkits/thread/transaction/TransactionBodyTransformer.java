@@ -1,10 +1,12 @@
 package soot.jimple.toolkits.thread.transaction;
 
 import java.util.*;
+
 import soot.*;
-import soot.util.Chain;
-import soot.jimple.*;
+import soot.util.*;
 import soot.toolkits.scalar.*;
+import soot.jimple.*;
+import soot.jimple.toolkits.infoflow.*;
 
 public class TransactionBodyTransformer extends BodyTransformer
 {
@@ -180,6 +182,12 @@ public class TransactionBodyTransformer extends BodyTransformer
 					Value lock = getLockFor((EquivalentValue) tn.lockObject); // adds local vars and global objects if needed
 					if(lock instanceof Ref)
 					{
+						if(lock instanceof InstanceFieldRef)
+						{
+							InstanceFieldRef ifr = (InstanceFieldRef) lock;
+							if(ifr.getBase() instanceof FakeJimpleLocal)
+								lock = reconstruct(b, units, ifr, (tn.entermonitor != null ? tn.entermonitor : tn.beginning), (tn.entermonitor != null));
+						}
 						if(!b.getLocals().contains(lockObj[tn.setNumber]))
 							b.getLocals().add(lockObj[tn.setNumber]);
 						
@@ -202,6 +210,12 @@ public class TransactionBodyTransformer extends BodyTransformer
 					Value lock = getLockFor((EquivalentValue) tn.lockset.get(lockNum)); // adds local vars and global objects if needed
 					if( lock instanceof FieldRef )
 					{
+						if(lock instanceof InstanceFieldRef)
+						{
+							InstanceFieldRef ifr = (InstanceFieldRef) lock;
+							if(ifr.getBase() instanceof FakeJimpleLocal)
+								lock = reconstruct(b, units, ifr, (tn.entermonitor != null ? tn.entermonitor : tn.beginning), (tn.entermonitor != null));
+						}
 						// add a local variable for this lock
 						Local lockLocal = Jimple.v().newLocal("locksetObj" + tempNum, RefType.v("java.lang.Object"));
 						tempNum++;
@@ -359,6 +373,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 							Stmt newGotoStmt = Jimple.v().newGotoStmt(clr.after);
 							units.insertBeforeNoRedirect(newGotoStmt, clr.after);
 							clr.end = new Pair(newGotoStmt, newExitmonitor);
+							clr.last = newGotoStmt;
 						}
 					}
 					
@@ -394,7 +409,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 									lastEnd = end;
 							}
 						}
-						if(clr.last == null || !units.contains(clr.last))
+						if(clr.last == null) // || !units.contains(clr.last))
 							clr.last = lastEnd; // last stmt and last end are the same
 						if( lastEnd == null )
 							throw new RuntimeException("Lock Region has no ends!  Where should we put the exception handling???");
@@ -414,8 +429,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 						units.insertAfter(newThrow, newExitmonitor);
 						// Add traps
 						SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
-						b.getTraps().addLast(Jimple.v().newTrap(throwableClass, clr.beginning, lastEnd, newCatch));
-						b.getTraps().addLast(Jimple.v().newTrap(throwableClass, newExitmonitor, newThrow, newCatch));
+						b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, newExitmonitor, newThrow, newCatch));
+						b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, clr.beginning, lastEnd, newCatch));
 						clr.exceptionalEnd = new Pair(newThrow, newExitmonitor);
 					}
 				}
@@ -520,6 +535,51 @@ public class TransactionBodyTransformer extends BodyTransformer
 		}
 	}
 	
+	static int baseLocalNum = 0;
+	
+	public InstanceFieldRef reconstruct(Body b, PatchingChain units, InstanceFieldRef lock, Stmt insertBefore, boolean redirect)
+	{
+		G.v().out.println("Reconstructing " + lock);
+
+		if(!(lock.getBase() instanceof FakeJimpleLocal))
+		{
+			G.v().out.println("  base is not a FakeJimpleLocal");
+			return lock;
+		}
+		FakeJimpleLocal fakeBase = (FakeJimpleLocal) lock.getBase();
+		
+		if(!(fakeBase.getInfo() instanceof LocksetAnalysis))
+			throw new RuntimeException("InstanceFieldRef cannot be reconstructed due to missing LocksetAnalysis info: " + lock);
+		LocksetAnalysis la = (LocksetAnalysis) fakeBase.getInfo();
+		
+		EquivalentValue baseEqVal = la.baseFor(lock);
+		if(baseEqVal == null)
+			throw new RuntimeException("InstanceFieldRef cannot be reconstructed due to lost base from Lockset");
+		Value base = baseEqVal.getValue();
+		Local baseLocal;
+		if(base instanceof InstanceFieldRef)
+		{
+			Value newBase = reconstruct(b, units, (InstanceFieldRef) base, insertBefore, redirect);
+			baseLocal = Jimple.v().newLocal("baseLocal" + (baseLocalNum++), newBase.getType());
+			b.getLocals().add(baseLocal);
+					
+			// make it equal to the right value
+			Stmt baseAssign = Jimple.v().newAssignStmt(baseLocal, newBase);
+			if(redirect == true)
+				units.insertBefore(baseAssign, insertBefore);
+			else
+				units.insertBeforeNoRedirect(baseAssign, insertBefore);
+		}
+		else if(base instanceof Local)
+			baseLocal = (Local) base;
+		else
+			throw new RuntimeException("InstanceFieldRef cannot be reconstructed because it's base is of an unsupported type" + base.getType() + ": " + base);
+		
+		InstanceFieldRef newLock = Jimple.v().newInstanceFieldRef(baseLocal, lock.getField().makeRef());
+		G.v().out.println("  as " + newLock);
+		return newLock;
+	}
+	
 	static int lockNumber = 0;
 	static Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<EquivalentValue, StaticFieldRef>();
 	static public Value getLockFor(EquivalentValue lockEqVal)
@@ -535,13 +595,22 @@ public class TransactionBodyTransformer extends BodyTransformer
 		if( lock instanceof Local )
 			return lock;
 			
-		if( lock instanceof StaticFieldRef )
+		if( lock instanceof StaticFieldRef || lock instanceof NewStaticLock)
 		{
 			if( lockEqValToLock.containsKey(lockEqVal) )
 				return lockEqValToLock.get(lockEqVal);
 			
-			StaticFieldRef sfrLock = (StaticFieldRef) lock;
-			SootClass lockClass = sfrLock.getField().getDeclaringClass();
+			SootClass lockClass = null;
+			if( lock instanceof StaticFieldRef )
+			{
+				StaticFieldRef sfrLock = (StaticFieldRef) lock;
+				lockClass = sfrLock.getField().getDeclaringClass();
+			}
+			else if( lock instanceof NewStaticLock )
+			{
+				DeadlockAvoidanceEdge dae = (DeadlockAvoidanceEdge) lock;
+				lockClass = dae.getLockClass();
+			}
         	SootMethod clinitMethod = null;
         	JimpleBody clinitBody = null;
         	Stmt firstStmt = null;

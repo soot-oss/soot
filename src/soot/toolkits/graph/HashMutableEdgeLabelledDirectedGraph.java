@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai, Patrick Lam
+ * Copyright (C) 2007 Richard L. Halpert
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -203,6 +204,23 @@ public class HashMutableEdgeLabelledDirectedGraph implements MutableEdgeLabelled
 		DGEdge edge = new DGEdge(from, to);
 		return edgeToLabels.get(edge);
 	}
+	
+	public MutableDirectedGraph getEdgesForLabel(Object label)
+	{
+		List<DGEdge> edges = labelToEdges.get(label);
+		MutableDirectedGraph ret = new HashMutableDirectedGraph();
+		if(edges == null)
+			return ret;
+		for(DGEdge edge : edges)
+		{
+			if(!ret.containsNode(edge.from()))
+				ret.addNode(edge.from());
+			if(!ret.containsNode(edge.to()))
+				ret.addNode(edge.to());
+			ret.addEdge(edge.from(), edge.to());
+		}
+		return ret;
+	}
 
     public void removeEdge(Object from, Object to, Object label)
     {
@@ -343,22 +361,30 @@ public class HashMutableEdgeLabelledDirectedGraph implements MutableEdgeLabelled
             tails.remove(node);
     }
 
-    public void printGraph() {
+    public void printGraph()
+    {
 
-	for (Iterator it = iterator(); it.hasNext(); ) {
-	    Object node = it.next();
-	    G.v().out.println("Node = "+node);
-	    G.v().out.println("Preds:");
-	    for (Iterator predsIt = getPredsOf(node).iterator(); predsIt.hasNext(); ) {
-		G.v().out.print("     ");
-		G.v().out.println(predsIt.next());
-	    }
-	    G.v().out.println("Succs:");
-	    for (Iterator succsIt = getSuccsOf(node).iterator(); succsIt.hasNext(); ) {
-		G.v().out.print("     ");
-		G.v().out.println(succsIt.next());
-	    }
-	}
+		for (Iterator it = iterator(); it.hasNext(); )
+		{
+		    Object node = it.next();
+		    G.v().out.println("Node = "+node);
+		    G.v().out.println("Preds:");
+		    for (Iterator predsIt = getPredsOf(node).iterator(); predsIt.hasNext(); )
+		    {
+		    	Object pred = predsIt.next();
+		        DGEdge edge = new DGEdge(pred, node);
+		        List labels = edgeToLabels.get(edge);
+				G.v().out.println("     " + pred + " [" + labels + "]");
+		    }
+		    G.v().out.println("Succs:");
+		    for (Iterator succsIt = getSuccsOf(node).iterator(); succsIt.hasNext(); )
+		    {
+		    	Object succ = succsIt.next();
+		        DGEdge edge = new DGEdge(node, succ);
+		        List labels = edgeToLabels.get(edge);
+				G.v().out.println("     " + succ + " [" + labels + "]");
+		    }
+		}
     }
 
 }

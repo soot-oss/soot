@@ -49,13 +49,20 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
 
 
     /**
-     *  Removes an edge between 2 nodes in the graph.
-     *  If the edge is not present no change is made.
+     *  Returns a list of labels for which an edge exists between from and to
      *  @param from   out node for the edges to remove.
      *  @param to     in node for the edges to remove.
-     *  @param label  label for the edge to remove.
      */
     public List<Object> getLabelsForEdges(Object from, Object to);
+
+
+    /**
+     *  Returns a MutableDirectedGraph consisting of
+     *  all edges with the given label and their nodes.
+     *  Nodes without edges are not included in the new graph.
+     *  @param label  label for the edge to remove.
+     */
+	public MutableDirectedGraph getEdgesForLabel(Object label);
 
 
     /**

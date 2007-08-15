@@ -9,9 +9,7 @@ import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.jimple.toolkits.thread.mhp.UnsynchronizedMhpAnalysis;
 import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.infoflow.ClassInfoFlowAnalysis;
-import soot.jimple.toolkits.infoflow.SmartMethodInfoFlowAnalysis;
-import soot.jimple.toolkits.infoflow.SmartMethodLocalObjectsAnalysis;
+import soot.jimple.toolkits.infoflow.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.toolkits.scalar.*;
@@ -754,10 +752,11 @@ public class TransactionTransformer extends SceneTransformer
 
 		// Find runtime lock objects (if using dynamic locks or locksets)
 		Map<Value, Integer> lockToLockNum = null;
+		List<PointsToSetInternal> lockPTSets = null;
 		if(!optionOneGlobalLock && !optionStaticLocks && !optionLeaveOriginalLocks)
 		{
 			// Data structures for determining lock numbers
-			List<PointsToSetInternal> lockPTSets = new ArrayList<PointsToSetInternal>();
+			lockPTSets = new ArrayList<PointsToSetInternal>();
 			lockToLockNum = new HashMap<Value, Integer>();
 
 			// For each transaction, if the group's R/Ws may be fields of the same object, 
@@ -771,59 +770,10 @@ public class TransactionTransformer extends SceneTransformer
 				if(group < 0)
 					continue;
 						
-				if(tn.group.useDynamicLock || optionUseLocksets) //tn.group.useLocksets) // if attempting to use a dynamic lock or locksets
+				if(tn.group.useDynamicLock || tn.group.useLocksets) // if attempting to use a dynamic lock or locksets
 				{
-					// Get a list of contributing uses
-/*					Map<Stmt, List<Value>> unitToUses = new HashMap<Stmt, List<Value>>();
-					Iterator entryIt = tn.unitToRWSet.entrySet().iterator();
-					while(entryIt.hasNext())
-					{
-						Map.Entry e = (Map.Entry) entryIt.next();
-						RWSet rw = (RWSet) e.getValue();
-						if(rw.hasNonEmptyIntersection(rws[group]))
-						{
-							// this is a contributing unit
-							Unit u = (Unit) e.getKey();
-							Stmt s = (Stmt) u;
-														
-							// Get list of contributing uses from this unit
-							List allUses = tn.unitToUses.get(s);
-							List<Value> contributingUses = new ArrayList<Value>();								
-							for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
-							{
-								Value vEqVal = (Value) usesIt.next();
-								Value v = ((vEqVal instanceof EquivalentValue) ? ((EquivalentValue) vEqVal).getValue() : vEqVal);
-								
-								if(s.containsFieldRef())
-								{
-									FieldRef fr = s.getFieldRef();
-									if(fr instanceof InstanceFieldRef)
-									{
-										if(((InstanceFieldRef) fr).getBase() == v)
-											v = fr;
-									}
-								}
-								RWSet valRW = tasea.valueRWSet(v, tn.method, s, tn);
-//								G.v().out.println("v: " + v);
-//								G.v().out.println("RW: " + valRW + "groupRW: " + rws[group]);
-								if(	valRW != null && valRW.hasNonEmptyIntersection(rws[group]) )
-								{
-//									G.v().out.print("CONTRIBUTES!\n\n");
-									contributingUses.add(vEqVal);
-									
-								}
-//								else
-//									G.v().out.println("DOESN'T contribute!\n\n");
-							}
-							unitToUses.put(s, contributingUses);
-						}
-					}
-*/
 					
 					// Get list of objects (FieldRef or Local) to be locked (lockset analysis)
-//					if(optionUseLocksets) G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
-//					LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-//					tn.lockset = la.getLocksetOf(unitToUses, tn.beginning);
 					G.v().out.println("[wjtp.tn] * " + tn.name + " *");
 					LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
 					tn.lockset = la.getLocksetOf(tasea, rws[group], tn);
@@ -832,12 +782,33 @@ public class TransactionTransformer extends SceneTransformer
 					// TODO check for nullness
 					if(optionUseLocksets)
 					{
-//						G.v().out.println("  " + (tn.lockset == null ? "FAILURE" : tn.lockset.toString()));
+						// Post-process the locksets
 						if(tn.lockset == null || tn.lockset.size() <= 0)
+						{
+							// If the lockset is invalid, revert the entire group to static locks:
 							tn.group.useLocksets = false;
+							
+							// Create a lockset containing a single placeholder static lock for each tn in the group
+							Value newStaticLock = new NewStaticLock(tn.method.getDeclaringClass());
+							EquivalentValue newStaticLockEqVal = new EquivalentValue(newStaticLock);
+							for(Transaction groupTn : tn.group)
+							{
+								groupTn.lockset = new ArrayList<EquivalentValue>();
+								groupTn.lockset.add(newStaticLockEqVal);
+							}
+
+							// Assign a lock number to the placeholder
+							Integer lockNum = new Integer(-lockPTSets.size()); // negative indicates a static lock
+							G.v().out.println("[wjtp.tn] Lock: num " + lockNum + " type " + newStaticLock.getType() + " obj " + newStaticLock);
+							lockToLockNum.put(newStaticLockEqVal, lockNum);
+							lockToLockNum.put(newStaticLock, lockNum);
+							PointsToSetInternal dummyLockPT = new HashPointsToSet(newStaticLock.getType(), (PAG) pta);
+							lockPTSets.add(dummyLockPT);
+						}
 						else
 						{
-							// Figure out the lock number for each lock
+							// If the lockset is valid
+							// Assign a lock number for each lock in the lockset
 							for( EquivalentValue lockEqVal : tn.lockset )
 							{
 								Value lock = lockEqVal.getValue();
@@ -849,7 +820,15 @@ public class TransactionTransformer extends SceneTransformer
 								else if(lock instanceof StaticFieldRef) // needs special treatment: could be primitive
 									lockPT = null;
 								else if(lock instanceof InstanceFieldRef)
-									lockPT = (PointsToSetInternal) pta.reachingObjects((Local) ((InstanceFieldRef) lock).getBase(), ((FieldRef) lock).getField());
+								{
+									Local base = (Local) ((InstanceFieldRef) lock).getBase();
+									if(base instanceof FakeJimpleLocal)
+										lockPT = (PointsToSetInternal) pta.reachingObjects(((FakeJimpleLocal)base).getRealLocal(), ((FieldRef) lock).getField());
+									else
+										lockPT = (PointsToSetInternal) pta.reachingObjects(base, ((FieldRef) lock).getField());
+								}
+								else if(lock instanceof NewStaticLock) // placeholder for anything that needs a static lock
+									lockPT = null;
 								else
 									lockPT = null;
 									
@@ -926,14 +905,20 @@ public class TransactionTransformer extends SceneTransformer
 			}
 			if(optionUseLocksets)
 			{
+				// If any lock has only a singleton reaching object, treat it like a static lock
 				for(int i = 0; i < lockPTSets.size(); i++)
 				{
 					PointsToSetInternal pts = lockPTSets.get(i);
-					if(pts.size() == 1)
+					if(pts.size() == 1 && false) // isSingleton(pts)) // It's NOT easy to find a singleton: single alloc node must be run just once
 					{
 						for(Object e : lockToLockNum.entrySet())
 						{
-							
+							Map.Entry entry = (Map.Entry) e;
+							Integer value = (Integer) entry.getValue();
+							if(value == i)
+							{
+								entry.setValue(new Integer(-i));
+							}
 						}
 					}
 				}
@@ -941,35 +926,29 @@ public class TransactionTransformer extends SceneTransformer
 		}
 		
 		// print out locksets
-		for( Transaction tn : AllTransactions )
+		if(optionUseLocksets)
 		{
-			if( tn.group != null && tn.group.useLocksets )
+			for( Transaction tn : AllTransactions )
 			{
-				G.v().out.print("[wjtp.tn] " + tn.name + " lockset: [");
-				boolean first = true;
-				for( EquivalentValue lockEqVal : tn.lockset )
+				if( tn.group != null )
 				{
-					if(!first)
-						G.v().out.print(" ");
-					first = false;
-					G.v().out.print(lockToLockNum.get(lockEqVal.getValue()));
+					G.v().out.println("[wjtp.tn] " + tn.name + " lockset: " + locksetToLockNumString(tn.lockset, lockToLockNum) + (tn.group.useLocksets ? "" : " (placeholder)"));
 				}
-				G.v().out.println("]");
 			}
 		}
-
 		
 		
 		// *** Detect the Possibility of Deadlock for Locksets ***
+		MutableEdgeLabelledDirectedGraph permanentOrder = new HashMutableEdgeLabelledDirectedGraph();
+		MutableEdgeLabelledDirectedGraph lockOrder = null;
 		if(optionUseLocksets) // deadlock detection and lock ordering for lockset allocations
 		{
-			MutableEdgeLabelledDirectedGraph lockOrder;
 			boolean foundDeadlock;
 			do
 			{
-				G.v().out.println("[wjtp.tn] *** Detect the Possibility of Deadlock for Locksets *** " + (new Date()));
+				G.v().out.println("[wjtp.tn] *** Detect " + (optionAvoidDeadlock ? "and Correct " : "") + "the Possibility of Deadlock for Locksets *** " + (new Date()));
 				foundDeadlock = false;
-		    	lockOrder = new HashMutableEdgeLabelledDirectedGraph(); // start each iteration with a fresh graph
+		    	lockOrder = (HashMutableEdgeLabelledDirectedGraph) ((HashMutableEdgeLabelledDirectedGraph) permanentOrder).clone(); // start each iteration with a fresh copy of the permanent orders
 				
 				// Assemble the partial ordering of locks
 		    	Iterator<Transaction> deadlockIt1 = AllTransactions.iterator();
@@ -978,7 +957,7 @@ public class TransactionTransformer extends SceneTransformer
 		    		Transaction tn1 = deadlockIt1.next();
 		    		
 		    		// skip if unlocked
-		    		if( tn1.setNumber <= 0 || !tn1.group.useLocksets )
+		    		if( tn1.group == null )
 		    			continue;
 		    			
 		    		// add a node for each lock in this lockset
@@ -1011,7 +990,7 @@ public class TransactionTransformer extends SceneTransformer
 		    			Transaction tn2 = deadlockIt2.next();
 		    			
 		    			// skip if unlocked
-		    			if( tn2.setNumber <= 0 || !tn2.group.useLocksets )
+		    			if( tn2.group == null )
 		    				continue;
 		    			
 		    			// add a node for each lock in this lockset
@@ -1046,21 +1025,42 @@ public class TransactionTransformer extends SceneTransformer
 									Integer to = (Integer) lit.next(); // node the edges go to
 									List labels = lockOrder.getLabelsForEdges(lock2Num, to);
 									boolean keep = false;
-									for(Object l : labels)
+									if(labels != null) // this shouldn't really happen... is something wrong with HMELDG?
 									{
-										Transaction label = (Transaction) l;
-										
-										if(true) // !hasStaticLockInCommon(tn1, label))
+										for(Object l : labels)
 										{
-											keep = true;
-											break;
+											Transaction labelTn = (Transaction) l;
+											
+											// Check if labelTn and tn1 share a static lock
+											boolean tnsShareAStaticLock = false;
+											for( EquivalentValue tn1LockEqVal : tn1.lockset )
+											{
+												Integer tn1LockNum = lockToLockNum.get(tn1LockEqVal.getValue());
+												if(tn1LockNum < 0)
+												{
+													// this is a static lock... see if some lock in labelTn has the same #
+													for( EquivalentValue labelTnLockEqVal : labelTn.lockset )
+													{
+														if(lockToLockNum.get(labelTnLockEqVal.getValue()) == tn1LockNum)
+														{
+															tnsShareAStaticLock = true;
+														}
+													}
+												}
+											}
+											
+											if(!tnsShareAStaticLock) // !hasStaticLockInCommon(tn1, labelTn))
+											{
+												keep = true;
+												break;
+											}
 										}
 									}
 									if(!keep)
 										lit.remove();
 								}
 
-				    			for( int i = 0; i < afterTn2.size(); i++ )
+/*				    			for( int i = 0; i < afterTn2.size(); i++ )
 				    			{
 				    				List succs = lockOrder.getSuccsOf(afterTn2.get(i)); // but not here
 				    				for( Object o : succs )
@@ -1069,14 +1069,15 @@ public class TransactionTransformer extends SceneTransformer
 						    				afterTn2.add(o);
 					    			}
 				    			}
+*/
 			    				
 								for( EquivalentValue lock1EqVal : tn1.lockset )
 								{
 									Value lock1 = lock1EqVal.getValue();
 									Integer lock1Num = lockToLockNum.get(lock1);
 									
-						    		if( ( lock1Num != lock2Num /* || 
-							    		  lock1 is dynamic and not the same lock in both places */ ) &&
+						    		if( ( lock1Num != lock2Num || 
+						    			  lock1Num > 0 ) &&
 							    		  afterTn2.contains(lock1Num) )
 					    			{
 					    				if(!optionAvoidDeadlock)
@@ -1086,29 +1087,169 @@ public class TransactionTransformer extends SceneTransformer
 						    			}
 						    			else
 						    			{
-						    				G.v().out.println("[wjtp.tn] DEADLOCK HAS BEEN DETECTED:");
-						    				G.v().out.println("[wjtp.tn]   " + lock1Num + " ("+lock1+") and " + lock2Num + " ("+lock2+") ");
-						    				G.v().out.println("[wjtp.tn]   adding deadlock avoidance edge between " +
-						    					(tn1.name) + " and " + (tn2.name) + " and restarting deadlock detection");
+						    				G.v().out.println("[wjtp.tn] DEADLOCK HAS BEEN DETECTED while inspecting " + lock1Num + " ("+lock1+") and " + lock2Num + " ("+lock2+") ");
 			    					
-											// add edge!
-											// 
+											// Create a deadlock avoidance edge
+											DeadlockAvoidanceEdge dae = new DeadlockAvoidanceEdge(tn1.method.getDeclaringClass());
+											EquivalentValue daeEqVal = new EquivalentValue(dae);
+											
+											// Register it as a static lock
+											Integer daeNum = new Integer(-lockPTSets.size()); // negative indicates a static lock
+											permanentOrder.addNode(daeNum);
+											lockToLockNum.put(dae, daeNum);
+											PointsToSetInternal dummyLockPT = new HashPointsToSet(lock1.getType(), (PAG) pta);
+											lockPTSets.add(dummyLockPT);
+
+											// Add it to the locksets of tn1 and whoever says l2 before l1
+											for(EquivalentValue lockEqVal : tn1.lockset)
+											{
+												Integer lockNum = lockToLockNum.get(lockEqVal.getValue());
+												if(!permanentOrder.containsNode(lockNum))
+													permanentOrder.addNode(lockNum);
+												permanentOrder.addEdge(daeNum, lockNum, tn1);
+											}
+											tn1.lockset.add(daeEqVal);
+
+											List forwardLabels = lockOrder.getLabelsForEdges(lock1Num, lock2Num);
+											if(forwardLabels != null)
+											{
+												for(Object t : forwardLabels)
+												{
+													Transaction tn = (Transaction) t;
+													if(!tn.lockset.contains(daeEqVal))
+													{
+														for(EquivalentValue lockEqVal : tn.lockset)
+														{
+															Integer lockNum = lockToLockNum.get(lockEqVal.getValue());
+															if(!permanentOrder.containsNode(lockNum))
+																permanentOrder.addNode(lockNum);
+															permanentOrder.addEdge(daeNum, lockNum, tn);
+														}
+														tn.lockset.add(daeEqVal);
+													}
+												}
+											}
+											
+											List backwardLabels = lockOrder.getLabelsForEdges(lock2Num, lock1Num);
+											if(backwardLabels != null)
+											{
+												for(Object t : backwardLabels)
+												{
+													Transaction tn = (Transaction) t;
+													if(!tn.lockset.contains(daeEqVal))
+													{
+														for(EquivalentValue lockEqVal : tn.lockset)
+														{
+															Integer lockNum = lockToLockNum.get(lockEqVal.getValue());
+															if(!permanentOrder.containsNode(lockNum))
+																permanentOrder.addNode(lockNum);
+															permanentOrder.addEdge(daeNum, lockNum, tn);
+														}
+														tn.lockset.add(daeEqVal);
+							    						G.v().out.println("[wjtp.tn]   Adding deadlock avoidance edge between " +
+							    							(tn1.name) + " and " + (tn.name));
+							    					}
+												}
+												G.v().out.println("[wjtp.tn]   Restarting deadlock detection");
+											}
 											
 											foundDeadlock = true;
+											break;
 						    			}
 					    			}
 					    			
 					    			if(lock1Num != lock2Num)
 										lockOrder.addEdge(lock1Num, lock2Num, tn1);
 					    		}
+					    		if(foundDeadlock)
+					    			break;
 					    	}
 				    	}
 		    		}
 		    	}
 			} while(foundDeadlock && optionAvoidDeadlock);
+			((HashMutableEdgeLabelledDirectedGraph) lockOrder).printGraph();
+		
+			G.v().out.println("[wjtp.tn] *** Reorder Locksets to Avoid Deadlock *** " + (new Date()));
+			for(Transaction tn : AllTransactions)
+			{
+				// Get the portion of the lock order that is visible to tn
+				HashMutableDirectedGraph visibleOrder = new HashMutableDirectedGraph();
+				if(tn.group != null)
+				{
+					for(Transaction otherTn : AllTransactions)
+					{
+						// Check if otherTn and tn share a static lock
+						boolean tnsShareAStaticLock = false;
+						for( EquivalentValue tnLockEqVal : tn.lockset )
+						{
+							Integer tnLockNum = lockToLockNum.get(tnLockEqVal.getValue());
+							if(tnLockNum < 0)
+							{
+								// this is a static lock... see if some lock in labelTn has the same #
+								if(otherTn.group != null)
+								{
+									for( EquivalentValue otherTnLockEqVal : otherTn.lockset )
+									{
+										if(lockToLockNum.get(otherTnLockEqVal.getValue()) == tnLockNum)
+										{
+											tnsShareAStaticLock = true;
+										}
+									}
+								}
+								else
+									tnsShareAStaticLock = true; // not really... but we want to skip this one
+							}
+						}
+						
+						if(!tnsShareAStaticLock || tn == otherTn) // if tns don't share any static lock, or if tns are the same one
+						{
+							// add these orderings to tn's visible order
+							MutableDirectedGraph orderings = lockOrder.getEdgesForLabel(otherTn);
+							for(Object node1 : orderings.getNodes())
+							{
+								if(!visibleOrder.containsNode(node1))
+									visibleOrder.addNode(node1);
+								for(Object node2 : orderings.getSuccsOf(node1))
+								{
+									if(!visibleOrder.containsNode(node2))
+										visibleOrder.addNode(node2);
+									visibleOrder.addEdge(node1, node2);
+								}
+							}
+						}
+					}
+
+					G.v().out.println("VISIBLE ORDER FOR " + tn.name);
+					visibleOrder.printGraph();
+				
+					// Order locks in tn's lockset according to the visible order (insertion sort)
+					List<EquivalentValue> newLockset = new ArrayList();
+					for(EquivalentValue lockEqVal : tn.lockset)
+					{
+						Value lockToInsert = lockEqVal.getValue();
+						Integer lockNumToInsert = lockToLockNum.get(lockToInsert);
+						int i = 0;
+						while( i < newLockset.size() )
+						{
+							EquivalentValue existingLockEqVal = newLockset.get(i);
+							Value existingLock = existingLockEqVal.getValue();
+							Integer existingLockNum = lockToLockNum.get(existingLock);
+							if( visibleOrder.containsEdge(lockNumToInsert, existingLockNum) ||
+								lockNumToInsert < existingLockNum )
+	//							!visibleOrder.containsEdge(existingLockNum, lockNumToInsert) ) // if(! existing before toinsert )
+								break;
+							i++;
+						}
+						newLockset.add(i, lockEqVal);
+					}
+					G.v().out.println("reordered from " + locksetToLockNumString(tn.lockset, lockToLockNum) +
+									" to " + locksetToLockNumString(newLockset, lockToLockNum));
+
+					tn.lockset = newLockset;
+				}
+			}
 		}
-		
-		
 		
 		// *** Print Output and Transform Program ***
     	G.v().out.println("[wjtp.tn] *** Print Output and Transform Program *** " + (new Date()));
@@ -1163,6 +1304,21 @@ public class TransactionTransformer extends SceneTransformer
 	    	    }
 	    	}
 	    }
+	}
+	
+	public String locksetToLockNumString(List<EquivalentValue> lockset, Map<Value, Integer> lockToLockNum)
+	{
+		if( lockset == null ) return "null";
+		String ret = "[";
+		boolean first = true;
+		for( EquivalentValue lockEqVal : lockset )
+		{
+			if(!first)
+				ret = ret + " ";
+			first = false;
+			ret = ret + lockToLockNum.get(lockEqVal.getValue());
+		}
+		return ret + "]";
 	}
     
     public boolean mayHappenInParallel(Transaction tn1, Transaction tn2)

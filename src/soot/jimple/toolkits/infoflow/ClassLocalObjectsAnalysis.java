@@ -95,7 +95,8 @@ public class ClassLocalObjectsAnalysis
 
     	if(true)
     	{
-    		G.v().out.println("[local-objects]   finished at " + new Date());
+    		G.v().out.println("[local-objects]   finished at                 " + new Date());
+    		G.v().out.println("[local-objects]   (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
     	}		
 	}
 	

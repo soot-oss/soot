@@ -3,7 +3,7 @@ package soot.jimple.toolkits.thread.transaction;
 import java.util.*;
 import soot.*;
 
-class TransactionGroup
+class TransactionGroup implements Iterable<Transaction>
 {
 	int groupNum; 
 	
