@@ -623,6 +623,7 @@ public class TransactionTransformer extends SceneTransformer
     		rws[group] = new CodeBlockRWSet();
 		if(!optionStaticLocks)
 		{
+			// THIS SHOULD BE REMOVED AND REPLACED WITH A PER-TRANSACTION CONTRIBUTING RWSET
 	    	Iterator<Transaction> tnIt8 = AllTransactions.iterator();
 	    	while(tnIt8.hasNext())
 	    	{
@@ -642,26 +643,28 @@ public class TransactionTransformer extends SceneTransformer
 		// of a shared lock object (if all dependencies are fields/localobjs of the same object)
 		if(optionStaticLocks)
 		{
+			// Allocate one new static lock for each group.
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
 				TransactionGroup tnGroup = groups.get(group + 1);
-				tnGroup.isDynamicLock = false; // actually, unknown, so not necessary to set it
+				tnGroup.isDynamicLock = false;
 				tnGroup.useDynamicLock = false; 
 				tnGroup.lockObject = null;
 			}
 		}
 		else if(optionLeaveOriginalLocks)
 		{
-			// if for any lock there is any def to anything other than a static field, then it's a local lock.
-			// initialize all groups to static
+			// This mode is treated similarly to dynamic allocation: one lock per group, could be static or dynamic.
+			// However, instead of finding the lock, we already have it, and need to figure out if it's static or not.
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
 				TransactionGroup tnGroup = groups.get(group + 1);
-				tnGroup.isDynamicLock = false; // actually, unknown, so not necessary to set it
+				tnGroup.isDynamicLock = false; // assume it's a static lock... then try to prove otherwise
 				tnGroup.useDynamicLock = false;
 				tnGroup.lockObject = null;
 			}
 			
+			// if for any lock there is any def to anything other than a static field, then it's a local lock.			
 			// for each transaction, check every def of the lock
 	    	Iterator<Transaction> tnAIt = AllTransactions.iterator();
 	    	while(tnAIt.hasNext())
