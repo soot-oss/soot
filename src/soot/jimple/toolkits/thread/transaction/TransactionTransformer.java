@@ -1028,7 +1028,7 @@ public class TransactionTransformer extends SceneTransformer
 									Integer to = (Integer) lit.next(); // node the edges go to
 									List labels = lockOrder.getLabelsForEdges(lock2Num, to);
 									boolean keep = false;
-									if(labels != null) // this shouldn't really happen... is something wrong with HMELDG?
+									if(labels != null) // this shouldn't really happen... is something wrong with the edge-labelled graph?
 									{
 										for(Object l : labels)
 										{

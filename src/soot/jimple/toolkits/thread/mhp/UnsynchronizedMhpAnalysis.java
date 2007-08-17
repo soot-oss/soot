@@ -96,7 +96,7 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 			List threadAllocNodes = startToAllocNodes.get(e.getKey());
 
 			// Get a list of all possible unique Runnable.run methods for this thread start statement
-			AbstractRuntimeThread thread = new AbstractRuntimeThread(); // provides a list interface to the methods in a threads sub call graph
+			AbstractRuntimeThread thread = new AbstractRuntimeThread(); // provides a list interface to the methods in a thread's sub-call-graph
 			thread.setStartStmt(startStmt);
 //			List threadMethods = new ArrayList();
 			Iterator runMethodsIt = runMethods.iterator();
