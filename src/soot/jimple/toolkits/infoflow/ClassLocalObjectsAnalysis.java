@@ -14,7 +14,7 @@ import soot.jimple.*;
 
 public class ClassLocalObjectsAnalysis
 {
-	boolean printdfgs = false;
+	boolean printdfgs;
 
 	LocalObjectsAnalysis loa;
 	InfoFlowAnalysis dfa;
@@ -251,6 +251,7 @@ public class ClassLocalObjectsAnalysis
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
+					G.v().out.println("Attempting to print graphs");
 					DirectedGraph primitiveGraph = primitiveDfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
 					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + "_primitive", 
 						primitiveGraph, method.getName() + "_primitive", false);
@@ -266,6 +267,7 @@ public class ClassLocalObjectsAnalysis
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
+					G.v().out.println("Attempting to print graph");
 					DirectedGraph nonPrimitiveGraph = dfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
 					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName(),
 						nonPrimitiveGraph, method.getName(), false);

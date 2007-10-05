@@ -16,7 +16,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	MhpTester mhp;
 	List<AbstractRuntimeThread> threads;
 	InfoFlowAnalysis primitiveDfa;
-	static boolean printDebug = false;
+	static boolean printDebug = false; // DEBUG!!!
 	
 	Map valueCache;
 	Map fieldCache;
@@ -24,7 +24,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	
 	public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
 	{
-		super(new InfoFlowAnalysis(false, true, printDebug)); // ref-only, without inner fields
+		super(new InfoFlowAnalysis(false, true, printDebug)); // ref-only, with inner fields
 		this.mhp = mhp;
 		this.threads = mhp.getThreads();
 		this.primitiveDfa = new InfoFlowAnalysis(true, true, printDebug); // ref+primitive, with inner fields
@@ -83,14 +83,12 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 		
 		if(printDebug)
 			G.v().out.println("- " + localOrRef + " in " + sm + " is...");
-		Iterator<AbstractRuntimeThread> threadsIt = threads.iterator();
-		while(threadsIt.hasNext())
-		{
-			AbstractRuntimeThread thread = threadsIt.next();
-			Iterator<Object> runMethodsIt = thread.getRunMethods().iterator();
-			while(runMethodsIt.hasNext())
-			{
-				SootMethod runMethod = (SootMethod) runMethodsIt.next();
+	    for(AbstractRuntimeThread thread : mhp.getThreads())
+	    {
+	        for(Object meth : thread.getRunMethods())
+	        {
+	            SootMethod runMethod = (SootMethod) meth;
+
 				if( runMethod.getDeclaringClass().isApplicationClass() &&
 					!isObjectLocalToContext(localOrRef, sm, runMethod))
 				{
@@ -99,6 +97,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 														" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 														" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
 //					valueCache.put(cacheKey, Boolean.FALSE);
+					escapesThrough(localOrRef, sm);
 					return false;
 				}
 			}
@@ -168,5 +167,66 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 		invokeCache.put(cacheKey, Boolean.FALSE);
 		return false;
 //*/
+	}
+	
+    /**
+        Returns a list of thread-shared sources and sinks,
+        or null if the given value is not thread-shared.
+     */
+	public List escapesThrough(Value sharedValue, SootMethod containingMethod)
+	{
+		// Return null if not actually a shared value
+//		if(isObjectThreadLocal(sharedValue, containingMethod))
+//			return null;
+			
+		List ret = new ArrayList();
+
+	    // The containingMethod might be called from multiple threads
+	    // It is possible for interestingValue to be thread-shared from some threads but not others,
+	    // so we must look at each thread separately.
+	    for(AbstractRuntimeThread thread : mhp.getThreads())
+	    {
+	        // Each "abstract thread" from the MHP analysis actually represents a "Thread.start()" statement that could
+	        // be starting one of several different kinds of threads.  We must consider each kind separately.
+	        for(Object meth : thread.getRunMethods())
+	        {
+	            SootMethod runMethod = (SootMethod) meth;
+
+	            // We can only analyze application classes for TLO
+	            if( runMethod.getDeclaringClass().isApplicationClass() &&
+	            	!isObjectLocalToContext(sharedValue, containingMethod, runMethod))
+	            {
+	                // This is one of the threads for which sharedValue is thread-shared
+	                // so now we will look for which object it escapes through
+	                ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(containingMethod.getDeclaringClass());
+	                CallLocalityContext clc = cloa.getMergedContext(containingMethod);
+
+					// Get the method info flow analysis object
+	                SmartMethodInfoFlowAnalysis smifa = dfa.getMethodInfoFlowAnalysis(containingMethod);
+
+	                // Get an IFA node for our sharedValue
+	                EquivalentValue sharedValueEqVal;
+	                if(sharedValue instanceof InstanceFieldRef)
+	                        sharedValueEqVal = InfoFlowAnalysis.getNodeForFieldRef(containingMethod, ((FieldRef) sharedValue).getField());
+	                else
+	                        sharedValueEqVal = new EquivalentValue(sharedValue);
+
+	                // Get the sources of our interesting value
+	                List<EquivalentValue> sources = smifa.sourcesOf(sharedValueEqVal);
+	                for(EquivalentValue source : sources)
+	                {
+	                    if(source.getValue() instanceof Ref)
+	                    {
+	                        if(clc != null && !clc.isFieldLocal(source)) // (bail out if clc is null)
+	                        {
+	                        	ret.add(source);
+	                            System.out.println(sharedValue + " in " + containingMethod + " escapes through " + source);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    return ret;
 	}
 }

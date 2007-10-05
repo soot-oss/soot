@@ -21,7 +21,7 @@ import soot.jimple.*;
 
 public class LocalObjectsAnalysis
 {
-	InfoFlowAnalysis dfa;
+	public InfoFlowAnalysis dfa;
 	UseFinder uf;
 	CallGraph cg;
 

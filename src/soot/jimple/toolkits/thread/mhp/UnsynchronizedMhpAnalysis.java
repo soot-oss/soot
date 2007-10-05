@@ -29,19 +29,39 @@ import java.util.*;
  *  determine if a thread may be run in parallel with itself.
  */
 
-public class UnsynchronizedMhpAnalysis implements MhpTester
+public class UnsynchronizedMhpAnalysis implements MhpTester, Runnable
 {
 	List<AbstractRuntimeThread> MHPLists;
 	boolean optionPrintDebug;
+	boolean optionThreaded = false; // DOESN'T WORK if set to true... ForwardFlowAnalysis uses a static field in a thread-unsafe way
+	
+	Thread self;
 	
 	public UnsynchronizedMhpAnalysis()
 	{
 		MHPLists = new ArrayList<AbstractRuntimeThread>();
 		optionPrintDebug = false;
+
+		self = null;
+
 		buildMHPLists();
 	}
 
-	public void buildMHPLists()
+	public void buildMHPLists() // can only be run once if optionThreaded is true
+	{
+		if(optionThreaded)
+		{
+			if(self != null)
+				return; // already running... do nothing
+
+			self = new Thread(this);
+			self.start();
+		}
+		else
+			run();
+	}
+
+	public void run()
 	{
 		SootMethod mainMethod = Scene.v().getMainClass().getMethodByName("main");
 
@@ -267,7 +287,7 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 			{
 				AbstractRuntimeThread someThread = it.next();
 				SootMethod someStartMethod = someThread.getStartStmtMethod();
-				if(mayHappenInParallel(someStartMethod, someStartMethod))
+				if(mayHappenInParallelInternal(someStartMethod, someStartMethod))
 				{
 					MHPLists.add(someThread); // add a second copy of it
 					someThread.setStartMethodMayHappenInParallel();
@@ -289,9 +309,53 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		}
 	}
 
-    public boolean mayHappenInParallel(SootMethod m1, SootMethod m2)
+    public boolean mayHappenInParallel(SootMethod m1, Unit u1, SootMethod m2, Unit u2)
     {
-    	if(MHPLists == null)
+   		if(optionThreaded)
+		{
+			if(self == null)
+				return true; // not started...
+
+			// Wait until finished
+			G.v().out.println("[mhp] waiting for thread to finish");
+			try
+			{
+				self.join();
+			}
+			catch(InterruptedException ie)
+			{
+				return true;
+			}
+		}
+
+		return mayHappenInParallelInternal(m1, m2);
+	}
+		
+    public boolean mayHappenInParallel(SootMethod m1, SootMethod m2)
+    { 
+   		if(optionThreaded)
+		{
+			if(self == null)
+				return true; // not started...
+
+			// Wait until finished
+			G.v().out.println("[mhp] waiting for thread to finish");
+			try
+			{
+				self.join();
+			}
+			catch(InterruptedException ie)
+			{
+				return true;
+			}
+		}
+
+		return mayHappenInParallelInternal(m1, m2);
+	}
+
+    private boolean mayHappenInParallelInternal(SootMethod m1, SootMethod m2)
+    {
+    	if(MHPLists == null) // not run
     	{
     		return true;
 		}
@@ -313,13 +377,25 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 		return false;
 	}
 	
-    public boolean mayHappenInParallel(SootMethod m1, Unit u1, SootMethod m2, Unit u2)
-    {
-		return mayHappenInParallel(m1, m2);
-	}
-
 	public void printMhpSummary()
 	{
+		if(optionThreaded)
+		{
+			if(self == null)
+				return; // not run... do nothing
+
+			// Wait until finished
+			G.v().out.println("[mhp] waiting for thread to finish");
+			try
+			{
+				self.join();
+			}
+			catch(InterruptedException ie)
+			{
+				return;
+			}
+		}
+
 		List<AbstractRuntimeThread> threads = new ArrayList<AbstractRuntimeThread>();
 		int size = MHPLists.size();
 		G.v().out.println("[mhp]");
@@ -339,6 +415,26 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 	
 	public List<SootClass> getThreadClassList()
 	{
+		if(optionThreaded)
+		{
+			if(self == null)
+				return null; // not run... do nothing
+
+			// Wait until finished
+			G.v().out.println("[mhp] waiting for thread to finish");
+			try
+			{
+				self.join();
+			}
+			catch(InterruptedException ie)
+			{
+				return null;
+			}
+		}
+		
+		if(MHPLists == null)
+			return null;
+		
 		List<SootClass> threadClasses = new ArrayList<SootClass>();
 		int size = MHPLists.size();
 		for(int i = 0; i < size; i++)
@@ -357,6 +453,26 @@ public class UnsynchronizedMhpAnalysis implements MhpTester
 	
 	public List<AbstractRuntimeThread> getThreads()
 	{
+		if(optionThreaded)
+		{
+			if(self == null)
+				return null; // not run... do nothing
+
+			// Wait until finished
+			G.v().out.println("[mhp] waiting for thread to finish");
+			try
+			{
+				self.join();
+			}
+			catch(InterruptedException ie)
+			{
+				return null;
+			}
+		}
+		
+		if(MHPLists == null)
+			return null;
+
 		List<AbstractRuntimeThread> threads = new ArrayList<AbstractRuntimeThread>();
 		int size = MHPLists.size();
 		for(int i = 0; i < size; i++)

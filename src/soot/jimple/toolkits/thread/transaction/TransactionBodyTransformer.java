@@ -288,7 +288,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					// Remove old prep stmt
 					if( clr.prepStmt != null )
 					{
-//						units.remove(clr.prepStmt);
+//						units.remove(clr.prepStmt); // seems to trigger bugs in code generation?
 					}
 					
 					// Reuse old entermonitor or insert new one, and insert prep
@@ -300,7 +300,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						units.remove(clr.entermonitor);
 						clr.entermonitor = newEntermonitor;
 
-						// units.insertBefore(newEntermonitor, newPrep);
+						// units.insertBefore(newEntermonitor, newPrep); // already inserted
 						// clr.prepStmt = newPrep;
 					}
 					else
@@ -308,7 +308,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						units.insertBeforeNoRedirect(newEntermonitor, clr.beginning);
 						clr.entermonitor = newEntermonitor;
 						
-						// units.insertBefore(newEntermonitor, newPrep);
+						// units.insertBefore(newEntermonitor, newPrep); // already inserted
 						// clr.prepStmt = newPrep;
 					}
 					
@@ -324,7 +324,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 							if(newPrep != null)
 							{
 								Stmt tmp = (Stmt) newPrep.clone();
-								units.insertBefore(tmp, exitmonitor);
+								units.insertBefore(tmp, exitmonitor); // seems to avoid code generation bugs?
 							}
 							units.insertBefore(newExitmonitor, exitmonitor);
 							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL

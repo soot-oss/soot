@@ -37,7 +37,7 @@ public class TransactionTransformer extends SceneTransformer
 	// Analysis options
 	boolean optionDoMHP = false;
 	boolean optionDoTLO = false;
-	boolean optionOnFlyTLO = false; // on-fly is more efficient, but harder to measure in time
+	boolean optionOnFlyTLO = false; // not a CLI option yet // on-fly is more efficient, but harder to measure in time
 	
 	// Output options
 	boolean optionPrintMhpSummary = true; // not a CLI option yet
@@ -93,8 +93,6 @@ public class TransactionTransformer extends SceneTransformer
 			optionStaticLocks = false;
 			optionUseLocksets = false;
 			optionLeaveOriginalLocks = true;
-			
-			optionIncludeEmptyPossibleEdges = false;
 		}
 		
 		optionAvoidDeadlock = PhaseOptions.getBoolean( options, "avoid-deadlock" );
@@ -104,11 +102,12 @@ public class TransactionTransformer extends SceneTransformer
 		optionDoTLO = PhaseOptions.getBoolean( options, "do-tlo" );
 //		optionOnFlyTLO = PhaseOptions.getBoolean( options, "on-fly-tlo" ); // not a real option yet
 
+//		optionPrintMhpSummary = PhaseOptions.getBoolean( options, "print-mhp" ); // not a real option yet
 		optionPrintGraph = PhaseOptions.getBoolean( options, "print-graph" );
 		optionPrintTable = PhaseOptions.getBoolean( options, "print-table" );
 		optionPrintDebug = PhaseOptions.getBoolean( options, "print-debug" );
 		
-		
+//		optionIncludeEmptyPossibleEdges = PhaseOptions.getBoolean( options, "include-empty-edges" ); // not a real option yet
 		
 		// *** Build May Happen In Parallel Info ***
 		if(optionDoMHP && Scene.v().getPointsToAnalysis() instanceof PAG)
@@ -117,7 +116,7 @@ public class TransactionTransformer extends SceneTransformer
 			mhp = new UnsynchronizedMhpAnalysis();
 			if(optionPrintMhpSummary)
 			{
-				mhp.printMhpSummary();
+//				mhp.printMhpSummary();
 			}
 		}
 		else
@@ -805,7 +804,7 @@ public class TransactionTransformer extends SceneTransformer
 							G.v().out.println("[wjtp.tn] Lock: num " + lockNum + " type " + newStaticLock.getType() + " obj " + newStaticLock);
 							lockToLockNum.put(newStaticLockEqVal, lockNum);
 							lockToLockNum.put(newStaticLock, lockNum);
-							PointsToSetInternal dummyLockPT = new HashPointsToSet(newStaticLock.getType(), (PAG) pta);
+							PointsToSetInternal dummyLockPT = new HashPointsToSet(newStaticLock.getType(), (PAG) pta); // KILLS CHA-BASED ANALYSIS (pointer exception)
 							lockPTSets.add(dummyLockPT);
 						}
 						else
@@ -1260,7 +1259,7 @@ public class TransactionTransformer extends SceneTransformer
 		// Print topological graph in graphviz format
 		if(optionPrintGraph)
 		{
-			printGraph(AllTransactions, groups);
+			printGraph(AllTransactions, groups, lockToLockNum);
 		}
 
 		// Print table of transaction information
@@ -1398,9 +1397,15 @@ public class TransactionTransformer extends SceneTransformer
     	}
 	}	
 
-	public void printGraph(Collection<Transaction> AllTransactions, List<TransactionGroup> groups)
+	public void printGraph(Collection<Transaction> AllTransactions, List<TransactionGroup> groups, Map<Value, Integer> lockToLockNum)
 	{
-		G.v().out.println("[transaction-graph] strict graph transactions {\n[transaction-graph] start=1;");
+		final String[] colors = {"black", "blue", "blueviolet", "chartreuse", "crimson", "darkgoldenrod1", "darkseagreen", "darkslategray", "deeppink",
+			"deepskyblue1", "firebrick1", "forestgreen", "gold", "gray80", "navy", "pink", "red", "sienna", "turquoise1", "yellow"};
+		Map<Integer, String> lockColors = new HashMap<Integer, String>();
+		int colorNum = 0;
+		HashSet<Transaction> visited = new HashSet<Transaction>();
+		
+		G.v().out.println("[transaction-graph]" + (optionUseLocksets ? "" : " strict") + " graph transactions {"); // "\n[transaction-graph] start=1;");
 
 		for(int group = 0; group < groups.size(); group++)
 		{
@@ -1427,6 +1432,10 @@ public class TransactionTransformer extends SceneTransformer
 								typeString = tn.group.lockObject.getType().toString();
 							G.v().out.println("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Lock: a \\n" + typeString + " object\";");
 						}
+						else if(tn.group.useLocksets)
+						{
+							G.v().out.println("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Locksets\";");
+						}
 						else
 						{
 							String objString = "";
@@ -1450,17 +1459,51 @@ public class TransactionTransformer extends SceneTransformer
 						printedHeading = true;
 					}
 					if(Scene.v().getReachableMethods().contains(tn.method))
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\"];");
+						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" style=\"setlinewidth(3)\"];");
 					else
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1];");
+						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1 style=\"setlinewidth(1)\"];");
 
-					Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
-					while(tnedgeit.hasNext())
+					if(tn.group.useLocksets) // print locks instead of dependence edges
 					{
-						TransactionDataDependency edge = tnedgeit.next();
-						Transaction tnedge = edge.other;
-						if(tnedge.setNumber == group + 1)
-							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
+						for(EquivalentValue lockEqVal : tn.lockset)
+						{
+							Integer lockNum = lockToLockNum.get(lockEqVal.getValue());
+							for(Transaction tn2 : tn.group)
+							{
+								if(!visited.contains(tn2) && mayHappenInParallel(tn, tn2))
+								{
+									for(EquivalentValue lock2EqVal : tn2.lockset)
+									{
+										Integer lock2Num = lockToLockNum.get(lock2EqVal.getValue());
+										if(lockNum.intValue() == lock2Num.intValue())
+										{
+											// Get the color for this lock
+											if(!lockColors.containsKey(lockNum))
+											{
+												lockColors.put(lockNum, colors[colorNum % colors.length]);
+												colorNum++;
+											}
+											String color = lockColors.get(lockNum);
+
+											// Draw an edge for this lock
+											G.v().out.println("[transaction-graph] " + tn.name + " -- " + tn2.name + " [color=" + color + " style=" + (lockNum >= 0 ? "dashed" : "solid") + " exactsize=1 style=\"setlinewidth(3)\"];");
+										}
+									}
+								}
+							}
+							visited.add(tn);
+						}
+					}
+					else
+					{
+						Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
+						while(tnedgeit.hasNext())
+						{
+							TransactionDataDependency edge = tnedgeit.next();
+							Transaction tnedge = edge.other;
+							if(tnedge.setNumber == group + 1)
+								G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(3)\"];");
+						}
 					}
 				}
 				
@@ -1468,29 +1511,39 @@ public class TransactionTransformer extends SceneTransformer
 			if(printedHeading)
 				G.v().out.println("[transaction-graph] }");
 		}
-
+		
+		// Print nodes with no group
 		{
+			boolean printedHeading = false;
 			Iterator<Transaction> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
 				Transaction tn = tnIt.next();
 				if(tn.setNumber == -1)
 				{
+					if(!printedHeading)
+					{
+						// putting these nodes in a "source" ranked subgraph makes them appear above all the clusters
+						G.v().out.println("[transaction-graph] subgraph lone {\n[transaction-graph] rank=source;");
+						printedHeading = true;
+					}
 					if(Scene.v().getReachableMethods().contains(tn.method))
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\"];");
+						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" style=\"setlinewidth(3)\"];");
 					else
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1];");
-				
+						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1 style=\"setlinewidth(1)\"];");
+
 					Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
 					while(tnedgeit.hasNext())
 					{
 						TransactionDataDependency edge = tnedgeit.next();
 						Transaction tnedge = edge.other;
 						if(tnedge.setNumber != tn.setNumber || tnedge.setNumber == -1)
-							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
+							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(1)\"];");
 					}
 				}
 			}
+			if(printedHeading)
+				G.v().out.println("[transaction-graph] }");
 		}
 
 		G.v().out.println("[transaction-graph] }");

@@ -267,15 +267,20 @@ public class InfoFlowAnalysis
 		while (nodesIt.hasNext())
 		{
 			Object node = nodesIt.next();
-			String nodeName = getNodeName(node);
-			canvas.drawNode(nodeName);
-			canvas.getNode(nodeName).setLabel(getNodeLabel(node));
+
+			canvas.drawNode(getNodeName(node));
+			canvas.getNode(getNodeName(node)).setLabel(getNodeLabel(node));
+
 			Iterator succsIt = graph.getSuccsOf(node).iterator();
 			
 			while (succsIt.hasNext())
 			{
 				Object s= succsIt.next();
-				canvas.drawEdge(nodeName, getNodeName(s));
+
+				canvas.drawNode(getNodeName(s));
+				canvas.getNode(getNodeName(s)).setLabel(getNodeLabel(s));
+
+				canvas.drawEdge(getNodeName(node), getNodeName(s));
 			}
 		}
 		
