@@ -97,7 +97,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 														" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 														" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
 //					valueCache.put(cacheKey, Boolean.FALSE);
-					escapesThrough(localOrRef, sm);
+//					escapesThrough(localOrRef, sm);
 					return false;
 				}
 			}
@@ -170,17 +170,16 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	}
 	
     /**
-        Returns a list of thread-shared sources and sinks,
-        or null if the given value is not thread-shared.
+        Returns a list of thread-shared sources and sinks.
      */
 	public List escapesThrough(Value sharedValue, SootMethod containingMethod)
 	{
-		// Return null if not actually a shared value
-//		if(isObjectThreadLocal(sharedValue, containingMethod))
-//			return null;
-			
 		List ret = new ArrayList();
 
+		// Return empty list if not actually a shared value
+		if(isObjectThreadLocal(sharedValue, containingMethod))
+			return ret;
+			
 	    // The containingMethod might be called from multiple threads
 	    // It is possible for interestingValue to be thread-shared from some threads but not others,
 	    // so we must look at each thread separately.
