@@ -171,14 +171,11 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	
     /**
         Returns a list of thread-shared sources and sinks.
+        Returns empty list if not actually a shared value.
      */
 	public List escapesThrough(Value sharedValue, SootMethod containingMethod)
 	{
 		List ret = new ArrayList();
-
-		// Return empty list if not actually a shared value
-		if(isObjectThreadLocal(sharedValue, containingMethod))
-			return ret;
 			
 	    // The containingMethod might be called from multiple threads
 	    // It is possible for interestingValue to be thread-shared from some threads but not others,
@@ -219,7 +216,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	                        if(clc != null && !clc.isFieldLocal(source)) // (bail out if clc is null)
 	                        {
 	                        	ret.add(source);
-	                            System.out.println(sharedValue + " in " + containingMethod + " escapes through " + source);
+//	                            System.out.println(sharedValue + " in " + containingMethod + " escapes through " + source);
 	                        }
 	                    }
 	                }
