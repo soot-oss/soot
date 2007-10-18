@@ -319,8 +319,6 @@ public class SmartMethodInfoFlowAnalysis
 	// for when data flows to the data structure pointed to by a local
 	protected void handleFlowsToDataStructure(Value base, Value source)
 	{
-//		if(true)
-//			throw new RuntimeException("flows to data structure???");
 		EquivalentValue sourcesOfBaseEqVal = new EquivalentValue(new AbstractDataSource(base));
 		EquivalentValue baseEqVal = new EquivalentValue(base);
 
@@ -391,6 +389,17 @@ public class SmartMethodInfoFlowAnalysis
 	{
 		// get the data flow graph
 		MutableDirectedGraph dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
+		if(true) // DEBUG!!!
+		{
+			SootMethod method = ie.getMethodRef().resolve();
+			if(method.getDeclaringClass().isApplicationClass())
+			{
+				G.v().out.println("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
+				MutableDirectedGraph abbreviatedDataFlowGraph = dfa.getInvokeAbbreviatedInfoFlowGraph(ie, sm);
+				InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + (refOnly ? "" : "_primitive"), 
+					abbreviatedDataFlowGraph, method.getName() + (refOnly ? "" : "_primitive"), false);
+			}
+		}
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
 //			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowSummary: ");
@@ -435,7 +444,7 @@ public class SmartMethodInfoFlowAnalysis
 				}
 				else if(includeInnerFields)
 				{
-					if( isNonRefType(node.getType()) )
+					if( false ) // isNonRefType(node.getType()) ) // TODO: double check this policy
 					{
 						// primitives flow from the parent object
 						InstanceFieldRef ifr = (InstanceFieldRef) node;
@@ -465,7 +474,7 @@ public class SmartMethodInfoFlowAnalysis
 			}
 			else if(node instanceof InstanceFieldRef && includeInnerFields)
 			{
-				if( isNonRefType(node.getType()) )
+				if( false ) // isNonRefType(node.getType()) ) // TODO: double check this policy
 				{
 					// primitives flow from the parent object
 					InstanceFieldRef ifr = (InstanceFieldRef) node;
@@ -544,7 +553,7 @@ public class SmartMethodInfoFlowAnalysis
 						{
 							Value source = (Value) sourcesIt.next();
 							
-							if( isNonRefType(sink.getType()) )
+							if( false ) // isNonRefType(sink.getType()) ) // TODO: double check this policy
 							{
 								// primitives flow to the parent object
 								InstanceFieldRef ifr = (InstanceFieldRef) sink;
@@ -577,7 +586,7 @@ public class SmartMethodInfoFlowAnalysis
 					for(Iterator sourcesIt = sources.iterator(); sourcesIt.hasNext(); )
 					{
 						Value source = (Value) sourcesIt.next();
-						if( isNonRefType(sink.getType()) )
+						if( false ) // isNonRefType(sink.getType()) ) // TODO: double check this policy
 						{
 							// primitives flow to the parent object
 							InstanceFieldRef ifr = (InstanceFieldRef) sink;
@@ -677,7 +686,7 @@ public class SmartMethodInfoFlowAnalysis
 				}
 				else if( includeInnerFields )
 				{
-					if( isNonRefType(lv.getType()) )
+					if( false ) //isNonRefType(lv.getType()) ) // TODO: double check this policy
 					{
 						// primitives flow to the parent object
 						sink = ifr.getBase();
@@ -731,7 +740,7 @@ public class SmartMethodInfoFlowAnalysis
 				}
 				else if( includeInnerFields )
 				{
-					if( isNonRefType(rv.getType()) )
+					if( false ) // isNonRefType(rv.getType()) ) // TODO: double check this policy
 					{
 						// primitives flow from the parent object
 						sources.add(ifr.getBase());

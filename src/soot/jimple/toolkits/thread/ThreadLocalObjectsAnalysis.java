@@ -16,7 +16,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	MhpTester mhp;
 	List<AbstractRuntimeThread> threads;
 	InfoFlowAnalysis primitiveDfa;
-	static boolean printDebug = false; // DEBUG!!!
+	static boolean printDebug = false;
 	
 	Map valueCache;
 	Map fieldCache;

@@ -57,7 +57,7 @@ public class FakeJimpleLocal extends JimpleLocal
     /** Returns a clone of the current JimpleLocal. */
     public Object clone()
     {
-        return new FakeJimpleLocal(getName(), getType(), realLocal);
+        return new FakeJimpleLocal(getName(), getType(), realLocal, info);
     }
     
     public Local getRealLocal()

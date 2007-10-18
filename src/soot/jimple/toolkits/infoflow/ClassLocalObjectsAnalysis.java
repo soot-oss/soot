@@ -251,7 +251,7 @@ public class ClassLocalObjectsAnalysis
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
-					G.v().out.println("Attempting to print graphs");
+					G.v().out.println("Attempting to print graphs (will succeed only if ./dfg/ is a valid path)");
 					DirectedGraph primitiveGraph = primitiveDfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
 					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + "_primitive", 
 						primitiveGraph, method.getName() + "_primitive", false);
@@ -267,7 +267,7 @@ public class ClassLocalObjectsAnalysis
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
-					G.v().out.println("Attempting to print graph");
+					G.v().out.println("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
 					DirectedGraph nonPrimitiveGraph = dfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
 					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName(),
 						nonPrimitiveGraph, method.getName(), false);

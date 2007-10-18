@@ -196,6 +196,14 @@ public class InfoFlowAnalysis
 		return getMethodInfoFlowSummary(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
 	}
 	
+	protected MutableDirectedGraph getInvokeAbbreviatedInfoFlowGraph(InvokeExpr ie, SootMethod context)
+	{
+		// get the data flow graph for each possible target of ie,
+		// then combine them conservatively and return the result.
+		SootMethodRef methodRef = ie.getMethodRef();
+		return getMethodInfoFlowAnalysis(methodRef.resolve()).getMethodAbbreviatedInfoFlowGraph();
+	}
+	
 	public static void printInfoFlowSummary(DirectedGraph g)
 	{
 		Iterator nodeIt = g.iterator();
@@ -291,15 +299,28 @@ public class InfoFlowAnalysis
 	static Map nodeToNodeName = new HashMap();
 	public static String getNodeName(Object o)
 	{
-		if(!nodeToNodeName.containsKey(o))
-			nodeToNodeName.put(o, "N" + (nodecount++));
-			
-		return (String) nodeToNodeName.get(o);
+//		if(!nodeToNodeName.containsKey(o)) // Since this uses all different kinds of objects, we
+//										   // were getting weird collisions, causing wrong graphs.
+//			nodeToNodeName.put(o, "N" + (nodecount++));
+//			
+//		return (String) nodeToNodeName.get(o);
+		return getNodeLabel(o);
 	}
 	
 	public static String getNodeLabel(Object o)
 	{
 		Value node = ((EquivalentValue) o).getValue();
+/*
+		if(node instanceof InstanceFieldRef)
+		{
+			InstanceFieldRef ifr = (InstanceFieldRef) node;
+			if(ifr.getBase() instanceof FakeJimpleLocal)
+				return ifr.getField().getDeclaringClass().getShortName() + "." + ifr.getFieldRef().name();
+			else
+				return ifr.getField().getDeclaringClass().getShortName() + "." + ifr.getFieldRef().name();
+		}
+		else
+*/
 		if(node instanceof FieldRef)
 		{
 			FieldRef fr = (FieldRef) node;

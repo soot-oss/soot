@@ -116,7 +116,7 @@ public class TransactionTransformer extends SceneTransformer
 			mhp = new UnsynchronizedMhpAnalysis();
 			if(optionPrintMhpSummary)
 			{
-//				mhp.printMhpSummary();
+				mhp.printMhpSummary();
 			}
 		}
 		else
