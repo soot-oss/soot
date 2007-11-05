@@ -29,6 +29,15 @@ Improvements and API changes in version 2.2.5 (To come)
 7. Richard Halpert's lock allocator as published at PACT'07, see:
    http://www.sable.mcgill.ca/publications/papers/#pact2007
    It is accessible via the wjtn (whole-jimple transaction) pack.
+   
+8. Added option: empties-as-allocs (default:true)
+   When this option is set to true, Spark treats references to EMPTY_SET,
+   EMPTY_MAP, and EMPTY_LIST as allocation sites for HashSet, HashMap and
+   LinkedList objects, respectively, and references to
+   Hashtable.emptyIterator as allocation sites for
+   Hashtable$EmptyIterator. This enables subsequent analyses to
+   differentiate different uses of Java's immutable empty collections.
+        
 
 Improvements and API changes in version 2.2.4 (Fri, Apr 27, 2007)
 
