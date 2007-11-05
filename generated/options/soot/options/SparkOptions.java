@@ -183,6 +183,22 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "simulate-natives" );
     }
     
+    /** Treat EMPTY as Alloc --
+    
+     * Treat EMPTY_* as allocation sites.
+    
+     * When this option is set to true, Spark treats references to 
+     * EMPTY_SET, EMPTY_MAP, and EMPTY_LIST as allocation sites for 
+     * HashSet, HashMap and LinkedList objects, respectively, and 
+     * references to Hashtable.emptyIterator as allocation sites for 
+     * Hashtable$EmptyIterator. This enables subsequent analyses to 
+     * differentiate different uses of Java's immutable empty 
+     * collections. 
+     */
+    public boolean empties_as_allocs() {
+        return soot.PhaseOptions.getBoolean( options, "empties-as-allocs" );
+    }
+    
     /** Simple Edges Bidirectional --
     
      * Equality-based analysis between variable nodes.

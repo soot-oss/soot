@@ -1116,6 +1116,12 @@ public class AntTask extends MatchingTask {
             addArg("simulate-natives:"+(arg?"true":"false"));
           }
       
+          public void setempties_as_allocs(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("empties-as-allocs:"+(arg?"true":"false"));
+          }
+      
           public void setsimple_edges_bidirectional(boolean arg) {
             addArg("-p");
             addArg("cg.spark");

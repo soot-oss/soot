@@ -40,7 +40,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         if( !m.isStatic() ) {
             SootClass c = m.getDeclaringClass();
             if( c == null ) {
-                throw new RuntimeException( "Method "+m+" has no declaring lass" );
+                throw new RuntimeException( "Method "+m+" has no declaring class" );
             }
             caseThis();
         }
@@ -80,6 +80,29 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
                 if( r instanceof InstanceFieldRef ) {
                     ((InstanceFieldRef) r).getBase().apply( MethodNodeFactory.this );
                     pag.addDereference( (VarNode) getNode() );
+                }
+                if( r instanceof StaticFieldRef ) {
+                	StaticFieldRef sfr = (StaticFieldRef) r;
+					SootFieldRef s = sfr.getFieldRef();
+                	if (pag.getOpts().empties_as_allocs()) {
+                	    if (s.declaringClass().getName().equals("java.util.Collections")) {
+                                if (s.name().equals("EMPTY_SET")) {
+                                    src = pag.makeAllocNode( RefType.v("java.util.HashSet"), 
+                                                                  RefType.v("java.util.HashSet"), method );
+                                } else if (s.name().equals("EMPTY_MAP")) {
+                                    src = pag.makeAllocNode( RefType.v("java.util.HashMap"), 
+                                                                  RefType.v("java.util.HashMap"), method );
+                                } else if (s.name().equals("EMPTY_LIST")) {
+                                    src = pag.makeAllocNode( RefType.v("java.util.LinkedList"), 
+                                                                  RefType.v("java.util.LinkedList"), method );
+                                } 
+                        } else if (s.declaringClass().getName().equals("java.util.Hashtable")) {
+                            if (s.name().equals("emptyIterator")) {
+                                src = pag.makeAllocNode( RefType.v("java.util.Hashtable$EmptyIterator"), 
+                                                              RefType.v("java.util.Hashtable$EmptyIterator"), method );
+                            }
+                        }
+                	}
                 }
 		mpag.addInternalEdge( src, dest );
 	    }

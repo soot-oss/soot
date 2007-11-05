@@ -1626,6 +1626,17 @@ When this option is set to true, the effects of native methods in the standard J
         </long_desc>
 						</boolopt>
 						<boolopt>
+							<name>Treat EMPTY as Alloc</name>
+							<alias>empties-as-allocs</alias>
+							<default>true</default>
+                                                        <short_desc>Treat EMPTY_* as allocation sites</short_desc>
+							<long_desc>
+When this option is set to true, Spark treats references to <code>EMPTY_SET</code>, <code>EMPTY_MAP</code>, and 
+<code>EMPTY_LIST</code> as allocation sites for <code>HashSet</code>, <code>HashMap</code> and <code>LinkedList</code> objects,
+respectively, and references to <code>Hashtable.emptyIterator</code> as allocation sites for <code>Hashtable$EmptyIterator</code>. This enables subsequent analyses to differentiate different uses of Java's immutable empty collections.
+        </long_desc>
+						</boolopt>
+						<boolopt>
 							<name>Simple Edges Bidirectional</name>
 							<alias>simple-edges-bidirectional</alias>
 							<default>false</default>
