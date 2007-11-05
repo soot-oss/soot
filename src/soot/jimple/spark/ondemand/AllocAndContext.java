@@ -23,9 +23,9 @@ import soot.jimple.spark.pag.AllocNode;
 
 public class AllocAndContext {
 
-  final AllocNode alloc;
+  public final AllocNode alloc;
 
-  final ImmutableStack<Integer> context;
+  public final ImmutableStack<Integer> context;
 
   public AllocAndContext(AllocNode alloc, ImmutableStack<Integer> context) {
     this.alloc = alloc;
