@@ -1,4 +1,4 @@
-<?xml version = '1.0' encoding = 'ISO-8859-1' ?>
+
 <?xml-stylesheet type="text/xsl" href="soot_options.xsl"  ?>
 <options>
 	<intro>
@@ -1628,7 +1628,7 @@ When this option is set to true, the effects of native methods in the standard J
 						<boolopt>
 							<name>Treat EMPTY as Alloc</name>
 							<alias>empties-as-allocs</alias>
-							<default>true</default>
+							<default>false</default>
                                                         <short_desc>Treat EMPTY_* as allocation sites</short_desc>
 							<long_desc>
 When this option is set to true, Spark treats references to <code>EMPTY_SET</code>, <code>EMPTY_MAP</code>, and 
