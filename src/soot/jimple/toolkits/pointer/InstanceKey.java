@@ -27,7 +27,7 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.pointer.LocalMustAliasAnalysis;
-import soot.jimple.toolkits.pointer.LocalNotMayAliasAnalysis;
+import soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis;
 
 /**
  * An instance key is a static representative of a runtime object.
@@ -39,12 +39,12 @@ public class InstanceKey {
 
     protected final Local assignedLocal;
     protected final LocalMustAliasAnalysis lmaa;
-    protected final LocalNotMayAliasAnalysis lnma;
+    protected final LocalMustNotAliasAnalysis lnma;
     protected final Stmt stmtAfterAssignStmt;
     protected final SootMethod owner;
     protected final int hashCode;
 
-    public InstanceKey(Local assignedLocal, Stmt stmtAfterAssignStmt, SootMethod owner, LocalMustAliasAnalysis lmaa, LocalNotMayAliasAnalysis lnma) {
+    public InstanceKey(Local assignedLocal, Stmt stmtAfterAssignStmt, SootMethod owner, LocalMustAliasAnalysis lmaa, LocalMustNotAliasAnalysis lnma) {
         this.assignedLocal = assignedLocal;
         this.owner = owner;
         this.stmtAfterAssignStmt = stmtAfterAssignStmt;

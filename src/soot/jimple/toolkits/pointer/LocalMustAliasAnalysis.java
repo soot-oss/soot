@@ -43,8 +43,14 @@ import soot.toolkits.scalar.BinaryIdentitySet;
  *
  * The underlying abstraction is based on global value numbering.
  * 
+ * See also {@link StrongLocalMustAliasAnalysis} for an analysis
+ * that soundly treats redefinitions within loops.
+ * 
+ * See Sable TR 2007-8 for details.
+ * 
  * @author Patrick Lam
  * @author Eric Bodden
+ * @see StrongLocalMustAliasAnalysis
  * */
 public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Local,Object>>
 {

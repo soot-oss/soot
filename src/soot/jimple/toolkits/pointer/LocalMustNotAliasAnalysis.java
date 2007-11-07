@@ -42,9 +42,11 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * NewExprs), the analysis tracks the source of the value. If two
  * variables have different sources, then they are different.
  * 
+ * See Sable TR 2007-8 for details.
+ * 
  * @author Patrick Lam
  */
-public class LocalNotMayAliasAnalysis extends ForwardFlowAnalysis
+public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis
 {
     protected static final Object UNKNOWN = new Object() {
         public String toString() {
@@ -54,7 +56,7 @@ public class LocalNotMayAliasAnalysis extends ForwardFlowAnalysis
     
     protected List<Local> locals;
 
-    public LocalNotMayAliasAnalysis(UnitGraph g)
+    public LocalMustNotAliasAnalysis(UnitGraph g)
     {
         super(g);
         locals = new LinkedList<Local>(); locals.addAll(g.getBody().getLocals());
