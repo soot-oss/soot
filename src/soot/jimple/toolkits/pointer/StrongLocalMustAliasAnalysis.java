@@ -19,7 +19,6 @@
 
 package soot.jimple.toolkits.pointer;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +29,6 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Stmt;
-import soot.jimple.toolkits.pointer.LocalMustAliasAnalysis;
 import soot.toolkits.graph.StronglyConnectedComponents;
 import soot.toolkits.graph.UnitGraph;
 
@@ -70,7 +68,7 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
 						if(defValue instanceof Local) {
 							Local defLocal = (Local) defValue;
 							if(defLocal.getType() instanceof RefLikeType) {
-								Object instanceKey = ((HashMap)getFlowBefore(unit)).get(defLocal);
+								Object instanceKey = getFlowBefore(unit).get(defLocal);
 								//if key is not already UNKNOWN
 								if(instanceKey instanceof Integer) {
 									Integer intKey = (Integer) instanceKey;
@@ -89,8 +87,8 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
      */
     @Override
     public boolean mustAlias(Local l1, Stmt s1, Local l2, Stmt s2) {
-        Object l1n = ((HashMap)getFlowBefore(s1)).get(l1);
-        Object l2n = ((HashMap)getFlowBefore(s2)).get(l2);
+        Object l1n = getFlowBefore(s1).get(l1);
+        Object l2n = getFlowBefore(s2).get(l2);
 
         if (l1n == UNKNOWN || l2n == UNKNOWN ||
             invalidInstanceKeys.contains(l2n) || invalidInstanceKeys.contains(l2n))
@@ -104,7 +102,7 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
      */
     @Override
     public String instanceKeyString(Local l, Stmt s) {
-        Object ln = ((HashMap)getFlowBefore(s)).get(l);
+        Object ln = getFlowBefore(s).get(l);
         if(invalidInstanceKeys.contains(ln)) {
             return UNKNOWN_LABEL;
         }
