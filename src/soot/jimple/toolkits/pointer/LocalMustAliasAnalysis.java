@@ -48,6 +48,7 @@ import soot.toolkits.scalar.BinaryIdentitySet;
  * */
 public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Local,Object>>
 {
+	
 	public static final String UNKNOWN_LABEL = "UNKNOWN";
 	
 	protected static final Object UNKNOWN = new Object() {
