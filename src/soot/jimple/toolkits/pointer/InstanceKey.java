@@ -149,4 +149,9 @@ public class InstanceKey {
         //or if both have no statement set but the same local
         return (stmtAfterAssignStmt==null && other.stmtAfterAssignStmt==null && assignedLocal==other.assignedLocal);
     }
+    
+    public boolean isOfReferenceType() {
+    	assert assignedLocal.getType() instanceof RefLikeType;
+    	return true;
+    }
 }
