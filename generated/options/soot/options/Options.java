@@ -1530,7 +1530,7 @@ public class Options extends OptionsBase {
                 +padOpt( "merge-stringbuffer (true)", "Represent all StringBuffers as one object" )
                 +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
-                +padOpt( "empties-as-allocs (true)", "Treat EMPTY_* as allocation sites" )
+                +padOpt( "empties-as-allocs (false)", "Treat EMPTY_* as allocation sites" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
@@ -2998,7 +2998,7 @@ public class Options extends OptionsBase {
               +"merge-stringbuffer:true "
               +"string-constants:false "
               +"simulate-natives:true "
-              +"empties-as-allocs:true "
+              +"empties-as-allocs:false "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
               +"simplify-offline:false "
