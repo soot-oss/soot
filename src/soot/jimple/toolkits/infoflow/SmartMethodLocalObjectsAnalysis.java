@@ -58,13 +58,17 @@ public class SmartMethodLocalObjectsAnalysis
 				if(!context.isFieldLocal(source))
 				{
 					if(printMessages)
-						G.v().out.println("      Requested value " + local + " is LOCAL in " + method + " ");
+						G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
 					return false;
 				}
+			} else if(source.getValue() instanceof Constant) {
+				if(printMessages)
+					G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+				return false;
 			}
 		}
 		if(printMessages)
-			G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+			G.v().out.println("      Requested value " + local + " is LOCAL in " + method + " ");
 		return true;
 	}
 	
