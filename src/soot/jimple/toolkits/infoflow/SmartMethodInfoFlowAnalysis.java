@@ -389,7 +389,7 @@ public class SmartMethodInfoFlowAnalysis
 	{
 		// get the data flow graph
 		MutableDirectedGraph dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
-		if(true) // DEBUG!!!
+		if(false) // DEBUG!!!
 		{
 			SootMethod method = ie.getMethodRef().resolve();
 			if(method.getDeclaringClass().isApplicationClass())
