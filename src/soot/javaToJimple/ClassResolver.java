@@ -19,6 +19,7 @@
 
 package soot.javaToJimple;
 import soot.*;
+import soot.options.Options;
 
 import java.util.*;
 
@@ -221,8 +222,8 @@ public class ClassResolver {
             else if (next instanceof polyglot.ast.Initializer) {
                 createInitializer((polyglot.ast.Initializer)next);
             }
-            else {
-                throw new RuntimeException("Class Body Member not implemented");
+            else if(Options.v().verbose()) {
+            		G.v().out.println("Class Body Member not implemented for type "+next.getClass().getName());
             }
         }
         handleInnerClassTags(classBody);
