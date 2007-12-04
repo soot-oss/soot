@@ -10,6 +10,7 @@
     </target>
 
     <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options">
+    	<mkdir dir="classes"/>
         <javac
             destdir="classes"
             debug="true"
