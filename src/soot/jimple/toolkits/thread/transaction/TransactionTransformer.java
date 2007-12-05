@@ -132,9 +132,9 @@ public class TransactionTransformer extends SceneTransformer
     	{
 	    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects *** " + (new Date()));
 	    	if(mhp != null)
-	    		tlo = new ThreadLocalObjectsAnalysis(mhp,false); // can tell only that a field/local is local to the object it's being accessed in
+	    		tlo = new ThreadLocalObjectsAnalysis(mhp); // can tell only that a field/local is local to the object it's being accessed in
 			else
-	    		tlo = new ThreadLocalObjectsAnalysis(new UnsynchronizedMhpAnalysis(),false); // can tell only that a field/local is local to the object it's being accessed in
+	    		tlo = new ThreadLocalObjectsAnalysis(new UnsynchronizedMhpAnalysis()); // can tell only that a field/local is local to the object it's being accessed in
 	    	if(!optionOnFlyTLO)
 	    	{
 		    	tlo.precompute();

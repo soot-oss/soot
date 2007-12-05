@@ -13,21 +13,19 @@ import soot.jimple.*;
 
 public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements IThreadLocalObjectsAnalysis 
 {
-	protected final MhpTester mhp;
-	protected final List<AbstractRuntimeThread> threads;
-	protected final InfoFlowAnalysis primitiveDfa;
-	protected final static boolean printDebug = false;
+	MhpTester mhp;
+	List<AbstractRuntimeThread> threads;
+	InfoFlowAnalysis primitiveDfa;
+	static boolean printDebug = false;
 	
-	protected final Map valueCache;
-	protected final Map fieldCache;
-	protected final Map invokeCache;
-	protected final boolean supportPrimitiveTypes;
+	Map valueCache;
+	Map fieldCache;
+	Map invokeCache;
 	
-	public ThreadLocalObjectsAnalysis(MhpTester mhp, boolean supportPrimitiveTypes) // must include main class
+	public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
 	{
-		super(new InfoFlowAnalysis(supportPrimitiveTypes, true, printDebug)); // with inner fields
+		super(new InfoFlowAnalysis(false, true, printDebug)); // ref-only, with inner fields
 		this.mhp = mhp;
-		this.supportPrimitiveTypes = supportPrimitiveTypes;
 		this.threads = mhp.getThreads();
 		this.primitiveDfa = new InfoFlowAnalysis(true, true, printDebug); // ref+primitive, with inner fields
 
@@ -75,20 +73,6 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	// Determines if a RefType Local or a FieldRef is Thread-Local
 	public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm)
 	{
-		if(!sm.hasActiveBody()) {
-			throw new RuntimeException("Method has no body!?");
-		}
-		boolean foundValue = false;
-		for (ValueBox vb : sm.getActiveBody().getUseAndDefBoxes()) {
-			if(vb.getValue()==localOrRef) {
-				foundValue = true;
-				break;
-			}
-		}
-		if(!foundValue) {
-			throw new RuntimeException("Local or Ref "+localOrRef+" never referenced in body!?");
-		}
-		
 		if(threads.size() <= 1)
 			return true;
 //		Pair cacheKey = new Pair(new EquivalentValue(localOrRef), sm);
