@@ -157,11 +157,19 @@ public class Util {
     public static void addLnPosTags(soot.tagkit.Host host, polyglot.util.Position pos) {
         if (pos != null) {
             if (soot.options.Options.v().keep_line_number()){
-                host.addTag(
-                		new soot.tagkit.SourceLnNamePosTag(
-                				pos.file(),pos.line(), pos.endLine(), pos.column(), pos.endColumn()
-                		)
-                );
+            	if(pos.file()!=null) {
+	                host.addTag(
+	                		new soot.tagkit.SourceLnNamePosTag(
+	                				pos.file(),pos.line(), pos.endLine(), pos.column(), pos.endColumn()
+	                		)
+	                );
+            	} else {
+	                host.addTag(
+	                		new soot.tagkit.SourceLnPosTag(
+	                				pos.line(), pos.endLine(), pos.column(), pos.endColumn()
+	                		)
+	                );
+            	}
             }
         }
     }
