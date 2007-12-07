@@ -629,15 +629,7 @@ public class ClassResolver {
         addProcedureToClass(sootMethod);
     
         if (procedure.position() != null){
-                if (procedure.body() != null) {
-                    if (procedure.body().position() != null) {
-                        Util.addLnPosTags(sootMethod, procedure.position().line(), procedure.body().position().endLine(), procedure.position().column(), procedure.body().position().endColumn());
-                    }
-                }
-                else {
-                    Util.addLnPosTags(sootMethod, procedure.position());
-                }
-                
+            Util.addLnPosTags(sootMethod, procedure.position());
         }
     
     
