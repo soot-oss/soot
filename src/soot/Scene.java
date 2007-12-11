@@ -198,6 +198,7 @@ public class Scene  //extends AbstractHost
     public int getState() { return this.stateCount; }
     private void modifyHierarchy() {
         stateCount++;
+        activeHierarchy = null;
         activeFastHierarchy = null;
         activeSideEffectAnalysis = null;
         activePointsToAnalysis = null;
