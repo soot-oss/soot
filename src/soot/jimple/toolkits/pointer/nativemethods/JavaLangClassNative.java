@@ -125,6 +125,10 @@ public class JavaLangClassNative extends NativeMethodClass {
       java_lang_Class_getDeclaredClasses0(method, thisVar, returnVar, params);
       return;
 
+    } else if (subSignature.equals("java.lang.reflect.Constructor[] getDeclaredConstructors0(boolean)")){
+      java_lang_Class_getDeclaredConstructors0(method, thisVar, returnVar, params);
+      return;
+
     } else {
       defaultMethod(method, thisVar, returnVar, params);
       return;
@@ -485,6 +489,24 @@ public class JavaLangClassNative extends NativeMethodClass {
 					     ReferenceVariable returnVar,
 					     ReferenceVariable params[]) {
     helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+  }
+
+  /**
+   * Returns an array of Constructor objects reflecting all the classes and
+   * interfaces declared as members of the class represented by this
+   * Class object.
+   *
+   *     private native java.lang.Class getDeclaredConstructors0(boolean)[];  
+   */
+  public 
+    void java_lang_Class_getDeclaredConstructors0(SootMethod method,
+					     ReferenceVariable thisVar,
+					     ReferenceVariable returnVar,
+					     ReferenceVariable params[]) {
+    AbstractObject array = Environment.v().getLeastArrayObject();
+    AbstractObject cons = Environment.v().getConstructorObject();
+    helper.assignObjectTo(returnVar, array);
+    helper.assignObjectTo(helper.arrayElementOf(returnVar), cons);
   }
 
   /**

@@ -110,6 +110,8 @@ public class NativeMethodDriver {
                        new SunMiscSignalNative(helper));
         cnameToSim.put("sun.misc.NativeSignalHandler",
                        new SunMiscSignalHandlerNative(helper));
+        cnameToSim.put("sun.misc.Unsafe",
+                       new SunMiscUnsafeNative(helper));
     }
 
   private final HashMap<String,NativeMethodClass> cnameToSim = new HashMap<String,NativeMethodClass>(100);
