@@ -103,8 +103,8 @@ public class InfoFlowAnalysis
 	/** Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue 
 	  * wrapped Refs. It's perfectly safe to modify this graph, just so long as 
 	  * new nodes are EquivalentValue wrapped Refs. */
-	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm) { return getMethodInfoFlowSummary(sm, true); }
-	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm, boolean doFullAnalysis)
+	public HashMutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm) { return getMethodInfoFlowSummary(sm, true); }
+	public HashMutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm, boolean doFullAnalysis)
 	{
 		ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
 		return cdfa.getMethodInfoFlowSummary(sm, doFullAnalysis);
@@ -145,7 +145,7 @@ public class InfoFlowAnalysis
 	{
 		if(sf.isStatic())
 		{
-			return new EquivalentValue( Jimple.v().newStaticFieldRef(sf.makeRef()) );
+			return new CachedEquivalentValue( Jimple.v().newStaticFieldRef(sf.makeRef()) );
 		}
 		else
 		{
@@ -154,7 +154,7 @@ public class InfoFlowAnalysis
 			{
 				JimpleLocal fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), sm.retrieveActiveBody().getThisLocal());
 				
-				return new EquivalentValue( Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef()) ); // fake thisLocal
+				return new CachedEquivalentValue( Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef()) ); // fake thisLocal
 			}
 			else
 			{
@@ -162,7 +162,7 @@ public class InfoFlowAnalysis
 				// for a static method, or for an inner field
 				JimpleLocal fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), realLocal);
 				
-				return new EquivalentValue( Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef()) ); // fake thisLocal
+				return new CachedEquivalentValue( Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef()) ); // fake thisLocal
 			}
 		}
 	}
@@ -171,24 +171,24 @@ public class InfoFlowAnalysis
 	// that is suitable for comparison to the nodes of a Data Flow Graph
 	public static EquivalentValue getNodeForParameterRef(SootMethod sm, int i)
 	{
-		return new EquivalentValue(new ParameterRef(sm.getParameterType(i), i));
+		return new CachedEquivalentValue(new ParameterRef(sm.getParameterType(i), i));
 	}
 	
 	// Returns an EquivalentValue wrapped Ref for the return value
 	// that is suitable for comparison to the nodes of a Data Flow Graph
 	public static EquivalentValue getNodeForReturnRef(SootMethod sm)
 	{
-		return new EquivalentValue(new ParameterRef(sm.getReturnType(), -1));
+		return new CachedEquivalentValue(new ParameterRef(sm.getReturnType(), -1));
 	}
 	
 	// Returns an EquivalentValue wrapped ThisRef
 	// that is suitable for comparison to the nodes of a Data Flow Graph
 	public static EquivalentValue getNodeForThisRef(SootMethod sm)
 	{
-		return new EquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
+		return new CachedEquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
 	}
 	
-	protected MutableDirectedGraph getInvokeInfoFlowSummary(InvokeExpr ie, SootMethod context)
+	protected HashMutableDirectedGraph getInvokeInfoFlowSummary(InvokeExpr ie, SootMethod context)
 	{
 		// get the data flow graph for each possible target of ie,
 		// then combine them conservatively and return the result.

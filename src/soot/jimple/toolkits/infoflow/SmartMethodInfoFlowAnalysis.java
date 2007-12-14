@@ -24,8 +24,8 @@ public class SmartMethodInfoFlowAnalysis
 	boolean refOnly; // determines if primitive type data flow is included
 	boolean includeInnerFields; // determines if flow to a field of an object (other than this) is treated like flow to that object
 	
-	MutableDirectedGraph abbreviatedInfoFlowGraph;
-	MutableDirectedGraph infoFlowSummary;
+	HashMutableDirectedGraph abbreviatedInfoFlowGraph;
+	HashMutableDirectedGraph infoFlowSummary;
 	Ref returnRef;
 	
 	boolean printMessages;
@@ -116,7 +116,7 @@ public class SmartMethodInfoFlowAnalysis
 		}
 		
 		// Add returnref of this method
-		EquivalentValue returnRefEqVal = new EquivalentValue(returnRef);
+		EquivalentValue returnRefEqVal = new CachedEquivalentValue(returnRef);
 		if(returnRef.getType() != VoidType.v() && !infoFlowSummary.containsNode(returnRefEqVal))
 			infoFlowSummary.addNode(returnRefEqVal);
 		
@@ -184,7 +184,7 @@ public class SmartMethodInfoFlowAnalysis
 			return ret;
 
 		// get direct sources
-		List preds = abbreviatedInfoFlowGraph.getPredsOf(node);
+		Set preds = abbreviatedInfoFlowGraph.getPredsOfAsSet(node);
 		Iterator predsIt = preds.iterator();
 		while(predsIt.hasNext())
 		{
@@ -204,9 +204,9 @@ public class SmartMethodInfoFlowAnalysis
 			EquivalentValue sink = sinksIt.next();
 			if(!visitedSources.contains(sink))
 			{
-				EquivalentValue flowsToSourcesOf = new EquivalentValue(new AbstractDataSource(sink.getValue()));
+				EquivalentValue flowsToSourcesOf = new CachedEquivalentValue(new AbstractDataSource(sink.getValue()));
 				
-				if( abbreviatedInfoFlowGraph.getPredsOf(sink).contains(flowsToSourcesOf) )
+				if( abbreviatedInfoFlowGraph.getPredsOfAsSet(sink).contains(flowsToSourcesOf) )
 				{
 					ret.addAll(sourcesOf(flowsToSourcesOf, visitedSources, visitedSinks));
 				}
@@ -229,7 +229,7 @@ public class SmartMethodInfoFlowAnalysis
 			return ret;
 
 		// get direct sinks
-		List succs = abbreviatedInfoFlowGraph.getSuccsOf(node);
+		Set succs = abbreviatedInfoFlowGraph.getSuccsOfAsSet(node);
 		Iterator succsIt = succs.iterator();
 		while(succsIt.hasNext())
 		{
@@ -249,8 +249,8 @@ public class SmartMethodInfoFlowAnalysis
 			if(succ.getValue() instanceof AbstractDataSource)
 			{
 				// It will have ONE successor, who will be the value whose sources it represents
-				List vHolder = abbreviatedInfoFlowGraph.getSuccsOf(succ);
-				EquivalentValue v = (EquivalentValue) vHolder.get(0); // get the one and only
+				Set vHolder = abbreviatedInfoFlowGraph.getSuccsOfAsSet(succ);
+				EquivalentValue v = (EquivalentValue) vHolder.iterator().next(); // get the one and only
 				if(!visitedSinks.contains(v))
 				{
 //					Set<EquivalentValue> 
@@ -261,12 +261,12 @@ public class SmartMethodInfoFlowAnalysis
 		return ret;
 	}
 	
-	public MutableDirectedGraph getMethodInfoFlowSummary()
+	public HashMutableDirectedGraph getMethodInfoFlowSummary()
 	{
 		return infoFlowSummary;
 	}
 	
-	public MutableDirectedGraph getMethodAbbreviatedInfoFlowGraph()
+	public HashMutableDirectedGraph getMethodAbbreviatedInfoFlowGraph()
 	{
 		return abbreviatedInfoFlowGraph;
 	}
@@ -293,7 +293,7 @@ public class SmartMethodInfoFlowAnalysis
 			sinkEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
 		}
 		else
-			sinkEqVal = new EquivalentValue(sink);
+			sinkEqVal = new CachedEquivalentValue(sink);
 			
 		if(source instanceof InstanceFieldRef)
 		{
@@ -301,7 +301,7 @@ public class SmartMethodInfoFlowAnalysis
 			sourceEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
 		}
 		else
-			sourceEqVal = new EquivalentValue(source);
+			sourceEqVal = new CachedEquivalentValue(source);
 		
 		if( source instanceof Ref && !infoFlowSummary.containsNode(sourceEqVal))
 			infoFlowSummary.addNode(sourceEqVal);
@@ -319,8 +319,8 @@ public class SmartMethodInfoFlowAnalysis
 	// for when data flows to the data structure pointed to by a local
 	protected void handleFlowsToDataStructure(Value base, Value source)
 	{
-		EquivalentValue sourcesOfBaseEqVal = new EquivalentValue(new AbstractDataSource(base));
-		EquivalentValue baseEqVal = new EquivalentValue(base);
+		EquivalentValue sourcesOfBaseEqVal = new CachedEquivalentValue(new AbstractDataSource(base));
+		EquivalentValue baseEqVal = new CachedEquivalentValue(base);
 
 		EquivalentValue sourceEqVal;
 		if(source instanceof InstanceFieldRef)
@@ -329,7 +329,7 @@ public class SmartMethodInfoFlowAnalysis
 			sourceEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
 		}
 		else
-			sourceEqVal = new EquivalentValue(source);
+			sourceEqVal = new CachedEquivalentValue(source);
 		
 		if( source instanceof Ref && !infoFlowSummary.containsNode(sourceEqVal))
 			infoFlowSummary.addNode(sourceEqVal);
@@ -352,7 +352,7 @@ public class SmartMethodInfoFlowAnalysis
 /*
 		InstanceFieldRef ifr = (InstanceFieldRef) innerFieldRef;
 		
-		EquivalentValue baseEqVal = new EquivalentValue(ifr.getBase());
+		EquivalentValue baseEqVal = new CachedEquivalentValue(ifr.getBase());
 		EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, ifr.getField()); // deals with inner fields
 		
 		if(!abbreviatedInfoFlowGraph.containsNode(baseEqVal))
@@ -388,7 +388,7 @@ public class SmartMethodInfoFlowAnalysis
 	protected List handleInvokeExpr(InvokeExpr ie)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
+		HashMutableDirectedGraph dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
 		if(false) // DEBUG!!!
 		{
 			SootMethod method = ie.getMethodRef().resolve();
@@ -507,7 +507,7 @@ public class SmartMethodInfoFlowAnalysis
 				throw new RuntimeException("Unknown Node Type in Data Flow Graph: node " + node + " in InvokeExpr " + ie);
 			}
 			
-			Iterator sinksIt = dataFlowSummary.getSuccsOf(nodeEqVal).iterator();
+			Iterator sinksIt = dataFlowSummary.getSuccsOfAsSet(nodeEqVal).iterator();
 			while(sinksIt.hasNext())
 			{
 				EquivalentValue sinkEqVal = (EquivalentValue) sinksIt.next();

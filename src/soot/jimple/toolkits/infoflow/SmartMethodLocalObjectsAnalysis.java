@@ -46,7 +46,7 @@ public class SmartMethodLocalObjectsAnalysis
 		if(local instanceof InstanceFieldRef)
 			localEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, ((FieldRef) local).getField());
 		else
-			localEqVal = new EquivalentValue(local);
+			localEqVal = new CachedEquivalentValue(local);
 			
 		List<EquivalentValue> sources = smdfa.sourcesOf(localEqVal);
 		Iterator<EquivalentValue> sourcesIt = sources.iterator();
@@ -80,7 +80,7 @@ public class SmartMethodLocalObjectsAnalysis
 		if(local instanceof InstanceFieldRef)
 			localEqVal = InfoFlowAnalysis.getNodeForFieldRef(method, ((FieldRef) local).getField());
 		else
-			localEqVal = new EquivalentValue(local);
+			localEqVal = new CachedEquivalentValue(local);
 			
 		List<EquivalentValue> sources = smdfa.sourcesOf(localEqVal);
 		Iterator<EquivalentValue> sourcesIt = sources.iterator();

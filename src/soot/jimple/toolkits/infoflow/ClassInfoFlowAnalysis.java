@@ -20,7 +20,7 @@ public class ClassInfoFlowAnalysis
 	InfoFlowAnalysis dfa; // used to access the data flow analyses of other classes
 	
 	Map<SootMethod, SmartMethodInfoFlowAnalysis> methodToInfoFlowAnalysis;
-	Map<SootMethod, MutableDirectedGraph> methodToInfoFlowSummary;
+	Map<SootMethod, HashMutableDirectedGraph> methodToInfoFlowSummary;
 	
 	public static int methodCount = 0;
 	
@@ -29,7 +29,7 @@ public class ClassInfoFlowAnalysis
 		 this.sootClass = sootClass;
 		 this.dfa = dfa;
 		 methodToInfoFlowAnalysis = new HashMap<SootMethod, SmartMethodInfoFlowAnalysis>();
-		 methodToInfoFlowSummary = new HashMap<SootMethod, MutableDirectedGraph>();
+		 methodToInfoFlowSummary = new HashMap<SootMethod, HashMutableDirectedGraph>();
 		 
 //		 doSimpleConservativeDataFlowAnalysis();
 	}
@@ -45,7 +45,7 @@ public class ClassInfoFlowAnalysis
 			// request its own DataFlowGraph, we need this simple version first.
 			if(!methodToInfoFlowSummary.containsKey(method))
 			{
-				MutableDirectedGraph dataFlowGraph = simpleConservativeInfoFlowAnalysis(method);
+				HashMutableDirectedGraph dataFlowGraph = simpleConservativeInfoFlowAnalysis(method);
 				methodToInfoFlowSummary.put(method, dataFlowGraph);
 			}
 			
@@ -69,7 +69,7 @@ public class ClassInfoFlowAnalysis
 	}
 	
 	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod method) { return getMethodInfoFlowSummary(method, true); }
-	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod method, boolean doFullAnalysis)
+	public HashMutableDirectedGraph getMethodInfoFlowSummary(SootMethod method, boolean doFullAnalysis)
 	{
 		if(!methodToInfoFlowSummary.containsKey(method))
 		{
@@ -78,7 +78,7 @@ public class ClassInfoFlowAnalysis
 			// First do simple version that doesn't follow invoke expressions
 			// The "smart" version will be computed later, but since it may
 			// request its own DataFlowGraph, we need this simple version first.
-			MutableDirectedGraph dataFlowGraph = simpleConservativeInfoFlowAnalysis(method);
+			HashMutableDirectedGraph dataFlowGraph = simpleConservativeInfoFlowAnalysis(method);
 			methodToInfoFlowSummary.put(method, dataFlowGraph);
 			
 			// Then do smart version that does follow invoke expressions, if possible
@@ -155,7 +155,7 @@ public class ClassInfoFlowAnalysis
 	}
 //*/	
 	/** Does not require any fixed point calculation */
-	private MutableDirectedGraph simpleConservativeInfoFlowAnalysis(SootMethod sm)
+	private HashMutableDirectedGraph simpleConservativeInfoFlowAnalysis(SootMethod sm)
 	{
 		// Constructs a graph representing the data flow between fields, parameters, and the
 		// return value of this method.  The graph nodes are EquivalentValue wrapped Refs.
@@ -214,7 +214,7 @@ public class ClassInfoFlowAnalysis
 		}
 		
 		// Each accessed field, global, and parameter becomes a node in the graph
-		MutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
+		HashMutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
 		Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
@@ -310,7 +310,7 @@ public class ClassInfoFlowAnalysis
 	}
 	
 	/** Does not require the method to have a body */
-	public MutableDirectedGraph triviallyConservativeInfoFlowAnalysis(SootMethod sm)
+	public HashMutableDirectedGraph triviallyConservativeInfoFlowAnalysis(SootMethod sm)
 	{
 		HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
 		
@@ -355,7 +355,7 @@ public class ClassInfoFlowAnalysis
 		// Don't add any static fields outside of the class... unsafe???
 
 		// Each field, global, and parameter becomes a node in the graph
-		MutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
+		HashMutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
 		Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{

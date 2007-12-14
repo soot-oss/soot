@@ -98,13 +98,13 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 	// 
 	public boolean isObjectLocal(Value local) // to this analysis of this method (which depends on context)
 	{
-		EquivalentValue source = new EquivalentValue(new AbstractDataSource(new String("SHARED")));
+		EquivalentValue source = new CachedEquivalentValue(new AbstractDataSource(new String("SHARED")));
 		if(infoFlowGraph.containsNode(source))
 		{
 			List sinks = infoFlowGraph.getSuccsOf(source);
 			if(printMessages)
-				G.v().out.println("      Requested value " + local + " is " + ( !sinks.contains(new EquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm + " ");
-			return !sinks.contains(new EquivalentValue(local));
+				G.v().out.println("      Requested value " + local + " is " + ( !sinks.contains(new CachedEquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm + " ");
+			return !sinks.contains(new CachedEquivalentValue(local));
 		}
 		else
 		{

@@ -81,7 +81,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 			infoFlowGraph.addNode(thisRefEqVal);
 		
 		// Add returnref of this method
-		EquivalentValue returnRefEqVal = new EquivalentValue(returnRef);
+		EquivalentValue returnRefEqVal = new CachedEquivalentValue(returnRef);
 		if(!infoFlowGraph.containsNode(returnRefEqVal))
 			infoFlowGraph.addNode(returnRefEqVal);
 		
@@ -184,7 +184,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 	private ArrayList<Value> getDirectSources(Value v, FlowSet fs)
 	{
 		ArrayList<Value> ret = new ArrayList<Value>(); // of "interesting sources"
-		EquivalentValue vEqVal = new EquivalentValue(v);
+		EquivalentValue vEqVal = new CachedEquivalentValue(v);
 		Iterator fsIt = fs.iterator();
 		while(fsIt.hasNext())
 		{
@@ -208,8 +208,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		while(sourcesIt.hasNext())
 		{
 			Value source = sourcesIt.next();
-			EquivalentValue sinkEqVal = new EquivalentValue(sink);
-			EquivalentValue sourceEqVal = new EquivalentValue(source);
+			EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
+			EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 			if(sinkEqVal.equals(sourceEqVal))
 				continue;
 			Pair pair = new Pair(sinkEqVal, sourceEqVal);
@@ -243,14 +243,14 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		while(sourcesIt.hasNext())
 		{
 			Value source = sourcesIt.next();
-			EquivalentValue sourceEqVal = new EquivalentValue(source);
+			EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 			Iterator<Value> sinksIt = sinks.iterator();
 			while(sinksIt.hasNext())
 			{
 				Value sink = sinksIt.next();
 				if(!isTrackableSink(sink))
 					continue;
-				EquivalentValue sinkEqVal = new EquivalentValue(sink);
+				EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
 				if(sinkEqVal.equals(sourceEqVal))
 					continue;
 				Pair pair = new Pair(sinkEqVal, sourceEqVal);
@@ -617,8 +617,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 	
 	public void addToEntryInitialFlow(Value source, Value sink)
 	{
-		EquivalentValue sinkEqVal = new EquivalentValue(sink);
-		EquivalentValue sourceEqVal = new EquivalentValue(source);
+		EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
+		EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 		if(sinkEqVal.equals(sourceEqVal))
 			return;
 		Pair pair = new Pair(sinkEqVal, sourceEqVal);
@@ -630,8 +630,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 	
 	public void addToNewInitialFlow(Value source, Value sink)
 	{
-		EquivalentValue sinkEqVal = new EquivalentValue(sink);
-		EquivalentValue sourceEqVal = new EquivalentValue(source);
+		EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
+		EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 		if(sinkEqVal.equals(sourceEqVal))
 			return;
 		Pair pair = new Pair(sinkEqVal, sourceEqVal);
