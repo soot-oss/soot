@@ -1,12 +1,27 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
-import soot.*;
-import java.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.callgraph.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.thread.mhp.TargetMethodsFinder;
-import soot.jimple.*;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -19,14 +34,20 @@ import soot.jimple.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
-public class MultiRunStatementsFinder extends ForwardFlowAnalysis
+public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit,BitSet>
 {
-	Set visited = new HashSet();
-	FlowSet multiRunStatements = new ArraySparseSet();
+	Set<Unit> multiRunStatements = new HashSet<Unit>();
+	
+    protected Map<Object,Integer> nodeToIndex;
+    protected int lastIndex = 0;
+	
 	//add soot method here just for debug
 	public MultiRunStatementsFinder(UnitGraph g, SootMethod sm, Set<Object> multiCalledMethods, CallGraph cg)
 	{
 		super(g);
+		
+		nodeToIndex = new HashMap<Object, Integer>();
+				
 		//      System.out.println("===entering MultiObjectAllocSites==");	
 		doAnalysis();
 		
@@ -37,9 +58,9 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 	}
 	
 	private void findMultiCalledMethodsIntra(Set<Object> multiCalledMethods, CallGraph callGraph){
-		Iterator it = multiRunStatements.iterator();
+		Iterator<Unit> it = multiRunStatements.iterator();
 		while (it.hasNext()){
-			Unit unit = (Unit)it.next();
+			Unit unit = it.next();
 			if (((Stmt)unit).containsInvokeExpr()){
 				
 				Value invokeExpr =((Stmt)unit).getInvokeExpr();
@@ -79,30 +100,25 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 	
 //	STEP 4: Is the merge operator union or intersection?
 //	UNION
-	protected void merge(Object in1, Object in2, Object out)
+	protected void merge(BitSet in1, BitSet in2, BitSet out)
 	{
-		FlowSet inSet1 = (FlowSet) in1;
-		FlowSet inSet2 = (FlowSet) in2;
-		FlowSet outSet = (FlowSet) out;
-		
-		inSet1.union(inSet2, outSet);
-		
+		out.clear();
+		out.or(in1);
+		out.or(in2);
 	}
 	
 	
 //	STEP 5: Define flow equations.
 //	in(s) = ( out(s) minus defs(s) ) union uses(s)
 //	
-	protected void flowThrough(Object inValue, Object unit,
-			Object outValue)
+	protected void flowThrough(BitSet in, Unit unit,
+			BitSet out)
 	{
-		FlowSet in  = (FlowSet) inValue;
-		FlowSet out = (FlowSet) outValue;
-		//JPegStmt s = (JPegStmt)unit;
+		out.clear();
+		out.or(in);
 		
-		in.copy(out);
-		if (!out.contains(unit)){
-			out.add(unit);
+		if (!out.get(indexOf(unit))){
+			out.set(indexOf(unit));
 //			System.out.println("add to out: "+unit);
 		}
 		else{
@@ -114,14 +130,10 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 		
 	}
 	
-	protected void copy(Object source, Object dest)
+	protected void copy(BitSet source, BitSet dest)
 	{
-		
-		FlowSet sourceSet = (FlowSet) source;
-		FlowSet destSet   = (FlowSet) dest;
-		
-		sourceSet.copy(destSet);
-		
+		dest.clear();
+		dest.or(source);
 	}
 	
 //	STEP 6: Determine value for start/end node, and
@@ -129,18 +141,33 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 //	
 //	start node:              empty set
 //	initial approximation:   empty set
-	protected Object entryInitialFlow()
+	protected BitSet entryInitialFlow()
 	{
-		return new ArraySparseSet();
+		return new BitSet();
 	}
 	
-	protected Object newInitialFlow()
+	protected BitSet newInitialFlow()
 	{
-		return new ArraySparseSet();
+		return new BitSet();
 	}
+	
 	public FlowSet getMultiRunStatements(){
-		return multiRunStatements;
+		FlowSet res = new ArraySparseSet();
+		for (Unit u : multiRunStatements) {
+			res.add(u);
+		}
+		return res;
 	}
+	
+    protected int indexOf(Object o) {
+        Integer index = nodeToIndex.get(o);
+        if(index==null) {
+            index = lastIndex;
+            nodeToIndex.put(o,index);
+            lastIndex++;
+        }
+        return index;
+    }
 	
 }
 
