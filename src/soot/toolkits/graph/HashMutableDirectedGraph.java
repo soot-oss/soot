@@ -42,8 +42,8 @@ import soot.util.*;
 public class HashMutableDirectedGraph implements MutableDirectedGraph {
 		
 
-    protected HashMap<Object,ArrayList> nodeToPreds = new HashMap();
-    protected HashMap<Object,ArrayList> nodeToSuccs = new HashMap();
+    protected HashMap<Object,LinkedHashSet<Object>> nodeToPreds = new HashMap();
+    protected HashMap<Object,LinkedHashSet<Object>> nodeToSuccs = new HashMap();
 
     protected Chain heads = new HashChain();
     protected Chain tails = new HashChain();
@@ -85,21 +85,54 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
     public List getPredsOf(Object s)
     {
-        List l = nodeToPreds.get(s);
-        if (l != null)
-            return Collections.unmodifiableList(l);
+        Set preds = nodeToPreds.get(s);
+        if (preds != null)
+            return new LinkedList(preds);
+        else
+            throw new RuntimeException(s+"not in graph!");
+    }
+    
+    /**
+     * Same as {@link #getPredsOf(Object)} but returns a set.
+     * This is faster than calling {@link #getPredsOf(Object)}.
+     * Also, certain operations like {@link Collection#contains(Object)}
+     * execute faster on the set than on the list.
+     * The returned set is unmodifiable. 
+     */
+    public Set getPredsOfAsSet(Object s)
+    {
+        Set preds = nodeToPreds.get(s);
+        if (preds != null)
+            return Collections.unmodifiableSet(preds);
         else
             throw new RuntimeException(s+"not in graph!");
     }
 
     public List getSuccsOf(Object s)
     {
-        List l = nodeToSuccs.get(s);
-        if (l != null)
-            return Collections.unmodifiableList(l);
+        Set succs = nodeToSuccs.get(s);
+        if (succs != null)
+            return new LinkedList(succs);
         else
             throw new RuntimeException(s+"not in graph!");
     }
+    
+    /**
+     * Same as {@link #getSuccsOf(Object)} but returns a set.
+     * This is faster than calling {@link #getSuccsOf(Object)}.
+     * Also, certain operations like {@link Collection#contains(Object)}
+     * execute faster on the set than on the list.
+     * The returned set is unmodifiable. 
+     */
+    public Set getSuccsOfAsSet(Object s)
+    {
+        Set succs = nodeToSuccs.get(s);
+        if (succs != null)
+            return Collections.unmodifiableSet(succs);
+        else
+            throw new RuntimeException(s+"not in graph!");
+    }
+
 
     public int size()
     {
@@ -119,11 +152,11 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
         if (containsEdge(from, to))
             return;
 
-        List<Object> succsList = nodeToSuccs.get(from);
+        Set<Object> succsList = nodeToSuccs.get(from);
         if (succsList == null)
             throw new RuntimeException(from + " not in graph!");
 
-        List<Object> predsList = nodeToPreds.get(to);
+        Set<Object> predsList = nodeToPreds.get(to);
         if (predsList == null)
             throw new RuntimeException(to + " not in graph!");
 
@@ -142,11 +175,11 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
         if (!containsEdge(from, to))
             return;
 
-        List succsList = nodeToSuccs.get(from);
+        Set succsList = nodeToSuccs.get(from);
         if (succsList == null)
             throw new RuntimeException(from + " not in graph!");
 
-        List predsList = nodeToPreds.get(to);
+        Set predsList = nodeToPreds.get(to);
         if (predsList == null)
             throw new RuntimeException(to + " not in graph!");
 
@@ -162,7 +195,7 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
     public boolean containsEdge(Object from, Object to)
     {
-				List succs = nodeToSuccs.get(from);
+    		Set succs = nodeToSuccs.get(from);
 				if (succs == null)
 						return false;
         return succs.contains(to);
@@ -183,8 +216,8 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 				if (containsNode(node))
 						throw new RuntimeException("Node already in graph");
 				
-				nodeToSuccs.put(node, new ArrayList());
-        nodeToPreds.put(node, new ArrayList());
+				nodeToSuccs.put(node, new LinkedHashSet<Object>());
+        nodeToPreds.put(node, new LinkedHashSet<Object>());
         heads.add(node); 
 				tails.add(node);
     }
