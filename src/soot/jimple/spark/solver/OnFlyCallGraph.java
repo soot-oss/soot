@@ -45,13 +45,6 @@ public class OnFlyCallGraph {
 
     public OnFlyCallGraph( PAG pag ) {
         this.pag = pag;
-        CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
-        if( options.all_reachable() ) {
-            List<SootMethod> entryPoints = new ArrayList<SootMethod>();
-            entryPoints.addAll( EntryPoints.v().all() );
-            entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
-            Scene.v().setEntryPoints( entryPoints );
-        }
         callGraph = new CallGraph();
         Scene.v().setCallGraph( callGraph );
         ContextManager cm = CallGraphBuilder.makeContextManager(callGraph);

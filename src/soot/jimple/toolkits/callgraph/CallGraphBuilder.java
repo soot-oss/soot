@@ -33,7 +33,6 @@ import soot.PointsToSet;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Type;
-import soot.options.CGOptions;
 import soot.util.queue.QueueReader;
 
 /** Models the call graph.
@@ -42,7 +41,6 @@ import soot.util.queue.QueueReader;
 public final class CallGraphBuilder
 { 
     private PointsToAnalysis pa;
-    private final CGOptions options;
     private final ReachableMethods reachables;
     private final OnFlyCallGraphBuilder ofcgb;
     private final CallGraph cg;
@@ -58,13 +56,6 @@ public final class CallGraphBuilder
      * PointsToAnalysis to resolve virtual calls. */
     public CallGraphBuilder( PointsToAnalysis pa ) {
         this.pa = pa;
-        options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
-        if( options.all_reachable() ) {
-            List<SootMethod> entryPoints = new ArrayList<SootMethod>();
-            entryPoints.addAll( EntryPoints.v().all() );
-            entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
-            Scene.v().setEntryPoints( entryPoints );
-        }
         cg = new CallGraph();
         Scene.v().setCallGraph( cg );
         reachables = Scene.v().getReachableMethods();
@@ -80,7 +71,6 @@ public final class CallGraphBuilder
         G.v().out.println( "Warning: using incomplete callgraph containing "+
                 "only application classes." );
         pa = soot.jimple.toolkits.pointer.DumbPointerAnalysis.v();
-        options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         cg = new CallGraph();
         Scene.v().setCallGraph(cg);
         List<MethodOrMethodContext> entryPoints = new ArrayList<MethodOrMethodContext>();
