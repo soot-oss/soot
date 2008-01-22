@@ -99,10 +99,9 @@ public class SPatchingChain extends PatchingChain<Unit>
             
             /* handle each UnitBox individually */
 
-            Unit[] boxes = (Unit[]) unit.getBoxesPointingToThis().toArray(new Unit[0]);
+            UnitBox[] boxes = (UnitBox[]) unit.getBoxesPointingToThis().toArray(new UnitBox[0]);
 
-            for (Unit element : boxes) {
-                UnitBox ub = (UnitBox) element;
+            for (UnitBox ub : boxes) {
 
                 if(ub.getUnit() != unit)
                     throw new RuntimeException("Assertion failed.");
