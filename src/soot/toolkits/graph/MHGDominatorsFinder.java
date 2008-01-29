@@ -79,7 +79,7 @@ public class MHGDominatorsFinder implements DominatorsFinder
             Object o = i.next();
             if(heads.contains(o)){
                 BitSet self = new BitSet();
-                self.set(indexOf(self));
+                self.set(indexOf(o));
                 nodeToFlowSet.put(o, self);
             }
             else{
