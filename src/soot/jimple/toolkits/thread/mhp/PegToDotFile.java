@@ -56,9 +56,6 @@ public class PegToDotFile {
 	
 	public static int graphtype = UNITGRAPH;
 	
-	public static String clsname;
-	public static String methname;
-	
 	public static boolean isBrief      = false;
 	private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
 	private static final Map<Object, String> startNodeToName = new HashMap<Object, String>(); 
@@ -257,6 +254,10 @@ public class PegToDotFile {
 			}
 		}
 		canvas.plot("peg.dot");
+		
+		//clean up
+		listNodeName.clear();
+		startNodeToName.clear();
 	} 
 	
 	private static int getNodeOrder(Hashtable<Object,Integer> nodeindex, Object node){

@@ -50,11 +50,6 @@ public class PegCallGraphToDot {
 	 * the graph in the middle */
 	
 	
-	//public static int graphtype = UNITGRAPH;
-	
-	public static String clsname;
-	public static String methname;
-	
 	public static boolean isBrief      = false;
 	private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
 	
@@ -176,6 +171,9 @@ public class PegCallGraphToDot {
 		}
 		
 		canvas.plot("pecg.dot");
+		
+		//clean up
+		listNodeName.clear();
 	} 
 	
 	private static int getNodeOrder(Hashtable<Object,Integer> nodeindex, Object node){
