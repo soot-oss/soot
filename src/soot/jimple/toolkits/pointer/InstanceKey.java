@@ -26,6 +26,8 @@ import soot.RefLikeType;
 import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.Stmt;
+import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
+import soot.jimple.spark.sets.PointsToSetEqualsWrapper;
 import soot.jimple.toolkits.pointer.LocalMustAliasAnalysis;
 import soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis;
 
@@ -43,6 +45,7 @@ public class InstanceKey {
     protected final Stmt stmtAfterAssignStmt;
     protected final SootMethod owner;
     protected final int hashCode;
+    protected final PointsToSet pts;
 
     public InstanceKey(Local assignedLocal, Stmt stmtAfterAssignStmt, SootMethod owner, LocalMustAliasAnalysis lmaa, LocalMustNotAliasAnalysis lnma) {
         this.assignedLocal = assignedLocal;
@@ -51,6 +54,9 @@ public class InstanceKey {
         this.lmaa = lmaa;
         this.lnma = lnma;
         this.hashCode = computeHashCode();
+
+        PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
+        pts = new PointsToSetEqualsWrapper((EqualsSupportingPointsToSet) pta.reachingObjects(assignedLocal));
     }
     
     /**
@@ -76,16 +82,12 @@ public class InstanceKey {
         //different methods or local not-may-alias was not successful: get points-to info
         PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
         if(pta==null) return false; //no info; hence don't know for sure
-        PointsToSet reachingObjects = pta.reachingObjects(assignedLocal);
-        PointsToSet otherReachingObjects = pta.reachingObjects(otherKey.assignedLocal);
         //may not alias if we have an empty intersection 
-        return !reachingObjects.hasNonEmptyIntersection(otherReachingObjects);
+        return !pts.hasNonEmptyIntersection(otherKey.pts);
     }
     
     public PointsToSet getPointsToSet() {
-        PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-        PointsToSet reachingObjects = pta.reachingObjects(assignedLocal);
-        return reachingObjects;
+        return pts;
     }
     
     public Local getLocal() {
@@ -147,7 +149,7 @@ public class InstanceKey {
             return true;
         }
         //or if both have no statement set but the same local
-        return (stmtAfterAssignStmt==null && other.stmtAfterAssignStmt==null && assignedLocal==other.assignedLocal);
+        return (stmtAfterAssignStmt==null && other.stmtAfterAssignStmt==null && pts.equals(other.pts));
     }
     
     public boolean isOfReferenceType() {
