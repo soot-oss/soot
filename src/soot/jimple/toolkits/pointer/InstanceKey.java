@@ -53,10 +53,9 @@ public class InstanceKey {
         this.stmtAfterAssignStmt = stmtAfterAssignStmt;
         this.lmaa = lmaa;
         this.lnma = lnma;
-        this.hashCode = computeHashCode();
-
         PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-        pts = new PointsToSetEqualsWrapper((EqualsSupportingPointsToSet) pta.reachingObjects(assignedLocal));
+        this.pts = new PointsToSetEqualsWrapper((EqualsSupportingPointsToSet) pta.reachingObjects(assignedLocal));
+        this.hashCode = computeHashCode();
     }
     
     /**
@@ -99,7 +98,7 @@ public class InstanceKey {
     }
 
     public String toString() {
-        String instanceKeyString = stmtAfterAssignStmt!=null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts("+assignedLocal+")";
+        String instanceKeyString = stmtAfterAssignStmt!=null ? lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt) : "pts("+hashCode+")";
         return instanceKeyString+"("+assignedLocal.getName()+")";
     }
 
@@ -123,6 +122,8 @@ public class InstanceKey {
         if(stmtAfterAssignStmt!=null && (assignedLocal.getType() instanceof RefLikeType)) {
             //compute hash code based on instance key string
             result = prime * result + lmaa.instanceKeyString(assignedLocal, stmtAfterAssignStmt).hashCode();
+        } else if(stmtAfterAssignStmt==null) {
+        	result = prime * result + pts.hashCode();
         }
         return result;
     }
@@ -156,4 +157,12 @@ public class InstanceKey {
     	assert assignedLocal.getType() instanceof RefLikeType;
     	return true;
     }
+
+	public SootMethod getOwner() {
+		return owner;
+	}
+
+	public Stmt getStmt() {
+		return stmtAfterAssignStmt;
+	}
 }
