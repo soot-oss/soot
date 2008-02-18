@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.omg.CORBA.UNKNOWN;
-
 import soot.EquivalentValue;
 import soot.Local;
 import soot.MethodOrMethodContext;
