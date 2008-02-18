@@ -100,7 +100,10 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
                             if (s.name().equals("emptyIterator")) {
                                 src = pag.makeAllocNode( RefType.v("java.util.Hashtable$EmptyIterator"), 
                                                               RefType.v("java.util.Hashtable$EmptyIterator"), method );
-                            }
+                            } else if (s.name().equals("emptyEnumerator")) {
+                                src = pag.makeAllocNode( RefType.v("java.util.Hashtable$EmptyEnumerator"), 
+                                        RefType.v("java.util.Hashtable$EmptyEnumerator"), method );
+                            } 
                         }
                 	}
                 }
