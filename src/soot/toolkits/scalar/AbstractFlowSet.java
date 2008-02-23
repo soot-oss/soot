@@ -41,7 +41,7 @@ import java.util.*;
  * }
  * </pre>
  */
-public abstract class AbstractFlowSet implements FlowSet {
+public abstract class AbstractFlowSet implements FlowSet, Iterable {
   public abstract AbstractFlowSet clone();
 
   /**
