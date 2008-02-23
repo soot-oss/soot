@@ -182,7 +182,6 @@ public class SootPartManager {
 					if (viewPart != null){
 						((AnalysisKeyView)viewPart).setInputKeys(handler.getKeyList());
 					}
-					page.bringToTop(viewPart);
 				}
 			} 
 			catch (PartInitException pie) {
