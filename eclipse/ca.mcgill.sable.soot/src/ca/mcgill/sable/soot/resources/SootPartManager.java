@@ -132,7 +132,6 @@ public class SootPartManager {
 						((AnalysisTypeView)view).setTypesChecked(handler.getTypesToShow());
 						((AnalysisTypeView)view).setInputTypes(types);
 					}
-					page.bringToTop(view);
 				}
 			} 
 			catch (PartInitException pie) {
