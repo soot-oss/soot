@@ -89,14 +89,7 @@ the {\tt createclass}
 \htmladdnormallink{example}{../createclass}.
 We now show how to add a field to a class.
 
-Here, we want to add a counter field to the main class.  In fact, we
-only want to add one counter field, even if Soot happens to be running
-two threads at once.  Hence we ensure mutual exclusion:
-
-\begin{verbatim}
-    synchronized(this)
-    {
-\end{verbatim}
+Here, we want to add a counter field to the main class.
 
 \subsection{Sanity check -- find main() method}
 
