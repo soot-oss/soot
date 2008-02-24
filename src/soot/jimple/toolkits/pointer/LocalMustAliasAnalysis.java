@@ -146,7 +146,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 			for (ValueBox useBox : useBoxes) {
 				Value val = useBox.getValue();
 				if(val instanceof FieldRef) {
-					usedFieldRefs.add(new EquivalentValue(val));						
+					FieldRef fieldRef = (FieldRef) val;
+					if(fieldRef.getType() instanceof RefLikeType)
+						usedFieldRefs.add(new EquivalentValue(fieldRef));						
 				}
 			}
 		}
