@@ -74,7 +74,7 @@ public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 	 * Default implementation constructing a PseudoTopologicalOrderer. 
 	 * @return an Orderer to order the nodes for the fixed-point iteration 
 	 */
-	protected Orderer constructOrderer() {
+	protected Orderer<N> constructOrderer() {
 		return new PseudoTopologicalOrderer();
 	}
 

@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author Eric Bodden
  */
-public interface Orderer {
+public interface Orderer<N> {
 
 	/**
 	 *  Builds an order for a directed graph.
@@ -37,6 +37,6 @@ public interface Orderer {
 	 *  @param reverse <code>true</code> to compute the reverse order
 	 *  @return a somehow ordered list of the graph's nodes
 	 */
-	public abstract List newList(DirectedGraph g, boolean reverse);
+	public abstract List<N> newList(DirectedGraph<N> g, boolean reverse);
 
 }

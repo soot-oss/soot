@@ -48,10 +48,10 @@ import soot.toolkits.graph.interaction.InteractionHandler;
  *   required by all BackwardFlowAnalyses.
  *  
  */
-public abstract class BackwardFlowAnalysis extends FlowAnalysis
+public abstract class BackwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
 {
     /** Construct the analysis from a DirectedGraph representation of a Body. */
-    public BackwardFlowAnalysis(DirectedGraph graph)
+    public BackwardFlowAnalysis(DirectedGraph<N> graph)
     {
         super(graph);
     }
@@ -63,29 +63,29 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
     protected void doAnalysis()
     {
-        final Map<Object, Integer> numbers = new HashMap<Object, Integer>();
+        final Map<N, Integer> numbers = new HashMap<N, Integer>();
 //        Timers.v().orderComputation = new soot.Timer();
 //        Timers.v().orderComputation.start();
-        List orderedUnits = constructOrderer().newList(graph,false);
+        List<N> orderedUnits = constructOrderer().newList(graph,false);
 //        Timers.v().orderComputation.end();
         new PseudoTopologicalOrderer().newList(graph,false);
         int i = 1;
-        for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
-            final Object u = uIt.next();
+        for( Iterator<N> uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
+            final N u = uIt.next();
             numbers.put(u, new Integer(i));
             i++;
         }
 
-        Collection<Object> changedUnits = constructWorklist(numbers);
+        Collection<N> changedUnits = constructWorklist(numbers);
 
 
         // Set initial Flows and nodes to visit.
         {
-            Iterator it = graph.iterator();
+            Iterator<N> it = graph.iterator();
 
             while(it.hasNext())
             {
-                Object s = it.next();
+                N s = it.next();
 
                 changedUnits.add(s);
 
@@ -94,15 +94,15 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             }
         }
 
-        List tails = graph.getTails();
+        List<N> tails = graph.getTails();
         
         // Feng Qian: March 07, 2002
         // init entry points
         {
-            Iterator it = tails.iterator();
+            Iterator<N> it = tails.iterator();
             
             while (it.hasNext()) {
-                Object s = it.next();
+                N s = it.next();
                 // this is a backward flow analysis
                 unitToAfterFlow.put(s, entryInitialFlow());
             }
@@ -110,15 +110,15 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
         // Perform fixed point flow analysis
         {
-            Object previousBeforeFlow = newInitialFlow();
+            A previousBeforeFlow = newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
-                Object beforeFlow;
-                Object afterFlow;
+                A beforeFlow;
+                A afterFlow;
 
                 //get the first object
-                Object s = changedUnits.iterator().next();
+                N s = changedUnits.iterator().next();
                 changedUnits.remove(s);
                 boolean isTail = tails.contains(s);
 
@@ -126,7 +126,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
                 // Compute and store afterFlow
                 {
-                    List succs = graph.getSuccsOf(s);
+                    List<N> succs = graph.getSuccsOf(s);
 
                     afterFlow =  unitToAfterFlow.get(s);
 
@@ -134,13 +134,13 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                         copy(unitToBeforeFlow.get(succs.get(0)), afterFlow);
                     else if(succs.size() != 0)
                     {
-                        Iterator succIt = succs.iterator();
+                        Iterator<N> succIt = succs.iterator();
 
                         copy(unitToBeforeFlow.get(succIt.next()), afterFlow);
 
                         while(succIt.hasNext())
                         {
-                            Object otherBranchFlow = unitToBeforeFlow.get(succIt.next());
+                            A otherBranchFlow = unitToBeforeFlow.get(succIt.next());
                             merge(afterFlow, otherBranchFlow);
                         }
 
@@ -153,7 +153,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 {
                     beforeFlow = unitToBeforeFlow.get(s);
                     if (Options.v().interactive_mode()){
-                        Object savedFlow = newInitialFlow();
+                        A savedFlow = newInitialFlow();
                         if (filterUnitToAfterFlow != null){
                             savedFlow = filterUnitToAfterFlow.get(s);
                             copy(filterUnitToAfterFlow.get(s), savedFlow);
@@ -169,7 +169,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                     }
                     flowThrough(afterFlow, s, beforeFlow);
                     if (Options.v().interactive_mode()){
-                        Object bSavedFlow = newInitialFlow();
+                        A bSavedFlow = newInitialFlow();
                         if (filterUnitToBeforeFlow != null){
                             bSavedFlow = filterUnitToBeforeFlow.get(s);
                             copy(filterUnitToBeforeFlow.get(s), bSavedFlow);
@@ -185,11 +185,11 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 // Update queue appropriately
                     if(!beforeFlow.equals(previousBeforeFlow))
                     {
-                        Iterator predIt = graph.getPredsOf(s).iterator();
+                        Iterator<N> predIt = graph.getPredsOf(s).iterator();
 
                         while(predIt.hasNext())
                         {
-                            Object pred = predIt.next();
+                            N pred = predIt.next();
                             
                             changedUnits.add(pred);
                         }
@@ -198,9 +198,9 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
         }
     }
     
-	protected Collection<Object> constructWorklist(final Map<Object, Integer> numbers) {
-		return new TreeSet<Object>( new Comparator() {
-            public int compare(Object o1, Object o2) {
+	protected Collection<N> constructWorklist(final Map<N, Integer> numbers) {
+		return new TreeSet<N>( new Comparator<N>() {
+            public int compare(N o1, N o2) {
                 Integer i1 = numbers.get(o1);
                 Integer i2 = numbers.get(o2);
                 return (i1.intValue() - i2.intValue());
