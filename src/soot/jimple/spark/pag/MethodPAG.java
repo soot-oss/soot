@@ -188,36 +188,37 @@ public final class MethodPAG {
         // Add node for parameter (String[]) in main method
         if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
             addInEdge( pag().nodeFactory().caseArgv(), nodeFactory.caseParm(0) );
-        }
+        } else
 
         if( method.getSignature().equals(
                     "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>" ) ) {
             addInEdge( pag().nodeFactory().caseMainThread(), nodeFactory.caseThis() );
             addInEdge( pag().nodeFactory().caseMainThreadGroup(), nodeFactory.caseParm( 0 ) );
-        }
+        } else
 
         if (method.getSignature().equals(
                 "<java.lang.ref.Finalizer: void <init>(java.lang.Object)>")) {
             addInEdge( nodeFactory.caseThis(), pag().nodeFactory().caseFinalizeQueue());
-        }
+        } else
+        	
         if (method.getSignature().equals(
                 "<java.lang.ref.Finalizer: void runFinalizer()>")) {
             addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseThis());
-        }
+        } else
 
         if (method.getSignature().equals(
                 "<java.lang.ref.Finalizer: void access$100(java.lang.Object)>")) {
             addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseParm(0));
-        }
+        } else
 
         if (method.getSignature().equals(
                 "<java.lang.ClassLoader: void <init>()>")) {
             addInEdge(pag.nodeFactory().caseDefaultClassLoader(), nodeFactory.caseThis());
-        }
+        } else
 
         if (method.getSignature().equals("<java.lang.Thread: void exit()>")) {
             addInEdge(pag.nodeFactory().caseMainThread(), nodeFactory.caseThis());
-        }
+        } else
 
         if (method
                 .getSignature()
@@ -243,7 +244,8 @@ public final class MethodPAG {
         for (SootMethod implicitMethod : EntryPoints.v().implicit()) {
          if (implicitMethod.getNumberedSubSignature().equals(
 		    method.getNumberedSubSignature())) {
-		isImplicit = true;
+        	 isImplicit = true;
+        	 break;
          }
       }
         if (isImplicit) {
