@@ -26,46 +26,46 @@ import java.util.List;
  *
  * @author Eric Bodden
  */
-public class InverseGraph implements DirectedGraph {
+public class InverseGraph<N> implements DirectedGraph<N> {
 	
-	protected final DirectedGraph g;
+	protected final DirectedGraph<N> g;
 
-	public InverseGraph(DirectedGraph g) {
+	public InverseGraph(DirectedGraph<N> g) {
 		this.g = g;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List getHeads() {
+	public List<N> getHeads() {
 		return g.getTails();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List getPredsOf(Object s) {
+	public List<N> getPredsOf(N s) {
 		return g.getSuccsOf(s);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List getSuccsOf(Object s) {
+	public List<N> getSuccsOf(N s) {
 		return g.getPredsOf(s);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public List getTails() {
+	public List<N> getTails() {
 		return g.getHeads();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Iterator iterator() {
+	public Iterator<N> iterator() {
 		return g.iterator();
 	}
 
