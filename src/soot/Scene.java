@@ -104,6 +104,9 @@ public class Scene  //extends AbstractHost
     public void setMainClass(SootClass m)
     {
         mainClass = m;
+        if(!m.declaresMethod(Scene.v().getSubSigNumberer().findOrAdd( "void main(java.lang.String[])" ))) {
+        	throw new RuntimeException("Main-class has no main method!");
+        }
     }
     
     Set<String> reservedNames = new HashSet<String>();
