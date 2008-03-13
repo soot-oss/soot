@@ -18,13 +18,13 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.internal.*;
-import soot.jimple.spark.pag.Node;
-import soot.jimple.spark.pag.PAG;
-import soot.util.*;
-import soot.RefType;
 import soot.Scene;
 import soot.Type;
+import soot.jimple.spark.internal.TypeManager;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.util.BitSetIterator;
+import soot.util.BitVector;
 
 /** Hybrid implementation of points-to set, which uses an explicit array for
  * small sets, and a bit vector for large sets.
@@ -279,17 +279,9 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     private PAG pag;
     private boolean empty = true;
 
-    private static final RefType OBJECT_TYPE = Scene.v().getRefType(
-    "java.lang.Object");
-    static {
-      if (OBJECT_TYPE == null) {
-        throw new RuntimeException();
-      }
-    }
-
     public static HybridPointsToSet intersection(final HybridPointsToSet set1,
         final HybridPointsToSet set2, PAG pag) {
-    final HybridPointsToSet ret = new HybridPointsToSet(OBJECT_TYPE, pag);
+    final HybridPointsToSet ret = new HybridPointsToSet(Scene.v().getObjectType(), pag);
     BitVector s1Bits = set1.bits;
     BitVector s2Bits = set2.bits;
     if (s1Bits == null || s2Bits == null) {

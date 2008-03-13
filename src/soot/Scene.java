@@ -26,18 +26,33 @@
 
 
 package soot;
-import soot.options.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-
-import soot.util.*;
-
-import java.util.*;
-import java.io.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
+import soot.jimple.toolkits.callgraph.ReachableMethods;
+import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
+import soot.jimple.toolkits.pointer.SideEffectAnalysis;
+import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
+import soot.util.ArrayNumberer;
+import soot.util.Chain;
+import soot.util.HashChain;
+import soot.util.MapNumberer;
+import soot.util.Numberer;
+import soot.util.SingletonList;
+import soot.util.StringNumberer;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene  //extends AbstractHost
@@ -64,10 +79,15 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.PRIVILEGED );
         kindNumberer.add( Kind.NEWINSTANCE );
 
-	addSootBasicClasses();
+        addSootBasicClasses();
+        
+        OBJECT_TYPE = getRefType("java.lang.Object");
     }
     public static Scene  v() { return G.v().soot_Scene (); }
 
+    
+    private final RefType OBJECT_TYPE;
+    
     Chain<SootClass> classes = new HashChain<SootClass>();
     Chain<SootClass> applicationClasses = new HashChain<SootClass>();
     Chain<SootClass> libraryClasses = new HashChain<SootClass>();
@@ -383,6 +403,13 @@ public class Scene  //extends AbstractHost
     public RefType getRefType(String className) 
     {
         return (RefType) nameToClass.get(className);
+    }
+    
+    /**
+     * Returns the {@link RefType} for {@link Object}.
+     */
+    public RefType getObjectType() {
+    	return OBJECT_TYPE;
     }
 
     /**
