@@ -44,6 +44,10 @@ public abstract class Pack implements HasPhaseOptions
     public Iterator iterator() { return opts.iterator(); }
 
     public void add(Transform t) { 
+    	if(!t.getPhaseName().startsWith(getPhaseName()+".")) {
+    		throw new RuntimeException("Transforms in pack '"+getPhaseName()+"' must have a phase name " +
+    				"that starts with '"+getPhaseName()+".'.");
+    	}    	
         PhaseOptions.v().getPM().notifyAddPack();
         if( get( t.getPhaseName() ) != null ) {
             throw new RuntimeException( "Phase "+t.getPhaseName()+" already "
