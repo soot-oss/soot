@@ -176,14 +176,20 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	}
 	
 	/**
-	 * all options get saved as &#60;alias, value&#62; pair
+	 * all options get saved as <alias, value> pair
 	 */ 
 	protected void okPressed() {
-		createNewConfig();	
-		super.okPressed();
+		if(createNewConfig())	
+			super.okPressed();
+		else {
+			Shell defaultShell = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+			String projectName = getSootMainProjectWidget().getText().getText();
+			MessageDialog.openError(defaultShell, "Unable to find Soot Main Project", "Project "+projectName+" does not exist," +
+					" is no Java project or is closed.");
+		}
 	}
-
-	private void createNewConfig() {
+	
+	private boolean createNewConfig() {
 	
 		setConfig(new HashMap());
 		
@@ -224,6 +230,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		</xsl:for-each>
 		
 		setSootMainClass(getSootMainClassWidget().getText().getText());			
+		return setSootMainProject(getSootMainProjectWidget().getText().getText());
 	}
 
 	protected HashMap savePressed() {
