@@ -18,12 +18,18 @@
  */
 
 package soot.jimple.toolkits.annotation;
-import soot.*;
-import java.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.tagkit.*;
-import soot.jimple.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Singletons;
+import soot.jimple.Stmt;
+import soot.tagkit.LinkTag;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.MHGDominatorsFinder;
 
 /** A body transformer that records avail expression 
  * information in tags.  - both pessimistic and optimistic options*/
@@ -37,11 +43,11 @@ public class DominatorsTagger extends BodyTransformer
     {
 
        
-        DominatorAnalysis analysis = new DominatorAnalysis(new ExceptionalUnitGraph(b));
+        MHGDominatorsFinder analysis = new MHGDominatorsFinder(new ExceptionalUnitGraph(b));
         Iterator it = b.getUnits().iterator();
         while (it.hasNext()){
             Stmt s = (Stmt)it.next();
-            FlowSet dominators = (FlowSet)analysis.getFlowAfter(s);
+            List dominators = analysis.getDominators(s);
             Iterator dIt = dominators.iterator();
             while (dIt.hasNext()){
                 Stmt ds = (Stmt)dIt.next();
