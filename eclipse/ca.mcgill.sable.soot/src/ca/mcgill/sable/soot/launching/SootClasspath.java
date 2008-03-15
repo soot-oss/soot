@@ -69,7 +69,7 @@ public class SootClasspath {
 	public String getSootClasspath() {
 		StringBuffer cp = new StringBuffer();
 		for (URL url : urls) {
-			cp.append(url.toString());
+			cp.append(url.getPath());
 			cp.append(separator);
 		}
 		
