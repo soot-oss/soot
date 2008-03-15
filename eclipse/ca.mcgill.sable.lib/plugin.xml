@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="ca.mcgill.sable.soot.lib"
+   name="Lib1 Plug-in"
+   version="1.0.0"
+   provider-name="">
+
+   <runtime>
+      <library name="lib/sootclasses.jar">
+         <export
+               name="*">
+         </export>
+      </library>
+      <library name="lib/jasminclasses.jar">
+         <export
+               name="*">
+         </export>
+      </library>
+      <library name="lib/polyglot.jar">
+         <export
+               name="*">
+         </export>
+      </library>
+      <library name="lib/java_cup.jar">
+         <export
+               name="*">
+         </export>
+      </library>
+   </runtime>
+
+</plugin>
