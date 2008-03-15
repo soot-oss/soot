@@ -19,7 +19,6 @@
 
 package soot.jimple.spark.sets;
 import soot.jimple.ClassConstant;
-import soot.jimple.spark.SparkTransformer;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.*;
 import soot.util.BitVector;

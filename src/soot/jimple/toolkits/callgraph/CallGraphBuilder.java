@@ -27,11 +27,9 @@ import soot.EntryPoints;
 import soot.G;
 import soot.Local;
 import soot.MethodOrMethodContext;
-import soot.PhaseOptions;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
 import soot.Scene;
-import soot.SootMethod;
 import soot.Type;
 import soot.util.queue.QueueReader;
 

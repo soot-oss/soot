@@ -23,8 +23,6 @@ import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.*;
-import soot.toolkits.scalar.*;
-
 import java.util.*;
 
 

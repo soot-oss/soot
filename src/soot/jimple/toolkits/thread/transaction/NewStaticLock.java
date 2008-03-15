@@ -1,7 +1,6 @@
 
 package soot.jimple.toolkits.thread.transaction;
 
-import java.lang.*;
 import java.util.*;
 
 import soot.*;

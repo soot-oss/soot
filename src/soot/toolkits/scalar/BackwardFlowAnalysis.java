@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import soot.Timers;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.PseudoTopologicalOrderer;

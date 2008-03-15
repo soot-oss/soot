@@ -23,9 +23,7 @@ import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.*;
 
-import java.util.*;
 import soot.util.queue.*;
-import soot.options.CGOptions;
 
 
 /** The interface between the pointer analysis engine and the on-the-fly

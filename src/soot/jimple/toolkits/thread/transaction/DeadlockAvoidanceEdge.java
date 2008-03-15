@@ -1,11 +1,7 @@
 
 package soot.jimple.toolkits.thread.transaction;
 
-import java.lang.*;
-import java.util.*;
-
 import soot.*;
-import soot.util.*;
 
 public class DeadlockAvoidanceEdge extends NewStaticLock
 {	

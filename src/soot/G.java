@@ -32,14 +32,12 @@ import java.io.PrintStream;
 import java.util.*;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.spark.pag.MethodPAG;
-import soot.jimple.spark.pag.Parm;
 import soot.jimple.spark.sets.P2SetFactory;
 import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.toolkits.typing.ClassHierarchy;
 import soot.shimple.*;
 import soot.toolkits.astmetrics.ClassData;
-import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
