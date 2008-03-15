@@ -79,12 +79,6 @@ public class PointsToBitVector extends BitVector {
 	}
 	*/
 	
-	public Object clone()
-	{
-		PointsToBitVector retVal = (PointsToBitVector) super.clone();
-		return retVal;
-	}
-	
 	public PointsToBitVector(PointsToBitVector other)
 	{
 		super(other);
