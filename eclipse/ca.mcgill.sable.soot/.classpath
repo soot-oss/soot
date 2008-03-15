@@ -3,8 +3,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="jasminclasses-2.2.2.jar"/>
-	<classpathentry kind="lib" path="sootclasses-2.2.2.jar"/>
-	<classpathentry kind="lib" path="polyglotclasses-1.3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

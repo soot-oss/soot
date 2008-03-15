@@ -26,7 +26,6 @@
       <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.core.boot"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.jface.text"/>
@@ -39,8 +38,15 @@
       <import plugin="org.eclipse.draw2d"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="ca.mcgill.sable.graph"/>
+      <import plugin="ca.mcgill.sable.soot.lib"/>
+      <import plugin="org.eclipse.ui.console"/>
    </requires>
 
+	<extension point="org.eclipse.ui.console.consoleFactories">
+		<consoleFactory label="Soot Console" class= "ca.mcgill.sable.soot.SootConsoleFactory"/>
+	</extension>
+
+	
 	
    <extension
          point="org.eclipse.ui.ide.markerImageProviders">
