@@ -19,23 +19,39 @@
 
 package ca.mcgill.sable.soot;
 
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.plugin.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.jface.preference.*;
-import org.eclipse.jface.resource.*;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Vector;
 
-import java.net.*;
-import java.util.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import ca.mcgill.sable.soot.editors.ColorManager;
-import ca.mcgill.sable.soot.launching.*;
-import ca.mcgill.sable.soot.resources.*;
-import ca.mcgill.sable.soot.interaction.*;
+import ca.mcgill.sable.soot.interaction.DataKeeper;
+import ca.mcgill.sable.soot.launching.ISootOutputEventListener;
+import ca.mcgill.sable.soot.launching.SootDocument;
+import ca.mcgill.sable.soot.launching.SootOutputEvent;
+import ca.mcgill.sable.soot.resources.SootPartManager;
+import ca.mcgill.sable.soot.resources.SootResourceManager;
+import ca.mcgill.sable.soot.resources.SootWorkbenchListener;
 
 
 
@@ -66,6 +82,32 @@ public class SootPlugin extends AbstractUIPlugin {
 	private Font sootFont = new Font(null, "Arial", 8, SWT.NORMAL);
 	
 	private IProject currentProject;
+
+    private MessageConsole findConsole(String name) {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		IConsole[] existing = conMan.getConsoles();
+		for (int i = 0; i < existing.length; i++)
+			if (name.equals(existing[i].getName()))
+				return (MessageConsole) existing[i];
+		// no console found, so create a new one
+		MessageConsole myConsole = new MessageConsole(name, null);
+		conMan.addConsoles(new IConsole[] { myConsole });
+		return myConsole;
+	}
+    
+    public MessageConsole getConsole() {
+    	if(console==null) {
+    		console = findConsole("Soot");
+    	}
+		return console;
+    }
+    
+    public void showConsole() {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		conMan.showConsoleView(getConsole());
+    }
 	
 	/**
 	 * Method addSootOutputEventListener.
@@ -140,6 +182,7 @@ public class SootPlugin extends AbstractUIPlugin {
 	}	
 
 	private SootResourceManager manager;
+	private MessageConsole console;
 
 	/**
 	 * Returns the shared instance.

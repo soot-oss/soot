@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Observer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
@@ -34,8 +35,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import soot.toolkits.graph.interaction.IInteractionListener;
 import soot.toolkits.graph.interaction.InteractionHandler;
+
 import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.interaction.InteractionController;
 
@@ -45,7 +46,7 @@ public class SootThread extends Thread {
 	private Display display;
 	private String mainClass;
 	private ArrayList cfgList;
-	private IInteractionListener listener;
+	private InteractionController listener;
 	private SootRunner parent;
 	private Shell activeShell;
 
@@ -82,7 +83,8 @@ public class SootThread extends Thread {
 			soot.G.reset();
 			soot.G.v().out = sootOutFinal;
            
-            InteractionHandler.v().setInteractionListener(getListener());
+			InteractionController listener = getListener();
+			InteractionHandler.v().setInteractionListener(listener);
             
             String mainClass = getMainClass();
             String mainProject = null;
@@ -99,7 +101,7 @@ public class SootThread extends Thread {
 		            if(project.exists() && project.isOpen() && project.hasNature("org.eclipse.jdt.core.javanature")) {
 		            	IJavaProject javaProject = JavaCore.create(project);
 						URL[] urls = SootClasspath.projectClassPath(javaProject);
-						loader = new URLClassLoader(urls);
+						loader = new URLClassLoader(urls,SootThread.class.getClassLoader());
 		            } else {
 		    			final String mc = mainClass;
 		    			final Shell defaultShell = getShell();
@@ -115,12 +117,22 @@ public class SootThread extends Thread {
 	            } else {
 	            	loader = SootThread.class.getClassLoader();
 	            }
-	            //set G of loaded soot instance to our G
-	            //(necessary for getting output and for interaction)
-				Class<?> sootG = loader.loadClass("soot.G");
-				Field instance = sootG.getDeclaredField("instance");
-				instance.setAccessible(true);
-				instance.set(null, soot.G.v());
+//	            //patch up streams
+//				Class<?> sootG = loader.loadClass("soot.G");
+//				Method reset = sootG.getMethod("reset");
+//				reset.invoke(null);
+//				Method v = sootG.getMethod("v");
+//				Object g = v.invoke(null);
+//				Field out = sootG.getField("out");
+//				out.set(g, sootOutFinal);
+//				
+//				//patch up interaction listener
+//				Class<?> interActHandler = loader.loadClass("soot.toolkits.graph.interaction.InteractionHandler");
+//				v = interActHandler.getMethod("v");
+//				Object inst = v.invoke(null);
+//				Method setMethod = interActHandler.getMethod("setInteractionListener", Observer.class);
+//				setMethod.invoke(inst, getListener());				
+				
 				toRun = loader.loadClass(mainClass);
 			} catch(final ClassNotFoundException e) {
 				final Shell defaultShell = getShell();
@@ -246,15 +258,15 @@ public class SootThread extends Thread {
 	/**
 	 * @return
 	 */
-	public IInteractionListener getListener() {
+	public InteractionController getListener() {
 		return listener;
 	}
 
 	/**
-	 * @param listener
+	 * @param controller
 	 */
-	public void setListener(IInteractionListener listener) {
-		this.listener = listener;
+	public void setListener(InteractionController controller) {
+		this.listener = controller;
 	}
 
 	/**

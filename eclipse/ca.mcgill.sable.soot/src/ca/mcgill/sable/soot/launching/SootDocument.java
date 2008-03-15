@@ -19,6 +19,8 @@
 
 package ca.mcgill.sable.soot.launching;
 
+import java.io.PrintStream;
+
 import org.eclipse.jface.text.*;
 import org.eclipse.ui.*;
 import ca.mcgill.sable.soot.*;
@@ -34,7 +36,10 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	private int oldStreamWriteEnd = 0;
 	private boolean viewShown = false;
 	
+	protected PrintStream consoleStream;
+	
 	public SootDocument() {
+		consoleStream = new PrintStream(SootPlugin.getDefault().getConsole().newMessageStream());
 	}
 	
 	public void startUp() {
@@ -82,21 +87,24 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	}
 	
 	private void clearText() {
-		set(new String());
-		setNewStreamWriteEnd(0);
-		setOldStreamWriteEnd(0);
-		showSootOutputView();
+//		set(new String());
+//		setNewStreamWriteEnd(0);
+//		setOldStreamWriteEnd(0);
+//		showSootOutputView();
+		SootPlugin.getDefault().getConsole().clearConsole();
 	}
 	
 	private void appendText(final String text) {
 		
 		update(new Runnable() {
 			public void run() {
-				int appendedLength= text.length();
-				setNewStreamWriteEnd(getOldStreamWriteEnd() + appendedLength);
-				replace0(getOldStreamWriteEnd(), 0, text);
-				setOldStreamWriteEnd(getNewStreamWriteEnd());
-				getViewer().getTextViewer().setTopIndex(getNumberOfLines());
+//				int appendedLength= text.length();
+//				setNewStreamWriteEnd(getOldStreamWriteEnd() + appendedLength);
+//				replace0(getOldStreamWriteEnd(), 0, text);
+//				setOldStreamWriteEnd(getNewStreamWriteEnd());
+//				getViewer().getTextViewer().setTopIndex(getNumberOfLines());
+				consoleStream.print(text);
+				SootPlugin.getDefault().showConsole();
 			}
 		});
 		

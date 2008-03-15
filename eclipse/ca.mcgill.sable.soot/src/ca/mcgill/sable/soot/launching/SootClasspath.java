@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -50,17 +52,24 @@ public class SootClasspath {
 		IClasspathEntry[] cp;
 		try {
 			cp = javaProject.getResolvedClasspath(true);
-			URL[] urls = new URL[cp.length + 1];
+			Set<URL> urls = new HashSet<URL>();
 			String uriString = workspace.getRoot().getFile(
 					javaProject.getOutputLocation()).getLocationURI().toString()
 					+ "/";
-			urls[0] = new URI(uriString).toURL();
-			int i = 1;
+			urls.add(new URI(uriString).toURL());
 			for (IClasspathEntry entry : cp) {
 				File file = entry.getPath().toFile();
-				urls[i++] = file.toURI().toURL();
+				URL url = file.toURI().toURL();
+				/* We omit the classpath entry for sootclasses*.jar, because
+				 * we have to load whatever soot classes are loaded from the current class loader,
+				 * not the project's class loader. 
+				 */				
+				if(!url.toString().contains("sootclasses"))
+					urls.add(url);
 			}
-			return urls;
+			URL[] array = new URL[urls.size()];
+			urls.toArray(array);
+			return array;
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 			return new URL[0];
