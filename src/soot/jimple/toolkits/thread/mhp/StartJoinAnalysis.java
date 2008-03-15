@@ -48,7 +48,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		if(!startStatements.isEmpty())
 		{
 			// Get supporting info and analyses
-			PostDominatorAnalysis pd = new PostDominatorAnalysis(new BriefUnitGraph(sm.getActiveBody()));
+			MHGPostDominatorsFinder pd = new MHGPostDominatorsFinder(new BriefUnitGraph(sm.getActiveBody()));
 			EqualUsesAnalysis lif = new EqualUsesAnalysis(g);
 			TransitiveTargets runMethodTargets = new TransitiveTargets( callGraph, new Filter(new RunMethodsPred()) );
 			
@@ -138,7 +138,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					// If startObject and joinObject MUST be the same, and if join post-dominates start
 					if( lif.areEqualUses( start, (Local) startObject, join, (Local) joinObject ) )
 					{
-						if(((FlowSet) pd.getFlowBefore(start)).contains(join)) // does join post-dominate start?
+						if((pd.getDominators(start)).contains(join)) // does join post-dominate start?
 						{
 //							G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
 							startToJoin.put(start, join); // then this join always joins this start's thread
