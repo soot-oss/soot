@@ -77,9 +77,14 @@ public class BitVector
             bits[indexOf(bit)] &= ~mask(bit);
     }
     public Object clone() {
-        BitVector ret = new BitVector( length() );
-        System.arraycopy( bits, 0, ret.bits, 0, ret.bits.length );
-        return ret;
+        try {
+			BitVector ret = (BitVector) super.clone();
+	        System.arraycopy( bits, 0, ret.bits, 0, ret.bits.length );
+	        return ret;
+		} catch (CloneNotSupportedException e) {
+			//cannot occur
+			throw new RuntimeException(e);
+		}
     }
     public boolean equals( Object o ) {
         if( !( o instanceof BitVector ) ) return false;
