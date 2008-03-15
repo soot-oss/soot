@@ -143,31 +143,6 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 
 	}
 	
-	protected void runSootAsProcess(String cmd) {
-		
-        SootProcessRunner op;    
-        try {   
-        	newProcessStarting();
-            op = new SootProcessRunner(Display.getCurrent(), cmd, sootClasspath);
-
-            if (window == null) {
-            	window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-            }
-            new  ProgressMonitorDialog(window.getShell()).run(true, true, op);
- 			
- 			
- 		} 
- 		catch (InvocationTargetException e1) {
-    		// handle exception
- 		} 
- 		catch (InterruptedException e2) {
-    		// handle cancelation
-    		System.out.println(e2.getMessage());
- 		}
- 
-   
-        
-	}
 	private void newProcessStarting() {
 		SootOutputEvent clear_event = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_CLEAR_EVENT);
         SootPlugin.getDefault().fireSootOutputEvent(clear_event);    
@@ -193,7 +168,7 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	
 	private void initPaths() {
 		
-		sootClasspath.initialize();
+		sootClasspath.initialize(getSootSelection().getJavaProject());
 		
 		// platform location 
 		platform_location = getSootSelection().getJavaProject().getProject().getLocation().toOSString();

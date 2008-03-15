@@ -80,7 +80,7 @@ public class SootFolderLauncher extends SootLauncher {
 	 * @return
 	 */
 	public String getClasspathAppend() {
-		return classpathAppend;
+		return getSootClasspath().getSootClasspath() + getSootClasspath().getSeparator() + classpathAppend;
 	}
 
 }

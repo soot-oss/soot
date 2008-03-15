@@ -206,7 +206,7 @@ public class SootFileLauncher extends SootLauncher {
 	 * @return String
 	 */
 	public String getClasspathAppend() {
-		return classpathAppend;
+		return getSootClasspath().getSootClasspath() + getSootClasspath().getSeparator() + classpathAppend;
 	}
 
 	/**
