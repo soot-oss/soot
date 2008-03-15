@@ -21,13 +21,23 @@ package ca.mcgill.sable.soot.launching;
 
 
 import java.io.PrintStream;
-import java.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import soot.*;
-import soot.toolkits.graph.interaction.*;
-import ca.mcgill.sable.soot.interaction.*;
+import org.eclipse.swt.widgets.Shell;
+
+import soot.toolkits.graph.interaction.IInteractionListener;
+import soot.toolkits.graph.interaction.InteractionHandler;
+import ca.mcgill.sable.soot.SootPlugin;
+import ca.mcgill.sable.soot.interaction.InteractionController;
 
 
 public class SootThread extends Thread {
@@ -37,6 +47,8 @@ public class SootThread extends Thread {
 	private ArrayList cfgList;
 	private IInteractionListener listener;
 	private SootRunner parent;
+	private Shell activeShell;
+
 	
 	/**
 	 * Constructor for SootThread.
@@ -67,18 +79,67 @@ public class SootThread extends Thread {
 		final PrintStream sootOutFinal = getSootOut();
 		try {
 			
-			soot.G.v().reset();
+			soot.G.reset();
 			soot.G.v().out = sootOutFinal;
            
             InteractionHandler.v().setInteractionListener(getListener());
             
-			Class toRun = Class.forName(getMainClass());
+            String mainClass = getMainClass();
+            String mainProject = null;
+            if(mainClass.contains(":")) {
+            	String[] split = mainClass.split(":");
+				mainProject = split[0];
+            	mainClass = split[1];
+            }
+            Class<?> toRun;
+			try {
+				ClassLoader loader;
+	            if(mainProject!=null) {
+		            IProject project = SootPlugin.getWorkspace().getRoot().getProject(mainProject);
+		            if(project.exists() && project.isOpen() && project.hasNature("org.eclipse.jdt.core.javanature")) {
+		            	IJavaProject javaProject = JavaCore.create(project);
+						URL[] urls = SootClasspath.projectClassPath(javaProject);
+						loader = new URLClassLoader(urls);
+		            } else {
+		    			final String mc = mainClass;
+		    			final Shell defaultShell = getShell();
+		    			getDisplay().syncExec(new Runnable() {
+		    				@Override
+		    				public void run() {
+				    			MessageDialog.openError(defaultShell, "Unable to find Soot Main Project", "Project "+mc+" does not exist," +
+								" is no Java project or is closed. Aborting...");
+		    				}
+		    			});
+		    			return;
+		            }
+	            } else {
+	            	loader = SootThread.class.getClassLoader();
+	            }
+	            //set G of loaded soot instance to our G
+	            //(necessary for getting output and for interaction)
+				Class<?> sootG = loader.loadClass("soot.G");
+				Field instance = sootG.getDeclaredField("instance");
+				instance.setAccessible(true);
+				instance.set(null, soot.G.v());
+				toRun = loader.loadClass(mainClass);
+			} catch(final ClassNotFoundException e) {
+				final Shell defaultShell = getShell();
+    			final String inProject = mainProject!=null ? (" in project "+mainProject):"";
+    			getDisplay().syncExec(new Runnable() {
+    				@Override
+    				public void run() {
+    	    			MessageDialog.openError(defaultShell, "Unable to find class", "Cannot find class"+inProject+". Aborting...\n"+e.getLocalizedMessage());
+    				}
+    			});
+				return;
+			}
+			            
 			Method [] meths = toRun.getDeclaredMethods();
 			Object [] args = new Object [1];
 			args[0] = cmdFinal;
 			for (int i = 0; i < meths.length; i++){
 				if (meths[i].getName().equals("main")){
-					Class [] fields = meths[i].getParameterTypes();
+					Class<?>[] fields = meths[i].getParameterTypes();
 					if (fields.length == 1){
 					meths[i].invoke(toRun, args);
 					}
@@ -94,6 +155,18 @@ public class SootThread extends Thread {
 			System.out.println(e.getCause());
        	}
 	}
+
+	private Shell getShell() {
+		getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				activeShell = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+			}
+		});		
+		return activeShell;
+	}
+
 	/**
 	 * Returns the cmd.
 	 * @return String

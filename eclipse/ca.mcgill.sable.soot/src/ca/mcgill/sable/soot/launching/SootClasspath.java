@@ -42,6 +42,10 @@ public class SootClasspath {
 	protected URL[] urls = new URL[0];
 	
 	public void initialize(IJavaProject javaProject) {
+		this.urls = projectClassPath(javaProject);		
+	}
+
+	public static URL[] projectClassPath(IJavaProject javaProject) {
 		IWorkspace workspace = SootPlugin.getWorkspace();
 		IClasspathEntry[] cp;
 		try {
@@ -56,21 +60,28 @@ public class SootClasspath {
 				File file = entry.getPath().toFile();
 				urls[i++] = file.toURI().toURL();
 			}
-			this.urls = urls;
+			return urls;
 		} catch (JavaModelException e) {
 			e.printStackTrace();
+			return new URL[0];
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+			return new URL[0];
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-		}		
+			return new URL[0];
+		}
 	}
 	
 	public String getSootClasspath() {
+		return urlsToString(urls);
+	}
+
+	public static String urlsToString(URL[] urls) {
 		StringBuffer cp = new StringBuffer();
 		for (URL url : urls) {
 			cp.append(url.getPath());
-			cp.append(separator);
+			cp.append(File.pathSeparator);
 		}
 		
 		return cp.toString();

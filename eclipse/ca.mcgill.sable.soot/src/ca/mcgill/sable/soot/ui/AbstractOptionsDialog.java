@@ -21,6 +21,11 @@ package ca.mcgill.sable.soot.ui;
 
 
 import java.util.*;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.*;
@@ -28,6 +33,8 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.*;
+
+import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.launching.SavedConfigManager;
 import ca.mcgill.sable.soot.launching.SootSavedConfiguration;
 import ca.mcgill.sable.soot.testing.*;
@@ -50,6 +57,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	private	Button addButton;
 	private	Button removeButton;
 	private String sootMainClass;
+	private String sootMainProject;
 	
 	/**
 	 * Constructor for AbstractOptionsDialog.
@@ -545,29 +553,47 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 
 		editGroupSootMainClass.setData("id", "sootMainClass");
 
-		String desc = "Specify main class to run.";	
-		if (desc.length() > 0) {
+		{
+			//main class widget
+			String desc = "Specify main class to run.";	
 			Label descLabel = new Label(editGroupSootMainClass, SWT.WRAP);
 			descLabel.setText(desc);
-		}
-	
-		String defKey = "sootMainClass";
-		String defaultString;
 		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			String defKey = "sootMainClass";
+			String defaultString;
+			
+			if (isInDefList(defKey)) {
+				defaultString = getStringDef(defKey);	
+			}
+			else {
+				defaultString = "";
+			}
+			setSootMainClassWidget(new StringOptionWidget(editGroupSootMainClass, SWT.NONE, new OptionData("Soot Main Class",  "", "","sootMainClass", "\nUses specified main class to run Soot.", defaultString)));
 		}
-		else {
-			defaultString = "";
+		{
+			//main project widget
+			String desc = "Specify the Java project which the main class resides in.";	
+			Label descLabel = new Label(editGroupSootMainClass, SWT.WRAP);
+			descLabel.setText(desc);
+		
+			String defKey = "sootMainProject";
+			String defaultString;
+			
+			if (isInDefList(defKey)) {
+				defaultString = getStringDef(defKey);	
+			}
+			else {
+				defaultString = "";
+			}
+			setSootMainProjectWidget(new StringOptionWidget(editGroupSootMainClass, SWT.NONE, new OptionData("Soot Main Project",  "", "","sootMainProject", "\nThe Java project holding the main class.", defaultString)));
 		}
-		setSootMainClassWidget(new StringOptionWidget(editGroupSootMainClass, SWT.NONE, new OptionData("Soot Main Class",  "", "","sootMainClass", "\nUses specified main class to run Soot.", defaultString)));
 
 		return editGroupSootMainClass;
 	}
 	
 	
 	
-	private StringOptionWidget sootMainClassWidget;
+	private StringOptionWidget sootMainClassWidget, sootMainProjectWidget;
 
 	private void setPageContainer(Composite comp) {
 		pageContainer = comp;
@@ -796,12 +822,31 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	public void setSootMainClassWidget(StringOptionWidget widget) {
 		sootMainClassWidget = widget;
 	}
+	
+	/**
+	 * @return
+	 */
+	public StringOptionWidget getSootMainProjectWidget() {
+		return sootMainProjectWidget;
+	}
+	
+	/**
+	 * @param widget
+	 */
+	public void setSootMainProjectWidget(StringOptionWidget widget) {
+		sootMainProjectWidget = widget;
+	}
+	
 
 	/**
 	 * @return
 	 */
 	public String getSootMainClass() {
-		return sootMainClass;
+		if(sootMainProject!=null && sootMainProject.length()>0) {
+			return sootMainProject+":"+sootMainClass;
+		} else {
+			return sootMainClass;
+		}
 	}
 
 	/**
@@ -809,6 +854,26 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	 */
 	public void setSootMainClass(String string) {
 		sootMainClass = string;
+	}
+	
+	/**
+	 * @param projectName
+	 * @return 
+	 */
+	public boolean setSootMainProject(String projectName) {
+		if(projectName==null || projectName.length()==0) {
+			sootMainProject = null;
+			return true;
+		}
+		IProject project = SootPlugin.getWorkspace().getRoot().getProject(projectName);
+		try {
+			if(project.exists() && project.isOpen() && project.hasNature("org.eclipse.jdt.core.javanature")) {
+				sootMainProject = projectName;
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return sootMainProject!=null;
 	}
 
 }

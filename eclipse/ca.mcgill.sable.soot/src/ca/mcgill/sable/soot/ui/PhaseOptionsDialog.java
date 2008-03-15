@@ -54,11 +54,13 @@
 package ca.mcgill.sable.soot.ui;
 
 //import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 //import ca.mcgill.sable.soot.SootPlugin;
 //import ca.mcgill.sable.soot.util.*;
+import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.ui.*;
 import java.util.*;
 import org.eclipse.swt.events.*;
@@ -1672,11 +1674,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 * all options get saved as <alias, value> pair
 	 */ 
 	protected void okPressed() {
-		createNewConfig();	
-		super.okPressed();
+		if(createNewConfig())	
+			super.okPressed();
+		else {
+			Shell defaultShell = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+			String projectName = getSootMainProjectWidget().getText().getText();
+			MessageDialog.openError(defaultShell, "Unable to find Soot Main Project", "Project "+projectName+" does not exist," +
+					" is no Java project or is closed.");
+		}
 	}
 
-	private void createNewConfig() {
+	private boolean createNewConfig() {
 	
 		setConfig(new HashMap());
 		
@@ -4631,7 +4639,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		
 		
-		setSootMainClass(getSootMainClassWidget().getText().getText());			
+		setSootMainClass(getSootMainClassWidget().getText().getText());		
+		return setSootMainProject(getSootMainProjectWidget().getText().getText());
 	}
 
 	protected HashMap savePressed() {
