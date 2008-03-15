@@ -21,6 +21,8 @@ package soot.jimple.spark.ondemand;
 import java.util.Set;
 
 import soot.PointsToSet;
+import soot.Type;
+import soot.jimple.ClassConstant;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
@@ -51,15 +53,15 @@ public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
     return wrapped.isEmpty();
   }
 
-  public Set possibleClassConstants() {
+  public Set<ClassConstant> possibleClassConstants() {
     return wrapped.possibleClassConstants();
   }
 
-  public Set possibleStringConstants() {
+  public Set<String> possibleStringConstants() {
     return wrapped.possibleStringConstants();
   }
 
-  public Set possibleTypes() {
+  public Set<Type> possibleTypes() {
     return wrapped.possibleTypes();
   }
 

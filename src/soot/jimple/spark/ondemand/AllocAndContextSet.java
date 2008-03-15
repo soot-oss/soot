@@ -89,7 +89,7 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
 	  return res;
   }
 
-  public Set possibleStringConstants() {
+  public Set<String> possibleStringConstants() {
 	  Set<String> res = new HashSet<String>();
 	  for (AllocAndContext allocAndContext : this) {
           AllocNode n = allocAndContext.alloc;

@@ -21,6 +21,8 @@ package soot.jimple.spark.sets;
 import java.util.Set;
 
 import soot.PointsToSet;
+import soot.Type;
+import soot.jimple.ClassConstant;
 
 /**
  * A decorator that implements equals/hashCode for {@link PointsToSet} supporting the {@link EqualsSupportingPointsToSet} interface.
@@ -82,7 +84,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
      * @return
      * @see soot.PointsToSet#possibleClassConstants()
      */
-    public Set possibleClassConstants() {
+    public Set<ClassConstant> possibleClassConstants() {
         return pts.possibleClassConstants();
     }
 
@@ -90,7 +92,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
      * @return
      * @see soot.PointsToSet#possibleStringConstants()
      */
-    public Set possibleStringConstants() {
+    public Set<String> possibleStringConstants() {
         return pts.possibleStringConstants();
     }
 
@@ -98,7 +100,7 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
      * @return
      * @see soot.PointsToSet#possibleTypes()
      */
-    public Set possibleTypes() {
+    public Set<Type> possibleTypes() {
         return pts.possibleTypes();
     }
     
