@@ -925,13 +925,7 @@ public class Scene  //extends AbstractHost
 
     private void loadNecessaryClass(String name) {
         SootClass c;
-
         c = Scene.v().loadClassAndSupport(name);
-
-        if (mainClass == null) {
-            mainClass = c;
-            Scene.v().setMainClass(c);
-        }
         c.setApplicationClass();
     }
     /** Load the set of classes that soot needs, including those specified on the

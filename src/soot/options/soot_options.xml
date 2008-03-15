@@ -415,7 +415,7 @@ to change type assignment to not refer to those classes.
 			<short_desc>Sets the main class for whole-program analysis.</short_desc>
 			<long_desc>
 <p>
-By default, the first class mentioned on the command-line is treated
+By default, the first class encountered with a main method is treated
 as the main class (entry point) in whole-program analysis. This option
 overrides this default.
 </p>
