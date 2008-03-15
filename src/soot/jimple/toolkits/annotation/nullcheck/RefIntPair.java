@@ -29,6 +29,11 @@
 package soot.jimple.toolkits.annotation.nullcheck;
 import soot.*;
 
+/**
+ * @deprecated only used by deprecated type {@link BranchedRefVarsAnalysis}; flagged
+ * for future deletion
+ */
+@Deprecated
 public class RefIntPair
 {
     private EquivalentValue _ref;

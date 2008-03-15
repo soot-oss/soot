@@ -54,6 +54,11 @@ import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import java.util.*;
 
+/**
+ * @deprecated uses deprecated type {@link BranchedRefVarsAnalysis} and seems of no use
+ * for Soot so marked for future deletion, unless clients object
+ */
+@Deprecated
 public class LocalRefVarsAnalysisWrapper
 {
     // compilation options
