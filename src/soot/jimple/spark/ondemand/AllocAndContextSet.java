@@ -18,12 +18,18 @@
  */
 package soot.jimple.spark.ondemand;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import soot.PointsToSet;
+import soot.Type;
+import soot.jimple.ClassConstant;
 import soot.jimple.spark.ondemand.genericutil.ArraySet;
 import soot.jimple.spark.ondemand.genericutil.ImmutableStack;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ClassConstantNode;
 import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
@@ -70,16 +76,38 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
     return false;
   }
 
-  public Set possibleClassConstants() {
-    throw new UnsupportedOperationException();
+  public Set<ClassConstant> possibleClassConstants() {
+	  Set<ClassConstant> res = new HashSet<ClassConstant>();
+	  for (AllocAndContext allocAndContext : this) {
+          AllocNode n = allocAndContext.alloc;
+          if( n instanceof ClassConstantNode ) {
+			res.add( ((ClassConstantNode)n).getClassConstant() );
+          } else {
+        	  return null;
+          }
+      }
+	  return res;
   }
 
   public Set possibleStringConstants() {
-    throw new UnsupportedOperationException();
+	  Set<String> res = new HashSet<String>();
+	  for (AllocAndContext allocAndContext : this) {
+          AllocNode n = allocAndContext.alloc;
+          if( n instanceof StringConstantNode ) {
+			res.add( ((StringConstantNode)n).getString() );
+          } else {
+        	  return null;
+          }
+      }
+	  return res;
   }
 
-  public Set possibleTypes() {
-    throw new UnsupportedOperationException();
+  public Set<Type> possibleTypes() {
+	  Set res = new HashSet<Type>();
+      for (AllocAndContext allocAndContext : this) {
+    	  res.add(allocAndContext.alloc.getType());
+      }
+      return res;
   }
   
   /**
