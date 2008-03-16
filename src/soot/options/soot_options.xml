@@ -1632,7 +1632,7 @@ When this option is set to true, the effects of native methods in the standard J
                                                         <short_desc>Treat singletons for empty sets etc. as allocation sites</short_desc>
 							<long_desc>
 When this option is set to true, Spark treats references to <code>EMPTYSET</code>, <code>EMPTYMAP</code>, and 
-<code>EMPTYLIST</code> as allocation sites for <code>HashSet</code>, <code>HashMap</code> and <code>LinkedList</code> objects respectively, and references to <code>Hashtable.emptyIterator</code> as allocation sites for <code>Hashtable$EmptyIterator</code>. This enables subsequent analyses to differentiate different uses of Java's immutable empty collections.
+<code>EMPTYLIST</code> as allocation sites for <code>HashSet</code>, <code>HashMap</code> and <code>LinkedList</code> objects respectively, and references to <code>Hashtable.emptyIterator</code> as allocation sites for <code>Hashtable.EmptyIterator</code>. This enables subsequent analyses to differentiate different uses of Java's immutable empty collections.
         </long_desc>
 						</boolopt>
 						<boolopt>
