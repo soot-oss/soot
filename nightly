@@ -145,9 +145,9 @@ function buildSootBarebones(){
 # build soot classes
 function buildSootClasses(){
     cd $HOME/autobuild/tmp/soot || return;
-    if !(ant quickstart); then
+    if !(ant classesjar); then
         # if something is broken send mail
-        echo "Soot will not build $rev" | /usr/bin/mutt jlhotak@sable.mcgill.ca -e 'set from = jlhotak@sable.mcgill.ca' -s "Soot Automated Nightly Build" || return;
+        echo "Soot will not build $rev" | /usr/bin/mutt ebodde@sable.mcgill.ca -e 'set from = ebodde@sable.mcgill.ca' -s "Soot Automated Nightly Build" || return;
         echo "Soot will not build $rev" || return;
     fi
 }
