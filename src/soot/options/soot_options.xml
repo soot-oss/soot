@@ -2102,6 +2102,26 @@ refinement-based points-to analysis (PLDI 06) is applied after Spark
 was run.
         					</long_desc>
 						</boolopt>
+						<intopt>
+							<name>Maximal traversal</name>
+							<alias>traversal</alias>
+							<default>75000</default>
+							<short_desc>Make the analysis traverse at most this number of nodes per query.</short_desc>
+							<long_desc>
+Make the analysis traverse at most this number of nodes per query.
+This quota is evenly shared between multiple passes (see next option).
+        					</long_desc>
+						</intopt>
+						<intopt>
+							<name>Maximal number of passes</name>
+							<alias>passes</alias>
+							<default>10</default>
+							<short_desc>Perform at most this number of refinement iterations.</short_desc>
+							<long_desc>
+Perform at most this number of refinement iterations.
+Each iteration traverses at most ( traverse / passes ) nodes.
+        					</long_desc>
+						</intopt>
 					</section>
 				</sub_phase>
 				<sub_phase>

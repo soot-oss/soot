@@ -18,17 +18,48 @@
  */
 
 package soot.jimple.spark;
-import soot.*;
-import soot.jimple.spark.builder.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
+import soot.G;
+import soot.Local;
+import soot.PointsToAnalysis;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.SourceLocator;
+import soot.Value;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.ReachingTypeDumper;
+import soot.jimple.Stmt;
+import soot.jimple.spark.builder.ContextInsensitiveBuilder;
 import soot.jimple.spark.ondemand.DemandCSPointsTo;
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.solver.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.*;
-import java.util.*;
+import soot.jimple.spark.pag.AllocDotField;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.PAG2HTML;
+import soot.jimple.spark.pag.PAGDumper;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.spark.solver.EBBCollapser;
+import soot.jimple.spark.solver.PropAlias;
+import soot.jimple.spark.solver.PropCycle;
+import soot.jimple.spark.solver.PropIter;
+import soot.jimple.spark.solver.PropMerge;
+import soot.jimple.spark.solver.PropWorklist;
+import soot.jimple.spark.solver.Propagator;
+import soot.jimple.spark.solver.SCCCollapser;
+import soot.jimple.toolkits.callgraph.CallGraphBuilder;
 import soot.options.SparkOptions;
-import soot.tagkit.*;
+import soot.tagkit.Host;
+import soot.tagkit.StringTag;
+import soot.tagkit.Tag;
 
 /** Main entry point for Spark.
  * @author Ondrej Lhotak
@@ -121,28 +152,7 @@ public class SparkTransformer extends SceneTransformer
         Date endProp = new Date();
         reportTime( "Propagation", startProp, endProp );
         reportTime( "Solution found", startSimplify, endProp );
-	/*	
-		//Measurement code inserted by Adam
-		//Count how many bitvectors are shared for the Heintze set
-		long numBitVectors = 0;
-		for (int i = 0; i < AllSharedHybridNodes.v().lookupMap.map.length; ++i)
-		{
-			if (AllSharedHybridNodes.v().lookupMap.map[i] != null)
-			{
-				ListIterator li = AllSharedHybridNodes.v().lookupMap.m
-        final Propagator[] propagator = new Propagator[1];
-        switch( opts.propagator() ) {
-            case SparkOptions.propagator_iter:ap[i].listIterator();
-				while (li.hasNext())
-				{
-					li.next();
-					++numBitVectors;
-				}
-			}
-		}
-		System.out.println("Number of shared bit vectors for Heintze: " + numBitVectors);
-		System.out.println("Number of bit vectors for Hybrid: " + HybridPointsToSet.numBitVectors);	
-*/
+
         if( opts.force_gc() ) doGC();
         
         if( !opts.on_fly_cg() || opts.vta() ) {
@@ -157,14 +167,6 @@ public class SparkTransformer extends SceneTransformer
 
         if( opts.set_mass() ) findSetMass( pag );
 
-        /*
-        if( propagator[0] instanceof PropMerge ) {
-            new MergeChecker( pag ).check();
-        } else if( propagator[0] != null ) {
-            new Checker( pag ).check();
-        }
-        */
-
         if( opts.dump_answer() ) new ReachingTypeDumper( pag, output_dir ).dump();
         if( opts.dump_solution() ) dumper.dumpPointsToSets();
         if( opts.dump_html() ) new PAG2HTML( pag, output_dir ).dump();
@@ -176,7 +178,9 @@ public class SparkTransformer extends SceneTransformer
         if(opts.cs_demand()) {
         		//replace by demand-driven refinement-based context-sensitive analysis
         		Date startOnDemand = new Date();
-        		PointsToAnalysis onDemandAnalysis = DemandCSPointsTo.makeDefault();
+        		int maxTraversal = opts.traversal();
+        		int maxPasses = opts.passes();        		
+        		PointsToAnalysis onDemandAnalysis = DemandCSPointsTo.makeWithBudget(maxTraversal, maxPasses);
         		Date endOndemand = new Date();
         		reportTime( "Initialized on-demand refinement-based context-sensitive analysis", startOnDemand, endOndemand );
         		Scene.v().setPointsToAnalysis(onDemandAnalysis);
@@ -266,10 +270,6 @@ public class SparkTransformer extends SceneTransformer
             PointsToSetInternal set = v.getP2Set();
             if( set != null ) mass += set.size();
             if( set != null ) varMass += set.size();
-            if( set != null && set.size() > 0 ) {
-                //G.v().out.println( "V "+v.getVariable()+" "+set.size() );
-            //    G.v().out.println( ""+v.getVariable()+" "+v.getMethod()+" "+set.size() );
-            }
         }
         for( Iterator<Object> anIt = pag.allocSourcesIterator(); anIt.hasNext(); ) {
             final AllocNode an = (AllocNode) anIt.next();
@@ -279,7 +279,6 @@ public class SparkTransformer extends SceneTransformer
                 if( set != null ) mass += set.size();
                 if( set != null && set.size() > 0 ) {
                     adfs++;
-            //        G.v().out.println( ""+adf.getBase().getNewExpr()+"."+adf.getField()+" "+set.size() );
                 }
             }
         }
@@ -305,68 +304,6 @@ public class SparkTransformer extends SceneTransformer
                 G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
             }
         }
-        // Compute points-to set sizes of dereference sites AFTER
-        // trimming sets by declared type
-        /*
-        if( pag.getTypeManager().getFastHierarchy() == null ) {
-            pag.getTypeManager().clearTypeMask();
-            pag.getTypeManager().setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
-            pag.getTypeManager().makeTypeMask( pag );
-            deRefCounts = new int[30001];
-            for( Iterator vIt = pag.getDereferences().iterator(); vIt.hasNext(); ) {
-                final VarNode v = (VarNode) vIt.next();
-                PointsToSetInternal set = 
-                    pag.getSetFactory().newSet( v.getType(), pag );
-                int size = 0;
-                if( set != null ) {
-                    v.getP2Set().setType( null );
-                    v.getP2Set().getNewSet().setType( null );
-                    v.getP2Set().getOldSet().setType( null );
-                    set.addAll( v.getP2Set(), null );
-                    size = set.size();
-                }
-                deRefCounts[size]++;
-            }
-            total = 0;
-            for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-            G.v().out.println( "Dereference counts AFTER trimming (total = "+total+"):" );
-            for( int i=0; i < deRefCounts.length; i++ ) {
-                if( deRefCounts[i] > 0 ) {
-                    G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
-                }
-            }
-        }
-        */
-        /*
-        deRefCounts = new int[30001];
-        for( Iterator siteIt = ig.getAllSites().iterator(); siteIt.hasNext(); ) {
-            final Stmt site = (Stmt) siteIt.next();
-            SootMethod method = ig.getDeclaringMethod( site );
-            Value ie = site.getInvokeExpr();
-            if( !(ie instanceof VirtualInvokeExpr) 
-                    && !(ie instanceof InterfaceInvokeExpr) ) continue;
-            InstanceInvokeExpr expr = (InstanceInvokeExpr) site.getInvokeExpr();
-            Local receiver = (Local) expr.getBase();
-            Collection types = pag.reachingObjects( method, site, receiver )
-                .possibleTypes();
-            Type receiverType = receiver.getType();
-            if( receiverType instanceof ArrayType ) {
-                receiverType = RefType.v( "java.lang.Object" );
-            }
-            Collection targets =
-                Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatchWithoutFailing(
-                        types, expr.getMethod(), (RefType) receiverType );
-            deRefCounts[targets.size()]++;
-        }
-        total = 0;
-        for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-        G.v().out.println( "Virtual invoke target counts (total = "+total+"):" );
-        for( int i=0; i < deRefCounts.length; i++ ) {
-            if( deRefCounts[i] > 0 ) {
-                G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
-            }
-        }
-        */
     }
 }
 
