@@ -6,7 +6,9 @@ Improvements and API changes in version 2.2.5 (To come)
 
 2. Included Manu Sridharan's demand-driven points-to analysis.  See
    http://doi.acm.org/10.1145/1133255.1134027 for details.  It can be
-   activated via: -p cg.spark cs-demand:true
+   activated via: -p cg.spark cs-demand:true, and also has two other
+   phase options to control the effort with which the analysis
+   tries to build context information.
 
 3. Added local must-alias and not-may alias analyses. See package
    soot.jimple.toolkits.pointer.
@@ -38,6 +40,15 @@ Improvements and API changes in version 2.2.5 (To come)
    Hashtable$EmptyIterator. This enables subsequent analyses to
    differentiate different uses of Java's immutable empty collections.
         
+9. Added instance keys (see class InstanceKey). An instance key is a
+   static abstraction of one or multiple runtime objects. It's identity
+   is defined via an intraprocedural flow-sensitive must-alias analysis.
+   Further an instance key can be tested for must-not-aliasing with
+   other keys. This functionality is provided via both an intraprocedural
+   flow-sensitive must-not-alias analysis and the normal interprocedural
+   flow-insensitive points-to analysis (whichever present). See the
+   Technical Report SABLE-TR-2007-8 for details, at:
+   http://www.sable.mcgill.ca/publications/techreports/#report2007-8
 
 Improvements and API changes in version 2.2.4 (Fri, Apr 27, 2007)
 
