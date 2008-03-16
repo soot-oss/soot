@@ -168,7 +168,7 @@
         </junit>
     </target>
 
-    <target name="release" depends="barebones,quickstart,javadoc,settings">
+    <target name="release" depends="barebones,javadoc,settings">
     </target>
 
     <target name="barebones" depends="clean,options,sablecc,settings">
