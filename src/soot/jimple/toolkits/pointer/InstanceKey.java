@@ -33,6 +33,12 @@ import soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis;
 
 /**
  * An instance key is a static representative of a runtime object.
+ * An instance key, if based on a {@link StrongLocalMustAliasAnalysis},
+ * is guaranteed to represent a single runtime object within a
+ * its declared method. If based on a (non-strong) {@link LocalMustAliasAnalysis},
+ * it represents the value of a variable at a single location, which itself can
+ * represent multiple runtime objects, if the location is contained in a loop. 
+ * 
  * See Sable TR 2007-8 for details.
  *
  * @author Eric Bodden
@@ -47,14 +53,24 @@ public class InstanceKey {
     protected final int hashCode;
     protected final PointsToSet pts;
 
-    public InstanceKey(Local assignedLocal, Stmt stmtAfterAssignStmt, SootMethod owner, LocalMustAliasAnalysis lmaa, LocalMustNotAliasAnalysis lnma) {
-        this.assignedLocal = assignedLocal;
+    /**
+     * Creates a new instance key representing the value stored in local, just before
+     * stmt. The identity of the key is defined via lmaa, and its must-not-alias relationship
+     * to other keys via lmna.
+     * @param local the local variable whose value this key represents
+     * @param stmt the statement at which this key represents the value
+     * @param owner the method containing local
+     * @param lmaa a {@link LocalMustAliasAnalysis}
+     * @param lmna a {@link LocalMustNotAliasAnalysis}
+     */
+    public InstanceKey(Local local, Stmt stmt, SootMethod owner, LocalMustAliasAnalysis lmaa, LocalMustNotAliasAnalysis lmna) {
+        this.assignedLocal = local;
         this.owner = owner;
-        this.stmtAfterAssignStmt = stmtAfterAssignStmt;
+        this.stmtAfterAssignStmt = stmt;
         this.lmaa = lmaa;
-        this.lnma = lnma;
+        this.lnma = lmna;
         PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-        this.pts = new PointsToSetEqualsWrapper((EqualsSupportingPointsToSet) pta.reachingObjects(assignedLocal));
+        this.pts = new PointsToSetEqualsWrapper((EqualsSupportingPointsToSet) pta.reachingObjects(local));
         this.hashCode = computeHashCode();
     }
     
@@ -111,9 +127,7 @@ public class InstanceKey {
     }
     
     /**
-     * The hash code is pretty constant. The result of the call to {@link LocalMustAliasAnalysis#instanceKeyString(Local, Stmt)}
-     * might change, but only if the instance key is invalidated and in this case it's UNKNOWN and does not equal any other key
-     * any more anyway.
+     * (Pre)computes the hash code.
      */
     protected int computeHashCode() {
         final int prime = 31;
