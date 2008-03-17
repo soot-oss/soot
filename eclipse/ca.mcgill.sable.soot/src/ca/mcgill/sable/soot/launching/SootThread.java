@@ -21,12 +21,10 @@ package ca.mcgill.sable.soot.launching;
 
 
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Observer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
@@ -36,7 +34,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import soot.toolkits.graph.interaction.InteractionHandler;
-
 import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.interaction.InteractionController;
 
@@ -117,23 +114,8 @@ public class SootThread extends Thread {
 	            } else {
 	            	loader = SootThread.class.getClassLoader();
 	            }
-//	            //patch up streams
-//				Class<?> sootG = loader.loadClass("soot.G");
-//				Method reset = sootG.getMethod("reset");
-//				reset.invoke(null);
-//				Method v = sootG.getMethod("v");
-//				Object g = v.invoke(null);
-//				Field out = sootG.getField("out");
-//				out.set(g, sootOutFinal);
-//				
-//				//patch up interaction listener
-//				Class<?> interActHandler = loader.loadClass("soot.toolkits.graph.interaction.InteractionHandler");
-//				v = interActHandler.getMethod("v");
-//				Object inst = v.invoke(null);
-//				Method setMethod = interActHandler.getMethod("setInteractionListener", Observer.class);
-//				setMethod.invoke(inst, getListener());				
-				
-				toRun = loader.loadClass(mainClass);
+
+	            toRun = loader.loadClass(mainClass);
 			} catch(final ClassNotFoundException e) {
 				final Shell defaultShell = getShell();
     			final String inProject = mainProject!=null ? (" in project "+mainProject):"";

@@ -60,12 +60,7 @@ public class SootClasspath {
 			for (IClasspathEntry entry : cp) {
 				File file = entry.getPath().toFile();
 				URL url = file.toURI().toURL();
-				/* We omit the classpath entry for sootclasses*.jar, because
-				 * we have to load whatever soot classes are loaded from the current class loader,
-				 * not the project's class loader. 
-				 */				
-				if(!url.toString().contains("sootclasses"))
-					urls.add(url);
+				urls.add(url);
 			}
 			URL[] array = new URL[urls.size()];
 			urls.toArray(array);
