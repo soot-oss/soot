@@ -68,7 +68,19 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	}
 	
 	private void setMainClassInDialog(PhaseOptionsDialog dialog, String mainClass){
-		dialog.addToEclipseDefList("sootMainClass", mainClass);	
+        String mainProject;
+        String realMainClass;
+        if(mainClass.contains(":")) {
+        	String[] split = mainClass.split(":");
+			mainProject = split[0];
+        	realMainClass = split[1];
+        } else {
+        	mainProject = null;
+        	realMainClass = mainClass;
+        }
+		
+		dialog.addToEclipseDefList("sootMainClass", realMainClass);	
+		dialog.addToEclipseDefList("sootMainProject", mainProject);	
 	}
 	
 	private HashMap eclipseDefList;
