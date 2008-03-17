@@ -66,49 +66,54 @@ public class NewBodyTransformerWizard extends JavaProjectWizard {
 			} catch (JavaModelException e) {
 			}
 			
-			InputStream is = getClass().getResourceAsStream("/" + ISootConstants.EXAMPLES_PATH + "BodyTransformer.java");
-			FileOutputStream fos = null;
-			try {
-				IClasspathEntry[] resolvedClasspath = newProject.getResolvedClasspath(true);
-				IClasspathEntry firstSourceEntry = null;
-				for (IClasspathEntry classpathEntry : resolvedClasspath) {
-					if(classpathEntry.getEntryKind()==IClasspathEntry.CPE_SOURCE) {
-						firstSourceEntry = classpathEntry;
-						break;
-					}
-				}
-				if(firstSourceEntry!=null) {
-					IPath path = SootPlugin.getWorkspace().getRoot().getFile(firstSourceEntry.getPath()).getLocation();
-					String srcPath = path.toString(); 
-					String newfileName = "MyMain.java";
-					final IPath newFilePath = firstSourceEntry.getPath().append(newfileName);
-					fos = new FileOutputStream(srcPath + File.separator + newfileName);
-					int temp = is.read();
-					while(temp>-1) {
-						fos.write(temp);
-						temp = is.read();
-					}
-					fos.close();
-					//refresh project
-					newProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-				
-					final IWorkbenchPage activePage= JavaPlugin.getActivePage();
-					if (activePage != null) {
-						final Display display= getShell().getDisplay();
-						if (display != null) {
-							display.asyncExec(new Runnable() {
-								public void run() {
-									try {
-										IResource newResource = SootPlugin.getWorkspace().getRoot().findMember(newFilePath);
-										IDE.openEditor(activePage, (IFile) newResource, true);
-									} catch (PartInitException e) {
-										JavaPlugin.log(e);
-									}
-								}
-							});
+			String templateFilePath = "/" + ISootConstants.EXAMPLES_PATH + "BodyTransformer.java";
+			InputStream is = getClass().getResourceAsStream(templateFilePath);
+			if(is==null) {				
+				new RuntimeException("Resource "+templateFilePath+" not found!").printStackTrace();
+			} else {			
+				FileOutputStream fos = null;
+				try {
+					IClasspathEntry[] resolvedClasspath = newProject.getResolvedClasspath(true);
+					IClasspathEntry firstSourceEntry = null;
+					for (IClasspathEntry classpathEntry : resolvedClasspath) {
+						if(classpathEntry.getEntryKind()==IClasspathEntry.CPE_SOURCE) {
+							firstSourceEntry = classpathEntry;
+							break;
 						}
 					}
-
+					if(firstSourceEntry!=null) {
+						IPath path = SootPlugin.getWorkspace().getRoot().getFile(firstSourceEntry.getPath()).getLocation();
+						String srcPath = path.toString(); 
+						String newfileName = "MyMain.java";
+						final IPath newFilePath = firstSourceEntry.getPath().append(newfileName);
+						fos = new FileOutputStream(srcPath + File.separator + newfileName);
+						int temp = is.read();
+						while(temp>-1) {
+							fos.write(temp);
+							temp = is.read();
+						}
+						fos.close();
+						//refresh project
+						newProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+					
+						final IWorkbenchPage activePage= JavaPlugin.getActivePage();
+						if (activePage != null) {
+							final Display display= getShell().getDisplay();
+							if (display != null) {
+								display.asyncExec(new Runnable() {
+									public void run() {
+										try {
+											IResource newResource = SootPlugin.getWorkspace().getRoot().findMember(newFilePath);
+											IDE.openEditor(activePage, (IFile) newResource, true);
+										} catch (PartInitException e) {
+											JavaPlugin.log(e);
+										}
+									}
+								});
+							}
+						}
+	
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
