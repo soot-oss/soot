@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/ca.mcgill.sable.soot.feature_2.2.5.jar" id="ca.mcgill.sable.soot.feature" version="2.2.5">
+      <category name="Soot"/>
+   </feature>
+   <category-def name="Soot" label="Soot"/>
+</site>
