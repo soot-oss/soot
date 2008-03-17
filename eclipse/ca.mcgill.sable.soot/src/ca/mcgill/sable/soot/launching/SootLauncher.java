@@ -19,32 +19,31 @@
 
 package ca.mcgill.sable.soot.launching;
 
-import org.eclipse.ui.*;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.jface.dialogs.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
-import org.eclipse.jface.text.ITextOperationTarget;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.jface.action.*;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
-import java.lang.reflect.InvocationTargetException;
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.attributes.AbstractAttributesComputer;
-import ca.mcgill.sable.soot.attributes.JavaAttributesComputer;
-import ca.mcgill.sable.soot.attributes.JimpleAttributesComputer;
-import ca.mcgill.sable.soot.attributes.SootAttributesJavaColorer;
-import ca.mcgill.sable.soot.editors.*;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.jdt.core.*;
-import ca.mcgill.sable.soot.cfg.*;
-import ca.mcgill.sable.graph.testing.*;
-import ca.mcgill.sable.graph.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-import java.util.*;
-import soot.jimple.toolkits.annotation.callgraph.*;
+import soot.jimple.toolkits.annotation.callgraph.CallData;
+import ca.mcgill.sable.graph.GraphPlugin;
+import ca.mcgill.sable.graph.testing.GraphGenerator;
+import ca.mcgill.sable.graph.testing.TestNode;
+import ca.mcgill.sable.soot.SootPlugin;
 			
 /**
  * Main Soot Launcher. Handles running Soot directly (or as a 
@@ -110,6 +109,17 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		
 		getSootCommandList().getList().toArray(temp);
 		
+        String mainProject;
+        String realMainClass;
+        if(mainClass.contains(":")) {
+        	String[] split = mainClass.split(":");
+			mainProject = split[0];
+        	realMainClass = split[1];
+        } else {
+        	mainProject = null;
+        	realMainClass = mainClass;
+        }
+		
 		sendSootOutputEvent(mainClass);
 		sendSootOutputEvent(" ");
 		
@@ -125,7 +135,7 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		
 		IRunnableWithProgress op; 
 		try {   
-        	newProcessStarting();
+        	newProcessStarting(realMainClass,mainProject);
             op = new SootRunner(temp, Display.getCurrent(), mainClass);
            	((SootRunner)op).setParent(this);
             ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
@@ -143,11 +153,16 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 
 	}
 	
-	private void newProcessStarting() {
+	private void newProcessStarting(String mainClass, String mainProject) {
+        if(mainProject == null) {
+        	mainProject = " from Soot's class library";
+        } else {
+			mainProject = " from project "+mainProject;
+        }
 		SootOutputEvent clear_event = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_CLEAR_EVENT);
         SootPlugin.getDefault().fireSootOutputEvent(clear_event);    
         SootOutputEvent se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
-        se.setTextToAppend("Starting ...");
+        se.setTextToAppend("Starting"+mainProject+":\n");
         SootPlugin.getDefault().fireSootOutputEvent(se);
 	}
 			
