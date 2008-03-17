@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="ca.mcgill.sable.soot.feature"
+      label="Soot Eclipse Plugin"
+      version="2.2.5"
+      provider-name="Sable Research Group, McGill University">
+
+   <description>
+      The Soot Eclipse plugin.
+   </description>
+
+   <license>
+      This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the
+Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.
+   </license>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.boot"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.draw2d"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.ui.console"/>
+   </requires>
+
+   <plugin
+         id="ca.mcgill.sable.graph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="ca.mcgill.sable.soot"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="ca.mcgill.sable.soot.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="ca.mcgill.sable.soot.lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="true"/>
+         <!-- Eric Bodden:
+         	In the above, unpack must be true because SootClasspathVariableInitializer right now looks
+         	for the sootclasses.jar in the file system. I don't think that we can change that, due to Eclipse's architecture.          	
+         -->
+         
+
+</feature>
