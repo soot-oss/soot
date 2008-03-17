@@ -38,8 +38,6 @@ public interface ISootConstants {
 	
 	public static final String ICON_PATH = "icons/";
 
-	public static final String EXAMPLES_PATH = "examples/";
-
 	public static final String ANALYSIS_KEY_VIEW_ID =
 		"ca.mcgill.sable.soot.ui.analysiskeyview.view";
 		

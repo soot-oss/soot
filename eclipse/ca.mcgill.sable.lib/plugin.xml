@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <plugin
    id="ca.mcgill.sable.soot.lib"
-   name="Lib1 Plug-in"
-   version="1.0.0"
-   provider-name="">
+   name="ca.mcgill.sable.soot.lib"
+   version="2.2.5"
+   provider-name="Sable Research Group, McGill University">
 
    <runtime>
       <library name="lib/sootclasses.jar">

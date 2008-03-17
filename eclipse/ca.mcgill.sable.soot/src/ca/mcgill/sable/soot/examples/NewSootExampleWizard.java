@@ -44,7 +44,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 
-import ca.mcgill.sable.soot.ISootConstants;
 import ca.mcgill.sable.soot.SootClasspathVariableInitializer;
 import ca.mcgill.sable.soot.SootPlugin;
 
@@ -79,14 +78,15 @@ public abstract class NewSootExampleWizard extends JavaProjectWizard {
 			} catch (JavaModelException e) {
 			}
 			
-			String templateFilePath = "/" + ISootConstants.EXAMPLES_PATH + fromFile;
-			InputStream is = getClass().getResourceAsStream(templateFilePath);
-			if(is==null) {
-				new RuntimeException("Resource "+templateFilePath+" not found!").printStackTrace();
-			} else {
-			
-				FileOutputStream fos = null;
-				try {
+			String templateFilePath = fromFile;
+			InputStream is = null;
+			FileOutputStream fos = null;
+			try {
+				is = SootPlugin.getDefault().getBundle().getResource(templateFilePath).openStream();
+				if(is==null) {
+					new RuntimeException("Resource "+templateFilePath+" not found!").printStackTrace();
+				} else {
+				
 					IClasspathEntry[] resolvedClasspath = newProject.getResolvedClasspath(true);
 					IClasspathEntry firstSourceEntry = null;
 					for (IClasspathEntry classpathEntry : resolvedClasspath) {
@@ -128,15 +128,14 @@ public abstract class NewSootExampleWizard extends JavaProjectWizard {
 						}
 	
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						if(is!=null) is.close();
-						if(fos!=null) fos.close();
-					} catch (IOException e) {
-					}
-					
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if(is!=null) is.close();
+					if(fos!=null) fos.close();
+				} catch (IOException e) {
 				}
 			}
 		}

@@ -3,8 +3,8 @@
 <plugin
    id="ca.mcgill.sable.graph"
    name="Graph Plug-in"
-   version="2.2.2"
-   provider-name=""
+   version="2.2.5"
+   provider-name="Sable Research Group, McGill University"
    class="ca.mcgill.sable.graph.GraphPlugin">
 
    <runtime>

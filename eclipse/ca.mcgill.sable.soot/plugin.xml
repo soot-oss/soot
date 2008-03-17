@@ -2,18 +2,19 @@
 <?eclipse version="3.0"?>
 <plugin
    id="ca.mcgill.sable.soot"
-   name="Soot Plug-in"
-   version="2.2.2"
-   provider-name=""
+   name="ca.mcgill.sable.soot"
+   version="2.2.5"
+   provider-name="Sable Research Group, McGill University"
    class="ca.mcgill.sable.soot.SootPlugin">
 
    <runtime>
-      <library name="soot-plugin.jar">
+      <library name="bin/">
          <export
                name="*">
          </export>
       </library>
-      <library name=".">
+      <!-- The following entry is necessary so that the bundle classloader can find the example files. -->
+      <library name="examples/">
          <export
                name="*">
          </export>
@@ -591,22 +592,6 @@
          </action>
       </objectContribution>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc.xml"
-            primary="true">
-      </toc>
-   </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="toc_Concepts.xml">
-      </toc>
-      <toc
-            file="toc_Reference.xml">
-      </toc>
-   </extension>                                                                       
 
 	<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
     	<classpathVariableInitializer variable="SOOTCLASSES" class= "ca.mcgill.sable.soot.SootClasspathVariableInitializer"/>

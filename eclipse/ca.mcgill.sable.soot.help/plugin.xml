@@ -2,7 +2,8 @@
 <plugin
    id="ca.mcgill.sable.soot.help"
    name="ca.mcgill.sable.soot.help"
-   version="1.0.0">
+   version="2.2.5"
+   provider-name="Sable Research Group, McGill University">
 
 
    <extension point="org.eclipse.help.toc">
