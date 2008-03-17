@@ -109,6 +109,7 @@ public class SootThread extends Thread {
 								" is no Java project or is closed. Aborting...");
 		    				}
 		    			});
+		    			SootPlugin.getDefault().getConsole().clearConsole();
 		    			return;
 		            }
 	            } else {
@@ -125,6 +126,7 @@ public class SootThread extends Thread {
     	    			MessageDialog.openError(defaultShell, "Unable to find class", "Cannot find class"+inProject+". Aborting...\n"+e.getLocalizedMessage());
     				}
     			});
+    			SootPlugin.getDefault().getConsole().clearConsole();
 				return;
 			}
 			            
