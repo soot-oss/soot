@@ -34,7 +34,12 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.wizards.JavaProjectWizard;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -43,8 +48,16 @@ import ca.mcgill.sable.soot.ISootConstants;
 import ca.mcgill.sable.soot.SootClasspathVariableInitializer;
 import ca.mcgill.sable.soot.SootPlugin;
 
-public class NewBodyTransformerWizard extends JavaProjectWizard {
+public abstract class NewSootExampleWizard extends JavaProjectWizard {
 
+	protected final String fromFile;
+	protected final String toFile;
+
+	protected NewSootExampleWizard(String fromFile, String toFile) {
+		this.fromFile = fromFile;
+		this.toFile = toFile;
+	}
+	
 	@Override
 	public boolean performFinish() {
 		boolean performFinish = super.performFinish();
@@ -66,7 +79,7 @@ public class NewBodyTransformerWizard extends JavaProjectWizard {
 			} catch (JavaModelException e) {
 			}
 			
-			String templateFilePath = "/" + ISootConstants.EXAMPLES_PATH + "BodyTransformer.java";
+			String templateFilePath = "/" + ISootConstants.EXAMPLES_PATH + fromFile;
 			InputStream is = getClass().getResourceAsStream(templateFilePath);
 			if(is==null) {
 				new RuntimeException("Resource "+templateFilePath+" not found!").printStackTrace();
@@ -85,7 +98,7 @@ public class NewBodyTransformerWizard extends JavaProjectWizard {
 					if(firstSourceEntry!=null) {
 						IPath path = SootPlugin.getWorkspace().getRoot().getFile(firstSourceEntry.getPath()).getLocation();
 						String srcPath = path.toString(); 
-						String newfileName = "MyMain.java";
+						String newfileName = toFile;
 						final IPath newFilePath = firstSourceEntry.getPath().append(newfileName);
 						fos = new FileOutputStream(srcPath + File.separator + newfileName);
 						int temp = is.read();
@@ -131,4 +144,33 @@ public class NewBodyTransformerWizard extends JavaProjectWizard {
 		return performFinish;
 	}
 	
+	@Override
+	public void addPages() {
+		addPage(new FirstPage());
+		super.addPages();
+	}	
+
+	protected static class FirstPage extends WizardPage {
+
+		private FirstPage() {
+			super("ca.mcgill.sable.soot.examples.NewExamplePage");
+		}
+		
+		@Override
+		public void createControl(Composite parent) {
+			final Composite composite= new Composite(parent, SWT.NULL);
+			composite.setFont(parent.getFont());
+			composite.setLayout(new FillLayout());
+			setControl(composite);
+			
+			Label label = new Label(composite, SWT.WRAP);
+			setControl(composite);
+			label.setText("Please create a new Java project using the following Wizard " +
+					"pages. Soot will then create the example source files in the project's source folder.");
+		
+			setTitle("Create example Soot extension");
+			setMessage("This wizard will help you create a new example Soot extension.");
+		}
+		
+	}
 }

@@ -90,6 +90,14 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		runSootDirectly("soot.Main");
 	}
 	
+	private void sendSootClearEvent(){
+		Display.getCurrent().syncExec(new Runnable(){
+			public void run() {
+				SootPlugin.getDefault().fireSootOutputEvent(new SootOutputEvent(SootLauncher.this, ISootOutputEventConstants.SOOT_CLEAR_EVENT));
+			};
+		});
+	}
+
 	private void sendSootOutputEvent(String toSend){
 		SootOutputEvent send = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
 		send.setTextToAppend(toSend);
@@ -120,10 +128,10 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
         	realMainClass = mainClass;
         }
 		
-		sendSootOutputEvent(mainClass);
+    	newProcessStarting(realMainClass,mainProject);
+        
+		sendSootOutputEvent(realMainClass);
 		sendSootOutputEvent(" ");
-		
-		final String [] cmdAsArray = temp;
 		
 		for (int i = 0; i < temp.length; i++) {
 			
@@ -135,7 +143,6 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		
 		IRunnableWithProgress op; 
 		try {   
-        	newProcessStarting(realMainClass,mainProject);
             op = new SootRunner(temp, Display.getCurrent(), mainClass);
            	((SootRunner)op).setParent(this);
             ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
@@ -159,28 +166,10 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
         } else {
 			mainProject = " from project "+mainProject;
         }
-		SootOutputEvent clear_event = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_CLEAR_EVENT);
-        SootPlugin.getDefault().fireSootOutputEvent(clear_event);    
-        SootOutputEvent se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
-        se.setTextToAppend("Starting"+mainProject+":\n");
-        SootPlugin.getDefault().fireSootOutputEvent(se);
+        sendSootClearEvent();
+        sendSootOutputEvent("Starting"+mainProject+":\n");
 	}
 			
-	private String[] formCmdLine(String cmd) {
-	 
-	  	
-	   	StringTokenizer st = new StringTokenizer(cmd);
-	  	int count = st.countTokens();
-        String[] cmdLine = new String[count];        
-        count = 0;
-        
-        while(st.hasMoreTokens()) {
-            cmdLine[count++] = st.nextToken();
-        }
-        
-        return cmdLine; 
-	}
-	
 	private void initPaths() {
 		
 		sootClasspath.initialize(getSootSelection().getJavaProject());

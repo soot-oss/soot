@@ -13,6 +13,11 @@
                name="*">
          </export>
       </library>
+      <library name=".">
+         <export
+               name="*">
+         </export>
+      </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
@@ -617,12 +622,43 @@
 	</category>
  	<wizard
 	   id = "ca.mcgill.sable.soot.examples.new.bodytransformer"
+      	   name = "Creating a class from scratch with Soot"
+	   class="ca.mcgill.sable.soot.examples.NewCreateSootClassWizard"
+	   category="org.eclipse.ui.Examples/ca.mcgill.sable.soot.examples"
+	   icon="icons/soot.png">
+    	<description>
+    		This tutorial is based on the createclass example, written by Raja-Vallée-Rai and distributed with the Ashes tools.
+    	</description>
+	</wizard>
+ 	<wizard
+	   id = "ca.mcgill.sable.soot.examples.new.bodytransformer"
+      	   name = "Annotating a class created from scratch with Soot"
+	   class="ca.mcgill.sable.soot.examples.NewAnnotateClassWizard"
+	   category="org.eclipse.ui.Examples/ca.mcgill.sable.soot.examples"
+	   icon="icons/soot.png">
+    	<description>
+    		This tutorial will show you how to add various kinds of class file attributes to a program, created from scratch, with Soot. It extends the program introduced in ``Creating a class file from scratch with Soot.'' Another, slightly more detailed, illustration of this process is available in the Soot tutorial ``Adding attributes to class files via Soot.''
+    	</description>
+	</wizard>
+	 	<wizard
+	   id = "ca.mcgill.sable.soot.examples.new.bodytransformer"
+      	   name = "Adding profiling instructions to applications with Soot (Goto instrumenter)"
+	   class="ca.mcgill.sable.soot.examples.NewGotoInstrumenterWizard"
+	   category="org.eclipse.ui.Examples/ca.mcgill.sable.soot.examples"
+	   icon="icons/soot.png">
+    	<description>
+    		This tutorial is based on the countgotos example, written by Raja-Vallée-Rai and distributed with Ashes.
+    	</description>
+	</wizard>
+ 	<wizard
+	   id = "ca.mcgill.sable.soot.examples.new.bodytransformer"
       	   name = "A simple BodyTransformer"
 	   class="ca.mcgill.sable.soot.examples.NewBodyTransformerWizard"
 	   category="org.eclipse.ui.Examples/ca.mcgill.sable.soot.examples"
 	   icon="icons/soot.png">
-    	<description>Creates a simple BodyTransformer that transforms each method body
-    	   in each application class.</description>
+    	<description>
+    		Creates a simple BodyTransformer that transforms each method body in each application class.
+    	</description>
 	</wizard>
 </extension>
 
