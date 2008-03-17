@@ -9,13 +9,6 @@
 
    <runtime>
       <library name="soot-plugin.jar"/>
-      <library name="sootclasses-2.2.2.jar"/>
-      <library name="soot/classes/"/>
-      <library name="jasminclasses-2.2.2.jar"/>
-      <library name="jasmin/classes/"/>
-      <library name="polyglotclasses-1.3.2.jar"/>
-      <library name="polyglot/classes/"/>
-      <library name="myclasses/"/>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
