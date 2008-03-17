@@ -8,7 +8,11 @@
    class="ca.mcgill.sable.soot.SootPlugin">
 
    <runtime>
-      <library name="soot-plugin.jar"/>
+      <library name="soot-plugin.jar">
+         <export
+               name="*">
+         </export>
+      </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
