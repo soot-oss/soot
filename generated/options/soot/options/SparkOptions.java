@@ -185,13 +185,13 @@ public class SparkOptions
     
     /** Treat EMPTY as Alloc --
     
-     * Treat EMPTY_* as allocation sites.
+     * Treat singletons for empty sets etc. as allocation sites.
     
      * When this option is set to true, Spark treats references to 
-     * EMPTY_SET, EMPTY_MAP, and EMPTY_LIST as allocation sites for 
-     * HashSet, HashMap and LinkedList objects, respectively, and 
+     * EMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for 
+     * HashSet, HashMap and LinkedList objects respectively, and 
      * references to Hashtable.emptyIterator as allocation sites for 
-     * Hashtable$EmptyIterator. This enables subsequent analyses to 
+     * Hashtable.EmptyIterator. This enables subsequent analyses to 
      * differentiate different uses of Java's immutable empty 
      * collections. 
      */
@@ -391,6 +391,31 @@ public class SparkOptions
      */
     public boolean cs_demand() {
         return soot.PhaseOptions.getBoolean( options, "cs-demand" );
+    }
+    
+    /** Maximal traversal --
+    
+     * Make the analysis traverse at most this number of nodes per 
+     * query..
+    
+     * Make the analysis traverse at most this number of nodes per 
+     * query. This quota is evenly shared between multiple passes (see 
+     * next option). 					
+     */
+    public int traversal() {
+        return soot.PhaseOptions.getInt( options, "traversal" );
+    }
+    
+    /** Maximal number of passes --
+    
+     * Perform at most this number of refinement iterations..
+    
+     * Perform at most this number of refinement iterations. Each 
+     * iteration traverses at most ( traverse / passes ) nodes. 
+     * 					
+     */
+    public int passes() {
+        return soot.PhaseOptions.getInt( options, "passes" );
     }
     
     public static final int propagator_iter = 1;

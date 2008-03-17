@@ -1236,6 +1236,18 @@ public class AntTask extends MatchingTask {
             addArg("double-set-new:"+arg);
           }
       
+          public void settraversal(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("traversal:"+arg);
+          }
+      
+          public void setpasses(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("passes:"+arg);
+          }
+      
         }
     
         public Object createp_cg_paddle() {

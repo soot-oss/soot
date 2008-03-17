@@ -1530,7 +1530,7 @@ public class Options extends OptionsBase {
                 +padOpt( "merge-stringbuffer (true)", "Represent all StringBuffers as one object" )
                 +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
-                +padOpt( "empties-as-allocs (false)", "Treat EMPTY_* as allocation sites" )
+                +padOpt( "empties-as-allocs (false)", "Treat singletons for empty sets etc. as allocation sites" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
@@ -1599,7 +1599,9 @@ public class Options extends OptionsBase {
                 +padOpt( "dump-answer (false)", "Dump computed reaching types for comparison with other solvers" )
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
-                +padOpt( "cs-demand (false)", "After running Spark, refine points-to sets on demand with context information" );
+                +padOpt( "cs-demand (false)", "After running Spark, refine points-to sets on demand with context information" )
+                +padOpt( "traversal (75000)", "Make the analysis traverse at most this number of nodes per query." )
+                +padOpt( "passes (10)", "Perform at most this number of refinement iterations." );
     
         if( phaseName.equals( "cg.paddle" ) )
             return "Phase "+phaseName+":\n"+
@@ -2445,7 +2447,9 @@ public class Options extends OptionsBase {
                 +"dump-answer "
                 +"add-tags "
                 +"set-mass "
-                +"cs-demand ";
+                +"cs-demand "
+                +"traversal "
+                +"passes ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""
@@ -3017,7 +3021,9 @@ public class Options extends OptionsBase {
               +"dump-answer:false "
               +"add-tags:false "
               +"set-mass:false "
-              +"cs-demand:false ";
+              +"cs-demand:false "
+              +"traversal:75000 "
+              +"passes:10 ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""
