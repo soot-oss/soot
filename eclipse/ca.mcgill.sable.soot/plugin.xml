@@ -604,6 +604,29 @@
       <toc
             file="toc_Reference.xml">
       </toc>
-   </extension>
+   </extension>                                                                       
+
+	<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
+    	<classpathVariableInitializer variable="SOOTCLASSES" class= "ca.mcgill.sable.soot.SootClasspathVariableInitializer"/>
+    	<classpathVariableInitializer variable="SOOTSRC" class= "ca.mcgill.sable.soot.SootClasspathVariableInitializer"/>
+	</extension>
+	
+	<extension
+      point = "org.eclipse.ui.newWizards">
+	<category
+	   id = "ca.mcgill.sable.soot.examples"
+	   parentCategory="org.eclipse.ui.Examples"
+	   name="Soot examples">
+	</category>
+ 	<wizard
+	   id = "ca.mcgill.sable.soot.examples.new.bodytransformer"
+      	   name = "A simple BodyTransformer"
+	   class="ca.mcgill.sable.soot.examples.NewBodyTransformerWizard"
+	   category="org.eclipse.ui.Examples/ca.mcgill.sable.soot.examples"
+	   icon="icons/soot.png">
+    	<description>Creates a simple BodyTransformer that transforms each method body
+    	   in each application class.</description>
+	</wizard>
+</extension>
 
 </plugin>
