@@ -68,9 +68,10 @@ public class NewBodyTransformerWizard extends JavaProjectWizard {
 			
 			String templateFilePath = "/" + ISootConstants.EXAMPLES_PATH + "BodyTransformer.java";
 			InputStream is = getClass().getResourceAsStream(templateFilePath);
-			if(is==null) {				
+			if(is==null) {
 				new RuntimeException("Resource "+templateFilePath+" not found!").printStackTrace();
-			} else {			
+			} else {
+			
 				FileOutputStream fos = null;
 				try {
 					IClasspathEntry[] resolvedClasspath = newProject.getResolvedClasspath(true);
@@ -114,16 +115,16 @@ public class NewBodyTransformerWizard extends JavaProjectWizard {
 						}
 	
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						if(is!=null) is.close();
+						if(fos!=null) fos.close();
+					} catch (IOException e) {
+					}
+					
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if(is!=null) is.close();
-					if(fos!=null) fos.close();
-				} catch (IOException e) {
-				}
-				
 			}
 		}
 		
