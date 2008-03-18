@@ -115,19 +115,13 @@ public class SootClass extends AbstractHost implements Numberable
     public void checkLevel( int level ) {
         if( !Scene.v().doneResolving() ) return;
         if( resolvingLevel < level ) {
-            /*
-            try {
-            */
-                throw new RuntimeException(
-                    "This operation requires resolving level "+
-                    levelToString(level)+" but "+name+
-                    " is at resolving level "+levelToString(resolvingLevel) );
-                /*
-            } catch( RuntimeException e ) {
-                System.out.println("RESOLVING ERROR: "+e.toString());
-                e.printStackTrace();
-            }
-            */
+        	String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n" +
+        			      "Scene.v().addBasicClass("+getName()+","+levelToString(level)+");\n" +
+        			      "Otherwise, try whole-program mode (-w).";
+            throw new RuntimeException(
+                "This operation requires resolving level "+
+                levelToString(level)+" but "+name+
+                " is at resolving level "+levelToString(resolvingLevel) + hint);
         }
     }
 
