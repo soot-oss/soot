@@ -26,21 +26,12 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.text"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.draw2d"/>
       <import plugin="org.eclipse.gef"/>
-      <import plugin="ca.mcgill.sable.graph"/>
       <import plugin="ca.mcgill.sable.soot.lib"/>
       <import plugin="org.eclipse.ui.console"/>
    </requires>

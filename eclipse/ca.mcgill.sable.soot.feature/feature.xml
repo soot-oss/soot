@@ -51,36 +51,28 @@ Boston, MA 02111-1307, USA.
    </requires>
 
    <plugin
-         id="ca.mcgill.sable.graph"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="ca.mcgill.sable.soot"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.2.5"
          unpack="false"/>
 
    <plugin
          id="ca.mcgill.sable.soot.help"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.2.5"
          unpack="false"/>
 
    <plugin
          id="ca.mcgill.sable.soot.lib"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.2.5"
          unpack="true"/>
-         <!-- Eric Bodden:
+       <!-- Eric Bodden:
          	In the above, unpack must be true because SootClasspathVariableInitializer right now looks
          	for the sootclasses.jar in the file system. I don't think that we can change that, due to Eclipse's architecture.          	
          -->
-         
 
 </feature>
