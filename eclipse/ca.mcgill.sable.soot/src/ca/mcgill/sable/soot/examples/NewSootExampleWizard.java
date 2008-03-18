@@ -155,7 +155,6 @@ public abstract class NewSootExampleWizard extends JavaProjectWizard {
 			super("ca.mcgill.sable.soot.examples.NewExamplePage");
 		}
 		
-		@Override
 		public void createControl(Composite parent) {
 			final Composite composite= new Composite(parent, SWT.NULL);
 			composite.setFont(parent.getFont());

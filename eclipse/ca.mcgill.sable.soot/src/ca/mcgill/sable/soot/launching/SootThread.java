@@ -103,7 +103,6 @@ public class SootThread extends Thread {
 		    			final String mc = mainClass;
 		    			final Shell defaultShell = getShell();
 		    			getDisplay().syncExec(new Runnable() {
-		    				@Override
 		    				public void run() {
 				    			MessageDialog.openError(defaultShell, "Unable to find Soot Main Project", "Project "+mc+" does not exist," +
 								" is no Java project or is closed. Aborting...");
@@ -121,7 +120,6 @@ public class SootThread extends Thread {
 				final Shell defaultShell = getShell();
     			final String inProject = mainProject!=null ? (" in project "+mainProject):"";
     			getDisplay().syncExec(new Runnable() {
-    				@Override
     				public void run() {
     	    			MessageDialog.openError(defaultShell, "Unable to find class", "Cannot find class"+inProject+". Aborting...\n"+e.getLocalizedMessage());
     				}
@@ -155,7 +153,6 @@ public class SootThread extends Thread {
 	private Shell getShell() {
 		getDisplay().syncExec(new Runnable() {
 
-			@Override
 			public void run() {
 				activeShell = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
 			}
