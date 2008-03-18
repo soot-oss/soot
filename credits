@@ -91,7 +91,7 @@ Feng Qian (fqian@sable.mcgill.ca)
     - Dot interface, CFGViewer
     - prepared 1.2.2, 1.2.3 release
 
-Ganesh Sittampalam (ganesh@earth.li>
+Ganesh Sittampalam (ganesh@earth.li)
    - contributed to resolver redesign
 
 Manu Sridharan (manu_s@eecs.berkeley.edu)
@@ -100,6 +100,9 @@ Manu Sridharan (manu_s@eecs.berkeley.edu)
     
 Vijay Sundaresan (vijay@sable.mcgill.ca)
     - first implementation of inlining and devirtualization
+    
+Julian Tibble
+    - Nullness analysis
 
 Navindra Umanee (navindra@cs.mcgill.ca)
     - Shimple infrastructure
