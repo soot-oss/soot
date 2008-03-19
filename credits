@@ -10,6 +10,12 @@ Marc Berndl
     - Soot framework optimization
     - annotation
 
+Eric Bodden
+    - Improvements to the Eclipse plugin
+    - Re-implementation of nullness analysis
+    - Instance Keys
+      - Local must-alias analysis
+
 Phong Co (phong@hasc.com)
     - Jimple scalar optimizations
 
@@ -49,6 +55,7 @@ Patrick Lam (plam@sable.mcgill.ca)
     - Baf implementation
     - Aggregation
     - second implementation of inlining and devirtualization
+    - Local must-not-alias analysis
 
 Jennifer Lhotak (jlhotak@sable.mcgill.ca)
     - Eclipse Plugin
@@ -102,7 +109,7 @@ Vijay Sundaresan (vijay@sable.mcgill.ca)
     - first implementation of inlining and devirtualization
     
 Julian Tibble
-    - Nullness analysis
+    - Improved footprint of nullness analysis
 
 Navindra Umanee (navindra@cs.mcgill.ca)
     - Shimple infrastructure
