@@ -42,7 +42,7 @@ public class Main {
     // TODO: the following string should be updated by the source control
     // No it shouldn't. Prcs is horribly borken in this respect, and causes
     // the code to not compile all the time.
-    public final String versionString = "2.2.3";
+    public final String versionString = "2.2.5";
 
     private Date start;
     private Date finish;
@@ -51,11 +51,11 @@ public class Main {
         G.v().out.println("Soot version " + versionString);
 
         G.v().out.println(
-            "Copyright (C) 1997-2003 Raja Vallee-Rai and others.");
+            "Copyright (C) 1997-2008 Raja Vallee-Rai and others.");
         G.v().out.println("All rights reserved.");
         G.v().out.println("");
         G.v().out.println(
-            "Contributions are copyright (C) 1997-2003 by their respective contributors.");
+            "Contributions are copyright (C) 1997-2008 by their respective contributors.");
         G.v().out.println("See the file 'credits' for a list of contributors.");
         G.v().out.println("See individual source files for details.");
         G.v().out.println("");
