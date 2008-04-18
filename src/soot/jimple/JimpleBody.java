@@ -26,6 +26,8 @@
 package soot.jimple;
 
 import soot.*;
+import soot.util.Chain;
+
 import java.util.*;
 
 /** Implementation of the Body class for the Jimple IR. */
@@ -62,29 +64,64 @@ public class JimpleBody extends StmtBody
     public void validate()
     {
         super.validate();
-
-        // Check validity of traps.
-	/* this check may not hold when jop.bcm is enabled. 
-	 *           disabled by Feng Qian, May 2002
-         */
-	/*
-        {
-            Iterator it = getTraps().iterator();
-            
-            while(it.hasNext())
-            {
-                Trap t = (Trap) it.next();
-                
-                Stmt s = (Stmt) t.getHandlerUnit();
-                                
-                if(!(s instanceof IdentityStmt) 
-		   || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef)){
-                    G.v().out.println(s);
-                    throw new RuntimeException("Trap handler is not of the form x := caughtexceptionref");
-                }
-            }
-        }
-	*/
+        validateIdentityStatements();
+    }
+    
+    /**
+     * Validates that the body starts with an @this-assignment (if the method is non-static)
+     * and that then parameter identity statements follow in the correct order.
+     */
+    public void validateIdentityStatements() {
+		if (method.isAbstract())
+			return;
+		
+		Body body=method.getActiveBody();
+		Chain<Unit> units=body.getUnits().getNonPatchingChain();
+		List params=method.getParameterTypes();
+		
+		Iterator<Unit> itUnits=units.iterator();
+		if (!method.isStatic()) {
+			Stmt first=(Stmt)itUnits.next();		
+			
+			IdentityStmt id=(IdentityStmt) first;
+			Local local=(Local)id.getLeftOp();
+			ThisRef ref=(ThisRef)id.getRightOp();
+			if (!ref.getType().equals(method.getDeclaringClass().getType()))
+				throw new RuntimeException("this-ref has wrong type!"+id);
+			
+			if (!local.getType().equals(method.getDeclaringClass().getType()))
+				throw new RuntimeException("this-local has wrong type!"+id);
+			
+		}	
+		
+		Iterator it=params.iterator();
+		int i=0;
+		while (it.hasNext()) {
+			Type type=(Type)it.next();
+			Stmt stmt=(Stmt)itUnits.next();
+			IdentityStmt id=(IdentityStmt)stmt;
+			Local local=(Local)id.getLeftOp();
+			ParameterRef ref=(ParameterRef)id.getRightOp();
+			if (!Type.toMachineType(local.getType()).equals(Type.toMachineType(type))) {
+				throw new RuntimeException("Parameter reference "+ref.getIndex()+" has wrong type: "+id);
+			}
+			if (ref.getIndex()!=i++) {
+				throw new RuntimeException("Parameter reference in wrong order");
+			}
+			if (!ref.getType().equals(type)) {
+				throw new RuntimeException("Parameter reference "+ref.getIndex()+" has wrong type: "+id);
+			}				
+		}
+		
+		//validate that only CaughtExceptionRef occurs in the rest of the body
+		while(itUnits.hasNext()) {
+			Unit u = itUnits.next();
+			if(u instanceof IdentityStmt) {
+				IdentityStmt identityStmt = (IdentityStmt) u;
+				if(!(identityStmt.getRightOp() instanceof CaughtExceptionRef))
+					throw new RuntimeException("Identity statement in middle of method: "+u);
+			}
+		}
     }
     
     /** Inserts usual statements for handling this & parameters into body. */
