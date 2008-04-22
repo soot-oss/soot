@@ -18,6 +18,8 @@
  */
 
 package soot;
+import soot.javaToJimple.IInitialResolver;
+import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.*;
 import java.io.*;
 import java.util.*;
@@ -30,7 +32,7 @@ public class CoffiClassSource extends ClassSource
         super( className );
         this.classFile = classFile;
     }
-    public List resolve( SootClass sc ) {
+    public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
             G.v().out.println("resolving [from .class]: " + className );
         List references = new ArrayList();
@@ -39,7 +41,10 @@ public class CoffiClassSource extends ClassSource
         try {
             classFile.close();
         } catch (IOException e) { throw new RuntimeException("!?"); }
-        return references;
+        
+        IInitialResolver.Dependencies deps = new IInitialResolver.Dependencies();
+        deps.typesToSignature.addAll(references);
+        return deps;
     }
     protected InputStream classFile;
 }

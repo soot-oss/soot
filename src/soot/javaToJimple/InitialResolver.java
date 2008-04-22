@@ -28,7 +28,7 @@ import polyglot.ast.Node;
 import polyglot.types.ConstructorInstance;
 import polyglot.util.IdentityKey;
 
-public class InitialResolver {
+public class InitialResolver implements IInitialResolver {
 
     private polyglot.ast.Node astNode;  // source node
     private polyglot.frontend.Compiler compiler; 
@@ -105,7 +105,7 @@ public class InitialResolver {
     /**
      * Invokes polyglot and gets the AST for the source given in fullPath
      */
-    public void formAst(String fullPath, List<String> locations){
+    public void formAst(String fullPath, List<String> locations, String className){
     
         JavaToJimple jtj = new JavaToJimple();
         polyglot.frontend.ExtensionInfo extInfo = jtj.initExtInfo(fullPath, locations);
@@ -173,9 +173,10 @@ public class InitialResolver {
     }
     
     // resolves all types and deals with .class literals and asserts
-    public List resolveFromJavaFile(soot.SootClass sc) {
-        List references = new ArrayList();
-        ClassResolver cr = new ClassResolver(sc, references);
+    public Dependencies resolveFromJavaFile(soot.SootClass sc) {
+        Dependencies dependencies = new Dependencies();
+        //conservatively load all to signatures
+        ClassResolver cr = new ClassResolver(sc, dependencies.typesToSignature);
         
         // create class to source map first 
         // create source file
@@ -187,7 +188,8 @@ public class InitialResolver {
         
         makeASTMap();
         
-        return references;
+        
+        return dependencies;
     }
     
 

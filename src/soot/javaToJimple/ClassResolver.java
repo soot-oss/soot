@@ -907,12 +907,12 @@ public class ClassResolver {
     
         Util.addLnPosTags(sootField, field.position());
     }
-    ClassResolver( SootClass sootClass, List references ) {
+    public ClassResolver( SootClass sootClass, Set<soot.Type> set ) {
         this.sootClass = sootClass;
-        this.references = references;
+        this.references = set;
     }
     private final SootClass sootClass;
-    private final List references;
+    private final Collection references;
 
     
     /**

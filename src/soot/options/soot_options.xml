@@ -421,6 +421,15 @@ overrides this default.
 </p>
 </long_desc>
 		</stropt>
+		<boolopt>
+			<name>Use Polyglot frontend</name>
+			<alias>polyglot</alias>
+			<default>false</default>
+			<short_desc>Use Java 1.4 Polyglot frontend instead of JastAdd</short_desc>
+			<long_desc>
+Use Java 1.4 Polyglot frontend instead of JastAdd, which supports Java 5 syntax.
+</long_desc>
+		</boolopt>
 	</section>
 	<section>
 		<name>Output Options</name>

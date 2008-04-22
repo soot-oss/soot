@@ -18,12 +18,13 @@
  */
 
 package soot;
-import soot.options.*;
-import soot.toolkits.astmetrics.ComputeASTMetrics;
+import java.io.File;
 
-import java.io.*;
-import java.util.*;
-import soot.javaToJimple.*;
+import soot.javaToJimple.IInitialResolver;
+import soot.javaToJimple.InitialResolver;
+import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
+import soot.toolkits.astmetrics.ComputeASTMetrics;
 
 /** A class source for resolving from .java files using javaToJimple.
  */
@@ -37,16 +38,21 @@ public class JavaClassSource extends ClassSource
         super( className );
     }
     
-    public List resolve( SootClass sc ) {
+    public Dependencies resolve( SootClass sc ) {
         if (Options.v().verbose())
             G.v().out.println("resolving [from .java]: " + className);
                     
+        IInitialResolver resolver;
+        if(Options.v().polyglot())
+        	resolver = InitialResolver.v();
+        else
+        	resolver = new JastAddInitialResolver();
 
         if (fullPath != null){
-            InitialResolver.v().formAst(fullPath.getPath(), SourceLocator.v().sourcePath());
+            resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);
         }
         //System.out.println("about to call initial resolver in j2j: "+sc.getName());
-        List references = InitialResolver.v().resolveFromJavaFile(sc);
+        Dependencies references = resolver.resolveFromJavaFile(sc);
         
         /*
          * 1st March 2006

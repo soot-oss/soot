@@ -19,6 +19,7 @@
 
 package soot;
 import soot.options.*;
+import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.jimple.*;
 import java.io.*;
 import java.util.*;
@@ -31,7 +32,7 @@ public class JimpleClassSource extends ClassSource
         super( className );
         this.classFile = classFile;
     }
-    public List resolve( SootClass sc ) {
+    public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
             G.v().out.println("resolving [from .jimple]: " + className );
         
@@ -46,12 +47,13 @@ public class JimpleClassSource extends ClassSource
             sm.setSource(mtdSrc);
         }
         
-        List ret = new ArrayList(jimpAST.getCstPool());
+        Dependencies deps = new Dependencies();
+        deps.typesToSignature.addAll(jimpAST.getCstPool());
 
         try {
             classFile.close();
         } catch (IOException e) { throw new RuntimeException("!?"); }
-        return ret;
+        return deps;
     }
     protected InputStream classFile;
 }

@@ -26,23 +26,56 @@
 
 
 package soot;
+import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
+
+import polyglot.util.StdErrorQueue;
+
+import AST.ASTNode;
+import AST.BytecodeParser;
+import AST.CompilationUnit;
+import AST.JavaParser;
+import AST.Program;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
 {
     /** Maps each resolved class to a list of all references in it. */
-    private final Map<SootClass, ArrayList> classToReferences = new HashMap<SootClass, ArrayList>();
-    
+    private final Map<SootClass, ArrayList> classToTypesSignature = new HashMap<SootClass, ArrayList>();
+
+    /** Maps each resolved class to a list of all references in it. */
+    private final Map<SootClass, ArrayList> classToTypesHierarchy = new HashMap<SootClass, ArrayList>();
+
     /** SootClasses waiting to be resolved. */
     private final LinkedList/*SootClass*/[] worklist = new LinkedList[4];
+
+	protected Program program;
 
     public SootResolver (Singletons.Global g) {
         worklist[SootClass.HIERARCHY] = new LinkedList();
         worklist[SootClass.SIGNATURES] = new LinkedList();
         worklist[SootClass.BODIES] = new LinkedList();
+        
+        
+        program = new Program();
+        ASTNode.reset();
+
+        program.initBytecodeReader(new BytecodeParser());
+        program.initJavaParser(
+          new JavaParser() {
+            public CompilationUnit parse(InputStream is, String fileName) throws IOException, beaver.Parser.Exception {
+              return new parser.JavaParser().parse(is, fileName);
+            }
+          }
+        );
+
+        Program.initOptions();
+        program.addKeyValueOption("-classpath");
+        Program.setValueForOption("-classpath", Scene.v().getSootClassPath());
     }
 
     public static SootResolver v() { return G.v().soot_SootResolver();}
@@ -136,11 +169,13 @@ public class SootResolver
                 G.v().out.println(
                         "Warning: " + className + " is a phantom class!");
                 sc.setPhantomClass();
-                classToReferences.put( sc, new ArrayList() );
+                classToTypesSignature.put( sc, new ArrayList() );
+                classToTypesHierarchy.put( sc, new ArrayList() );
             }
         } else {
-            Collection references = is.resolve(sc);
-            classToReferences.put( sc, new ArrayList(new HashSet(references)) );
+            Dependencies dependencies = is.resolve(sc);
+            classToTypesSignature.put( sc, new ArrayList(dependencies.typesToSignature) );
+            classToTypesHierarchy.put( sc, new ArrayList(dependencies.typesToHierarchy) );
         }
         reResolveHierarchy(sc);
     }
@@ -209,18 +244,36 @@ public class SootResolver
             G.v().out.println("bringing to BODIES: "+sc);
         sc.setResolvingLevel(SootClass.BODIES);
 
-        Collection references = classToReferences.get(sc);
-        if( references == null ) return;
+        {
+        	Collection references = classToTypesHierarchy.get(sc);
+            if( references == null ) return;
 
-        Iterator it = references.iterator();
-        while( it.hasNext() ) {
-            final Object o = it.next();
+            Iterator it = references.iterator();
+            while( it.hasNext() ) {
+                final Object o = it.next();
 
-            if( o instanceof String ) {
-                addToResolveWorklist((String) o, SootClass.SIGNATURES);
-            } else if( o instanceof Type ) {
-                addToResolveWorklist((Type) o, SootClass.SIGNATURES);
-            } else throw new RuntimeException(o.toString());
+                if( o instanceof String ) {
+                    addToResolveWorklist((String) o, SootClass.HIERARCHY);
+                } else if( o instanceof Type ) {
+                    addToResolveWorklist((Type) o, SootClass.HIERARCHY);
+                } else throw new RuntimeException(o.toString());
+            }
+        }
+
+        {
+        	Collection references = classToTypesSignature.get(sc);
+            if( references == null ) return;
+
+            Iterator it = references.iterator();
+            while( it.hasNext() ) {
+                final Object o = it.next();
+
+                if( o instanceof String ) {
+                    addToResolveWorklist((String) o, SootClass.SIGNATURES);
+                } else if( o instanceof Type ) {
+                    addToResolveWorklist((Type) o, SootClass.SIGNATURES);
+                } else throw new RuntimeException(o.toString());
+            }
         }
     }
 
@@ -232,6 +285,10 @@ public class SootResolver
         addToResolveWorklist(cl, resolvingLevel);
         processResolveWorklist();
     }
+
+	public Program getProgram() {
+		return program;
+	}
 }
 
 

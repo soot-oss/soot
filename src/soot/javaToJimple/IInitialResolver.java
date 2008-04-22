@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Ondrej Lhotak
+ * Copyright (C) 2008 Eric Bodden
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,23 +16,27 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+package soot.javaToJimple;
 
-package soot;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.SootClass;
+import soot.Type;
 
-/** A class source is responsible for resolving a single class from a
- * particular source format (.class, .jimple, .java, etc.)
- */
-public abstract class ClassSource 
-{
-    public ClassSource( String className ) {
-        this.className = className;
-    }
-    /** Resolve the class into the SootClass sc. Returns a list of Strings
-     * or Types referenced by the class. */
-    public abstract Dependencies resolve( SootClass sc );
-    protected String className;
+public interface IInitialResolver {
+	
+	public void formAst(String fullPath, List<String> locations, String className);
+	
+	public Dependencies resolveFromJavaFile(SootClass sc);
+	
+	public class Dependencies {
+		public final Set<Type> typesToHierarchy, typesToSignature;
+		public Dependencies() {
+			typesToHierarchy = new HashSet<Type>();
+			typesToSignature = new HashSet<Type>();
+		}
+	}
+
 }
-
