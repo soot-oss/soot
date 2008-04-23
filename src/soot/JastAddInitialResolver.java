@@ -40,16 +40,20 @@ public class JastAddInitialResolver implements IInitialResolver {
 	protected Map<String,CompilationUnit> classNameToCU = new HashMap<String, CompilationUnit>();
 	
 	public void formAst(String fullPath, List<String> locations, String className) {
-        Program program = SootResolver.v().getProgram();		
-		program.addSourceFile(fullPath);
-		CompilationUnit u = program.getCompilationUnit(className);
-	  	program.addCompilationUnit(u);
-	  	u.jimplify1phase1();
-	  	u.jimplify1phase2();
-	  	if(classNameToCU.containsKey(className)) {
-	  		throw new IllegalStateException();
-	  	}
-	  	classNameToCU.put(className, u);	  	
+	      Program program = SootResolver.v().getProgram();
+	      program.addSourceFile(fullPath);
+	      int i = program.getNumCompilationUnit() - 1;
+	      while(i >= 0 && !fullPath.equals(program.getCompilationUnit(i).pathName()))
+	          i--;
+	      if(i >= 0) {
+	          CompilationUnit u = program.getCompilationUnit(i);
+	          u.jimplify1phase1();
+	          u.jimplify1phase2();
+	          if(classNameToCU.containsKey(className)) {
+	              throw new IllegalStateException();
+	          }
+	          classNameToCU.put(className, u);
+	      }
 	}
 
 	public Dependencies resolveFromJavaFile(SootClass sc) {
