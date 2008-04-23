@@ -68,8 +68,12 @@ public class JimpleBody extends StmtBody
     }
     
     /**
-     * Validates that the body starts with an @this-assignment (if the method is non-static)
-     * and that then parameter identity statements follow in the correct order.
+     * Checks the following invariants on this Jimple body:
+     * <ol>
+     * <li> this-references may only occur in instance methods
+     * <li> this-references may only occur as the first statement in a method, if they occur at all
+     * <li> param-references must precede all statements that are not themselves param-references or this-references
+     * </ol>
      */
     public void validateIdentityStatements() {
 		if (method.isAbstract())
@@ -77,50 +81,31 @@ public class JimpleBody extends StmtBody
 		
 		Body body=method.getActiveBody();
 		Chain<Unit> units=body.getUnits().getNonPatchingChain();
-		List params=method.getParameterTypes();
+
+		boolean foundNonThisOrParamIdentityStatement = false;
+		boolean firstStatement = true;
 		
-		Iterator<Unit> itUnits=units.iterator();
-		if (!method.isStatic()) {
-			Stmt first=(Stmt)itUnits.next();		
-			
-			IdentityStmt id=(IdentityStmt) first;
-			Local local=(Local)id.getLeftOp();
-			ThisRef ref=(ThisRef)id.getRightOp();
-			if (!ref.getType().equals(method.getDeclaringClass().getType()))
-				throw new RuntimeException("this-ref has wrong type!"+id);
-			
-			if (!local.getType().equals(method.getDeclaringClass().getType()))
-				throw new RuntimeException("this-local has wrong type!"+id);
-			
-		}	
-		
-		Iterator it=params.iterator();
-		int i=0;
-		while (it.hasNext()) {
-			Type type=(Type)it.next();
-			Stmt stmt=(Stmt)itUnits.next();
-			IdentityStmt id=(IdentityStmt)stmt;
-			Local local=(Local)id.getLeftOp();
-			ParameterRef ref=(ParameterRef)id.getRightOp();
-			if (!Type.toMachineType(local.getType()).equals(Type.toMachineType(type))) {
-				throw new RuntimeException("Parameter reference "+ref.getIndex()+" has wrong type: "+id);
+		for (Unit unit : units) {
+			if(unit instanceof IdentityStmt) {
+				IdentityStmt identityStmt = (IdentityStmt) unit;
+				if(identityStmt.getRightOp() instanceof ThisRef) {					
+					if(method.isStatic()) {
+						throw new RuntimeException("@this-assignment in a static method!");
+					}					
+					if(!firstStatement) {
+						throw new RuntimeException("@this-assignment statement should precede all other statements");
+					}
+				} else if(identityStmt.getRightOp() instanceof ParameterRef && foundNonThisOrParamIdentityStatement) {
+						throw new RuntimeException("@param-assignment statements should precede all non-identity statements");
+				} else {
+					//@caughtexception statement					
+					foundNonThisOrParamIdentityStatement = true;
+				}
+			} else {
+				//non-identity statement
+				foundNonThisOrParamIdentityStatement = true;
 			}
-			if (ref.getIndex()!=i++) {
-				throw new RuntimeException("Parameter reference in wrong order");
-			}
-			if (!ref.getType().equals(type)) {
-				throw new RuntimeException("Parameter reference "+ref.getIndex()+" has wrong type: "+id);
-			}				
-		}
-		
-		//validate that only CaughtExceptionRef occurs in the rest of the body
-		while(itUnits.hasNext()) {
-			Unit u = itUnits.next();
-			if(u instanceof IdentityStmt) {
-				IdentityStmt identityStmt = (IdentityStmt) u;
-				if(!(identityStmt.getRightOp() instanceof CaughtExceptionRef))
-					throw new RuntimeException("Identity statement in middle of method: "+u);
-			}
+			firstStatement = false;
 		}
     }
     
