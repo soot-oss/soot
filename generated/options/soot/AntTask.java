@@ -223,6 +223,10 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
+        public void setpolyglot(boolean arg) {
+            if(arg) addArg("-polyglot");
+        }
+  
         public void setoutput_dir(String arg) {
             addArg("-output-dir");
             addArg(arg);

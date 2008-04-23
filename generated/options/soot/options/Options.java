@@ -305,6 +305,11 @@ public class Options extends OptionsBase {
                 }
             }
   
+            else if( false 
+            || option.equals( "polyglot" )
+            )
+                polyglot = true;
+  
             else if( false
             || option.equals( "d" )
             || option.equals( "output-dir" )
@@ -976,6 +981,10 @@ public class Options extends OptionsBase {
     public String main_class() { return main_class; }
     public void set_main_class( String setting ) { main_class = setting; }
     private String main_class = "";
+    public boolean polyglot() { return polyglot; }
+    private boolean polyglot = false;
+    public void set_polyglot( boolean setting ) { polyglot = setting; }
+  
     public String output_dir() { return output_dir; }
     public void set_output_dir( String setting ) { output_dir = setting; }
     private String output_dir = "";
@@ -1141,6 +1150,7 @@ public class Options extends OptionsBase {
 +padOpt(" -use-old-type-assigner", "Use old type assigner - may be slower" )
 +padOpt(" -j2me", "Use J2ME mode; changes assignment of types" )
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
++padOpt(" -polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d DIR -output-dir DIR", "Store output files in DIR" )
