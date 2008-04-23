@@ -1,3 +1,6 @@
+## Location of JastAdd classes jar file to link Soot against
+jastaddfrontend.loc=../JastAddExtensions/SootJastAddJ
+
 ## Location of Polyglot classes jar file to link Soot against
 polyglot.jar=${user.home}/polyglotclasses-1.3.jar
 

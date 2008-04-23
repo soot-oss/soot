@@ -35,11 +35,12 @@ import java.util.*;
 
 import polyglot.util.StdErrorQueue;
 
-import AST.ASTNode;
-import AST.BytecodeParser;
-import AST.CompilationUnit;
-import AST.JavaParser;
-import AST.Program;
+import soot.JastAddJ.ASTNode;
+import soot.JastAddJ.BytecodeParser;
+import soot.JastAddJ.CompilationUnit;
+import soot.JastAddJ.JavaParser;
+import soot.JastAddJ.JastAddJavaParser;
+import soot.JastAddJ.Program;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
@@ -68,7 +69,7 @@ public class SootResolver
         program.initJavaParser(
           new JavaParser() {
             public CompilationUnit parse(InputStream is, String fileName) throws IOException, beaver.Parser.Exception {
-              return new parser.JavaParser().parse(is, fileName);
+              return new JastAddJavaParser().parse(is, fileName);
             }
           }
         );

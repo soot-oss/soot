@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import soot.javaToJimple.IInitialResolver;
-import AST.BodyDecl;
-import AST.CompilationUnit;
-import AST.MethodDecl;
-import AST.Program;
-import AST.TypeDecl;
+import soot.JastAddJ.BodyDecl;
+import soot.JastAddJ.CompilationUnit;
+import soot.JastAddJ.MethodDecl;
+import soot.JastAddJ.Program;
+import soot.JastAddJ.TypeDecl;
 
 public class JastAddInitialResolver implements IInitialResolver {
 
@@ -62,9 +62,9 @@ public class JastAddInitialResolver implements IInitialResolver {
 			m.setSource(new MethodSource() {
 				public Body getBody(SootMethod m, String phaseName) {
 					CompilationUnit u = classNameToCU.get(m.getDeclaringClass().getName());
-					AST.List<TypeDecl> typeDeclList = u.getTypeDeclList();
+					soot.JastAddJ.List<TypeDecl> typeDeclList = u.getTypeDeclList();
 					for (TypeDecl typeDecl : typeDeclList) {
-						AST.List<BodyDecl> bodyDeclList = typeDecl.getBodyDeclList();
+						soot.JastAddJ.List<BodyDecl> bodyDeclList = typeDecl.getBodyDeclList();
 						for (BodyDecl bodyDecl : bodyDeclList) {
 							if(bodyDecl instanceof MethodDecl) {
 								MethodDecl methodDecl = (MethodDecl) bodyDecl;

@@ -9,7 +9,7 @@
         />
     </target>
 
-    <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options">
+    <target name="compile" depends="settings,sablecc,jastadd,copypeephole,settings,singletons,options">
     	<mkdir dir="classes"/>
         <javac
             destdir="classes"
@@ -33,6 +33,7 @@
             <src path="src"/>
             <src path="generated/singletons"/>
             <src path="generated/sablecc"/>
+            <src path="generated/jastadd"/>
             <src path="generated/options"/>
         </javac>
     </target>
@@ -75,6 +76,23 @@
             <fileset dir="src" includes="jimple.scc"/>
         </apply>
     </target>
+	
+    <target name="determine-jastadd-uptodate" depends="settings">
+    	<uptodate property="jastadd.uptodate" targetfile="generated/jastadd/soot">
+    	    <srcfiles dir= "${jastaddfrontend.loc}" includes="**/*.jrag,**/*.flex,**/*.parser,**/*.scanner"/>
+    	</uptodate>
+    </target>
+
+    <target name="jastadd" depends="determine-jastadd-uptodate,settings" unless="jastadd.uptodate">
+    	<ant antfile="${jastaddfrontend.loc}/build.xml" target="gen" inheritall="false"/>
+    	<mkdir dir="generated/jastadd"/>
+    	<copy todir="generated/jastadd/soot">
+    	    <fileset dir="${jastaddfrontend.loc}/soot" includes="**/*.java"/>
+    	</copy>
+    	<copy todir="generated/jastadd/beaver">
+    	    <fileset dir="${jastaddfrontend.loc}/beaver" includes="**/*.java"/>
+    	</copy>
+    </target>
 
     <target name="javadoc">
         <javadoc
@@ -100,7 +118,7 @@
         </delete>
     </target>
 
-    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-options,veryclean-sablecc"/>
+    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-options,veryclean-sablecc,veryclean-jastadd"/>
     <target name="veryclean-singletons">
         <delete quiet="true">
             <fileset dir="generated/singletons" includes="**/*" />
@@ -123,6 +141,20 @@
         <fail if="do.sablecc.abort">Build aborted by user.</fail>
         <delete quiet="true">
             <fileset dir="generated/sablecc" includes="**/*" />
+        </delete>
+    </target>
+    <target name="veryclean-jastadd">
+        <input
+            message="This will delete files that require JastAdd to be installed to regenerate. Are you sure?"
+            validargs="y,n"
+            addproperty="do.jastadd.delete"
+        />
+        <condition property="do.jastadd.abort">
+            <equals arg1="n" arg2="${do.jastadd.delete}"/>
+        </condition>
+        <fail if="do.jastadd.abort">Build aborted by user.</fail>
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="generated/jastadd" includes="**/*" />
         </delete>
     </target>
 
