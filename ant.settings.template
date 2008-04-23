@@ -1,4 +1,7 @@
 ## Location of JastAdd classes jar file to link Soot against
+#  This can be found at:
+#  svn+ssh://musketeer.comlab.ox.ac.uk/srv/svn/projects/trunk/JastAddExtensions/
+#  check out this url and then set thiss variable to <prefix>/JastAddExtensions/SootJastAddJ 
 jastaddfrontend.loc=../JastAddExtensions/SootJastAddJ
 
 ## Location of Polyglot classes jar file to link Soot against
