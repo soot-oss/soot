@@ -868,4 +868,10 @@ public class Singletons {
         return instance_soot_jimple_toolkits_thread_transaction_TransactionTransformer;
     }
 
+    private soot.JastAddInitialResolver instance_soot_JastAddInitialResolver;
+    public soot.JastAddInitialResolver soot_JastAddInitialResolver() {
+        if( instance_soot_JastAddInitialResolver == null ) instance_soot_JastAddInitialResolver = new soot.JastAddInitialResolver( g );
+        return instance_soot_JastAddInitialResolver;
+    }
+
 }

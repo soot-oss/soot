@@ -24,6 +24,8 @@
 
 package soot;
 
+import soot.options.Options;
+
 /** A class provider looks for a file of a specific format for a specified
  * class, and returns a ClassSource for it if it finds it.
  */
@@ -33,41 +35,42 @@ public class JavaClassProvider implements ClassProvider
      * or null if it was not found. */
     public ClassSource find( String className ) {
 
-        if (soot.javaToJimple.InitialResolver.v().hasASTForSootName(className)){
+    	if(Options.v().polyglot() &&
+	       soot.javaToJimple.InitialResolver.v().hasASTForSootName(className)){
             soot.javaToJimple.InitialResolver.v().setASTForSootName(className);
             return new JavaClassSource(className);
-        }
-        else {
-        	/* 04.04.2006 mbatch	if there is a $ in the name,
+    	} else { //jastAdd; or polyglot AST not yet produced
+	    	/* 04.04.2006 mbatch	if there is a $ in the name,
 			 *						we need to check if it's a real file, 
 			 * 						not just inner class								
 			 */
-          	boolean checkAgain = className.indexOf('$') >= 0;
-          	
-            String javaClassName = SourceLocator.v().getSourceForClass(className);
-            String fileName = javaClassName.replace('.', '/') + ".java";
-            SourceLocator.FoundFile file = 
-                SourceLocator.v().lookupInClassPath(fileName);
-
-            /* 04.04.2006 mbatch	if inner class not found,
+	      	boolean checkAgain = className.indexOf('$') >= 0;
+	      	
+	        String javaClassName = SourceLocator.v().getSourceForClass(className);
+	        String fileName = javaClassName.replace('.', '/') + ".java";
+	        SourceLocator.FoundFile file = 
+	            SourceLocator.v().lookupInClassPath(fileName);
+	
+	        /* 04.04.2006 mbatch	if inner class not found,
 		     *						check if it's a real file							
 			 */
-            if( file == null) {
-            
-              if (checkAgain) {
-                fileName = className.replace('.', '/') + ".java";
-                file = SourceLocator.v().lookupInClassPath(fileName);
-              }
-            }
-            /* 04.04.2006 mbatch	end */
+	        if( file == null) {
+	        
+	          if (checkAgain) {
+	            fileName = className.replace('.', '/') + ".java";
+	            file = SourceLocator.v().lookupInClassPath(fileName);
+	          }
+	        }
+	        /* 04.04.2006 mbatch	end */
+	
+	        if (file == null)
+	        	return null;         
+	        
+	        if( file.file == null ) {
+	            throw new RuntimeException( "Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar" );
+	        }
+	        return new JavaClassSource(className, file.file);
+    	}
 
-            if (file == null)
-            	return null;         
-            
-            if( file.file == null ) {
-                throw new RuntimeException( "Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar" );
-            }
-            return new JavaClassSource(className, file.file);
-        }
     }
 }

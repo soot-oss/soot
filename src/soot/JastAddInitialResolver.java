@@ -31,6 +31,12 @@ import AST.TypeDecl;
 
 public class JastAddInitialResolver implements IInitialResolver {
 
+    public JastAddInitialResolver(soot.Singletons.Global g){}
+
+    public static JastAddInitialResolver v() {
+        return soot.G.v().soot_JastAddInitialResolver();
+    }
+	
 	protected Map<String,CompilationUnit> classNameToCU = new HashMap<String, CompilationUnit>();
 	
 	public void formAst(String fullPath, List<String> locations, String className) {

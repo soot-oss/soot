@@ -46,7 +46,7 @@ public class JavaClassSource extends ClassSource
         if(Options.v().polyglot())
         	resolver = InitialResolver.v();
         else
-        	resolver = new JastAddInitialResolver();
+        	resolver = JastAddInitialResolver.v();
 
         if (fullPath != null){
             resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);
