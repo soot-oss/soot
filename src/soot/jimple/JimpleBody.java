@@ -95,8 +95,10 @@ public class JimpleBody extends StmtBody
 					if(!firstStatement) {
 						throw new RuntimeException("@this-assignment statement should precede all other statements");
 					}
-				} else if(identityStmt.getRightOp() instanceof ParameterRef && foundNonThisOrParamIdentityStatement) {
+				} else if(identityStmt.getRightOp() instanceof ParameterRef) {
+					if(foundNonThisOrParamIdentityStatement) {
 						throw new RuntimeException("@param-assignment statements should precede all non-identity statements");
+					}
 				} else {
 					//@caughtexception statement					
 					foundNonThisOrParamIdentityStatement = true;
