@@ -72,7 +72,8 @@ public class JimpleBody extends StmtBody
      * <ol>
      * <li> this-references may only occur in instance methods
      * <li> this-references may only occur as the first statement in a method, if they occur at all
-     * <li> param-references must precede all statements that are not themselves param-references or this-references
+     * <li> param-references must precede all statements that are not themselves param-references or this-references,
+     *      if they occur at all
      * </ol>
      */
     public void validateIdentityStatements() {
