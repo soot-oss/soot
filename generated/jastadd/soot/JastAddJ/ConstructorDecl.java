@@ -345,83 +345,6 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 
   public SootMethod sootMethod;
 
-    // Declared in EmitJimple.jrag at line 622
-
-
-  public void jimplify2() {
-    if(!generate() || sootMethod().hasActiveBody() || sootMethod().getSource() != null) return;
-    JimpleBody body = Jimple.v().newBody(sootMethod());
-    sootMethod().setActiveBody(body);
-    Body b = new Body(hostType(), body, this);
-    b.setLine(this);
-    for(int i = 0; i < getNumParameter(); i++)
-      getParameter(i).jimplify2(b);
-
-    boolean needsInit = true;
-
-    if(hasConstructorInvocation()) {
-      getConstructorInvocation().jimplify2(b);
-      Stmt stmt = getConstructorInvocation();
-      if(stmt instanceof ExprStmt) {
-        ExprStmt exprStmt = (ExprStmt)stmt;
-        Expr expr = exprStmt.getExpr();
-        if(!expr.isSuperConstructorAccess())
-          needsInit = false;
-
-      }
-    }
-
-    if(hostType().needsEnclosing()) {
-      TypeDecl type = hostType().enclosingType();
-      b.add(Jimple.v().newAssignStmt(
-        Jimple.v().newInstanceFieldRef(
-          b.emitThis(hostType()),
-          hostType().getSootField("this$0", type).makeRef()
-        ),
-        asLocal(b, Jimple.v().newParameterRef(type.getSootType(), 0))
-      ));
-    }
-    
-    for(Iterator iter = hostType().enclosingVariables().iterator(); iter.hasNext(); ) {
-      Variable v = (Variable)iter.next();
-      ParameterDeclaration p = (ParameterDeclaration)parameterDeclaration("val$" + v.name()).iterator().next();
-      b.add(Jimple.v().newAssignStmt(
-        Jimple.v().newInstanceFieldRef(
-          b.emitThis(hostType()),
-          hostType().getSootClassDecl().getField("val$" + v.name(), v.type().getSootType()).makeRef()
-        ),
-        p.local
-      ));
-    }
-
-    if(needsInit) {
-      TypeDecl typeDecl = hostType();
-      for(int i = 0; i < typeDecl.getNumBodyDecl(); i++) {
-        BodyDecl bodyDecl = typeDecl.getBodyDecl(i);
-        if(bodyDecl instanceof FieldDeclaration && bodyDecl.generate()) {
-          FieldDeclaration f = (FieldDeclaration)bodyDecl;
-          if(!f.isStatic() && f.hasInit()) {
-            soot.Local base = b.emitThis(hostType());
-            Local l = asLocal(b,
-              f.getInit().type().emitCastTo(b, f.getInit(), f.type()), // AssignConversion
-              f.type().getSootType()
-            );
-            b.setLine(f);
-            b.add(Jimple.v().newAssignStmt(
-              Jimple.v().newInstanceFieldRef(base, f.sootRef()),
-              l
-            ));
-          }
-        }
-        else if(bodyDecl instanceof InstanceInitializer && bodyDecl.generate()) {
-          bodyDecl.jimplify2(b);
-        }
-      }
-    }
-    getBlock().jimplify2(b);
-    b.add(Jimple.v().newReturnVoidStmt());
-  }
-
     // Declared in java.ast at line 3
     // Declared in java.ast line 72
 
@@ -714,6 +637,84 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     public Block getBlockNoTransform() {
         return (Block)getChildNoTransform(4);
     }
+
+    // Declared in EmitJimpleRefinements.jrag at line 75
+
+  
+    public void jimplify2() {
+    if(!generate() || sootMethod().hasActiveBody()  ||
+      (sootMethod().getSource() != null && (sootMethod().getSource() instanceof soot.coffi.CoffiMethodSource)) ) return;  
+     JimpleBody body = Jimple.v().newBody(sootMethod());
+    sootMethod().setActiveBody(body);
+    Body b = new Body(hostType(), body, this);
+    b.setLine(this);
+    for(int i = 0; i < getNumParameter(); i++)
+      getParameter(i).jimplify2(b);
+
+    boolean needsInit = true;
+
+    if(hasConstructorInvocation()) {
+      getConstructorInvocation().jimplify2(b);
+      Stmt stmt = getConstructorInvocation();
+      if(stmt instanceof ExprStmt) {
+        ExprStmt exprStmt = (ExprStmt)stmt;
+        Expr expr = exprStmt.getExpr();
+        if(!expr.isSuperConstructorAccess())
+          needsInit = false;
+
+      }
+    }
+
+    if(hostType().needsEnclosing()) {
+      TypeDecl type = hostType().enclosingType();
+      b.add(Jimple.v().newAssignStmt(
+        Jimple.v().newInstanceFieldRef(
+          b.emitThis(hostType()),
+          hostType().getSootField("this$0", type).makeRef()
+        ),
+        asLocal(b, Jimple.v().newParameterRef(type.getSootType(), 0))
+      ));
+    }
+    
+    for(Iterator iter = hostType().enclosingVariables().iterator(); iter.hasNext(); ) {
+      Variable v = (Variable)iter.next();
+      ParameterDeclaration p = (ParameterDeclaration)parameterDeclaration("val$" + v.name()).iterator().next();
+      b.add(Jimple.v().newAssignStmt(
+        Jimple.v().newInstanceFieldRef(
+          b.emitThis(hostType()),
+          hostType().getSootClassDecl().getField("val$" + v.name(), v.type().getSootType()).makeRef()
+        ),
+        p.local
+      ));
+    }
+
+    if(needsInit) {
+      TypeDecl typeDecl = hostType();
+      for(int i = 0; i < typeDecl.getNumBodyDecl(); i++) {
+        BodyDecl bodyDecl = typeDecl.getBodyDecl(i);
+        if(bodyDecl instanceof FieldDeclaration && bodyDecl.generate()) {
+          FieldDeclaration f = (FieldDeclaration)bodyDecl;
+          if(!f.isStatic() && f.hasInit()) {
+            soot.Local base = b.emitThis(hostType());
+            Local l = asLocal(b,
+              f.getInit().type().emitCastTo(b, f.getInit(), f.type()), // AssignConversion
+              f.type().getSootType()
+            );
+            b.setLine(f);
+            b.add(Jimple.v().newAssignStmt(
+              Jimple.v().newInstanceFieldRef(base, f.sootRef()),
+              l
+            ));
+          }
+        }
+        else if(bodyDecl instanceof InstanceInitializer && bodyDecl.generate()) {
+          bodyDecl.jimplify2(b);
+        }
+      }
+    }
+    getBlock().jimplify2(b);
+    b.add(Jimple.v().newReturnVoidStmt());
+  }
 
     // Declared in LookupConstructor.jrag at line 155
 private boolean refined_LookupConstructor_moreSpecificThan_ConstructorDecl(ConstructorDecl m)

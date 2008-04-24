@@ -340,7 +340,7 @@ public class MethodAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 100
+    // Declared in EmitJimpleRefinements.jrag at line 176
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);

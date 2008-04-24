@@ -570,15 +570,16 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Unexpected constant");
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 75
+    // Declared in EmitJimpleRefinements.jrag at line 151
 
+  
   
   public void collectTypesToHierarchy(Collection<Type> set) {
 	 for(int i = 0; i < getNumChild(); i++)
 	  getChild(i).collectTypesToHierarchy(set);
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 88
+    // Declared in EmitJimpleRefinements.jrag at line 164
 
 	
   public void collectTypesToSignatures(Collection<Type> set) {

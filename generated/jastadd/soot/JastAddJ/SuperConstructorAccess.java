@@ -77,7 +77,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 112
+    // Declared in EmitJimpleRefinements.jrag at line 188
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);

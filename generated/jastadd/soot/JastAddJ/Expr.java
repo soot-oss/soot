@@ -199,7 +199,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     return rvalue;
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 80
+    // Declared in EmitJimpleRefinements.jrag at line 156
 
   
   public void collectTypesToHierarchy(Collection<Type> set) {

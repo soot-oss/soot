@@ -151,7 +151,7 @@ public class ConstructorAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 108
+    // Declared in EmitJimpleRefinements.jrag at line 184
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);

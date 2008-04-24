@@ -25,6 +25,7 @@ import java.util.Map;
 import soot.javaToJimple.IInitialResolver;
 import soot.JastAddJ.BodyDecl;
 import soot.JastAddJ.CompilationUnit;
+import soot.JastAddJ.ConstructorDecl;
 import soot.JastAddJ.MethodDecl;
 import soot.JastAddJ.Program;
 import soot.JastAddJ.TypeDecl;
@@ -70,6 +71,10 @@ public class JastAddInitialResolver implements IInitialResolver {
 								MethodDecl methodDecl = (MethodDecl) bodyDecl;
 								if(m.equals(methodDecl.sootMethod))
 									methodDecl.jimplify2();
+							} else if(bodyDecl instanceof ConstructorDecl) {
+								ConstructorDecl constrDecl = (ConstructorDecl) bodyDecl;
+								if(m.equals(constrDecl.sootMethod))
+									constrDecl.jimplify2();
 							}
 						}
 					}					

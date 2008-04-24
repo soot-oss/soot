@@ -358,7 +358,7 @@ public class VarAccess extends Access implements Cloneable {
     return super.emitStore(b, lvalue, rvalue);
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 93
+    // Declared in EmitJimpleRefinements.jrag at line 169
 
 	
   public void collectTypesToSignatures(Collection<Type> set) {

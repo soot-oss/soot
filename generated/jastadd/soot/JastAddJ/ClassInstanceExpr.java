@@ -387,7 +387,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     }
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 104
+    // Declared in EmitJimpleRefinements.jrag at line 180
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
