@@ -1,4 +1,12 @@
-Improvements and API changes in version 2.2.5 (To come)
+Improvements and API changes in version 2.2.6
+
+1. Integrated new JastAdd-based frontend with support for Java 5
+   source code. Thanks to Torbjorn Ekman for contributing his
+   frontend and his implementation of Java2Jimple!
+   If you like to use the old polyglot-based frontend then
+   just give the -polyglot command line option (Java 1.4 only).
+
+Improvements and API changes in version 2.2.5 
 
 1. Soot now has an option to prepend the classpath given on the
    command line to the default classpath.  See the documentation on 

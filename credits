@@ -15,6 +15,7 @@ Eric Bodden
     - Re-implementation of nullness analysis
     - Instance Keys
       - Local must-alias analysis
+    - Integration of JastAdd frontend
 
 Phong Co (phong@hasc.com)
     - Jimple scalar optimizations
@@ -22,6 +23,10 @@ Phong Co (phong@hasc.com)
 Archie Cobbs
     - Added SourceFileTag, InnerClassTag, and the various ConstantValueTags
     - Miscellaneous bug fixes
+
+Torbjorn Ekman
+    - JastAdd-based frontend with Java 5 support; including its own
+      version of Java2Jimple
 
 David Eng (flynn@sable.mcgill.ca)
     - XML output
