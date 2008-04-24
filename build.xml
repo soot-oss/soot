@@ -78,7 +78,7 @@
     </target>
 	
     <target name="determine-jastadd-uptodate" depends="settings" if="jastaddfrontend.loc">
-    	<uptodate property="jastadd.uptodate" targetfile="generated/jastadd/soot">
+    	<uptodate property="jastadd.uptodate" targetfile="generated/jastadd/beaver/Action.java">
     	    <srcfiles dir= "${jastaddfrontend.loc}" includes="**/*.jrag,**/*.flex,**/*.parser,**/*.scanner"/>
     	</uptodate>
     </target>
