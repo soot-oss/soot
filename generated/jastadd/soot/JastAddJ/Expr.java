@@ -206,7 +206,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 	 super.collectTypesToHierarchy(set);
 	 // collect all expr types that are reference types
 	 // select the element type in case it is an array type
-	 if(type().isReferenceType() && !type().isUnknown())
+	 if(type().elementType().isReferenceType() && !type().isUnknown())
 	  set.add(type().elementType().erasure().getSootClassDecl().getType());
   }
 
