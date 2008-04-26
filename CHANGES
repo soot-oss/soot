@@ -6,7 +6,7 @@ Improvements and API changes in version 2.2.6
    If you like to use the old polyglot-based frontend then
    just give the -polyglot command line option (Java 1.4 only).
    
-2. At the very least if -validate is on Soot now checks that @this
+2. At the very least if -validate is on, Soot now checks that @this
    is only assigned in the first statement of an instance method.
    This has always been an implicit assumption for Jimple code
    but up until now was not enforced. Code transformations written
