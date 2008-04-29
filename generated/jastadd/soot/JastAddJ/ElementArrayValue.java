@@ -43,6 +43,15 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
     s.append("}");
   }
 
+    // Declared in AnnotationsCodegen.jrag at line 288
+
+  public void appendAsAttributeTo(ArrayList list, String name) {
+    ArrayList elemVals = new ArrayList();
+    for(int i = 0; i < getNumElementValue(); i++)
+      getElementValue(i).appendAsAttributeTo(elemVals, "default");
+    list.add(new soot.tagkit.AnnotationArrayElem(elemVals, '[', name));
+  }
+
     // Declared in Annotations.ast at line 3
     // Declared in Annotations.ast line 13
 

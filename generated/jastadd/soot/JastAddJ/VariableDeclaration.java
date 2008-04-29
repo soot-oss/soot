@@ -146,7 +146,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     }
   }
 
-    // Declared in EmitJimple.jrag at line 364
+    // Declared in EmitJimple.jrag at line 368
 
 
 
@@ -168,7 +168,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     }
   }
 
-    // Declared in EmitJimple.jrag at line 381
+    // Declared in EmitJimple.jrag at line 385
 
   public Local local;
 

@@ -947,9 +947,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     for(int i = 0; i < getNumBodyDecl(); i++)
       if(getBodyDecl(i).generate())
         getBodyDecl(i).jimplify1phase2();
+    addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 419
+    // Declared in EmitJimple.jrag at line 423
 
 
   public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type) {
@@ -969,7 +970,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     );
   }
 
-    // Declared in EmitJimple.jrag at line 568
+    // Declared in EmitJimple.jrag at line 572
 
 
   public void jimplify2clinit() {
@@ -1000,7 +1001,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       b.add(Jimple.v().newReturnVoidStmt());
   }
 
-    // Declared in EmitJimple.jrag at line 596
+    // Declared in EmitJimple.jrag at line 600
 
 
   public void jimplify2() {
@@ -1026,7 +1027,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
     if(!tags.isEmpty())
       getSootClassDecl().addTag(new soot.tagkit.InnerClassAttribute(tags));
+    addAttributes();
     getSootClassDecl().setResolvingLevel(SootClass.BODIES);
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 11
+
+  public void addAttributes() {
+    super.addAttributes();
+    Collection c = new ArrayList();
+    getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
+    getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
+    for(Iterator iter = c.iterator(); iter.hasNext(); ) {
+      soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
+      getSootClassDecl().addTag(tag);
+    }
   }
 
     // Declared in AutoBoxingCodegen.jrag at line 56
@@ -1064,7 +1079,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return Jimple.v().newVirtualInvokeExpr(asLocal(b, v), ref, new ArrayList());
   }
 
-    // Declared in EnumsCodegen.jrag at line 86
+    // Declared in EnumsCodegen.jrag at line 85
 
   // compute index of enum constants
   private HashMap createEnumIndexMap = null;
@@ -3879,7 +3894,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean sootClass_computed = false;
     protected SootClass sootClass_value;
-    // Declared in GenericsCodegen.jrag at line 409
+    // Declared in GenericsCodegen.jrag at line 407
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
         if(sootClass_computed)
             return sootClass_value;
@@ -3929,7 +3944,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean hasClinit_computed = false;
     protected boolean hasClinit_value;
-    // Declared in EmitJimple.jrag at line 552
+    // Declared in EmitJimple.jrag at line 556
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasClinit() {
         if(hasClinit_computed)
             return hasClinit_value;
@@ -3959,7 +3974,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean innerClassesAttributeEntries_computed = false;
     protected Collection innerClassesAttributeEntries_value;
-    // Declared in EmitJimple.jrag at line 622
+    // Declared in EmitJimple.jrag at line 630
  @SuppressWarnings({"unchecked", "cast"})     public Collection innerClassesAttributeEntries() {
         if(innerClassesAttributeEntries_computed)
             return innerClassesAttributeEntries_value;
@@ -3983,7 +3998,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
   }
 
     protected java.util.Map getSootField_String_TypeDecl_values;
-    // Declared in EmitJimple.jrag at line 656
+    // Declared in EmitJimple.jrag at line 664
  @SuppressWarnings({"unchecked", "cast"})     public SootField getSootField(String name, TypeDecl type) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(name);
@@ -4013,8 +4028,16 @@ if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_val
 
     private int variableSize_compute() {  return 1;  }
 
+    // Declared in AnnotationsCodegen.jrag at line 253
+ @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
+        String typeDescriptor_value = typeDescriptor_compute();
+        return typeDescriptor_value;
+    }
+
+    private String typeDescriptor_compute() {  return jvmName();  }
+
     protected java.util.Map createEnumMethod_TypeDecl_values;
-    // Declared in EnumsCodegen.jrag at line 43
+    // Declared in EnumsCodegen.jrag at line 42
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl createEnumMethod(TypeDecl enumDecl) {
         Object _parameters = enumDecl;
 if(createEnumMethod_TypeDecl_values == null) createEnumMethod_TypeDecl_values = new java.util.HashMap(4);
@@ -4072,7 +4095,7 @@ if(createEnumMethod_TypeDecl_values == null) createEnumMethod_TypeDecl_values = 
   }
 
     protected java.util.Map createEnumIndex_EnumConstant_values;
-    // Declared in EnumsCodegen.jrag at line 87
+    // Declared in EnumsCodegen.jrag at line 86
  @SuppressWarnings({"unchecked", "cast"})     public int createEnumIndex(EnumConstant e) {
         Object _parameters = e;
 if(createEnumIndex_EnumConstant_values == null) createEnumIndex_EnumConstant_values = new java.util.HashMap(4);
@@ -4130,7 +4153,7 @@ if(createEnumIndex_EnumConstant_values == null) createEnumIndex_EnumConstant_val
   }
 
     protected java.util.Map createEnumArray_TypeDecl_values;
-    // Declared in EnumsCodegen.jrag at line 130
+    // Declared in EnumsCodegen.jrag at line 129
  @SuppressWarnings({"unchecked", "cast"})     public FieldDeclaration createEnumArray(TypeDecl enumDecl) {
         Object _parameters = enumDecl;
 if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = new java.util.HashMap(4);
@@ -4157,7 +4180,7 @@ if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = ne
     return (FieldDeclaration)getBodyDeclList().getChild(0);
   }
 
-    // Declared in GenericsCodegen.jrag at line 331
+    // Declared in GenericsCodegen.jrag at line 329
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;

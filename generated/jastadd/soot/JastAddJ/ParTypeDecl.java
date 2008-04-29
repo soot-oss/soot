@@ -43,7 +43,7 @@ public interface ParTypeDecl extends Parameterization {
   public Access createQualifiedAccess();
 
 
-    // Declared in GenericsCodegen.jrag at line 404
+    // Declared in GenericsCodegen.jrag at line 402
 
 
   public void transformation();

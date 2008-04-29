@@ -129,13 +129,8 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
     b.addLabel(end_label());
   }
 
-    // Declared in EnumsCodegen.jrag at line 18
+    // Declared in EnumsCodegen.jrag at line 17
 
-    // add flags to enums
- /* public static final int Modifiers.ACC_ENUM = 0x4000;
-  eq EnumDecl.flags() = super.flags() | Modifiers.ACC_ENUM;
-  eq EnumConstant.flags() = super.flags() | Modifiers.ACC_ENUM;
-*/
 
   // transform enum switch statements into integer indexed switch statements
   public void transformation() {

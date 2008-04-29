@@ -115,7 +115,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     s.append(" " + name());
   }
 
-    // Declared in EmitJimple.jrag at line 383
+    // Declared in EmitJimple.jrag at line 387
 
 
   public void jimplify2(Body b) {
@@ -124,7 +124,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     b.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type().getSootType(), localNum())));
   }
 
-    // Declared in EmitJimple.jrag at line 388
+    // Declared in EmitJimple.jrag at line 392
 
   public Local local;
 

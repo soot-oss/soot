@@ -75,13 +75,13 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Operation p not supported for " + getClass().getName());
   }
 
-    // Declared in EmitJimple.jrag at line 203
+    // Declared in EmitJimple.jrag at line 204
 
   
   public void jimplify1phase2() {
   }
 
-    // Declared in EmitJimple.jrag at line 633
+    // Declared in EmitJimple.jrag at line 641
 
 
   public void jimplify2() {
@@ -197,7 +197,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean visibleTypeParameters_compute() {  return true;  }
 
-    // Declared in EmitJimple.jrag at line 161
+    // Declared in EmitJimple.jrag at line 162
  @SuppressWarnings({"unchecked", "cast"})     public boolean generate() {
         boolean generate_value = generate_compute();
         return generate_value;

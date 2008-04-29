@@ -373,6 +373,14 @@ if(containsElementOf_TypeDecl_values == null) containsElementOf_TypeDecl_values 
 
     private boolean isAnnotationDecl_compute() {  return true;  }
 
+    // Declared in AnnotationsCodegen.jrag at line 222
+ @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        int sootTypeModifiers_value = sootTypeModifiers_compute();
+        return sootTypeModifiers_value;
+    }
+
+    private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | Modifiers.ACC_ANNOTATION;  }
+
     // Declared in Annotations.jrag at line 77
     public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
         if(caller == getModifiersNoTransform()) {

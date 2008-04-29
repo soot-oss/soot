@@ -306,7 +306,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimple.jrag at line 227
+    // Declared in EmitJimple.jrag at line 229
 
   public void jimplify1phase2() {
     String name = "<init>";
@@ -337,13 +337,81 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       m.addTag(new soot.tagkit.ParamNamesTag(paramnames));
       sootMethod = m;
     }
+    addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 284
+    // Declared in EmitJimple.jrag at line 287
 
 
 
   public SootMethod sootMethod;
+
+    // Declared in AnnotationsCodegen.jrag at line 44
+
+  public void addAttributes() {
+    super.addAttributes();
+    Collection c = new ArrayList();
+    getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
+    getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
+    addRuntimeVisibleParameterAnnotationsAttribute(c);
+    addRuntimeInvisibleParameterAnnotationsAttribute(c);
+    for(Iterator iter = c.iterator(); iter.hasNext(); ) {
+      soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
+      sootMethod.addTag(tag);
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 132
+
+  public void addRuntimeVisibleParameterAnnotationsAttribute(Collection c) {
+    boolean foundVisibleAnnotations = false;
+    Collection annotations = new ArrayList(getNumParameter());
+    for(int i = 0; i < getNumParameter(); i++) {
+      Collection a = getParameter(i).getModifiers().runtimeVisibleAnnotations();
+      if(!a.isEmpty()) foundVisibleAnnotations = true;
+      soot.tagkit.VisibilityAnnotationTag tag = new soot.tagkit.VisibilityAnnotationTag(soot.tagkit.AnnotationConstants.RUNTIME_VISIBLE);
+      for(Iterator iter = a.iterator(); iter.hasNext(); ) {
+        Annotation annotation = (Annotation)iter.next();
+        ArrayList elements = new ArrayList(1);
+        annotation.appendAsAttributeTo(elements);
+        tag.addAnnotation((soot.tagkit.AnnotationTag)elements.get(0));
+      }
+      annotations.add(tag);
+    }
+    if(foundVisibleAnnotations) {
+      soot.tagkit.VisibilityParameterAnnotationTag tag = new soot.tagkit.VisibilityParameterAnnotationTag(annotations.size(), soot.tagkit.AnnotationConstants.RUNTIME_VISIBLE);
+      for(Iterator iter = annotations.iterator(); iter.hasNext(); ) {
+        tag.addVisibilityAnnotation((soot.tagkit.VisibilityAnnotationTag)iter.next());
+      }
+      c.add(tag);
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 188
+
+  public void addRuntimeInvisibleParameterAnnotationsAttribute(Collection c) {
+    boolean foundVisibleAnnotations = false;
+    Collection annotations = new ArrayList(getNumParameter());
+    for(int i = 0; i < getNumParameter(); i++) {
+      Collection a = getParameter(i).getModifiers().runtimeInvisibleAnnotations();
+      if(!a.isEmpty()) foundVisibleAnnotations = true;
+      soot.tagkit.VisibilityAnnotationTag tag = new soot.tagkit.VisibilityAnnotationTag(soot.tagkit.AnnotationConstants.RUNTIME_INVISIBLE);
+      for(Iterator iter = a.iterator(); iter.hasNext(); ) {
+        Annotation annotation = (Annotation)iter.next();
+        ArrayList elements = new ArrayList(1);
+        annotation.appendAsAttributeTo(elements);
+        tag.addAnnotation((soot.tagkit.AnnotationTag)elements.get(0));
+      }
+      annotations.add(tag);
+    }
+    if(foundVisibleAnnotations) {
+      soot.tagkit.VisibilityParameterAnnotationTag tag = new soot.tagkit.VisibilityParameterAnnotationTag(annotations.size(), soot.tagkit.AnnotationConstants.RUNTIME_INVISIBLE);
+      for(Iterator iter = annotations.iterator(); iter.hasNext(); ) {
+        tag.addVisibilityAnnotation((soot.tagkit.VisibilityAnnotationTag)iter.next());
+      }
+      c.add(tag);
+    }
+  }
 
     // Declared in java.ast at line 3
     // Declared in java.ast line 72
@@ -1177,7 +1245,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 285
+    // Declared in EmitJimple.jrag at line 288
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed)
             return sootMethod_value;
@@ -1207,7 +1275,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 300
+    // Declared in EmitJimple.jrag at line 303
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;

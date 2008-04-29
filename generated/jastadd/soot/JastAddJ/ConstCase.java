@@ -63,7 +63,7 @@ public class ConstCase extends Case implements Cloneable {
       error("Switch expression must be constant");
   }
 
-    // Declared in EnumsCodegen.jrag at line 33
+    // Declared in EnumsCodegen.jrag at line 32
 
 
   public void transformation() {

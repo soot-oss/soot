@@ -152,7 +152,7 @@ public abstract class AbstractWildcardType extends TypeDecl implements Cloneable
 
     private boolean isWildcard_compute() {  return true;  }
 
-    // Declared in GenericsCodegen.jrag at line 417
+    // Declared in GenericsCodegen.jrag at line 415
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;

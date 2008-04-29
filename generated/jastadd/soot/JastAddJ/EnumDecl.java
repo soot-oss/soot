@@ -632,6 +632,14 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     return false;
   }
 
+    // Declared in EnumsCodegen.jrag at line 13
+ @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        int sootTypeModifiers_value = sootTypeModifiers_compute();
+        return sootTypeModifiers_value;
+    }
+
+    private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | Modifiers.ACC_ENUM;  }
+
     // Declared in Enums.jrag at line 383
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeString() {
         TypeDecl typeString_value = getParent().Define_TypeDecl_typeString(this, null);

@@ -420,7 +420,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     }
   }
 
-    // Declared in GenericsCodegen.jrag at line 404
+    // Declared in GenericsCodegen.jrag at line 402
 
 
   public void transformation() {

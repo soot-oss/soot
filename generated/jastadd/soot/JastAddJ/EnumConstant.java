@@ -476,6 +476,14 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     private boolean isConstant_compute() {  return true;  }
 
+    // Declared in EnumsCodegen.jrag at line 14
+ @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        int sootTypeModifiers_value = sootTypeModifiers_compute();
+        return sootTypeModifiers_value;
+    }
+
+    private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | Modifiers.ACC_ENUM;  }
+
     // Declared in Enums.jrag at line 456
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeAccessNoTransform()) {

@@ -345,7 +345,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in EmitJimple.jrag at line 163
+    // Declared in EmitJimple.jrag at line 164
 
 
   public void jimplify1phase2() {
@@ -1361,7 +1361,15 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return sc;
   }
 
-    // Declared in GenericsCodegen.jrag at line 333
+    // Declared in AnnotationsCodegen.jrag at line 254
+ @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
+        String typeDescriptor_value = typeDescriptor_compute();
+        return typeDescriptor_value;
+    }
+
+    private String typeDescriptor_compute() {  return "L" + jvmName() + ";";  }
+
+    // Declared in GenericsCodegen.jrag at line 331
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;

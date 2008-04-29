@@ -740,7 +740,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in EmitJimple.jrag at line 346
+    // Declared in EmitJimple.jrag at line 350
 
    // hostType().getSootClassDecl().getField(name(), type().getSootType()).makeRef();
   

@@ -343,7 +343,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private boolean supertypeGLBType_compute(GLBType type) {  return this == type;  }
 
-    // Declared in GenericsCodegen.jrag at line 416
+    // Declared in GenericsCodegen.jrag at line 414
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;

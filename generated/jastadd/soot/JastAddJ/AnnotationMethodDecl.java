@@ -58,6 +58,20 @@ public class AnnotationMethodDecl extends MethodDecl implements Cloneable {
     s.append(";\n");
   }
 
+    // Declared in AnnotationsCodegen.jrag at line 224
+
+
+  public void addAttributes() {
+    super.addAttributes();
+    // 4.8.19
+    if(hasDefaultValue()) {
+      ArrayList elements = new ArrayList(1);
+      getDefaultValue().appendAsAttributeTo(elements, "default");
+      soot.tagkit.AnnotationDefaultTag tag = new soot.tagkit.AnnotationDefaultTag((soot.tagkit.AnnotationElem)elements.get(0));
+      sootMethod.addTag(tag);
+    }
+  }
+
     // Declared in Annotations.ast at line 3
     // Declared in Annotations.ast line 3
 

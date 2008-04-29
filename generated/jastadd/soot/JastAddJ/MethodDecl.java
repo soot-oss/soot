@@ -336,7 +336,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     return m;
   }
 
-    // Declared in EmitJimple.jrag at line 206
+    // Declared in EmitJimple.jrag at line 207
 
 
   public void jimplify1phase2() {
@@ -359,14 +359,86 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
       m.addTag(new soot.tagkit.ParamNamesTag(paramnames));
       sootMethod = m;
     }
+    addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 258
+    // Declared in EmitJimple.jrag at line 261
 
 
   public SootMethod sootMethod;
 
-    // Declared in GenericsCodegen.jrag at line 340
+    // Declared in AnnotationsCodegen.jrag at line 32
+
+  public void addAttributes() {
+    super.addAttributes();
+    Collection c = new ArrayList();
+    getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
+    getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
+    addRuntimeVisibleParameterAnnotationsAttribute(c);
+    addRuntimeInvisibleParameterAnnotationsAttribute(c);
+    for(Iterator iter = c.iterator(); iter.hasNext(); ) {
+      soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
+      sootMethod.addTag(tag);
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 109
+
+
+  // 4.8.17
+  public void addRuntimeVisibleParameterAnnotationsAttribute(Collection c) {
+    boolean foundVisibleAnnotations = false;
+    Collection annotations = new ArrayList(getNumParameter());
+    for(int i = 0; i < getNumParameter(); i++) {
+      Collection a = getParameter(i).getModifiers().runtimeVisibleAnnotations();
+      if(!a.isEmpty()) foundVisibleAnnotations = true;
+      soot.tagkit.VisibilityAnnotationTag tag = new soot.tagkit.VisibilityAnnotationTag(soot.tagkit.AnnotationConstants.RUNTIME_VISIBLE);
+      for(Iterator iter = a.iterator(); iter.hasNext(); ) {
+        Annotation annotation = (Annotation)iter.next();
+        ArrayList elements = new ArrayList(1);
+        annotation.appendAsAttributeTo(elements);
+        tag.addAnnotation((soot.tagkit.AnnotationTag)elements.get(0));
+      }
+      annotations.add(tag);
+    }
+    if(foundVisibleAnnotations) {
+      soot.tagkit.VisibilityParameterAnnotationTag tag = new soot.tagkit.VisibilityParameterAnnotationTag(annotations.size(), soot.tagkit.AnnotationConstants.RUNTIME_VISIBLE);
+      for(Iterator iter = annotations.iterator(); iter.hasNext(); ) {
+        tag.addVisibilityAnnotation((soot.tagkit.VisibilityAnnotationTag)iter.next());
+      }
+      c.add(tag);
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 165
+
+
+  // 4.8.18
+  public void addRuntimeInvisibleParameterAnnotationsAttribute(Collection c) {
+    boolean foundVisibleAnnotations = false;
+    Collection annotations = new ArrayList(getNumParameter());
+    for(int i = 0; i < getNumParameter(); i++) {
+      Collection a = getParameter(i).getModifiers().runtimeInvisibleAnnotations();
+      if(!a.isEmpty()) foundVisibleAnnotations = true;
+      soot.tagkit.VisibilityAnnotationTag tag = new soot.tagkit.VisibilityAnnotationTag(soot.tagkit.AnnotationConstants.RUNTIME_INVISIBLE);
+      for(Iterator iter = a.iterator(); iter.hasNext(); ) {
+        Annotation annotation = (Annotation)iter.next();
+        ArrayList elements = new ArrayList(1);
+        annotation.appendAsAttributeTo(elements);
+        tag.addAnnotation((soot.tagkit.AnnotationTag)elements.get(0));
+      }
+      annotations.add(tag);
+    }
+    if(foundVisibleAnnotations) {
+      soot.tagkit.VisibilityParameterAnnotationTag tag = new soot.tagkit.VisibilityParameterAnnotationTag(annotations.size(), soot.tagkit.AnnotationConstants.RUNTIME_INVISIBLE);
+      for(Iterator iter = annotations.iterator(); iter.hasNext(); ) {
+        tag.addVisibilityAnnotation((soot.tagkit.VisibilityAnnotationTag)iter.next());
+      }
+      c.add(tag);
+    }
+  }
+
+    // Declared in GenericsCodegen.jrag at line 338
 
   
   public void transformation() {
@@ -762,6 +834,22 @@ private boolean refined_LookupMethod_moreSpecificThan_MethodDecl(MethodDecl m)
         return false;
     }
     return true;
+  }
+
+    // Declared in EmitJimple.jrag at line 108
+private int refined_EmitJimple_sootTypeModifiers()
+{
+    int result = 0;
+    if(isPublic()) result |= soot.Modifier.PUBLIC;
+    if(isProtected()) result |= soot.Modifier.PROTECTED;
+    if(isPrivate()) result |= soot.Modifier.PRIVATE;
+    if(isFinal()) result |= soot.Modifier.FINAL;
+    if(isStatic()) result |= soot.Modifier.STATIC;
+    if(isAbstract()) result |= soot.Modifier.ABSTRACT;
+    if(isSynchronized()) result |= soot.Modifier.SYNCHRONIZED;
+    if(isStrictfp()) result |= soot.Modifier.STRICTFP;
+    if(isNative()) result |= soot.Modifier.NATIVE;
+    return result;
   }
 
     protected java.util.Map accessibleFrom_TypeDecl_values;
@@ -1187,29 +1275,22 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     private ParameterDeclaration lastParameter_compute() {  return getParameter(getNumParameter() - 1);  }
 
-    // Declared in EmitJimple.jrag at line 108
+    // Declared in VariableArityParametersCodegen.jrag at line 80
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;
     }
 
     private int sootTypeModifiers_compute() {
-    int result = 0;
-    if(isPublic()) result |= soot.Modifier.PUBLIC;
-    if(isProtected()) result |= soot.Modifier.PROTECTED;
-    if(isPrivate()) result |= soot.Modifier.PRIVATE;
-    if(isFinal()) result |= soot.Modifier.FINAL;
-    if(isStatic()) result |= soot.Modifier.STATIC;
-    if(isAbstract()) result |= soot.Modifier.ABSTRACT;
-    if(isSynchronized()) result |= soot.Modifier.SYNCHRONIZED;
-    if(isStrictfp()) result |= soot.Modifier.STRICTFP;
-    if(isNative()) result |= soot.Modifier.NATIVE;
-    return result;
+    int res = refined_EmitJimple_sootTypeModifiers();
+    if(isVariableArity())
+      res |= Modifiers.ACC_VARARGS;
+    return res;
   }
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 259
+    // Declared in EmitJimple.jrag at line 262
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed)
             return sootMethod_value;
@@ -1232,7 +1313,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 269
+    // Declared in EmitJimple.jrag at line 272
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;
@@ -1324,7 +1405,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return unknownMethod_value;
     }
 
-    // Declared in EmitJimple.jrag at line 267
+    // Declared in EmitJimple.jrag at line 270
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
         return typeObject_value;

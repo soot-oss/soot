@@ -297,6 +297,19 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
         return (Opt<Block>)getChildNoTransform(4);
     }
 
+    // Declared in GenericsCodegen.jrag at line 322
+ @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        int sootTypeModifiers_value = sootTypeModifiers_compute();
+        return sootTypeModifiers_value;
+    }
+
+    private int sootTypeModifiers_compute() {
+    int res = super.sootTypeModifiers();
+    res |= Modifiers.ACC_BRIDGE;
+    res |= Flags.ACC_SYNTHETIC;
+    return res;
+  }
+
 public ASTNode rewriteTo() {
     return super.rewriteTo();
 }

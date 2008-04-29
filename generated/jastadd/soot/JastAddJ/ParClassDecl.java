@@ -507,7 +507,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     }
   }
 
-    // Declared in GenericsCodegen.jrag at line 404
+    // Declared in GenericsCodegen.jrag at line 402
 
 
   public void transformation() {

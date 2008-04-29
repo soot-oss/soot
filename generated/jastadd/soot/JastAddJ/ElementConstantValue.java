@@ -53,6 +53,36 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
     getExpr().toString(s);
   }
 
+    // Declared in AnnotationsCodegen.jrag at line 257
+
+
+  public void appendAsAttributeTo(ArrayList list, String name) {
+    if(getExpr().isConstant() && !getExpr().type().isEnumDecl()) {
+      char kind = getExpr().type().isString() ? 's' : getExpr().type().typeDescriptor().charAt(0);
+      TypeDecl type = getExpr().type();
+      if(type.isLong())
+        list.add(new soot.tagkit.AnnotationLongElem(getExpr().constant().longValue(), kind, name));
+      else if(type.isDouble())
+        list.add(new soot.tagkit.AnnotationDoubleElem(getExpr().constant().doubleValue(), kind, name));
+      else if(type.isFloat())
+        list.add(new soot.tagkit.AnnotationFloatElem(getExpr().constant().floatValue(), kind, name));
+      else if(type.isString())
+        list.add(new soot.tagkit.AnnotationStringElem(getExpr().constant().stringValue(), kind, name));
+      else if(type.isIntegralType() || type().isBoolean())
+        list.add(new soot.tagkit.AnnotationIntElem(getExpr().constant().intValue(), kind, name));
+      else
+        throw new UnsupportedOperationException("Unsupported attribute constant type " + type.typeName());
+    }
+    else if(getExpr().isClassAccess()) {
+      list.add(new soot.tagkit.AnnotationClassElem(getExpr().type().typeDescriptor(), 'c', name));
+    }
+    else {
+      Variable v = getExpr().varDecl();
+      if(v == null) throw new Error("Expected Enumeration constant");
+      list.add(new soot.tagkit.AnnotationEnumElem(v.type().typeDescriptor(), v.name(), 'e', name));
+    }
+  }
+
     // Declared in Annotations.ast at line 3
     // Declared in Annotations.ast line 11
 

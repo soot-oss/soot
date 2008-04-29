@@ -603,7 +603,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return type == lookupGLBType(bounds);
   }
 
-    // Declared in GenericsCodegen.jrag at line 415
+    // Declared in GenericsCodegen.jrag at line 413
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;

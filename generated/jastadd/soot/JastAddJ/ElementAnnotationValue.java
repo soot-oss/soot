@@ -38,6 +38,14 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
     getAnnotation().toString(s);
   }
 
+    // Declared in AnnotationsCodegen.jrag at line 283
+
+  public void appendAsAttributeTo(ArrayList list, String name) {
+    ArrayList elemVals = new ArrayList();
+    getAnnotation().appendAsAttributeTo(elemVals);
+    list.add(new soot.tagkit.AnnotationAnnotationElem((soot.tagkit.AnnotationTag)elemVals.get(0), '@', name));
+  }
+
     // Declared in Annotations.ast at line 3
     // Declared in Annotations.ast line 12
 

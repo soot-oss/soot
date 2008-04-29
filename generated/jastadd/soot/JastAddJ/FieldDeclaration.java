@@ -332,7 +332,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     return isStatic() ? fieldAccess : new VarAccess("that").qualifiesAccess(fieldAccess);
   }
 
-    // Declared in EmitJimple.jrag at line 319
+    // Declared in EmitJimple.jrag at line 322
 
   
 
@@ -357,11 +357,26 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
       }
       sootField = f;
     }
+    addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 341
+    // Declared in EmitJimple.jrag at line 345
 
   public SootField sootField;
+
+    // Declared in AnnotationsCodegen.jrag at line 22
+
+  
+  public void addAttributes() {
+    super.addAttributes();
+    Collection c = new ArrayList();
+    getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
+    getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
+    for(Iterator iter = c.iterator(); iter.hasNext(); ) {
+      soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
+      sootField.addTag(tag);
+    }
+  }
 
     // Declared in java.ast at line 3
     // Declared in java.ast line 77
@@ -890,7 +905,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean sootRef_computed = false;
     protected SootFieldRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 342
+    // Declared in EmitJimple.jrag at line 346
  @SuppressWarnings({"unchecked", "cast"})     public SootFieldRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;

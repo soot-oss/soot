@@ -14,6 +14,14 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
         node.is$Final(false);
     return node;
     }
+    // Declared in AnnotationsCodegen.jrag at line 249
+
+
+  // 4.8.15.1
+  public void appendAsAttributeTo(ArrayList list, String name) {
+    throw new Error(getClass().getName() + " does not support appendAsAttributeTo(Attribute buf)");
+  }
+
     // Declared in Annotations.ast at line 3
     // Declared in Annotations.ast line 10
 
@@ -94,7 +102,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
         return unknownType_value;
     }
 
-    // Declared in AnnotationsCodegen.jrag at line 151
+    // Declared in AnnotationsCodegen.jrag at line 295
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;

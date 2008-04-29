@@ -36,7 +36,7 @@ public class NullType extends TypeDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in EmitJimple.jrag at line 435
+    // Declared in EmitJimple.jrag at line 439
 
   public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type) {
     return v;

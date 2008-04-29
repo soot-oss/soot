@@ -252,7 +252,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in EmitJimple.jrag at line 184
+    // Declared in EmitJimple.jrag at line 185
 
 
   public void jimplify1phase2() {
@@ -970,7 +970,15 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | soot.Modifier.INTERFACE;  }
 
-    // Declared in GenericsCodegen.jrag at line 332
+    // Declared in AnnotationsCodegen.jrag at line 255
+ @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
+        String typeDescriptor_value = typeDescriptor_compute();
+        return typeDescriptor_value;
+    }
+
+    private String typeDescriptor_compute() {  return "L" + jvmName() + ";";  }
+
+    // Declared in GenericsCodegen.jrag at line 330
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;
