@@ -32,7 +32,7 @@ public class OrBitwiseExpr extends BitwiseExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 805
+    // Declared in Expressions.jrag at line 807
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
     return asLocal(b, Jimple.v().newOrExpr(asImmediate(b, left), asImmediate(b, right)));

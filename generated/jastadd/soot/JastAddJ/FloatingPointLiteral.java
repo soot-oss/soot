@@ -130,7 +130,7 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
     return true;
   }
 
-    // Declared in ConstantExpression.jrag at line 266
+    // Declared in ConstantExpression.jrag at line 282
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

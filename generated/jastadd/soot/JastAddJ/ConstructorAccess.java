@@ -119,13 +119,13 @@ public class ConstructorAccess extends Access implements Cloneable {
     getArgList().insertChild(new VarAccess("@p1"),1);
   }
 
-    // Declared in InnerClasses.jrag at line 439
+    // Declared in InnerClasses.jrag at line 448
 
 
   // add val$name as arguments to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 440
+    // Declared in InnerClasses.jrag at line 449
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -137,7 +137,7 @@ public class ConstructorAccess extends Access implements Cloneable {
     }
   }
 
-    // Declared in Transformations.jrag at line 137
+    // Declared in Transformations.jrag at line 138
 
 
   // remote collection / demand driven creation of accessor
@@ -151,11 +151,11 @@ public class ConstructorAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 184
+    // Declared in EmitJimpleRefinements.jrag at line 234
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
-	 set.add(decl().erasedConstructor().hostType().erasure().getSootClassDecl().getType());
+   addDependencyIfNeeded(set, decl().erasedConstructor().hostType());
   }
 
     // Declared in java.ast at line 3
@@ -468,7 +468,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     private TypeDecl type_compute() {  return decl().type();  }
 
-    // Declared in MethodSignature.jrag at line 307
+    // Declared in MethodSignature.jrag at line 311
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         int arity_value = arity_compute();
         return arity_value;

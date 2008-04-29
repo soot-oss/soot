@@ -219,7 +219,7 @@ public class CharType extends IntegralType implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(2);
     }
 
-    // Declared in ConstantExpression.jrag at line 296
+    // Declared in ConstantExpression.jrag at line 312
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;

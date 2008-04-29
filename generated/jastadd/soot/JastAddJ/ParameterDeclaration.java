@@ -115,7 +115,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     s.append(" " + name());
   }
 
-    // Declared in EmitJimple.jrag at line 346
+    // Declared in EmitJimple.jrag at line 383
 
 
   public void jimplify2(Body b) {
@@ -124,7 +124,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     b.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type().getSootType(), localNum())));
   }
 
-    // Declared in EmitJimple.jrag at line 351
+    // Declared in EmitJimple.jrag at line 388
 
   public Local local;
 
@@ -378,7 +378,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     protected boolean sourceVariableDecl_computed = false;
     protected Variable sourceVariableDecl_value;
-    // Declared in Generics.jrag at line 1308
+    // Declared in Generics.jrag at line 1311
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed)
             return sourceVariableDecl_value;

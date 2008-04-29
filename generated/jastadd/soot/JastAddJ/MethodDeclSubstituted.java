@@ -37,7 +37,7 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericsCodegen.jrag at line 315
+    // Declared in GenericsCodegen.jrag at line 317
 
   public void transformation() { }
 
@@ -318,7 +318,7 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
         return tokenMethodDecl_Original;
     }
 
-    // Declared in Generics.jrag at line 1298
+    // Declared in Generics.jrag at line 1301
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed)
             return sourceMethodDecl_value;

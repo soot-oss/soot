@@ -36,15 +36,15 @@ public class RawClassDecl extends ParClassDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 749
+    // Declared in Generics.jrag at line 752
 
   public Access substitute(Parameterization parTypeDecl) { return createBoundAccess(); }
 
-    // Declared in Generics.jrag at line 804
+    // Declared in Generics.jrag at line 807
 
   public Access substituteReturnType(Parameterization parTypeDecl) { return createBoundAccess(); }
 
-    // Declared in Generics.jrag at line 824
+    // Declared in Generics.jrag at line 827
 
   public Access substituteParameterType(Parameterization parTypeDecl) { return createBoundAccess(); }
 

@@ -32,7 +32,7 @@ public class MulExpr extends MultiplicativeExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 787
+    // Declared in Expressions.jrag at line 789
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
     return asLocal(b, Jimple.v().newMulExpr(asImmediate(b, left), asImmediate(b, right)));

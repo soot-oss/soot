@@ -66,7 +66,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 873
+    // Declared in Expressions.jrag at line 875
 
 
   // See BooleanExpressions.jrag for the evaluation of conditionals
@@ -145,7 +145,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
         return (Access)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 476
+    // Declared in ConstantExpression.jrag at line 492
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

@@ -63,7 +63,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
       error("cannot reference this before supertype constructor has been called");
   }
 
-    // Declared in Transformations.jrag at line 148
+    // Declared in Transformations.jrag at line 149
 
 
   // remote collection / demand driven creation of accessor
@@ -77,11 +77,11 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 188
+    // Declared in EmitJimpleRefinements.jrag at line 238
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
-	 set.add(decl().erasedConstructor().hostType().erasure().getSootClassDecl().getType());
+   addDependencyIfNeeded(set, decl().erasedConstructor().hostType());
   }
 
     // Declared in java.ast at line 3

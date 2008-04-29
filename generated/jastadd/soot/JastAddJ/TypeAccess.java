@@ -424,7 +424,7 @@ private TypeDecl refined_LookupType_decl()
 
     private boolean staticContextQualifier_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 904
+    // Declared in Generics.jrag at line 907
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         boolean usesTypeVariable_value = usesTypeVariable_compute();
         return usesTypeVariable_value;

@@ -128,7 +128,7 @@ public class DoubleLiteral extends Literal implements Cloneable {
     return true;
   }
 
-    // Declared in ConstantExpression.jrag at line 276
+    // Declared in ConstantExpression.jrag at line 292
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

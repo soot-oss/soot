@@ -32,12 +32,12 @@ public class LShiftExpr extends ShiftExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 774
+    // Declared in Expressions.jrag at line 776
 
 
   public soot.Value eval(Body b) { return emitShiftExpr(b); }
 
-    // Declared in Expressions.jrag at line 796
+    // Declared in Expressions.jrag at line 798
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
     return asLocal(b, Jimple.v().newShlExpr(asImmediate(b, left), asImmediate(b, right)));

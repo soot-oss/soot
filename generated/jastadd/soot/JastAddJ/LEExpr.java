@@ -111,7 +111,7 @@ public class LEExpr extends RelationalExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 518
+    // Declared in ConstantExpression.jrag at line 534
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

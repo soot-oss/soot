@@ -330,7 +330,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1099
+    // Declared in Generics.jrag at line 1102
 
 
   public ClassDecl p(Parameterization parTypeDecl) {
@@ -345,11 +345,15 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in EmitJimple.jrag at line 155
+    // Declared in EmitJimple.jrag at line 163
 
 
   public void jimplify1phase2() {
     SootClass sc = getSootClassDecl();
+    sc.setResolvingLevel(SootClass.DANGLING);
+    sc.setModifiers(sootTypeModifiers());
+    sc.setApplicationClass();
+    sc.addTag(new soot.tagkit.SourceFileTag(sourceNameWithoutPath()));
     if(hasSuperclass()) {
       sc.setSuperclass(superclass().getSootClassDecl());
     }
@@ -360,7 +364,9 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
     if(isNestedType())
       sc.setOuterClass(enclosingType().getSootClassDecl());
+    sc.setResolvingLevel(SootClass.HIERARCHY);
     super.jimplify1phase2();
+    sc.setResolvingLevel(SootClass.SIGNATURES);
   }
 
     // Declared in java.ast at line 3
@@ -634,7 +640,7 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
     return refined_TypeAnalysis_castingConversionTo_TypeDecl(type);
   }
 
-    // Declared in ConstantExpression.jrag at line 302
+    // Declared in ConstantExpression.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
@@ -642,7 +648,7 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
 
     private Constant cast_compute(Constant c) {  return Constant.create(c.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 364
+    // Declared in ConstantExpression.jrag at line 380
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
@@ -650,7 +656,7 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
 
     private Constant add_compute(Constant c1, Constant c2) {  return Constant.create(c1.stringValue() + c2.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 429
+    // Declared in ConstantExpression.jrag at line 445
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
@@ -658,7 +664,7 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
 
     private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.stringValue() : c2.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 533
+    // Declared in ConstantExpression.jrag at line 549
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
@@ -741,7 +747,7 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
     return map;
   }
 
-    // Declared in LookupMethod.jrag at line 305
+    // Declared in MethodSignature.jrag at line 344
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsSignatureMap() {
         if(methodsSignatureMap_computed)
             return methodsSignatureMap_value;
@@ -758,17 +764,25 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
     if(hasSuperclass()) {
       for(Iterator iter = superclass().methodsIterator(); iter.hasNext(); ) {
         MethodDecl m = (MethodDecl)iter.next();
-        if(!m.isPrivate() && m.accessibleFrom(this) && !localMethodsSignatureMap().containsKey(m.signature()))
-          putSimpleSetElement(map, m.signature(), m);
+        if(!m.isPrivate() && m.accessibleFrom(this) && !localMethodsSignatureMap().containsKey(m.signature())) {
+          if(!(m instanceof MethodDeclSubstituted) || !localMethodsSignatureMap().containsKey(m.sourceMethodDecl().signature()))
+            putSimpleSetElement(map, m.signature(), m);
+        }
       }
     }
     for(Iterator outerIter = interfacesIterator(); outerIter.hasNext(); ) {
       TypeDecl typeDecl = (TypeDecl)outerIter.next();
       for(Iterator iter = typeDecl.methodsIterator(); iter.hasNext(); ) {
         MethodDecl m = (MethodDecl)iter.next();
-        if(!m.isPrivate() && m.accessibleFrom(this) && !localMethodsSignatureMap().containsKey(m.signature()))
-          if(allMethodsAbstract((SimpleSet)map.get(m.signature())))
-            putSimpleSetElement(map, m.signature(), m);
+        if(!m.isPrivate() && m.accessibleFrom(this) && !localMethodsSignatureMap().containsKey(m.signature())) {
+          if(!(m instanceof MethodDeclSubstituted) || !localMethodsSignatureMap().containsKey(m.sourceMethodDecl().signature())) {
+            if(allMethodsAbstract((SimpleSet)map.get(m.signature())) &&
+              (!(m instanceof MethodDeclSubstituted) ||
+               allMethodsAbstract((SimpleSet)map.get(m.sourceMethodDecl().signature()))              )
+            )
+              putSimpleSetElement(map, m.signature(), m);
+          }
+        }
       }
     }
     return map;
@@ -1304,7 +1318,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private TypeDecl superEnclosing_compute() {  return superclass().erasure().enclosing();  }
 
-    // Declared in EmitJimpleRefinements.jrag at line 19
+    // Declared in EmitJimpleRefinements.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
         if(sootClass_computed)
             return sootClass_value;
@@ -1320,37 +1334,34 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     boolean needAddclass = false;
     SootClass sc = null;
     if(Scene.v().containsClass(jvmName())) {
-        SootClass cl = Scene.v().getSootClass(jvmName());
-        //fix for test case 653: if there's a class java.lang.Object etc. on the command line
-        //prefer that class over the Coffi class that may already have been loaded from bytecode
-		try {
-			MethodSource source = cl.getMethodByName("<clinit>").getSource();
-			if(source instanceof CoffiMethodSource) {
-				Scene.v().removeClass(cl);
-				needAddclass = true;
-			}
-		} catch(RuntimeException e) {
-			//method not found
-		}    	
-    	sc = cl;       
+      SootClass cl = Scene.v().getSootClass(jvmName());
+      //fix for test case 653: if there's a class java.lang.Object etc. on the command line
+      //prefer that class over the Coffi class that may already have been loaded from bytecode
+      try {
+        MethodSource source = cl.getMethodByName("<clinit>").getSource();
+        if(source instanceof CoffiMethodSource) {
+          Scene.v().removeClass(cl);
+          needAddclass = true;
+        }
+      } catch(RuntimeException e) {
+        //method not found
+      }    	
+      sc = cl;       
     }
     else {
-    	needAddclass = true;
+      needAddclass = true;
     }
     if(needAddclass) {
-        if(Program.verbose())
-      		System.out.println("Creating from source " + jvmName());        
-    	sc = new SootClass(jvmName(), sootTypeModifiers());
-    	Scene.v().addClass(sc);
+      if(Program.verbose())
+        System.out.println("Creating from source " + jvmName());        
+      sc = new SootClass(jvmName());
+      sc.setResolvingLevel(SootClass.DANGLING);
+      Scene.v().addClass(sc);
     } 
-    sc.setApplicationClass();
-    if (!isObject())
-      sc.setSuperclass(typeObject().getSootClassDecl());
-    sc.addTag(new soot.tagkit.SourceFileTag(sourceNameWithoutPath()));
     return sc;
   }
 
-    // Declared in GenericsCodegen.jrag at line 331
+    // Declared in GenericsCodegen.jrag at line 333
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;

@@ -38,7 +38,7 @@ public class GLBType extends ReferenceType implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 1267
+    // Declared in Generics.jrag at line 1270
 
 
   public HashSet implementedInterfaces(){
@@ -244,7 +244,7 @@ public class GLBType extends ReferenceType implements Cloneable {
         return (List<Access>)getChildNoTransform(2);
     }
 
-    // Declared in Generics.jrag at line 1257
+    // Declared in Generics.jrag at line 1260
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
         String typeName_value = typeName_compute();
         return typeName_value;
@@ -343,7 +343,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private boolean supertypeGLBType_compute(GLBType type) {  return this == type;  }
 
-    // Declared in GenericsCodegen.jrag at line 404
+    // Declared in GenericsCodegen.jrag at line 416
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;

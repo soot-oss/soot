@@ -89,7 +89,7 @@ public class StringLiteral extends Literal implements Cloneable {
 
   public boolean mayHaveRewrite() { return false; }
 
-    // Declared in ConstantExpression.jrag at line 288
+    // Declared in ConstantExpression.jrag at line 304
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

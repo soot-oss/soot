@@ -403,7 +403,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         return 4;
     }
 
-    // Declared in Generics.jrag at line 1096
+    // Declared in Generics.jrag at line 1099
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         TypeDecl original_value = original_compute();
         return original_value;
@@ -411,7 +411,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
     private TypeDecl original_compute() {  return getOriginal().original();  }
 
-    // Declared in Generics.jrag at line 1294
+    // Declared in Generics.jrag at line 1297
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed)
             return sourceTypeDecl_value;
@@ -516,9 +516,9 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return supertypeGenericInterfaceDecl_GenericInterfaceDecl_value;
     }
 
-    private boolean supertypeGenericInterfaceDecl_compute(GenericInterfaceDecl type) {  return original().supertypeGenericInterfaceDecl(type);  }
+    private boolean supertypeGenericInterfaceDecl_compute(GenericInterfaceDecl type) {  return super.supertypeGenericInterfaceDecl(type) || original().supertypeGenericInterfaceDecl(type);  }
 
-    // Declared in Generics.jrag at line 922
+    // Declared in Generics.jrag at line 925
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localMethodsSignatureMap() {
         if(localMethodsSignatureMap_computed)
             return localMethodsSignatureMap_value;
@@ -545,7 +545,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return map;
   }
 
-    // Declared in Generics.jrag at line 937
+    // Declared in Generics.jrag at line 940
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localFields(String name) {
         Object _parameters = name;
 if(localFields_String_values == null) localFields_String_values = new java.util.HashMap(4);
@@ -574,7 +574,7 @@ if(localFields_String_values == null) localFields_String_values = new java.util.
     return set;
   }
 
-    // Declared in Generics.jrag at line 952
+    // Declared in Generics.jrag at line 955
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localTypeDecls(String name) {
         Object _parameters = name;
 if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
@@ -618,7 +618,7 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
     return set;
   }
 
-    // Declared in Generics.jrag at line 982
+    // Declared in Generics.jrag at line 985
  @SuppressWarnings({"unchecked", "cast"})     public Collection constructors() {
         if(constructors_computed)
             return constructors_value;

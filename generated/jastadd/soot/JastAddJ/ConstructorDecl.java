@@ -190,7 +190,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     );
   }
 
-    // Declared in Generics.jrag at line 1069
+    // Declared in Generics.jrag at line 1072
 
   
 
@@ -207,13 +207,13 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return c;
   }
 
-    // Declared in InnerClasses.jrag at line 427
+    // Declared in InnerClasses.jrag at line 436
 
 
   // add val$name as parameters to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 428
+    // Declared in InnerClasses.jrag at line 437
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -225,7 +225,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in InnerClasses.jrag at line 462
+    // Declared in InnerClasses.jrag at line 471
 
 
   public ConstructorDecl createAccessor() {
@@ -268,7 +268,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return c;
   }
 
-    // Declared in InnerClasses.jrag at line 502
+    // Declared in InnerClasses.jrag at line 511
 
 
   protected List createAccessorParameters() {
@@ -279,7 +279,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return parameters;
   }
 
-    // Declared in InnerClasses.jrag at line 510
+    // Declared in InnerClasses.jrag at line 519
 
 
   protected TypeDecl createAnonymousJavaTypeDecl() {
@@ -292,11 +292,11 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
           new List()
       );
     classDecl = hostType().addMemberClass(classDecl);
-    hostType().addUsedNestedType(classDecl);
+    hostType().addNestedType(classDecl);
     return classDecl;
   }
 
-    // Declared in Transformations.jrag at line 118
+    // Declared in Transformations.jrag at line 119
 
 
 
@@ -306,7 +306,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimple.jrag at line 207
+    // Declared in EmitJimple.jrag at line 227
 
   public void jimplify1phase2() {
     String name = "<init>";
@@ -339,7 +339,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in EmitJimple.jrag at line 264
+    // Declared in EmitJimple.jrag at line 284
 
 
 
@@ -638,7 +638,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         return (Block)getChildNoTransform(4);
     }
 
-    // Declared in EmitJimpleRefinements.jrag at line 75
+    // Declared in EmitJimpleRefinements.jrag at line 120
 
   
     public void jimplify2() {
@@ -682,7 +682,8 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       b.add(Jimple.v().newAssignStmt(
         Jimple.v().newInstanceFieldRef(
           b.emitThis(hostType()),
-          hostType().getSootClassDecl().getField("val$" + v.name(), v.type().getSootType()).makeRef()
+          Scene.v().makeFieldRef(hostType().getSootClassDecl(), "val$" + v.name(), v.type().getSootType(), false)
+          //hostType().getSootClassDecl().getField("val$" + v.name(), v.type().getSootType()).makeRef()
         ),
         p.local
       ));
@@ -1022,7 +1023,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sourceConstructorDecl_computed = false;
     protected ConstructorDecl sourceConstructorDecl_value;
-    // Declared in Generics.jrag at line 1300
+    // Declared in Generics.jrag at line 1303
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed)
             return sourceConstructorDecl_value;
@@ -1090,7 +1091,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 299
+    // Declared in MethodSignature.jrag at line 303
  @SuppressWarnings({"unchecked", "cast"})     public boolean potentiallyApplicable(List argList) {
         boolean potentiallyApplicable_List_value = potentiallyApplicable_compute(argList);
         return potentiallyApplicable_List_value;
@@ -1104,7 +1105,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 306
+    // Declared in MethodSignature.jrag at line 310
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         int arity_value = arity_compute();
         return arity_value;
@@ -1128,7 +1129,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private ParameterDeclaration lastParameter_compute() {  return getParameter(getNumParameter() - 1);  }
 
-    // Declared in InnerClasses.jrag at line 404
+    // Declared in InnerClasses.jrag at line 413
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsEnclosing() {
         boolean needsEnclosing_value = needsEnclosing_compute();
         return needsEnclosing_value;
@@ -1136,7 +1137,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private boolean needsEnclosing_compute() {  return hostType().needsEnclosing();  }
 
-    // Declared in InnerClasses.jrag at line 405
+    // Declared in InnerClasses.jrag at line 414
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsSuperEnclosing() {
         boolean needsSuperEnclosing_value = needsSuperEnclosing_compute();
         return needsSuperEnclosing_value;
@@ -1144,7 +1145,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private boolean needsSuperEnclosing_compute() {  return hostType().needsSuperEnclosing();  }
 
-    // Declared in InnerClasses.jrag at line 407
+    // Declared in InnerClasses.jrag at line 416
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosing() {
         TypeDecl enclosing_value = enclosing_compute();
         return enclosing_value;
@@ -1152,7 +1153,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private TypeDecl enclosing_compute() {  return hostType().enclosing();  }
 
-    // Declared in InnerClasses.jrag at line 408
+    // Declared in InnerClasses.jrag at line 417
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superEnclosing() {
         TypeDecl superEnclosing_value = superEnclosing_compute();
         return superEnclosing_value;
@@ -1176,7 +1177,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 265
+    // Declared in EmitJimple.jrag at line 285
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed)
             return sootMethod_value;
@@ -1206,7 +1207,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 280
+    // Declared in EmitJimple.jrag at line 300
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;
@@ -1218,7 +1219,23 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
         return sootRef_value;
     }
 
-    private SootMethodRef sootRef_compute() {  return sootMethod().makeRef();  }
+    private SootMethodRef sootRef_compute() {
+    ArrayList parameters = new ArrayList();
+    TypeDecl typeDecl = hostType();
+    if(typeDecl.needsEnclosing())
+      parameters.add(typeDecl.enclosingType().getSootType());
+    if(typeDecl.needsSuperEnclosing()) {
+      TypeDecl superClass = ((ClassDecl)typeDecl).superclass();
+      parameters.add(superClass.enclosingType().getSootType());
+    }
+    for(int i = 0; i < getNumParameter(); i++)
+      parameters.add(getParameter(i).type().getSootType());
+    SootMethodRef ref = Scene.v().makeConstructorRef(
+      hostType().getSootClassDecl(),
+      parameters
+    );
+    return ref;
+  }
 
     protected boolean localNumOfFirstParameter_computed = false;
     protected int localNumOfFirstParameter_value;
@@ -1261,7 +1278,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     localNumOfFirstParameter() :
     getParameter(getNumParameter()-1).localNum() + getParameter(getNumParameter()-1).type().variableSize();  }
 
-    // Declared in GenericsCodegen.jrag at line 311
+    // Declared in GenericsCodegen.jrag at line 313
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl erasedConstructor() {
         ConstructorDecl erasedConstructor_value = erasedConstructor_compute();
         return erasedConstructor_value;
@@ -1456,7 +1473,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
     }
 
-    // Declared in Statements.jrag at line 294
+    // Declared in Statements.jrag at line 302
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
             return getNumException() != 0;

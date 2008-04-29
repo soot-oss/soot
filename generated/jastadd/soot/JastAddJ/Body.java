@@ -3,23 +3,23 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
 public class Body extends java.lang.Object {
-    // Declared in EmitJimple.jrag at line 403
+    // Declared in EmitJimple.jrag at line 440
 
     int nextTempIndex = 0;
 
-    // Declared in EmitJimple.jrag at line 404
+    // Declared in EmitJimple.jrag at line 441
 
     soot.jimple.JimpleBody body;
 
-    // Declared in EmitJimple.jrag at line 405
+    // Declared in EmitJimple.jrag at line 442
 
     java.util.Stack chains;
 
-    // Declared in EmitJimple.jrag at line 406
+    // Declared in EmitJimple.jrag at line 443
 
     TypeDecl typeDecl;
 
-    // Declared in EmitJimple.jrag at line 407
+    // Declared in EmitJimple.jrag at line 444
 
     public Body(TypeDecl typeDecl, soot.jimple.JimpleBody body, ASTNode container) {
       this.typeDecl = typeDecl;
@@ -31,14 +31,14 @@ public class Body extends java.lang.Object {
         emitThis(typeDecl);
     }
 
-    // Declared in EmitJimple.jrag at line 416
+    // Declared in EmitJimple.jrag at line 453
 
     public Local getParam(int i)
     {
       return body.getParameterLocal(i);
     }
 
-    // Declared in EmitJimple.jrag at line 420
+    // Declared in EmitJimple.jrag at line 457
 
     public Local newTemp(soot.Type type) {
       Local local = Jimple.v().newLocal("temp$" + nextTempIndex++, type);
@@ -46,7 +46,7 @@ public class Body extends java.lang.Object {
       return local;
     }
 
-    // Declared in EmitJimple.jrag at line 425
+    // Declared in EmitJimple.jrag at line 462
 
     public Local newTemp(soot.Value v) {
       if (v == NullConstant.v())
@@ -62,7 +62,7 @@ public class Body extends java.lang.Object {
       return local;
     }
 
-    // Declared in EmitJimple.jrag at line 438
+    // Declared in EmitJimple.jrag at line 475
 
     public Local newLocal(String name, soot.Type type) {
       Local local = Jimple.v().newLocal(name, type);
@@ -72,26 +72,26 @@ public class Body extends java.lang.Object {
       return local;
     }
 
-    // Declared in EmitJimple.jrag at line 446
+    // Declared in EmitJimple.jrag at line 483
 
 
     private soot.tagkit.LineNumberTag lineTag;
 
-    // Declared in EmitJimple.jrag at line 447
+    // Declared in EmitJimple.jrag at line 484
 
     public void setLine(ASTNode node)
     {
       lineTag = new soot.tagkit.LineNumberTag(node.lineNumber());
     }
 
-    // Declared in EmitJimple.jrag at line 451
+    // Declared in EmitJimple.jrag at line 488
 
     private soot.tagkit.LineNumberTag currentSourceRangeTag()
     {
       return lineTag;
     }
 
-    // Declared in EmitJimple.jrag at line 456
+    // Declared in EmitJimple.jrag at line 493
 
 
     public Body add(soot.jimple.Stmt stmt) {
@@ -113,33 +113,33 @@ public class Body extends java.lang.Object {
       return this;
     }
 
-    // Declared in EmitJimple.jrag at line 474
+    // Declared in EmitJimple.jrag at line 511
 
     public void pushBlock(soot.PatchingChain c) {
       chains.push(c);
     }
 
-    // Declared in EmitJimple.jrag at line 477
+    // Declared in EmitJimple.jrag at line 514
 
     public void popBlock() {
       chains.pop();
     }
 
-    // Declared in EmitJimple.jrag at line 481
+    // Declared in EmitJimple.jrag at line 518
 
 
     public soot.jimple.Stmt newLabel() {
       return soot.jimple.Jimple.v().newNopStmt();
     }
 
-    // Declared in EmitJimple.jrag at line 484
+    // Declared in EmitJimple.jrag at line 521
 
     public Body addLabel(soot.jimple.Stmt label) {
       add(label);
       return this;
     }
 
-    // Declared in EmitJimple.jrag at line 489
+    // Declared in EmitJimple.jrag at line 526
 
 
     public soot.Local emitThis(TypeDecl typeDecl) {
@@ -153,11 +153,11 @@ public class Body extends java.lang.Object {
       return thisName;
     }
 
-    // Declared in EmitJimple.jrag at line 499
+    // Declared in EmitJimple.jrag at line 536
 
     Local thisName;
 
-    // Declared in EmitJimple.jrag at line 501
+    // Declared in EmitJimple.jrag at line 538
 
 
     public Body addTrap(TypeDecl type, soot.jimple.Stmt firstStmt, soot.jimple.Stmt lastStmt, soot.jimple.Stmt handler) {

@@ -15,12 +15,12 @@ public interface MemberSubstitutor extends Parameterization {
 
     TypeDecl substitute(TypeVariable typeVariable);
 
-    // Declared in Generics.jrag at line 922
+    // Declared in Generics.jrag at line 925
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localMethodsSignatureMap();
-    // Declared in Generics.jrag at line 937
+    // Declared in Generics.jrag at line 940
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localFields(String name);
-    // Declared in Generics.jrag at line 952
+    // Declared in Generics.jrag at line 955
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localTypeDecls(String name);
-    // Declared in Generics.jrag at line 982
+    // Declared in Generics.jrag at line 985
  @SuppressWarnings({"unchecked", "cast"})     public Collection constructors();
 }

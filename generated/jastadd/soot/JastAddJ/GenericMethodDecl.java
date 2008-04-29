@@ -7,12 +7,16 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
         super.flushCache();
         getParMethodDeclList_computed = false;
         getParMethodDeclList_value = null;
+        rawMethodDecl_computed = false;
+        rawMethodDecl_value = null;
         lookupParMethodDecl_ArrayList_values = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public GenericMethodDecl clone() throws CloneNotSupportedException {
         GenericMethodDecl node = (GenericMethodDecl)super.clone();
         node.getParMethodDeclList_computed = false;
         node.getParMethodDeclList_value = null;
+        node.rawMethodDecl_computed = false;
+        node.rawMethodDecl_value = null;
         node.lookupParMethodDecl_ArrayList_values = null;
         node.in$Circle(false);
         node.is$Final(false);
@@ -37,17 +41,23 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericMethods.jrag at line 50
+    // Declared in GenericMethods.jrag at line 55
 
 
   public ParMethodDecl p(ArrayList typeArguments) {
-    ParMethodDecl methodDecl = new ParMethodDecl();
+    ParMethodDecl methodDecl = typeArguments.isEmpty() ? new RawMethodDecl() : new ParMethodDecl();
     addParMethodDecl(methodDecl);
     List list = new List();
-    for(Iterator iter = typeArguments.iterator(); iter.hasNext(); )
-      list.add(((TypeDecl)iter.next()).createBoundAccess());
+    if(typeArguments.isEmpty()) {
+      GenericMethodDecl original = original();
+      for(int i = 0; i < original.getNumTypeParameter(); i++)
+        list.add(original.getTypeParameter(i).erasure().createBoundAccess());
+    }
+    else {
+      for(Iterator iter = typeArguments.iterator(); iter.hasNext(); )
+        list.add(((TypeDecl)iter.next()).createBoundAccess());
+    }
     methodDecl.setTypeArgumentList(list);
-
     methodDecl.setModifiers((Modifiers)getModifiers().fullCopy());
     methodDecl.setTypeAccess(getTypeAccess().type().substituteReturnType(methodDecl));
     methodDecl.setID(getID());
@@ -56,7 +66,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     return methodDecl;
   }
 
-    // Declared in GenericMethods.jrag at line 152
+    // Declared in GenericMethods.jrag at line 163
 
 
   public void toString(StringBuffer s) {
@@ -98,7 +108,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1047
+    // Declared in Generics.jrag at line 1050
 
 
   public BodyDecl p(Parameterization parTypeDecl) {
@@ -117,7 +127,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     return m;
   }
 
-    // Declared in Generics.jrag at line 1063
+    // Declared in Generics.jrag at line 1066
 
   public GenericMethodDecl original;
 
@@ -535,8 +545,24 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
 
     private List getParMethodDeclList_compute() {  return new List();  }
 
+    protected boolean rawMethodDecl_computed = false;
+    protected MethodDecl rawMethodDecl_value;
+    // Declared in GenericMethods.jrag at line 28
+ @SuppressWarnings({"unchecked", "cast"})     public MethodDecl rawMethodDecl() {
+        if(rawMethodDecl_computed)
+            return rawMethodDecl_value;
+        int num = boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        rawMethodDecl_value = rawMethodDecl_compute();
+        if(true)
+            rawMethodDecl_computed = true;
+        return rawMethodDecl_value;
+    }
+
+    private MethodDecl rawMethodDecl_compute() {  return lookupParMethodDecl(new ArrayList());  }
+
     protected java.util.Map lookupParMethodDecl_ArrayList_values;
-    // Declared in GenericMethods.jrag at line 37
+    // Declared in GenericMethods.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl lookupParMethodDecl(ArrayList typeArguments) {
         Object _parameters = typeArguments;
 if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_values = new java.util.HashMap(4);
@@ -553,7 +579,11 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
     private MethodDecl lookupParMethodDecl_compute(ArrayList typeArguments) {
     l: for(int i = 0; i < getNumParMethodDecl(); i++) {
       ParMethodDecl decl = getParMethodDecl(i);
-      if(decl.getNumTypeArgument() == typeArguments.size()) {
+      if(decl instanceof RawMethodDecl) {
+        if(typeArguments.isEmpty())
+          return decl;
+      }
+      else if(decl.getNumTypeArgument() == typeArguments.size()) {
         for(int j = 0; j < decl.getNumTypeArgument(); j++)
           if(decl.getTypeArgument(j).type() != typeArguments.get(j))
             continue l;
@@ -563,7 +593,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
     return p(typeArguments);
   }
 
-    // Declared in GenericMethods.jrag at line 83
+    // Declared in GenericMethods.jrag at line 94
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localLookupType(String name) {
         SimpleSet localLookupType_String_value = localLookupType_compute(name);
         return localLookupType_String_value;
@@ -577,7 +607,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
     return SimpleSet.emptySet;
   }
 
-    // Declared in Generics.jrag at line 1062
+    // Declared in Generics.jrag at line 1065
  @SuppressWarnings({"unchecked", "cast"})     public GenericMethodDecl original() {
         GenericMethodDecl original_value = original_compute();
         return original_value;
@@ -585,13 +615,13 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
 
     private GenericMethodDecl original_compute() {  return original != null ? original : this;  }
 
-    // Declared in GenericMethods.jrag at line 82
+    // Declared in GenericMethods.jrag at line 93
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupType(String name) {
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
         return lookupType_String_value;
     }
 
-    // Declared in GenericMethods.jrag at line 31
+    // Declared in GenericMethods.jrag at line 32
     public GenericMethodDecl Define_GenericMethodDecl_genericMethodDecl(ASTNode caller, ASTNode child) {
         if(caller == getParMethodDeclListNoTransform()) {
       int i = caller.getIndexOfChild(child);
@@ -600,7 +630,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
         return getParent().Define_GenericMethodDecl_genericMethodDecl(this, caller);
     }
 
-    // Declared in GenericMethods.jrag at line 80
+    // Declared in GenericMethods.jrag at line 91
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -609,7 +639,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 90
+    // Declared in GenericMethods.jrag at line 101
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

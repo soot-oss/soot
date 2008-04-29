@@ -34,7 +34,7 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
     // terminate search if body declaration is reached
   }
 
-    // Declared in Generics.jrag at line 1028
+    // Declared in Generics.jrag at line 1031
 
 
   // TODO: for a substituted class decl we need to search the original, substitute with the enclosing type of this
@@ -75,13 +75,13 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Operation p not supported for " + getClass().getName());
   }
 
-    // Declared in EmitJimple.jrag at line 183
+    // Declared in EmitJimple.jrag at line 203
 
   
   public void jimplify1phase2() {
   }
 
-    // Declared in EmitJimple.jrag at line 593
+    // Declared in EmitJimple.jrag at line 633
 
 
   public void jimplify2() {
@@ -197,7 +197,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean visibleTypeParameters_compute() {  return true;  }
 
-    // Declared in EmitJimple.jrag at line 153
+    // Declared in EmitJimple.jrag at line 161
  @SuppressWarnings({"unchecked", "cast"})     public boolean generate() {
         boolean generate_value = generate_compute();
         return generate_value;

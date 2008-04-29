@@ -24,19 +24,30 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
   static long parseLong(String s) {
     long x = 0L;
     s = s.toLowerCase();
-    int radix = 10;
     boolean neg = false;
+    if(s.startsWith("-")) {
+      s = s.substring(1);
+      neg = true;
+    }
     if(s.startsWith("0x")) {
-      radix = 16;
       s = s.substring(2);
       if(s.length() > 16) {
         for(int i = 0; i < s.length()-16; i++)
           if(s.charAt(i) != '0')
             throw new NumberFormatException("");
       }
+      for (int i = 0; i < s.length(); i++) {
+        int c = s.charAt(i);
+        if (c >= 'a' && c <= 'f')
+          c = c - 'a' + 10;
+        else if(c >= '0' && c <= '9')
+          c = c - '0';
+        else
+          throw new NumberFormatException("");
+        x = x * 16 + c;
+      }
     }
     else if(s.startsWith("0")) {
-      radix = 8;
       s = s.substring(1);
       // Octals larger than 01777777777777777777777L are not valid
       if(s.length() > 21) {
@@ -44,39 +55,41 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
           if(i == s.length() - 21 - 1) {
             if(s.charAt(i) != '0' && s.charAt(i) != '1')
               throw new NumberFormatException("");
-          } 
+          }
           else {
             if(s.charAt(i) != '0')
               throw new NumberFormatException("");
           }
       }
-    }
-    else if(s.startsWith("-")) {
-      s = s.substring(1);
-      neg = true;
-    }
-    long oldx = 0;
-    for (int i = 0; i < s.length(); i++) {
-      int c = s.charAt(i);
-      if (c < '0' || c > '9') {
-        c = c - 'a' + 10;
-      }
-      else {
-        c = c - '0';
-      }
-      x *= radix;
-      x += c;
-      if(x < oldx && radix == 10) {
-        boolean negMinValue = i == (s.length()-1) && neg && x == Long.MIN_VALUE;
-        if(!negMinValue)
+      for (int i = 0; i < s.length(); i++) {
+        int c = s.charAt(i);
+        if(c >= '0' && c <= '7')
+          c = c - '0';
+        else
           throw new NumberFormatException("");
+        x = x * 8 + c;
       }
-      oldx = x;
     }
-    if(radix == 10 && x == Long.MIN_VALUE)
-      return x;
-    if(radix == 10 && x < 0) {
-      throw new NumberFormatException("");
+    else {
+      long oldx = 0;
+      for (int i = 0; i < s.length(); i++) {
+        int c = s.charAt(i);
+        if(c >= '0' && c <= '9')
+          c = c - '0';
+        else
+          throw new NumberFormatException("");
+        x = x * 10 + c;
+        if(x < oldx) {
+          boolean negMinValue = i == (s.length()-1) && neg && x == Long.MIN_VALUE;
+          if(!negMinValue)
+            throw new NumberFormatException("");
+        }
+        oldx = x;
+      }
+      if(x == Long.MIN_VALUE)
+        return x;
+      if(x < 0)
+        throw new NumberFormatException("");
     }
     return neg ? -x : x;
   }
@@ -216,7 +229,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 467
+    // Declared in ConstantExpression.jrag at line 483
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

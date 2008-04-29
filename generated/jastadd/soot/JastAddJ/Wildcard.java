@@ -63,7 +63,7 @@ public class Wildcard extends AbstractWildcard implements Cloneable {
 
   public boolean mayHaveRewrite() { return false; }
 
-    // Declared in Generics.jrag at line 1155
+    // Declared in Generics.jrag at line 1158
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
@@ -77,7 +77,7 @@ public class Wildcard extends AbstractWildcard implements Cloneable {
 
     private TypeDecl type_compute() {  return typeWildcard();  }
 
-    // Declared in Generics.jrag at line 1160
+    // Declared in Generics.jrag at line 1163
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeWildcard() {
         TypeDecl typeWildcard_value = getParent().Define_TypeDecl_typeWildcard(this, null);
         return typeWildcard_value;

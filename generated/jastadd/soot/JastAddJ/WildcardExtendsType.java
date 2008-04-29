@@ -48,7 +48,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
         }
         return res;
     }
-    // Declared in Generics.jrag at line 752
+    // Declared in Generics.jrag at line 755
 
 
   public Access substitute(Parameterization parTypeDecl) {
@@ -330,7 +330,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
 
     private boolean usesTypeVariable_compute() {  return getAccess().type().usesTypeVariable();  }
 
-    // Declared in Generics.jrag at line 1152
+    // Declared in Generics.jrag at line 1155
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl extendsType() {
         TypeDecl extendsType_value = extendsType_compute();
         return extendsType_value;

@@ -235,7 +235,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 
   }
 
-    // Declared in Generics.jrag at line 1032
+    // Declared in Generics.jrag at line 1035
 
 
   public BodyDecl p(Parameterization parTypeDecl) {
@@ -336,7 +336,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     return m;
   }
 
-    // Declared in EmitJimple.jrag at line 186
+    // Declared in EmitJimple.jrag at line 206
 
 
   public void jimplify1phase2() {
@@ -361,12 +361,12 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     }
   }
 
-    // Declared in EmitJimple.jrag at line 238
+    // Declared in EmitJimple.jrag at line 258
 
 
   public SootMethod sootMethod;
 
-    // Declared in GenericsCodegen.jrag at line 338
+    // Declared in GenericsCodegen.jrag at line 340
 
   
   public void transformation() {
@@ -407,8 +407,15 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
                     )
                   );
             }
+            List modifiersList = new List();
+            if(isPublic())
+              modifiersList.add(new Modifier("public"));
+            else if(isProtected())
+              modifiersList.add(new Modifier("protected"));
+            else if(isPrivate())
+              modifiersList.add(new Modifier("private"));
             MethodDecl bridge = new BridgeMethodDecl(
-                (Modifiers)getModifiers().fullCopy(),
+                new Modifiers(modifiersList),
                 erased.type().erasure().createBoundAccess(),
                 erased.name(),
                 parameters,
@@ -719,8 +726,9 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         return (Opt<Block>)getChildNoTransform(4);
     }
 
-    // Declared in EmitJimpleRefinements.jrag at line 54
-  
+    // Declared in EmitJimpleRefinements.jrag at line 99
+
+
 
 
     public void jimplify2() {
@@ -852,7 +860,7 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
 
     protected boolean signature_computed = false;
     protected String signature_value;
-    // Declared in MethodSignature.jrag at line 328
+    // Declared in MethodSignature.jrag at line 332
  @SuppressWarnings({"unchecked", "cast"})     public String signature() {
         if(signature_computed)
             return signature_value;
@@ -1082,7 +1090,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     private boolean isVoid_compute() {  return type().isVoid();  }
 
-    // Declared in GenericMethods.jrag at line 73
+    // Declared in GenericMethods.jrag at line 84
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayOverrideReturn(MethodDecl m) {
         boolean mayOverrideReturn_MethodDecl_value = mayOverrideReturn_compute(m);
         return mayOverrideReturn_MethodDecl_value;
@@ -1116,7 +1124,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean usesTypeVariable_computed = false;
     protected boolean usesTypeVariable_value;
-    // Declared in Generics.jrag at line 900
+    // Declared in Generics.jrag at line 903
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed)
             return usesTypeVariable_value;
@@ -1133,7 +1141,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sourceMethodDecl_computed = false;
     protected MethodDecl sourceMethodDecl_value;
-    // Declared in Generics.jrag at line 1296
+    // Declared in Generics.jrag at line 1299
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed)
             return sourceMethodDecl_value;
@@ -1155,7 +1163,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     private boolean visibleTypeParameters_compute() {  return !isStatic();  }
 
-    // Declared in MethodSignature.jrag at line 267
+    // Declared in MethodSignature.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         int arity_value = arity_compute();
         return arity_value;
@@ -1201,7 +1209,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 239
+    // Declared in EmitJimple.jrag at line 259
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed)
             return sootMethod_value;
@@ -1224,7 +1232,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 249
+    // Declared in EmitJimple.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;
@@ -1316,7 +1324,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return unknownMethod_value;
     }
 
-    // Declared in EmitJimple.jrag at line 247
+    // Declared in EmitJimple.jrag at line 267
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
         return typeObject_value;
@@ -1421,7 +1429,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_NameType_nameType(this, caller);
     }
 
-    // Declared in Statements.jrag at line 293
+    // Declared in Statements.jrag at line 301
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(caller == getBlockOptNoTransform()) {
             return getNumException() != 0;

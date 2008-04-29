@@ -51,7 +51,7 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
       error(getExpr().type().typeName() + " is not int after unary numeric promotion");
   }
 
-    // Declared in Expressions.jrag at line 643
+    // Declared in Expressions.jrag at line 645
 
   public void addArraySize(Body b, ArrayList list) {
     getAccess().addArraySize(b, list);

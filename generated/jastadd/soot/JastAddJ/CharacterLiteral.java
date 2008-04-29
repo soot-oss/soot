@@ -89,7 +89,7 @@ public class CharacterLiteral extends Literal implements Cloneable {
 
   public boolean mayHaveRewrite() { return false; }
 
-    // Declared in ConstantExpression.jrag at line 287
+    // Declared in ConstantExpression.jrag at line 303
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

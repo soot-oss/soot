@@ -3,7 +3,7 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
 public class Constraints extends java.lang.Object {
-    // Declared in GenericMethodsInference.jrag at line 98
+    // Declared in GenericMethodsInference.jrag at line 102
 
     static class ConstraintSet {
       public Collection supertypeConstraints = new HashSet(4);
@@ -12,15 +12,19 @@ public class Constraints extends java.lang.Object {
       public TypeDecl typeArgument;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 104
+    // Declared in GenericMethodsInference.jrag at line 108
 
     private Collection typeVariables;
 
-    // Declared in GenericMethodsInference.jrag at line 105
+    // Declared in GenericMethodsInference.jrag at line 109
 
     private Map constraintsMap;
 
-    // Declared in GenericMethodsInference.jrag at line 107
+    // Declared in GenericMethodsInference.jrag at line 110
+
+    public boolean rawAccess = false;
+
+    // Declared in GenericMethodsInference.jrag at line 112
 
 
     public Constraints() {
@@ -28,7 +32,7 @@ public class Constraints extends java.lang.Object {
       constraintsMap = new HashMap();
     }
 
-    // Declared in GenericMethodsInference.jrag at line 112
+    // Declared in GenericMethodsInference.jrag at line 117
 
 
     public void addTypeVariable(TypeVariable T) {
@@ -38,7 +42,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 119
+    // Declared in GenericMethodsInference.jrag at line 124
 
 
     public boolean unresolvedTypeArguments() {
@@ -51,7 +55,7 @@ public class Constraints extends java.lang.Object {
       return false;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 129
+    // Declared in GenericMethodsInference.jrag at line 134
 
 
     public void printConstraints() {
@@ -74,7 +78,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 150
+    // Declared in GenericMethodsInference.jrag at line 155
 
 
     
@@ -91,7 +95,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 163
+    // Declared in GenericMethodsInference.jrag at line 168
 
 
     public void resolveEqualityConstraints() {
@@ -121,7 +125,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 190
+    // Declared in GenericMethodsInference.jrag at line 195
 
 
     public void replaceEqualityConstraints(TypeDecl before, TypeDecl after) {
@@ -132,7 +136,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 198
+    // Declared in GenericMethodsInference.jrag at line 203
 
     
     public void replaceAllConstraints(TypeDecl before, TypeDecl after) {
@@ -145,7 +149,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 208
+    // Declared in GenericMethodsInference.jrag at line 213
 
     
     private void replaceConstraints(Collection constraints, TypeDecl before, TypeDecl after) {
@@ -160,7 +164,7 @@ public class Constraints extends java.lang.Object {
       constraints.addAll(newConstraints);
     }
 
-    // Declared in GenericMethodsInference.jrag at line 220
+    // Declared in GenericMethodsInference.jrag at line 225
 
 
     public void resolveSubtypeConstraints() {
@@ -180,7 +184,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 237
+    // Declared in GenericMethodsInference.jrag at line 242
 
     
     public void resolveSupertypeConstraints() {
@@ -207,7 +211,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 289
+    // Declared in GenericMethodsInference.jrag at line 294
 
     
     /*
@@ -266,7 +270,7 @@ public class Constraints extends java.lang.Object {
         throw new Error("Operation not supported for " + t.fullName() + ", " + t.getClass().getName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 317
+    // Declared in GenericMethodsInference.jrag at line 322
 
 
     public static HashSet parameterizedSupertypes(TypeDecl t) {
@@ -275,12 +279,12 @@ public class Constraints extends java.lang.Object {
       return result;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 322
+    // Declared in GenericMethodsInference.jrag at line 327
 
     public static void addParameterizedSupertypes(TypeDecl t, HashSet processed, HashSet result) {
       if(!processed.contains(t)) {
         processed.add(t);
-        if(t.isParameterizedType() && !t.isRawType())
+        if(t.isParameterizedType() /*&& !t.isRawType()*/)
           result.add(t);
         for(Iterator iter = directSupertypes(t).iterator(); iter.hasNext(); ) {
           TypeDecl typeDecl = (TypeDecl)iter.next();
@@ -289,7 +293,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 334
+    // Declared in GenericMethodsInference.jrag at line 339
 
 
     public Collection typeArguments() {
@@ -302,7 +306,7 @@ public class Constraints extends java.lang.Object {
       return list;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 344
+    // Declared in GenericMethodsInference.jrag at line 349
 
 
     public void addSupertypeConstraint(TypeDecl T, TypeDecl A) {
@@ -311,7 +315,7 @@ public class Constraints extends java.lang.Object {
       //System.out.println(T.name() + " :> " + A.fullName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 349
+    // Declared in GenericMethodsInference.jrag at line 354
 
     public void addSubtypeConstraint(TypeDecl T, TypeDecl A) {
       ConstraintSet set = (ConstraintSet)constraintsMap.get(T);
@@ -319,7 +323,7 @@ public class Constraints extends java.lang.Object {
       //System.out.println(T.name() + " <: " + A.fullName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 354
+    // Declared in GenericMethodsInference.jrag at line 359
 
     public void addEqualConstraint(TypeDecl T, TypeDecl A) {
       ConstraintSet set = (ConstraintSet)constraintsMap.get(T);
@@ -327,7 +331,7 @@ public class Constraints extends java.lang.Object {
       //System.out.println(T.name() + " = " + A.fullName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 360
+    // Declared in GenericMethodsInference.jrag at line 365
 
     
     public void convertibleTo(TypeDecl A, TypeDecl F) {
@@ -379,6 +383,9 @@ public class Constraints extends java.lang.Object {
           ParTypeDecl PF = (ParTypeDecl)F;
           ParTypeDecl PA = (ParTypeDecl)iter.next();
           if(PF.genericDecl() == PA.genericDecl()) {
+            if(A.isRawType())
+              rawAccess = true;
+            else
             for(int i = 0; i < PF.getNumArgument(); i++) {
               TypeDecl T = PF.getArgument(i).type();
               if(T.involvesTypeParameters()) {
@@ -418,7 +425,7 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 449
+    // Declared in GenericMethodsInference.jrag at line 457
 
 
 
@@ -466,7 +473,7 @@ public class Constraints extends java.lang.Object {
                 if(H != G) {
                   for(Iterator iter = parameterizedSupertypes(F).iterator(); iter.hasNext(); ) {
                     TypeDecl V = (TypeDecl)iter.next();
-                    if(((ParTypeDecl)V).genericDecl() == H) {
+                    if(!V.isRawType() && ((ParTypeDecl)V).genericDecl() == H) {
                       if(F.instanceOf(V))
                         convertibleFrom(A, V);
                     }
@@ -495,7 +502,7 @@ public class Constraints extends java.lang.Object {
                 if(H != G) {
                   for(Iterator iter = parameterizedSupertypes(F).iterator(); iter.hasNext(); ) {
                     TypeDecl V = (TypeDecl)iter.next();
-                    if(((ParTypeDecl)V).genericDecl() == H) {
+                    if(!V.isRawType() && ((ParTypeDecl)V).genericDecl() == H) {
                       // replace type argument Un with ? extends Un in V
                       ArrayList list = new ArrayList();
                       for(int j = 0; j < ((ParTypeDecl)V).getNumArgument(); j++)
@@ -520,7 +527,7 @@ public class Constraints extends java.lang.Object {
                 if(H != G) {
                   for(Iterator iter = parameterizedSupertypes(F).iterator(); iter.hasNext(); ) {
                     TypeDecl V = (TypeDecl)iter.next();
-                    if(((ParTypeDecl)V).genericDecl() == H) {
+                    if(!V.isRawType() && ((ParTypeDecl)V).genericDecl() == H) {
                       // replace type argument Un with ? super Un in V
                       ArrayList list = new ArrayList();
                       for(int j = 0; j < ((ParTypeDecl)V).getNumArgument(); j++)
@@ -542,9 +549,11 @@ public class Constraints extends java.lang.Object {
           }
         }
       }
+      else if(F.isRawType())
+        rawAccess = true;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 571
+    // Declared in GenericMethodsInference.jrag at line 581
 
 
     public void constraintEqual(TypeDecl A, TypeDecl F) {
@@ -577,10 +586,13 @@ public class Constraints extends java.lang.Object {
         }
       }
       else if(F instanceof ParTypeDecl && !F.isRawType()) {
-        if(A instanceof ParTypeDecl && !A.isRawType()) {
+        if(A instanceof ParTypeDecl) {
           ParTypeDecl PF = (ParTypeDecl)F;
           ParTypeDecl PA = (ParTypeDecl)A;
           if(PF.genericDecl() == PA.genericDecl()) {
+            if(A.isRawType())
+              rawAccess = true;
+            else
             for(int i = 0; i < PF.getNumArgument(); i++) {
               TypeDecl T = PF.getArgument(i).type();
               if(T.involvesTypeParameters()) {

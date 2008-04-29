@@ -32,7 +32,7 @@ public class AssignXorExpr extends AssignBitwiseExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 177
+    // Declared in Expressions.jrag at line 178
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
     return Jimple.v().newXorExpr(asImmediate(b, fst), asImmediate(b, snd));

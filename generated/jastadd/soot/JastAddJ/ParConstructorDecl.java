@@ -3,6 +3,7 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
 
+
 public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
@@ -41,7 +42,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         return res;
     }
     // Declared in GenericMethods.ast at line 3
-    // Declared in GenericMethods.ast line 5
+    // Declared in GenericMethods.ast line 7
 
     public ParConstructorDecl() {
         super();
@@ -56,7 +57,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
     // Declared in GenericMethods.ast at line 14
 
 
-    // Declared in GenericMethods.ast line 5
+    // Declared in GenericMethods.ast line 7
     public ParConstructorDecl(Modifiers p0, String p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5, List<Access> p6) {
         setChild(p0, 0);
         setID(p1);
@@ -70,7 +71,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
     // Declared in GenericMethods.ast at line 25
 
 
-    // Declared in GenericMethods.ast line 5
+    // Declared in GenericMethods.ast line 7
     public ParConstructorDecl(Modifiers p0, beaver.Symbol p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5, List<Access> p6) {
         setChild(p0, 0);
         setID(p1);
@@ -303,7 +304,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
     }
 
     // Declared in GenericMethods.ast at line 2
-    // Declared in GenericMethods.ast line 5
+    // Declared in GenericMethods.ast line 7
     public void setTypeArgumentList(List<Access> list) {
         setChild(list, 5);
     }
@@ -368,7 +369,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         return (List<Access>)getChildNoTransform(5);
     }
 
-    // Declared in Generics.jrag at line 1301
+    // Declared in Generics.jrag at line 1304
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed)
             return sourceConstructorDecl_value;
@@ -384,7 +385,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
 
     protected boolean genericConstructorDecl_computed = false;
     protected GenericConstructorDecl genericConstructorDecl_value;
-    // Declared in GenericMethods.jrag at line 33
+    // Declared in GenericMethods.jrag at line 34
  @SuppressWarnings({"unchecked", "cast"})     public GenericConstructorDecl genericConstructorDecl() {
         if(genericConstructorDecl_computed)
             return genericConstructorDecl_value;

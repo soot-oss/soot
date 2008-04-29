@@ -146,7 +146,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     }
   }
 
-    // Declared in EmitJimple.jrag at line 327
+    // Declared in EmitJimple.jrag at line 364
 
 
 
@@ -168,7 +168,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     }
   }
 
-    // Declared in EmitJimple.jrag at line 344
+    // Declared in EmitJimple.jrag at line 381
 
   public Local local;
 
@@ -537,7 +537,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean sourceVariableDecl_computed = false;
     protected Variable sourceVariableDecl_value;
-    // Declared in Generics.jrag at line 1305
+    // Declared in Generics.jrag at line 1308
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed)
             return sourceVariableDecl_value;

@@ -87,7 +87,8 @@ public class AssignPlusExpr extends AssignAdditiveExpr implements Cloneable {
           Scene.v().getMethod("<java.lang.StringBuffer: java.lang.String toString()>").makeRef()
         ));
   
-      getDest().emitStore(b, (Value)lvalue.clone(), result);
+      Value v2 = lvalue instanceof Local ? lvalue : (Value)lvalue.clone();
+      getDest().emitStore(b, v2, result);
       return result;
     }
     else {
@@ -95,7 +96,7 @@ public class AssignPlusExpr extends AssignAdditiveExpr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 159
+    // Declared in Expressions.jrag at line 160
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
     return Jimple.v().newAddExpr(asImmediate(b, fst), asImmediate(b, snd));

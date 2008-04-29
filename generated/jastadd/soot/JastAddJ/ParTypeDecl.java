@@ -32,7 +32,7 @@ public interface ParTypeDecl extends Parameterization {
   public TypeVariable typeParameter(int index);
 
 
-    // Declared in Generics.jrag at line 738
+    // Declared in Generics.jrag at line 741
 
   public Access substitute(Parameterization parTypeDecl);
 
@@ -43,7 +43,7 @@ public interface ParTypeDecl extends Parameterization {
   public Access createQualifiedAccess();
 
 
-    // Declared in GenericsCodegen.jrag at line 395
+    // Declared in GenericsCodegen.jrag at line 404
 
 
   public void transformation();

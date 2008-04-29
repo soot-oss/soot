@@ -292,7 +292,7 @@ private TypeDecl refined_AutoBoxing_type()
 
     protected boolean isConstant_computed = false;
     protected boolean isConstant_value;
-    // Declared in ConstantExpression.jrag at line 477
+    // Declared in ConstantExpression.jrag at line 493
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         if(isConstant_computed)
             return isConstant_value;

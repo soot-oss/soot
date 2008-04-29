@@ -266,13 +266,13 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         warning(decl().signature() + " in " + decl().hostType().typeName() + " has been deprecated");
   }
 
-    // Declared in InnerClasses.jrag at line 451
+    // Declared in InnerClasses.jrag at line 460
 
 
   // add val$name as arguments to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 452
+    // Declared in InnerClasses.jrag at line 461
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -284,7 +284,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     }
   }
 
-    // Declared in Transformations.jrag at line 126
+    // Declared in Transformations.jrag at line 127
 
 
 
@@ -299,7 +299,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in Expressions.jrag at line 536
+    // Declared in Expressions.jrag at line 538
 
 
   private soot.Value emitLocalEnclosing(Body b, TypeDecl localClass) {
@@ -309,7 +309,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     throw new Error("Not implemented");
   }
 
-    // Declared in Expressions.jrag at line 543
+    // Declared in Expressions.jrag at line 545
 
 
   private soot.Value emitInnerMemberEnclosing(Body b, TypeDecl innerClass) {
@@ -332,7 +332,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 563
+    // Declared in Expressions.jrag at line 565
 
 
   public soot.Value eval(Body b) {
@@ -387,11 +387,11 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     }
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 180
+    // Declared in EmitJimpleRefinements.jrag at line 230
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
-	 set.add(decl().erasedConstructor().hostType().erasure().getSootClassDecl().getType());
+   addDependencyIfNeeded(set, decl().erasedConstructor().hostType());
   }
 
     // Declared in java.ast at line 3
@@ -799,7 +799,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     private boolean noEnclosingInstance_compute() {  return isQualified() ? qualifier().staticContextQualifier() : inStaticContext();  }
 
-    // Declared in MethodSignature.jrag at line 308
+    // Declared in MethodSignature.jrag at line 312
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         int arity_value = arity_compute();
         return arity_value;

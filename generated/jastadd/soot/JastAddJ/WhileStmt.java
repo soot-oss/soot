@@ -75,7 +75,7 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
     }
   }
 
-    // Declared in Statements.jrag at line 137
+    // Declared in Statements.jrag at line 145
 
 
   public void jimplify2(Body b) {
@@ -352,7 +352,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 
     protected boolean cond_label_computed = false;
     protected soot.jimple.Stmt cond_label_value;
-    // Declared in Statements.jrag at line 133
+    // Declared in Statements.jrag at line 141
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt cond_label() {
         if(cond_label_computed)
             return cond_label_value;
@@ -368,7 +368,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 
     protected boolean end_label_computed = false;
     protected soot.jimple.Stmt end_label_value;
-    // Declared in Statements.jrag at line 134
+    // Declared in Statements.jrag at line 142
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt end_label() {
         if(end_label_computed)
             return end_label_value;
@@ -384,7 +384,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 
     protected boolean stmt_label_computed = false;
     protected soot.jimple.Stmt stmt_label_value;
-    // Declared in Statements.jrag at line 135
+    // Declared in Statements.jrag at line 143
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt stmt_label() {
         if(stmt_label_computed)
             return stmt_label_value;
@@ -398,7 +398,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 
     private soot.jimple.Stmt stmt_label_compute() {  return newLabel();  }
 
-    // Declared in Statements.jrag at line 192
+    // Declared in Statements.jrag at line 200
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
@@ -406,7 +406,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 
     private soot.jimple.Stmt break_label_compute() {  return end_label();  }
 
-    // Declared in Statements.jrag at line 211
+    // Declared in Statements.jrag at line 219
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;

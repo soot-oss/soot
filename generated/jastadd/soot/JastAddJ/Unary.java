@@ -29,14 +29,14 @@ public abstract class Unary extends Expr implements Cloneable {
     s.append(printPostOp());
   }
 
-    // Declared in Expressions.jrag at line 668
+    // Declared in Expressions.jrag at line 670
 
 
   public soot.Value eval(Body b) {
     return super.eval(b);
   }
 
-    // Declared in Expressions.jrag at line 714
+    // Declared in Expressions.jrag at line 716
 
 
   public soot.Value emitPostfix(Body b, int constant) {
@@ -53,7 +53,7 @@ public abstract class Unary extends Expr implements Cloneable {
     return value;
   }
 
-    // Declared in Expressions.jrag at line 731
+    // Declared in Expressions.jrag at line 733
 
 
   public soot.Value emitPrefix(Body b, int constant) {

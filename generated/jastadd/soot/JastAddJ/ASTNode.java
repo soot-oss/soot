@@ -452,7 +452,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
   }
 
-    // Declared in Transformations.jrag at line 208
+    // Declared in Transformations.jrag at line 209
 
   
   // imperative transformation of the AST
@@ -464,7 +464,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return node.getParent();
   }
 
-    // Declared in Transformations.jrag at line 213
+    // Declared in Transformations.jrag at line 214
 
   protected ASTNode with(ASTNode node) {
    ((ASTNode)this).setChild(node, replacePos);
@@ -472,7 +472,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    return node;
   }
 
-    // Declared in Transformations.jrag at line 218
+    // Declared in Transformations.jrag at line 219
 
   private static int replacePos = 0;
 
@@ -492,14 +492,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).jimplify1phase2();
   }
 
-    // Declared in EmitJimple.jrag at line 316
+    // Declared in EmitJimple.jrag at line 353
 
   public void jimplify2() {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).jimplify2();
   }
 
-    // Declared in EmitJimple.jrag at line 321
+    // Declared in EmitJimple.jrag at line 358
 
 
   public void jimplify2(Body b) {
@@ -507,7 +507,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).jimplify2(b);
   }
 
-    // Declared in EmitJimple.jrag at line 354
+    // Declared in EmitJimple.jrag at line 391
 
 
 
@@ -516,14 +516,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return b.newTemp(v);
   }
 
-    // Declared in EmitJimple.jrag at line 358
+    // Declared in EmitJimple.jrag at line 395
 
   public soot.Local asLocal(Body b, soot.Value v) {
     if(v instanceof soot.Local) return (soot.Local)v;
     return b.newTemp(v);
   }
 
-    // Declared in EmitJimple.jrag at line 362
+    // Declared in EmitJimple.jrag at line 399
 
   public soot.Local asLocal(Body b, soot.Value v, Type t) {
     if(v instanceof soot.Local) return (soot.Local)v;
@@ -532,7 +532,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return local;
   }
 
-    // Declared in EmitJimple.jrag at line 368
+    // Declared in EmitJimple.jrag at line 405
 
   public soot.Value asRValue(Body b, soot.Value v) {
     if(v instanceof soot.Local) return v;
@@ -542,14 +542,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Need to convert " + v.getClass().getName() + " to RValue");
   }
 
-    // Declared in EmitJimple.jrag at line 507
+    // Declared in EmitJimple.jrag at line 544
 
 
   protected soot.jimple.Stmt newLabel() {
     return soot.jimple.Jimple.v().newNopStmt();
   }
 
-    // Declared in Expressions.jrag at line 696
+    // Declared in Expressions.jrag at line 698
 
 
   public static soot.Value emitConstant(Constant constant) {
@@ -570,16 +570,15 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Unexpected constant");
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 151
+    // Declared in EmitJimpleRefinements.jrag at line 196
 
-  
-  
+
   public void collectTypesToHierarchy(Collection<Type> set) {
 	 for(int i = 0; i < getNumChild(); i++)
 	  getChild(i).collectTypesToHierarchy(set);
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 164
+    // Declared in EmitJimpleRefinements.jrag at line 214
 
 	
   public void collectTypesToSignatures(Collection<Type> set) {
@@ -881,9 +880,26 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 194
 
-    protected static int duringEnums = 0;
+    protected static int duringBoundNames = 0;
 
     // Declared in ASTNode.ast at line 195
+
+    protected static boolean duringBoundNames() {
+        if(duringBoundNames == 0) {
+            return false;
+        }
+        else {
+            state.pop();
+            state.push(ASTNode.REWRITE_INTERRUPT);
+            return true;
+        }
+    }
+
+    // Declared in ASTNode.ast at line 205
+
+    protected static int duringEnums = 0;
+
+    // Declared in ASTNode.ast at line 206
 
     protected static boolean duringEnums() {
         if(duringEnums == 0) {
@@ -896,11 +912,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 205
+    // Declared in ASTNode.ast at line 216
 
     protected static int duringLookupConstructor = 0;
 
-    // Declared in ASTNode.ast at line 206
+    // Declared in ASTNode.ast at line 217
 
     protected static boolean duringLookupConstructor() {
         if(duringLookupConstructor == 0) {
@@ -913,11 +929,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 216
+    // Declared in ASTNode.ast at line 227
 
     protected static int duringConstantExpression = 0;
 
-    // Declared in ASTNode.ast at line 217
+    // Declared in ASTNode.ast at line 228
 
     protected static boolean duringConstantExpression() {
         if(duringConstantExpression == 0) {
@@ -930,11 +946,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 227
+    // Declared in ASTNode.ast at line 238
 
     protected static int duringAnonymousClasses = 0;
 
-    // Declared in ASTNode.ast at line 228
+    // Declared in ASTNode.ast at line 239
 
     protected static boolean duringAnonymousClasses() {
         if(duringAnonymousClasses == 0) {
@@ -947,11 +963,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 238
+    // Declared in ASTNode.ast at line 249
 
     protected static int duringAnnotations = 0;
 
-    // Declared in ASTNode.ast at line 239
+    // Declared in ASTNode.ast at line 250
 
     protected static boolean duringAnnotations() {
         if(duringAnnotations == 0) {
@@ -964,11 +980,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 249
+    // Declared in ASTNode.ast at line 260
 
     protected static int duringSyntacticClassification = 0;
 
-    // Declared in ASTNode.ast at line 250
+    // Declared in ASTNode.ast at line 261
 
     protected static boolean duringSyntacticClassification() {
         if(duringSyntacticClassification == 0) {
@@ -981,11 +997,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 260
+    // Declared in ASTNode.ast at line 271
 
     protected static int duringResolveAmbiguousNames = 0;
 
-    // Declared in ASTNode.ast at line 261
+    // Declared in ASTNode.ast at line 272
 
     protected static boolean duringResolveAmbiguousNames() {
         if(duringResolveAmbiguousNames == 0) {
@@ -998,7 +1014,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 271
+    // Declared in ASTNode.ast at line 282
 
     public static void reset() {
         IN_CIRCLE = false;
@@ -1017,6 +1033,10 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         if(duringVariableDeclaration != 0) {
             System.out.println("Warning: resetting duringVariableDeclaration");
             duringVariableDeclaration = 0;
+        }
+        if(duringBoundNames != 0) {
+            System.out.println("Warning: resetting duringBoundNames");
+            duringBoundNames = 0;
         }
         if(duringEnums != 0) {
             System.out.println("Warning: resetting duringEnums");
@@ -1048,7 +1068,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         }
     }
 
-    // Declared in ASTNode.ast at line 318
+    // Declared in ASTNode.ast at line 333
 
     public java.util.Iterator<T> iterator() {
         return new java.util.Iterator<T>() {
@@ -1068,7 +1088,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         };
     }
 
-    // Declared in ASTNode.ast at line 335
+    // Declared in ASTNode.ast at line 350
 
   public boolean mayHaveRewrite() { return false; }
 
@@ -1108,7 +1128,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     private String dumpString_compute() {  return getClass().getName();  }
 
-    // Declared in Generics.jrag at line 894
+    // Declared in Generics.jrag at line 897
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         boolean usesTypeVariable_value = usesTypeVariable_compute();
         return usesTypeVariable_value;

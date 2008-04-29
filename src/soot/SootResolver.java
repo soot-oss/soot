@@ -77,6 +77,13 @@ public class SootResolver
         Program.initOptions();
         program.addKeyValueOption("-classpath");
         Program.setValueForOption("-classpath", Scene.v().getSootClassPath());
+        if(Options.v().src_prec() == Options.src_prec_java)
+        	program.setSrcPrec(Program.SRC_PREC_JAVA);
+        else if(Options.v().src_prec() == Options.src_prec_class)
+        	program.setSrcPrec(Program.SRC_PREC_CLASS);
+        else if(Options.v().src_prec() == Options.src_prec_only_class)
+        	program.setSrcPrec(Program.SRC_PREC_CLASS);
+        program.initPaths();
     }
 
     public static SootResolver v() { return G.v().soot_SootResolver();}

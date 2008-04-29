@@ -43,7 +43,7 @@ public class LUBType extends ReferenceType implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericMethodsInference.jrag at line 655
+    // Declared in GenericMethodsInference.jrag at line 668
 
 
     // the erased candidate set for type parameter Tj, EC,
@@ -66,7 +66,7 @@ public class LUBType extends ReferenceType implements Cloneable {
       return result;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 674
+    // Declared in GenericMethodsInference.jrag at line 687
 
 
     // The minimal erased candidate set for Tj
@@ -90,7 +90,7 @@ public class LUBType extends ReferenceType implements Cloneable {
       return MEC;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 695
+    // Declared in GenericMethodsInference.jrag at line 708
 
 
     // relevant invocations of G, Inv(G)
@@ -108,7 +108,7 @@ public class LUBType extends ReferenceType implements Cloneable {
       return result;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 709
+    // Declared in GenericMethodsInference.jrag at line 722
 
 
     // least containing invocation (lci)
@@ -130,7 +130,7 @@ public class LUBType extends ReferenceType implements Cloneable {
       return ((GenericTypeDecl)G).lookupParTypeDecl(list);
     }
 
-    // Declared in GenericMethodsInference.jrag at line 728
+    // Declared in GenericMethodsInference.jrag at line 741
 
 
     // least containing type arguments
@@ -176,7 +176,7 @@ public class LUBType extends ReferenceType implements Cloneable {
         throw new Error("lcta not defined for (" + X.getClass().getName() + ", " + Y.getClass().getName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 770
+    // Declared in GenericMethodsInference.jrag at line 783
 
 
     public TypeDecl lub(TypeDecl X, TypeDecl Y) {
@@ -186,14 +186,14 @@ public class LUBType extends ReferenceType implements Cloneable {
       return lub(list);
     }
 
-    // Declared in GenericMethodsInference.jrag at line 777
+    // Declared in GenericMethodsInference.jrag at line 790
 
 
     public TypeDecl lub(ArrayList list) {
       return lookupLUBType(list);
     }
 
-    // Declared in GenericMethodsInference.jrag at line 782
+    // Declared in GenericMethodsInference.jrag at line 795
 
 
     // erased supertype set of T
@@ -209,7 +209,7 @@ public class LUBType extends ReferenceType implements Cloneable {
       return result;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 795
+    // Declared in GenericMethodsInference.jrag at line 808
 
 
     // supertype set of T
@@ -219,7 +219,7 @@ public class LUBType extends ReferenceType implements Cloneable {
       return result;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 801
+    // Declared in GenericMethodsInference.jrag at line 814
 
 
     public void addSupertypes(HashSet set, TypeDecl t) {
@@ -261,7 +261,7 @@ public class LUBType extends ReferenceType implements Cloneable {
         throw new Error("Operation not supported for " + t.fullName() + ", " + t.getClass().getName());
     }
 
-    // Declared in Generics.jrag at line 1229
+    // Declared in Generics.jrag at line 1232
 
 
   public HashSet implementedInterfaces(){
@@ -469,7 +469,7 @@ public class LUBType extends ReferenceType implements Cloneable {
 
     protected boolean lub_computed = false;
     protected TypeDecl lub_value;
-    // Declared in GenericMethodsInference.jrag at line 637
+    // Declared in GenericMethodsInference.jrag at line 650
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lub() {
         if(lub_computed)
             return lub_value;
@@ -496,7 +496,7 @@ public class LUBType extends ReferenceType implements Cloneable {
     return lookupLUBType(bounds);
   }
 
-    // Declared in Generics.jrag at line 1219
+    // Declared in Generics.jrag at line 1222
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
         String typeName_value = typeName_compute();
         return typeName_value;
@@ -603,7 +603,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return type == lookupGLBType(bounds);
   }
 
-    // Declared in GenericsCodegen.jrag at line 403
+    // Declared in GenericsCodegen.jrag at line 415
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;

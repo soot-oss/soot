@@ -205,10 +205,14 @@ public class MethodAccess extends Access implements Cloneable {
       TypeDecl A = getArg(i).type();
       int index = i >= decl.getNumParameter() ? decl.getNumParameter() - 1 : i;
       TypeDecl F = decl.getParameter(index).type();
-      if(decl.getParameter(index) instanceof VariableArityParameterDeclaration)
+      if(decl.getParameter(index) instanceof VariableArityParameterDeclaration 
+         && (getNumArg() != decl.getNumParameter() || !A.isArrayDecl())) {
         F = F.componentType();
+      }
       c.convertibleTo(A, F);
     }
+    if(c.rawAccess)
+      return new ArrayList();
     
     //c.printConstraints();
     //System.err.println("Resolving equality constraints");
@@ -321,7 +325,7 @@ public class MethodAccess extends Access implements Cloneable {
       return;
     }*/
     
-    if(m.isPrivate() && m.hostType() != hostType()/*.hasMethod(name()*/) {
+    if(requiresAccessor()) {
       /* Access to private methods in enclosing types:
       The original MethodAccess is replaced with an access to an accessor method
       built by createAccessor(). This method is built lazily and differs from
@@ -331,6 +335,7 @@ public class MethodAccess extends Access implements Cloneable {
       2) The method is always invoked using INVOKESTATIC
       3) The flags must indicate that the method is static and package private
       */
+      super.transformation();
       replace(this).with(decl().createAccessor(methodQualifierType()).createBoundAccess(getArgList()));
       return;
     }
@@ -340,11 +345,11 @@ public class MethodAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 176
+    // Declared in EmitJimpleRefinements.jrag at line 226
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
-	 set.add(methodQualifierType().elementType().erasure().getSootClassDecl().getType());
+   addDependencyIfNeeded(set, methodQualifierType());
   }
 
     // Declared in java.ast at line 3
@@ -486,7 +491,7 @@ public class MethodAccess extends Access implements Cloneable {
         return (List<Expr>)getChildNoTransform(0);
     }
 
-    // Declared in MethodSignature.jrag at line 312
+    // Declared in MethodSignature.jrag at line 316
 
 
   // 15.12.3
@@ -515,8 +520,10 @@ public class MethodAccess extends Access implements Cloneable {
     if(typeDecl == null)
       return null;
     typeDecl = typeDecl.erasure();
-    if(!typeDecl.memberMethods(decl().name()).contains(decl()))
-      return decl().hostType();
+    MethodDecl m = decl().sourceMethodDecl();
+    Collection methods = typeDecl.memberMethods(m.name());
+    if(!methods.contains(decl()) && !methods.contains(m))
+      return m.hostType();
     return typeDecl.erasure();
   }
 
@@ -1010,16 +1017,18 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     if(m instanceof GenericMethodDecl) {
       GenericMethodDecl gm = (GenericMethodDecl)m;
       ArrayList list = typeArguments(m);
-      if(gm.getNumTypeParameter() != list.size())
-        return false;
-      for(int i = 0; i < gm.getNumTypeParameter(); i++)
-        if(!((TypeDecl)list.get(i)).subtype(gm.original().getTypeParameter(i)))
+      if(list.size() != 0) {
+        if(gm.getNumTypeParameter() != list.size())
           return false;
+        for(int i = 0; i < gm.getNumTypeParameter(); i++)
+          if(!((TypeDecl)list.get(i)).subtype(gm.original().getTypeParameter(i)))
+            return false;
+      }
     }
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 268
+    // Declared in MethodSignature.jrag at line 270
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         int arity_value = arity_compute();
         return arity_value;
@@ -1028,7 +1037,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     private int arity_compute() {  return getNumArg();  }
 
     protected java.util.Map typeArguments_MethodDecl_values;
-    // Declared in MethodSignature.jrag at line 270
+    // Declared in MethodSignature.jrag at line 272
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList typeArguments(MethodDecl m) {
         Object _parameters = m;
 if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = new java.util.HashMap(4);
@@ -1047,6 +1056,8 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
     if(m instanceof GenericMethodDecl) {
       GenericMethodDecl g = (GenericMethodDecl)m;
       Collection arguments = computeConstraints(g);
+      if(arguments.isEmpty())
+        return typeArguments;
       int i = 0;
       for(Iterator iter = arguments.iterator(); iter.hasNext(); i++) {
         TypeDecl typeDecl = (TypeDecl)iter.next();
@@ -1077,6 +1088,21 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
     if(arity() != decl().arity())
       return false;
     return getArg(getNumArg()-1).type().methodInvocationConversionTo(decl().lastParameter().type());
+  }
+
+    // Declared in InnerClasses.jrag at line 365
+ @SuppressWarnings({"unchecked", "cast"})     public boolean requiresAccessor() {
+        boolean requiresAccessor_value = requiresAccessor_compute();
+        return requiresAccessor_value;
+    }
+
+    private boolean requiresAccessor_compute() {
+    MethodDecl m = decl();
+    if(m.isPrivate() && m.hostType() != hostType())
+      return true;
+    if(m.isProtected() && !m.hostPackage().equals(hostPackage()) && !hostType().hasMethod(m.name()))
+      return true;
+    return false;
   }
 
     // Declared in ExceptionHandling.jrag at line 29

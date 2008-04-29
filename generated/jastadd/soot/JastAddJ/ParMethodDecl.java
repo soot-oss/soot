@@ -43,7 +43,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         }
         return res;
     }
-    // Declared in GenericMethods.jrag at line 70
+    // Declared in GenericMethods.jrag at line 81
 
   // Disable error checking in instantiated generic methods
   public void collectErrors() {
@@ -64,19 +64,19 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     return false; 
   }
 
-    // Declared in Generics.jrag at line 716
+    // Declared in Generics.jrag at line 719
 
   public int numTypeParameter() {
     return genericMethodDecl().original().getNumTypeParameter();
   }
 
-    // Declared in Generics.jrag at line 719
+    // Declared in Generics.jrag at line 722
 
   public TypeVariable typeParameter(int index) {
     return genericMethodDecl().original().getTypeParameter(index);
   }
 
-    // Declared in GenericsCodegen.jrag at line 316
+    // Declared in GenericsCodegen.jrag at line 318
 
   public void transformation() { }
 
@@ -408,7 +408,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         return (List<Access>)getChildNoTransform(5);
     }
 
-    // Declared in Generics.jrag at line 1297
+    // Declared in Generics.jrag at line 1300
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed)
             return sourceMethodDecl_value;
@@ -448,7 +448,7 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
 
     protected boolean genericMethodDecl_computed = false;
     protected GenericMethodDecl genericMethodDecl_value;
-    // Declared in GenericMethods.jrag at line 30
+    // Declared in GenericMethods.jrag at line 31
  @SuppressWarnings({"unchecked", "cast"})     public GenericMethodDecl genericMethodDecl() {
         if(genericMethodDecl_computed)
             return genericMethodDecl_value;

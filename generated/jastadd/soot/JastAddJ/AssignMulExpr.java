@@ -32,7 +32,7 @@ public class AssignMulExpr extends AssignMultiplicativeExpr implements Cloneable
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 150
+    // Declared in Expressions.jrag at line 151
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
     return asImmediate(b, Jimple.v().newMulExpr(asImmediate(b, fst), asImmediate(b, snd)));

@@ -50,7 +50,7 @@ public abstract class Access extends Expr implements Cloneable {
     return enclosing;
   }
 
-    // Declared in Expressions.jrag at line 286
+    // Declared in Expressions.jrag at line 287
 
   public soot.Value emitLoadLocalInNestedClass(Body b, Variable v) {
     if(inExplicitConstructorInvocation() && enclosingBodyDecl() instanceof ConstructorDecl) {
@@ -60,12 +60,13 @@ public abstract class Access extends Expr implements Cloneable {
     else {
       return Jimple.v().newInstanceFieldRef(
         b.emitThis(hostType()),
-        hostType().getSootClassDecl().getField("val$" + v.name(), v.type().getSootType()).makeRef()
+        Scene.v().makeFieldRef(hostType().getSootClassDecl(), "val$" + v.name(), v.type().getSootType(), false)
+        //hostType().getSootClassDecl().getField("val$" + v.name(), v.type().getSootType()).makeRef()
       );
     }
   }
 
-    // Declared in Expressions.jrag at line 420
+    // Declared in Expressions.jrag at line 422
 
 
   // load this where hostType is the target this instance 
@@ -79,9 +80,9 @@ public abstract class Access extends Expr implements Cloneable {
       Local base;
       if(inExplicitConstructorInvocation()) {
         base = asLocal(b,
-          Jimple.v().newParameterRef(enclosing.getSootType(), 0)
+          Jimple.v().newParameterRef(enclosing.enclosingType().getSootType(), 0)
         );
-        enclosing = enclosing.enclosingType();
+        enclosing = enclosing.enclosing();
       }
       else {
         base = b.emitThis(hostType());
@@ -104,7 +105,7 @@ public abstract class Access extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 638
+    // Declared in Expressions.jrag at line 640
 
 
   public void addArraySize(Body b, ArrayList list) {
@@ -264,7 +265,7 @@ public abstract class Access extends Expr implements Cloneable {
         return withinDeprecatedAnnotation_value;
     }
 
-    // Declared in Expressions.jrag at line 285
+    // Declared in Expressions.jrag at line 286
  @SuppressWarnings({"unchecked", "cast"})     public boolean inExplicitConstructorInvocation() {
         boolean inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
         return inExplicitConstructorInvocation_value;

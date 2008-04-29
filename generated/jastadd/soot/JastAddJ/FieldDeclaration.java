@@ -227,7 +227,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     }
   }
 
-    // Declared in Generics.jrag at line 1081
+    // Declared in Generics.jrag at line 1084
 
   public BodyDecl p(Parameterization parTypeDecl) {
     FieldDeclaration f = new FieldDeclarationSubstituted(
@@ -332,7 +332,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     return isStatic() ? fieldAccess : new VarAccess("that").qualifiesAccess(fieldAccess);
   }
 
-    // Declared in EmitJimple.jrag at line 283
+    // Declared in EmitJimple.jrag at line 319
 
   
 
@@ -359,7 +359,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     }
   }
 
-    // Declared in EmitJimple.jrag at line 305
+    // Declared in EmitJimple.jrag at line 341
 
   public SootField sootField;
 
@@ -576,7 +576,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     return set;
   }
 
-    // Declared in ConstantExpression.jrag at line 463
+    // Declared in ConstantExpression.jrag at line 479
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
@@ -834,7 +834,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean usesTypeVariable_computed = false;
     protected boolean usesTypeVariable_value;
-    // Declared in Generics.jrag at line 903
+    // Declared in Generics.jrag at line 906
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed)
             return usesTypeVariable_value;
@@ -850,7 +850,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean sourceVariableDecl_computed = false;
     protected Variable sourceVariableDecl_value;
-    // Declared in Generics.jrag at line 1306
+    // Declared in Generics.jrag at line 1309
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed)
             return sourceVariableDecl_value;
@@ -890,7 +890,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean sootRef_computed = false;
     protected SootFieldRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 306
+    // Declared in EmitJimple.jrag at line 342
  @SuppressWarnings({"unchecked", "cast"})     public SootFieldRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;
@@ -902,7 +902,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return sootRef_value;
     }
 
-    private SootFieldRef sootRef_compute() {  return hostType().getSootClassDecl().getField(name(), type().getSootType()).makeRef();  }
+    private SootFieldRef sootRef_compute() {  return Scene.v().makeFieldRef(hostType().getSootClassDecl(), name(), type().getSootType(), isStatic());  }
 
     // Declared in GenericsCodegen.jrag at line 29
  @SuppressWarnings({"unchecked", "cast"})     public FieldDeclaration erasedField() {

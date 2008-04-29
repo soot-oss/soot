@@ -221,7 +221,7 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
 
     protected boolean typeWildcard_computed = false;
     protected TypeDecl typeWildcard_value;
-    // Declared in Generics.jrag at line 1162
+    // Declared in Generics.jrag at line 1165
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeWildcard() {
         if(typeWildcard_computed)
             return typeWildcard_value;
@@ -246,7 +246,7 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
 
     protected java.util.Map lookupWildcardExtends_TypeDecl_values;
     protected List lookupWildcardExtends_TypeDecl_list;
-    // Declared in Generics.jrag at line 1173
+    // Declared in Generics.jrag at line 1176
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardExtends(TypeDecl bound) {
         Object _parameters = bound;
 if(lookupWildcardExtends_TypeDecl_values == null) lookupWildcardExtends_TypeDecl_values = new java.util.HashMap(4);
@@ -279,7 +279,7 @@ if(lookupWildcardExtends_TypeDecl_values == null) lookupWildcardExtends_TypeDecl
 
     protected java.util.Map lookupWildcardSuper_TypeDecl_values;
     protected List lookupWildcardSuper_TypeDecl_list;
-    // Declared in Generics.jrag at line 1186
+    // Declared in Generics.jrag at line 1189
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl bound) {
         Object _parameters = bound;
 if(lookupWildcardSuper_TypeDecl_values == null) lookupWildcardSuper_TypeDecl_values = new java.util.HashMap(4);
@@ -312,7 +312,7 @@ if(lookupWildcardSuper_TypeDecl_values == null) lookupWildcardSuper_TypeDecl_val
 
     protected java.util.Map lookupLUBType_Collection_values;
     protected List lookupLUBType_Collection_list;
-    // Declared in Generics.jrag at line 1199
+    // Declared in Generics.jrag at line 1202
  @SuppressWarnings({"unchecked", "cast"})     public LUBType lookupLUBType(Collection bounds) {
         Object _parameters = bounds;
 if(lookupLUBType_Collection_values == null) lookupLUBType_Collection_values = new java.util.HashMap(4);
@@ -352,7 +352,7 @@ if(lookupLUBType_Collection_values == null) lookupLUBType_Collection_values = ne
 
     protected java.util.Map lookupGLBType_ArrayList_values;
     protected List lookupGLBType_ArrayList_list;
-    // Declared in Generics.jrag at line 1237
+    // Declared in Generics.jrag at line 1240
  @SuppressWarnings({"unchecked", "cast"})     public GLBType lookupGLBType(ArrayList bounds) {
         Object _parameters = bounds;
 if(lookupGLBType_ArrayList_values == null) lookupGLBType_ArrayList_values = new java.util.HashMap(4);

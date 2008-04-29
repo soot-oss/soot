@@ -30,7 +30,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 827
+    // Declared in Generics.jrag at line 830
 
 
   public List substitute(Parameterization parTypeDecl) {

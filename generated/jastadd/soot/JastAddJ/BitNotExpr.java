@@ -45,7 +45,7 @@ public class BitNotExpr extends Unary implements Cloneable {
       error("unary ~ only operates on integral types");
   }
 
-    // Declared in Expressions.jrag at line 675
+    // Declared in Expressions.jrag at line 677
 
   public soot.Value eval(Body b) {
     soot.Value v = IntType.emitConstant(-1);
@@ -113,7 +113,7 @@ public class BitNotExpr extends Unary implements Cloneable {
 
     private Constant constant_compute() {  return type().bitNot(getOperand().constant());  }
 
-    // Declared in ConstantExpression.jrag at line 473
+    // Declared in ConstantExpression.jrag at line 489
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

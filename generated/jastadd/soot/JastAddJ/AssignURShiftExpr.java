@@ -32,11 +32,11 @@ public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 143
+    // Declared in Expressions.jrag at line 144
 
   public soot.Value eval(Body b) { return emitShiftExpr(b); }
 
-    // Declared in Expressions.jrag at line 171
+    // Declared in Expressions.jrag at line 172
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
     return Jimple.v().newUshrExpr(asImmediate(b, fst), asImmediate(b, snd));

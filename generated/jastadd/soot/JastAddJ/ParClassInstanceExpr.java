@@ -32,7 +32,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         }
         return res;
     }
-    // Declared in GenericMethods.jrag at line 142
+    // Declared in GenericMethods.jrag at line 153
 
   public void toString(StringBuffer s) {
     s.append("<");
@@ -45,7 +45,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
   }
 
     // Declared in GenericMethods.ast at line 3
-    // Declared in GenericMethods.ast line 12
+    // Declared in GenericMethods.ast line 15
 
     public ParClassInstanceExpr() {
         super();
@@ -59,7 +59,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
     // Declared in GenericMethods.ast at line 13
 
 
-    // Declared in GenericMethods.ast line 12
+    // Declared in GenericMethods.ast line 15
     public ParClassInstanceExpr(Access p0, List<Expr> p1, Opt<TypeDecl> p2, List<Access> p3) {
         setChild(p0, 0);
         setChild(p1, 1);
@@ -204,7 +204,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
     }
 
     // Declared in GenericMethods.ast at line 2
-    // Declared in GenericMethods.ast line 12
+    // Declared in GenericMethods.ast line 15
     public void setTypeArgumentList(List<Access> list) {
         setChild(list, 3);
     }
@@ -269,7 +269,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         return (List<Access>)getChildNoTransform(3);
     }
 
-    // Declared in GenericMethods.jrag at line 108
+    // Declared in GenericMethods.jrag at line 119
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -278,7 +278,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 109
+    // Declared in GenericMethods.jrag at line 120
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

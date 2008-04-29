@@ -53,7 +53,7 @@ public class ClassAccess extends Access implements Cloneable {
     s.append("class");
   }
 
-    // Declared in Transformations.jrag at line 159
+    // Declared in Transformations.jrag at line 160
 
 
   // remote collection / demand driven creation of accessor
@@ -67,7 +67,7 @@ public class ClassAccess extends Access implements Cloneable {
     
   }
 
-    // Declared in Expressions.jrag at line 881
+    // Declared in Expressions.jrag at line 883
 
 
 

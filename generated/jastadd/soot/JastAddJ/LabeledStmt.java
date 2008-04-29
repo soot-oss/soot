@@ -303,7 +303,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt end_label_compute() {  return newLabel();  }
 
-    // Declared in Statements.jrag at line 194
+    // Declared in Statements.jrag at line 202
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
@@ -311,7 +311,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt break_label_compute() {  return end_label();  }
 
-    // Declared in Statements.jrag at line 213
+    // Declared in Statements.jrag at line 221
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;

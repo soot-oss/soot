@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2008 Eric Bodden
+ * Copyright (C) 2008 Torbjorn Ekman
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +19,9 @@
  */
 package soot;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +33,12 @@ import soot.JastAddJ.MethodDecl;
 import soot.JastAddJ.Program;
 import soot.JastAddJ.TypeDecl;
 
+/**
+ * An {@link IInitialResolver} for the JastAdd frontend.
+ * 
+ * @author Torbjorn Ekman
+ * @author Eric Bodden
+ */
 public class JastAddInitialResolver implements IInitialResolver {
 
     public JastAddInitialResolver(soot.Singletons.Global g){}
@@ -42,50 +51,95 @@ public class JastAddInitialResolver implements IInitialResolver {
 	
 	public void formAst(String fullPath, List<String> locations, String className) {
 	      Program program = SootResolver.v().getProgram();
-	      program.addSourceFile(fullPath);
-	      int i = program.getNumCompilationUnit() - 1;
-	      while(i >= 0 && !fullPath.equals(program.getCompilationUnit(i).pathName()))
-	          i--;
-	      if(i >= 0) {
-	          CompilationUnit u = program.getCompilationUnit(i);
+    	  CompilationUnit u = program.getCachedOrLoadCompilationUnit(fullPath);
+    	  if(u != null && !u.isResolved) {
+    		  u.isResolved = true;
+	          java.util.ArrayList<soot.JastAddJ.Problem> errors = new java.util.ArrayList<soot.JastAddJ.Problem>();
+	          u.errorCheck(errors);
+	          if(!errors.isEmpty()) {
+	        	  for(soot.JastAddJ.Problem p : errors)
+	        		  G.v().out.println(p);
+	        	  //die
+	        	  throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED,
+	        			  "there were errors during parsing and/or type checking (JastAdd frontend)");
+	          }
+	          u.transformation();
 	          u.jimplify1phase1();
 	          u.jimplify1phase2();
-	          if(classNameToCU.containsKey(className)) {
-	              throw new IllegalStateException();
-	          }
-	          classNameToCU.put(className, u);
+	  		  HashSet<SootClass> types = new HashSet<SootClass>();
+			  for(TypeDecl typeDecl : u.getTypeDecls())
+				  collectTypeDecl(typeDecl, types);
+			  for(SootClass sc : types)
+				  classNameToCU.put(sc.getName(), u);
 	      }
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void collectTypeDecl(TypeDecl typeDecl, HashSet<SootClass> types) {
+		types.add(typeDecl.getSootClassDecl());
+		for(TypeDecl nestedType : (Collection<TypeDecl>)typeDecl.nestedTypes()) {
+			collectTypeDecl(nestedType, types);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private TypeDecl findNestedTypeDecl(TypeDecl typeDecl, SootClass sc) {
+		if(typeDecl.sootClass() == sc)
+			return typeDecl;
+		for(TypeDecl nestedType : (Collection<TypeDecl>)typeDecl.nestedTypes()) {
+			TypeDecl t = findNestedTypeDecl(nestedType, sc);
+			if(t != null)
+				return t;
+		}
+		return null;			
+	}
 
-	public Dependencies resolveFromJavaFile(SootClass sc) {
+	public Dependencies resolveFromJavaFile(SootClass sootclass) {
+		CompilationUnit u = classNameToCU.get(sootclass.getName());
+		HashSet<SootClass> types = new HashSet<SootClass>();
+		for(TypeDecl typeDecl : u.getTypeDecls()) {
+			collectTypeDecl(typeDecl, types);
+		}
 		Dependencies deps = new Dependencies(); 
+		u.collectTypesToHierarchy(deps.typesToHierarchy);
+	  	u.collectTypesToSignatures(deps.typesToSignature);
+		
+		for(SootClass sc : types) {
 		for (SootMethod m : sc.getMethods()) {
 			m.setSource(new MethodSource() {
 				public Body getBody(SootMethod m, String phaseName) {
-					CompilationUnit u = classNameToCU.get(m.getDeclaringClass().getName());
-					soot.JastAddJ.List<TypeDecl> typeDeclList = u.getTypeDeclList();
-					for (TypeDecl typeDecl : typeDeclList) {
-						soot.JastAddJ.List<BodyDecl> bodyDeclList = typeDecl.getBodyDeclList();
-						for (BodyDecl bodyDecl : bodyDeclList) {
-							if(bodyDecl instanceof MethodDecl) {
-								MethodDecl methodDecl = (MethodDecl) bodyDecl;
-								if(m.equals(methodDecl.sootMethod))
-									methodDecl.jimplify2();
-							} else if(bodyDecl instanceof ConstructorDecl) {
-								ConstructorDecl constrDecl = (ConstructorDecl) bodyDecl;
-								if(m.equals(constrDecl.sootMethod))
-									constrDecl.jimplify2();
+					SootClass sc = m.getDeclaringClass();
+					CompilationUnit u = classNameToCU.get(sc.getName());
+					for(TypeDecl typeDecl : u.getTypeDecls()) {
+						typeDecl = findNestedTypeDecl(typeDecl, sc);
+						if(typeDecl != null) {
+							if(typeDecl.clinit == m) {
+								typeDecl.jimplify2clinit();
+								return m.getActiveBody();
 							}
+							for(BodyDecl bodyDecl : typeDecl.getBodyDecls()) {
+								if(bodyDecl instanceof MethodDecl) {
+									MethodDecl methodDecl = (MethodDecl) bodyDecl;
+									if(m.equals(methodDecl.sootMethod)) {
+										methodDecl.jimplify2();
+										return m.getActiveBody();
+									}
+								} else if(bodyDecl instanceof ConstructorDecl) {
+									ConstructorDecl constrDecl = (ConstructorDecl) bodyDecl;
+									if(m.equals(constrDecl.sootMethod)) {
+										constrDecl.jimplify2();
+										return m.getActiveBody();
+									}
+								}
+							}
+							
 						}
-					}					
-					return m.getActiveBody();
+					}
+					throw new RuntimeException("Could not find body for " + m.getSignature() + " in " + m.getDeclaringClass().getName());
 				}
 			});
-			CompilationUnit u = classNameToCU.get(m.getDeclaringClass().getName());
-		  	u.collectTypesToHierarchy(deps.typesToHierarchy);
-		  	u.collectTypesToSignatures(deps.typesToSignature);
 		}
-		
+		}
         return deps;
 	}
 

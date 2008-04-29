@@ -87,7 +87,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
       error("*** The type of the expression must be a reference");
   }
 
-    // Declared in Statements.jrag at line 276
+    // Declared in Statements.jrag at line 284
 
 
   public void emitFinallyCode(Body b) {
@@ -95,7 +95,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
     b.add(Jimple.v().newExitMonitorStmt(monitor(b)));
   }
 
-    // Declared in Statements.jrag at line 377
+    // Declared in Statements.jrag at line 408
 
 
   // TODO: SynchronizedStmt
@@ -259,7 +259,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     private boolean canCompleteNormally_compute() {  return getBlock().canCompleteNormally();  }
 
     protected java.util.Map monitor_Body_values;
-    // Declared in Statements.jrag at line 272
+    // Declared in Statements.jrag at line 280
  @SuppressWarnings({"unchecked", "cast"})     public soot.Local monitor(Body b) {
         Object _parameters = b;
 if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
@@ -279,7 +279,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_begin_computed = false;
     protected soot.jimple.Stmt label_begin_value;
-    // Declared in Statements.jrag at line 370
+    // Declared in Statements.jrag at line 401
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_begin() {
         if(label_begin_computed)
             return label_begin_value;
@@ -295,7 +295,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_end_computed = false;
     protected soot.jimple.Stmt label_end_value;
-    // Declared in Statements.jrag at line 371
+    // Declared in Statements.jrag at line 402
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_end() {
         if(label_end_computed)
             return label_end_value;
@@ -311,7 +311,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_finally_computed = false;
     protected soot.jimple.Stmt label_finally_value;
-    // Declared in Statements.jrag at line 372
+    // Declared in Statements.jrag at line 403
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally() {
         if(label_finally_computed)
             return label_finally_value;
@@ -327,7 +327,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_finally_block_computed = false;
     protected soot.jimple.Stmt label_finally_block_value;
-    // Declared in Statements.jrag at line 373
+    // Declared in Statements.jrag at line 404
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally_block() {
         if(label_finally_block_computed)
             return label_finally_block_value;
@@ -343,7 +343,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_exception_handler_computed = false;
     protected soot.jimple.Stmt label_exception_handler_value;
-    // Declared in Statements.jrag at line 374
+    // Declared in Statements.jrag at line 405
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_exception_handler() {
         if(label_exception_handler_computed)
             return label_exception_handler_value;
@@ -357,7 +357,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     private soot.jimple.Stmt label_exception_handler_compute() {  return newLabel();  }
 
-    // Declared in Statements.jrag at line 356
+    // Declared in Statements.jrag at line 387
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
         TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         return typeThrowable_value;

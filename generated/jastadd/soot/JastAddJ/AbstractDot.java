@@ -73,14 +73,14 @@ public class AbstractDot extends Access implements Cloneable {
 
   public void emitEvalBranch(Body b) { lastAccess().emitEvalBranch(b); }
 
-    // Declared in Expressions.jrag at line 184
+    // Declared in Expressions.jrag at line 185
 
 
   public soot.Value eval(Body b) {
     return lastAccess().eval(b);
   }
 
-    // Declared in Expressions.jrag at line 250
+    // Declared in Expressions.jrag at line 251
 
 
   public soot.Value emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
@@ -162,7 +162,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     private Constant constant_compute() {  return lastAccess().constant();  }
 
-    // Declared in ConstantExpression.jrag at line 479
+    // Declared in ConstantExpression.jrag at line 495
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

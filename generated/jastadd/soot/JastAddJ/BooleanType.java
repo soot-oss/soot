@@ -231,7 +231,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(2);
     }
 
-    // Declared in ConstantExpression.jrag at line 301
+    // Declared in ConstantExpression.jrag at line 317
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
@@ -239,7 +239,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
 
     private Constant cast_compute(Constant c) {  return Constant.create(c.booleanValue());  }
 
-    // Declared in ConstantExpression.jrag at line 402
+    // Declared in ConstantExpression.jrag at line 418
  @SuppressWarnings({"unchecked", "cast"})     public Constant andBitwise(Constant c1, Constant c2) {
         Constant andBitwise_Constant_Constant_value = andBitwise_compute(c1, c2);
         return andBitwise_Constant_Constant_value;
@@ -247,7 +247,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
 
     private Constant andBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.booleanValue() & c2.booleanValue());  }
 
-    // Declared in ConstantExpression.jrag at line 410
+    // Declared in ConstantExpression.jrag at line 426
  @SuppressWarnings({"unchecked", "cast"})     public Constant xorBitwise(Constant c1, Constant c2) {
         Constant xorBitwise_Constant_Constant_value = xorBitwise_compute(c1, c2);
         return xorBitwise_Constant_Constant_value;
@@ -255,7 +255,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
 
     private Constant xorBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.booleanValue() ^ c2.booleanValue());  }
 
-    // Declared in ConstantExpression.jrag at line 418
+    // Declared in ConstantExpression.jrag at line 434
  @SuppressWarnings({"unchecked", "cast"})     public Constant orBitwise(Constant c1, Constant c2) {
         Constant orBitwise_Constant_Constant_value = orBitwise_compute(c1, c2);
         return orBitwise_Constant_Constant_value;
@@ -263,7 +263,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
 
     private Constant orBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.booleanValue() | c2.booleanValue());  }
 
-    // Declared in ConstantExpression.jrag at line 428
+    // Declared in ConstantExpression.jrag at line 444
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
@@ -271,7 +271,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
 
     private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.booleanValue() : c2.booleanValue());  }
 
-    // Declared in ConstantExpression.jrag at line 532
+    // Declared in ConstantExpression.jrag at line 548
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;

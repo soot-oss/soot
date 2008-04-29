@@ -32,11 +32,11 @@ public class RShiftExpr extends ShiftExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 775
+    // Declared in Expressions.jrag at line 777
 
   public soot.Value eval(Body b) { return emitShiftExpr(b); }
 
-    // Declared in Expressions.jrag at line 799
+    // Declared in Expressions.jrag at line 801
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
     return asLocal(b, Jimple.v().newShrExpr(asImmediate(b, left), asImmediate(b, right)));

@@ -85,13 +85,13 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
     return new ArrayTypeAccess(componentType().createQualifiedAccess());
   }
 
-    // Declared in Generics.jrag at line 730
+    // Declared in Generics.jrag at line 733
 
   public Access substitute(Parameterization parTypeDecl) {
     return new ArrayTypeAccess(componentType().substitute(parTypeDecl));
   }
 
-    // Declared in Generics.jrag at line 766
+    // Declared in Generics.jrag at line 769
 
   public Access substituteReturnType(Parameterization parTypeDecl) {
     return new ArrayTypeAccess(componentType().substituteReturnType(parTypeDecl));

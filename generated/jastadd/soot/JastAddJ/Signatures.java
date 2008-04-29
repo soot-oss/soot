@@ -3,23 +3,23 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
 public class Signatures extends java.lang.Object {
-    // Declared in BytecodeReader.jrag at line 550
+    // Declared in BytecodeReader.jrag at line 549
 
     // simple parser framework
     String data;
 
-    // Declared in BytecodeReader.jrag at line 551
+    // Declared in BytecodeReader.jrag at line 550
 
     int pos;
 
-    // Declared in BytecodeReader.jrag at line 552
+    // Declared in BytecodeReader.jrag at line 551
 
     public Signatures(String s) {
       data = s;
       pos = 0;
     }
 
-    // Declared in BytecodeReader.jrag at line 557
+    // Declared in BytecodeReader.jrag at line 556
 
 
     public boolean next(String s) {
@@ -29,7 +29,7 @@ public class Signatures extends java.lang.Object {
       return true;
     }
 
-    // Declared in BytecodeReader.jrag at line 564
+    // Declared in BytecodeReader.jrag at line 563
 
 
     public void eat(String s) {
@@ -39,14 +39,14 @@ public class Signatures extends java.lang.Object {
       pos += s.length();
     }
 
-    // Declared in BytecodeReader.jrag at line 571
+    // Declared in BytecodeReader.jrag at line 570
 
 
     public void error(String s) {
       throw new Error("Expected " + s + " but found " + data.substring(pos));
     }
 
-    // Declared in BytecodeReader.jrag at line 575
+    // Declared in BytecodeReader.jrag at line 574
 
 
     public String identifier() {
@@ -58,14 +58,14 @@ public class Signatures extends java.lang.Object {
       return result;
     }
 
-    // Declared in BytecodeReader.jrag at line 584
+    // Declared in BytecodeReader.jrag at line 583
 
 
     public boolean eof() {
       return pos == data.length();
     }
 
-    // Declared in BytecodeReader.jrag at line 590
+    // Declared in BytecodeReader.jrag at line 589
 
 
     // 4.4.4 Signatures
@@ -104,7 +104,7 @@ public class Signatures extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 624
+    // Declared in BytecodeReader.jrag at line 623
 
 
     public static class FieldSignature extends Signatures {
@@ -118,7 +118,7 @@ public class Signatures extends java.lang.Object {
       private Access fieldTypeAccess;
     }
 
-    // Declared in BytecodeReader.jrag at line 635
+    // Declared in BytecodeReader.jrag at line 634
 
 
     public static class MethodSignature extends Signatures {
@@ -174,12 +174,12 @@ public class Signatures extends java.lang.Object {
       public Access returnType() { return returnType; }
     }
 
-    // Declared in BytecodeReader.jrag at line 688
+    // Declared in BytecodeReader.jrag at line 687
 
 
     protected List typeParameters;
 
-    // Declared in BytecodeReader.jrag at line 690
+    // Declared in BytecodeReader.jrag at line 689
 
 
     void formalTypeParameters() {
@@ -191,7 +191,7 @@ public class Signatures extends java.lang.Object {
       eat(">");
     }
 
-    // Declared in BytecodeReader.jrag at line 699
+    // Declared in BytecodeReader.jrag at line 698
 
 
     TypeVariable formalTypeParameter() {
@@ -208,7 +208,7 @@ public class Signatures extends java.lang.Object {
       return new TypeVariable(new Modifiers(new List()), id, new List(), bounds);
     }
 
-    // Declared in BytecodeReader.jrag at line 713
+    // Declared in BytecodeReader.jrag at line 712
 
 
     Access classBound() {
@@ -222,7 +222,7 @@ public class Signatures extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 724
+    // Declared in BytecodeReader.jrag at line 723
 
 
     Access interfaceBound() {
@@ -230,7 +230,7 @@ public class Signatures extends java.lang.Object {
       return fieldTypeSignature();
     }
 
-    // Declared in BytecodeReader.jrag at line 730
+    // Declared in BytecodeReader.jrag at line 729
 
 
 
@@ -246,13 +246,13 @@ public class Signatures extends java.lang.Object {
       return null; // error never returns
     }
 
-    // Declared in BytecodeReader.jrag at line 741
+    // Declared in BytecodeReader.jrag at line 740
 
     boolean nextIsFieldTypeSignature() {
       return next("L") || next("[") || next("T");
     }
 
-    // Declared in BytecodeReader.jrag at line 745
+    // Declared in BytecodeReader.jrag at line 744
 
 
     Access classTypeSignature() {
@@ -267,10 +267,9 @@ public class Signatures extends java.lang.Object {
         packageName.append(typeName);
         typeName = identifier();
       }
-      String[] names = typeName.split("\\$");
-      Access a = new TypeAccess(packageName.toString(), names[0]);
-      for(int i = 1; i < names.length; i++)
-        a = a.qualifiesAccess(new TypeAccess(names[i]));
+      Access a = typeName.indexOf('$') == -1 ?
+        new TypeAccess(packageName.toString(), typeName) : 
+        new BytecodeTypeAccess(packageName.toString(), typeName);
       if(next("<")) { // type arguments of top level type
         a = new ParTypeAccess(a, typeArguments());
       }
@@ -281,23 +280,21 @@ public class Signatures extends java.lang.Object {
       return a;
     }
 
-    // Declared in BytecodeReader.jrag at line 771
+    // Declared in BytecodeReader.jrag at line 769
 
 
     Access classTypeSignatureSuffix() {
       eat(".");
       String id = identifier();
-      String[] names = id.split("\\$");
-      Access a = new TypeAccess(names[0]);
-      for(int i = 1; i < names.length; i++)
-        a = a.qualifiesAccess(new TypeAccess(names[i]));
+      Access a = id.indexOf('$') == -1 ?
+        new TypeAccess(id) : new BytecodeTypeAccess("", id);
       if(next("<")) {
         a = new ParTypeAccess(a, typeArguments());
       }
       return a;
     }
 
-    // Declared in BytecodeReader.jrag at line 784
+    // Declared in BytecodeReader.jrag at line 780
 
 
     Access typeVariableSignature() {
@@ -307,7 +304,7 @@ public class Signatures extends java.lang.Object {
       return new TypeAccess(id);
     }
 
-    // Declared in BytecodeReader.jrag at line 791
+    // Declared in BytecodeReader.jrag at line 787
 
 
     List typeArguments() {
@@ -320,7 +317,7 @@ public class Signatures extends java.lang.Object {
       return list;
     }
 
-    // Declared in BytecodeReader.jrag at line 801
+    // Declared in BytecodeReader.jrag at line 797
 
 
     Access typeArgument() {
@@ -341,7 +338,7 @@ public class Signatures extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 819
+    // Declared in BytecodeReader.jrag at line 815
 
 
     Access arrayTypeSignature() {
@@ -349,7 +346,7 @@ public class Signatures extends java.lang.Object {
       return new ArrayTypeAccess(typeSignature());
     }
 
-    // Declared in BytecodeReader.jrag at line 824
+    // Declared in BytecodeReader.jrag at line 820
 
 
     Access typeSignature() {
@@ -361,7 +358,7 @@ public class Signatures extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 833
+    // Declared in BytecodeReader.jrag at line 829
 
 
     Access baseType() {
@@ -377,7 +374,7 @@ public class Signatures extends java.lang.Object {
       return null; // error never returns
     }
 
-    // Declared in BytecodeReader.jrag at line 846
+    // Declared in BytecodeReader.jrag at line 842
 
 
     public static void main(String[] args) {

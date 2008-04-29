@@ -99,7 +99,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
   public boolean mayHaveRewrite() { return false; }
 
-    // Declared in ConstantExpression.jrag at line 220
+    // Declared in ConstantExpression.jrag at line 233
  @SuppressWarnings({"unchecked", "cast"})     public boolean isHex() {
         boolean isHex_value = isHex_compute();
         return isHex_value;
@@ -107,7 +107,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     private boolean isHex_compute() {  return getLITERAL().toLowerCase().startsWith("0x");  }
 
-    // Declared in ConstantExpression.jrag at line 221
+    // Declared in ConstantExpression.jrag at line 234
  @SuppressWarnings({"unchecked", "cast"})     public boolean isOctal() {
         boolean isOctal_value = isOctal_compute();
         return isOctal_value;
@@ -115,7 +115,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     private boolean isOctal_compute() {  return getLITERAL().startsWith("0");  }
 
-    // Declared in ConstantExpression.jrag at line 222
+    // Declared in ConstantExpression.jrag at line 235
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDecimal() {
         boolean isDecimal_value = isDecimal_compute();
         return isDecimal_value;
@@ -123,7 +123,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     private boolean isDecimal_compute() {  return !isHex() && !isOctal();  }
 
-    // Declared in ConstantExpression.jrag at line 229
+    // Declared in ConstantExpression.jrag at line 242
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPositive() {
         boolean isPositive_value = isPositive_compute();
         return isPositive_value;
@@ -131,7 +131,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     private boolean isPositive_compute() {  return !getLITERAL().startsWith("-");  }
 
-    // Declared in ConstantExpression.jrag at line 242
+    // Declared in ConstantExpression.jrag at line 255
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;
@@ -148,6 +148,9 @@ public class IntegerLiteral extends Literal implements Cloneable {
     try {
       l = Literal.parseLong(getLITERAL());
     } catch (NumberFormatException e) {
+      Constant c = Constant.create(0L);
+      c.error = true;
+      return c;
     }
     Constant c = Constant.create((int)l);
     if(isDecimal() && l != (int)l)

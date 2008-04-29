@@ -41,7 +41,7 @@ public abstract class Binary extends Expr implements Cloneable {
     getRightOperand().toString(s);
   }
 
-    // Declared in Expressions.jrag at line 748
+    // Declared in Expressions.jrag at line 750
 
 
   public soot.Value eval(Body b) {
@@ -57,7 +57,7 @@ public abstract class Binary extends Expr implements Cloneable {
     ));
   }
 
-    // Declared in Expressions.jrag at line 761
+    // Declared in Expressions.jrag at line 763
 
 
   public soot.Value emitShiftExpr(Body b) {
@@ -73,7 +73,7 @@ public abstract class Binary extends Expr implements Cloneable {
     ));
   }
 
-    // Declared in Expressions.jrag at line 778
+    // Declared in Expressions.jrag at line 780
 
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
@@ -147,7 +147,7 @@ public abstract class Binary extends Expr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 500
+    // Declared in ConstantExpression.jrag at line 516
 private TypeDecl refined_ConstantExpression_binaryNumericPromotedType()
 {
     TypeDecl leftType = left().type();
@@ -222,7 +222,7 @@ private TypeDecl refined_ConstantExpression_binaryNumericPromotedType()
 
     private boolean isConstant_compute() {  return getLeftOperand().isConstant() && getRightOperand().isConstant();  }
 
-    // Declared in ConstantExpression.jrag at line 498
+    // Declared in ConstantExpression.jrag at line 514
  @SuppressWarnings({"unchecked", "cast"})     public Expr left() {
         Expr left_value = left_compute();
         return left_value;
@@ -230,7 +230,7 @@ private TypeDecl refined_ConstantExpression_binaryNumericPromotedType()
 
     private Expr left_compute() {  return getLeftOperand();  }
 
-    // Declared in ConstantExpression.jrag at line 499
+    // Declared in ConstantExpression.jrag at line 515
  @SuppressWarnings({"unchecked", "cast"})     public Expr right() {
         Expr right_value = right_compute();
         return right_value;

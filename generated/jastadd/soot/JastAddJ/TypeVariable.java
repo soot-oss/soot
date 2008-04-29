@@ -132,7 +132,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     
   }
 
-    // Declared in Generics.jrag at line 733
+    // Declared in Generics.jrag at line 736
 
   public Access substitute(Parameterization parTypeDecl) {
     if(parTypeDecl.isRawType())
@@ -140,7 +140,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     return parTypeDecl.substitute(this).createBoundAccess();
   }
 
-    // Declared in Generics.jrag at line 778
+    // Declared in Generics.jrag at line 781
 
 
   public Access substituteReturnType(Parameterization parTypeDecl) {
@@ -170,7 +170,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     return typeDecl.createBoundAccess();
   }
 
-    // Declared in Generics.jrag at line 812
+    // Declared in Generics.jrag at line 815
 
   public Access substituteParameterType(Parameterization parTypeDecl) {
     if(parTypeDecl.isRawType())
@@ -185,7 +185,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     return typeDecl.createBoundAccess();
   }
 
-    // Declared in Generics.jrag at line 1280
+    // Declared in Generics.jrag at line 1283
 
 
   public Access createQualifiedAccess() {
@@ -523,7 +523,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     for(int i = 0; i < getNumTypeBound(); i++) {
       for(Iterator iter = getTypeBound(i).type().memberMethods(name).iterator(); iter.hasNext(); ) {
         MethodDecl decl = (MethodDecl)iter.next();
-        if(!decl.isPrivate())
+        //if(decl.accessibleFrom(hostType()))
           list.add(decl);
       }
     }
@@ -549,7 +549,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     for(int i = 0; i < getNumTypeBound(); i++) {
       for(Iterator iter = getTypeBound(i).type().memberFields(name).iterator(); iter.hasNext(); ) {
         FieldDeclaration decl = (FieldDeclaration)iter.next();
-        if(!decl.isPrivate())
+        //if(decl.accessibleFrom(hostType()))
           set = set.add(decl);
       }
     }
@@ -632,7 +632,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     protected boolean lubType_computed = false;
     protected TypeDecl lubType_value;
-    // Declared in Generics.jrag at line 771
+    // Declared in Generics.jrag at line 774
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lubType() {
         if(lubType_computed)
             return lubType_value;
@@ -708,7 +708,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean usesTypeVariable_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 1284
+    // Declared in Generics.jrag at line 1287
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFrom(TypeDecl type) {
         Object _parameters = type;
 if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
@@ -724,7 +724,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean accessibleFrom_compute(TypeDecl type) {  return true;  }
 
-    // Declared in Generics.jrag at line 1286
+    // Declared in Generics.jrag at line 1289
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
         if(typeName_computed)
             return typeName_value;
@@ -932,10 +932,10 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     private boolean supertypeTypeVariable_compute(TypeVariable type) {
     if(type == this)
       return true;
-    for(int i = 0; i < type.getNumTypeBound(); i++) {
+    for(int i = 0; i < getNumTypeBound(); i++) {
       boolean found = false;
-      for(int j = 0; !found && j < getNumTypeBound(); j++) {
-        if(type.getSubstitutedTypeBound(i, this).type().subtype(getTypeBound(j).type()))
+      for(int j = 0; !found && j < type.getNumTypeBound(); j++) {
+        if(type.getSubstitutedTypeBound(j, this).type().subtype(getTypeBound(i).type()))
           found = true;
       }
       if(!found)
@@ -1022,13 +1022,13 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in Generics.jrag at line 769
+    // Declared in Generics.jrag at line 772
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
         return typeObject_value;
     }
 
-    // Declared in Generics.jrag at line 811
+    // Declared in Generics.jrag at line 814
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNull() {
         TypeDecl typeNull_value = getParent().Define_TypeDecl_typeNull(this, null);
         return typeNull_value;

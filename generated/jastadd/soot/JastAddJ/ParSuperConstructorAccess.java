@@ -32,7 +32,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
         }
         return res;
     }
-    // Declared in GenericMethods.jrag at line 133
+    // Declared in GenericMethods.jrag at line 144
 
   public void toString(StringBuffer s) {
     s.append("<");
@@ -45,7 +45,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
   }
 
     // Declared in GenericMethods.ast at line 3
-    // Declared in GenericMethods.ast line 11
+    // Declared in GenericMethods.ast line 14
 
     public ParSuperConstructorAccess() {
         super();
@@ -58,7 +58,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
     // Declared in GenericMethods.ast at line 12
 
 
-    // Declared in GenericMethods.ast line 11
+    // Declared in GenericMethods.ast line 14
     public ParSuperConstructorAccess(String p0, List<Expr> p1, List<Access> p2) {
         setID(p0);
         setChild(p1, 0);
@@ -68,7 +68,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
     // Declared in GenericMethods.ast at line 19
 
 
-    // Declared in GenericMethods.ast line 11
+    // Declared in GenericMethods.ast line 14
     public ParSuperConstructorAccess(beaver.Symbol p0, List<Expr> p1, List<Access> p2) {
         setID(p0);
         setChild(p1, 0);
@@ -153,7 +153,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
     }
 
     // Declared in GenericMethods.ast at line 2
-    // Declared in GenericMethods.ast line 11
+    // Declared in GenericMethods.ast line 14
     public void setTypeArgumentList(List<Access> list) {
         setChild(list, 1);
     }
@@ -218,7 +218,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
         return (List<Access>)getChildNoTransform(1);
     }
 
-    // Declared in GenericMethods.jrag at line 94
+    // Declared in GenericMethods.jrag at line 105
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -227,7 +227,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 95
+    // Declared in GenericMethods.jrag at line 106
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

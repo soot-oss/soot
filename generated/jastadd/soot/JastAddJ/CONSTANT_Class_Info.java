@@ -37,7 +37,7 @@ public class CONSTANT_Class_Info extends CONSTANT_Info {
 
     public String simpleName() {
       String name = name();
-      name = name.replace('$', '.');
+      //name = name.replace('$', '.');
       int pos = name.lastIndexOf('.');
       return name.substring(pos + 1, name.length());
     }
@@ -47,7 +47,7 @@ public class CONSTANT_Class_Info extends CONSTANT_Info {
 
     public String packageDecl() {
       String name = name();
-      name = name.replace('$', '.');
+      //name = name.replace('$', '.');
       int pos = name.lastIndexOf('.');
       if(pos == -1)
         return "";
@@ -59,24 +59,13 @@ public class CONSTANT_Class_Info extends CONSTANT_Info {
 
     public Access access() {
       String name = name();
-      name = name.replace('$', '.');
-      int index = -1;
-      int pos = 0;
-      Access result = null;
-      do {
-        pos = name.indexOf('.', index+1);
-        if(pos == -1)
-          pos = name.length();
-        String s = name.substring(index+1, pos);
-        if(index == -1) {
-          result = new ParseName(s);
-        }
-        else {
-          result = result.qualifiesAccess(new ParseName(s));
-        }
-        index = pos;
-      } while(pos != name.length());
-      return result;
+      int pos = name.lastIndexOf('.');
+      String typeName = name.substring(pos + 1, name.length());
+      String packageName = pos == -1 ? "" : name.substring(0, pos);
+      if(typeName.indexOf('$') != -1)
+        return new BytecodeTypeAccess(packageName, typeName);
+      else
+        return new TypeAccess(packageName, typeName);
     }
 
 

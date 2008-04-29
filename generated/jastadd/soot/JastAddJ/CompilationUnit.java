@@ -155,6 +155,11 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
+    // Declared in ClassLoading.jrag at line 12
+
+
+  public boolean isResolved = false;
+
     // Declared in java.ast at line 3
     // Declared in java.ast line 4
 

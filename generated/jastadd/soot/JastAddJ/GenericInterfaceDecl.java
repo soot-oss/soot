@@ -62,7 +62,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
       error(" generic interface " + typeName() + " may not directly or indirectly inherit java.lang.Throwable");
   }
 
-    // Declared in Generics.jrag at line 1132
+    // Declared in Generics.jrag at line 1135
 
   public InterfaceDecl p(Parameterization parTypeDecl) {
     GenericInterfaceDecl c = new GenericInterfaceDeclSubstituted(
@@ -548,7 +548,7 @@ if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAcce
     private TypeDecl lookupParTypeDecl_compute(ParTypeAccess p) {
     for(int i = 0; i < getNumParTypeDecl(); i++) {
       ParTypeDecl decl = (ParTypeDecl)getParTypeDecl(i);
-      if(decl.sameSignature(p))
+      if(!decl.isRawType() && decl.sameSignature(p))
         return (TypeDecl)decl;
     }
     ParInterfaceDecl typeDecl = new ParInterfaceDecl();
@@ -581,7 +581,7 @@ if(lookupParTypeDecl_ArrayList_values == null) lookupParTypeDecl_ArrayList_value
     private TypeDecl lookupParTypeDecl_compute(ArrayList list) {
     for(int i = 0; i < getNumParTypeDecl(); i++) {
       ParTypeDecl decl = (ParTypeDecl)getParTypeDecl(i);
-      if(decl.isRawType() ? list.isEmpty() : decl.sameSignature(list))
+      if(decl.isRawType() ? list.isEmpty() : (!list.isEmpty() && decl.sameSignature(list)))
         return (TypeDecl)decl;
     }
     ParInterfaceDecl typeDecl = list.size() == 0 ? new RawInterfaceDecl() : new ParInterfaceDecl();

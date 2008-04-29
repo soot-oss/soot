@@ -204,7 +204,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1122
+    // Declared in Generics.jrag at line 1125
 
   public InterfaceDecl p(Parameterization parTypeDecl) {
     InterfaceDecl c = new InterfaceDeclSubstituted(
@@ -252,11 +252,15 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in EmitJimple.jrag at line 170
+    // Declared in EmitJimple.jrag at line 184
 
 
   public void jimplify1phase2() {
     SootClass sc = getSootClassDecl();
+    sc.setResolvingLevel(SootClass.DANGLING);
+    sc.setModifiers(sootTypeModifiers());
+    sc.setApplicationClass();
+    sc.addTag(new soot.tagkit.SourceFileTag(sourceNameWithoutPath()));
     sc.setSuperclass(typeObject().getSootClassDecl());
     for(Iterator iter = superinterfacesIterator(); iter.hasNext(); ) {
       TypeDecl typeDecl = (TypeDecl)iter.next();
@@ -265,7 +269,9 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     }
     if(isNestedType())
       sc.setOuterClass(enclosingType().getSootClassDecl());
+    sc.setResolvingLevel(SootClass.HIERARCHY);
     super.jimplify1phase2();
+    sc.setResolvingLevel(SootClass.SIGNATURES);
   }
 
     // Declared in java.ast at line 3
@@ -486,7 +492,7 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
 
     private Collection lookupSuperConstructor_compute() {  return typeObject().constructors();  }
 
-    // Declared in LookupMethod.jrag at line 325
+    // Declared in MethodSignature.jrag at line 372
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsSignatureMap() {
         if(methodsSignatureMap_computed)
             return methodsSignatureMap_value;
@@ -505,7 +511,8 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
       for(Iterator iter = typeDecl.methodsIterator(); iter.hasNext(); ) {
         MethodDecl m = (MethodDecl)iter.next();
         if(!m.isPrivate() && m.accessibleFrom(this) && !localMethodsSignatureMap().containsKey(m.signature()))
-          putSimpleSetElement(map, m.signature(), m);
+          if(!(m instanceof MethodDeclSubstituted) || !localMethodsSignatureMap().containsKey(m.sourceMethodDecl().signature()))
+            putSimpleSetElement(map, m.signature(), m);
       }
     }
     for(Iterator iter = typeObject().methodsIterator(); iter.hasNext(); ) {
@@ -935,7 +942,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return false;
   }
 
-    // Declared in EmitJimple.jrag at line 76
+    // Declared in EmitJimpleRefinements.jrag at line 54
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
         if(sootClass_computed)
             return sootClass_value;
@@ -950,10 +957,8 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     private SootClass sootClass_compute() {
     if(Program.verbose())
       System.out.println("Creating from source " + jvmName());
-    SootClass sc = new SootClass(jvmName(), sootTypeModifiers());
-    Scene.v().addClass(sc);
-    sc.setApplicationClass();
-    sc.addTag(new soot.tagkit.SourceFileTag(sourceNameWithoutPath()));
+    SootClass sc = SootResolver.v().makeClassRef(jvmName());
+    sc.setModifiers(sootTypeModifiers()); // turn it into an interface
     return sc;
   }
 
@@ -965,7 +970,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | soot.Modifier.INTERFACE;  }
 
-    // Declared in GenericsCodegen.jrag at line 330
+    // Declared in GenericsCodegen.jrag at line 332
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;

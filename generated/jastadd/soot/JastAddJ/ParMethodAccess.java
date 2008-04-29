@@ -44,7 +44,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
         error("can not have type parameters on a non generic method");
       else {
         ParMethodDecl m = (ParMethodDecl)decl();
-        if(m.numTypeParameter() != getNumTypeArgument())
+        if(!(m instanceof RawMethodDecl) && m.numTypeParameter() != getNumTypeArgument())
           error("generic method " + m.signature() + " requires " + m.numTypeParameter() + " type arguments");
         else {
         }
@@ -52,7 +52,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     }
   }
 
-    // Declared in GenericMethods.jrag at line 115
+    // Declared in GenericMethods.jrag at line 126
 
 
   public void toString(StringBuffer s) {
@@ -66,7 +66,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   }
 
     // Declared in GenericMethods.ast at line 3
-    // Declared in GenericMethods.ast line 7
+    // Declared in GenericMethods.ast line 10
 
     public ParMethodAccess() {
         super();
@@ -79,7 +79,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     // Declared in GenericMethods.ast at line 12
 
 
-    // Declared in GenericMethods.ast line 7
+    // Declared in GenericMethods.ast line 10
     public ParMethodAccess(String p0, List<Expr> p1, List<Access> p2) {
         setID(p0);
         setChild(p1, 0);
@@ -89,7 +89,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     // Declared in GenericMethods.ast at line 19
 
 
-    // Declared in GenericMethods.ast line 7
+    // Declared in GenericMethods.ast line 10
     public ParMethodAccess(beaver.Symbol p0, List<Expr> p1, List<Access> p2) {
         setID(p0);
         setChild(p1, 0);
@@ -174,7 +174,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     }
 
     // Declared in GenericMethods.ast at line 2
-    // Declared in GenericMethods.ast line 7
+    // Declared in GenericMethods.ast line 10
     public void setTypeArgumentList(List<Access> list) {
         setChild(list, 1);
     }
@@ -239,7 +239,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
         return (List<Access>)getChildNoTransform(1);
     }
 
-    // Declared in MethodSignature.jrag at line 292
+    // Declared in MethodSignature.jrag at line 296
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList typeArguments(MethodDecl m) {
         Object _parameters = m;
 if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = new java.util.HashMap(4);
@@ -260,7 +260,7 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
     return typeArguments;
   }
 
-    // Declared in GenericMethods.jrag at line 78
+    // Declared in GenericMethods.jrag at line 89
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -269,7 +269,7 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 79
+    // Declared in GenericMethods.jrag at line 90
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

@@ -327,7 +327,7 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
         return tokenConstructorDecl_Original;
     }
 
-    // Declared in Generics.jrag at line 1302
+    // Declared in Generics.jrag at line 1305
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed)
             return sourceConstructorDecl_value;
@@ -341,7 +341,7 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
 
     private ConstructorDecl sourceConstructorDecl_compute() {  return getOriginal().sourceConstructorDecl();  }
 
-    // Declared in GenericsCodegen.jrag at line 312
+    // Declared in GenericsCodegen.jrag at line 314
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl erasedConstructor() {
         ConstructorDecl erasedConstructor_value = erasedConstructor_compute();
         return erasedConstructor_value;

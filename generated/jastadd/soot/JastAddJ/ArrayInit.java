@@ -74,7 +74,7 @@ public class ArrayInit extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 648
+    // Declared in Expressions.jrag at line 650
 
 
   public soot.Value eval(Body b) {
@@ -192,7 +192,7 @@ public class ArrayInit extends Expr implements Cloneable {
         return (List<Expr>)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 453
+    // Declared in ConstantExpression.jrag at line 469
  @SuppressWarnings({"unchecked", "cast"})     public boolean representableIn(TypeDecl t) {
         boolean representableIn_TypeDecl_value = representableIn_compute(t);
         return representableIn_TypeDecl_value;

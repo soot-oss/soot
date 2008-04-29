@@ -63,7 +63,7 @@ public class CastExpr extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 687
+    // Declared in Expressions.jrag at line 689
 
   // See BooleanExpressions.jrag for LogNotExpr
 
@@ -151,7 +151,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     private Constant constant_compute() {  return type().cast(getExpr().constant());  }
 
-    // Declared in ConstantExpression.jrag at line 469
+    // Declared in ConstantExpression.jrag at line 485
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

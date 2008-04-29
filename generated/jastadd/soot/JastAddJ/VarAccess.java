@@ -264,7 +264,7 @@ public class VarAccess extends Access implements Cloneable {
     super.collectEnclosingVariables(set, typeDecl);
   }
 
-    // Declared in Transformations.jrag at line 102
+    // Declared in Transformations.jrag at line 103
 
 
   // remote collection / demand driven creation of accessor
@@ -283,7 +283,7 @@ public class VarAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in Expressions.jrag at line 188
+    // Declared in Expressions.jrag at line 189
 
 
   public soot.Value refined_Expressions_eval(Body b) {
@@ -334,7 +334,7 @@ public class VarAccess extends Access implements Cloneable {
       return super.eval(b);
   }
 
-    // Declared in Expressions.jrag at line 263
+    // Declared in Expressions.jrag at line 264
 
   public soot.Value refined_Expressions_emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
     Variable v = decl();
@@ -358,15 +358,15 @@ public class VarAccess extends Access implements Cloneable {
     return super.emitStore(b, lvalue, rvalue);
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 169
+    // Declared in EmitJimpleRefinements.jrag at line 219
 
-	
+
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
    // if we access a field declaration we load the qualifying type 
    // the element type is used to cater for reading the field length in an array type
 	 if(decl() instanceof FieldDeclaration)
-	  set.add(fieldQualifierType().elementType().erasure().getSootClassDecl().getType());
+     addDependencyIfNeeded(set, fieldQualifierType());
   }
 
     // Declared in java.ast at line 3
@@ -439,7 +439,7 @@ public class VarAccess extends Access implements Cloneable {
         return tokenString_ID != null ? tokenString_ID : "";
     }
 
-    // Declared in GenericsCodegen.jrag at line 306
+    // Declared in GenericsCodegen.jrag at line 308
 
 
     protected TypeDecl refined_GenericsCodegen_fieldQualifierType() {
@@ -847,7 +847,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
   }
 
     protected java.util.Map base_Body_values;
-    // Declared in Expressions.jrag at line 248
+    // Declared in Expressions.jrag at line 249
  @SuppressWarnings({"unchecked", "cast"})     public soot.Local base(Body b) {
         Object _parameters = b;
 if(base_Body_values == null) base_Body_values = new java.util.HashMap(4);

@@ -46,7 +46,7 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
     getClassDecl().toString(s);
   }
 
-    // Declared in Statements.jrag at line 407
+    // Declared in Statements.jrag at line 438
 
 
   public void jimplify2(Body b) {

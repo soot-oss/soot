@@ -64,7 +64,7 @@ public class PreDecExpr extends Unary implements Cloneable {
       error("unary decrement only operates on numeric types");
   }
 
-    // Declared in Expressions.jrag at line 746
+    // Declared in Expressions.jrag at line 748
 
   public soot.Value eval(Body b) { return emitPrefix(b, -1); }
 

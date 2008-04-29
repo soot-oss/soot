@@ -125,7 +125,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean canCompleteNormally_compute() {  return true;  }
 
-    // Declared in Statements.jrag at line 188
+    // Declared in Statements.jrag at line 196
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
@@ -135,7 +135,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     throw new UnsupportedOperationException("Can not break at this statement of type " + getClass().getName());
   }
 
-    // Declared in Statements.jrag at line 207
+    // Declared in Statements.jrag at line 215
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;

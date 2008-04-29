@@ -179,56 +179,6 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Could not find nested type " + name);
   }
 
-    // Declared in ClassPath.jrag at line 88
-
-    
-  // load a compilation unit from disc using the following rules:
-  //   1) specified on the command line
-  //   2) class file not older than source file
-  //   3) source file
-  public CompilationUnit getCompilationUnit(String name) {
-    initPaths();
-    try {
-      if(sourceFiles.selectCompilationUnit(name))
-        return sourceFiles.getCompilationUnit();
-      PathPart sourcePart = null;
-      PathPart classPart = null;
-      for(Iterator iter = sourcePath.iterator(); iter.hasNext() && sourcePart == null; ) {
-        PathPart part = (PathPart)iter.next();
-        if(part.selectCompilationUnit(name))
-          sourcePart = part;
-      }
-      for(Iterator iter = classPath.iterator(); iter.hasNext() && classPart == null; ) {
-        PathPart part = (PathPart)iter.next();
-        if(part.selectCompilationUnit(name))
-          classPart = part;
-      }
-      
-      if(sourcePart != null && (classPart == null || classPart.age <= sourcePart.age)) {
-        CompilationUnit unit = sourcePart.getCompilationUnit();
-        int index = name.lastIndexOf('.');
-        if(index == -1)
-          return unit;
-        String pkgName = name.substring(0, index);
-        if(pkgName.equals(unit.getPackageDecl()))
-          return unit;
-      }
-      if(classPart != null) {
-        CompilationUnit unit = classPart.getCompilationUnit();
-        int index = name.lastIndexOf('.');
-        if(index == -1)
-          return unit;
-        String pkgName = name.substring(0, index);
-        if(pkgName.equals(unit.getPackageDecl()))
-          return unit;
-      }
-      return null;
-    }
-    catch(IOException e) {
-    }
-    return null;
-  }
-
     // Declared in ClassPath.jrag at line 132
 
   
@@ -790,8 +740,9 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in EmitJimple.jrag at line 309
+    // Declared in EmitJimple.jrag at line 346
 
+   // hostType().getSootClassDecl().getField(name(), type().getSootType()).makeRef();
   
   public void jimplify2() {
     for(Iterator iter = compilationUnitIterator(); iter.hasNext(); ) {
@@ -799,6 +750,50 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       if(u.fromSource())
         u.jimplify2();
     }
+  }
+
+    // Declared in ClassLoading.jrag at line 3
+
+
+  public static final int SRC_PREC_JAVA = 1;
+
+    // Declared in ClassLoading.jrag at line 4
+
+  public static final int SRC_PREC_CLASS = 2;
+
+    // Declared in ClassLoading.jrag at line 5
+
+  public static final int SRC_PREC_ONLY_CLASS = 3;
+
+    // Declared in ClassLoading.jrag at line 7
+
+
+  private int srcPrec = 0;
+
+    // Declared in ClassLoading.jrag at line 8
+
+  public void setSrcPrec(int i) {
+    srcPrec = i;
+  }
+
+    // Declared in ClassLoading.jrag at line 14
+
+
+  private HashMap loadedCompilationUnit = new HashMap();
+
+    // Declared in ClassLoading.jrag at line 15
+
+  public boolean hasLoadedCompilationUnit(String fileName) {
+    return loadedCompilationUnit.containsKey(fileName);
+  }
+
+    // Declared in ClassLoading.jrag at line 18
+
+  public CompilationUnit getCachedOrLoadCompilationUnit(String fileName) {
+    if(loadedCompilationUnit.containsKey(fileName))
+      return (CompilationUnit)loadedCompilationUnit.get(fileName);
+    addSourceFile(fileName);
+    return (CompilationUnit)loadedCompilationUnit.get(fileName);
   }
 
     // Declared in java.ast at line 3
@@ -859,7 +854,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     // Declared in java.ast at line 15
 
 
-    public void addCompilationUnit(CompilationUnit node) {
+    public void refined_java_addCompilationUnit(CompilationUnit node) {
         List<CompilationUnit> list = getCompilationUnitList();
         list.addChild(node);
     }
@@ -897,6 +892,95 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
      @SuppressWarnings({"unchecked", "cast"})  public List<CompilationUnit> getCompilationUnitListNoTransform() {
         return (List<CompilationUnit>)getChildNoTransform(0);
     }
+
+    // Declared in ClassLoading.jrag at line 36
+
+
+    public CompilationUnit getCompilationUnit(String name) {
+    initPaths();
+    try {
+      if(sourceFiles.selectCompilationUnit(name))
+        return sourceFiles.getCompilationUnit();
+      PathPart sourcePart = null;
+      PathPart classPart = null;
+      for(Iterator iter = sourcePath.iterator(); iter.hasNext() && sourcePart == null; ) {
+        PathPart part = (PathPart)iter.next();
+        if(part.selectCompilationUnit(name))
+          sourcePart = part;
+      }
+      for(Iterator iter = classPath.iterator(); iter.hasNext() && classPart == null; ) {
+        PathPart part = (PathPart)iter.next();
+        if(part.selectCompilationUnit(name))
+          classPart = part;
+      }
+      
+      if(sourcePart != null && srcPrec == SRC_PREC_JAVA) {
+        CompilationUnit unit = sourcePart.getCompilationUnit();
+        int index = name.lastIndexOf('.');
+        if(index == -1)
+          return unit;
+        String pkgName = name.substring(0, index);
+        if(pkgName.equals(unit.getPackageDecl()))
+          return unit;
+      }
+      if(classPart != null && srcPrec == SRC_PREC_CLASS) {
+        CompilationUnit unit = classPart.getCompilationUnit();
+        int index = name.lastIndexOf('.');
+        if(index == -1)
+          return unit;
+        String pkgName = name.substring(0, index);
+        if(pkgName.equals(unit.getPackageDecl()))
+          return unit;
+      }
+      if(srcPrec == SRC_PREC_ONLY_CLASS) {
+        if(classPart != null) {
+          CompilationUnit unit = classPart.getCompilationUnit();
+          int index = name.lastIndexOf('.');
+          if(index == -1)
+            return unit;
+          String pkgName = name.substring(0, index);
+          if(pkgName.equals(unit.getPackageDecl()))
+            return unit;
+        }
+      }
+      else if(sourcePart != null && (classPart == null || classPart.age <= sourcePart.age)) {
+        CompilationUnit unit = sourcePart.getCompilationUnit();
+        int index = name.lastIndexOf('.');
+        if(index == -1)
+          return unit;
+        String pkgName = name.substring(0, index);
+        if(pkgName.equals(unit.getPackageDecl()))
+          return unit;
+      }
+      else if(classPart != null) {
+        CompilationUnit unit = classPart.getCompilationUnit();
+        int index = name.lastIndexOf('.');
+        if(index == -1)
+          return unit;
+        String pkgName = name.substring(0, index);
+        if(pkgName.equals(unit.getPackageDecl()))
+          return unit;
+      }
+      return null;
+    }
+    catch(IOException e) {
+    }
+    return null;
+  }
+
+    // Declared in ClassLoading.jrag at line 25
+
+
+    void addCompilationUnit(CompilationUnit unit) {
+    try {
+      if(unit.pathName() != null) {
+        String fileName = new File(unit.pathName()).getCanonicalPath();
+        loadedCompilationUnit.put(fileName, unit);
+      }
+    } catch (IOException e) {
+    }
+    refined_java_addCompilationUnit(unit);
+  }
 
     protected boolean typeObject_computed = false;
     protected TypeDecl typeObject_value;
@@ -1195,7 +1279,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
           return u.getTypeDecl(j);
         }
       }
-      throw new Error("No type named " + typeName + " in file " + fullName + ", " + u.pathName() + ", " + u.relativeName());
+      //throw new Error("No type named " + typeName + " in file " + fullName + ", " + u.pathName() + ", " + u.relativeName());
     }
     return null;
   }
@@ -1220,7 +1304,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
 
     protected boolean wildcards_computed = false;
     protected WildcardsCompilationUnit wildcards_value;
-    // Declared in Generics.jrag at line 1144
+    // Declared in Generics.jrag at line 1147
  @SuppressWarnings({"unchecked", "cast"})     public WildcardsCompilationUnit wildcards() {
         if(wildcards_computed)
             return wildcards_value;
@@ -1242,7 +1326,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
     );
   }
 
-    // Declared in Generics.jrag at line 1216
+    // Declared in Generics.jrag at line 1219
     public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1289,7 +1373,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
-    // Declared in GenericMethods.jrag at line 32
+    // Declared in GenericMethods.jrag at line 33
     public GenericMethodDecl Define_GenericMethodDecl_genericMethodDecl(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1415,7 +1499,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_mayBeProtected(this, caller);
     }
 
-    // Declared in Generics.jrag at line 1171
+    // Declared in Generics.jrag at line 1174
     public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1502,7 +1586,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_componentType(this, caller);
     }
 
-    // Declared in Statements.jrag at line 291
+    // Declared in Statements.jrag at line 299
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1520,7 +1604,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_NameType_nameType(this, caller);
     }
 
-    // Declared in Generics.jrag at line 1254
+    // Declared in Generics.jrag at line 1257
     public GLBType Define_GLBType_lookupGLBType(ASTNode caller, ASTNode child, ArrayList bounds) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1866,7 +1950,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
     }
 
-    // Declared in GenericMethods.jrag at line 35
+    // Declared in GenericMethods.jrag at line 36
     public GenericConstructorDecl Define_GenericConstructorDecl_genericConstructorDecl(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1940,7 +2024,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_mayBeAbstract(this, caller);
     }
 
-    // Declared in Generics.jrag at line 1182
+    // Declared in Generics.jrag at line 1185
     public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -2003,7 +2087,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
     }
 
-    // Declared in Generics.jrag at line 1195
+    // Declared in Generics.jrag at line 1198
     public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

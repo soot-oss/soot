@@ -182,7 +182,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(2);
     }
 
-    // Declared in ConstantExpression.jrag at line 294
+    // Declared in ConstantExpression.jrag at line 310
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
@@ -190,7 +190,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant cast_compute(Constant c) {  return Constant.create(c.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 308
+    // Declared in ConstantExpression.jrag at line 324
  @SuppressWarnings({"unchecked", "cast"})     public Constant plus(Constant c) {
         Constant plus_Constant_value = plus_compute(c);
         return plus_Constant_value;
@@ -198,7 +198,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant plus_compute(Constant c) {  return c;  }
 
-    // Declared in ConstantExpression.jrag at line 317
+    // Declared in ConstantExpression.jrag at line 333
  @SuppressWarnings({"unchecked", "cast"})     public Constant minus(Constant c) {
         Constant minus_Constant_value = minus_compute(c);
         return minus_Constant_value;
@@ -206,7 +206,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant minus_compute(Constant c) {  return Constant.create(-c.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 326
+    // Declared in ConstantExpression.jrag at line 342
  @SuppressWarnings({"unchecked", "cast"})     public Constant bitNot(Constant c) {
         Constant bitNot_Constant_value = bitNot_compute(c);
         return bitNot_Constant_value;
@@ -214,7 +214,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant bitNot_compute(Constant c) {  return Constant.create(~c.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 333
+    // Declared in ConstantExpression.jrag at line 349
  @SuppressWarnings({"unchecked", "cast"})     public Constant mul(Constant c1, Constant c2) {
         Constant mul_Constant_Constant_value = mul_compute(c1, c2);
         return mul_Constant_Constant_value;
@@ -222,7 +222,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant mul_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() * c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 342
+    // Declared in ConstantExpression.jrag at line 358
  @SuppressWarnings({"unchecked", "cast"})     public Constant div(Constant c1, Constant c2) {
         Constant div_Constant_Constant_value = div_compute(c1, c2);
         return div_Constant_Constant_value;
@@ -230,7 +230,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant div_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() / c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 351
+    // Declared in ConstantExpression.jrag at line 367
  @SuppressWarnings({"unchecked", "cast"})     public Constant mod(Constant c1, Constant c2) {
         Constant mod_Constant_Constant_value = mod_compute(c1, c2);
         return mod_Constant_Constant_value;
@@ -238,7 +238,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant mod_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() % c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 360
+    // Declared in ConstantExpression.jrag at line 376
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
@@ -246,7 +246,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant add_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() + c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 370
+    // Declared in ConstantExpression.jrag at line 386
  @SuppressWarnings({"unchecked", "cast"})     public Constant sub(Constant c1, Constant c2) {
         Constant sub_Constant_Constant_value = sub_compute(c1, c2);
         return sub_Constant_Constant_value;
@@ -254,7 +254,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant sub_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() - c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 379
+    // Declared in ConstantExpression.jrag at line 395
  @SuppressWarnings({"unchecked", "cast"})     public Constant lshift(Constant c1, Constant c2) {
         Constant lshift_Constant_Constant_value = lshift_compute(c1, c2);
         return lshift_Constant_Constant_value;
@@ -262,7 +262,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant lshift_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() << c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 386
+    // Declared in ConstantExpression.jrag at line 402
  @SuppressWarnings({"unchecked", "cast"})     public Constant rshift(Constant c1, Constant c2) {
         Constant rshift_Constant_Constant_value = rshift_compute(c1, c2);
         return rshift_Constant_Constant_value;
@@ -270,7 +270,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant rshift_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() >> c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 393
+    // Declared in ConstantExpression.jrag at line 409
  @SuppressWarnings({"unchecked", "cast"})     public Constant urshift(Constant c1, Constant c2) {
         Constant urshift_Constant_Constant_value = urshift_compute(c1, c2);
         return urshift_Constant_Constant_value;
@@ -278,7 +278,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant urshift_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() >>> c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 400
+    // Declared in ConstantExpression.jrag at line 416
  @SuppressWarnings({"unchecked", "cast"})     public Constant andBitwise(Constant c1, Constant c2) {
         Constant andBitwise_Constant_Constant_value = andBitwise_compute(c1, c2);
         return andBitwise_Constant_Constant_value;
@@ -286,7 +286,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant andBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() & c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 408
+    // Declared in ConstantExpression.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public Constant xorBitwise(Constant c1, Constant c2) {
         Constant xorBitwise_Constant_Constant_value = xorBitwise_compute(c1, c2);
         return xorBitwise_Constant_Constant_value;
@@ -294,7 +294,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant xorBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() ^ c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 416
+    // Declared in ConstantExpression.jrag at line 432
  @SuppressWarnings({"unchecked", "cast"})     public Constant orBitwise(Constant c1, Constant c2) {
         Constant orBitwise_Constant_Constant_value = orBitwise_compute(c1, c2);
         return orBitwise_Constant_Constant_value;
@@ -302,7 +302,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant orBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.intValue() | c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 424
+    // Declared in ConstantExpression.jrag at line 440
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
@@ -310,7 +310,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.intValue() : c2.intValue());  }
 
-    // Declared in ConstantExpression.jrag at line 528
+    // Declared in ConstantExpression.jrag at line 544
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
@@ -318,7 +318,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private boolean eqIsTrue_compute(Expr left, Expr right) {  return left.constant().intValue() == right.constant().intValue();  }
 
-    // Declared in ConstantExpression.jrag at line 536
+    // Declared in ConstantExpression.jrag at line 552
  @SuppressWarnings({"unchecked", "cast"})     public boolean ltIsTrue(Expr left, Expr right) {
         boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
         return ltIsTrue_Expr_Expr_value;
@@ -326,7 +326,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private boolean ltIsTrue_compute(Expr left, Expr right) {  return left.constant().intValue() < right.constant().intValue();  }
 
-    // Declared in ConstantExpression.jrag at line 542
+    // Declared in ConstantExpression.jrag at line 558
  @SuppressWarnings({"unchecked", "cast"})     public boolean leIsTrue(Expr left, Expr right) {
         boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
         return leIsTrue_Expr_Expr_value;

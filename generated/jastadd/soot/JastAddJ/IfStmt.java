@@ -89,19 +89,27 @@ public class IfStmt extends Stmt implements Cloneable {
     // Declared in Statements.jrag at line 115
 
   public void jimplify2(Body b) {
-    soot.jimple.Stmt elseBranch = else_branch_label();
-    soot.jimple.Stmt thenBranch = then_branch_label();
     soot.jimple.Stmt endBranch = newLabel();
-    getCondition().emitEvalBranch(b);
-    b.addLabel(thenBranch);
-    getThen().jimplify2(b);
-    if(getThen().canCompleteNormally() && hasElse()) {
-      b.setLine(this);
-      b.add(Jimple.v().newGotoStmt(endBranch));
+    if(getCondition().isConstant()) {
+      if(getCondition().isTrue())
+        getThen().jimplify2(b);
+      else if(getCondition().isFalse() && hasElse())
+        getElse().jimplify2(b);
     }
-    b.addLabel(elseBranch);
-    if(hasElse())
-      getElse().jimplify2(b);
+    else {
+      soot.jimple.Stmt elseBranch = else_branch_label();
+      soot.jimple.Stmt thenBranch = then_branch_label();
+      getCondition().emitEvalBranch(b);
+      b.addLabel(thenBranch);
+      getThen().jimplify2(b);
+      if(getThen().canCompleteNormally() && hasElse()) {
+        b.setLine(this);
+        b.add(Jimple.v().newGotoStmt(endBranch));
+      }
+      b.addLabel(elseBranch);
+      if(hasElse())
+        getElse().jimplify2(b);
+    }
     b.addLabel(endBranch);
   }
 

@@ -57,7 +57,7 @@ public class ArrayAccess extends Access implements Cloneable {
       error("array index must be int after unary numeric promotion which " + getExpr().type().typeName() + " is not");
   }
 
-    // Declared in Expressions.jrag at line 401
+    // Declared in Expressions.jrag at line 403
 
 
   public soot.Value eval(Body b) {

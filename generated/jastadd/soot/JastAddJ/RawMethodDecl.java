@@ -3,20 +3,19 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
 
-
-public class BridgeMethodDecl extends MethodDecl implements Cloneable {
+public class RawMethodDecl extends ParMethodDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
-     @SuppressWarnings({"unchecked", "cast"})  public BridgeMethodDecl clone() throws CloneNotSupportedException {
-        BridgeMethodDecl node = (BridgeMethodDecl)super.clone();
+     @SuppressWarnings({"unchecked", "cast"})  public RawMethodDecl clone() throws CloneNotSupportedException {
+        RawMethodDecl node = (RawMethodDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
     return node;
     }
-     @SuppressWarnings({"unchecked", "cast"})  public BridgeMethodDecl copy() {
+     @SuppressWarnings({"unchecked", "cast"})  public RawMethodDecl copy() {
       try {
-          BridgeMethodDecl node = (BridgeMethodDecl)clone();
+          RawMethodDecl node = (RawMethodDecl)clone();
           if(children != null) node.children = (ASTNode[])children.clone();
           return node;
       } catch (CloneNotSupportedException e) {
@@ -24,8 +23,8 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
       System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
       return null;
     }
-     @SuppressWarnings({"unchecked", "cast"})  public BridgeMethodDecl fullCopy() {
-        BridgeMethodDecl res = (BridgeMethodDecl)copy();
+     @SuppressWarnings({"unchecked", "cast"})  public RawMethodDecl fullCopy() {
+        RawMethodDecl res = (RawMethodDecl)copy();
         for(int i = 0; i < getNumChildNoTransform(); i++) {
           ASTNode node = getChildNoTransform(i);
           if(node != null) node = node.fullCopy();
@@ -33,57 +32,61 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericsCodegen.jrag at line 316
+    // Declared in Generics.jrag at line 716
 
+  public boolean isRawType() {
+    return true; 
+  }
 
-  public void transformation() { }
+    // Declared in GenericMethods.ast at line 3
+    // Declared in GenericMethods.ast line 5
 
-    // Declared in Generics.ast at line 3
-    // Declared in Generics.ast line 43
-
-    public BridgeMethodDecl() {
+    public RawMethodDecl() {
         super();
 
         setChild(new List(), 2);
         setChild(new List(), 3);
         setChild(new Opt(), 4);
+        setChild(new List(), 5);
 
     }
 
-    // Declared in Generics.ast at line 13
+    // Declared in GenericMethods.ast at line 14
 
 
-    // Declared in Generics.ast line 43
-    public BridgeMethodDecl(Modifiers p0, Access p1, String p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5) {
+    // Declared in GenericMethods.ast line 5
+    public RawMethodDecl(Modifiers p0, Access p1, String p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6) {
         setChild(p0, 0);
         setChild(p1, 1);
         setID(p2);
         setChild(p3, 2);
         setChild(p4, 3);
         setChild(p5, 4);
+        setChild(p6, 5);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in GenericMethods.ast at line 25
 
 
-    // Declared in Generics.ast line 43
-    public BridgeMethodDecl(Modifiers p0, Access p1, beaver.Symbol p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5) {
+    // Declared in GenericMethods.ast line 5
+    public RawMethodDecl(Modifiers p0, Access p1, beaver.Symbol p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6) {
         setChild(p0, 0);
         setChild(p1, 1);
         setID(p2);
         setChild(p3, 2);
         setChild(p4, 3);
         setChild(p5, 4);
+        setChild(p6, 5);
     }
 
-    // Declared in Generics.ast at line 32
+    // Declared in GenericMethods.ast at line 35
 
 
   protected int numChildren() {
-    return 5;
+    return 6;
   }
 
-    // Declared in Generics.ast at line 35
+    // Declared in GenericMethods.ast at line 38
 
   public boolean mayHaveRewrite() { return false; }
 
@@ -295,6 +298,72 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
 
      @SuppressWarnings({"unchecked", "cast"})  public Opt<Block> getBlockOptNoTransform() {
         return (Opt<Block>)getChildNoTransform(4);
+    }
+
+    // Declared in GenericMethods.ast at line 2
+    // Declared in GenericMethods.ast line 4
+    public void setTypeArgumentList(List<Access> list) {
+        setChild(list, 5);
+    }
+
+    // Declared in GenericMethods.ast at line 6
+
+
+    private int getNumTypeArgument = 0;
+
+    // Declared in GenericMethods.ast at line 7
+
+    public int getNumTypeArgument() {
+        return getTypeArgumentList().getNumChild();
+    }
+
+    // Declared in GenericMethods.ast at line 11
+
+
+     @SuppressWarnings({"unchecked", "cast"})  public Access getTypeArgument(int i) {
+        return (Access)getTypeArgumentList().getChild(i);
+    }
+
+    // Declared in GenericMethods.ast at line 15
+
+
+    public void addTypeArgument(Access node) {
+        List<Access> list = getTypeArgumentList();
+        list.addChild(node);
+    }
+
+    // Declared in GenericMethods.ast at line 20
+
+
+    public void setTypeArgument(Access node, int i) {
+        List<Access> list = getTypeArgumentList();
+        list.setChild(node, i);
+    }
+
+    // Declared in GenericMethods.ast at line 24
+
+    public List<Access> getTypeArguments() {
+        return getTypeArgumentList();
+    }
+
+    // Declared in GenericMethods.ast at line 27
+
+    public List<Access> getTypeArgumentsNoTransform() {
+        return getTypeArgumentListNoTransform();
+    }
+
+    // Declared in GenericMethods.ast at line 31
+
+
+     @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentList() {
+        return (List<Access>)getChild(5);
+    }
+
+    // Declared in GenericMethods.ast at line 35
+
+
+     @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentListNoTransform() {
+        return (List<Access>)getChildNoTransform(5);
     }
 
 public ASTNode rewriteTo() {

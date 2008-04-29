@@ -132,7 +132,7 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
         return tokenParameterDeclaration_Original;
     }
 
-    // Declared in Generics.jrag at line 1309
+    // Declared in Generics.jrag at line 1312
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed)
             return sourceVariableDecl_value;

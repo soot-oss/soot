@@ -33,6 +33,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         fullName_value = null;
         typeName_computed = false;
         typeName_value = null;
+        unimplementedMethods_computed = false;
+        unimplementedMethods_value = null;
         localMethodsSignatureMap_computed = false;
         localMethodsSignatureMap_value = null;
         localFields_String_values = null;
@@ -69,6 +71,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         node.fullName_value = null;
         node.typeName_computed = false;
         node.typeName_value = null;
+        node.unimplementedMethods_computed = false;
+        node.unimplementedMethods_value = null;
         node.localMethodsSignatureMap_computed = false;
         node.localMethodsSignatureMap_value = null;
         node.localFields_String_values = null;
@@ -474,7 +478,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     return ((GenericTypeDecl)original()).getTypeParameter(index);
   }
 
-    // Declared in Generics.jrag at line 738
+    // Declared in Generics.jrag at line 741
 
   public Access substitute(Parameterization parTypeDecl) {
     // TODO: include nesting as well....
@@ -503,7 +507,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     }
   }
 
-    // Declared in GenericsCodegen.jrag at line 395
+    // Declared in GenericsCodegen.jrag at line 404
 
 
   public void transformation() {
@@ -603,7 +607,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
 
     protected boolean getSuperClassAccessOpt_computed = false;
     protected Opt getSuperClassAccessOpt_value;
-    // Declared in Generics.jrag at line 865
+    // Declared in Generics.jrag at line 868
  @SuppressWarnings({"unchecked", "cast"})     public Opt getSuperClassAccessOpt() {
         if(getSuperClassAccessOpt_computed)
             return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
@@ -630,7 +634,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
 
     protected boolean getImplementsList_computed = false;
     protected List getImplementsList_value;
-    // Declared in Generics.jrag at line 876
+    // Declared in Generics.jrag at line 879
  @SuppressWarnings({"unchecked", "cast"})     public List getImplementsList() {
         if(getImplementsList_computed)
             return (List)ASTNode.getChild(this, getImplementsListChildPosition());
@@ -653,7 +657,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
 
     protected boolean getBodyDeclList_computed = false;
     protected List getBodyDeclList_value;
-    // Declared in Generics.jrag at line 883
+    // Declared in Generics.jrag at line 886
  @SuppressWarnings({"unchecked", "cast"})     public List getBodyDeclList() {
         if(getBodyDeclList_computed)
             return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
@@ -1067,7 +1071,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return false;
   }
 
-    // Declared in Generics.jrag at line 1097
+    // Declared in Generics.jrag at line 1100
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         TypeDecl original_value = original_compute();
         return original_value;
@@ -1075,7 +1079,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
 
     private TypeDecl original_compute() {  return genericDecl().original();  }
 
-    // Declared in Generics.jrag at line 1290
+    // Declared in Generics.jrag at line 1293
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed)
             return sourceTypeDecl_value;
@@ -1150,7 +1154,34 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return s.toString();
   }
 
-    // Declared in Generics.jrag at line 922
+    // Declared in MethodSignature.jrag at line 391
+ @SuppressWarnings({"unchecked", "cast"})     public Collection unimplementedMethods() {
+        if(unimplementedMethods_computed)
+            return unimplementedMethods_value;
+        int num = boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        unimplementedMethods_value = unimplementedMethods_compute();
+        if(isFinal && num == boundariesCrossed)
+            unimplementedMethods_computed = true;
+        return unimplementedMethods_value;
+    }
+
+    private Collection unimplementedMethods_compute() {
+    HashSet set = new HashSet();
+    HashSet result = new HashSet();
+    for(Iterator iter = genericDecl().unimplementedMethods().iterator(); iter.hasNext(); ) {
+      MethodDecl m = (MethodDecl)iter.next();
+      set.add(m.sourceMethodDecl());
+    }
+    for(Iterator iter = super.unimplementedMethods().iterator(); iter.hasNext(); ) {
+      MethodDecl m = (MethodDecl)iter.next();
+      if(set.contains(m.sourceMethodDecl()))
+        result.add(m);
+    }
+    return result;
+  }
+
+    // Declared in Generics.jrag at line 925
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localMethodsSignatureMap() {
         if(localMethodsSignatureMap_computed)
             return localMethodsSignatureMap_value;
@@ -1177,7 +1208,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return map;
   }
 
-    // Declared in Generics.jrag at line 937
+    // Declared in Generics.jrag at line 940
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localFields(String name) {
         Object _parameters = name;
 if(localFields_String_values == null) localFields_String_values = new java.util.HashMap(4);
@@ -1206,7 +1237,7 @@ if(localFields_String_values == null) localFields_String_values = new java.util.
     return set;
   }
 
-    // Declared in Generics.jrag at line 952
+    // Declared in Generics.jrag at line 955
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localTypeDecls(String name) {
         Object _parameters = name;
 if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
@@ -1250,7 +1281,7 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
     return set;
   }
 
-    // Declared in Generics.jrag at line 982
+    // Declared in Generics.jrag at line 985
  @SuppressWarnings({"unchecked", "cast"})     public Collection constructors() {
         if(constructors_computed)
             return constructors_value;

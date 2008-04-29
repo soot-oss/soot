@@ -61,7 +61,7 @@ public class AssertStmt extends Stmt implements Cloneable {
       error("The second part of an assert statement may not be void");
   }
 
-    // Declared in Transformations.jrag at line 169
+    // Declared in Transformations.jrag at line 170
 
 
   public void transformation() {

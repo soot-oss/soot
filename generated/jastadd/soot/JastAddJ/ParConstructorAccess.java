@@ -34,7 +34,7 @@ public class ParConstructorAccess extends ConstructorAccess implements Cloneable
         }
         return res;
     }
-    // Declared in GenericMethods.jrag at line 124
+    // Declared in GenericMethods.jrag at line 135
 
   public void toString(StringBuffer s) {
     s.append("<");
@@ -47,7 +47,7 @@ public class ParConstructorAccess extends ConstructorAccess implements Cloneable
   }
 
     // Declared in GenericMethods.ast at line 3
-    // Declared in GenericMethods.ast line 10
+    // Declared in GenericMethods.ast line 13
 
     public ParConstructorAccess() {
         super();
@@ -60,7 +60,7 @@ public class ParConstructorAccess extends ConstructorAccess implements Cloneable
     // Declared in GenericMethods.ast at line 12
 
 
-    // Declared in GenericMethods.ast line 10
+    // Declared in GenericMethods.ast line 13
     public ParConstructorAccess(String p0, List<Expr> p1, List<Access> p2) {
         setID(p0);
         setChild(p1, 0);
@@ -70,7 +70,7 @@ public class ParConstructorAccess extends ConstructorAccess implements Cloneable
     // Declared in GenericMethods.ast at line 19
 
 
-    // Declared in GenericMethods.ast line 10
+    // Declared in GenericMethods.ast line 13
     public ParConstructorAccess(beaver.Symbol p0, List<Expr> p1, List<Access> p2) {
         setID(p0);
         setChild(p1, 0);
@@ -155,7 +155,7 @@ public class ParConstructorAccess extends ConstructorAccess implements Cloneable
     }
 
     // Declared in GenericMethods.ast at line 2
-    // Declared in GenericMethods.ast line 10
+    // Declared in GenericMethods.ast line 13
     public void setTypeArgumentList(List<Access> list) {
         setChild(list, 1);
     }
@@ -220,7 +220,7 @@ public class ParConstructorAccess extends ConstructorAccess implements Cloneable
         return (List<Access>)getChildNoTransform(1);
     }
 
-    // Declared in GenericMethods.jrag at line 92
+    // Declared in GenericMethods.jrag at line 103
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -229,7 +229,7 @@ public class ParConstructorAccess extends ConstructorAccess implements Cloneable
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 93
+    // Declared in GenericMethods.jrag at line 104
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

@@ -219,7 +219,7 @@ public class ByteType extends IntegralType implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(2);
     }
 
-    // Declared in ConstantExpression.jrag at line 297
+    // Declared in ConstantExpression.jrag at line 313
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;

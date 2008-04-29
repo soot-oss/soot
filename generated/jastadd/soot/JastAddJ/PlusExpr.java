@@ -45,7 +45,7 @@ public class PlusExpr extends Unary implements Cloneable {
       error("unary plus only operates on numeric types");
   }
 
-    // Declared in Expressions.jrag at line 674
+    // Declared in Expressions.jrag at line 676
 
   public soot.Value eval(Body b) { return getOperand().eval(b); }
 
@@ -104,7 +104,7 @@ public class PlusExpr extends Unary implements Cloneable {
 
     private Constant constant_compute() {  return type().plus(getOperand().constant());  }
 
-    // Declared in ConstantExpression.jrag at line 471
+    // Declared in ConstantExpression.jrag at line 487
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

@@ -51,13 +51,13 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
       error("The type void of the right hand side is not numeric");
   }
 
-    // Declared in Expressions.jrag at line 781
+    // Declared in Expressions.jrag at line 783
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
     return asLocal(b, Jimple.v().newAddExpr(asImmediate(b, left), asImmediate(b, right)));
   }
 
-    // Declared in Expressions.jrag at line 815
+    // Declared in Expressions.jrag at line 817
 
 
   public soot.Value eval(Body b) {
