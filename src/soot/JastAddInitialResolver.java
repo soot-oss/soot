@@ -69,9 +69,12 @@ public class JastAddInitialResolver implements IInitialResolver {
 	  		  HashSet<SootClass> types = new HashSet<SootClass>();
 			  for(TypeDecl typeDecl : u.getTypeDecls())
 				  collectTypeDecl(typeDecl, types);
-			  for(SootClass sc : types)
-				  classNameToCU.put(sc.getName(), u);
-	      }
+			  if(types.isEmpty())
+				  classNameToCU.put(className, u);
+		      else
+		    	  for(SootClass sc : types)
+		    		  classNameToCU.put(sc.getName(), u);	     
+    	  }
 	}
 	
 	@SuppressWarnings("unchecked")
