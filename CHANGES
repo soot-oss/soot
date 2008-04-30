@@ -17,7 +17,7 @@ Improvements and API changes in version 2.2.6
 3. Integrated full support for preserving annotations in Jimple
    and writing them to bytecode. SOURCE level annotations are
    preserved if code is read from source and the flag
-   -preserve-source-annotations is given. (does not hold for
+   -p jb preserve-source-annotations is given. (does not hold for
    package and local variable annotations) SOURCE level annotations
    are not written into bytecode by Soot.
 
