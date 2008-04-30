@@ -1031,13 +1031,14 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     getSootClassDecl().setResolvingLevel(SootClass.BODIES);
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 11
+    // Declared in AnnotationsCodegen.jrag at line 20
 
   public void addAttributes() {
     super.addAttributes();
-    Collection c = new ArrayList();
+    ArrayList c = new ArrayList();
     getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
     getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
+    getModifiers().addSourceOnlyAnnotations(c);
     for(Iterator iter = c.iterator(); iter.hasNext(); ) {
       soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
       getSootClassDecl().addTag(tag);
@@ -4028,7 +4029,7 @@ if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_val
 
     private int variableSize_compute() {  return 1;  }
 
-    // Declared in AnnotationsCodegen.jrag at line 253
+    // Declared in AnnotationsCodegen.jrag at line 321
  @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
         String typeDescriptor_value = typeDescriptor_compute();
         return typeDescriptor_value;

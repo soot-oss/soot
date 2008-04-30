@@ -475,6 +475,12 @@ public class AntTask extends MatchingTask {
             addArg("use-original-names:"+(arg?"true":"false"));
           }
       
+          public void setpreserve_source_annotations(boolean arg) {
+            addArg("-p");
+            addArg("jb");
+            addArg("preserve-source-annotations:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_jb_ls() {

@@ -970,13 +970,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | soot.Modifier.INTERFACE;  }
 
-    // Declared in AnnotationsCodegen.jrag at line 255
+    // Declared in AnnotationsCodegen.jrag at line 323
  @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
         String typeDescriptor_value = typeDescriptor_compute();
         return typeDescriptor_value;
     }
 
-    private String typeDescriptor_compute() {  return "L" + jvmName() + ";";  }
+    private String typeDescriptor_compute() {  return "L" + jvmName().replace('.', '/') + ";";  }
 
     // Declared in GenericsCodegen.jrag at line 330
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {

@@ -758,6 +758,16 @@ includes those names.  Otherwise, Soot gives variables generic
 names based on their types.
 </long_desc>
 				</boolopt>
+				<boolopt>
+					<name>Preserve source-level annotations</name>
+					<alias>preserve-source-annotations</alias>
+                    <default>false</default>
+					<short_desc/>
+					<long_desc>
+Preserves annotations of retention type SOURCE. (for
+everything but package and local variable annotations) 
+</long_desc>
+				</boolopt>
 				<sub_phase>
 					<name>Local Splitter</name>
 					<alias>jb.ls</alias>

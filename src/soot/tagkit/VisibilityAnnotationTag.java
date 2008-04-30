@@ -44,7 +44,19 @@ public class VisibilityAnnotationTag implements  Tag
     
     // should also print here number of annotations and perhaps the annotations themselves
     public String toString() {
-        StringBuffer sb = new StringBuffer("Visibility Annotation: level: "+(visibility == AnnotationConstants.RUNTIME_VISIBLE ? " runtime visible" : " runtime invisible") +"\n Annotations: ");
+        StringBuffer sb = new StringBuffer("Visibility Annotation: level: ");
+        switch(visibility) {
+        case AnnotationConstants.RUNTIME_INVISIBLE:
+        	sb.append("CLASS (runtime-invisible)");
+        	break;
+        case AnnotationConstants.RUNTIME_VISIBLE:
+        	sb.append("RUNTIME (runtime-visible)");
+        	break;
+        case AnnotationConstants.SOURCE_VISIBLE:
+        	sb.append("SOURCE");
+        	break;
+        }        
+        sb.append("\n Annotations:"); 
         if (annotations != null){
             Iterator<AnnotationTag> it = annotations.iterator();
             while (it.hasNext()){

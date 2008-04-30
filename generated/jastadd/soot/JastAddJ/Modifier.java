@@ -117,7 +117,7 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
 
     private String dumpString_compute() {  return getClass().getName() + " [" + getID() + "]";  }
 
-    // Declared in AnnotationsCodegen.jrag at line 89
+    // Declared in AnnotationsCodegen.jrag at line 142
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeVisible() {
         boolean isRuntimeVisible_value = isRuntimeVisible_compute();
         return isRuntimeVisible_value;
@@ -125,7 +125,7 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
 
     private boolean isRuntimeVisible_compute() {  return false;  }
 
-    // Declared in AnnotationsCodegen.jrag at line 99
+    // Declared in AnnotationsCodegen.jrag at line 152
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeInvisible() {
         boolean isRuntimeInvisible_value = isRuntimeInvisible_compute();
         return isRuntimeInvisible_value;

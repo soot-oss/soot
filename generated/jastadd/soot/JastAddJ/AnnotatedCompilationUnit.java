@@ -60,6 +60,18 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
       super.toString(s);
   }
 
+    // Declared in AnnotationsCodegen.jrag at line 11
+
+  public void jimplify1phase2() {
+    super.jimplify1phase2();
+    ArrayList c = new ArrayList();
+    getModifiers().addAllAnnotations(c);
+    for(Iterator iter = c.iterator(); iter.hasNext(); ) {
+      soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
+      //host.addTag(tag);
+    }
+  }
+
     // Declared in Annotations.ast at line 3
     // Declared in Annotations.ast line 16
 

@@ -53,10 +53,10 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
     getExpr().toString(s);
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 257
+    // Declared in AnnotationsCodegen.jrag at line 325
 
 
-  public void appendAsAttributeTo(ArrayList list, String name) {
+  public void appendAsAttributeTo(Collection list, String name) {
     if(getExpr().isConstant() && !getExpr().type().isEnumDecl()) {
       char kind = getExpr().type().isString() ? 's' : getExpr().type().typeDescriptor().charAt(0);
       TypeDecl type = getExpr().type();

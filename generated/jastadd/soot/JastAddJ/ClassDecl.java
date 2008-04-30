@@ -1361,13 +1361,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return sc;
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 254
+    // Declared in AnnotationsCodegen.jrag at line 322
  @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
         String typeDescriptor_value = typeDescriptor_compute();
         return typeDescriptor_value;
     }
 
-    private String typeDescriptor_compute() {  return "L" + jvmName() + ";";  }
+    private String typeDescriptor_compute() {  return "L" + jvmName().replace('.', '/') + ";";  }
 
     // Declared in GenericsCodegen.jrag at line 331
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {

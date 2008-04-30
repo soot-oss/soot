@@ -58,7 +58,6 @@ public class AnnotationTag implements Tag
     // different kinds - with second level for the constant kinds
  
     private String type;
-    private final int visibility = 0; 
     private int numElems = 0;
     private ArrayList<AnnotationElem> elems;
     
@@ -99,10 +98,6 @@ public class AnnotationTag implements Tag
         return type;
     }
     
-    public int getVisibility(){
-        return visibility;
-    }
-
     public int getNumElems(){
         return numElems;
     }

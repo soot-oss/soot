@@ -43,9 +43,9 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
     s.append("}");
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 288
+    // Declared in AnnotationsCodegen.jrag at line 356
 
-  public void appendAsAttributeTo(ArrayList list, String name) {
+  public void appendAsAttributeTo(Collection list, String name) {
     ArrayList elemVals = new ArrayList();
     for(int i = 0; i < getNumElementValue(); i++)
       getElementValue(i).appendAsAttributeTo(elemVals, "default");

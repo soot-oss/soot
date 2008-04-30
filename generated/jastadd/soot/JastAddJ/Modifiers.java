@@ -117,7 +117,51 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 57
+    // Declared in AnnotationsCodegen.jrag at line 83
+
+  /*
+  refine EmitJimple public void VariableDeclaration.jimplify2(Body b) {
+    EmitJimple.VariableDeclaration.jimplify2(b);
+    ArrayList c = new ArrayList();
+    getModifiers().addAllAnnotations(c);
+    for(Iterator iter = c.iterator(); iter.hasNext(); ) {
+      soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
+      local.addTag(tag);
+    }
+  }
+  */
+
+  public void addSourceOnlyAnnotations(Collection c) {
+    if(new soot.options.JBOptions(soot.PhaseOptions.v().getPhaseOptions("jb")).
+       preserve_source_annotations()) {
+	    for(int i = 0; i < getNumModifier(); i++) {
+	      if(getModifier(i) instanceof Annotation) {
+	        Annotation a = (Annotation)getModifier(i);
+	        if(!a.isRuntimeVisible() && !a.isRuntimeInvisible()) {
+      		    soot.tagkit.VisibilityAnnotationTag tag = new soot.tagkit.VisibilityAnnotationTag(soot.tagkit.AnnotationConstants.SOURCE_VISIBLE);
+        		ArrayList elements = new ArrayList(1);
+        		a.appendAsAttributeTo(elements);
+        		tag.addAnnotation((soot.tagkit.AnnotationTag)elements.get(0));
+        		c.add(tag);
+	        }
+	      }
+	    }
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 101
+
+  
+  public void addAllAnnotations(Collection c) {
+    for(int i = 0; i < getNumModifier(); i++) {
+      if(getModifier(i) instanceof Annotation) {
+        Annotation a = (Annotation)getModifier(i);
+        a.appendAsAttributeTo(c);
+      }
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 110
 
 
   public void addRuntimeVisibleAnnotationsAttribute(Collection c) {
@@ -134,7 +178,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 72
+    // Declared in AnnotationsCodegen.jrag at line 125
 
 
   // 4.8.16
@@ -152,7 +196,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 156
+    // Declared in AnnotationsCodegen.jrag at line 209
 
 
   public Collection runtimeVisibleAnnotations() {
@@ -163,7 +207,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     return annotations;
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 212
+    // Declared in AnnotationsCodegen.jrag at line 265
 
 
   public Collection runtimeInvisibleAnnotations() {
@@ -174,7 +218,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     return annotations;
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 221
+    // Declared in AnnotationsCodegen.jrag at line 289
 
 
   // Add ACC_ANNOTATION flag to generated class file
@@ -634,7 +678,7 @@ if(numModifier_String_values == null) numModifier_String_values = new java.util.
         return lookupType_String_String_value;
     }
 
-    // Declared in AnnotationsCodegen.jrag at line 86
+    // Declared in AnnotationsCodegen.jrag at line 139
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;

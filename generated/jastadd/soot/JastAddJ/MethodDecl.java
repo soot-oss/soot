@@ -367,22 +367,24 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 
   public SootMethod sootMethod;
 
-    // Declared in AnnotationsCodegen.jrag at line 32
+    // Declared in AnnotationsCodegen.jrag at line 43
 
   public void addAttributes() {
     super.addAttributes();
-    Collection c = new ArrayList();
+    ArrayList c = new ArrayList();
     getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
     getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
     addRuntimeVisibleParameterAnnotationsAttribute(c);
     addRuntimeInvisibleParameterAnnotationsAttribute(c);
+    addSourceLevelParameterAnnotationsAttribute(c);
+    getModifiers().addSourceOnlyAnnotations(c);
     for(Iterator iter = c.iterator(); iter.hasNext(); ) {
       soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
       sootMethod.addTag(tag);
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 109
+    // Declared in AnnotationsCodegen.jrag at line 162
 
 
   // 4.8.17
@@ -410,7 +412,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 165
+    // Declared in AnnotationsCodegen.jrag at line 218
 
 
   // 4.8.18
@@ -435,6 +437,17 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         tag.addVisibilityAnnotation((soot.tagkit.VisibilityAnnotationTag)iter.next());
       }
       c.add(tag);
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 273
+
+
+  public void addSourceLevelParameterAnnotationsAttribute(Collection c) {
+    boolean foundVisibleAnnotations = false;
+    Collection annotations = new ArrayList(getNumParameter());
+    for(int i = 0; i < getNumParameter(); i++) {
+      getParameter(i).getModifiers().addSourceOnlyAnnotations(c);
     }
   }
 

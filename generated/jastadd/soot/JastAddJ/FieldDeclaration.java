@@ -364,14 +364,15 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
 
   public SootField sootField;
 
-    // Declared in AnnotationsCodegen.jrag at line 22
+    // Declared in AnnotationsCodegen.jrag at line 32
 
   
   public void addAttributes() {
     super.addAttributes();
-    Collection c = new ArrayList();
+    ArrayList c = new ArrayList();
     getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
     getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
+    getModifiers().addSourceOnlyAnnotations(c);
     for(Iterator iter = c.iterator(); iter.hasNext(); ) {
       soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
       sootField.addTag(tag);

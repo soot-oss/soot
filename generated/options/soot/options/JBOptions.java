@@ -54,5 +54,16 @@ public class JBOptions
         return soot.PhaseOptions.getBoolean( options, "use-original-names" );
     }
     
+    /** Preserve source-level annotations --
+    
+     * .
+    
+     * Preserves annotations of retention type SOURCE. (for everything 
+     * but package and local variable annotations) 
+     */
+    public boolean preserve_source_annotations() {
+        return soot.PhaseOptions.getBoolean( options, "preserve-source-annotations" );
+    }
+    
 }
         

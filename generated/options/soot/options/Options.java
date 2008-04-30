@@ -1330,7 +1330,8 @@ public class Options extends OptionsBase {
                 "\nJimple Body Creation creates a JimpleBody for each input \nmethod, using either coffi, to read .class files, or the jimple \nparser, to read .jimple files. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "use-original-names (false)", "" );
+                +padOpt( "use-original-names (false)", "" )
+                +padOpt( "preserve-source-annotations (false)", "" );
     
         if( phaseName.equals( "jb.ls" ) )
             return "Phase "+phaseName+":\n"+
@@ -2286,7 +2287,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb" ) )
             return ""
                 +"enabled "
-                +"use-original-names ";
+                +"use-original-names "
+                +"preserve-source-annotations ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""
@@ -2860,7 +2862,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb" ) )
             return ""
               +"enabled:true "
-              +"use-original-names:false ";
+              +"use-original-names:false "
+              +"preserve-source-annotations:false ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""

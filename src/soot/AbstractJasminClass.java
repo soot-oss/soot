@@ -213,8 +213,11 @@ public abstract class AbstractJasminClass
         if (tag.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE){
             sb.append(".runtime_visible_annotation\n");
         }
-        else {
+        else if(tag.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE){
             sb.append(".runtime_invisible_annotation\n");
+        } else {
+        	//source level annotation
+        	return "";
         }
         if (tag.hasAnnotations()){
             Iterator<AnnotationTag> it = tag.getAnnotations().iterator();

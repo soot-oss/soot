@@ -346,22 +346,24 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 
   public SootMethod sootMethod;
 
-    // Declared in AnnotationsCodegen.jrag at line 44
+    // Declared in AnnotationsCodegen.jrag at line 57
 
   public void addAttributes() {
     super.addAttributes();
-    Collection c = new ArrayList();
+    ArrayList c = new ArrayList();
     getModifiers().addRuntimeVisibleAnnotationsAttribute(c);
     getModifiers().addRuntimeInvisibleAnnotationsAttribute(c);
     addRuntimeVisibleParameterAnnotationsAttribute(c);
     addRuntimeInvisibleParameterAnnotationsAttribute(c);
+    addSourceLevelParameterAnnotationsAttribute(c);
+    getModifiers().addSourceOnlyAnnotations(c);
     for(Iterator iter = c.iterator(); iter.hasNext(); ) {
       soot.tagkit.Tag tag = (soot.tagkit.Tag)iter.next();
       sootMethod.addTag(tag);
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 132
+    // Declared in AnnotationsCodegen.jrag at line 185
 
   public void addRuntimeVisibleParameterAnnotationsAttribute(Collection c) {
     boolean foundVisibleAnnotations = false;
@@ -387,7 +389,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 188
+    // Declared in AnnotationsCodegen.jrag at line 241
 
   public void addRuntimeInvisibleParameterAnnotationsAttribute(Collection c) {
     boolean foundVisibleAnnotations = false;
@@ -410,6 +412,16 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         tag.addVisibilityAnnotation((soot.tagkit.VisibilityAnnotationTag)iter.next());
       }
       c.add(tag);
+    }
+  }
+
+    // Declared in AnnotationsCodegen.jrag at line 280
+
+  public void addSourceLevelParameterAnnotationsAttribute(Collection c) {
+    boolean foundVisibleAnnotations = false;
+    Collection annotations = new ArrayList(getNumParameter());
+    for(int i = 0; i < getNumParameter(); i++) {
+      getParameter(i).getModifiers().addSourceOnlyAnnotations(c);
     }
   }
 
