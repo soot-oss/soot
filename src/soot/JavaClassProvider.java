@@ -31,6 +31,15 @@ import soot.options.Options;
  */
 public class JavaClassProvider implements ClassProvider
 {
+	public static class JarException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
+		public JarException(String className) {
+			super("Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar");
+		}
+		
+	}
+	
     /** Look for the specified class. Return a ClassSource for it if found,
      * or null if it was not found. */
     public ClassSource find( String className ) {
@@ -67,7 +76,7 @@ public class JavaClassProvider implements ClassProvider
 	        	return null;         
 	        
 	        if( file.file == null ) {
-	            throw new RuntimeException( "Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar" );
+	            throw new JarException(className);
 	        }
 	        return new JavaClassSource(className, file.file);
     	}
