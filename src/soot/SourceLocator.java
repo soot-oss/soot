@@ -18,6 +18,7 @@
  */
 
 package soot;
+import soot.JavaClassProvider.JarException;
 import soot.options.*;
 import java.util.*;
 import java.util.zip.*;
@@ -39,10 +40,16 @@ public class SourceLocator
         if( classProviders == null ) {
             setupClassProviders();
         }
+        JarException ex = null;
         for (ClassProvider cp : classProviders) {
-            ClassSource ret = cp.find(className);
-            if( ret != null ) return ret;
+            try {
+	        	ClassSource ret = cp.find(className);
+	            if( ret != null ) return ret;
+            } catch(JarException e) {
+            	ex = e;
+            }
         }
+        if(ex!=null) throw ex;
         return null;
     }
 
