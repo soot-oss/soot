@@ -329,7 +329,7 @@ public class CFGToDotGraph {
    *
    * @return a visualization of <code>graph</code>.
    */
-  public DotGraph drawCFG(ExceptionalGraph graph) {
+  public <N> DotGraph drawCFG(ExceptionalGraph<N> graph) {
     Body body = graph.getBody();
     DotGraph canvas = initDotGraph(body);
     DotNamer namer = new DotNamer((int)(graph.size()/0.7f), 0.7f);
@@ -341,8 +341,8 @@ public class CFGToDotGraph {
       String junk = namer.getName(nodesIt.next());
     }
 
-    for (Iterator<Unit> nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
-	Unit node = nodesIt.next();
+    for (Iterator<N> nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
+	N node = nodesIt.next();
 
       canvas.drawNode(namer.getName(node));
 
