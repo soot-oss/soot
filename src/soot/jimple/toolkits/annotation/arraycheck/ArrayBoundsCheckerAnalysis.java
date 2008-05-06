@@ -154,17 +154,17 @@ class ArrayBoundsCheckerAnalysis
 
     /** buildEdgeSet creates a set of edges from directed graph.
      */
-    public Set<FlowGraphEdge> buildEdgeSet(DirectedGraph dg)
+    public Set<FlowGraphEdge> buildEdgeSet(DirectedGraph<Block> dg)
     {
         HashSet<FlowGraphEdge> edges = new HashSet<FlowGraphEdge>();
 
-        Iterator unitIt = dg.iterator();
-        while (unitIt.hasNext())
+        Iterator<Block> blockIt = dg.iterator();
+        while (blockIt.hasNext())
         {
-            Object s = unitIt.next();
+            Block s = blockIt.next();
 
-            List preds = graph.getPredsOf(s);
-            List succs = graph.getSuccsOf(s);
+            List<Block> preds = graph.getPredsOf(s);
+            List<Block> succs = graph.getSuccsOf(s);
 
             /* Head units has in edge from itself to itself.*/
             if (preds.size() == 0)
@@ -355,7 +355,7 @@ class ArrayBoundsCheckerAnalysis
 
             while(!changedUnits.isEmpty())
             {
-                Object s = changedUnits.removeFirst();
+                Block s = (Block) changedUnits.removeFirst();
                 changedUnitsSet.remove(s);
 
                 // DebugMsg.counter2++;

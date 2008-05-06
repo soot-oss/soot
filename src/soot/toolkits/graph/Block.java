@@ -47,7 +47,7 @@ public class Block
 {
     private Unit mHead, mTail;
     private final Body mBody;
-    private List mPreds, mSuccessors;
+    private List<Block> mPreds, mSuccessors;
     private int mBlockLength = 0, mIndexInMethod = 0;
     /**
      *   Constructs a Block in the context of a BlockGraph, and enclosing Body instances.
@@ -99,11 +99,11 @@ public class Block
      *  @see Chain 
      *  @see Unit
      */
-    public Iterator iterator() 
+    public Iterator<Unit> iterator() 
     {
         if(mBody != null) 
         {
-            Chain units = mBody.getUnits();
+            Chain<Unit> units = mBody.getUnits();
             return units.iterator(mHead, mTail);
         } else {
             return null;
@@ -125,7 +125,7 @@ public class Block
         if(point == mHead) 
             mHead = toInsert;
 
-        Chain methodBody = mBody.getUnits();
+        Chain<Unit> methodBody = mBody.getUnits();
         methodBody.insertBefore(toInsert, point);
     }
 
@@ -143,7 +143,7 @@ public class Block
         if(point == mTail) 
             mTail = toInsert;
 
-        Chain methodBody = mBody.getUnits();
+        Chain<Unit> methodBody = mBody.getUnits();
         methodBody.insertAfter(toInsert, point);
     }
 
@@ -158,12 +158,12 @@ public class Block
      */         
     public boolean remove(Unit item) 
     {
-        Chain methodBody = mBody.getUnits();
+        Chain<Unit> methodBody = mBody.getUnits();
         
         if(item == mHead)
-            mHead = (Unit)methodBody.getSuccOf(item);
+            mHead = methodBody.getSuccOf(item);
         else if(item == mTail)
-            mTail = (Unit) methodBody.getPredOf(item);
+            mTail = methodBody.getPredOf(item);
         
         return methodBody.remove(item);
     }
@@ -178,9 +178,9 @@ public class Block
      */           
     public Unit getSuccOf(Unit aItem) 
     {        
-        Chain methodBody = mBody.getUnits();
+        Chain<Unit> methodBody = mBody.getUnits();
         if(aItem != mTail)
-            return  (Unit) methodBody.getSuccOf(aItem);
+            return methodBody.getSuccOf(aItem);
         else
             return null;
     }
@@ -194,9 +194,9 @@ public class Block
      */      
     public Unit getPredOf(Unit aItem) 
     {
-        Chain methodBody = mBody.getUnits();
+        Chain<Unit> methodBody = mBody.getUnits();
         if(aItem != mHead)
-            return  (Unit) methodBody.getPredOf(aItem);
+            return methodBody.getPredOf(aItem);
         else
             return null;        
     }
@@ -249,7 +249,7 @@ public class Block
      *
      *   @see BlockGraph
      */ 
-    public void setPreds(List preds)
+    public void setPreds(List<Block> preds)
     {
         mPreds = preds;
         return;
@@ -260,7 +260,7 @@ public class Block
      *   @return            A list of predecessor blocks.
      *   @see BlockGraph
      */     
-    public List getPreds()
+    public List<Block> getPreds()
     {
         return mPreds;
     }
@@ -274,7 +274,7 @@ public class Block
      *
      *   @see BlockGraph
      */
-    public void setSuccs(List succs)
+    public void setSuccs(List<Block> succs)
     {
         mSuccessors = succs;
     }
@@ -286,37 +286,11 @@ public class Block
      *   @return            A list of successorblocks.
      *   @see BlockGraph
      */
-    public List getSuccs()
+    public List<Block> getSuccs()
     {
         return mSuccessors;
     }
 
-
-
-    Map allMapToUnnamed = new AllMapTo("???");
-
-    class AllMapTo extends AbstractMap
-    {
-        Object dest;
-        
-        public AllMapTo(Object dest)
-        {
-            this.dest = dest;
-        }
-        
-        public Object get(Object key)
-        {
-            return dest;
-        }
-        
-        public Set entrySet()
-        {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-
-    
     public String toShortString() {return "Block #" + mIndexInMethod; }
 
     public String toString()
@@ -330,18 +304,18 @@ public class Block
         strBuf.append("Block " + mIndexInMethod + ":" + System.getProperty("line.separator"));
         strBuf.append("[preds: ");
         if(mPreds != null) {
-            Iterator it = mPreds.iterator();
+            Iterator<Block> it = mPreds.iterator();
             while(it.hasNext()) {
                 
-                strBuf.append(((Block) it.next()).getIndexInMethod()+ " ");
+                strBuf.append(it.next().getIndexInMethod()+ " ");
             }
         }
         strBuf.append("] [succs: ");
         if(mSuccessors != null) {
-            Iterator it = mSuccessors.iterator();
+            Iterator<Block> it = mSuccessors.iterator();
             while(it.hasNext()) {
                 
-                strBuf.append(((Block) it.next()).getIndexInMethod() + " ");
+                strBuf.append(it.next().getIndexInMethod() + " ");
             }
             
         }
@@ -352,8 +326,8 @@ public class Block
         
         //strBuf.append("     block" + mIndexInMethod + ":" + System.getProperty("line.separator"));
 
-        Chain methodUnits = mBody.getUnits();
-        Iterator basicBlockIt = methodUnits.iterator(mHead, mTail);
+        Chain<Unit> methodUnits = mBody.getUnits();
+        Iterator<Unit> basicBlockIt = methodUnits.iterator(mHead, mTail);
         
         if(basicBlockIt.hasNext()) {
             Unit someUnit = (Unit) basicBlockIt.next();

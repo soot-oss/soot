@@ -33,7 +33,6 @@ package soot.toolkits.graph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.Body;
 import soot.Trap;
-import soot.Unit;
 
 import java.util.List;
 import java.util.Collection;
@@ -45,7 +44,7 @@ import soot.toolkits.exceptions.ThrowableSet;
  *  distinguishes exceptional control flow.</p>
  *  @param N node type
  */
-public interface ExceptionalGraph<N extends Unit> extends DirectedGraph<N>
+public interface ExceptionalGraph<N> extends DirectedGraph<N>
 {
     /**
      * <p>Data structure to represent the fact that
@@ -172,5 +171,5 @@ public interface ExceptionalGraph<N extends Unit> extends DirectedGraph<N>
      *	       the traps and handlers, if any, which catch the exceptions
      *	       which may be thrown by <code>n</code>.
      */
-    public Collection<N> getExceptionDests(N n);
+    public Collection<? extends ExceptionDest<N>> getExceptionDests(N n);
 }

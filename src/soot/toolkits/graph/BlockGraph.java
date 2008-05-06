@@ -47,13 +47,13 @@ import soot.util.Chain;
      *  block leaders (represented by overriding <code>BlockGraph</code>'s
      *  definition of {@link computeLeaders()}.
      */
-public abstract class BlockGraph implements DirectedGraph 
+public abstract class BlockGraph implements DirectedGraph<Block> 
 {
     Body mBody;
-    Chain mUnits;
-    List mBlocks;
-    List mHeads = new ArrayList();
-    List mTails = new ArrayList();
+    Chain<Unit> mUnits;
+    List<Block> mBlocks;
+    List<Block> mHeads = new ArrayList<Block>();
+    List<Block> mTails = new ArrayList<Block>();
 
    
     /**
@@ -125,24 +125,24 @@ public abstract class BlockGraph implements DirectedGraph
 
 	// Trap handlers start new basic blocks, no matter how many
 	// predecessors they have.
-	Chain traps = body.getTraps();
-	for (Iterator trapIt = traps.iterator(); trapIt.hasNext(); ) {
-	    Trap trap = (Trap) trapIt.next();
+	Chain<Trap> traps = body.getTraps();
+	for (Iterator<Trap> trapIt = traps.iterator(); trapIt.hasNext(); ) {
+	    Trap trap = trapIt.next();
 	    leaders.add(trap.getHandlerUnit());
 	}
 
-	for (Iterator unitIt = body.getUnits().iterator(); unitIt.hasNext(); ) {
-	    Unit u = (Unit) unitIt.next();
-	    List predecessors = unitGraph.getPredsOf(u);
+	for (Iterator<Unit> unitIt = body.getUnits().iterator(); unitIt.hasNext(); ) {
+	    Unit u = unitIt.next();
+	    List<Unit> predecessors = unitGraph.getPredsOf(u);
 	    int predCount = predecessors.size();
-	    List successors = unitGraph.getSuccsOf(u);
+	    List<Unit> successors = unitGraph.getSuccsOf(u);
 	    int succCount = successors.size();
 
 	    if (predCount != 1) { // If predCount == 1 but the predecessor
 		leaders.add(u);	  // is a branch, u will get added by that
 	    }                     // branch's successor test.
 	    if ((succCount > 1) || (u.branches())) {
-		for (Iterator it = successors.iterator(); it.hasNext(); ) {
+		for (Iterator<Unit> it = successors.iterator(); it.hasNext(); ) {
 		    leaders.add((Unit) it.next()); // The cast is an
 		}				   // assertion check.
 	    }
@@ -177,16 +177,16 @@ public abstract class BlockGraph implements DirectedGraph
      * @return a {@link Map} from {@link Unit}s which begin or end a block
      *           to the block which contains them.
      */
-    protected Map buildBlocks(Set<Unit> leaders, UnitGraph unitGraph) {
-	List blockList = new ArrayList(leaders.size());
-	Map unitToBlock = new HashMap(); // Maps head and tail units to 
+    protected Map<Unit, Block> buildBlocks(Set<Unit> leaders, UnitGraph unitGraph) {
+	List<Block> blockList = new ArrayList<Block>(leaders.size());
+	Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>(); // Maps head and tail units to 
 					 // their blocks, for building
 					 // predecessor and successor lists.
 	Unit blockHead = null;
 	int blockLength = 0;
-	Iterator unitIt = mUnits.iterator();
+	Iterator<Unit> unitIt = mUnits.iterator();
 	if (unitIt.hasNext()) {
-	    blockHead = (Unit) unitIt.next();
+	    blockHead = unitIt.next();
 	    if (! leaders.contains(blockHead)) {
 		throw new RuntimeException("BlockGraph: first unit not a leader!");
 	    }
@@ -196,7 +196,7 @@ public abstract class BlockGraph implements DirectedGraph
 	int indexInMethod = 0;
 
 	while (unitIt.hasNext()) {
-	    Unit u = (Unit) unitIt.next();
+	    Unit u = unitIt.next();
 	    if (leaders.contains(u)) {
 		addBlock(blockHead, blockTail, indexInMethod, blockLength,
 			 blockList, unitToBlock);
@@ -214,18 +214,18 @@ public abstract class BlockGraph implements DirectedGraph
 	}
 
 	// The underlying UnitGraph defines heads and tails.
-	for (Iterator it = unitGraph.getHeads().iterator(); it.hasNext(); ) {
+	for (Iterator<Unit> it = unitGraph.getHeads().iterator(); it.hasNext(); ) {
 	    Unit headUnit = (Unit) it.next();
-	    Block headBlock = (Block) unitToBlock.get(headUnit);
+	    Block headBlock = unitToBlock.get(headUnit);
 	    if (headBlock.getHead() == headUnit) {
 		mHeads.add(headBlock);
 	    } else {
 		throw new RuntimeException("BlockGraph(): head Unit is not the first unit in the corresponding Block!");
 	    }
 	}
-	for (Iterator it = unitGraph.getTails().iterator(); it.hasNext(); ) {
+	for (Iterator<Unit> it = unitGraph.getTails().iterator(); it.hasNext(); ) {
 	    Unit tailUnit = (Unit) it.next();
-	    Block tailBlock = (Block) unitToBlock.get(tailUnit);
+	    Block tailBlock = unitToBlock.get(tailUnit);
 	    if (tailBlock.getTail() == tailUnit) {
 		mTails.add(tailBlock);
 	    } else {
@@ -233,14 +233,14 @@ public abstract class BlockGraph implements DirectedGraph
 	    }
 	}
 	
-	for (Iterator blockIt = blockList.iterator(); blockIt.hasNext(); ) {
-	    Block block = (Block) blockIt.next();
+	for (Iterator<Block> blockIt = blockList.iterator(); blockIt.hasNext(); ) {
+	    Block block = blockIt.next();
 
-	    List predUnits = unitGraph.getPredsOf(block.getHead());
-	    List predBlocks = new ArrayList(predUnits.size());
-	    for (Iterator predIt = predUnits.iterator(); predIt.hasNext(); ) {
-		Unit predUnit = (Unit) predIt.next();
-		Block predBlock = (Block) unitToBlock.get(predUnit);
+	    List<Unit> predUnits = unitGraph.getPredsOf(block.getHead());
+	    List<Block> predBlocks = new ArrayList<Block>(predUnits.size());
+	    for (Iterator<Unit> predIt = predUnits.iterator(); predIt.hasNext(); ) {
+		Unit predUnit = predIt.next();
+		Block predBlock = unitToBlock.get(predUnit);
 		if (predBlock == null) {
 		    throw new RuntimeException("BlockGraph(): block head mapped to null block!");
 		}
@@ -248,7 +248,7 @@ public abstract class BlockGraph implements DirectedGraph
 	    }
 
 	    if (predBlocks.size() == 0) {
-		block.setPreds(Collections.EMPTY_LIST);
+		block.setPreds(Collections.<Block>emptyList());
 
 		// If the UnreachableCodeEliminator is not eliminating
 		// unreachable handlers, then they will have no
@@ -269,18 +269,18 @@ public abstract class BlockGraph implements DirectedGraph
 		}
 	    }
 
-	    List succUnits = unitGraph.getSuccsOf(block.getTail());
-	    List succBlocks = new ArrayList(succUnits.size());
-	    for (Iterator succIt = succUnits.iterator(); succIt.hasNext(); ) {
-		Unit succUnit = (Unit) succIt.next();
-		Block succBlock = (Block) unitToBlock.get(succUnit);
+	    List<Unit> succUnits = unitGraph.getSuccsOf(block.getTail());
+	    List<Block> succBlocks = new ArrayList<Block>(succUnits.size());
+	    for (Iterator<Unit> succIt = succUnits.iterator(); succIt.hasNext(); ) {
+		Unit succUnit =  succIt.next();
+		Block succBlock = unitToBlock.get(succUnit);
 		if (succBlock == null) {
 		    throw new RuntimeException("BlockGraph(): block tail mapped to null block!");
 		}
 		succBlocks.add(succBlock);
 	    }
 	    if (succBlocks.size() == 0) {
-		block.setSuccs(Collections.EMPTY_LIST);
+		block.setSuccs(Collections.<Block>emptyList());
 		if (! mTails.contains(block)) {
 		    throw new RuntimeException("Block with no successors is not a tail!: " + block.toString());
 		    // Note that a block can be a tail even if it has
@@ -293,7 +293,7 @@ public abstract class BlockGraph implements DirectedGraph
 	mBlocks = Collections.unmodifiableList(blockList);
 	mHeads = Collections.unmodifiableList(mHeads);
 	if (mTails.size() == 0) {
-	    mTails = Collections.EMPTY_LIST;
+	    mTails = Collections.emptyList();
 	} else {
 	    mTails = Collections.unmodifiableList(mTails);
 	}
@@ -315,7 +315,7 @@ public abstract class BlockGraph implements DirectedGraph
      *                    to the new block
      */
     private void addBlock(Unit head, Unit tail, int index, int length, 
-			  List blockList, Map unitToBlock) {
+			  List<Block> blockList, Map<Unit, Block> unitToBlock) {
 	Block block = new Block(head, tail, mBody, index, length, this);
 	blockList.add(block);
 	unitToBlock.put(tail, block);
@@ -338,7 +338,7 @@ public abstract class BlockGraph implements DirectedGraph
      *           unit chain.
      *  @see Block
      */
-    public List getBlocks()
+    public List<Block> getBlocks()
     {
         return mBlocks;
     }
@@ -346,10 +346,10 @@ public abstract class BlockGraph implements DirectedGraph
                
     public String toString() {
        
-        Iterator it = mBlocks.iterator();
+        Iterator<Block> it = mBlocks.iterator();
         StringBuffer buf = new StringBuffer();
         while(it.hasNext()) {
-            Block someBlock = (Block) it.next();
+            Block someBlock = it.next();
             
             buf.append(someBlock.toString() + '\n');
         }
@@ -358,25 +358,23 @@ public abstract class BlockGraph implements DirectedGraph
     }
 
     /* DirectedGraph implementation   */
-    public List getHeads()
+    public List<Block> getHeads()
     {
         return mHeads;
     }
 
-    public List getTails()
+    public List<Block> getTails()
     {
 	return mTails;
     }
 
-    public List getPredsOf(Object o)
+    public List<Block> getPredsOf(Block b)
     {
-        Block b = (Block) o;
         return b.getPreds();
     }
 
-    public List getSuccsOf(Object o)
+    public List<Block> getSuccsOf(Block b)
     {
-        Block b = (Block) o;
         return b.getSuccs();
     }
 
@@ -385,7 +383,7 @@ public abstract class BlockGraph implements DirectedGraph
         return mBlocks.size();
     }
 
-    public Iterator iterator()
+    public Iterator<Block> iterator()
     {
         return mBlocks.iterator();
     }

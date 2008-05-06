@@ -36,7 +36,7 @@ import java.util.*;
  * Provides an implementation of the Set object using java.util.Array
  */
 
-public class ArraySet extends AbstractSet
+public class ArraySet<E> extends AbstractSet<E>
 {
     private static final int DEFAULT_SIZE = 8;
 
@@ -60,11 +60,11 @@ public class ArraySet extends AbstractSet
      * Create a set which contains the given elements.
      */
 
-    public ArraySet(Object[] elements)
+    public ArraySet(E[] elements)
     {
         this();
 
-        for (Object element : elements)
+        for (E element : elements)
 			add(element);
     }
 
@@ -84,7 +84,7 @@ public class ArraySet extends AbstractSet
 
     /** Add an element without checking whether it is already in the set.
      * It is up to the caller to guarantee that it isn't. */
-    final public boolean addElement(Object e)
+    final public boolean addElement(E e)
     {
         if(e==null) throw new RuntimeException( "oops" );
         // Expand array if necessary
@@ -96,7 +96,7 @@ public class ArraySet extends AbstractSet
             return true;
     }
 
-    final public boolean add(Object e)
+    final public boolean add(E e)
     {
         if(e==null) throw new RuntimeException( "oops" );
         if(contains(e))
@@ -113,12 +113,13 @@ public class ArraySet extends AbstractSet
         }
     }
 
-    final public boolean addAll(Collection s) {
+    @SuppressWarnings("unchecked")
+	final public boolean addAll(Collection<? extends E> s) {
         boolean ret = false;
         if( !(s instanceof ArraySet) ) return super.addAll(s);
         ArraySet as = (ArraySet) s;
         for (Object element : as.elements)
-			ret = add( element ) | ret;
+			ret = add( (E)element ) | ret;
         return ret;
     }
 
@@ -127,12 +128,12 @@ public class ArraySet extends AbstractSet
         return numElements;
     }
 
-    final public Iterator iterator()
+    final public Iterator<E> iterator()
     {
-        return new ArrayIterator();
+        return new ArrayIterator<E>();
     }
 
-    private class ArrayIterator implements Iterator
+    private class ArrayIterator<V> implements Iterator<V>
     {
         int nextIndex;
 
@@ -146,12 +147,13 @@ public class ArraySet extends AbstractSet
             return nextIndex < numElements;
         }
 
-        final public Object next() throws NoSuchElementException
+        @SuppressWarnings("unchecked")
+		final public V next() throws NoSuchElementException
         {
             if(!(nextIndex < numElements))
                 throw new NoSuchElementException();
 
-            return elements[nextIndex++];
+            return (V) elements[nextIndex++];
         }
 
         final public void remove() throws NoSuchElementException
@@ -200,7 +202,7 @@ public class ArraySet extends AbstractSet
         return array;
     }
 
-    final public Object[] toArray( Object[] array )
+    final public <T> T[] toArray( T[] array )
     {
         System.arraycopy(elements, 0, array, 0, numElements);
         return array;
