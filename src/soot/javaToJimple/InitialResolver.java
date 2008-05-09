@@ -110,9 +110,9 @@ public class InitialResolver implements IInitialResolver {
         JavaToJimple jtj = new JavaToJimple();
         polyglot.frontend.ExtensionInfo extInfo = jtj.initExtInfo(fullPath, locations);
         // only have one compiler - for memory issues
-        //if (compiler == null) {
+        if (compiler == null) {
             compiler = new polyglot.frontend.Compiler(extInfo);
-        //}
+        }
         // build ast
         astNode = jtj.compile(compiler, fullPath, extInfo);
  
