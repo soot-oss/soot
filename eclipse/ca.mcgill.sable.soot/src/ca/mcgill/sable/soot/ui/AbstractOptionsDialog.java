@@ -580,7 +580,8 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			String defaultString;
 			
 			if (isInDefList(defKey)) {
-				defaultString = getStringDef(defKey);	
+				defaultString = getStringDef(defKey);
+				if(defaultString==null) defaultString = "";
 			}
 			else {
 				defaultString = "";
