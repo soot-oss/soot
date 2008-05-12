@@ -1,22 +1,3 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2005 Jennifer Lhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 
 
 /*
@@ -54,13 +35,11 @@
 package ca.mcgill.sable.soot.ui;
 
 //import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 //import ca.mcgill.sable.soot.SootPlugin;
 //import ca.mcgill.sable.soot.util.*;
-import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.ui.*;
 import java.util.*;
 import org.eclipse.swt.events.*;
@@ -133,6 +112,8 @@ Composite bopChild = bopCreate(getPageContainer());
 
 Composite tagChild = tagCreate(getPageContainer());
 
+Composite dbChild = dbCreate(getPageContainer());
+
 Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
 
 Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
@@ -199,15 +180,19 @@ Composite cgSpark_Points_To_Set_Flowing_OptionsChild = cgSpark_Points_To_Set_Flo
 
 Composite cgSpark_Output_OptionsChild = cgSpark_Output_OptionsCreate(getPageContainer());
 
+Composite cgContext_sensitive_refinementChild = cgContext_sensitive_refinementCreate(getPageContainer());
+
 Composite cgPaddle_General_OptionsChild = cgPaddle_General_OptionsCreate(getPageContainer());
 
-Composite cgPaddle_Pointer_Assignment_Graph_Building_OptionsChild = cgPaddle_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
+Composite cgPaddle_Context_Sensitivity_OptionsChild = cgPaddle_Context_Sensitivity_OptionsCreate(getPageContainer());
 
-Composite cgPaddle_Pointer_Assignment_Graph_Simplification_OptionsChild = cgPaddle_Pointer_Assignment_Graph_Simplification_OptionsCreate(getPageContainer());
+Composite cgPaddle_Pointer_Assignment_Graph_Building_OptionsChild = cgPaddle_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
 
 Composite cgPaddle_Points_To_Set_Flowing_OptionsChild = cgPaddle_Points_To_Set_Flowing_OptionsCreate(getPageContainer());
 
 Composite cgPaddle_Output_OptionsChild = cgPaddle_Output_OptionsCreate(getPageContainer());
+
+Composite wjtpwjtp_tnChild = wjtpwjtp_tnCreate(getPageContainer());
 
 Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
 
@@ -240,6 +225,8 @@ Composite jopjop_cpfChild = jopjop_cpfCreate(getPageContainer());
 Composite jopjop_cbfChild = jopjop_cbfCreate(getPageContainer());
 
 Composite jopjop_daeChild = jopjop_daeCreate(getPageContainer());
+
+Composite jopjop_nceChild = jopjop_nceCreate(getPageContainer());
 
 Composite jopjop_uce1Child = jopjop_uce1Create(getPageContainer());
 
@@ -307,6 +294,14 @@ Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
 
 Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
+Composite dbdb_transformationsChild = dbdb_transformationsCreate(getPageContainer());
+
+Composite dbdb_renamerChild = dbdb_renamerCreate(getPageContainer());
+
+Composite dbdb_deobfuscateChild = dbdb_deobfuscateCreate(getPageContainer());
+
+Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContainer());
+
 
 		addOtherPages(getPageContainer());
 		initializeRadioGroups();
@@ -369,9 +364,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("jb", getjbuse_original_names_widget(), "use-original-names");
 		
 		
+		addToEnableGroup("jb", getjbpreserve_source_annotations_widget(), "preserve-source-annotations");
+		
+		
 		getjbenabled_widget().getButton().addSelectionListener(this);
 		
 		getjbuse_original_names_widget().getButton().addSelectionListener(this);
+		
+		getjbpreserve_source_annotations_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ls");
@@ -669,13 +669,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgall_reachable_widget(), "all-reachable");
 		
 		
+		addToEnableGroup("cg", getcgimplicit_entry_widget(), "implicit-entry");
+		
+		
 		addToEnableGroup("cg", getcgtrim_clinit_widget(), "trim-clinit");
-		
-		
-		addToEnableGroup("cg", getcgcontext_widget(), "context");
-		
-		
-		addToEnableGroup("cg", getcgk_widget(), "k");
 		
 		
 		getcgenabled_widget().getButton().addSelectionListener(this);
@@ -687,6 +684,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getcgverbose_widget().getButton().addSelectionListener(this);
 		
 		getcgall_reachable_widget().getButton().addSelectionListener(this);
+		
+		getcgimplicit_entry_widget().getButton().addSelectionListener(this);
 		
 		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
 		
@@ -743,6 +742,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimulate_natives_widget(), "simulate-natives");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkempties_as_allocs_widget(), "empties-as-allocs");
+
+		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
 
 		
@@ -797,6 +799,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkset_mass_widget(), "set-mass");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkcs_demand_widget(), "cs-demand");
+
+		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparktraversal_widget(), "traversal");
+
+		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkpasses_widget(), "passes");
+
+		
 		
 		makeNewEnableGroup("cg", "cg.paddle");
 		
@@ -808,37 +819,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleverbose_widget(), "verbose");
 
 		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleconf_widget(), "conf");
+
+		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebdd_widget(), "bdd");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleorder_widget(), "order");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledynamic_order_widget(), "dynamic-order");
 
 		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleprofile_widget(), "profile");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebddq_widget(), "bddq");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleverbosegc_widget(), "verbosegc");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledebugq_widget(), "debugq");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletrace_widget(), "trace");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlenumtrace_widget(), "numtrace");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleq_widget(), "q");
 
 		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebackend_widget(), "backend");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleignore_types_widget(), "ignore-types");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebdd_nodes_widget(), "bdd-nodes");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleforce_gc_widget(), "force-gc");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleignore_types_widget(), "ignore-types");
 
 		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlepre_jimplify_widget(), "pre-jimplify");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlevta_widget(), "vta");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_widget(), "context");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlek_widget(), "k");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_heap_widget(), "context-heap");
 
 		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlerta_widget(), "rta");
@@ -859,25 +879,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimulate_natives_widget(), "simulate-natives");
 
 		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleglobal_nodes_in_natives_widget(), "global-nodes-in-natives");
+
+		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleon_fly_cg_widget(), "on-fly-cg");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_heap_widget(), "context-heap");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlethis_edges_widget(), "this-edges");
 
 		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleprecise_newinstance_widget(), "precise-newinstance");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimplify_offline_widget(), "simplify-offline");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimplify_sccs_widget(), "simplify-sccs");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleignore_types_for_sccs_widget(), "ignore-types-for-sccs");
 
 		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlepropagator_widget(), "propagator");
@@ -892,28 +903,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledouble_set_new_widget(), "double-set-new");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_html_widget(), "dump-html");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_counts_widget(), "context-counts");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_pag_widget(), "dump-pag");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletotal_context_counts_widget(), "total-context-counts");
 
 		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_solution_widget(), "dump-solution");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletopo_sort_widget(), "topo-sort");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_types_widget(), "dump-types");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleclass_method_var_widget(), "class-method-var");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_answer_widget(), "dump-answer");
-
-		
-		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleadd_tags_widget(), "add-tags");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlemethod_context_counts_widget(), "method-context-counts");
 
 		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleset_mass_widget(), "set-mass");
@@ -948,6 +944,44 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		getwjtpenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wjtp", "wjtp.tn");
+		
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnenabled_widget(), "enabled");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnlocking_scheme_widget(), "locking-scheme");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnavoid_deadlock_widget(), "avoid-deadlock");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnopen_nesting_widget(), "open-nesting");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tndo_mhp_widget(), "do-mhp");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tndo_tlo_widget(), "do-tlo");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnprint_graph_widget(), "print-graph");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnprint_table_widget(), "print-table");
+		
+		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnprint_debug_widget(), "print-debug");
+		
+		getwjtpwjtp_tnenabled_widget().getButton().addSelectionListener(this);
+		
+		getwjtpwjtp_tnavoid_deadlock_widget().getButton().addSelectionListener(this);
+		
+		getwjtpwjtp_tnopen_nesting_widget().getButton().addSelectionListener(this);
+		
+		getwjtpwjtp_tndo_mhp_widget().getButton().addSelectionListener(this);
+		
+		getwjtpwjtp_tndo_tlo_widget().getButton().addSelectionListener(this);
+		
+		getwjtpwjtp_tnprint_graph_widget().getButton().addSelectionListener(this);
+		
+		getwjtpwjtp_tnprint_table_widget().getButton().addSelectionListener(this);
+		
+		getwjtpwjtp_tnprint_debug_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("wjop");
@@ -1092,10 +1126,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("shimple", getshimpleenabled_widget(), "enabled");
 		
 		
-		addToEnableGroup("shimple", getshimplephi_elim_opt_widget(), "phi-elim-opt");
+		addToEnableGroup("shimple", getshimplenode_elim_opt_widget(), "node-elim-opt");
 		
 		
 		addToEnableGroup("shimple", getshimplestandard_local_names_widget(), "standard-local-names");
+		
+		
+		addToEnableGroup("shimple", getshimpleextended_widget(), "extended");
 		
 		
 		addToEnableGroup("shimple", getshimpledebug_widget(), "debug");
@@ -1103,7 +1140,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		getshimpleenabled_widget().getButton().addSelectionListener(this);
 		
+		getshimplenode_elim_opt_widget().getButton().addSelectionListener(this);
+		
 		getshimplestandard_local_names_widget().getButton().addSelectionListener(this);
+		
+		getshimpleextended_widget().getButton().addSelectionListener(this);
 		
 		getshimpledebug_widget().getButton().addSelectionListener(this);
 		
@@ -1244,6 +1285,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getjopjop_daeonly_tag_widget().getButton().addSelectionListener(this);
 		
 		getjopjop_daeonly_stack_locals_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jop", "jop.nce");
+		
+		
+		addToEnableGroup("jop", "jop.nce", getjopjop_nceenabled_widget(), "enabled");
+		
+		getjopjop_nceenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jop", "jop.uce1");
@@ -1659,6 +1708,52 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		gettagtag_fieldrwenabled_widget().getButton().addSelectionListener(this);
 		
+		
+		makeNewEnableGroup("db");
+		
+		
+		addToEnableGroup("db", getdbenabled_widget(), "enabled");
+		
+		
+		addToEnableGroup("db", getdbsource_is_javac_widget(), "source-is-javac");
+		
+		
+		getdbenabled_widget().getButton().addSelectionListener(this);
+		
+		getdbsource_is_javac_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("db", "db.transformations");
+		
+		
+		addToEnableGroup("db", "db.transformations", getdbdb_transformationsenabled_widget(), "enabled");
+		
+		getdbdb_transformationsenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("db", "db.renamer");
+		
+		
+		addToEnableGroup("db", "db.renamer", getdbdb_renamerenabled_widget(), "enabled");
+		
+		getdbdb_renamerenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("db", "db.deobfuscate");
+		
+		
+		addToEnableGroup("db", "db.deobfuscate", getdbdb_deobfuscateenabled_widget(), "enabled");
+		
+		getdbdb_deobfuscateenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("db", "db.force-recompile");
+		
+		
+		addToEnableGroup("db", "db.force-recompile", getdbdb_force_recompileenabled_widget(), "enabled");
+		
+		getdbdb_force_recompileenabled_widget().getButton().addSelectionListener(this);
+		
 
 		updateAllEnableGroups();
 	}
@@ -1671,7 +1766,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}
 	
 	/**
-	 * all options get saved as <alias, value> pair
+	 * all options get saved as (alias, value) pair
 	 */ 
 	protected void okPressed() {
 		if(createNewConfig())	
@@ -1683,7 +1778,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 					" is no Java project or is closed.");
 		}
 	}
-
+	
 	private boolean createNewConfig() {
 	
 		setConfig(new HashMap());
@@ -1815,6 +1910,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getGeneral_Optionsphase_help_widget().getAlias(), stringRes);
 		}
 		
+		boolRes = getInput_Optionsprepend_classpath_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsprepend_classpath_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getInput_Optionsast_metrics_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsast_metrics_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsfull_resolver_widget().getButton().getSelection();
 		
 		
@@ -1843,6 +1958,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsuse_old_type_assigner_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getInput_Optionsj2me_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsj2me_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getInput_Optionspolyglot_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionspolyglot_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
@@ -2077,6 +2212,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbuse_original_names_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbpreserve_source_annotations_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbpreserve_source_annotations_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lsenabled_widget().getButton().getSelection();
@@ -2549,6 +2694,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgall_reachable_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgimplicit_entry_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgimplicit_entry_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgtrim_clinit_widget().getButton().getSelection();
 		
 		
@@ -2566,25 +2721,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgjdkver_widget().getAlias(), stringRes);
-		}
-		
-		stringRes = getcgk_widget().getText().getText();
-		
-		defStringRes = "2";
-		
-
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
-			getConfig().put(getcgk_widget().getAlias(), stringRes);
-		}
-		 
-		stringRes = getcgcontext_widget().getSelectedAlias();
-
-		
-		defStringRes = "insens";
-		
-
-		if (!stringRes.equals(defStringRes)) {
-			getConfig().put(getcgcontext_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
@@ -2725,6 +2861,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparksimulate_natives_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkempties_as_allocs_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkempties_as_allocs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparksimple_edges_bidirectional_widget().getButton().getSelection();
@@ -2907,6 +3053,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_sparkset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgcg_sparkcs_demand_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkcs_demand_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getcgcg_sparktraversal_widget().getText().getText();
+		
+		defStringRes = "75000";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgcg_sparktraversal_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getcgcg_sparkpasses_widget().getText().getText();
+		
+		defStringRes = "10";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgcg_sparkpasses_widget().getAlias(), stringRes);
+		}
+		
 		boolRes = getcgcg_paddleenabled_widget().getButton().getSelection();
 		
 		
@@ -2937,6 +3111,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_paddlebdd_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgcg_paddledynamic_order_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddledynamic_order_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgcg_paddleprofile_widget().getButton().getSelection();
 		
 		
@@ -2947,44 +3131,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_paddleprofile_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_paddlebddq_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleverbosegc_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddlebddq_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddledebugq_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddledebugq_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddletrace_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddletrace_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddlenumtrace_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddlenumtrace_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleverbosegc_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_paddleignore_types_widget().getButton().getSelection();
@@ -2997,16 +3151,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_paddleignore_types_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_paddleforce_gc_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddleforce_gc_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getcgcg_paddlepre_jimplify_widget().getButton().getSelection();
 		
 		
@@ -3016,25 +3160,82 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlepre_jimplify_widget().getAlias(), new Boolean(boolRes));
 		}
+		
+		stringRes = getcgcg_paddleorder_widget().getText().getText();
+		
+		defStringRes = "32";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgcg_paddleorder_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getcgcg_paddlebdd_nodes_widget().getText().getText();
+		
+		defStringRes = "0";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgcg_paddlebdd_nodes_widget().getAlias(), stringRes);
+		}
+		 
+		stringRes = getcgcg_paddleconf_widget().getSelectedAlias();
+
+		
+		defStringRes = "ofcg";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddleconf_widget().getAlias(), stringRes);
+		}
+		 
+		stringRes = getcgcg_paddleq_widget().getSelectedAlias();
+
+		
+		defStringRes = "auto";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddleq_widget().getAlias(), stringRes);
+		}
 		 
 		stringRes = getcgcg_paddlebackend_widget().getSelectedAlias();
 
 		
-		defStringRes = "buddy";
+		defStringRes = "auto";
 		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddlebackend_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getcgcg_paddlevta_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlecontext_heap_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddlevta_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlecontext_heap_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getcgcg_paddlek_widget().getText().getText();
+		
+		defStringRes = "2";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgcg_paddlek_widget().getAlias(), stringRes);
+		}
+		 
+		stringRes = getcgcg_paddlecontext_widget().getSelectedAlias();
+
+		
+		defStringRes = "insens";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddlecontext_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getcgcg_paddlerta_widget().getButton().getSelection();
@@ -3097,6 +3298,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_paddlesimulate_natives_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgcg_paddleglobal_nodes_in_natives_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddleglobal_nodes_in_natives_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgcg_paddlesimple_edges_bidirectional_widget().getButton().getSelection();
 		
 		
@@ -3107,24 +3318,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_paddlesimple_edges_bidirectional_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_paddleon_fly_cg_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddleon_fly_cg_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddlecontext_heap_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlethis_edges_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddlecontext_heap_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlethis_edges_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_paddleprecise_newinstance_widget().getButton().getSelection();
@@ -3136,41 +3337,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleprecise_newinstance_widget().getAlias(), new Boolean(boolRes));
 		}
-		
-		boolRes = getcgcg_paddlesimplify_offline_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddlesimplify_offline_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddlesimplify_sccs_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddlesimplify_sccs_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddleignore_types_for_sccs_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddleignore_types_for_sccs_widget().getAlias(), new Boolean(boolRes));
-		}
 		 
 		stringRes = getcgcg_paddlepropagator_widget().getSelectedAlias();
 
 		
-		defStringRes = "worklist";
+		defStringRes = "auto";
 		
 
 		if (!stringRes.equals(defStringRes)) {
@@ -3207,84 +3378,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_paddledouble_set_new_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getcgcg_paddledump_html_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlecontext_counts_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddledump_html_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlecontext_counts_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_paddledump_pag_widget().getButton().getSelection();
+		boolRes = getcgcg_paddletotal_context_counts_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddledump_pag_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddletotal_context_counts_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_paddledump_solution_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlemethod_context_counts_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddledump_solution_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddletopo_sort_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddletopo_sort_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddledump_types_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddledump_types_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddleclass_method_var_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddleclass_method_var_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddledump_answer_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddledump_answer_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_paddleadd_tags_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_paddleadd_tags_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlemethod_context_counts_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_paddleset_mass_widget().getButton().getSelection();
@@ -3335,6 +3456,96 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tnenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tnenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tnavoid_deadlock_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tnavoid_deadlock_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tnopen_nesting_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tnopen_nesting_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tndo_mhp_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tndo_mhp_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tndo_tlo_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tndo_tlo_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tnprint_graph_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tnprint_graph_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tnprint_table_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tnprint_table_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpwjtp_tnprint_debug_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_tnprint_debug_widget().getAlias(), new Boolean(boolRes));
+		}
+		 
+		stringRes = getwjtpwjtp_tnlocking_scheme_widget().getSelectedAlias();
+
+		
+		defStringRes = "medium-grained";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getwjtpwjtp_tnlocking_scheme_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getwjopenabled_widget().getButton().getSelection();
@@ -3604,6 +3815,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getshimpleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getshimplenode_elim_opt_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimplenode_elim_opt_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getshimplestandard_local_names_widget().getButton().getSelection();
 		
 		
@@ -3614,6 +3835,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getshimplestandard_local_names_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getshimpleextended_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimpleextended_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getshimpledebug_widget().getButton().getSelection();
 		
 		
@@ -3622,16 +3853,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimpledebug_widget().getAlias(), new Boolean(boolRes));
-		}
-		 
-		stringRes = getshimplephi_elim_opt_widget().getSelectedAlias();
-
-		
-		defStringRes = "post";
-		
-
-		if (!stringRes.equals(defStringRes)) {
-			getConfig().put(getshimplephi_elim_opt_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getstpenabled_widget().getButton().getSelection();
@@ -3852,6 +4073,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopjop_nceenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_nceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_uce1enabled_widget().getButton().getSelection();
@@ -4493,6 +4724,66 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getdbenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getdbenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getdbsource_is_javac_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getdbsource_is_javac_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getdbdb_transformationsenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getdbdb_transformationsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getdbdb_renamerenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getdbdb_renamerenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getdbdb_deobfuscateenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getdbdb_deobfuscateenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getdbdb_force_recompileenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getdbdb_force_recompileenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getApplication_Mode_Optionsinclude_all_widget().getButton().getSelection();
 		
 		
@@ -4639,7 +4930,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		
 		
-		setSootMainClass(getSootMainClassWidget().getText().getText());		
+		setSootMainClass(getSootMainClassWidget().getText().getText());			
 		return setSootMainProject(getSootMainProjectWidget().getText().getText());
 	}
 
@@ -5000,6 +5291,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			subSectParent.addChild(cg_Spark_Output_Options_branch);
 			
+			SootOption cg_Context_sensitive_refinement_branch = new SootOption("Context-sensitive refinement", "cgContext_sensitive_refinement");
+
+			subSectParent.addChild(cg_Context_sensitive_refinement_branch);
+			
 			SootOption cg_cg_paddle_branch = new SootOption("Paddle", "cgcg_paddle");
 			subParent.addChild(cg_cg_paddle_branch);
 
@@ -5014,13 +5309,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			subSectParent.addChild(cg_Paddle_General_Options_branch);
 			
+			SootOption cg_Paddle_Context_Sensitivity_Options_branch = new SootOption("Paddle Context Sensitivity Options", "cgPaddle_Context_Sensitivity_Options");
+
+			subSectParent.addChild(cg_Paddle_Context_Sensitivity_Options_branch);
+			
 			SootOption cg_Paddle_Pointer_Assignment_Graph_Building_Options_branch = new SootOption("Paddle Pointer Assignment Graph Building Options", "cgPaddle_Pointer_Assignment_Graph_Building_Options");
 
 			subSectParent.addChild(cg_Paddle_Pointer_Assignment_Graph_Building_Options_branch);
-			
-			SootOption cg_Paddle_Pointer_Assignment_Graph_Simplification_Options_branch = new SootOption("Paddle Pointer Assignment Graph Simplification Options", "cgPaddle_Pointer_Assignment_Graph_Simplification_Options");
-
-			subSectParent.addChild(cg_Paddle_Pointer_Assignment_Graph_Simplification_Options_branch);
 			
 			SootOption cg_Paddle_Points_To_Set_Flowing_Options_branch = new SootOption("Paddle Points-To Set Flowing Options", "cgPaddle_Points_To_Set_Flowing_Options");
 
@@ -5050,6 +5345,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subParent = wjtp_branch;
 
 
+			
+			SootOption wjtp_wjtp_tn_branch = new SootOption("Transactional Transformation", "wjtpwjtp_tn");
+			subParent.addChild(wjtp_wjtp_tn_branch);
+
+
+			
+
+			
+			subSectParent = wjtp_wjtp_tn_branch;
+			
 			
 			//Whole-Jimple Optimization Pack
 			SootOption wjop_branch = new SootOption("Whole-Jimple Optimization Pack", "wjop");
@@ -5258,6 +5563,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jop_jop_dae_branch;
+			
+			
+			SootOption jop_jop_nce_branch = new SootOption("Null Check Eliminator", "jopjop_nce");
+			subParent.addChild(jop_jop_nce_branch);
+
+
+			
+
+			
+			subSectParent = jop_jop_nce_branch;
 			
 			
 			SootOption jop_jop_uce1_branch = new SootOption("Unreachable Code Eliminator 1", "jopjop_uce1");
@@ -5632,6 +5947,53 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = tag_tag_fieldrw_branch;
 			
 			
+			//Dava Body Creation
+			SootOption db_branch = new SootOption("Dava Body Creation", "db");
+			parent.addChild(db_branch);
+			subParent = db_branch;
+
+
+			
+			SootOption db_db_transformations_branch = new SootOption("Transformations", "dbdb_transformations");
+			subParent.addChild(db_db_transformations_branch);
+
+
+			
+
+			
+			subSectParent = db_db_transformations_branch;
+			
+			
+			SootOption db_db_renamer_branch = new SootOption("Renamer", "dbdb_renamer");
+			subParent.addChild(db_db_renamer_branch);
+
+
+			
+
+			
+			subSectParent = db_db_renamer_branch;
+			
+			
+			SootOption db_db_deobfuscate_branch = new SootOption("De-obfuscate", "dbdb_deobfuscate");
+			subParent.addChild(db_db_deobfuscate_branch);
+
+
+			
+
+			
+			subSectParent = db_db_deobfuscate_branch;
+			
+			
+			SootOption db_db_force_recompile_branch = new SootOption("Force Recompilability", "dbdb_force_recompile");
+			subParent.addChild(db_db_force_recompile_branch);
+
+
+			
+
+			
+			subSectParent = db_db_force_recompile_branch;
+			
+			
 		SootOption Application_Mode_Options_branch = new SootOption("Application Mode Options", "Application_Mode_Options");
 		root.addChild(Application_Mode_Options_branch);
 		parent = Application_Mode_Options_branch;		
@@ -5779,6 +6141,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
+	private BooleanOptionWidget Input_Optionsprepend_classpath_widget;
+	
+	private void setInput_Optionsprepend_classpath_widget(BooleanOptionWidget widget) {
+		Input_Optionsprepend_classpath_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsprepend_classpath_widget() {
+		return Input_Optionsprepend_classpath_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsast_metrics_widget;
+	
+	private void setInput_Optionsast_metrics_widget(BooleanOptionWidget widget) {
+		Input_Optionsast_metrics_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsast_metrics_widget() {
+		return Input_Optionsast_metrics_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsfull_resolver_widget;
 	
 	private void setInput_Optionsfull_resolver_widget(BooleanOptionWidget widget) {
@@ -5807,6 +6189,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getInput_Optionsuse_old_type_assigner_widget() {
 		return Input_Optionsuse_old_type_assigner_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsj2me_widget;
+	
+	private void setInput_Optionsj2me_widget(BooleanOptionWidget widget) {
+		Input_Optionsj2me_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsj2me_widget() {
+		return Input_Optionsj2me_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionspolyglot_widget;
+	
+	private void setInput_Optionspolyglot_widget(BooleanOptionWidget widget) {
+		Input_Optionspolyglot_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionspolyglot_widget() {
+		return Input_Optionspolyglot_widget;
 	}	
 	
 
@@ -6065,6 +6467,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjbuse_original_names_widget() {
 		return jbuse_original_names_widget;
+	}	
+	
+	private BooleanOptionWidget jbpreserve_source_annotations_widget;
+	
+	private void setjbpreserve_source_annotations_widget(BooleanOptionWidget widget) {
+		jbpreserve_source_annotations_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbpreserve_source_annotations_widget() {
+		return jbpreserve_source_annotations_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_lsenabled_widget;
@@ -6537,6 +6949,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgall_reachable_widget;
 	}	
 	
+	private BooleanOptionWidget cgimplicit_entry_widget;
+	
+	private void setcgimplicit_entry_widget(BooleanOptionWidget widget) {
+		cgimplicit_entry_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgimplicit_entry_widget() {
+		return cgimplicit_entry_widget;
+	}	
+	
 	private BooleanOptionWidget cgtrim_clinit_widget;
 	
 	private void setcgtrim_clinit_widget(BooleanOptionWidget widget) {
@@ -6557,30 +6979,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	public StringOptionWidget getcgjdkver_widget() {
 		return cgjdkver_widget;
 	}
-	
-	
-	
-	private StringOptionWidget cgk_widget;
-	
-	private void setcgk_widget(StringOptionWidget widget) {
-		cgk_widget = widget;
-	}
-	
-	public StringOptionWidget getcgk_widget() {
-		return cgk_widget;
-	}
-	
-	
-	
-	private MultiOptionWidget cgcontext_widget;
-	
-	private void setcgcontext_widget(MultiOptionWidget widget) {
-		cgcontext_widget = widget;
-	}
-	
-	public MultiOptionWidget getcgcontext_widget() {
-		return cgcontext_widget;
-	}	
 	
 	
 	private BooleanOptionWidget cgcg_chaenabled_widget;
@@ -6721,6 +7119,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_sparksimulate_natives_widget() {
 		return cgcg_sparksimulate_natives_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkempties_as_allocs_widget;
+	
+	private void setcgcg_sparkempties_as_allocs_widget(BooleanOptionWidget widget) {
+		cgcg_sparkempties_as_allocs_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkempties_as_allocs_widget() {
+		return cgcg_sparkempties_as_allocs_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparksimple_edges_bidirectional_widget;
@@ -6911,6 +7319,40 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkset_mass_widget;
 	}	
 	
+	private BooleanOptionWidget cgcg_sparkcs_demand_widget;
+	
+	private void setcgcg_sparkcs_demand_widget(BooleanOptionWidget widget) {
+		cgcg_sparkcs_demand_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkcs_demand_widget() {
+		return cgcg_sparkcs_demand_widget;
+	}	
+	
+	
+	private StringOptionWidget cgcg_sparktraversal_widget;
+	
+	private void setcgcg_sparktraversal_widget(StringOptionWidget widget) {
+		cgcg_sparktraversal_widget = widget;
+	}
+	
+	public StringOptionWidget getcgcg_sparktraversal_widget() {
+		return cgcg_sparktraversal_widget;
+	}
+	
+	
+	
+	private StringOptionWidget cgcg_sparkpasses_widget;
+	
+	private void setcgcg_sparkpasses_widget(StringOptionWidget widget) {
+		cgcg_sparkpasses_widget = widget;
+	}
+	
+	public StringOptionWidget getcgcg_sparkpasses_widget() {
+		return cgcg_sparkpasses_widget;
+	}
+	
+	
 	private BooleanOptionWidget cgcg_paddleenabled_widget;
 	
 	private void setcgcg_paddleenabled_widget(BooleanOptionWidget widget) {
@@ -6941,6 +7383,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_paddlebdd_widget;
 	}	
 	
+	private BooleanOptionWidget cgcg_paddledynamic_order_widget;
+	
+	private void setcgcg_paddledynamic_order_widget(BooleanOptionWidget widget) {
+		cgcg_paddledynamic_order_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddledynamic_order_widget() {
+		return cgcg_paddledynamic_order_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_paddleprofile_widget;
 	
 	private void setcgcg_paddleprofile_widget(BooleanOptionWidget widget) {
@@ -6951,44 +7403,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_paddleprofile_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_paddlebddq_widget;
+	private BooleanOptionWidget cgcg_paddleverbosegc_widget;
 	
-	private void setcgcg_paddlebddq_widget(BooleanOptionWidget widget) {
-		cgcg_paddlebddq_widget = widget;
+	private void setcgcg_paddleverbosegc_widget(BooleanOptionWidget widget) {
+		cgcg_paddleverbosegc_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_paddlebddq_widget() {
-		return cgcg_paddlebddq_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddledebugq_widget;
-	
-	private void setcgcg_paddledebugq_widget(BooleanOptionWidget widget) {
-		cgcg_paddledebugq_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddledebugq_widget() {
-		return cgcg_paddledebugq_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddletrace_widget;
-	
-	private void setcgcg_paddletrace_widget(BooleanOptionWidget widget) {
-		cgcg_paddletrace_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddletrace_widget() {
-		return cgcg_paddletrace_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddlenumtrace_widget;
-	
-	private void setcgcg_paddlenumtrace_widget(BooleanOptionWidget widget) {
-		cgcg_paddlenumtrace_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddlenumtrace_widget() {
-		return cgcg_paddlenumtrace_widget;
+	public BooleanOptionWidget getcgcg_paddleverbosegc_widget() {
+		return cgcg_paddleverbosegc_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_paddleignore_types_widget;
@@ -6999,16 +7421,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_paddleignore_types_widget() {
 		return cgcg_paddleignore_types_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddleforce_gc_widget;
-	
-	private void setcgcg_paddleforce_gc_widget(BooleanOptionWidget widget) {
-		cgcg_paddleforce_gc_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddleforce_gc_widget() {
-		return cgcg_paddleforce_gc_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_paddlepre_jimplify_widget;
@@ -7022,6 +7434,54 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
+	private StringOptionWidget cgcg_paddleorder_widget;
+	
+	private void setcgcg_paddleorder_widget(StringOptionWidget widget) {
+		cgcg_paddleorder_widget = widget;
+	}
+	
+	public StringOptionWidget getcgcg_paddleorder_widget() {
+		return cgcg_paddleorder_widget;
+	}
+	
+	
+	
+	private StringOptionWidget cgcg_paddlebdd_nodes_widget;
+	
+	private void setcgcg_paddlebdd_nodes_widget(StringOptionWidget widget) {
+		cgcg_paddlebdd_nodes_widget = widget;
+	}
+	
+	public StringOptionWidget getcgcg_paddlebdd_nodes_widget() {
+		return cgcg_paddlebdd_nodes_widget;
+	}
+	
+	
+	
+	private MultiOptionWidget cgcg_paddleconf_widget;
+	
+	private void setcgcg_paddleconf_widget(MultiOptionWidget widget) {
+		cgcg_paddleconf_widget = widget;
+	}
+	
+	public MultiOptionWidget getcgcg_paddleconf_widget() {
+		return cgcg_paddleconf_widget;
+	}	
+	
+	
+	
+	private MultiOptionWidget cgcg_paddleq_widget;
+	
+	private void setcgcg_paddleq_widget(MultiOptionWidget widget) {
+		cgcg_paddleq_widget = widget;
+	}
+	
+	public MultiOptionWidget getcgcg_paddleq_widget() {
+		return cgcg_paddleq_widget;
+	}	
+	
+	
+	
 	private MultiOptionWidget cgcg_paddlebackend_widget;
 	
 	private void setcgcg_paddlebackend_widget(MultiOptionWidget widget) {
@@ -7033,15 +7493,39 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private BooleanOptionWidget cgcg_paddlevta_widget;
+	private BooleanOptionWidget cgcg_paddlecontext_heap_widget;
 	
-	private void setcgcg_paddlevta_widget(BooleanOptionWidget widget) {
-		cgcg_paddlevta_widget = widget;
+	private void setcgcg_paddlecontext_heap_widget(BooleanOptionWidget widget) {
+		cgcg_paddlecontext_heap_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_paddlevta_widget() {
-		return cgcg_paddlevta_widget;
+	public BooleanOptionWidget getcgcg_paddlecontext_heap_widget() {
+		return cgcg_paddlecontext_heap_widget;
 	}	
+	
+	
+	private StringOptionWidget cgcg_paddlek_widget;
+	
+	private void setcgcg_paddlek_widget(StringOptionWidget widget) {
+		cgcg_paddlek_widget = widget;
+	}
+	
+	public StringOptionWidget getcgcg_paddlek_widget() {
+		return cgcg_paddlek_widget;
+	}
+	
+	
+	
+	private MultiOptionWidget cgcg_paddlecontext_widget;
+	
+	private void setcgcg_paddlecontext_widget(MultiOptionWidget widget) {
+		cgcg_paddlecontext_widget = widget;
+	}
+	
+	public MultiOptionWidget getcgcg_paddlecontext_widget() {
+		return cgcg_paddlecontext_widget;
+	}	
+	
 	
 	private BooleanOptionWidget cgcg_paddlerta_widget;
 	
@@ -7103,6 +7587,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_paddlesimulate_natives_widget;
 	}	
 	
+	private BooleanOptionWidget cgcg_paddleglobal_nodes_in_natives_widget;
+	
+	private void setcgcg_paddleglobal_nodes_in_natives_widget(BooleanOptionWidget widget) {
+		cgcg_paddleglobal_nodes_in_natives_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddleglobal_nodes_in_natives_widget() {
+		return cgcg_paddleglobal_nodes_in_natives_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_paddlesimple_edges_bidirectional_widget;
 	
 	private void setcgcg_paddlesimple_edges_bidirectional_widget(BooleanOptionWidget widget) {
@@ -7113,24 +7607,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_paddlesimple_edges_bidirectional_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_paddleon_fly_cg_widget;
+	private BooleanOptionWidget cgcg_paddlethis_edges_widget;
 	
-	private void setcgcg_paddleon_fly_cg_widget(BooleanOptionWidget widget) {
-		cgcg_paddleon_fly_cg_widget = widget;
+	private void setcgcg_paddlethis_edges_widget(BooleanOptionWidget widget) {
+		cgcg_paddlethis_edges_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_paddleon_fly_cg_widget() {
-		return cgcg_paddleon_fly_cg_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddlecontext_heap_widget;
-	
-	private void setcgcg_paddlecontext_heap_widget(BooleanOptionWidget widget) {
-		cgcg_paddlecontext_heap_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddlecontext_heap_widget() {
-		return cgcg_paddlecontext_heap_widget;
+	public BooleanOptionWidget getcgcg_paddlethis_edges_widget() {
+		return cgcg_paddlethis_edges_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_paddleprecise_newinstance_widget;
@@ -7141,36 +7625,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_paddleprecise_newinstance_widget() {
 		return cgcg_paddleprecise_newinstance_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddlesimplify_offline_widget;
-	
-	private void setcgcg_paddlesimplify_offline_widget(BooleanOptionWidget widget) {
-		cgcg_paddlesimplify_offline_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddlesimplify_offline_widget() {
-		return cgcg_paddlesimplify_offline_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddlesimplify_sccs_widget;
-	
-	private void setcgcg_paddlesimplify_sccs_widget(BooleanOptionWidget widget) {
-		cgcg_paddlesimplify_sccs_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddlesimplify_sccs_widget() {
-		return cgcg_paddlesimplify_sccs_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddleignore_types_for_sccs_widget;
-	
-	private void setcgcg_paddleignore_types_for_sccs_widget(BooleanOptionWidget widget) {
-		cgcg_paddleignore_types_for_sccs_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddleignore_types_for_sccs_widget() {
-		return cgcg_paddleignore_types_for_sccs_widget;
 	}	
 	
 	
@@ -7221,84 +7675,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private BooleanOptionWidget cgcg_paddledump_html_widget;
+	private BooleanOptionWidget cgcg_paddlecontext_counts_widget;
 	
-	private void setcgcg_paddledump_html_widget(BooleanOptionWidget widget) {
-		cgcg_paddledump_html_widget = widget;
+	private void setcgcg_paddlecontext_counts_widget(BooleanOptionWidget widget) {
+		cgcg_paddlecontext_counts_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_paddledump_html_widget() {
-		return cgcg_paddledump_html_widget;
+	public BooleanOptionWidget getcgcg_paddlecontext_counts_widget() {
+		return cgcg_paddlecontext_counts_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_paddledump_pag_widget;
+	private BooleanOptionWidget cgcg_paddletotal_context_counts_widget;
 	
-	private void setcgcg_paddledump_pag_widget(BooleanOptionWidget widget) {
-		cgcg_paddledump_pag_widget = widget;
+	private void setcgcg_paddletotal_context_counts_widget(BooleanOptionWidget widget) {
+		cgcg_paddletotal_context_counts_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_paddledump_pag_widget() {
-		return cgcg_paddledump_pag_widget;
+	public BooleanOptionWidget getcgcg_paddletotal_context_counts_widget() {
+		return cgcg_paddletotal_context_counts_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_paddledump_solution_widget;
+	private BooleanOptionWidget cgcg_paddlemethod_context_counts_widget;
 	
-	private void setcgcg_paddledump_solution_widget(BooleanOptionWidget widget) {
-		cgcg_paddledump_solution_widget = widget;
+	private void setcgcg_paddlemethod_context_counts_widget(BooleanOptionWidget widget) {
+		cgcg_paddlemethod_context_counts_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_paddledump_solution_widget() {
-		return cgcg_paddledump_solution_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddletopo_sort_widget;
-	
-	private void setcgcg_paddletopo_sort_widget(BooleanOptionWidget widget) {
-		cgcg_paddletopo_sort_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddletopo_sort_widget() {
-		return cgcg_paddletopo_sort_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddledump_types_widget;
-	
-	private void setcgcg_paddledump_types_widget(BooleanOptionWidget widget) {
-		cgcg_paddledump_types_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddledump_types_widget() {
-		return cgcg_paddledump_types_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddleclass_method_var_widget;
-	
-	private void setcgcg_paddleclass_method_var_widget(BooleanOptionWidget widget) {
-		cgcg_paddleclass_method_var_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddleclass_method_var_widget() {
-		return cgcg_paddleclass_method_var_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddledump_answer_widget;
-	
-	private void setcgcg_paddledump_answer_widget(BooleanOptionWidget widget) {
-		cgcg_paddledump_answer_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddledump_answer_widget() {
-		return cgcg_paddledump_answer_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_paddleadd_tags_widget;
-	
-	private void setcgcg_paddleadd_tags_widget(BooleanOptionWidget widget) {
-		cgcg_paddleadd_tags_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_paddleadd_tags_widget() {
-		return cgcg_paddleadd_tags_widget;
+	public BooleanOptionWidget getcgcg_paddlemethod_context_counts_widget() {
+		return cgcg_paddlemethod_context_counts_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_paddleset_mass_widget;
@@ -7350,6 +7754,98 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	public BooleanOptionWidget getwjtpenabled_widget() {
 		return wjtpenabled_widget;
 	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tnenabled_widget;
+	
+	private void setwjtpwjtp_tnenabled_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tnenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tnenabled_widget() {
+		return wjtpwjtp_tnenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tnavoid_deadlock_widget;
+	
+	private void setwjtpwjtp_tnavoid_deadlock_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tnavoid_deadlock_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tnavoid_deadlock_widget() {
+		return wjtpwjtp_tnavoid_deadlock_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tnopen_nesting_widget;
+	
+	private void setwjtpwjtp_tnopen_nesting_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tnopen_nesting_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tnopen_nesting_widget() {
+		return wjtpwjtp_tnopen_nesting_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tndo_mhp_widget;
+	
+	private void setwjtpwjtp_tndo_mhp_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tndo_mhp_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tndo_mhp_widget() {
+		return wjtpwjtp_tndo_mhp_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tndo_tlo_widget;
+	
+	private void setwjtpwjtp_tndo_tlo_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tndo_tlo_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tndo_tlo_widget() {
+		return wjtpwjtp_tndo_tlo_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tnprint_graph_widget;
+	
+	private void setwjtpwjtp_tnprint_graph_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tnprint_graph_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tnprint_graph_widget() {
+		return wjtpwjtp_tnprint_graph_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tnprint_table_widget;
+	
+	private void setwjtpwjtp_tnprint_table_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tnprint_table_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tnprint_table_widget() {
+		return wjtpwjtp_tnprint_table_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_tnprint_debug_widget;
+	
+	private void setwjtpwjtp_tnprint_debug_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_tnprint_debug_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_tnprint_debug_widget() {
+		return wjtpwjtp_tnprint_debug_widget;
+	}	
+	
+	
+	private MultiOptionWidget wjtpwjtp_tnlocking_scheme_widget;
+	
+	private void setwjtpwjtp_tnlocking_scheme_widget(MultiOptionWidget widget) {
+		wjtpwjtp_tnlocking_scheme_widget = widget;
+	}
+	
+	public MultiOptionWidget getwjtpwjtp_tnlocking_scheme_widget() {
+		return wjtpwjtp_tnlocking_scheme_widget;
+	}	
+	
 	
 	private BooleanOptionWidget wjopenabled_widget;
 	
@@ -7631,6 +8127,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return shimpleenabled_widget;
 	}	
 	
+	private BooleanOptionWidget shimplenode_elim_opt_widget;
+	
+	private void setshimplenode_elim_opt_widget(BooleanOptionWidget widget) {
+		shimplenode_elim_opt_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimplenode_elim_opt_widget() {
+		return shimplenode_elim_opt_widget;
+	}	
+	
 	private BooleanOptionWidget shimplestandard_local_names_widget;
 	
 	private void setshimplestandard_local_names_widget(BooleanOptionWidget widget) {
@@ -7639,6 +8145,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getshimplestandard_local_names_widget() {
 		return shimplestandard_local_names_widget;
+	}	
+	
+	private BooleanOptionWidget shimpleextended_widget;
+	
+	private void setshimpleextended_widget(BooleanOptionWidget widget) {
+		shimpleextended_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimpleextended_widget() {
+		return shimpleextended_widget;
 	}	
 	
 	private BooleanOptionWidget shimpledebug_widget;
@@ -7650,18 +8166,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	public BooleanOptionWidget getshimpledebug_widget() {
 		return shimpledebug_widget;
 	}	
-	
-	
-	private MultiOptionWidget shimplephi_elim_opt_widget;
-	
-	private void setshimplephi_elim_opt_widget(MultiOptionWidget widget) {
-		shimplephi_elim_opt_widget = widget;
-	}
-	
-	public MultiOptionWidget getshimplephi_elim_opt_widget() {
-		return shimplephi_elim_opt_widget;
-	}	
-	
 	
 	private BooleanOptionWidget stpenabled_widget;
 	
@@ -7883,6 +8387,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjopjop_daeonly_stack_locals_widget() {
 		return jopjop_daeonly_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jopjop_nceenabled_widget;
+	
+	private void setjopjop_nceenabled_widget(BooleanOptionWidget widget) {
+		jopjop_nceenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjopjop_nceenabled_widget() {
+		return jopjop_nceenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_uce1enabled_widget;
@@ -8529,6 +9043,66 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return tagtag_fieldrwenabled_widget;
 	}	
 	
+	private BooleanOptionWidget dbenabled_widget;
+	
+	private void setdbenabled_widget(BooleanOptionWidget widget) {
+		dbenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getdbenabled_widget() {
+		return dbenabled_widget;
+	}	
+	
+	private BooleanOptionWidget dbsource_is_javac_widget;
+	
+	private void setdbsource_is_javac_widget(BooleanOptionWidget widget) {
+		dbsource_is_javac_widget = widget;
+	}
+	
+	public BooleanOptionWidget getdbsource_is_javac_widget() {
+		return dbsource_is_javac_widget;
+	}	
+	
+	private BooleanOptionWidget dbdb_transformationsenabled_widget;
+	
+	private void setdbdb_transformationsenabled_widget(BooleanOptionWidget widget) {
+		dbdb_transformationsenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getdbdb_transformationsenabled_widget() {
+		return dbdb_transformationsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget dbdb_renamerenabled_widget;
+	
+	private void setdbdb_renamerenabled_widget(BooleanOptionWidget widget) {
+		dbdb_renamerenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getdbdb_renamerenabled_widget() {
+		return dbdb_renamerenabled_widget;
+	}	
+	
+	private BooleanOptionWidget dbdb_deobfuscateenabled_widget;
+	
+	private void setdbdb_deobfuscateenabled_widget(BooleanOptionWidget widget) {
+		dbdb_deobfuscateenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getdbdb_deobfuscateenabled_widget() {
+		return dbdb_deobfuscateenabled_widget;
+	}	
+	
+	private BooleanOptionWidget dbdb_force_recompileenabled_widget;
+	
+	private void setdbdb_force_recompileenabled_widget(BooleanOptionWidget widget) {
+		dbdb_force_recompileenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getdbdb_force_recompileenabled_widget() {
+		return dbdb_force_recompileenabled_widget;
+	}	
+	
 	private BooleanOptionWidget Application_Mode_Optionsinclude_all_widget;
 	
 	private void setApplication_Mode_Optionsinclude_all_widget(BooleanOptionWidget widget) {
@@ -8935,6 +9509,38 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = ""+" "+""+" "+"pp";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp", "\nInstead of replacing the default soot classpath with the \nclasspath given on the command line, prepent it with that \nclasspath. The default classpath holds whatever is set in the \nCLASSPATH environment variable, followed by rt.jar (resolved \nthrough the JAVA-UNDERSCORE-HOME environment variable). If \nwhole-program mode is enabled, jce.jar is also appended in the \nend. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"ast-metrics";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsast_metrics_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Compute AST Metrics", "", "","ast-metrics", "\n			If this flag is set and soot converts java to jimple then \nAST metrics will be computed. 	", defaultBool)));
+		
+		
+		
 		defKey = ""+" "+""+" "+"full-resolver";
 		defKey = defKey.trim();
 
@@ -8983,6 +9589,38 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = ""+" "+""+" "+"j2me";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class Cloneable nor \nSerializable, so we have to change type assignment to not refer \nto those classes.			 ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"polyglot";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of JastAdd, which \nsupports Java 5 syntax. ", defaultBool)));
+		
+		
+		
 		data = new OptionData [] {
 		
 		new OptionData("Class File",
@@ -8990,6 +9628,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		"\nTry to resolve classes first from .class files found in the \nSoot classpath. Fall back to .jimple files only when unable to \nfind a .class file. ",
 		
 		true),
+		
+		new OptionData("Only Class File",
+		"only-class",
+		"\nTry to resolve classes first from .class files found in the \nSoot classpath. Do not try any other types of files even when \nunable to find a .class file. ",
+		
+		false),
 		
 		new OptionData("Jimple File",
 		"J",
@@ -9061,7 +9705,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Optionsmain_class_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Main Class",  "", "","main-class", "\nBy default, the first class mentioned on the command-line is \ntreated as the main class (entry point) in whole-program \nanalysis. This option overrides this default. ", defaultString)));
+		setInput_Optionsmain_class_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Main Class",  "", "","main-class", "\nBy default, the first class encountered with a main method is \ntreated as the main class (entry point) in whole-program \nanalysis. This option overrides this default. ", defaultString)));
 		
 
 		
@@ -9453,7 +10097,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing an ExceptionalUnitGraph or \nExceptionalBlockGraph, include edges to an exception handler \nonly from the predecessors of an instruction which may throw an \nexceptions to the handler, and not from the excepting \ninstruction itself, unless the excepting instruction has \npotential side effects. Omitting edges from excepting units \nallows more accurate flow analyses (since if an instruction \nwithout side effects throws an exception, it has not changed the \nstate of the computation). This accuracy, though, could lead \noptimizations to generate unverifiable code, since the dataflow \nanalyses performed by bytecode verifiers might include paths to \nexception handlers from all protected instructions, regardless \nof whether the instructions have side effects. (In practice, \nthe pedantic throw analysis suffices to pass verification in all \nVMs tested with Soot to date, but the JVM specification does \nallow for less discriminating verifiers which would reject some \ncode that might be generated using the pedantic throw analysis \nwithout also adding edges from all excepting units.)", defaultBool)));
+		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing an ExceptionalUnitGraph or \nExceptionalBlockGraph, include edges to an exception handler \nonly from the predecessors of an instruction which may throw an \nexception to the handler, and not from the excepting instruction \nitself, unless the excepting instruction has potential side \neffects. Omitting edges from excepting units allows more \naccurate flow analyses (since if an instruction without side \neffects throws an exception, it has not changed the state of the \ncomputation). This accuracy, though, could lead optimizations to \ngenerate unverifiable code, since the dataflow analyses \nperformed by bytecode verifiers might include paths to exception \nhandlers from all protected instructions, regardless of whether \nthe instructions have side effects. (In practice, the pedantic \nthrow analysis suffices to pass verification in all VMs tested \nwith Soot to date, but the JVM specification does allow for less \ndiscriminating verifiers which would reject some code that might \nbe generated using the pedantic throw analysis without also \nadding edges from all excepting units.)", defaultBool)));
 		
 		
 		
@@ -9562,6 +10206,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p", "jb","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb"+" "+"preserve-source-annotations";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbpreserve_source_annotations_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Preserve source-level annotations", "p", "jb","preserve-source-annotations", "\nPreserves annotations of retention type SOURCE. (for everything \nbut package and local variable annotations) ", defaultBool)));
 		
 		
 
@@ -11127,6 +11787,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"cg"+" "+"implicit-entry";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgimplicit_entry_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Implicit Entry Points", "p", "cg","implicit-entry", "\nWhen this option is true, methods that are called implicitly by \nthe VM are considered entry points of the call graph. When it is \nfalse, these methods are not considered entry points, leading to \na possibly incomplete call graph.", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"cg"+" "+"trim-clinit";
 		defKey = defKey.trim();
 
@@ -11143,54 +11819,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		data = new OptionData [] {
-		
-		new OptionData("Context-insensitive",
-		"insens",
-		"\nBuilds a context-insensitive call graph. ",
-		
-		true),
-		
-		new OptionData("1-CFA",
-		"1cfa",
-		"\nBuilds a 1-CFA call graph. ",
-		
-		false),
-		
-		new OptionData("k-CFA",
-		"kcfa",
-		"\nBuilds a k-CFA call graph. ",
-		
-		false),
-		
-		new OptionData("Object Sensitive",
-		"objsens",
-		"\nBuilds an object-sensitive call graph. ",
-		
-		false),
-		
-		new OptionData("k-Object Sensitive",
-		"kobjsens",
-		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k receiver objects. ",
-		
-		false),
-		
-		};
-		
-										
-		setcgcontext_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Context sensitivity", "p", "cg","context", "\nThis option tells Paddle which level of context-sensitivity to \nuse in constructing the call graph. ")));
-		
-		defKey = "p"+" "+"cg"+" "+"context";
-		defKey = defKey.trim();
-		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);
-		
-			getcgcontext_widget().setDef(defaultString);
-		}
-		
-		
-		
 		defKey = "p"+" "+"cg"+" "+"jdkver";
 		defKey = defKey.trim();
 		
@@ -11204,21 +11832,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgjdkver_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("JDK version",  "p", "cg","jdkver", "\nThis option sets the JDK version of the standard library being \nanalyzed so that Soot can simulate the native methods in the \nspecific version of the library. The default, 3, refers to Java \n1.3.x.", defaultString)));
-		
-		
-		defKey = "p"+" "+"cg"+" "+"k";
-		defKey = defKey.trim();
-		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
-			defaultString = "2";
-			
-		}
-
-		setcgk_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Context length (k)",  "p", "cg","k", "\nThe maximum length of \ncall string or receiver object string used as context. \n", defaultString)));
 		
 
 		
@@ -11565,6 +12178,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"cg.spark"+" "+"empties-as-allocs";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p", "cg.spark","empties-as-allocs", "\nWhen this option is set to true, Spark treats references to \nEMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for \nHashSet, HashMap and LinkedList objects respectively, and \nreferences to Hashtable.emptyIterator as allocation sites for \nHashtable.EmptyIterator. This enables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections. ", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"cg.spark"+" "+"simple-edges-bidirectional";
 		defKey = defKey.trim();
 
@@ -11785,17 +12414,23 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
+		new OptionData("Heintze",
+		"heintze",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		
+		false),
+		
+		new OptionData("Shared List",
+		"sharedlist",
+		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
+		
+		false),
+		
 		new OptionData("Double",
 		"double",
 		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
 		
 		true),
-		
-		new OptionData("Shared bit-vector",
-		"shared",
-		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
-		
-		false),
 		
 		};
 		
@@ -11839,9 +12474,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
-		new OptionData("Shared bit-vector",
-		"shared",
-		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
+		new OptionData("Heintze",
+		"heintze",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		
+		false),
+		
+		new OptionData("Shared List",
+		"sharedlist",
+		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
 		
 		false),
 		
@@ -11887,9 +12528,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
-		new OptionData("Shared bit-vector",
-		"shared",
-		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
+		new OptionData("Heintze",
+		"heintze",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		
+		false),
+		
+		new OptionData("Shared List",
+		"sharedlist",
+		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
 		
 		false),
 		
@@ -12089,6 +12736,82 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
+	private Composite cgContext_sensitive_refinementCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupcgContext_sensitive_refinement = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgContext_sensitive_refinement.setLayout(layout);
+	
+	 	editGroupcgContext_sensitive_refinement.setText("Context-sensitive refinement");
+	 	
+		editGroupcgContext_sensitive_refinement.setData("id", "cgContext_sensitive_refinement");
+		
+		String desccgContext_sensitive_refinement = "";	
+		if (desccgContext_sensitive_refinement.length() > 0) {
+			Label descLabelcgContext_sensitive_refinement = new Label(editGroupcgContext_sensitive_refinement, SWT.WRAP);
+			descLabelcgContext_sensitive_refinement.setText(desccgContext_sensitive_refinement);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"cs-demand";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkcs_demand_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Demand-driven refinement-based context-sensitive points-to analysis", "p", "cg.spark","cs-demand", "\nWhen this option is set to true, Manu Sridharan's \ndemand-driven, refinement-based points-to analysis (PLDI 06) is \napplied after Spark was run. 					", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"traversal";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "75000";
+			
+		}
+
+		setcgcg_sparktraversal_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal traversal",  "p", "cg.spark","traversal", "\nMake the analysis traverse at most this number of nodes per \nquery. This quota is evenly shared between multiple passes (see \nnext option). 					", defaultString)));
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"passes";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "10";
+			
+		}
+
+		setcgcg_sparkpasses_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal number of passes",  "p", "cg.spark","passes", "\nPerform at most this number of refinement iterations. Each \niteration traverses at most ( traverse / passes ) nodes. \n					", defaultString)));
+		
+
+		
+		return editGroupcgContext_sensitive_refinement;
+	}
+
+
+
 	private Composite cgcg_paddleCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -12191,6 +12914,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"cg.paddle"+" "+"dynamic-order";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddledynamic_order_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Dynamic reordering", "p", "cg.paddle","dynamic-order", "\nAllows the BDD package \nto perform dynamic variable ordering. ", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"cg.paddle"+" "+"profile";
 		defKey = defKey.trim();
 
@@ -12207,7 +12946,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = "p"+" "+"cg.paddle"+" "+"bddq";
+		defKey = "p"+" "+"cg.paddle"+" "+"verbosegc";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -12219,55 +12958,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_paddlebddq_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("BDD Queues", "p", "cg.paddle","bddq", "\nForce \nPaddle to use BDD versions of the queues for communicating \nbetween its components ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"debugq";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddledebugq_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Debug Queues", "p", "cg.paddle","debugq", "\nForce \nPaddle to use debugging versions of the queues for communicating \nbetween its components ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"trace";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddletrace_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Trace", "p", "cg.paddle","trace", "\nPrint \nthe contents of all internal Paddle queues for debugging. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"numtrace";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddlenumtrace_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Number Trace", "p", "cg.paddle","numtrace", "\nPrint \nthe sizes of all internal Paddle queues for debugging. ", defaultBool)));
+		setcgcg_paddleverbosegc_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose GC", "p", "cg.paddle","verbosegc", "\nPrint memory usage at each BDD garbage collection. ", defaultBool)));
 		
 		
 		
@@ -12284,22 +12975,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgcg_paddleignore_types_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.paddle","ignore-types", "\nWhen this option is set to true, all parts of Paddle completely \nignore declared types of variables and casts. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"force-gc";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddleforce_gc_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.paddle","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured. \n", defaultBool)));
 		
 		
 		
@@ -12321,11 +12996,137 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		data = new OptionData [] {
 		
+		new OptionData("On-the fly call graph",
+		"ofcg",
+		"\nPerforms points-to analysis and builds call graph together, \non-the-fly. ",
+		
+		true),
+		
+		new OptionData("CHA only",
+		"cha",
+		"\nBuilds only a call graph using Class Hieararchy Analysis, and \nperforms no points-to analysis. ",
+		
+		false),
+		
+		new OptionData("CHA ahead-of-time call graph",
+		"cha-aot",
+		"\nFirst builds a call graph using CHA, then uses the call graph \nin a fixed-call-graph points-to analysis. ",
+		
+		false),
+		
+		new OptionData("OFCG-AOT",
+		"ofcg-aot",
+		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then uses the resulting call graph to perform a second \npoints-to analysis with a fixed call graph. ",
+		
+		false),
+		
+		new OptionData("CHA-Context-AOT call graph",
+		"cha-context-aot",
+		"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04, then uses the call graph in a fixed-call-graph \npoints-to analysis. ",
+		
+		false),
+		
+		new OptionData("OFCG-Context-AOT",
+		"ofcg-context-aot",
+		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04, then uses the resulting \ncall graph to perform a second points-to analysis with a fixed \ncall graph. ",
+		
+		false),
+		
+		new OptionData("CHA-Context call graph",
+		"cha-context",
+		"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04. Does not produce points-to information. ",
+		
+		false),
+		
+		new OptionData("OFCG-Context",
+		"ofcg-context",
+		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04. Does not perform a \nsubsequent points-to analysis. ",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddleconf_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Configuration", "p", "cg.paddle","conf", "\nSelects the configuration of points-to analysis and call graph \nconstruction to be used in Paddle. ")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"conf";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddleconf_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Select Automatically",
+		"auto",
+		"\nWhen the bdd option is true, the BDD-based worklist \nimplementation will be used. When the bdd option is false, the \nTraditional worklist implementation will be used. ",
+		
+		true),
+		
+		new OptionData("Traditional",
+		"trad",
+		"\nNormal worklist queue implementation ",
+		
+		false),
+		
+		new OptionData("BDD",
+		"bdd",
+		"\nBDD-based queue implementation ",
+		
+		false),
+		
+		new OptionData("Debug",
+		"debug",
+		"\nAn implementation of worklists that includes both traditional \nand BDD-based implementations, and signals an error whenever \ntheir contents differ. ",
+		
+		false),
+		
+		new OptionData("Trace",
+		"trace",
+		"\nA worklist implementation that prints out all tuples added to \nevery worklist. ",
+		
+		false),
+		
+		new OptionData("Number Trace",
+		"numtrace",
+		"\nA worklist implementation that prints out the number of tuples \nadded to each worklist after each operation. ",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddleq_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Worklist Implementation", "p", "cg.paddle","q", "\nSelect the implementation of worklists to be used in Paddle. \n")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"q";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddleq_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Select Automatically",
+		"auto",
+		"\nWhen the bdd option is true, the BuDDy backend will be used. \nWhen the bdd option is false, the backend will be set to none, \nto avoid loading any BDD backend. ",
+		
+		true),
+		
 		new OptionData("BuDDy",
 		"buddy",
 		"\nUse BuDDy implementation of BDDs. ",
 		
-		true),
+		false),
 		
 		new OptionData("CUDD",
 		"cudd",
@@ -12366,9 +13167,160 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		
 		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"order";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "32";
+			
+		}
+
+		setcgcg_paddleorder_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Variable ordering",  "p", "cg.paddle","order", "\nSelects one of the BDD \nvariable orderings hard-coded in Paddle. ", defaultString)));
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"bdd-nodes";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "0";
+			
+		}
+
+		setcgcg_paddlebdd_nodes_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("BDD Nodes",  "p", "cg.paddle","bdd-nodes", "\nThis option specifies the number of BDD nodes to be used by the \nBDD backend. A value of 0 causes the backend to start with one \nmillion nodes, and allocate more as required. A value other than \nzero causes the backend to start with the specified size, and \nprevents it from ever allocating any more nodes. ", defaultString)));
+		
 
 		
 		return editGroupcgPaddle_General_Options;
+	}
+
+
+
+	private Composite cgPaddle_Context_Sensitivity_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupcgPaddle_Context_Sensitivity_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgPaddle_Context_Sensitivity_Options.setLayout(layout);
+	
+	 	editGroupcgPaddle_Context_Sensitivity_Options.setText("Paddle Context Sensitivity Options");
+	 	
+		editGroupcgPaddle_Context_Sensitivity_Options.setData("id", "cgPaddle_Context_Sensitivity_Options");
+		
+		String desccgPaddle_Context_Sensitivity_Options = "";	
+		if (desccgPaddle_Context_Sensitivity_Options.length() > 0) {
+			Label descLabelcgPaddle_Context_Sensitivity_Options = new Label(editGroupcgPaddle_Context_Sensitivity_Options, SWT.WRAP);
+			descLabelcgPaddle_Context_Sensitivity_Options.setText(desccgPaddle_Context_Sensitivity_Options);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"context-heap";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddlecontext_heap_widget(new BooleanOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context-sensitive Heap Locations", "p", "cg.paddle","context-heap", "\nWhen this option is set to true, the context-sensitivity level \nthat is set for the context-sensitive call graph and for pointer \nvariables is also used to model heap locations \ncontext-sensitively. When this option is false, heap locations \nare modelled context-insensitively regardless of the \ncontext-sensitivity level. ", defaultBool)));
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Context-insensitive",
+		"insens",
+		"\nBuilds a context-insensitive call graph. ",
+		
+		true),
+		
+		new OptionData("1-CFA",
+		"1cfa",
+		"\nBuilds a 1-CFA call graph. ",
+		
+		false),
+		
+		new OptionData("k-CFA",
+		"kcfa",
+		"\nBuilds a k-CFA call graph. ",
+		
+		false),
+		
+		new OptionData("Object Sensitive",
+		"objsens",
+		"\nBuilds an object-sensitive call graph. ",
+		
+		false),
+		
+		new OptionData("k-Object Sensitive",
+		"kobjsens",
+		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k receiver objects. ",
+		
+		false),
+		
+		new OptionData("Unique k-Object Sensitive",
+		"uniqkobjsens",
+		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k unique receiver objects. If the receiver of a \ncall already appears in the context string, the context string \nis just reused as is. ",
+		
+		false),
+		
+		new OptionData("Thread k-Object Sensitive",
+		"threadkobjsens",
+		"\nExperimental option for thread-entry-point sensitivity. ",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddlecontext_widget(new MultiOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, data, new OptionData("Context abstraction", "p", "cg.paddle","context", "\nThis option tells Paddle which level of context-sensitivity to \nuse in constructing the call graph. ")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"context";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddlecontext_widget().setDef(defaultString);
+		}
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"k";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "2";
+			
+		}
+
+		setcgcg_paddlek_widget(new StringOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context length (k)",  "p", "cg.paddle","k", "\nThe maximum length of \ncall string or receiver object string used as context. \n", defaultString)));
+		
+
+		
+		return editGroupcgPaddle_Context_Sensitivity_Options;
 	}
 
 
@@ -12394,22 +13346,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"vta";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddlevta_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.paddle","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely. \n", defaultBool)));
 		
 		
 		
@@ -12509,6 +13445,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"cg.paddle"+" "+"global-nodes-in-natives";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddleglobal_nodes_in_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Global Nodes in Simulated Natives", "p", "cg.paddle","global-nodes-in-natives", "\nThe simulations of native methods such as System.arraycopy() \nuse temporary local variable nodes. Setting this switch to true \ncauses them to use global variable nodes instead, reducing \nprecision. The switch exists only to make it possible to measure \nthis effect on precision; there is no other practical reason to \nset it to true. ", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"cg.paddle"+" "+"simple-edges-bidirectional";
 		defKey = defKey.trim();
 
@@ -12525,23 +13477,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = "p"+" "+"cg.paddle"+" "+"on-fly-cg";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setcgcg_paddleon_fly_cg_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.paddle","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"context-heap";
+		defKey = "p"+" "+"cg.paddle"+" "+"this-edges";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -12553,7 +13489,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_paddlecontext_heap_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Context-sensitive Heap Locations", "p", "cg.paddle","context-heap", "\nWhen this option is set to true, the context-sensitivity level \nthat is set for the context-sensitive call graph and for pointer \nvariables is also used to model heap locations \ncontext-sensitively. When this option is false, heap locations \nare modelled context-insensitively regardless of the \ncontext-sensitivity level. ", defaultBool)));
+		setcgcg_paddlethis_edges_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("this Pointer Assignment Edge", "p", "cg.paddle","this-edges", "\nWhen constructing a call graph on-the-fly during points-to \nanalysis, Paddle normally propagates only those receivers that \ncause a method to be invoked to the this pointer of the method. \nWhen this option is set to true, however, Paddle instead models \nflow of receivers as an assignnment edge from the receiver at \nthe call site to the this pointer of the method, reducing \nprecision. ", defaultBool)));
 		
 		
 		
@@ -12575,84 +13511,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options;
-	}
-
-
-
-	private Composite cgPaddle_Pointer_Assignment_Graph_Simplification_OptionsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setLayout(layout);
-	
-	 	editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setText("Paddle Pointer Assignment Graph Simplification Options");
-	 	
-		editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setData("id", "cgPaddle_Pointer_Assignment_Graph_Simplification_Options");
-		
-		String desccgPaddle_Pointer_Assignment_Graph_Simplification_Options = "";	
-		if (desccgPaddle_Pointer_Assignment_Graph_Simplification_Options.length() > 0) {
-			Label descLabelcgPaddle_Pointer_Assignment_Graph_Simplification_Options = new Label(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.WRAP);
-			descLabelcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setText(desccgPaddle_Pointer_Assignment_Graph_Simplification_Options);
-		}
-		OptionData [] data;	
-		
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"simplify-offline";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddlesimplify_offline_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.paddle","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"simplify-sccs";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddlesimplify_sccs_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.paddle","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"ignore-types-for-sccs";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddleignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.paddle","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has \nno effect unless simplify-sccs is true. ", defaultBool)));
-		
-		
-
-		
-		return editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options;
 	}
 
 
@@ -12683,6 +13541,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		data = new OptionData [] {
 		
+		new OptionData("Select Automatically",
+		"auto",
+		"\nWhen the bdd option is true, the Incremental BDD propagation \nalgorithm will be used. When the bdd option is false, the \nWorklist propagation algorithm will be used. ",
+		
+		true),
+		
 		new OptionData("Iter",
 		"iter",
 		"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change. ",
@@ -12692,18 +13556,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		new OptionData("Worklist",
 		"worklist",
 		"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm. ",
-		
-		true),
-		
-		new OptionData("Cycle",
-		"cycle",
-		"\nThis algorithm finds cycles in the PAG on-the-fly. It is not yet \nfinished.",
-		
-		false),
-		
-		new OptionData("Merge",
-		"merge",
-		"\nMerge is an algorithm that merges all concrete field (yellow) \nnodes with their corresponding field reference (red) nodes. This \nalgorithm is not yet finished. ",
 		
 		false),
 		
@@ -12722,12 +13574,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		new OptionData("Incrementalized BDD",
 		"incbdd",
 		"\nA propagator that stores points-to sets in binary decision \ndiagrams, and propagates them incrementally. ",
-		
-		false),
-		
-		new OptionData("None",
-		"none",
-		"\nNone means that propagation is not done; the graph is only \nbuilt and simplified. This is useful if an external solver is \nbeing used to perform the propagation. ",
 		
 		false),
 		
@@ -12773,17 +13619,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
+		new OptionData("Heintze",
+		"heintze",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		
+		false),
+		
 		new OptionData("Double",
 		"double",
 		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
 		
 		true),
-		
-		new OptionData("Shared bit-vector",
-		"shared",
-		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
-		
-		false),
 		
 		};
 		
@@ -12827,9 +13673,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
-		new OptionData("Shared bit-vector",
-		"shared",
-		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
+		new OptionData("Heintze",
+		"heintze",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
 		
 		false),
 		
@@ -12875,9 +13721,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
-		new OptionData("Shared bit-vector",
-		"shared",
-		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
+		new OptionData("Heintze",
+		"heintze",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
 		
 		false),
 		
@@ -12927,7 +13773,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = "p"+" "+"cg.paddle"+" "+"dump-html";
+		defKey = "p"+" "+"cg.paddle"+" "+"context-counts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -12939,11 +13785,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_paddledump_html_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.paddle","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large. ", defaultBool)));
+		setcgcg_paddlecontext_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts", "p", "cg.paddle","context-counts", "\nCauses Paddle to print the number of contexts for each method \nand call edge, and the number of equivalence classes of contexts \nfor each variable node. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.paddle"+" "+"dump-pag";
+		defKey = "p"+" "+"cg.paddle"+" "+"total-context-counts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -12955,11 +13801,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_paddledump_pag_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.paddle","dump-pag", "\nWhen this option is set to true, a representation of the \npointer assignment graph suitable for processing with other \nsolvers (such as the BDD-based solver) is output before the \nanalysis begins. ", defaultBool)));
+		setcgcg_paddletotal_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts (Totals only)", "p", "cg.paddle","total-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.paddle"+" "+"dump-solution";
+		defKey = "p"+" "+"cg.paddle"+" "+"method-context-counts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -12971,87 +13817,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_paddledump_solution_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.paddle","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"topo-sort";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddletopo_sort_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.paddle","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"dump-types";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setcgcg_paddledump_types_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.paddle","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"class-method-var";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setcgcg_paddleclass_method_var_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.paddle","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to \ntrue has the effect of setting Topological Sort to false. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"dump-answer";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddledump_answer_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.paddle","dump-answer", "\nWhen this option is set to true, the computed reaching types \nfor each variable are dumped to a file, so that they can be \ncompared with the results of other analyses (such as the old \nVTA). ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"add-tags";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_paddleadd_tags_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.paddle","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded within tags and printed with the resulting \nJimple code. ", defaultBool)));
+		setcgcg_paddlemethod_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Method Context Counts (Totals only)", "p", "cg.paddle","method-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes split out by method. Requires \ntotal-context-counts to also be turned on. ", defaultBool)));
 		
 		
 		
@@ -13227,6 +13993,206 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupwjtp;
+	}
+
+
+
+	private Composite wjtpwjtp_tnCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupwjtpwjtp_tn = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjtpwjtp_tn.setLayout(layout);
+	
+	 	editGroupwjtpwjtp_tn.setText("Transactional Transformation");
+	 	
+		editGroupwjtpwjtp_tn.setData("id", "wjtpwjtp_tn");
+		
+		String descwjtpwjtp_tn = "Finds and processes transactional regions (EXPERIMENTAL)";	
+		if (descwjtpwjtp_tn.length() > 0) {
+			Label descLabelwjtpwjtp_tn = new Label(editGroupwjtpwjtp_tn, SWT.WRAP);
+			descLabelwjtpwjtp_tn.setText(descwjtpwjtp_tn);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjtpwjtp_tnenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Enabled", "p", "wjtp.tn","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"avoid-deadlock";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setwjtpwjtp_tnavoid_deadlock_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Deadlock Avoidance", "p", "wjtp.tn","avoid-deadlock", "\nPerform Deadlock Avoidance by enforcing a lock ordering where \nnecessary. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"open-nesting";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setwjtpwjtp_tnopen_nesting_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Use Open Nesting", "p", "wjtp.tn","open-nesting", "\nUse an open nesting model, where inner transactions are allowed \nto commit independently of any outer transaction. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"do-mhp";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setwjtpwjtp_tndo_mhp_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform May-Happen-in-Parallel Analysis", "p", "wjtp.tn","do-mhp", "\nPerform a May-Happen-in-Parallel analysis to assist in \nallocating locks. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"do-tlo";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setwjtpwjtp_tndo_tlo_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Local Objects Analysis", "p", "wjtp.tn","do-tlo", "\nPerform a Local-Objects analysis to assist in allocating locks. \n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"print-graph";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjtpwjtp_tnprint_graph_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Topological Graph", "p", "wjtp.tn","print-graph", "\nPrint a topological graph of the program's transactions in the \nformat used by the graphviz package. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"print-table";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjtpwjtp_tnprint_table_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Table", "p", "wjtp.tn","print-table", "\nPrint a table of information about the program's transactions. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"print-debug";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjtpwjtp_tnprint_debug_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Debugging Info", "p", "wjtp.tn","print-debug", "\nPrint debugging info, including every statement visited. ", defaultBool)));
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Medium Grained",
+		"medium-grained",
+		"\nTry to identify transactional regions that can employ a dynamic \nlock to increase parallelism. All side effects must be \nprotected by a single object. This locking scheme aims to \napproximate typical Java Monitor usage. ",
+		
+		true),
+		
+		new OptionData("Coarse Grained",
+		"coarse-grained",
+		"\nInsert static objects into the program for synchronization. \nOne object will be used for each group of conflicting \nsynchronized regions. This locking scheme achieves code-level \nlocking. ",
+		
+		false),
+		
+		new OptionData("Single Static Lock",
+		"single-static",
+		"\nInsert one static object into the program for synchronization \nfor all transactional regions. This locking scheme is for \nresearch purposes. ",
+		
+		false),
+		
+		new OptionData("Leave Original Locks",
+		"leave-original",
+		"\nAnalyse the existing lock structure of the program, but do not \nchange it. With one of the print options, this can be useful \nfor comparison between the original program and one of the \ngenerated locking schemes. ",
+		
+		false),
+		
+		};
+		
+										
+		setwjtpwjtp_tnlocking_scheme_widget(new MultiOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, data, new OptionData("Locking Scheme", "p", "wjtp.tn","locking-scheme", "\nSelects the granularity of the generated lock allocation")));
+		
+		defKey = "p"+" "+"wjtp.tn"+" "+"locking-scheme";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getwjtpwjtp_tnlocking_scheme_widget().setDef(defaultString);
+		}
+		
+		
+
+		
+		return editGroupwjtpwjtp_tn;
 	}
 
 
@@ -14024,6 +14990,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"shimple"+" "+"node-elim-opt";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setshimplenode_elim_opt_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Shimple Node Elimination Optimizations", "p", "shimple","node-elim-opt", "\nPerform some optimizations, such as dead code \nelimination and local aggregation, before/after \neliminating nodes. ", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"shimple"+" "+"standard-local-names";
 		defKey = defKey.trim();
 
@@ -14040,6 +15022,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"shimple"+" "+"extended";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p", "shimple","extended", "\nIf enabled, Shimple will created extended SSA (SSI) \nform. ", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"shimple"+" "+"debug";
 		defKey = defKey.trim();
 
@@ -14053,48 +15051,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setshimpledebug_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Debugging Output", "p", "shimple","debug", "\nIf enabled, Soot may print out warnings and \nmessages useful for debugging the Shimple module. \nAutomatically enabled by the global debug switch. \n", defaultBool)));
-		
-		
-		
-		data = new OptionData [] {
-		
-		new OptionData("No-optimize Phi Elimination",
-		"none",
-		"\nDo not optimize as part of Phi node elimination, either before \nor after eliminating Phi nodes. This is useful for monitoring \nand understanding the behaviour of Shimple optimizations and \ntransformations.",
-		
-		false),
-		
-		new OptionData("Pre-optimize Phi elimination",
-		"pre",
-		"\nPerform some optimizations, such as dead code elimination and \nlocal aggregation, before eliminating Phi nodes. This appears \nto be less effective than post-optimization, but the option is \nprovided for future testing and investigation.",
-		
-		false),
-		
-		new OptionData("Post-optimize Phi Elimination",
-		"post",
-		"\nPerform some optimizations, such as dead code elimination and \nlocal aggregation, after eliminating Phi nodes. This appears to \nbe more effective than post-optimization.",
-		
-		true),
-		
-		new OptionData("Pre- and Post- Optimize Phi Elimination",
-		"pre-and-post",
-		"\nIf enabled, applies recommended optimizations such \nas dead code elimination and local aggregation both \nbefore and after Phi node elimination. Provided for \nexperimentation.",
-		
-		false),
-		
-		};
-		
-										
-		setshimplephi_elim_opt_widget(new MultiOptionWidget(editGroupshimple, SWT.NONE, data, new OptionData("Phi Node Elimination Optimizations", "p", "shimple","phi-elim-opt", "\n")));
-		
-		defKey = "p"+" "+"shimple"+" "+"phi-elim-opt";
-		defKey = defKey.trim();
-		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);
-		
-			getshimplephi_elim_opt_widget().setDef(defaultString);
-		}
 		
 		
 
@@ -14832,6 +15788,52 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjopjop_dae;
+	}
+
+
+
+	private Composite jopjop_nceCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjopjop_nce = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjopjop_nce.setLayout(layout);
+	
+	 	editGroupjopjop_nce.setText("Null Check Eliminator");
+	 	
+		editGroupjopjop_nce.setData("id", "jopjop_nce");
+		
+		String descjopjop_nce = "Null Check Eliminator";	
+		if (descjopjop_nce.length() > 0) {
+			Label descLabeljopjop_nce = new Label(editGroupjopjop_nce, SWT.WRAP);
+			descLabeljopjop_nce.setText(descjopjop_nce);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jop.nce"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjopjop_nceenabled_widget(new BooleanOptionWidget(editGroupjopjop_nce, SWT.NONE, new OptionData("Enabled", "p", "jop.nce","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjopjop_nce;
 	}
 
 
@@ -17039,6 +18041,252 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGrouptagtag_fieldrw;
+	}
+
+
+
+	private Composite dbCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupdb = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupdb.setLayout(layout);
+	
+	 	editGroupdb.setText("Dava Body Creation");
+	 	
+		editGroupdb.setData("id", "db");
+		
+		String descdb = "Dummy phase to store options for Dava";	
+		if (descdb.length() > 0) {
+			Label descLabeldb = new Label(editGroupdb, SWT.WRAP);
+			descLabeldb.setText(descdb);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"db"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setdbenabled_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Enabled", "p", "db","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"db"+" "+"source-is-javac";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p", "db","source-is-javac", "\n					check out soot.dava.toolkits.base.misc.ThrowFinder 					In \nshort we want to ensure that if there are throw exception info \nin the class file dava uses this info.					 					", defaultBool)));
+		
+		
+
+		
+		return editGroupdb;
+	}
+
+
+
+	private Composite dbdb_transformationsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupdbdb_transformations = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupdbdb_transformations.setLayout(layout);
+	
+	 	editGroupdbdb_transformations.setText("Transformations");
+	 	
+		editGroupdbdb_transformations.setData("id", "dbdb_transformations");
+		
+		String descdbdb_transformations = "The Dava back-end with all its transformations";	
+		if (descdbdb_transformations.length() > 0) {
+			Label descLabeldbdb_transformations = new Label(editGroupdbdb_transformations, SWT.WRAP);
+			descLabeldbdb_transformations.setText(descdbdb_transformations);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"db.transformations"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setdbdb_transformationsenabled_widget(new BooleanOptionWidget(editGroupdbdb_transformations, SWT.NONE, new OptionData("Enabled", "p", "db.transformations","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupdbdb_transformations;
+	}
+
+
+
+	private Composite dbdb_renamerCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupdbdb_renamer = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupdbdb_renamer.setLayout(layout);
+	
+	 	editGroupdbdb_renamer.setText("Renamer");
+	 	
+		editGroupdbdb_renamer.setData("id", "dbdb_renamer");
+		
+		String descdbdb_renamer = "Apply heuristics based naming of local variables";	
+		if (descdbdb_renamer.length() > 0) {
+			Label descLabeldbdb_renamer = new Label(editGroupdbdb_renamer, SWT.WRAP);
+			descLabeldbdb_renamer.setText(descdbdb_renamer);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"db.renamer"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setdbdb_renamerenabled_widget(new BooleanOptionWidget(editGroupdbdb_renamer, SWT.NONE, new OptionData("Enabled", "p", "db.renamer","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupdbdb_renamer;
+	}
+
+
+
+	private Composite dbdb_deobfuscateCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupdbdb_deobfuscate = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupdbdb_deobfuscate.setLayout(layout);
+	
+	 	editGroupdbdb_deobfuscate.setText("De-obfuscate");
+	 	
+		editGroupdbdb_deobfuscate.setData("id", "dbdb_deobfuscate");
+		
+		String descdbdb_deobfuscate = " Apply de-obfuscation analyses";	
+		if (descdbdb_deobfuscate.length() > 0) {
+			Label descLabeldbdb_deobfuscate = new Label(editGroupdbdb_deobfuscate, SWT.WRAP);
+			descLabeldbdb_deobfuscate.setText(descdbdb_deobfuscate);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"db.deobfuscate"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setdbdb_deobfuscateenabled_widget(new BooleanOptionWidget(editGroupdbdb_deobfuscate, SWT.NONE, new OptionData("Enabled", "p", "db.deobfuscate","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupdbdb_deobfuscate;
+	}
+
+
+
+	private Composite dbdb_force_recompileCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupdbdb_force_recompile = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupdbdb_force_recompile.setLayout(layout);
+	
+	 	editGroupdbdb_force_recompile.setText("Force Recompilability");
+	 	
+		editGroupdbdb_force_recompile.setData("id", "dbdb_force_recompile");
+		
+		String descdbdb_force_recompile = " Try to get recompilable code.";	
+		if (descdbdb_force_recompile.length() > 0) {
+			Label descLabeldbdb_force_recompile = new Label(editGroupdbdb_force_recompile, SWT.WRAP);
+			descLabeldbdb_force_recompile.setText(descdbdb_force_recompile);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"db.force-recompile"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setdbdb_force_recompileenabled_widget(new BooleanOptionWidget(editGroupdbdb_force_recompile, SWT.NONE, new OptionData("Enabled", "p", "db.force-recompile","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupdbdb_force_recompile;
 	}
 
 
