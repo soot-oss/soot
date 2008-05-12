@@ -58,6 +58,11 @@
             in="src/soot/options/soot_options.xml"
             out="generated/options/soot/AntTask.java"
         />
+        <xslt
+            style="src/soot/options/phase_options_dialog.xsl"
+            in="src/soot/options/soot_options.xml"
+            out="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"
+        />
     </target>
 
     <target name="copypeephole" depends="sablecc,settings">
@@ -127,6 +132,7 @@
     <target name="veryclean-options">
         <delete quiet="true">
             <fileset dir="generated/options" includes="**/*" />
+        	<filename name="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"/>
         </delete>
     </target>
     <target name="veryclean-sablecc">
