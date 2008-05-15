@@ -35,10 +35,16 @@ public class Evaluator {
 
     public static boolean isValueConstantValued(Value op) {
 
-        if (op instanceof Constant)
+    	if (op instanceof Constant)
             return true;
         else if ((op instanceof UnopExpr)) {
-            if (isValueConstantValued(((UnopExpr)op).getOp()))
+            Value innerOp = ((UnopExpr)op).getOp();
+            if(innerOp==NullConstant.v())
+            	//operations on null will throw an exception and the operation
+            	//is therefore not considered constant-valued; see posting on Soot list
+            	//on 18 September 2007 14:36
+            	return false;
+			if (isValueConstantValued(innerOp))
                 return true;
         }
         else if (op instanceof BinopExpr) 
