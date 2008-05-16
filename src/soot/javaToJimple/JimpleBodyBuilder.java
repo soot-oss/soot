@@ -21,13 +21,16 @@
 
 package soot.javaToJimple;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Try;
 import polyglot.util.IdentityKey;
-
 import soot.Local;
 import soot.SootClass;
 import soot.SootField;
@@ -44,31 +47,32 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         //base(this);
     }
     
+    protected List<List<Stmt>> beforeReturn; // list used to exclude return stmts from synch try blocks 
+    protected List<List<Stmt>> afterReturn;  // list used to exclude return stmts from synch try blocks 
     
-    ArrayList<Trap> exceptionTable;       // list of exceptions
-    Stack<Stmt> endControlNoop = new Stack<Stmt>();     // for break
-    Stack<Stmt> condControlNoop = new Stack<Stmt>();    // continue
-    Stack<Value> monitorStack;     // for synchronized blocks
-    Stack<Try> tryStack; // for try stmts in case of returns
-    Stack<Try> catchStack; // for catch stmts in case of returns
+    protected ArrayList<Trap> exceptionTable;       // list of exceptions
+    protected Stack<Stmt> endControlNoop = new Stack<Stmt>();     // for break
+    protected Stack<Stmt> condControlNoop = new Stack<Stmt>();    // continue
+    protected Stack<Value> monitorStack;     // for synchronized blocks
+    protected Stack<Try> tryStack; // for try stmts in case of returns
+    protected Stack<Try> catchStack; // for catch stmts in case of returns
 
-    Stack<Stmt> trueNoop = new Stack<Stmt>();
-    Stack<Stmt> falseNoop = new Stack<Stmt>();
+    protected Stack<Stmt> trueNoop = new Stack<Stmt>();
+    protected Stack<Stmt> falseNoop = new Stack<Stmt>();
     
-    HashMap<String, Stmt> labelBreakMap; // for break label --> nop to jump to
-    HashMap<String, Stmt> labelContinueMap; // for continue label --> nop to jump to
-    //Stack labelStack;
-    //String lastLabel;
-    HashMap<polyglot.ast.Stmt, Stmt> labelMap;
-    HashMap<IdentityKey, Local> localsMap = new HashMap<IdentityKey, Local>();    // localInst --> soot local 
+    protected HashMap<String, Stmt> labelBreakMap; // for break label --> nop to jump to
+    protected HashMap<String, Stmt> labelContinueMap; // for continue label --> nop to jump to
 
-    HashMap getThisMap = new HashMap(); // type --> local to ret
-    soot.Local specialThisLocal;    // === body.getThisLocal();
-    soot.Local outerClassParamLocal;    // outer class this
+    protected HashMap<polyglot.ast.Stmt, Stmt> labelMap;
+    protected HashMap<IdentityKey, Local> localsMap = new HashMap<IdentityKey, Local>();    // localInst --> soot local 
+
+    protected HashMap getThisMap = new HashMap(); // type --> local to ret
+    protected Local specialThisLocal;    // === body.getThisLocal();
+    protected Local outerClassParamLocal;    // outer class this
    
-    private int paramRefCount = 0;  // counter for param ref stmts
+    protected int paramRefCount = 0;  // counter for param ref stmts
     
-    LocalGenerator lg;  // for generated locals not in orig src
+    protected LocalGenerator lg;  // for generated locals not in orig src
     
     /**
      * Jimple Body Creation
@@ -98,7 +102,6 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         //create outer class this param ref for inner classes except for static inner classes - this is not needed
         int outerIndex = sootMethod.getDeclaringClass().getName().lastIndexOf("$");
-        int classMod = sootMethod.getDeclaringClass().getModifiers();
             
         if ((outerIndex != -1) && (sootMethod.getName().equals("<init>")) && sootMethod.getDeclaringClass().declaresFieldByName("this$0")){
 
@@ -1649,6 +1652,17 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         soot.jimple.EnterMonitorStmt enterMon = soot.jimple.Jimple.v().newEnterMonitorStmt(sootExpr);
         body.getUnits().add(enterMon);
         
+        if (beforeReturn == null)
+        {
+      	  beforeReturn = new ArrayList<List<Stmt>>();
+        }
+        if (afterReturn == null)
+        {
+      	  afterReturn = new ArrayList<List<Stmt>>();
+        }
+        beforeReturn.add(new ArrayList<Stmt>());
+        afterReturn.add(new ArrayList<Stmt>());
+        
         if (monitorStack == null){
             monitorStack = new Stack<Value>();
         }
@@ -1710,8 +1724,25 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       
         
         body.getUnits().add(endSynchNoop);
+        
+        /* add to the exceptionList all the ranges dictated by the returns found
+         * (the problem is that return statements are not within the traps
+         * because just before the return all locks have already been released) 
+         */
+        List<Stmt>  before = beforeReturn.get(beforeReturn.size()-1); //last element
+        List<Stmt>  after = afterReturn.get(afterReturn.size()-1); //last element
+        if (before.size() > 0)
+        {
+	        addToExceptionList(startNoop, before.get(0), catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
+	        for (int i = 1; i < before.size(); i++)
+	        {
+	      	  addToExceptionList(after.get(i-1), before.get(i), catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
+	        }
+	        addToExceptionList(after.get(after.size()-1), endNoop, catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
+        }
+        beforeReturn.remove(before);
+        afterReturn.remove(after);
 
-        addToExceptionList(startNoop, endNoop, catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
         addToExceptionList(catchBeforeNoop, catchAfterNoop, catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
                 
     }
@@ -1737,6 +1768,17 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
             while(!putBack.isEmpty()){
                 monitorStack.push(putBack.pop());
+            }
+            
+            //put label after exitmonitor(s) to mark where to stop the synch try block 
+            soot.jimple.Stmt stopNoop = soot.jimple.Jimple.v().newNopStmt();
+            body.getUnits().add(stopNoop);
+            if (beforeReturn != null) // add to the list(s) of returns to be handled in the createSynch method
+            {
+            	for (List<Stmt> v: beforeReturn)
+            	{
+            		v.add(stopNoop);
+            	}
             }
         }
         
@@ -1792,6 +1834,17 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             body.getUnits().add(retStmtLocal);
             Util.addLnPosTags(retStmtLocal.getOpBox(), expr.position());
             Util.addLnPosTags(retStmtLocal, retStmt.position());
+        }
+        
+        //after the return is handled, put another label to show the new start point of the synch try block
+        soot.jimple.Stmt startNoop = soot.jimple.Jimple.v().newNopStmt();
+        body.getUnits().add(startNoop);
+        if (afterReturn != null) // add to the list(s) of returns to be handled in the createSynch method
+        {
+        	for (List<Stmt> v: afterReturn)
+        	{
+        		v.add(startNoop);
+        	}
         }
     }
     
