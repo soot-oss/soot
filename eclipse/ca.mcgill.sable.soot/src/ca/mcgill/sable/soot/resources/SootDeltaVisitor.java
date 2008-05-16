@@ -25,6 +25,7 @@ package ca.mcgill.sable.soot.resources;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchWindow;
 
 
 import ca.mcgill.sable.soot.*;
@@ -71,7 +72,10 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 	private void updateJimpleOutline(IFile file) {
 		
 		
-		IEditorReference [] refs = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+		IWorkbenchWindow activeWorkbenchWindow = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+		if(activeWorkbenchWindow==null) return;
+		
+		IEditorReference [] refs = activeWorkbenchWindow.getActivePage().getEditorReferences();
 		for (int i = 0; i < refs.length; i++){
 			if (refs[i] == null) continue;
 			if (refs[i].getName() == null) continue;
