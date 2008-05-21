@@ -874,4 +874,10 @@ public class Singletons {
         return instance_soot_JastAddInitialResolver;
     }
 
+    private soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator;
+    public soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator() {
+        if( instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator == null ) instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator = new soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator( g );
+        return instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator;
+    }
+
 }

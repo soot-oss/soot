@@ -20,6 +20,10 @@ Improvements and API changes in version 2.2.6
    -p jb preserve-source-annotations is given. (does not hold for
    package and local variable annotations) SOURCE level annotations
    are not written into bytecode by Soot.
+   Annotations can easily be added to SootClass, SootMethod and
+   SootField instances using the utility class
+   soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator.
+   (Thanks to Will Benton!)   
 
 Improvements and API changes in version 2.2.5 
 

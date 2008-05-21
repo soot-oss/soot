@@ -139,3 +139,4 @@ soot.jimple.spark.sets.AllSharedListNodes
 soot.jimple.spark.sets.AllSharedHybridNodes
 soot.jimple.toolkits.thread.transaction.TransactionTransformer
 soot.JastAddInitialResolver
+soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator
