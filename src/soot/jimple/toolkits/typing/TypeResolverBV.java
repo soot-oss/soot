@@ -37,6 +37,7 @@ import java.io.*;
 
 /**
  * This class resolves the type of local variables.
+ * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
  **/
 public class TypeResolverBV
 {

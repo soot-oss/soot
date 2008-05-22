@@ -37,6 +37,8 @@ import java.io.*;
 
 /**
  * This class resolves the type of local variables.
+ * 
+ * <b>NOTE:</b> This class has been superseded by {@link soot.jimple.toolkits.typing.fast.TypeResolver}.
  **/
 public class TypeResolver
 {
@@ -165,62 +167,43 @@ public class TypeResolver
     }
   }
 
-  public static void resolve(JimpleBody stmtBody, Scene scene)
-  {
-    if(DEBUG)
-      {
-	G.v().out.println(stmtBody.getMethod());
-      }
+  public static void resolve(JimpleBody stmtBody, Scene scene) {
+		if (DEBUG) {
+			G.v().out.println(stmtBody.getMethod());
+		}
 
-    // Disable bit-vector type assigner completely until it works correctly.
-    if(true || soot.options.Options.v().use_old_type_assigner()) {
-      try
-        {
-          TypeResolver resolver = new TypeResolver(stmtBody, scene);
-          resolver.resolve_step_1();
-        }
-      catch(TypeException e1)
-        {
-          if(DEBUG)
-            {
-              e1.printStackTrace();
-              G.v().out.println("Step 1 Exception-->" + e1.getMessage());
-            }
-    	
-          try
-    	    {
-              TypeResolver resolver = new TypeResolver(stmtBody, scene);
-              resolver.resolve_step_2();
-    	    }
-          catch(TypeException e2)
-    	    {
-    	      if(DEBUG)
-    	        {
-    		  e2.printStackTrace();
-    		  G.v().out.println("Step 2 Exception-->" + e2.getMessage());
-    	        }
-    	      
-    	      try
-    	        {
-    	          TypeResolver resolver = new TypeResolver(stmtBody, scene);
-    	          resolver.resolve_step_3();
-    	        }
-    	      catch(TypeException e3)
-    	        {
-    	          StringWriter st = new StringWriter();
-    	          PrintWriter pw = new PrintWriter(st);
-    	          e3.printStackTrace(pw);
-    	          pw.close();
-    	          throw new RuntimeException(st.toString());
-    	        }
-    	    }
-        } 
-      soot.jimple.toolkits.typing.integer.TypeResolver.resolve(stmtBody);
-    }
-    else {
-        TypeResolverBV.resolve(stmtBody, scene);
-    }
-  }
+		try {
+			TypeResolver resolver = new TypeResolver(stmtBody, scene);
+			resolver.resolve_step_1();
+		} catch (TypeException e1) {
+			if (DEBUG) {
+				e1.printStackTrace();
+				G.v().out.println("Step 1 Exception-->" + e1.getMessage());
+			}
+
+			try {
+				TypeResolver resolver = new TypeResolver(stmtBody, scene);
+				resolver.resolve_step_2();
+			} catch (TypeException e2) {
+				if (DEBUG) {
+					e2.printStackTrace();
+					G.v().out.println("Step 2 Exception-->" + e2.getMessage());
+				}
+
+				try {
+					TypeResolver resolver = new TypeResolver(stmtBody, scene);
+					resolver.resolve_step_3();
+				} catch (TypeException e3) {
+					StringWriter st = new StringWriter();
+					PrintWriter pw = new PrintWriter(st);
+					e3.printStackTrace(pw);
+					pw.close();
+					throw new RuntimeException(st.toString());
+				}
+			}
+		}
+		soot.jimple.toolkits.typing.integer.TypeResolver.resolve(stmtBody);
+	}
   
   private void debug_vars(String message)
   {

@@ -31,6 +31,9 @@ import soot.jimple.*;
 import java.util.*;
 import java.io.*;
 
+/**
+ * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
+ */
 class ConstraintCheckerBV extends AbstractStmtSwitch
 {
   private final ClassHierarchy hierarchy;

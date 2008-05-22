@@ -30,6 +30,10 @@ import soot.*;
 import soot.jimple.*;
 import java.util.*;
 
+/**
+ * 
+ * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
+ */
 class ConstraintCollectorBV extends AbstractStmtSwitch
 {
   private TypeResolverBV resolver;

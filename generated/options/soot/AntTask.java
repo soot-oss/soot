@@ -210,10 +210,6 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-allow-phantom-refs");
         }
   
-        public void setuse_old_type_assigner(boolean arg) {
-            if(arg) addArg("-use-old-type-assigner");
-        }
-  
         public void setj2me(boolean arg) {
             if(arg) addArg("-j2me");
         }
@@ -545,6 +541,18 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jb.tr");
             addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+          public void setuse_older_type_assigner(boolean arg) {
+            addArg("-p");
+            addArg("jb.tr");
+            addArg("use-older-type-assigner:"+(arg?"true":"false"));
+          }
+      
+          public void setcompare_type_assigners(boolean arg) {
+            addArg("-p");
+            addArg("jb.tr");
+            addArg("compare-type-assigners:"+(arg?"true":"false"));
           }
       
         }

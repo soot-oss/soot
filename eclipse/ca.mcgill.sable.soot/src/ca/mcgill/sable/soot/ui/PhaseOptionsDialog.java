@@ -405,7 +405,15 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trenabled_widget(), "enabled");
 		
+		addToEnableGroup("jb", "jb.tr", getjbjb_truse_older_type_assigner_widget(), "use-older-type-assigner");
+		
+		addToEnableGroup("jb", "jb.tr", getjbjb_trcompare_type_assigners_widget(), "compare-type-assigners");
+		
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
+		
+		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
+		
+		getjbjb_trcompare_type_assigners_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ulp");
@@ -1948,16 +1956,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getInput_Optionsuse_old_type_assigner_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionsuse_old_type_assigner_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getInput_Optionsj2me_widget().getButton().getSelection();
 		
 		
@@ -2270,6 +2268,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_truse_older_type_assigner_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_truse_older_type_assigner_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_trcompare_type_assigners_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_trcompare_type_assigners_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpenabled_widget().getButton().getSelection();
@@ -6179,16 +6197,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsallow_phantom_refs_widget;
 	}	
 	
-	private BooleanOptionWidget Input_Optionsuse_old_type_assigner_widget;
-	
-	private void setInput_Optionsuse_old_type_assigner_widget(BooleanOptionWidget widget) {
-		Input_Optionsuse_old_type_assigner_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Optionsuse_old_type_assigner_widget() {
-		return Input_Optionsuse_old_type_assigner_widget;
-	}	
-	
 	private BooleanOptionWidget Input_Optionsj2me_widget;
 	
 	private void setInput_Optionsj2me_widget(BooleanOptionWidget widget) {
@@ -6525,6 +6533,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getjbjb_trenabled_widget() {
 		return jbjb_trenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_truse_older_type_assigner_widget;
+	
+	private void setjbjb_truse_older_type_assigner_widget(BooleanOptionWidget widget) {
+		jbjb_truse_older_type_assigner_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_truse_older_type_assigner_widget() {
+		return jbjb_truse_older_type_assigner_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_trcompare_type_assigners_widget;
+	
+	private void setjbjb_trcompare_type_assigners_widget(BooleanOptionWidget widget) {
+		jbjb_trcompare_type_assigners_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_trcompare_type_assigners_widget() {
+		return jbjb_trcompare_type_assigners_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_ulpenabled_widget;
@@ -9571,22 +9599,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		defKey = ""+" "+""+" "+"use-old-type-assigner";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setInput_Optionsuse_old_type_assigner_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use old Type Assigner ", "", "","use-old-type-assigner", "\nDisable the reimplemented type assigner. This uses improved \ndata structures to provide a significant performance benefit, \nbut has not yet been thoroughly tested. ", defaultBool)));
-		
-		
-		
 		defKey = ""+" "+""+" "+"j2me";
 		defKey = defKey.trim();
 
@@ -10420,6 +10432,38 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Enabled", "p", "jb.tr","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb.tr"+" "+"use-older-type-assigner";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb.tr"+" "+"compare-type-assigners";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime and results) of Ben Bellamy's \ntype assigner with the older type assigner that was in Soot. If \nthis is set to true, use-older-type-assigner has no effect. ", defaultBool)));
 		
 		
 

@@ -31,7 +31,9 @@ import soot.options.Options;
 import soot.util.*;
 import java.util.*;
 
-/** Represents a type variable. **/
+/** Represents a type variable. 
+ * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
+ **/
 class TypeVariableBV implements Comparable
 {
   private static final boolean DEBUG = false;

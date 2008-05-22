@@ -7,6 +7,9 @@
 -------------------- Soot Contributors ------------------------
                   (in alphabetical order)
 
+Ben Bellamy
+    - New type assigner (see OOPSLA '08)
+
 Will Benton
     - Annotation generator for Java 5 annotations
 

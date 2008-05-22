@@ -12,7 +12,7 @@ Improvements and API changes in version 2.2.6
    but up until now was not enforced. Code transformations written
    by clients should make sure to restore this invariant before
    transforming Jimple into another intermediate representation
-   or into bytecode.
+   or into bytecode. (Eric Bodden)  
    
 3. Integrated full support for preserving annotations in Jimple
    and writing them to bytecode. SOURCE level annotations are
@@ -24,6 +24,33 @@ Improvements and API changes in version 2.2.6
    SootField instances using the utility class
    soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator.
    (Thanks to Will Benton!)   
+ 
+4. Java 5 Annotations for fields, classes, parameters and methods
+   are now fully preserved in bytecode. Jasmin was changed to
+   implement this support. (Eric Bodden)   
+   
+5. Ben Bellamy contributed a new implementation for the type assigner.
+   This is to be published under the title 'Efficient Local Type
+   Inference' at OOPSLA '08. The new type assigner is usually
+   faster (it is applied when processing bytecode), and sometimes
+   more precise. In particular it should always infer the most
+   narrow type possible.   
+   Ben has tested this code, and verified that it provides a typing
+   that is at least as tight as the original algorithm (tighter in
+   2914 methods out of 295598) on a number of benchmarks. These are:
+   abc-complete.jar, BlueJ, CSO (Scala code), Gant, Groovy, havoc.jar,
+   Java 3D, jEdit, Java Grande Forum, Jigsaw, Jython, Kawa, rt.jar,
+   Kawa, Scala and tools.jar.
+   The mean execution time improvement is around 10 times,
+   but for the longest methods (abc parser methods and havoc with
+   >9000 statements) the improvement is between 200 and 500 times.
+   There are new phase options in jb.tr that allow to switch
+   back to the old type assigner or to compare both implementations.
+   The command line option -use-old-type-assigner was removed.
+   It used to enabled an even older version of the type assigner
+   (based on bit vectors) that was commented out any way.
+   The appropriate code was flagged as deprecated and may be removed
+   in future versions of Soot.   
 
 Improvements and API changes in version 2.2.5 
 

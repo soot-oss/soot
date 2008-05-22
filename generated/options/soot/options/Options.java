@@ -279,11 +279,6 @@ public class Options extends OptionsBase {
                 allow_phantom_refs = true;
   
             else if( false 
-            || option.equals( "use-old-type-assigner" )
-            )
-                use_old_type_assigner = true;
-  
-            else if( false 
             || option.equals( "j2me" )
             )
                 j2me = true;
@@ -970,10 +965,6 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs( boolean setting ) { allow_phantom_refs = setting; }
   
-    public boolean use_old_type_assigner() { return use_old_type_assigner; }
-    private boolean use_old_type_assigner = false;
-    public void set_use_old_type_assigner( boolean setting ) { use_old_type_assigner = setting; }
-  
     public boolean j2me() { return j2me; }
     private boolean j2me = false;
     public void set_j2me( boolean setting ) { j2me = setting; }
@@ -1147,7 +1138,6 @@ public class Options extends OptionsBase {
 +padVal(" java", "Favour Java files as Soot source" )
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
-+padOpt(" -use-old-type-assigner", "Use old type assigner - may be slower" )
 +padOpt(" -j2me", "Use J2ME mode; changes assignment of types" )
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
 +padOpt(" -polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd" )
@@ -1356,7 +1346,9 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nThe Type Assigner gives local variables types which will \naccommodate the values stored in them over the course of the \nmethod. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (true)", "" );
+                +padOpt( "enabled (true)", "" )
+                +padOpt( "use-older-type-assigner (false)", "Enables the older type assigner" )
+                +padOpt( "compare-type-assigners (false)", "Compares Ben Bellamy's and the older type assigner" );
     
         if( phaseName.equals( "jb.ulp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2305,7 +2297,9 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.tr" ) )
             return ""
-                +"enabled ";
+                +"enabled "
+                +"use-older-type-assigner "
+                +"compare-type-assigners ";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""
@@ -2880,7 +2874,9 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.tr" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"use-older-type-assigner:false "
+              +"compare-type-assigners:false ";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""

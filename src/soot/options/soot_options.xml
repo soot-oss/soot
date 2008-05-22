@@ -388,17 +388,6 @@ incorrect results.
 </long_desc>
 		</boolopt>
 		<boolopt>
-			<name>Use old Type Assigner </name>
-			<alias>use-old-type-assigner</alias>
-			<default>false</default>
-			<short_desc>Use old type assigner - may be slower</short_desc>
-			<long_desc>
-Disable the reimplemented type assigner. This uses improved data 
-structures to provide a significant performance benefit, but has
-not yet been thoroughly tested.
-</long_desc>
-		</boolopt>
-		<boolopt>
 			<name>Use J2ME mode</name>
 			<alias>j2me</alias>
 			<default>false</default>
@@ -838,11 +827,36 @@ accommodate the values stored in them over the course of the
 method.
 </long_desc>
 					<name>Type Assigner</name>
+                    <class>JBTROptions</class>
 					<alias>jb.tr</alias>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
                                                 <default>true</default>
+					</boolopt>
+					<boolopt>
+						<name>Use older type assigner</name>
+						<alias>use-older-type-assigner</alias>
+                        <default>false</default>
+					<short_desc>Enables the older type assigner</short_desc>
+					<long_desc>
+This enables the older type assigner that was in use until May 2008.
+The current type assigner is a reimplementation by Ben Bellamy
+that uses an entirely new and faster algorithm which always assigns
+the most narrow type possible. If compare-type-assigners is on,
+this option causes the older type assigner to execute first.
+(Otherwise the newer one is executed first.)
+</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Compare type assigners</name>
+						<alias>compare-type-assigners</alias>
+                        <default>false</default>
+					<short_desc>Compares Ben Bellamy's and the older type assigner</short_desc>
+					<long_desc>
+Enables comparison (both runtime and results) of Ben Bellamy's type assigner with the
+older type assigner that was in Soot.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>

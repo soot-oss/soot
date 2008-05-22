@@ -29,7 +29,9 @@ package soot.jimple.toolkits.typing;
 import soot.*;
 import soot.util.*;
 import java.util.*;
-
+/**
+ * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
+ */
 class StronglyConnectedComponentsBV
 {
   BitVector variables;
