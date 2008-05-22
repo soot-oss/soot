@@ -150,9 +150,6 @@ public class Modifier
         if(isAbstract(m))
             buffer.append("abstract ");
 
-        if(isInterface(m))
-            buffer.append("interface ");
-
         if(isStatic(m))
             buffer.append("static ");
 
@@ -179,6 +176,9 @@ public class Modifier
         
         if(isEnum(m))
             buffer.append("enum ");
+        
+        if(isInterface(m))
+        	buffer.append("interface ");
         
         return (buffer.toString()).trim();
     }
