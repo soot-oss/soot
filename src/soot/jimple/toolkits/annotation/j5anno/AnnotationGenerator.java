@@ -41,11 +41,15 @@ import soot.tagkit.VisibilityAnnotationTag;
 
 /**
  * AnnotationGenerator is a singleton class that wraps up Soot's support for Java 5
- * annotations in a more convenient interface. It supplies two <tt>annotate()</tt>
+ * annotations in a more convenient interface. It supplies three <tt>annotate()</tt>
  * methods that take an <tt>Host</tt>, an annotation class, and zero or more 
  * <tt>AnnotationElem</tt> objects; these methods find the appropriate <tt>Tag</tt>
  * on the given <tt>Host</tt> for the appropriate annotation visibility and
  * add an annotation of the given type to it.
+ * <b>Note</b> that the first two methods expect an annotation class, which the last
+ * method expects a class name. If the class is passed, this class has to be on
+ * Soot's classpath at compile time. It is not enough to add the class to
+ * the soo-classpath!<br> <br>
  *   
  * One caveat:
  * <tt>annotate()</tt> does not add annotation classes to the Scene, so you will 
@@ -122,14 +126,30 @@ public class AnnotationGenerator {
 			case RUNTIME:
 				retPolicy = AnnotationConstants.RUNTIME_VISIBLE;
 				break;
-			case SOURCE:
-				retPolicy = AnnotationConstants.SOURCE_VISIBLE;
+			default:
+				throw new RuntimeException("Unexpected retention policy: "+retPolicy);
 			}
 		} 
 
-		String annotationName = "L" + klass.getCanonicalName().replace('.','/');
-		
-		annotate(h, annotationName, retPolicy , elems);	
+		annotate(h, klass.getCanonicalName(), retPolicy , elems);	
+	}
+	
+	/**
+	 * Applies a Java 1.5-style annotation to a given Host. The Host must be of type {@link SootClass}, {@link SootMethod}
+	 * or {@link SootField}.
+	 * 
+	 * @param h a method, field, or class
+	 * @param annotationName the qualified name of the annotation class
+	 * @param visibility any of the constants in {@link AnnotationConstants}
+	 * @param elems a (possibly empty) sequence of AnnotationElem objects corresponding to the elements that should be contained in this annotation
+	 */
+	public void annotate(Host h, String annotationName, int visibility, List<AnnotationElem> elems) {
+		annotationName = "L" + annotationName.replace('.','/');
+		VisibilityAnnotationTag tagToAdd = findOrAdd(h, visibility);
+		AnnotationTag at = new AnnotationTag(annotationName, elems.size());
+		for (AnnotationElem elem : elems) 
+			at.addElem(elem);
+		tagToAdd.addAnnotation(at);
 	}
 	
 	/**
@@ -159,12 +179,4 @@ public class AnnotationGenerator {
 		return (va_tags.get(0));
 	}
 	
-	private void annotate(Host h, String annotationName, int visibility, List<AnnotationElem> elems) {
-		VisibilityAnnotationTag tagToAdd = findOrAdd(h, visibility);
-		AnnotationTag at = new AnnotationTag(annotationName, elems.size());
-		for (AnnotationElem elem : elems) 
-			at.addElem(elem);
-		tagToAdd.addAnnotation(at);
-	}
-
 }
