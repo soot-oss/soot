@@ -34,6 +34,7 @@ import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 import soot.jimple.*;
+
 import java.util.*;
 
 public class GLookupSwitchStmt extends JLookupSwitchStmt 
@@ -63,7 +64,7 @@ public class GLookupSwitchStmt extends JLookupSwitchStmt
         List clonedLookupValues = new ArrayList(lookupValueCount);
 
         for( int i = 0; i < lookupValueCount ;i++) {
-            clonedLookupValues.add(i, new Integer(getLookupValue(i)));
+        	clonedLookupValues.add(i, IntConstant.v(getLookupValue(i)));
         }
         
         return new GLookupSwitchStmt(Grimp.cloneIfNecessary(getKey()), clonedLookupValues, getTargets(), getDefaultTarget());
