@@ -36,6 +36,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.Trap;
 import soot.Value;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
@@ -629,7 +630,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
         }
         return true;
-    }
+    }   
     
     /**
      * If Stmts Creation - only add line-number tags to if (the other
@@ -768,35 +769,37 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             soot.Value sootCond = base().createAggressiveExpr(expr, false, false);
 
             boolean needIf = needSootIf(sootCond);
-            if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
-                if (!boto){
-                    sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
-                }
-                else {
-                    sootCond = soot.jimple.Jimple.v().newNeExpr(sootCond, soot.jimple.IntConstant.v(0));
-                }
-            }
-            
-            else {
-                sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
-                if (!boto){
-                    sootCond = reverseCondition((soot.jimple.ConditionExpr)sootCond);
-                }
-            }
-                    
             if (needIf) {
+	            if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
+	                if (!boto){
+	                    sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
+	                }
+	                else {
+	                    sootCond = soot.jimple.Jimple.v().newNeExpr(sootCond, soot.jimple.IntConstant.v(0));
+	                }
+	            }
+	            
+	            else {
+	                sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
+	                if (!boto){
+	                    sootCond = reverseCondition((soot.jimple.ConditionExpr)sootCond);
+	                }
+	            }
+                    
 		        soot.jimple.IfStmt ifStmt = soot.jimple.Jimple.v().newIfStmt(sootCond, tgt);
 		        body.getUnits().add(ifStmt);
                 // add line and pos tags
                 Util.addLnPosTags(ifStmt.getConditionBox(), expr.position());
                 Util.addLnPosTags(ifStmt, expr.position());
             }
-            /*else {
+            //for an "if(true) goto tgt" we have to branch always; for an "if(true) goto tgt" we just
+            //do nothing at all
+            else if(sootCond instanceof IntConstant && ((IntConstant)sootCond).value == 1){
 		        soot.jimple.GotoStmt gotoStmt = soot.jimple.Jimple.v().newGotoStmt(tgt);
 		        body.getUnits().add(gotoStmt);
                 // add line and pos tags
                 Util.addLnPosTags(gotoStmt, expr.position());
-            }*/
+            }
         }
     }
     
