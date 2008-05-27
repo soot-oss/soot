@@ -49,7 +49,10 @@ public class JBTROptions
      * This enables the older type assigner that was in use until May 
      * 2008. The current type assigner is a reimplementation by Ben 
      * Bellamy that uses an entirely new and faster algorithm which 
-     * always assigns the most narrow type possible. 
+     * always assigns the most narrow type possible. If 
+     * compare-type-assigners is on, this option causes the older type 
+     * assigner to execute first. (Otherwise the newer one is executed 
+     * first.) 
      */
     public boolean use_older_type_assigner() {
         return soot.PhaseOptions.getBoolean( options, "use-older-type-assigner" );
@@ -60,8 +63,7 @@ public class JBTROptions
      * Compares Ben Bellamy's and the older type assigner.
     
      * Enables comparison (both runtime and results) of Ben Bellamy's 
-     * type assigner with the older type assigner that was in Soot. If 
-     * this is set to true, use-older-type-assigner has no effect. 
+     * type assigner with the older type assigner that was in Soot. 
      */
     public boolean compare_type_assigners() {
         return soot.PhaseOptions.getBoolean( options, "compare-type-assigners" );
