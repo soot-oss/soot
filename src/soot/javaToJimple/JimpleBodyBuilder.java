@@ -794,7 +794,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
             //for an "if(true) goto tgt" we have to branch always; for an "if(true) goto tgt" we just
             //do nothing at all
-            else if(sootCond instanceof IntConstant && ((IntConstant)sootCond).value == 1){
+            //(if boto is false then we have to reverse the meaning) 
+            else if(sootCond instanceof IntConstant && (((IntConstant)sootCond).value == 1)==boto){
 		        soot.jimple.GotoStmt gotoStmt = soot.jimple.Jimple.v().newGotoStmt(tgt);
 		        body.getUnits().add(gotoStmt);
                 // add line and pos tags
