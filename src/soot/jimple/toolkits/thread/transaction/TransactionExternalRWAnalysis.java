@@ -85,7 +85,7 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
     	{
     		Transaction tn = new Transaction(false, body.getMethod(), 0);
     		tn.entermonitor = (Stmt) unit;
-    		tn.units.add(unit);
+    		tn.units.add((Unit) unit);
     		tn.read.union(stmtRead);
     		tn.write.union(stmtWrite);
     		out.add(tn);

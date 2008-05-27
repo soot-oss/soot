@@ -11,9 +11,9 @@ public class LockRegion
 	public Stmt entermonitor;
 	public Stmt beginning; // first stmt of body
 //	public Vector exitmonitors; // all of them... this should be removed
-	public List<Pair> earlyEnds; // list of <return/branch stmt, exitmonitor> pairs
-	public Pair exceptionalEnd; // <throw stmt, exitmonitor> pair
-	public Pair end; // <goto stmt, exitmonitor> pair
+	public List<Pair<Stmt, Stmt>> earlyEnds; // list of <return/branch stmt, exitmonitor> pairs
+	public Pair<Stmt, Stmt> exceptionalEnd; // <throw stmt, exitmonitor> pair
+	public Pair<Stmt, Stmt> end; // <goto stmt, exitmonitor> pair
 	public Stmt last; // the last stmt before exception handling (usually a goto, return, or branch stmt from one of the ends)
 	public Stmt after;
 
@@ -23,7 +23,7 @@ public class LockRegion
 		this.entermonitor = null;
 		this.beginning = null;
 //		this.exitmonitors = new Vector();
-		this.earlyEnds = new ArrayList<Pair>();
+		this.earlyEnds = new ArrayList<Pair<Stmt, Stmt>>();
 		this.exceptionalEnd = null;
 		this.end = null;
 		this.last = null;
@@ -36,7 +36,7 @@ public class LockRegion
 		this.entermonitor = lr.entermonitor;
 		this.beginning = lr.beginning;
 //		this.exitmonitors = (Vector) lr.exitmonitors.clone();
-		this.earlyEnds = new ArrayList<Pair>();
+		this.earlyEnds = new ArrayList<Pair<Stmt, Stmt>>();
 		this.earlyEnds.addAll(lr.earlyEnds);
 		this.exceptionalEnd = null;
 		this.end = lr.end;

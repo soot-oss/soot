@@ -15,7 +15,6 @@ public class TransactionBodyTransformer extends BodyTransformer
 
     public static TransactionBodyTransformer v() { return instance; }
     
-    public static boolean[] addedGlobalLockObj = null;
     private static boolean addedGlobalLockDefs = false;
 	private static int throwableNum = 0; // doesn't matter if not reinitialized to 0
     
@@ -24,15 +23,15 @@ public class TransactionBodyTransformer extends BodyTransformer
     	throw new RuntimeException("Not Supported");
     }
     
-    protected void internalTransform(Body b, FlowSet fs, List<TransactionGroup> groups)
+    protected void internalTransform(Body b, FlowSet fs, List<TransactionGroup> groups, boolean[] insertedGlobalLock)
 	{
 		// 
 		JimpleBody j = (JimpleBody) b;
 		SootMethod thisMethod = b.getMethod();
-    	PatchingChain units = b.getUnits();
-		Iterator unitIt = units.iterator();
+    	PatchingChain<Unit> units = b.getUnits();
+		Iterator<Unit> unitIt = units.iterator();
 		Unit firstUnit = j.getFirstNonIdentityStmt();
-		Unit lastUnit = (Unit) units.getLast();
+		Unit lastUnit = units.getLast();
 		
 		// Objects of synchronization, plus book keeping
 		Local[] lockObj = new Local[groups.size()];
@@ -45,19 +44,14 @@ public class TransactionBodyTransformer extends BodyTransformer
 			globalLockObj[i] = null;
 		}
 		
-		// Make sure a main routine exists.  We will insert some code into it.
-//        if (!Scene.v().getMainClass().declaresMethod("void main(java.lang.String[])"))
-//            throw new RuntimeException("couldn't find main() in mainClass");
-        
         // Add all global lock objects to the main class if not yet added.
         // Get references to them if they do already exist.
   		for(int i = 1; i < groups.size(); i++)
    		{
    			TransactionGroup tnGroup = groups.get(i);
-// 			if( useGlobalLock[i - 1] )
 			if( !tnGroup.useDynamicLock && !tnGroup.useLocksets )
    			{
-	   			if( !addedGlobalLockObj[i] )
+	   			if( !insertedGlobalLock[i] )
 	            {
 	            	// Add globalLockObj field if possible...
 	            	
@@ -75,7 +69,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		            	Scene.v().getMainClass().addField(globalLockObj[i]);
 					}
 
-	            	addedGlobalLockObj[i] = true;
+	            	insertedGlobalLock[i] = true;
 	            }
 	            else
 	            {
@@ -108,7 +102,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 				clinitBody = (JimpleBody) clinitMethod.getActiveBody();
 				firstStmt = clinitBody.getFirstNonIdentityStmt();
         	}
-        	PatchingChain clinitUnits = clinitBody.getUnits();
+        	PatchingChain<Unit> clinitUnits = clinitBody.getUnits();
         	
     		for(int i = 1; i < groups.size(); i++)
     		{
@@ -253,7 +247,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						nlr.last = clr.last; // last stmt before exception handling
 						if(clr.end != null)
 						{
-							Stmt endExitmonitor = (Stmt) clr.end.getO2();
+							Stmt endExitmonitor = clr.end.getO2();
 							nlr.after = endExitmonitor;
 						}
 						
@@ -313,10 +307,10 @@ public class TransactionBodyTransformer extends BodyTransformer
 					}
 					
 					// For each early end, reuse or insert exitmonitor stmt
-					List<Pair> newEarlyEnds = new ArrayList<Pair>();
-					for (Pair end : clr.earlyEnds) {
-						Stmt earlyEnd = (Stmt) end.getO1();
-						Stmt exitmonitor = (Stmt) end.getO2();
+					List<Pair<Stmt, Stmt>> newEarlyEnds = new ArrayList<Pair<Stmt, Stmt>>();
+					for (Pair<Stmt, Stmt> end : clr.earlyEnds) {
+						Stmt earlyEnd = end.getO1();
+						Stmt exitmonitor = end.getO2();
 						
 						Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
 						if( exitmonitor != null )
@@ -329,7 +323,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 							units.insertBefore(newExitmonitor, exitmonitor);
 							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 							units.remove(exitmonitor);
-							newEarlyEnds.add(new Pair(earlyEnd, newExitmonitor));
+							newEarlyEnds.add(new Pair<Stmt, Stmt>(earlyEnd, newExitmonitor));
 						}
 						else
 						{
@@ -339,7 +333,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 								units.insertBefore(tmp, earlyEnd);
 							}
 							units.insertBefore(newExitmonitor, earlyEnd);
-							newEarlyEnds.add(new Pair(earlyEnd, newExitmonitor));
+							newEarlyEnds.add(new Pair<Stmt, Stmt>(earlyEnd, newExitmonitor));
 						}
 					}
 					clr.earlyEnds = newEarlyEnds;
@@ -350,7 +344,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
 						if( clr.end != null )
 						{
-							Stmt exitmonitor = (Stmt) clr.end.getO2();
+							Stmt exitmonitor = clr.end.getO2();
 
 							if(newPrep != null)
 							{
@@ -360,7 +354,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 							units.insertBefore(newExitmonitor, exitmonitor);
 							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 							units.remove(exitmonitor);
-							clr.end = new Pair(clr.end.getO1(), newExitmonitor);
+							clr.end = new Pair<Stmt, Stmt>(clr.end.getO1(), newExitmonitor);
 						}
 						else
 						{
@@ -372,7 +366,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 							units.insertBefore(newExitmonitor, clr.after); // steal jumps to end, send them to monitorexit
 							Stmt newGotoStmt = Jimple.v().newGotoStmt(clr.after);
 							units.insertBeforeNoRedirect(newGotoStmt, clr.after);
-							clr.end = new Pair(newGotoStmt, newExitmonitor);
+							clr.end = new Pair<Stmt, Stmt>(newGotoStmt, newExitmonitor);
 							clr.last = newGotoStmt;
 						}
 					}
@@ -381,7 +375,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
 					if( clr.exceptionalEnd != null )
 					{
-						Stmt exitmonitor = (Stmt) clr.exceptionalEnd.getO2();
+						Stmt exitmonitor = clr.exceptionalEnd.getO2();
 						
 						if(newPrep != null)
 						{
@@ -391,7 +385,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						units.insertBefore(newExitmonitor, exitmonitor);
 							
 						units.remove(exitmonitor);
-						clr.exceptionalEnd = new Pair(clr.exceptionalEnd.getO1(), newExitmonitor);
+						clr.exceptionalEnd = new Pair<Stmt, Stmt>(clr.exceptionalEnd.getO1(), newExitmonitor);
 					}
 					else
 					{
@@ -399,7 +393,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						Stmt lastEnd = null; // last end stmt (not same as last stmt)
 						if( clr.end != null )
 						{
-							lastEnd = (Stmt) clr.end.getO1();
+							lastEnd = clr.end.getO1();
 						}
 						else
 						{
@@ -431,69 +425,17 @@ public class TransactionBodyTransformer extends BodyTransformer
 						SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
 						b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, newExitmonitor, newThrow, newCatch));
 						b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, clr.beginning, lastEnd, newCatch));
-						clr.exceptionalEnd = new Pair(newThrow, newExitmonitor);
+						clr.exceptionalEnd = new Pair<Stmt, Stmt>(newThrow, newExitmonitor);
 					}
 				}
-/*
-				else if(tn.wholeMethod)
-				{
-					thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) ); // remove synchronized modifier for this method
-					synchronizeSingleEntrySingleExitBlock(b, (Stmt) firstUnit, (Stmt) lastUnit, (Local) clo);
-				}
-				else if(lockNum > 0)
-				{
-					// don't have all the info to do this right yet
-//					synchronizeSingleEntrySingleExitBlock(b, (Stmt) tnbodystart, (Stmt) tnbodyend, (Local) clo);
-				}
-				else
-				{
-					if(tn.entermonitor == null) 
-						G.v().out.println("ERROR: Transaction has no beginning statement: " + tn.method.toString());
-						
-					// Deal with entermonitor
-					Stmt newBegin = Jimple.v().newEnterMonitorStmt(clo);
-					units.insertBefore(newBegin, tn.entermonitor);
-					redirectTraps(b, tn.entermonitor, newBegin);
-					units.remove(tn.entermonitor);
-					
-					// Deal with exitmonitors
-					// early
-					Iterator endsIt = tn.earlyEnds.iterator();
-					while(endsIt.hasNext())
-					{
-						Pair end = (Pair) endsIt.next();
-						Stmt sEnd = (Stmt) end.getO2();
-						Stmt newEnd = Jimple.v().newExitMonitorStmt(clo);
-						units.insertBefore(newEnd, sEnd);
-						redirectTraps(b, sEnd, newEnd);
-						units.remove(sEnd);
-					}
-					// exceptional
-					Stmt sEnd = (Stmt) tn.exceptionalEnd.getO2();
-					Stmt newEnd = Jimple.v().newExitMonitorStmt(clo);
-					units.insertBefore(newEnd, sEnd);
-					redirectTraps(b, sEnd, newEnd);
-					units.remove(sEnd);
-					// fallthrough
-					sEnd = (Stmt) tn.end.getO2();
-					newEnd = Jimple.v().newExitMonitorStmt(clo);
-					units.insertBefore(newEnd, sEnd);
-					redirectTraps(b, sEnd, newEnd);
-					units.remove(sEnd);
-				}
-*/
-				
-				// Replace calls to notify() with calls to notifyAll()
-				// Replace base object with appropriate lockobj
 				lockNum++;
 			}
 			
 			// deal with waits and notifys
 			{
-				Iterator<Object> notifysIt = tn.notifys.iterator();
-				while(notifysIt.hasNext())
+				for(Unit uNotify : tn.notifys)
 				{
-					Stmt sNotify = (Stmt) notifysIt.next();
+					Stmt sNotify = (Stmt) uNotify;
 					Stmt newNotify = 
 						Jimple.v().newInvokeStmt(
 	           				Jimple.v().newVirtualInvokeExpr(
@@ -514,22 +456,12 @@ public class TransactionBodyTransformer extends BodyTransformer
 				}
 
 				// Replace base object of calls to wait with appropriate lockobj
-				Iterator<Object> waitsIt = tn.waits.iterator();
-				while(waitsIt.hasNext())
+				for(Unit uWait : tn.waits)
 				{
-					Stmt sWait = (Stmt) waitsIt.next();
+					Stmt sWait = (Stmt) uWait;
 					((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(clo); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
 					if(newPrep != null)
 						units.insertBefore((Stmt) newPrep.clone(), sWait);
-	//				Stmt newWait = 
-	//					Jimple.v().newInvokeStmt(
-	//         				Jimple.v().newVirtualInvokeExpr(
-	//       						(Local) clo,
-	//       						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void wait()").makeRef(), 
-	//       						Collections.EMPTY_LIST));
-	//	            units.insertBefore(newWait, sWait);
-	//				redirectTraps(b, sWait, newWait);
-	//				units.remove(sWait);
 				}
 			}
 		}
@@ -537,7 +469,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 	
 	static int baseLocalNum = 0;
 	
-	public InstanceFieldRef reconstruct(Body b, PatchingChain units, InstanceFieldRef lock, Stmt insertBefore, boolean redirect)
+	public InstanceFieldRef reconstruct(Body b, PatchingChain<Unit> units, InstanceFieldRef lock, Stmt insertBefore, boolean redirect)
 	{
 		G.v().out.println("Reconstructing " + lock);
 
@@ -628,7 +560,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 				clinitBody = (JimpleBody) clinitMethod.getActiveBody();
 				firstStmt = clinitBody.getFirstNonIdentityStmt();
         	}
-        	PatchingChain clinitUnits = clinitBody.getUnits();
+        	PatchingChain<Unit> clinitUnits = clinitBody.getUnits();
         	
 			Local lockLocal = Jimple.v().newLocal("objectLockLocal" + lockNumber, RefType.v("java.lang.Object"));
 			// lockNumber is increased below
@@ -674,96 +606,12 @@ public class TransactionBodyTransformer extends BodyTransformer
 
 		throw new RuntimeException("Unknown type of lock (" + lock + "): expected FieldRef, ArrayRef, or Local");
 	}
-	
-/*
-	public void synchronizeSingleEntrySingleExitBlock(Body b, Stmt start, Stmt end, Local lockObj)
-	{
-		PatchingChain units = b.getUnits();
-		
-		// <existing local defs>
-		
-		// add a throwable to local vars
-		Local throwableLocal = Jimple.v().newLocal("throwableLocal" + (throwableNum++), RefType.v("java.lang.Throwable"));
-		b.getLocals().add(throwableLocal);
-		
-		// <existing identity refs>
-		
-		// add entermonitor statement and label0
-//		Unit label0Unit = start;
-		Unit labelEnterMonitorStmt = Jimple.v().newEnterMonitorStmt(lockObj);
-		units.insertBeforeNoRedirect(labelEnterMonitorStmt, start); // steal jumps to start, send them to monitorenter
-		
-		// <existing code body>	check for return statements
-		List returnUnits = new ArrayList();
-		if(start != end)
-		{
-			Iterator bodyIt = units.iterator(start, end);
-			while(bodyIt.hasNext())
-			{
-				Stmt bodyStmt = (Stmt) bodyIt.next();
-				if(bodyIt.hasNext()) // ignore the end unit
-				{
-					if( bodyStmt instanceof ReturnStmt ||
-						bodyStmt instanceof ReturnVoidStmt)
-					{
-						returnUnits.add(bodyStmt);
-					}
-				}
-			}
-		}
-		
-		// add normal flow and labels
-		Unit labelExitMonitorStmt = (Unit) Jimple.v().newExitMonitorStmt(lockObj);
-		units.insertBefore(labelExitMonitorStmt, end); // steal jumps to end, send them to monitorexit
-//		end = (Stmt) units.getSuccOf(end);
-		Unit label1Unit = (Unit) Jimple.v().newGotoStmt(end);
-		units.insertBeforeNoRedirect(label1Unit, end);
-//		end = (Stmt) units.getSuccOf(end);
-		
-		// add exceptional flow and labels
-		Unit label2Unit = (Unit) Jimple.v().newIdentityStmt(throwableLocal, Jimple.v().newCaughtExceptionRef());
-		units.insertBeforeNoRedirect(label2Unit, end);
-//		end = (Stmt) units.getSuccOf(end);
-		Unit label3Unit = (Unit) Jimple.v().newExitMonitorStmt(lockObj);
-		units.insertBeforeNoRedirect(label3Unit, end);
-//		end = (Stmt) units.getSuccOf(end);
-		Unit label4Unit = (Unit) Jimple.v().newThrowStmt(throwableLocal);
-		units.insertBeforeNoRedirect(label4Unit, end);
-//		end = (Stmt) units.getSuccOf(end);
-		
-		// <existing end statement>
-
-		Iterator returnIt = returnUnits.iterator();
-		while(returnIt.hasNext())
-		{
-			Stmt bodyStmt = (Stmt) returnIt.next();
-			units.insertBefore(Jimple.v().newExitMonitorStmt(lockObj), bodyStmt); // TODO: WHAT IF IT'S IN A NESTED TRANSACTION???
-//			Stmt placeholder = Jimple.v().newNopStmt();
-//			units.insertAfter(Jimple.v().newNopStmt(), label4Unit);
-//			bodyStmt.redirectJumpsToThisTo(placeholder);
-//			units.insertBefore(Jimple.v().newGotoStmt(placeholder), bodyStmt);
-//			units.remove(bodyStmt);
-//			units.swapWith(placeholder, bodyStmt);
-			
-//			units.swapWith
-		}
-		
-		// add exception routing table
-		Unit label0Unit = (Unit) units.getSuccOf(labelEnterMonitorStmt);
-		SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
-		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label0Unit, label1Unit, label2Unit));
-		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label3Unit, label4Unit, label2Unit));
-
-	}
-*/
 
 	public void redirectTraps(Body b, Unit oldUnit, Unit newUnit)
 	{
-		Chain traps = b.getTraps();
-		Iterator trapsIt = traps.iterator();
-		while(trapsIt.hasNext())
+		Chain<Trap> traps = b.getTraps();
+		for(Trap trap : traps)
 		{
-			AbstractTrap trap = (AbstractTrap) trapsIt.next();
 			if(trap.getHandlerUnit() == oldUnit)
 				trap.setHandlerUnit(newUnit);
 			if(trap.getBeginUnit() == oldUnit)

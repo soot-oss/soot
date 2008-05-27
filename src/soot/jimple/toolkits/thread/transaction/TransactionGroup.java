@@ -2,6 +2,8 @@ package soot.jimple.toolkits.thread.transaction;
 
 import java.util.*;
 import soot.*;
+import soot.jimple.toolkits.pointer.RWSet;
+import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 
 class TransactionGroup implements Iterable<Transaction>
 {
@@ -9,6 +11,9 @@ class TransactionGroup implements Iterable<Transaction>
 	
 	// Information about the group members
 	List<Transaction> transactions;
+	
+	// Group read/write set
+	RWSet rwSet;
 
 	// Information about the selected lock(s)
 	public boolean isDynamicLock; // is lockObject actually dynamic? or is it a static ref?
@@ -20,6 +25,7 @@ class TransactionGroup implements Iterable<Transaction>
 	{
 		this.groupNum = groupNum;
 		this.transactions = new ArrayList<Transaction>();
+		this.rwSet = new CodeBlockRWSet();
 		
 		this.isDynamicLock = false;
 		this.useDynamicLock = false;

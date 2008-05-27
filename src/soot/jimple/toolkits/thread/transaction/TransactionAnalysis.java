@@ -11,7 +11,7 @@ import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 
-public class TransactionAnalysis extends ForwardFlowAnalysis
+public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 {
     FlowSet emptySet = new ArraySparseSet();
 
@@ -30,12 +30,14 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     Transaction methodTn;
 	
 	public boolean optionPrintDebug = false;
-
-    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, ThreadLocalObjectsAnalysis tlo)
+	public boolean optionOpenNesting = true;
+	
+    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, boolean optionOpenNesting, ThreadLocalObjectsAnalysis tlo)
 	{
 		super(graph);
 
 		this.optionPrintDebug = optionPrintDebug;
+		this.optionOpenNesting = optionOpenNesting;
 
 		body = b;
 		units = b.getUnits();
@@ -56,9 +58,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
     				Scene.v().getCallGraph(), null, tlo);
-    	
-//    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
-    				
+    	    				
     	prepUnits = new ArrayList<Object>();
     	
 		methodTn = null;
@@ -82,7 +82,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     /**
      * All INs are initialized to the empty set.
      **/
-    protected Object newInitialFlow()
+    protected FlowSet newInitialFlow()
     {
 		FlowSet ret = emptySet.clone();
 		if(method.isSynchronized() && methodTn != null)
@@ -95,7 +95,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     /**
      * IN(Start) is the empty set
      **/
-    protected Object entryInitialFlow()
+    protected FlowSet entryInitialFlow()
     {
 		FlowSet ret = emptySet.clone();
 		if(method.isSynchronized() && methodTn != null)
@@ -108,12 +108,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     /**
      * OUT is the same as (IN minus killSet) plus the genSet.
      **/
-    protected void flowThrough(Object inValue, Object unit, Object outValue)
+    protected void flowThrough(FlowSet in, Unit unit, FlowSet out)
     {
-        FlowSet
-            in = (FlowSet) inValue,
-            out = (FlowSet) outValue;
-
 		Stmt stmt = (Stmt) unit;
 
        	copy(in, out);
@@ -181,19 +177,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	addSelf = false; // this transaction already exists...
             }
             
-            // Check if the statement is within this transaction
-           	// If this statement is within a nested transaction, within this transaction
-//			if(tfp.inside == true && tn.nestLevel < nestLevel)
-//			{
-//				// if this statement is an early exit
-//				if(stmt instanceof ReturnStmt ||
-//					stmt instanceof ReturnVoidStmt)
-//				{
-//					tn.earlyEnds.add(stmt);
-//				}
-//			}
             // if this is the immediately enclosing transaction
-        	if(tfp.inside == true && tn.nestLevel == nestLevel)
+        	if(tfp.inside == true && (tn.nestLevel == nestLevel || optionOpenNesting == false))
         	{
         		printed = true; // for debugging purposes, indicated that we'll print a debug output for this statement
         		
@@ -209,14 +194,14 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	{
             		// Note if this unit is a call to wait() or notify()/notifyAll()
             		String InvokeSig = stmt.getInvokeExpr().getMethod().getSubSignature();
-            		if(InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()"))
+            		if((InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()")) && tn.nestLevel == nestLevel) // only applies to outermost txn
             		{
 				        if(!tn.notifys.contains(unit))
 		            		tn.notifys.add(unit);
 	            		if(optionPrintDebug)
 	            			G.v().out.print("{x,x} ");
 	            	}
-	            	else if(InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
+	            	else if((InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)")) && tn.nestLevel == nestLevel) // only applies to outermost txn
             		{
 				        if(!tn.waits.contains(unit))
 		            		tn.waits.add(unit);
@@ -255,15 +240,11 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 						}
 		            }
             	}
-            	else if(unit instanceof ExitMonitorStmt)
+            	else if(unit instanceof ExitMonitorStmt && tn.nestLevel == nestLevel) // only applies to outermost txn
             	{
             		// Mark this as end of this tn
             		tfp.inside = false;
             		
-            		// THIS SHOULD BE REMOVED
-//            		if(!tn.exitmonitors.contains(unit))
-//            			tn.exitmonitors.add(unit);
-            			
             		// Check if this is an early end or fallthrough end
             		Stmt nextUnit = (Stmt) units.getSuccOf(stmt);
             		if( nextUnit instanceof ReturnStmt ||
@@ -300,9 +281,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		           	// Debug Output
             		if(optionPrintDebug)
 			        {
-//						tasea.readSet(tn.method, stmt, tn, sld);
-//						tasea.writeSet(tn.method, stmt, tn, sld);
-
 			           	G.v().out.print("[");
 			           	if(stmtRead != null)
 			           	{
@@ -321,28 +299,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			        		G.v().out.print( "0" );
 			        	G.v().out.print("] ");
 					}
-/*
-					CodeBlockRWSet bothRW = new CodeBlockRWSet();
-					bothRW.union(stmtRead);
-					bothRW.union(stmtWrite);
-        			tn.unitToRWSet.put(unit, bothRW);
-	
-					List<Object> usesList;
-					if(tn.unitToUses.containsKey(unit))
-						usesList = tn.unitToUses.get(unit);
-					else
-					{
-						usesList = new ArrayList<Object>();
-						tn.unitToUses.put(unit, usesList);
-					}
-
-					for(Iterator usesIt = uses.iterator(); usesIt.hasNext(); )
-					{
-						Object use = usesIt.next();
-						if(!usesList.contains(use))
-							usesList.add(use);
-					}
-*/
         		}
 			}
         }
@@ -380,21 +336,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			if(stmt instanceof EnterMonitorStmt)
 				newTn.origLock = ((EnterMonitorStmt) stmt).getOp();
 				
-/*			// 
-			else
-			{
-				if(wholeMethod)
-				{
-					if(method.isStatic())
-						this.origLock = new AbstractDataSource( method.getDeclaringClass().getName() + ".class" ); // a dummy type meant for display
-					else
-						this.origLock = method.retrieveActiveBody().getThisLocal();
-				}
-				else
-					this.origLock = null;
-			}
-*/
-
         	if(optionPrintDebug)
         		G.v().out.println("Transaction found in method: " + newTn.method.toString());
 			out.add(new TransactionFlowPair(newTn, true));
@@ -422,22 +363,13 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     /**
      * union
      **/
-    protected void merge(Object in1, Object in2, Object out)
+    protected void merge(FlowSet inSet1, FlowSet inSet2, FlowSet outSet)
     {
-        FlowSet
-            inSet1 = (FlowSet) in1,
-            inSet2 = (FlowSet) in2,
-            outSet = (FlowSet) out;
-
 		inSet1.union(inSet2, outSet);
     }
 
-    protected void copy(Object source, Object dest)
+    protected void copy(FlowSet sourceSet, FlowSet destSet)
     {
-        FlowSet
-            sourceSet = (FlowSet) source,
-            destSet = (FlowSet) dest;
-		
 		destSet.clear();
 
 		Iterator it = sourceSet.iterator();
