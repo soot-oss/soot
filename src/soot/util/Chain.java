@@ -55,8 +55,10 @@ public interface Chain<E> extends Collection<E>, Serializable
     /** Replaces <code>out</code> in the Chain by <code>in</code>. */
     public void swapWith(E out, E in);
 
-    /** Removes the given object from this Chain. */
-    public boolean remove(E u);
+    /** Removes the given object from this Chain.
+     *  Parameter has to be of type {@link Object} to be compatible
+     *  with the {@link Collection} interface. */
+    public boolean remove(Object u);
 
     /** Adds the given object at the beginning of the Chain. */
     public void addFirst(E u);
