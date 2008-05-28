@@ -221,7 +221,7 @@ public abstract class Access extends Expr implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 279
+    // Declared in TypeAnalysis.jrag at line 278
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

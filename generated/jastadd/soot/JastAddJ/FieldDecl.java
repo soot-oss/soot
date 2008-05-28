@@ -176,7 +176,7 @@ public class FieldDecl extends MemberDecl implements Cloneable {
 
     private boolean isStatic_compute() {  return getModifiers().isStatic();  }
 
-    // Declared in TypeAnalysis.jrag at line 258
+    // Declared in TypeAnalysis.jrag at line 257
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getVariableDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -194,7 +194,7 @@ public class FieldDecl extends MemberDecl implements Cloneable {
     }
 
 public ASTNode rewriteTo() {
-    // Declared in VariableDeclaration.jrag at line 105
+    // Declared in VariableDeclaration.jrag at line 109
     if(getNumVariableDecl() == 1) {
         duringVariableDeclaration++;
         ASTNode result = rewriteRule0();
@@ -202,7 +202,7 @@ public ASTNode rewriteTo() {
         return result;
     }
 
-    // Declared in VariableDeclaration.jrag at line 116
+    // Declared in VariableDeclaration.jrag at line 120
     if(getParent().getParent() instanceof TypeDecl && 
         ((TypeDecl)getParent().getParent()).getBodyDeclListNoTransform() == getParent() && getNumVariableDecl() > 1) {
         duringVariableDeclaration++;
@@ -217,7 +217,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in VariableDeclaration.jrag at line 105
+    // Declared in VariableDeclaration.jrag at line 109
     private FieldDeclaration rewriteRule0() {
 {
       FieldDeclaration decl = getVariableDecl(0).createFieldDeclarationFrom(getModifiers(), getTypeAccess());
@@ -225,7 +225,7 @@ public ASTNode rewriteTo() {
       decl.setEnd(end); // copy location information
       return decl;
     }    }
-    // Declared in VariableDeclaration.jrag at line 116
+    // Declared in VariableDeclaration.jrag at line 120
     private List rewriteTypeDecl_getBodyDecl() {
 {
       List varList = new List();

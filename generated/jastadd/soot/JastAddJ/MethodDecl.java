@@ -607,7 +607,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 88
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -1169,7 +1169,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 270
+    // Declared in TypeAnalysis.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
@@ -1183,7 +1183,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     private TypeDecl type_compute() {  return getTypeAccess().type();  }
 
-    // Declared in TypeAnalysis.jrag at line 273
+    // Declared in TypeAnalysis.jrag at line 272
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
@@ -1523,7 +1523,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_NameType_nameType(this, caller);
     }
 
-    // Declared in Statements.jrag at line 301
+    // Declared in Statements.jrag at line 348
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(caller == getBlockOptNoTransform()) {
             return getNumException() != 0;

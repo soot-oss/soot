@@ -35,7 +35,7 @@ public class VarDeclStmt extends Stmt implements Cloneable {
         }
         return res;
     }
-    // Declared in VariableDeclaration.jrag at line 154
+    // Declared in VariableDeclaration.jrag at line 158
 
 
   private List createVariableDeclarationList() {
@@ -202,7 +202,7 @@ public class VarDeclStmt extends Stmt implements Cloneable {
 
     private boolean canCompleteNormally_compute() {  return reachable();  }
 
-    // Declared in TypeAnalysis.jrag at line 259
+    // Declared in TypeAnalysis.jrag at line 258
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getVariableDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -220,7 +220,7 @@ public class VarDeclStmt extends Stmt implements Cloneable {
     }
 
 public ASTNode rewriteTo() {
-    // Declared in VariableDeclaration.jrag at line 135
+    // Declared in VariableDeclaration.jrag at line 139
     if(getNumVariableDecl() == 1) {
         duringVariableDeclaration++;
         ASTNode result = rewriteRule0();
@@ -228,7 +228,7 @@ public ASTNode rewriteTo() {
         return result;
     }
 
-    // Declared in VariableDeclaration.jrag at line 146
+    // Declared in VariableDeclaration.jrag at line 150
     if(getParent().getParent() instanceof Block && 
         ((Block)getParent().getParent()).getStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
         duringVariableDeclaration++;
@@ -240,7 +240,7 @@ public ASTNode rewriteTo() {
         duringVariableDeclaration--;
       return newList.getChildNoTransform(0);
     }
-    // Declared in VariableDeclaration.jrag at line 150
+    // Declared in VariableDeclaration.jrag at line 154
     if(getParent().getParent() instanceof ForStmt && 
         ((ForStmt)getParent().getParent()).getInitStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
         duringVariableDeclaration++;
@@ -255,7 +255,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in VariableDeclaration.jrag at line 135
+    // Declared in VariableDeclaration.jrag at line 139
     private VariableDeclaration rewriteRule0() {
 {
       VariableDeclaration decl = getVariableDecl(0).createVariableDeclarationFrom(getModifiers(), getTypeAccess());
@@ -263,11 +263,11 @@ public ASTNode rewriteTo() {
       decl.setEnd(end); // copy location information
       return decl;
     }    }
-    // Declared in VariableDeclaration.jrag at line 146
+    // Declared in VariableDeclaration.jrag at line 150
     private List rewriteBlock_getStmt() {
         return createVariableDeclarationList();
     }
-    // Declared in VariableDeclaration.jrag at line 150
+    // Declared in VariableDeclaration.jrag at line 154
     private List rewriteForStmt_getInitStmt() {
         return createVariableDeclarationList();
     }

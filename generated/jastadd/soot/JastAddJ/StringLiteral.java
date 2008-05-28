@@ -89,6 +89,36 @@ public class StringLiteral extends Literal implements Cloneable {
 
   public boolean mayHaveRewrite() { return false; }
 
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 124
+    public void setLITERAL(String value) {
+        tokenString_LITERAL = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int LITERALstart;
+
+    // Declared in java.ast at line 6
+
+    public int LITERALend;
+
+    // Declared in java.ast at line 7
+
+    public void setLITERAL(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setLITERAL is only valid for String lexemes");
+        tokenString_LITERAL = (String)symbol.value;
+        LITERALstart = symbol.getStart();
+        LITERALend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getLITERAL() {
+        return tokenString_LITERAL != null ? tokenString_LITERAL : "";
+    }
+
     // Declared in ConstantExpression.jrag at line 304
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
@@ -105,7 +135,7 @@ public class StringLiteral extends Literal implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 307
+    // Declared in TypeAnalysis.jrag at line 306
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

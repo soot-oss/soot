@@ -95,6 +95,10 @@ public class Body extends java.lang.Object {
 
 
     public Body add(soot.jimple.Stmt stmt) {
+      if(list != null) {
+        list.add(stmt);
+        list = null;
+      }
       stmt.addTag(currentSourceRangeTag());
       soot.PatchingChain chain = (soot.PatchingChain)chains.peek();
       if(stmt instanceof IdentityStmt && chain.size() != 0) {
@@ -113,33 +117,33 @@ public class Body extends java.lang.Object {
       return this;
     }
 
-    // Declared in EmitJimple.jrag at line 515
+    // Declared in EmitJimple.jrag at line 519
 
     public void pushBlock(soot.PatchingChain c) {
       chains.push(c);
     }
 
-    // Declared in EmitJimple.jrag at line 518
+    // Declared in EmitJimple.jrag at line 522
 
     public void popBlock() {
       chains.pop();
     }
 
-    // Declared in EmitJimple.jrag at line 522
+    // Declared in EmitJimple.jrag at line 526
 
 
     public soot.jimple.Stmt newLabel() {
       return soot.jimple.Jimple.v().newNopStmt();
     }
 
-    // Declared in EmitJimple.jrag at line 525
+    // Declared in EmitJimple.jrag at line 529
 
     public Body addLabel(soot.jimple.Stmt label) {
       add(label);
       return this;
     }
 
-    // Declared in EmitJimple.jrag at line 530
+    // Declared in EmitJimple.jrag at line 534
 
 
     public soot.Local emitThis(TypeDecl typeDecl) {
@@ -153,17 +157,35 @@ public class Body extends java.lang.Object {
       return thisName;
     }
 
-    // Declared in EmitJimple.jrag at line 540
+    // Declared in EmitJimple.jrag at line 544
 
     Local thisName;
 
-    // Declared in EmitJimple.jrag at line 542
+    // Declared in EmitJimple.jrag at line 546
 
 
     public Body addTrap(TypeDecl type, soot.jimple.Stmt firstStmt, soot.jimple.Stmt lastStmt, soot.jimple.Stmt handler) {
       body.getTraps().add(Jimple.v().newTrap(type.getSootClassDecl(), firstStmt, lastStmt, handler));
       return this;
     }
+
+    // Declared in EmitJimple.jrag at line 551
+
+
+    public soot.jimple.Stmt previousStmt() {
+      PatchingChain<Unit> o = (PatchingChain<Unit>)chains.lastElement();
+      return (soot.jimple.Stmt)o.getLast();
+    }
+
+    // Declared in EmitJimple.jrag at line 555
+
+    public void addNextStmt(java.util.ArrayList list) {
+      this.list = list;
+    }
+
+    // Declared in EmitJimple.jrag at line 558
+
+    java.util.ArrayList list = null;
 
 
 }

@@ -64,7 +64,7 @@ public class CatchClause extends ASTNode<ASTNode> implements Cloneable, Variable
       error("*** The catch variable must extend Throwable");
   }
 
-    // Declared in Statements.jrag at line 377
+    // Declared in Statements.jrag at line 452
 
   public void jimplify2(Body b) {
     b.addLabel(label());
@@ -170,7 +170,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean label_computed = false;
     protected soot.jimple.Stmt label_value;
-    // Declared in Statements.jrag at line 376
+    // Declared in Statements.jrag at line 451
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label() {
         if(label_computed)
             return label_value;
@@ -227,7 +227,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return reachableCatchClause_value;
     }
 
-    // Declared in EmitJimple.jrag at line 554
+    // Declared in EmitJimple.jrag at line 567
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;

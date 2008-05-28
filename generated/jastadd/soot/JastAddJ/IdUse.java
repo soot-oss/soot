@@ -74,7 +74,7 @@ public class IdUse extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 95
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 

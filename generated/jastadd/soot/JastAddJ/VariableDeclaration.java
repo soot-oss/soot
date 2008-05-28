@@ -255,7 +255,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 80
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -431,7 +431,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private String dumpString_compute() {  return getClass().getName() + " [" + getID() + "]";  }
 
-    // Declared in TypeAnalysis.jrag at line 253
+    // Declared in TypeAnalysis.jrag at line 252
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         TypeDecl type_value = type_compute();
         return type_value;
@@ -563,7 +563,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return outerScope_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 586
+    // Declared in TypeAnalysis.jrag at line 585
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
@@ -607,7 +607,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 262
+    // Declared in TypeAnalysis.jrag at line 261
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getInitOptNoTransform()) {
             return type();

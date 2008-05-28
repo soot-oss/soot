@@ -172,14 +172,14 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     s.append(indent() + "}\n");
   }
 
-    // Declared in TypeAnalysis.jrag at line 594
+    // Declared in TypeAnalysis.jrag at line 593
 
 
   public boolean hasSuperclass() {
     return !isObject();
   }
 
-    // Declared in TypeAnalysis.jrag at line 598
+    // Declared in TypeAnalysis.jrag at line 597
 
 
   public ClassDecl superclass() {
@@ -190,7 +190,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     return (ClassDecl)typeObject();
   }
 
-    // Declared in TypeAnalysis.jrag at line 613
+    // Declared in TypeAnalysis.jrag at line 612
 
   
 
@@ -437,6 +437,36 @@ public class ClassDecl extends ReferenceType implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 63
     public void setSuperClassAccessOpt(Opt<Access> opt) {
         setChild(opt, 1);
     }
@@ -607,7 +637,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(3);
     }
 
-    // Declared in TypeAnalysis.jrag at line 85
+    // Declared in TypeAnalysis.jrag at line 84
 private boolean refined_TypeAnalysis_castingConversionTo_TypeDecl(TypeDecl type)
 {
     if(type.isArrayDecl()) {
@@ -1011,7 +1041,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     */
   }
 
-    // Declared in TypeAnalysis.jrag at line 211
+    // Declared in TypeAnalysis.jrag at line 210
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassDecl() {
         boolean isClassDecl_value = isClassDecl_compute();
         return isClassDecl_value;
@@ -1019,7 +1049,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isClassDecl_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 226
+    // Declared in TypeAnalysis.jrag at line 225
  @SuppressWarnings({"unchecked", "cast"})     public boolean isString() {
         if(isString_computed)
             return isString_value;
@@ -1033,7 +1063,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isString_compute() {  return fullName().equals("java.lang.String");  }
 
-    // Declared in TypeAnalysis.jrag at line 229
+    // Declared in TypeAnalysis.jrag at line 228
  @SuppressWarnings({"unchecked", "cast"})     public boolean isObject() {
         if(isObject_computed)
             return isObject_value;
@@ -1063,7 +1093,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 425
+    // Declared in TypeAnalysis.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
         boolean isSupertypeOfClassDecl_ClassDecl_value = isSupertypeOfClassDecl_compute(type);
         return isSupertypeOfClassDecl_ClassDecl_value;
@@ -1075,7 +1105,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return type.hasSuperclass() && type.superclass() != null && type.superclass().instanceOf(this);
   }
 
-    // Declared in TypeAnalysis.jrag at line 442
+    // Declared in TypeAnalysis.jrag at line 441
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
         boolean isSupertypeOfInterfaceDecl_InterfaceDecl_value = isSupertypeOfInterfaceDecl_compute(type);
         return isSupertypeOfInterfaceDecl_InterfaceDecl_value;
@@ -1083,7 +1113,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfInterfaceDecl_compute(InterfaceDecl type) {  return isObject();  }
 
-    // Declared in TypeAnalysis.jrag at line 455
+    // Declared in TypeAnalysis.jrag at line 454
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
         boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
         return isSupertypeOfArrayDecl_ArrayDecl_value;
@@ -1095,7 +1125,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return type.hasSuperclass() && type.superclass() != null && type.superclass().instanceOf(this);
   }
 
-    // Declared in TypeAnalysis.jrag at line 537
+    // Declared in TypeAnalysis.jrag at line 536
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInnerClass() {
         boolean isInnerClass_value = isInnerClass_compute();
         return isInnerClass_value;
@@ -1394,7 +1424,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
-    // Declared in TypeAnalysis.jrag at line 577
+    // Declared in TypeAnalysis.jrag at line 576
     public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
         if(caller == getImplementsListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

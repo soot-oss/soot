@@ -115,6 +115,36 @@ public class ByteType extends IntegralType implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 42
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 42
     public void setSuperClassAccessOpt(Opt<Access> opt) {
         setChild(opt, 1);
     }
@@ -227,7 +257,7 @@ public class ByteType extends IntegralType implements Cloneable {
 
     private Constant cast_compute(Constant c) {  return Constant.create((byte)c.intValue());  }
 
-    // Declared in TypeAnalysis.jrag at line 31
+    // Declared in TypeAnalysis.jrag at line 30
  @SuppressWarnings({"unchecked", "cast"})     public boolean narrowingConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
@@ -243,7 +273,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean narrowingConversionTo_compute(TypeDecl type) {  return type.isChar();  }
 
-    // Declared in TypeAnalysis.jrag at line 150
+    // Declared in TypeAnalysis.jrag at line 149
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
         if(unaryNumericPromotion_computed)
             return unaryNumericPromotion_value;
@@ -257,7 +287,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private TypeDecl unaryNumericPromotion_compute() {  return typeInt();  }
 
-    // Declared in TypeAnalysis.jrag at line 187
+    // Declared in TypeAnalysis.jrag at line 186
  @SuppressWarnings({"unchecked", "cast"})     public boolean isByte() {
         boolean isByte_value = isByte_compute();
         return isByte_value;

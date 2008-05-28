@@ -89,6 +89,36 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 4
+    public void setPackageDecl(java.lang.String value) {
+        tokenjava_lang_String_PackageDecl = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int PackageDeclstart;
+
+    // Declared in java.ast at line 6
+
+    public int PackageDeclend;
+
+    // Declared in java.ast at line 7
+
+    public void setPackageDecl(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setPackageDecl is only valid for String lexemes");
+        tokenjava_lang_String_PackageDecl = (String)symbol.value;
+        PackageDeclstart = symbol.getStart();
+        PackageDeclend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public java.lang.String getPackageDecl() {
+        return tokenjava_lang_String_PackageDecl != null ? tokenjava_lang_String_PackageDecl : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 4
     public void setImportDeclList(List<ImportDecl> list) {
         setChild(list, 0);
     }

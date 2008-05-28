@@ -95,7 +95,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 26
-    private String tokenString_Package;
+    protected String tokenString_Package;
 
     // Declared in java.ast at line 3
 

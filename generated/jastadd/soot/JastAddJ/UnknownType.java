@@ -105,6 +105,36 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 63
     public void setSuperClassAccessOpt(Opt<Access> opt) {
         setChild(opt, 1);
     }
@@ -275,7 +305,7 @@ public class UnknownType extends ClassDecl implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(3);
     }
 
-    // Declared in TypeAnalysis.jrag at line 168
+    // Declared in TypeAnalysis.jrag at line 167
  @SuppressWarnings({"unchecked", "cast"})     public boolean isReferenceType() {
         boolean isReferenceType_value = isReferenceType_compute();
         return isReferenceType_value;
@@ -283,7 +313,7 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     private boolean isReferenceType_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 171
+    // Declared in TypeAnalysis.jrag at line 170
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitiveType() {
         boolean isPrimitiveType_value = isPrimitiveType_compute();
         return isPrimitiveType_value;
@@ -291,7 +321,7 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     private boolean isPrimitiveType_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 176
+    // Declared in TypeAnalysis.jrag at line 175
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNumericType() {
         boolean isNumericType_value = isNumericType_compute();
         return isNumericType_value;
@@ -299,7 +329,7 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     private boolean isNumericType_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 180
+    // Declared in TypeAnalysis.jrag at line 179
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIntegralType() {
         boolean isIntegralType_value = isIntegralType_compute();
         return isIntegralType_value;
@@ -307,7 +337,7 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     private boolean isIntegralType_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 184
+    // Declared in TypeAnalysis.jrag at line 183
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBoolean() {
         boolean isBoolean_value = isBoolean_compute();
         return isBoolean_value;
@@ -315,7 +345,7 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     private boolean isBoolean_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 194
+    // Declared in TypeAnalysis.jrag at line 193
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInt() {
         boolean isInt_value = isInt_compute();
         return isInt_value;
@@ -323,7 +353,7 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     private boolean isInt_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 232
+    // Declared in TypeAnalysis.jrag at line 231
  @SuppressWarnings({"unchecked", "cast"})     public boolean isUnknown() {
         boolean isUnknown_value = isUnknown_compute();
         return isUnknown_value;
@@ -347,7 +377,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 418
+    // Declared in TypeAnalysis.jrag at line 417
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
         boolean isSupertypeOfClassDecl_ClassDecl_value = isSupertypeOfClassDecl_compute(type);
         return isSupertypeOfClassDecl_ClassDecl_value;
@@ -355,7 +385,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfClassDecl_compute(ClassDecl type) {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 419
+    // Declared in TypeAnalysis.jrag at line 418
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
         boolean isSupertypeOfInterfaceDecl_InterfaceDecl_value = isSupertypeOfInterfaceDecl_compute(type);
         return isSupertypeOfInterfaceDecl_InterfaceDecl_value;
@@ -363,7 +393,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfInterfaceDecl_compute(InterfaceDecl type) {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 420
+    // Declared in TypeAnalysis.jrag at line 419
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
         boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
         return isSupertypeOfArrayDecl_ArrayDecl_value;
@@ -371,7 +401,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfArrayDecl_compute(ArrayDecl type) {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 421
+    // Declared in TypeAnalysis.jrag at line 420
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfPrimitiveType(PrimitiveType type) {
         boolean isSupertypeOfPrimitiveType_PrimitiveType_value = isSupertypeOfPrimitiveType_compute(type);
         return isSupertypeOfPrimitiveType_PrimitiveType_value;
@@ -379,7 +409,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfPrimitiveType_compute(PrimitiveType type) {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 422
+    // Declared in TypeAnalysis.jrag at line 421
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {
         boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
         return isSupertypeOfNullType_NullType_value;

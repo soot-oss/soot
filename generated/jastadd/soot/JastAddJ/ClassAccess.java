@@ -137,7 +137,7 @@ public class ClassAccess extends Access implements Cloneable {
 
   public boolean mayHaveRewrite() { return false; }
 
-    // Declared in TypeAnalysis.jrag at line 402
+    // Declared in TypeAnalysis.jrag at line 401
 private TypeDecl refined_TypeAnalysis_type()
 { return lookupType("java.lang", "Class"); }
 

@@ -337,6 +337,36 @@ public class LUBType extends ReferenceType implements Cloneable {
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 38
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in Generics.ast at line 5
+
+    public int IDstart;
+
+    // Declared in Generics.ast at line 6
+
+    public int IDend;
+
+    // Declared in Generics.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in Generics.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in Generics.ast at line 2
+    // Declared in Generics.ast line 38
     public void setBodyDeclList(List<BodyDecl> list) {
         setChild(list, 1);
     }

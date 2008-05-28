@@ -81,7 +81,7 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
   public void jimplify1phase2() {
   }
 
-    // Declared in EmitJimple.jrag at line 641
+    // Declared in EmitJimple.jrag at line 654
 
 
   public void jimplify2() {
@@ -157,7 +157,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private TypeDecl type_compute(String name) {  return null;  }
 
-    // Declared in TypeAnalysis.jrag at line 272
+    // Declared in TypeAnalysis.jrag at line 271
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
@@ -288,19 +288,28 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return nameType_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 568
+    // Declared in TypeAnalysis.jrag at line 567
  @SuppressWarnings({"unchecked", "cast"})     public String hostPackage() {
         String hostPackage_value = getParent().Define_String_hostPackage(this, null);
         return hostPackage_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 583
+    // Declared in TypeAnalysis.jrag at line 582
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 516
+    // Declared in Statements.jrag at line 446
+    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return null;
+        }
+        return getParent().Define_ArrayList_exceptionRanges(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 515
     public BodyDecl Define_BodyDecl_enclosingBodyDecl(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

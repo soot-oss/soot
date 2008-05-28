@@ -199,7 +199,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 313
+    // Declared in TypeAnalysis.jrag at line 312
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
@@ -245,7 +245,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         return getParent().Define_TypeDecl_expectedType(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 263
+    // Declared in TypeAnalysis.jrag at line 262
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getArrayInitOptNoTransform()) {
             return type();

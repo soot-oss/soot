@@ -407,7 +407,7 @@ public class VarAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 16
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -806,7 +806,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
 
-    // Declared in TypeAnalysis.jrag at line 284
+    // Declared in TypeAnalysis.jrag at line 283
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

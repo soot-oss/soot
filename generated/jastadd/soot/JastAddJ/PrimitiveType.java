@@ -45,7 +45,7 @@ public class PrimitiveType extends TypeDecl implements Cloneable {
     return new PrimitiveTypeAccess(name());
   }
 
-    // Declared in TypeAnalysis.jrag at line 606
+    // Declared in TypeAnalysis.jrag at line 605
 
   
   public boolean hasSuperclass() {
@@ -113,6 +113,36 @@ public class PrimitiveType extends TypeDecl implements Cloneable {
 
     public Modifiers getModifiersNoTransform() {
         return (Modifiers)getChildNoTransform(0);
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 42
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
     }
 
     // Declared in java.ast at line 2
@@ -221,7 +251,7 @@ public class PrimitiveType extends TypeDecl implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(2);
     }
 
-    // Declared in TypeAnalysis.jrag at line 22
+    // Declared in TypeAnalysis.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public boolean wideningConversionTo(TypeDecl type) {
         boolean wideningConversionTo_TypeDecl_value = wideningConversionTo_compute(type);
         return wideningConversionTo_TypeDecl_value;
@@ -229,7 +259,7 @@ public class PrimitiveType extends TypeDecl implements Cloneable {
 
     private boolean wideningConversionTo_compute(TypeDecl type) {  return instanceOf(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 28
+    // Declared in TypeAnalysis.jrag at line 27
  @SuppressWarnings({"unchecked", "cast"})     public boolean narrowingConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
@@ -245,7 +275,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean narrowingConversionTo_compute(TypeDecl type) {  return type.instanceOf(this);  }
 
-    // Declared in TypeAnalysis.jrag at line 170
+    // Declared in TypeAnalysis.jrag at line 169
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitiveType() {
         boolean isPrimitiveType_value = isPrimitiveType_compute();
         return isPrimitiveType_value;
@@ -253,7 +283,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean isPrimitiveType_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 223
+    // Declared in TypeAnalysis.jrag at line 222
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitive() {
         boolean isPrimitive_value = isPrimitive_compute();
         return isPrimitive_value;
@@ -277,7 +307,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 477
+    // Declared in TypeAnalysis.jrag at line 476
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfPrimitiveType(PrimitiveType type) {
         boolean isSupertypeOfPrimitiveType_PrimitiveType_value = isSupertypeOfPrimitiveType_compute(type);
         return isSupertypeOfPrimitiveType_PrimitiveType_value;
@@ -289,7 +319,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return type.hasSuperclass() && type.superclass().isPrimitive() && type.superclass().instanceOf(this);
   }
 
-    // Declared in TypeAnalysis.jrag at line 610
+    // Declared in TypeAnalysis.jrag at line 609
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superclass() {
         TypeDecl superclass_value = superclass_compute();
         return superclass_value;
@@ -386,7 +416,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return type.hasSuperclass() && type.superclass().isPrimitive() && type.superclass().subtype(this);
   }
 
-    // Declared in TypeAnalysis.jrag at line 575
+    // Declared in TypeAnalysis.jrag at line 574
     public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
         if(caller == getSuperClassAccessOptNoTransform()) {
             return hostType();

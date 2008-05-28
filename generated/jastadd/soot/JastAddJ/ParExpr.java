@@ -201,7 +201,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 310
+    // Declared in TypeAnalysis.jrag at line 309
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

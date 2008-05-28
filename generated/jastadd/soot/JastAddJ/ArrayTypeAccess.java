@@ -116,7 +116,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 22
-    private String tokenString_Package;
+    protected String tokenString_Package;
 
     // Declared in java.ast at line 3
 
@@ -126,7 +126,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 22
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 

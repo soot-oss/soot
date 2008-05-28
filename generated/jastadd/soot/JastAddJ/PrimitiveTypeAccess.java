@@ -82,7 +82,7 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 21
-    private String tokenString_Name;
+    protected String tokenString_Name;
 
     // Declared in java.ast at line 3
 
@@ -116,7 +116,7 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 21
-    private String tokenString_Package;
+    protected String tokenString_Package;
 
     // Declared in java.ast at line 3
 
@@ -126,7 +126,7 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 21
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 

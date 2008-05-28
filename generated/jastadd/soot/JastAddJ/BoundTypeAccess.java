@@ -84,9 +84,69 @@ public class BoundTypeAccess extends TypeAccess implements Cloneable {
 
   public boolean mayHaveRewrite() { return false; }
 
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 20
+    public void setPackage(String value) {
+        tokenString_Package = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int Packagestart;
+
+    // Declared in java.ast at line 6
+
+    public int Packageend;
+
+    // Declared in java.ast at line 7
+
+    public void setPackage(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setPackage is only valid for String lexemes");
+        tokenString_Package = (String)symbol.value;
+        Packagestart = symbol.getStart();
+        Packageend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getPackage() {
+        return tokenString_Package != null ? tokenString_Package : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 20
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
     // Declared in BoundNames.ast at line 2
     // Declared in BoundNames.ast line 8
-    private TypeDecl tokenTypeDecl_TypeDecl;
+    protected TypeDecl tokenTypeDecl_TypeDecl;
 
     // Declared in BoundNames.ast at line 3
 

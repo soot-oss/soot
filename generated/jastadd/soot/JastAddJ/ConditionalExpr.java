@@ -220,7 +220,7 @@ public class ConditionalExpr extends Expr implements Cloneable {
         return (Expr)getChildNoTransform(2);
     }
 
-    // Declared in TypeAnalysis.jrag at line 365
+    // Declared in TypeAnalysis.jrag at line 364
 private TypeDecl refined_TypeAnalysis_type()
 {
     TypeDecl trueType = getTrueExpr().type();

@@ -111,7 +111,7 @@ public class SuperAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 25
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -192,7 +192,7 @@ private TypeDecl refined_LookupType_decl()
 
     private NameType predNameType_compute() {  return NameType.TYPE_NAME;  }
 
-    // Declared in TypeAnalysis.jrag at line 289
+    // Declared in TypeAnalysis.jrag at line 288
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

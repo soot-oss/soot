@@ -125,7 +125,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean canCompleteNormally_compute() {  return true;  }
 
-    // Declared in Statements.jrag at line 196
+    // Declared in Statements.jrag at line 199
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
@@ -135,7 +135,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     throw new UnsupportedOperationException("Can not break at this statement of type " + getClass().getName());
   }
 
-    // Declared in Statements.jrag at line 215
+    // Declared in Statements.jrag at line 224
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;
@@ -181,13 +181,13 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return lookupVariable_String_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 513
+    // Declared in TypeAnalysis.jrag at line 512
  @SuppressWarnings({"unchecked", "cast"})     public BodyDecl enclosingBodyDecl() {
         BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
         return enclosingBodyDecl_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 585
+    // Declared in TypeAnalysis.jrag at line 584
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;

@@ -199,7 +199,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     private String printOp_compute() {  return " + ";  }
 
-    // Declared in TypeAnalysis.jrag at line 328
+    // Declared in TypeAnalysis.jrag at line 327
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

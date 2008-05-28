@@ -92,7 +92,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in Annotations.ast at line 2
     // Declared in Annotations.ast line 8
-    private String tokenString_Name;
+    protected String tokenString_Name;
 
     // Declared in Annotations.ast at line 3
 

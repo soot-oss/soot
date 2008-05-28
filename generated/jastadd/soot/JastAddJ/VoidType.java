@@ -102,6 +102,36 @@ public class VoidType extends TypeDecl implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 38
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 38
     public void setBodyDeclList(List<BodyDecl> list) {
         setChild(list, 1);
     }
@@ -166,7 +196,7 @@ public class VoidType extends TypeDecl implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(1);
     }
 
-    // Declared in TypeAnalysis.jrag at line 57
+    // Declared in TypeAnalysis.jrag at line 56
  @SuppressWarnings({"unchecked", "cast"})     public boolean stringConversion() {
         boolean stringConversion_value = stringConversion_compute();
         return stringConversion_value;
@@ -174,7 +204,7 @@ public class VoidType extends TypeDecl implements Cloneable {
 
     private boolean stringConversion_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 204
+    // Declared in TypeAnalysis.jrag at line 203
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
@@ -198,7 +228,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 488
+    // Declared in TypeAnalysis.jrag at line 487
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfVoidType(VoidType type) {
         boolean isSupertypeOfVoidType_VoidType_value = isSupertypeOfVoidType_compute(type);
         return isSupertypeOfVoidType_VoidType_value;

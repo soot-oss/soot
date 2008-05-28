@@ -77,7 +77,7 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 194
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 

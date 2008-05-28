@@ -104,7 +104,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
       error("*** The thrown expression must extend Throwable");
   }
 
-    // Declared in Statements.jrag at line 263
+    // Declared in Statements.jrag at line 310
 
 
   public void jimplify2(Body b) {

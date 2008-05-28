@@ -148,7 +148,7 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
 
     // Declared in StaticImports.ast at line 2
     // Declared in StaticImports.ast line 3
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in StaticImports.ast at line 3
 

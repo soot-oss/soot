@@ -485,7 +485,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
   }
 
-    // Declared in TypeAnalysis.jrag at line 235
+    // Declared in TypeAnalysis.jrag at line 234
 
   public FieldDeclaration findSingleVariable(String name) {
     return (FieldDeclaration)memberFields(name).iterator().next();
@@ -970,7 +970,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     );
   }
 
-    // Declared in EmitJimple.jrag at line 572
+    // Declared in EmitJimple.jrag at line 585
 
 
   public void jimplify2clinit() {
@@ -1001,7 +1001,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       b.add(Jimple.v().newReturnVoidStmt());
   }
 
-    // Declared in EmitJimple.jrag at line 600
+    // Declared in EmitJimple.jrag at line 613
 
 
   public void jimplify2() {
@@ -1147,7 +1147,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 38
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -1287,7 +1287,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return emitCastTo(b, expr.eval(b), type);
   }
 
-    // Declared in TypeAnalysis.jrag at line 60
+    // Declared in TypeAnalysis.jrag at line 59
 private boolean refined_TypeAnalysis_assignConversionTo_TypeDecl_Expr(TypeDecl type, Expr expr)
 {
     //System.out.println("@@@ " + fullName() + " assign conversion to " + type.fullName() + ", expr: " + expr);
@@ -1305,13 +1305,13 @@ private boolean refined_TypeAnalysis_assignConversionTo_TypeDecl_Expr(TypeDecl t
     return false;
   }
 
-    // Declared in TypeAnalysis.jrag at line 77
+    // Declared in TypeAnalysis.jrag at line 76
 private boolean refined_TypeAnalysis_methodInvocationConversionTo_TypeDecl(TypeDecl type)
 {
     return identityConversionTo(type) || wideningConversionTo(type);
   }
 
-    // Declared in TypeAnalysis.jrag at line 82
+    // Declared in TypeAnalysis.jrag at line 81
 private boolean refined_TypeAnalysis_castingConversionTo_TypeDecl(TypeDecl type)
 { return identityConversionTo(type) ||
     wideningConversionTo(type) || narrowingConversionTo(type); }
@@ -2335,7 +2335,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     return packageName + "." + name();
   }
 
-    // Declared in TypeAnalysis.jrag at line 16
+    // Declared in TypeAnalysis.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public boolean identityConversionTo(TypeDecl type) {
         boolean identityConversionTo_TypeDecl_value = identityConversionTo_compute(type);
         return identityConversionTo_TypeDecl_value;
@@ -2343,7 +2343,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     private boolean identityConversionTo_compute(TypeDecl type) {  return this == type;  }
 
-    // Declared in TypeAnalysis.jrag at line 18
+    // Declared in TypeAnalysis.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public boolean wideningConversionTo(TypeDecl type) {
         boolean wideningConversionTo_TypeDecl_value = wideningConversionTo_compute(type);
         return wideningConversionTo_TypeDecl_value;
@@ -2352,7 +2352,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     private boolean wideningConversionTo_compute(TypeDecl type) {  return instanceOf(type);  }
 
     protected java.util.Map narrowingConversionTo_TypeDecl_values;
-    // Declared in TypeAnalysis.jrag at line 19
+    // Declared in TypeAnalysis.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public boolean narrowingConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
@@ -2368,7 +2368,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean narrowingConversionTo_compute(TypeDecl type) {  return instanceOf(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 56
+    // Declared in TypeAnalysis.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public boolean stringConversion() {
         boolean stringConversion_value = stringConversion_compute();
         return stringConversion_value;
@@ -2468,7 +2468,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     */
   }
 
-    // Declared in TypeAnalysis.jrag at line 147
+    // Declared in TypeAnalysis.jrag at line 146
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
         TypeDecl unaryNumericPromotion_value = unaryNumericPromotion_compute();
         return unaryNumericPromotion_value;
@@ -2476,7 +2476,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private TypeDecl unaryNumericPromotion_compute() {  return this;  }
 
-    // Declared in TypeAnalysis.jrag at line 155
+    // Declared in TypeAnalysis.jrag at line 154
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotion(TypeDecl type) {
         TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
         return binaryNumericPromotion_TypeDecl_value;
@@ -2484,7 +2484,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private TypeDecl binaryNumericPromotion_compute(TypeDecl type) {  return unknownType();  }
 
-    // Declared in TypeAnalysis.jrag at line 166
+    // Declared in TypeAnalysis.jrag at line 165
  @SuppressWarnings({"unchecked", "cast"})     public boolean isReferenceType() {
         boolean isReferenceType_value = isReferenceType_compute();
         return isReferenceType_value;
@@ -2492,7 +2492,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isReferenceType_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 169
+    // Declared in TypeAnalysis.jrag at line 168
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitiveType() {
         boolean isPrimitiveType_value = isPrimitiveType_compute();
         return isPrimitiveType_value;
@@ -2500,7 +2500,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isPrimitiveType_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 174
+    // Declared in TypeAnalysis.jrag at line 173
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNumericType() {
         boolean isNumericType_value = isNumericType_compute();
         return isNumericType_value;
@@ -2508,7 +2508,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isNumericType_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 178
+    // Declared in TypeAnalysis.jrag at line 177
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIntegralType() {
         boolean isIntegralType_value = isIntegralType_compute();
         return isIntegralType_value;
@@ -2516,7 +2516,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isIntegralType_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 182
+    // Declared in TypeAnalysis.jrag at line 181
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBoolean() {
         boolean isBoolean_value = isBoolean_compute();
         return isBoolean_value;
@@ -2524,7 +2524,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isBoolean_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 186
+    // Declared in TypeAnalysis.jrag at line 185
  @SuppressWarnings({"unchecked", "cast"})     public boolean isByte() {
         boolean isByte_value = isByte_compute();
         return isByte_value;
@@ -2532,7 +2532,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isByte_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 188
+    // Declared in TypeAnalysis.jrag at line 187
  @SuppressWarnings({"unchecked", "cast"})     public boolean isChar() {
         boolean isChar_value = isChar_compute();
         return isChar_value;
@@ -2540,7 +2540,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isChar_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 190
+    // Declared in TypeAnalysis.jrag at line 189
  @SuppressWarnings({"unchecked", "cast"})     public boolean isShort() {
         boolean isShort_value = isShort_compute();
         return isShort_value;
@@ -2548,7 +2548,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isShort_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 192
+    // Declared in TypeAnalysis.jrag at line 191
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInt() {
         boolean isInt_value = isInt_compute();
         return isInt_value;
@@ -2556,7 +2556,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isInt_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 196
+    // Declared in TypeAnalysis.jrag at line 195
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFloat() {
         boolean isFloat_value = isFloat_compute();
         return isFloat_value;
@@ -2564,7 +2564,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isFloat_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 198
+    // Declared in TypeAnalysis.jrag at line 197
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLong() {
         boolean isLong_value = isLong_compute();
         return isLong_value;
@@ -2572,7 +2572,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isLong_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 200
+    // Declared in TypeAnalysis.jrag at line 199
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDouble() {
         boolean isDouble_value = isDouble_compute();
         return isDouble_value;
@@ -2580,7 +2580,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isDouble_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 203
+    // Declared in TypeAnalysis.jrag at line 202
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
@@ -2588,7 +2588,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isVoid_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 206
+    // Declared in TypeAnalysis.jrag at line 205
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNull() {
         boolean isNull_value = isNull_compute();
         return isNull_value;
@@ -2596,7 +2596,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isNull_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 210
+    // Declared in TypeAnalysis.jrag at line 209
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassDecl() {
         boolean isClassDecl_value = isClassDecl_compute();
         return isClassDecl_value;
@@ -2604,7 +2604,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isClassDecl_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 212
+    // Declared in TypeAnalysis.jrag at line 211
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInterfaceDecl() {
         boolean isInterfaceDecl_value = isInterfaceDecl_compute();
         return isInterfaceDecl_value;
@@ -2612,7 +2612,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isInterfaceDecl_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 214
+    // Declared in TypeAnalysis.jrag at line 213
  @SuppressWarnings({"unchecked", "cast"})     public boolean isArrayDecl() {
         boolean isArrayDecl_value = isArrayDecl_compute();
         return isArrayDecl_value;
@@ -2620,7 +2620,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isArrayDecl_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 222
+    // Declared in TypeAnalysis.jrag at line 221
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitive() {
         boolean isPrimitive_value = isPrimitive_compute();
         return isPrimitive_value;
@@ -2630,7 +2630,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     protected boolean isString_computed = false;
     protected boolean isString_value;
-    // Declared in TypeAnalysis.jrag at line 225
+    // Declared in TypeAnalysis.jrag at line 224
  @SuppressWarnings({"unchecked", "cast"})     public boolean isString() {
         if(isString_computed)
             return isString_value;
@@ -2646,7 +2646,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     protected boolean isObject_computed = false;
     protected boolean isObject_value;
-    // Declared in TypeAnalysis.jrag at line 228
+    // Declared in TypeAnalysis.jrag at line 227
  @SuppressWarnings({"unchecked", "cast"})     public boolean isObject() {
         if(isObject_computed)
             return isObject_value;
@@ -2660,7 +2660,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isObject_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 231
+    // Declared in TypeAnalysis.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public boolean isUnknown() {
         boolean isUnknown_value = isUnknown_compute();
         return isUnknown_value;
@@ -2685,7 +2685,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 424
+    // Declared in TypeAnalysis.jrag at line 423
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
         boolean isSupertypeOfClassDecl_ClassDecl_value = isSupertypeOfClassDecl_compute(type);
         return isSupertypeOfClassDecl_ClassDecl_value;
@@ -2693,7 +2693,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfClassDecl_compute(ClassDecl type) {  return type == this;  }
 
-    // Declared in TypeAnalysis.jrag at line 441
+    // Declared in TypeAnalysis.jrag at line 440
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
         boolean isSupertypeOfInterfaceDecl_InterfaceDecl_value = isSupertypeOfInterfaceDecl_compute(type);
         return isSupertypeOfInterfaceDecl_InterfaceDecl_value;
@@ -2701,7 +2701,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfInterfaceDecl_compute(InterfaceDecl type) {  return type == this;  }
 
-    // Declared in TypeAnalysis.jrag at line 454
+    // Declared in TypeAnalysis.jrag at line 453
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
         boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
         return isSupertypeOfArrayDecl_ArrayDecl_value;
@@ -2709,7 +2709,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfArrayDecl_compute(ArrayDecl type) {  return this == type;  }
 
-    // Declared in TypeAnalysis.jrag at line 476
+    // Declared in TypeAnalysis.jrag at line 475
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfPrimitiveType(PrimitiveType type) {
         boolean isSupertypeOfPrimitiveType_PrimitiveType_value = isSupertypeOfPrimitiveType_compute(type);
         return isSupertypeOfPrimitiveType_PrimitiveType_value;
@@ -2717,7 +2717,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfPrimitiveType_compute(PrimitiveType type) {  return type == this;  }
 
-    // Declared in TypeAnalysis.jrag at line 483
+    // Declared in TypeAnalysis.jrag at line 482
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {
         boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
         return isSupertypeOfNullType_NullType_value;
@@ -2725,7 +2725,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfNullType_compute(NullType type) {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 487
+    // Declared in TypeAnalysis.jrag at line 486
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfVoidType(VoidType type) {
         boolean isSupertypeOfVoidType_VoidType_value = isSupertypeOfVoidType_compute(type);
         return isSupertypeOfVoidType_VoidType_value;
@@ -2733,7 +2733,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfVoidType_compute(VoidType type) {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 499
+    // Declared in TypeAnalysis.jrag at line 498
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl topLevelType() {
         TypeDecl topLevelType_value = topLevelType_compute();
         return topLevelType_value;
@@ -2745,7 +2745,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return enclosingType().topLevelType();
   }
 
-    // Declared in TypeAnalysis.jrag at line 525
+    // Declared in TypeAnalysis.jrag at line 524
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTopLevelType() {
         boolean isTopLevelType_value = isTopLevelType_compute();
         return isTopLevelType_value;
@@ -2753,7 +2753,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isTopLevelType_compute() {  return !isNestedType();  }
 
-    // Declared in TypeAnalysis.jrag at line 536
+    // Declared in TypeAnalysis.jrag at line 535
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInnerClass() {
         boolean isInnerClass_value = isInnerClass_compute();
         return isInnerClass_value;
@@ -2761,7 +2761,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isInnerClass_compute() {  return false;  }
 
-    // Declared in TypeAnalysis.jrag at line 538
+    // Declared in TypeAnalysis.jrag at line 537
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInnerType() {
         boolean isInnerType_value = isInnerType_compute();
         return isInnerType_value;
@@ -2769,7 +2769,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isInnerType_compute() {  return (isLocalClass() || isAnonymous() || (isMemberType() && !isStatic())) && !inStaticContext();  }
 
-    // Declared in TypeAnalysis.jrag at line 540
+    // Declared in TypeAnalysis.jrag at line 539
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInnerTypeOf(TypeDecl typeDecl) {
         boolean isInnerTypeOf_TypeDecl_value = isInnerTypeOf_compute(typeDecl);
         return isInnerTypeOf_TypeDecl_value;
@@ -2777,7 +2777,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isInnerTypeOf_compute(TypeDecl typeDecl) {  return typeDecl == this || (isInnerType() && enclosingType().isInnerTypeOf(typeDecl));  }
 
-    // Declared in TypeAnalysis.jrag at line 547
+    // Declared in TypeAnalysis.jrag at line 546
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl withinBodyThatSubclasses(TypeDecl type) {
         TypeDecl withinBodyThatSubclasses_TypeDecl_value = withinBodyThatSubclasses_compute(type);
         return withinBodyThatSubclasses_TypeDecl_value;
@@ -2791,7 +2791,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return null;
   }
 
-    // Declared in TypeAnalysis.jrag at line 555
+    // Declared in TypeAnalysis.jrag at line 554
  @SuppressWarnings({"unchecked", "cast"})     public boolean encloses(TypeDecl type) {
         boolean encloses_TypeDecl_value = encloses_compute(type);
         return encloses_TypeDecl_value;
@@ -2799,7 +2799,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean encloses_compute(TypeDecl type) {  return type.enclosedBy(this);  }
 
-    // Declared in TypeAnalysis.jrag at line 557
+    // Declared in TypeAnalysis.jrag at line 556
  @SuppressWarnings({"unchecked", "cast"})     public boolean enclosedBy(TypeDecl type) {
         boolean enclosedBy_TypeDecl_value = enclosedBy_compute(type);
         return enclosedBy_TypeDecl_value;
@@ -2813,7 +2813,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return enclosingType().enclosedBy(type);
   }
 
-    // Declared in TypeAnalysis.jrag at line 571
+    // Declared in TypeAnalysis.jrag at line 570
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = hostType_compute();
         return hostType_value;
@@ -3945,7 +3945,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean hasClinit_computed = false;
     protected boolean hasClinit_value;
-    // Declared in EmitJimple.jrag at line 556
+    // Declared in EmitJimple.jrag at line 569
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasClinit() {
         if(hasClinit_computed)
             return hasClinit_value;
@@ -3975,7 +3975,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean innerClassesAttributeEntries_computed = false;
     protected Collection innerClassesAttributeEntries_value;
-    // Declared in EmitJimple.jrag at line 630
+    // Declared in EmitJimple.jrag at line 643
  @SuppressWarnings({"unchecked", "cast"})     public Collection innerClassesAttributeEntries() {
         if(innerClassesAttributeEntries_computed)
             return innerClassesAttributeEntries_value;
@@ -3999,7 +3999,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
   }
 
     protected java.util.Map getSootField_String_TypeDecl_values;
-    // Declared in EmitJimple.jrag at line 664
+    // Declared in EmitJimple.jrag at line 677
  @SuppressWarnings({"unchecked", "cast"})     public SootField getSootField(String name, TypeDecl type) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(name);
@@ -4392,7 +4392,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     protected boolean isAnonymous_computed = false;
     protected boolean isAnonymous_value;
-    // Declared in TypeAnalysis.jrag at line 217
+    // Declared in TypeAnalysis.jrag at line 216
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAnonymous() {
         if(isAnonymous_computed)
             return isAnonymous_value;
@@ -4404,37 +4404,37 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return isAnonymous_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 498
+    // Declared in TypeAnalysis.jrag at line 497
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosingType() {
         TypeDecl enclosingType_value = getParent().Define_TypeDecl_enclosingType(this, null);
         return enclosingType_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 514
+    // Declared in TypeAnalysis.jrag at line 513
  @SuppressWarnings({"unchecked", "cast"})     public BodyDecl enclosingBodyDecl() {
         BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
         return enclosingBodyDecl_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 520
+    // Declared in TypeAnalysis.jrag at line 519
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNestedType() {
         boolean isNestedType_value = getParent().Define_boolean_isNestedType(this, null);
         return isNestedType_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 528
+    // Declared in TypeAnalysis.jrag at line 527
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMemberType() {
         boolean isMemberType_value = getParent().Define_boolean_isMemberType(this, null);
         return isMemberType_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 542
+    // Declared in TypeAnalysis.jrag at line 541
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLocalClass() {
         boolean isLocalClass_value = getParent().Define_boolean_isLocalClass(this, null);
         return isLocalClass_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 567
+    // Declared in TypeAnalysis.jrag at line 566
  @SuppressWarnings({"unchecked", "cast"})     public String hostPackage() {
         String hostPackage_value = getParent().Define_String_hostPackage(this, null);
         return hostPackage_value;
@@ -4442,7 +4442,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     protected boolean unknownType_computed = false;
     protected TypeDecl unknownType_value;
-    // Declared in TypeAnalysis.jrag at line 673
+    // Declared in TypeAnalysis.jrag at line 672
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
         if(unknownType_computed)
             return unknownType_value;
@@ -4557,7 +4557,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_Collection_lookupMethod(this, caller, name);
     }
 
-    // Declared in TypeAnalysis.jrag at line 573
+    // Declared in TypeAnalysis.jrag at line 572
     public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return hostType();
@@ -4691,7 +4691,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_TypeDecl_componentType(this, caller);
     }
 
-    // Declared in Statements.jrag at line 300
+    // Declared in Statements.jrag at line 347
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -4771,7 +4771,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 496
+    // Declared in TypeAnalysis.jrag at line 495
     public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -4820,7 +4820,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_mayBeStrictfp(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 219
+    // Declared in TypeAnalysis.jrag at line 218
     public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -4928,7 +4928,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 544
+    // Declared in TypeAnalysis.jrag at line 543
     public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -4937,7 +4937,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isLocalClass(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 522
+    // Declared in TypeAnalysis.jrag at line 521
     public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

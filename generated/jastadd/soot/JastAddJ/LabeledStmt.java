@@ -122,7 +122,7 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 202
-    private String tokenString_Label;
+    protected String tokenString_Label;
 
     // Declared in java.ast at line 3
 
@@ -303,7 +303,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt end_label_compute() {  return newLabel();  }
 
-    // Declared in Statements.jrag at line 202
+    // Declared in Statements.jrag at line 205
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
@@ -311,7 +311,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt break_label_compute() {  return end_label();  }
 
-    // Declared in Statements.jrag at line 221
+    // Declared in Statements.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;

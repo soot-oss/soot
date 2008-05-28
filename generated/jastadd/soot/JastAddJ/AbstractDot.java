@@ -388,7 +388,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private NameType predNameType_compute() {  return getLeft() instanceof Access ? ((Access)getLeft()).predNameType() : NameType.NO_NAME;  }
 
-    // Declared in TypeAnalysis.jrag at line 250
+    // Declared in TypeAnalysis.jrag at line 249
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

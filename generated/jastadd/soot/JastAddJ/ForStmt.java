@@ -142,7 +142,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     }
   }
 
-    // Declared in Statements.jrag at line 176
+    // Declared in Statements.jrag at line 179
 
 
   public void jimplify2(Body b) {
@@ -658,7 +658,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     protected boolean cond_label_computed = false;
     protected soot.jimple.Stmt cond_label_value;
-    // Declared in Statements.jrag at line 171
+    // Declared in Statements.jrag at line 174
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt cond_label() {
         if(cond_label_computed)
             return cond_label_value;
@@ -674,7 +674,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     protected boolean begin_label_computed = false;
     protected soot.jimple.Stmt begin_label_value;
-    // Declared in Statements.jrag at line 172
+    // Declared in Statements.jrag at line 175
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt begin_label() {
         if(begin_label_computed)
             return begin_label_value;
@@ -690,7 +690,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     protected boolean update_label_computed = false;
     protected soot.jimple.Stmt update_label_value;
-    // Declared in Statements.jrag at line 173
+    // Declared in Statements.jrag at line 176
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt update_label() {
         if(update_label_computed)
             return update_label_value;
@@ -706,7 +706,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     protected boolean end_label_computed = false;
     protected soot.jimple.Stmt end_label_value;
-    // Declared in Statements.jrag at line 174
+    // Declared in Statements.jrag at line 177
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt end_label() {
         if(end_label_computed)
             return end_label_value;
@@ -720,7 +720,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     private soot.jimple.Stmt end_label_compute() {  return newLabel();  }
 
-    // Declared in Statements.jrag at line 199
+    // Declared in Statements.jrag at line 202
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
@@ -728,7 +728,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     private soot.jimple.Stmt break_label_compute() {  return end_label();  }
 
-    // Declared in Statements.jrag at line 218
+    // Declared in Statements.jrag at line 227
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;

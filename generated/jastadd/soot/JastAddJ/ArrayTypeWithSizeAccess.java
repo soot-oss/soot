@@ -125,6 +125,18 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
         return (Expr)getChildNoTransform(1);
     }
 
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 22
+    public void setPackage(String value) {
+        tokenString_Package = value;
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 22
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
     // Declared in DefiniteAssignment.jrag at line 361
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         boolean isDAafter_Variable_value = isDAafter_compute(v);

@@ -148,7 +148,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     private NameType predNameType_compute() {  return NameType.EXPRESSION_NAME;  }
 
-    // Declared in TypeAnalysis.jrag at line 281
+    // Declared in TypeAnalysis.jrag at line 280
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
@@ -170,7 +170,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     private boolean isVariable_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 282
+    // Declared in TypeAnalysis.jrag at line 281
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;

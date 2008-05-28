@@ -78,6 +78,36 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 42
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 42
     public void setSuperClassAccessOpt(Opt<Access> opt) {
         setChild(opt, 1);
     }
@@ -342,7 +372,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     private boolean assignableToInt_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 179
+    // Declared in TypeAnalysis.jrag at line 178
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIntegralType() {
         boolean isIntegralType_value = isIntegralType_compute();
         return isIntegralType_value;

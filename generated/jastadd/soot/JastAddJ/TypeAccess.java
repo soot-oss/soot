@@ -207,7 +207,7 @@ public class TypeAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 20
-    private String tokenString_Package;
+    protected String tokenString_Package;
 
     // Declared in java.ast at line 3
 
@@ -241,7 +241,7 @@ public class TypeAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 20
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -402,7 +402,7 @@ private TypeDecl refined_LookupType_decl()
 
     private NameType predNameType_compute() {  return NameType.PACKAGE_OR_TYPE_NAME;  }
 
-    // Declared in TypeAnalysis.jrag at line 280
+    // Declared in TypeAnalysis.jrag at line 279
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

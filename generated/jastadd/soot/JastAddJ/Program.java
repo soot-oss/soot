@@ -1286,7 +1286,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
 
     protected boolean unknownConstructor_computed = false;
     protected ConstructorDecl unknownConstructor_value;
-    // Declared in TypeAnalysis.jrag at line 246
+    // Declared in TypeAnalysis.jrag at line 245
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl unknownConstructor() {
         if(unknownConstructor_computed)
             return unknownConstructor_value;
@@ -1436,6 +1436,15 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_insideLoop(this, caller);
     }
 
+    // Declared in VariableDeclaration.jrag at line 87
+    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return false;
+        }
+        return getParent().Define_boolean_isMethodParameter(this, caller);
+    }
+
     // Declared in BranchTarget.jrag at line 173
     public LabeledStmt Define_LabeledStmt_lookupLabel(ASTNode caller, ASTNode child, String name) {
         if(true) {
@@ -1535,7 +1544,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_mayBeTransient(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 533
+    // Declared in TypeAnalysis.jrag at line 532
     public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1553,7 +1562,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_mayBeNative(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 238
+    // Declared in TypeAnalysis.jrag at line 237
     public MethodDecl Define_MethodDecl_unknownMethod(ASTNode caller, ASTNode child) {
         if(true) { 
    int childIndex = this.getIndexOfChild(caller);
@@ -1586,7 +1595,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_componentType(this, caller);
     }
 
-    // Declared in Statements.jrag at line 299
+    // Declared in Statements.jrag at line 346
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1667,7 +1676,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 234
+    // Declared in TypeAnalysis.jrag at line 233
     public Variable Define_Variable_unknownField(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1860,7 +1869,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_Collection_lookupMethod(this, caller, name);
     }
 
-    // Declared in TypeAnalysis.jrag at line 580
+    // Declared in TypeAnalysis.jrag at line 579
     public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1896,7 +1905,16 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_isSource(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 245
+    // Declared in Statements.jrag at line 447
+    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return null;
+        }
+        return getParent().Define_ArrayList_exceptionRanges(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 244
     public ConstructorDecl Define_ConstructorDecl_unknownConstructor(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1914,7 +1932,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 257
+    // Declared in TypeAnalysis.jrag at line 256
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(true) {
       int i = this.getIndexOfChild(caller);
@@ -1930,6 +1948,15 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
 { throw new UnsupportedOperationException(); }
 }
         return getParent().Define_Expr_nestedScope(this, caller);
+    }
+
+    // Declared in VariableDeclaration.jrag at line 89
+    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return false;
+        }
+        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
     }
 
     // Declared in LookupType.jrag at line 81
@@ -1966,6 +1993,15 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
             return typeVoid();
         }
         return getParent().Define_TypeDecl_typeVoid(this, caller);
+    }
+
+    // Declared in VariableDeclaration.jrag at line 88
+    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return false;
+        }
+        return getParent().Define_boolean_isConstructorParameter(this, caller);
     }
 
     // Declared in LookupVariable.jrag at line 24
@@ -2033,7 +2069,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
     }
 
-    // Declared in TypeAnalysis.jrag at line 220
+    // Declared in TypeAnalysis.jrag at line 219
     public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -2078,7 +2114,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
     }
 
-    // Declared in TypeAnalysis.jrag at line 515
+    // Declared in TypeAnalysis.jrag at line 514
     public BodyDecl Define_BodyDecl_enclosingBodyDecl(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

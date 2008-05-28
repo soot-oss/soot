@@ -104,6 +104,36 @@ public class NullType extends TypeDecl implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 38
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 38
     public void setBodyDeclList(List<BodyDecl> list) {
         setChild(list, 1);
     }
@@ -168,7 +198,7 @@ public class NullType extends TypeDecl implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(1);
     }
 
-    // Declared in TypeAnalysis.jrag at line 207
+    // Declared in TypeAnalysis.jrag at line 206
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNull() {
         boolean isNull_value = isNull_compute();
         return isNull_value;
@@ -192,7 +222,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 485
+    // Declared in TypeAnalysis.jrag at line 484
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {
         boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
         return isSupertypeOfNullType_NullType_value;

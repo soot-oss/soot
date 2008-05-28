@@ -13,6 +13,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
         isDAafterReachedFinallyBlocks_Variable_values = null;
         isDUafter_Variable_values = null;
         canCompleteNormally_computed = false;
+        inSynchronizedBlock_computed = false;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ReturnStmt clone() throws CloneNotSupportedException {
         ReturnStmt node = (ReturnStmt)super.clone();
@@ -23,6 +24,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
         node.isDAafterReachedFinallyBlocks_Variable_values = null;
         node.isDUafter_Variable_values = null;
         node.canCompleteNormally_computed = false;
+        node.inSynchronizedBlock_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -89,7 +91,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
 
   }
 
-    // Declared in Statements.jrag at line 233
+    // Declared in Statements.jrag at line 268
 
 
   public void jimplify2(Body b) {
@@ -105,20 +107,32 @@ public class ReturnStmt extends Stmt implements Cloneable {
         ),
         type.getSootType()
       );
+      ArrayList list = exceptionRanges();
+      if(!inSynchronizedBlock())
+        endExceptionRange(b, list);
       for(Iterator iter = finallyList().iterator(); iter.hasNext(); ) {
         FinallyHost stmt = (FinallyHost)iter.next();
         stmt.emitFinallyCode(b);
       }
       b.setLine(this);
+      if(inSynchronizedBlock())
+        endExceptionRange(b, list);
       b.add(Jimple.v().newReturnStmt(local));
+      beginExceptionRange(b, list);
     }
     else {
+      ArrayList list = exceptionRanges();
+      if(!inSynchronizedBlock())
+        endExceptionRange(b, list);
       for(Iterator iter = finallyList().iterator(); iter.hasNext(); ) {
         FinallyHost stmt = (FinallyHost)iter.next();
         stmt.emitFinallyCode(b);
       }
       b.setLine(this);
+      if(inSynchronizedBlock())
+        endExceptionRange(b, list);
       b.add(Jimple.v().newReturnVoidStmt());
+      beginExceptionRange(b, list);
     }
   }
 
@@ -311,10 +325,32 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean canCompleteNormally_compute() {  return false;  }
 
+    protected boolean inSynchronizedBlock_computed = false;
+    protected boolean inSynchronizedBlock_value;
+    // Declared in Statements.jrag at line 248
+ @SuppressWarnings({"unchecked", "cast"})     public boolean inSynchronizedBlock() {
+        if(inSynchronizedBlock_computed)
+            return inSynchronizedBlock_value;
+        int num = boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        inSynchronizedBlock_value = inSynchronizedBlock_compute();
+        if(isFinal && num == boundariesCrossed)
+            inSynchronizedBlock_computed = true;
+        return inSynchronizedBlock_value;
+    }
+
+    private boolean inSynchronizedBlock_compute() {  return !finallyList().isEmpty() && finallyList().iterator().next() instanceof SynchronizedStmt;  }
+
     // Declared in TypeCheck.jrag at line 403
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl returnType() {
         TypeDecl returnType_value = getParent().Define_TypeDecl_returnType(this, null);
         return returnType_value;
+    }
+
+    // Declared in Statements.jrag at line 440
+ @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
+        ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
+        return exceptionRanges_value;
     }
 
     // Declared in GenericMethodsInference.jrag at line 38

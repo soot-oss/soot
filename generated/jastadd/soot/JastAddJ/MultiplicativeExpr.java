@@ -97,7 +97,7 @@ public abstract class MultiplicativeExpr extends ArithmeticExpr implements Clone
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 324
+    // Declared in TypeAnalysis.jrag at line 323
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

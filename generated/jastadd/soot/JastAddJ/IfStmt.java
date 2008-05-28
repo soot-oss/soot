@@ -110,7 +110,8 @@ public class IfStmt extends Stmt implements Cloneable {
       if(hasElse())
         getElse().jimplify2(b);
     }
-    b.addLabel(endBranch);
+    if(getThen().canCompleteNormally() && hasElse())
+      b.addLabel(endBranch);
   }
 
     // Declared in java.ast at line 3

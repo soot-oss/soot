@@ -265,7 +265,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
       refined_BooleanExpressions_emitEvalBranch(b);
   }
 
-    // Declared in TypeAnalysis.jrag at line 277
+    // Declared in TypeAnalysis.jrag at line 276
  @SuppressWarnings({"unchecked", "cast"})     public abstract TypeDecl type();
     // Declared in ConstantExpression.jrag at line 98
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
@@ -591,7 +591,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     private boolean hasNextAccess_compute() {  return isLeftChildOfDot();  }
 
-    // Declared in TypeAnalysis.jrag at line 505
+    // Declared in TypeAnalysis.jrag at line 504
  @SuppressWarnings({"unchecked", "cast"})     public Stmt enclosingStmt() {
         Stmt enclosingStmt_value = enclosingStmt_compute();
         return enclosingStmt_value;
@@ -814,19 +814,19 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
         return nameType_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 512
+    // Declared in TypeAnalysis.jrag at line 511
  @SuppressWarnings({"unchecked", "cast"})     public BodyDecl enclosingBodyDecl() {
         BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
         return enclosingBodyDecl_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 569
+    // Declared in TypeAnalysis.jrag at line 568
  @SuppressWarnings({"unchecked", "cast"})     public String hostPackage() {
         String hostPackage_value = getParent().Define_String_hostPackage(this, null);
         return hostPackage_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 584
+    // Declared in TypeAnalysis.jrag at line 583
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;

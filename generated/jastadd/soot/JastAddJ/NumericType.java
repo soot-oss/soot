@@ -109,6 +109,36 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 42
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 42
     public void setSuperClassAccessOpt(Opt<Access> opt) {
         setChild(opt, 1);
     }
@@ -213,7 +243,7 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(2);
     }
 
-    // Declared in TypeAnalysis.jrag at line 156
+    // Declared in TypeAnalysis.jrag at line 155
 private TypeDecl refined_TypeAnalysis_binaryNumericPromotion_TypeDecl(TypeDecl type)
 {
     if(!type.isNumericType())
@@ -223,7 +253,7 @@ private TypeDecl refined_TypeAnalysis_binaryNumericPromotion_TypeDecl(TypeDecl t
 
     protected boolean unaryNumericPromotion_computed = false;
     protected TypeDecl unaryNumericPromotion_value;
-    // Declared in TypeAnalysis.jrag at line 149
+    // Declared in TypeAnalysis.jrag at line 148
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
         if(unaryNumericPromotion_computed)
             return unaryNumericPromotion_value;
@@ -258,7 +288,7 @@ if(binaryNumericPromotion_TypeDecl_values == null) binaryNumericPromotion_TypeDe
     return refined_TypeAnalysis_binaryNumericPromotion_TypeDecl(type);
   }
 
-    // Declared in TypeAnalysis.jrag at line 175
+    // Declared in TypeAnalysis.jrag at line 174
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNumericType() {
         boolean isNumericType_value = isNumericType_compute();
         return isNumericType_value;

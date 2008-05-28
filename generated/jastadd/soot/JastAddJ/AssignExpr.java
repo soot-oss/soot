@@ -241,7 +241,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 299
+    // Declared in TypeAnalysis.jrag at line 298
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

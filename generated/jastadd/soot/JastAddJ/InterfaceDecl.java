@@ -119,7 +119,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     s.append(indent() + "}\n");
   }
 
-    // Declared in TypeAnalysis.jrag at line 642
+    // Declared in TypeAnalysis.jrag at line 641
 
   
   public Iterator superinterfacesIterator() {
@@ -335,6 +335,36 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
 
     public Modifiers getModifiersNoTransform() {
         return (Modifiers)getChildNoTransform(0);
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 64
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
     }
 
     // Declared in java.ast at line 2
@@ -665,7 +695,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     */
   }
 
-    // Declared in TypeAnalysis.jrag at line 213
+    // Declared in TypeAnalysis.jrag at line 212
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInterfaceDecl() {
         boolean isInterfaceDecl_value = isInterfaceDecl_compute();
         return isInterfaceDecl_value;
@@ -689,7 +719,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 430
+    // Declared in TypeAnalysis.jrag at line 429
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
         boolean isSupertypeOfClassDecl_ClassDecl_value = isSupertypeOfClassDecl_compute(type);
         return isSupertypeOfClassDecl_ClassDecl_value;
@@ -706,7 +736,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return type.hasSuperclass() && type.superclass() != null && type.superclass().instanceOf(this);
   }
 
-    // Declared in TypeAnalysis.jrag at line 443
+    // Declared in TypeAnalysis.jrag at line 442
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
         boolean isSupertypeOfInterfaceDecl_InterfaceDecl_value = isSupertypeOfInterfaceDecl_compute(type);
         return isSupertypeOfInterfaceDecl_InterfaceDecl_value;
@@ -723,7 +753,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return false;
   }
 
-    // Declared in TypeAnalysis.jrag at line 460
+    // Declared in TypeAnalysis.jrag at line 459
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
         boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
         return isSupertypeOfArrayDecl_ArrayDecl_value;
@@ -986,7 +1016,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private SimpleSet bridgeCandidates_compute(String signature) {  return ancestorMethods(signature);  }
 
-    // Declared in TypeAnalysis.jrag at line 98
+    // Declared in TypeAnalysis.jrag at line 97
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl unknownMethod() {
         MethodDecl unknownMethod_value = getParent().Define_MethodDecl_unknownMethod(this, null);
         return unknownMethod_value;
@@ -1001,7 +1031,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
-    // Declared in TypeAnalysis.jrag at line 578
+    // Declared in TypeAnalysis.jrag at line 577
     public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
         if(caller == getSuperInterfaceIdListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

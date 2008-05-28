@@ -2,7 +2,7 @@
 package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
-// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080407
+// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080527
 
 public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Cloneable, Iterable<T> {
     public void flushCache() {
@@ -542,14 +542,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Need to convert " + v.getClass().getName() + " to RValue");
   }
 
-    // Declared in EmitJimple.jrag at line 548
+    // Declared in EmitJimple.jrag at line 561
 
 
   protected soot.jimple.Stmt newLabel() {
     return soot.jimple.Jimple.v().newNopStmt();
   }
 
-    // Declared in EmitJimple.jrag at line 627
+    // Declared in EmitJimple.jrag at line 640
 
 
   public void addAttributes() {
@@ -574,6 +574,25 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     else if(constant instanceof Constant.ConstantString)
       return soot.jimple.StringConstant.v(constant.stringValue());
     throw new Error("Unexpected constant");
+  }
+
+    // Declared in Statements.jrag at line 255
+
+
+  public void endExceptionRange(Body b, ArrayList list) {
+    if(list != null) {
+      soot.jimple.Stmt label = newLabel();
+      b.addLabel(label);
+      list.add(label);
+      //list.add(b.previousStmt());
+    }
+  }
+
+    // Declared in Statements.jrag at line 263
+
+  public void beginExceptionRange(Body b, ArrayList list) {
+    if(list != null)
+      b.addNextStmt(list);
   }
 
     // Declared in EmitJimpleRefinements.jrag at line 196
@@ -1272,6 +1291,9 @@ public ASTNode rewriteTo() {
     }
     public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
         return getParent().Define_boolean_isSource(this, caller);
+    }
+    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
+        return getParent().Define_ArrayList_exceptionRanges(this, caller);
     }
     public ConstructorDecl Define_ConstructorDecl_unknownConstructor(ASTNode caller, ASTNode child) {
         return getParent().Define_ConstructorDecl_unknownConstructor(this, caller);

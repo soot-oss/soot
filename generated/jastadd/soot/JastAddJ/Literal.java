@@ -178,7 +178,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 124
-    private String tokenString_LITERAL;
+    protected String tokenString_LITERAL;
 
     // Declared in java.ast at line 3
 

@@ -33,7 +33,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
         }
         return res;
     }
-    // Declared in VariableDeclaration.jrag at line 169
+    // Declared in VariableDeclaration.jrag at line 173
 
 
   public VariableDeclaration createVariableDeclarationFrom(Modifiers modifiers, Access type) {
@@ -50,7 +50,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
     return decl;
   }
 
-    // Declared in VariableDeclaration.jrag at line 183
+    // Declared in VariableDeclaration.jrag at line 187
 
 
   public FieldDeclaration createFieldDeclarationFrom(Modifiers modifiers, Access type) {
@@ -111,7 +111,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 82
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -249,7 +249,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
         return (Opt<Expr>)getChildNoTransform(1);
     }
 
-    // Declared in VariableDeclaration.jrag at line 98
+    // Declared in VariableDeclaration.jrag at line 102
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
         String name_value = name_compute();
         return name_value;

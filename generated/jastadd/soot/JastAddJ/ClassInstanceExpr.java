@@ -777,7 +777,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     private NameType predNameType_compute() {  return NameType.EXPRESSION_NAME;  }
 
-    // Declared in TypeAnalysis.jrag at line 312
+    // Declared in TypeAnalysis.jrag at line 311
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
@@ -880,7 +880,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 574
+    // Declared in TypeAnalysis.jrag at line 573
     public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclOptNoTransform()) {
             return hostType();
@@ -888,7 +888,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_TypeDecl_hostType(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 532
+    // Declared in TypeAnalysis.jrag at line 531
     public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclOptNoTransform()) {
             return false;
@@ -905,7 +905,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
-    // Declared in TypeAnalysis.jrag at line 218
+    // Declared in TypeAnalysis.jrag at line 217
     public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclOptNoTransform()) {
             return true;

@@ -125,6 +125,36 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 3
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in Generics.ast at line 5
+
+    public int IDstart;
+
+    // Declared in Generics.ast at line 6
+
+    public int IDend;
+
+    // Declared in Generics.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in Generics.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in Generics.ast at line 2
+    // Declared in Generics.ast line 3
     public void setSuperInterfaceIdList(List<Access> list) {
         setChild(list, 1);
     }
@@ -323,7 +353,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 36
-    private TypeDecl tokenTypeDecl_Original;
+    protected TypeDecl tokenTypeDecl_Original;
 
     // Declared in Generics.ast at line 3
 

@@ -204,7 +204,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 4
-    private java.lang.String tokenjava_lang_String_PackageDecl;
+    protected java.lang.String tokenjava_lang_String_PackageDecl;
 
     // Declared in java.ast at line 3
 
@@ -654,7 +654,7 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
         return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
-    // Declared in TypeAnalysis.jrag at line 494
+    // Declared in TypeAnalysis.jrag at line 493
     public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -678,7 +678,7 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
-    // Declared in TypeAnalysis.jrag at line 565
+    // Declared in TypeAnalysis.jrag at line 564
     public String Define_String_hostPackage(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -687,7 +687,7 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
         return getParent().Define_String_hostPackage(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 581
+    // Declared in TypeAnalysis.jrag at line 580
     public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
         if(caller == getImportDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -714,7 +714,7 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
         return getParent().Define_String_packageName(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 531
+    // Declared in TypeAnalysis.jrag at line 530
     public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -732,7 +732,7 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
         return getParent().Define_boolean_isIncOrDec(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 543
+    // Declared in TypeAnalysis.jrag at line 542
     public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -741,7 +741,7 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
         return getParent().Define_boolean_isLocalClass(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 521
+    // Declared in TypeAnalysis.jrag at line 520
     public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

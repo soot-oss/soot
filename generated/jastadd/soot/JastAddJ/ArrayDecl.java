@@ -165,6 +165,36 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 63
     public void setSuperClassAccessOpt(Opt<Access> opt) {
         setChild(opt, 1);
     }
@@ -335,7 +365,7 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(3);
     }
 
-    // Declared in TypeAnalysis.jrag at line 121
+    // Declared in TypeAnalysis.jrag at line 120
 private boolean refined_TypeAnalysis_castingConversionTo_TypeDecl(TypeDecl type)
 {
     if(type.isArrayDecl()) {
@@ -474,7 +504,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
       return refined_TypeAnalysis_castingConversionTo_TypeDecl(type);
   }
 
-    // Declared in TypeAnalysis.jrag at line 215
+    // Declared in TypeAnalysis.jrag at line 214
  @SuppressWarnings({"unchecked", "cast"})     public boolean isArrayDecl() {
         boolean isArrayDecl_value = isArrayDecl_compute();
         return isArrayDecl_value;
@@ -498,7 +528,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 470
+    // Declared in TypeAnalysis.jrag at line 469
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
         boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
         return isSupertypeOfArrayDecl_ArrayDecl_value;
@@ -785,13 +815,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private Type getSootType_compute() {  return soot.ArrayType.v(elementType().getSootType(), dimension());  }
 
-    // Declared in TypeAnalysis.jrag at line 141
+    // Declared in TypeAnalysis.jrag at line 140
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeSerializable() {
         TypeDecl typeSerializable_value = getParent().Define_TypeDecl_typeSerializable(this, null);
         return typeSerializable_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 142
+    // Declared in TypeAnalysis.jrag at line 141
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeCloneable() {
         TypeDecl typeCloneable_value = getParent().Define_TypeDecl_typeCloneable(this, null);
         return typeCloneable_value;

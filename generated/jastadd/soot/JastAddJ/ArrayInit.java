@@ -273,7 +273,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 266
+    // Declared in TypeAnalysis.jrag at line 265
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
@@ -289,7 +289,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
 
     protected boolean declType_computed = false;
     protected TypeDecl declType_value;
-    // Declared in TypeAnalysis.jrag at line 256
+    // Declared in TypeAnalysis.jrag at line 255
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl declType() {
         if(declType_computed)
             return declType_value;
@@ -334,7 +334,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 264
+    // Declared in TypeAnalysis.jrag at line 263
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getInitListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

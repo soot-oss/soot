@@ -100,6 +100,36 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 38
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 38
     public void setBodyDeclList(List<BodyDecl> list) {
         setChild(list, 1);
     }
@@ -164,7 +194,7 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(1);
     }
 
-    // Declared in TypeAnalysis.jrag at line 34
+    // Declared in TypeAnalysis.jrag at line 33
  @SuppressWarnings({"unchecked", "cast"})     public boolean wideningConversionTo(TypeDecl type) {
         boolean wideningConversionTo_TypeDecl_value = wideningConversionTo_compute(type);
         return wideningConversionTo_TypeDecl_value;
@@ -172,7 +202,7 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
 
     private boolean wideningConversionTo_compute(TypeDecl type) {  return instanceOf(type);  }
 
-    // Declared in TypeAnalysis.jrag at line 37
+    // Declared in TypeAnalysis.jrag at line 36
  @SuppressWarnings({"unchecked", "cast"})     public boolean narrowingConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
@@ -204,7 +234,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
     return false;
   }
 
-    // Declared in TypeAnalysis.jrag at line 167
+    // Declared in TypeAnalysis.jrag at line 166
  @SuppressWarnings({"unchecked", "cast"})     public boolean isReferenceType() {
         boolean isReferenceType_value = isReferenceType_compute();
         return isReferenceType_value;
@@ -212,7 +242,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean isReferenceType_compute() {  return true;  }
 
-    // Declared in TypeAnalysis.jrag at line 484
+    // Declared in TypeAnalysis.jrag at line 483
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {
         boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
         return isSupertypeOfNullType_NullType_value;

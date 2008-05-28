@@ -393,7 +393,7 @@ public class MethodAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 17
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -667,7 +667,7 @@ public class MethodAccess extends Access implements Cloneable {
     return decl().hostType();
   }
 
-    // Declared in TypeAnalysis.jrag at line 285
+    // Declared in TypeAnalysis.jrag at line 284
 private TypeDecl refined_TypeAnalysis_type()
 { return decl().type(); }
 

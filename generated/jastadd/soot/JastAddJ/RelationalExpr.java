@@ -174,7 +174,7 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 345
+    // Declared in TypeAnalysis.jrag at line 344
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

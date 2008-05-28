@@ -187,7 +187,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 362
+    // Declared in TypeAnalysis.jrag at line 361
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

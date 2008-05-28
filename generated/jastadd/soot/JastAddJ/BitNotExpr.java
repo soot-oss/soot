@@ -129,7 +129,7 @@ public class BitNotExpr extends Unary implements Cloneable {
 
     private String printPreOp_compute() {  return "~";  }
 
-    // Declared in TypeAnalysis.jrag at line 318
+    // Declared in TypeAnalysis.jrag at line 317
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

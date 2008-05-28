@@ -105,7 +105,7 @@ public class MemberInterfaceDecl extends MemberTypeDecl implements Cloneable {
 
     private TypeDecl typeDecl_compute() {  return getInterfaceDecl();  }
 
-    // Declared in TypeAnalysis.jrag at line 530
+    // Declared in TypeAnalysis.jrag at line 529
     public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
         if(caller == getInterfaceDeclNoTransform()) {
             return true;

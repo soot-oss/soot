@@ -350,6 +350,36 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Enums.ast at line 2
     // Declared in Enums.ast line 1
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in Enums.ast at line 5
+
+    public int IDstart;
+
+    // Declared in Enums.ast at line 6
+
+    public int IDend;
+
+    // Declared in Enums.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in Enums.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in Enums.ast at line 2
+    // Declared in Enums.ast line 1
     public void setImplementsList(List<Access> list) {
         setChild(list, 1);
     }

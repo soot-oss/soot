@@ -208,7 +208,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 84
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -282,7 +282,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 254
+    // Declared in TypeAnalysis.jrag at line 253
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
@@ -320,7 +320,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private boolean isLocalVariable_compute() {  return false;  }
 
-    // Declared in VariableDeclaration.jrag at line 88
+    // Declared in VariableDeclaration.jrag at line 92
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
         boolean isFinal_value = isFinal_compute();
         return isFinal_value;
@@ -328,7 +328,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private boolean isFinal_compute() {  return getModifiers().isFinal();  }
 
-    // Declared in VariableDeclaration.jrag at line 89
+    // Declared in VariableDeclaration.jrag at line 93
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBlank() {
         boolean isBlank_value = isBlank_compute();
         return isBlank_value;
@@ -336,7 +336,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private boolean isBlank_compute() {  return true;  }
 
-    // Declared in VariableDeclaration.jrag at line 90
+    // Declared in VariableDeclaration.jrag at line 94
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
         boolean isStatic_value = isStatic_compute();
         return isStatic_value;
@@ -344,7 +344,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private boolean isStatic_compute() {  return false;  }
 
-    // Declared in VariableDeclaration.jrag at line 92
+    // Declared in VariableDeclaration.jrag at line 96
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
         String name_value = name_compute();
         return name_value;
@@ -352,7 +352,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private String name_compute() {  return getID();  }
 
-    // Declared in VariableDeclaration.jrag at line 94
+    // Declared in VariableDeclaration.jrag at line 98
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasInit() {
         boolean hasInit_value = hasInit_compute();
         return hasInit_value;
@@ -360,7 +360,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private boolean hasInit_compute() {  return false;  }
 
-    // Declared in VariableDeclaration.jrag at line 95
+    // Declared in VariableDeclaration.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public Expr getInit() {
         Expr getInit_value = getInit_compute();
         return getInit_value;
@@ -368,7 +368,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private Expr getInit_compute() { throw new UnsupportedOperationException(); }
 
-    // Declared in VariableDeclaration.jrag at line 96
+    // Declared in VariableDeclaration.jrag at line 100
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -418,7 +418,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
         return enclosingBodyDecl_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 587
+    // Declared in TypeAnalysis.jrag at line 586
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;

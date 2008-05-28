@@ -120,7 +120,7 @@ public class PlusExpr extends Unary implements Cloneable {
 
     private String printPreOp_compute() {  return "+";  }
 
-    // Declared in TypeAnalysis.jrag at line 316
+    // Declared in TypeAnalysis.jrag at line 315
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

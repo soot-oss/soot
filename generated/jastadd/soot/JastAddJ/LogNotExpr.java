@@ -172,7 +172,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private String printPreOp_compute() {  return "!";  }
 
-    // Declared in TypeAnalysis.jrag at line 319
+    // Declared in TypeAnalysis.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

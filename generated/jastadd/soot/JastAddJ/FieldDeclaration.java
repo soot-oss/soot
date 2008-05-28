@@ -462,7 +462,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 77
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -598,7 +598,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
         return isConstant_value;
     }
 
-    private boolean isConstant_compute() {  return isFinal() && hasInit() && getInit().isConstant() && (type().isPrimitive() || type().isString());  }
+    private boolean isConstant_compute() {  return isFinal() && hasInit() && getInit().isConstant() && (type() instanceof PrimitiveType || type().isString());  }
 
     // Declared in DataStructures.jrag at line 67
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
@@ -736,7 +736,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private String dumpString_compute() {  return getClass().getName() + " [" + getID() + "]";  }
 
-    // Declared in TypeAnalysis.jrag at line 252
+    // Declared in TypeAnalysis.jrag at line 251
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         TypeDecl type_value = type_compute();
         return type_value;
@@ -744,7 +744,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private TypeDecl type_compute() {  return getTypeAccess().type();  }
 
-    // Declared in TypeAnalysis.jrag at line 274
+    // Declared in TypeAnalysis.jrag at line 273
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
@@ -1039,7 +1039,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_mayBeTransient(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 261
+    // Declared in TypeAnalysis.jrag at line 260
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getInitOptNoTransform()) {
             return type();

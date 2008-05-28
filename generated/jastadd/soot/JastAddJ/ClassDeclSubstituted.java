@@ -123,6 +123,36 @@ public class ClassDeclSubstituted extends ClassDecl implements Cloneable, Member
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
+    public void setID(String value) {
+        tokenString_ID = value;
+    }
+
+    // Declared in java.ast at line 5
+
+    public int IDstart;
+
+    // Declared in java.ast at line 6
+
+    public int IDend;
+
+    // Declared in java.ast at line 7
+
+    public void setID(beaver.Symbol symbol) {
+        if(symbol.value != null && !(symbol.value instanceof String))
+          throw new UnsupportedOperationException("setID is only valid for String lexemes");
+        tokenString_ID = (String)symbol.value;
+        IDstart = symbol.getStart();
+        IDend = symbol.getEnd();
+    }
+
+    // Declared in java.ast at line 14
+
+    public String getID() {
+        return tokenString_ID != null ? tokenString_ID : "";
+    }
+
+    // Declared in java.ast at line 2
+    // Declared in java.ast line 63
     public void setSuperClassAccessOpt(Opt<Access> opt) {
         setChild(opt, 1);
     }
@@ -295,7 +325,7 @@ public class ClassDeclSubstituted extends ClassDecl implements Cloneable, Member
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 33
-    private TypeDecl tokenTypeDecl_Original;
+    protected TypeDecl tokenTypeDecl_Original;
 
     // Declared in Generics.ast at line 3
 

@@ -495,7 +495,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 72
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -1069,7 +1069,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     return false;
   }
 
-    // Declared in TypeAnalysis.jrag at line 269
+    // Declared in TypeAnalysis.jrag at line 268
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         TypeDecl type_value = type_compute();
         return type_value;
@@ -1077,7 +1077,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private TypeDecl type_compute() {  return unknownType();  }
 
-    // Declared in TypeAnalysis.jrag at line 275
+    // Declared in TypeAnalysis.jrag at line 274
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
@@ -1381,7 +1381,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return handlesException_TypeDecl_value;
     }
 
-    // Declared in TypeAnalysis.jrag at line 268
+    // Declared in TypeAnalysis.jrag at line 267
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;
@@ -1553,7 +1553,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
     }
 
-    // Declared in Statements.jrag at line 302
+    // Declared in Statements.jrag at line 349
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
             return getNumException() != 0;

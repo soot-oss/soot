@@ -199,7 +199,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 18
-    private String tokenString_ID;
+    protected String tokenString_ID;
 
     // Declared in java.ast at line 3
 
@@ -454,7 +454,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
 
-    // Declared in TypeAnalysis.jrag at line 286
+    // Declared in TypeAnalysis.jrag at line 285
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

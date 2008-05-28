@@ -46,7 +46,7 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
     getClassDecl().toString(s);
   }
 
-    // Declared in Statements.jrag at line 438
+    // Declared in Statements.jrag at line 516
 
 
   public void jimplify2(Body b) {
@@ -145,7 +145,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean canCompleteNormally_compute() {  return reachable();  }
 
-    // Declared in TypeAnalysis.jrag at line 545
+    // Declared in TypeAnalysis.jrag at line 544
     public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
         if(caller == getClassDeclNoTransform()) {
             return true;

@@ -15,6 +15,7 @@ public class ContinueStmt extends Stmt implements Cloneable {
         isDAafterReachedFinallyBlocks_Variable_values = null;
         isDUafter_Variable_values = null;
         canCompleteNormally_computed = false;
+        inSynchronizedBlock_computed = false;
         lookupLabel_String_values = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ContinueStmt clone() throws CloneNotSupportedException {
@@ -28,6 +29,7 @@ public class ContinueStmt extends Stmt implements Cloneable {
         node.isDAafterReachedFinallyBlocks_Variable_values = null;
         node.isDUafter_Variable_values = null;
         node.canCompleteNormally_computed = false;
+        node.inSynchronizedBlock_computed = false;
         node.lookupLabel_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
@@ -83,16 +85,22 @@ public class ContinueStmt extends Stmt implements Cloneable {
     s.append(";\n");
   }
 
-    // Declared in Statements.jrag at line 224
+    // Declared in Statements.jrag at line 233
 
 
   public void jimplify2(Body b) {
+    ArrayList list = exceptionRanges();
+    if(!inSynchronizedBlock())
+      endExceptionRange(b, list);
     for(Iterator iter = finallyList().iterator(); iter.hasNext(); ) {
       FinallyHost stmt = (FinallyHost)iter.next();
       stmt.emitFinallyCode(b);
     }
+    if(inSynchronizedBlock())
+      endExceptionRange(b, list);
     b.setLine(this);
     b.add(Jimple.v().newGotoStmt(targetStmt().continue_label()));
+    beginExceptionRange(b, list);
   }
 
     // Declared in java.ast at line 3
@@ -133,7 +141,7 @@ public class ContinueStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 216
-    private String tokenString_Label;
+    protected String tokenString_Label;
 
     // Declared in java.ast at line 3
 
@@ -309,6 +317,22 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean canCompleteNormally_compute() {  return false;  }
 
+    protected boolean inSynchronizedBlock_computed = false;
+    protected boolean inSynchronizedBlock_value;
+    // Declared in Statements.jrag at line 252
+ @SuppressWarnings({"unchecked", "cast"})     public boolean inSynchronizedBlock() {
+        if(inSynchronizedBlock_computed)
+            return inSynchronizedBlock_value;
+        int num = boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        inSynchronizedBlock_value = inSynchronizedBlock_compute();
+        if(isFinal && num == boundariesCrossed)
+            inSynchronizedBlock_computed = true;
+        return inSynchronizedBlock_value;
+    }
+
+    private boolean inSynchronizedBlock_compute() {  return !finallyList().isEmpty() && finallyList().iterator().next() instanceof SynchronizedStmt;  }
+
     protected java.util.Map lookupLabel_String_values;
     // Declared in BranchTarget.jrag at line 170
  @SuppressWarnings({"unchecked", "cast"})     public LabeledStmt lookupLabel(String name) {
@@ -328,6 +352,12 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean insideLoop() {
         boolean insideLoop_value = getParent().Define_boolean_insideLoop(this, null);
         return insideLoop_value;
+    }
+
+    // Declared in Statements.jrag at line 441
+ @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
+        ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
+        return exceptionRanges_value;
     }
 
 public ASTNode rewriteTo() {

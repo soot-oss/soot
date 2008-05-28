@@ -102,7 +102,7 @@ public abstract class LogicalExpr extends Binary implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 348
+    // Declared in TypeAnalysis.jrag at line 347
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

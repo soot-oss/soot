@@ -97,7 +97,7 @@ public abstract class AdditiveExpr extends ArithmeticExpr implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 326
+    // Declared in TypeAnalysis.jrag at line 325
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;

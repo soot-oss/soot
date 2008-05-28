@@ -98,7 +98,7 @@ public abstract class ShiftExpr extends Binary implements Cloneable {
 
     protected boolean type_computed = false;
     protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 342
+    // Declared in TypeAnalysis.jrag at line 341
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
