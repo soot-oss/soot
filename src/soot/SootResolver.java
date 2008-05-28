@@ -76,7 +76,7 @@ public class SootResolver
 
         Program.initOptions();
         program.addKeyValueOption("-classpath");
-        Program.setValueForOption("-classpath", Scene.v().getSootClassPath());
+        Program.setValueForOption(Scene.v().getSootClassPath(), "-classpath");
         if(Options.v().src_prec() == Options.src_prec_java)
         	program.setSrcPrec(Program.SRC_PREC_JAVA);
         else if(Options.v().src_prec() == Options.src_prec_class)
