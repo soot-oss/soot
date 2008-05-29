@@ -7,10 +7,6 @@ import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
-import soot.jimple.toolkits.thread.transaction.LocksetAnalysis;
-import soot.jimple.toolkits.thread.transaction.LocksetFlowInfo;
-import soot.jimple.toolkits.thread.transaction.Transaction;
-import soot.jimple.toolkits.thread.transaction.TransactionAwareSideEffectAnalysis;
 import soot.jimple.toolkits.infoflow.*;
 
 // LocksetAnalysis written by Richard L. Halpert, 2007-04-19

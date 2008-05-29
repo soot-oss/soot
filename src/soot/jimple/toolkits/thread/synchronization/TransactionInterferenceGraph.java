@@ -14,9 +14,6 @@ import soot.PointsToAnalysis;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
-import soot.jimple.toolkits.thread.transaction.Transaction;
-import soot.jimple.toolkits.thread.transaction.TransactionDataDependency;
-import soot.jimple.toolkits.thread.transaction.TransactionGroup;
 
 public class TransactionInterferenceGraph {
 

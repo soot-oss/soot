@@ -12,7 +12,6 @@ import soot.jimple.toolkits.pointer.SideEffectAnalysis;
 import soot.jimple.toolkits.pointer.RWSet;
 import soot.jimple.toolkits.pointer.Union;
 import soot.jimple.toolkits.pointer.UnionFactory;
-import soot.jimple.toolkits.thread.transaction.Transaction;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;

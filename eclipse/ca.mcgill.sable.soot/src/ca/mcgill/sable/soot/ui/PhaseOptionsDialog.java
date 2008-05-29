@@ -10447,7 +10447,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. ", defaultBool)));
+		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. If \ncompare-type-assigners is on, this option causes the older type \nassigner to execute first. (Otherwise the newer one is executed \nfirst.) ", defaultBool)));
 		
 		
 		
@@ -10463,7 +10463,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime and results) of Ben Bellamy's \ntype assigner with the older type assigner that was in Soot. If \nthis is set to true, use-older-type-assigner has no effect. ", defaultBool)));
+		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime and results) of Ben Bellamy's \ntype assigner with the older type assigner that was in Soot. ", defaultBool)));
 		
 		
 

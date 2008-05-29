@@ -8,9 +8,6 @@ import soot.util.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
-import soot.jimple.toolkits.thread.transaction.Transaction;
-import soot.jimple.toolkits.thread.transaction.TransactionAwareSideEffectAnalysis;
-import soot.jimple.toolkits.thread.transaction.TransactionFlowPair;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 

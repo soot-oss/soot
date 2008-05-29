@@ -4,8 +4,6 @@ import java.util.*;
 import soot.*;
 import soot.jimple.toolkits.pointer.RWSet;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
-import soot.jimple.toolkits.thread.transaction.Transaction;
-import soot.jimple.toolkits.thread.transaction.TransactionGroup;
 
 class TransactionGroup implements Iterable<Transaction>
 {

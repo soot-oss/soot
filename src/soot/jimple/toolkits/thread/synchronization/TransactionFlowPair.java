@@ -1,8 +1,5 @@
 package soot.jimple.toolkits.thread.synchronization;
 
-import soot.jimple.toolkits.thread.transaction.Transaction;
-import soot.jimple.toolkits.thread.transaction.TransactionFlowPair;
-
 class TransactionFlowPair
 {
 	// Information about the transactional region
