@@ -1,7 +1,9 @@
 
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import soot.*;
+import soot.jimple.toolkits.thread.transaction.DeadlockAvoidanceEdge;
+import soot.jimple.toolkits.thread.transaction.NewStaticLock;
 
 public class DeadlockAvoidanceEdge extends NewStaticLock
 {	

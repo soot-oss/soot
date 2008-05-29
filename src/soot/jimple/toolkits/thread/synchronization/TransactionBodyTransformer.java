@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import java.util.*;
 
@@ -7,6 +7,14 @@ import soot.util.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.infoflow.*;
+import soot.jimple.toolkits.thread.transaction.DeadlockAvoidanceEdge;
+import soot.jimple.toolkits.thread.transaction.LockRegion;
+import soot.jimple.toolkits.thread.transaction.LocksetAnalysis;
+import soot.jimple.toolkits.thread.transaction.NewStaticLock;
+import soot.jimple.toolkits.thread.transaction.Transaction;
+import soot.jimple.toolkits.thread.transaction.TransactionBodyTransformer;
+import soot.jimple.toolkits.thread.transaction.TransactionFlowPair;
+import soot.jimple.toolkits.thread.transaction.TransactionGroup;
 
 public class TransactionBodyTransformer extends BodyTransformer
 {

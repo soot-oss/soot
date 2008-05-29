@@ -1,9 +1,10 @@
 
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import java.util.*;
 
 import soot.*;
+import soot.jimple.toolkits.thread.transaction.NewStaticLock;
 import soot.util.*;
 
 // Written by Richard L. Halpert on August 11, 2007

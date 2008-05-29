@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +20,10 @@ import soot.jimple.spark.sets.HashPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.callgraph.Filter;
 import soot.jimple.toolkits.callgraph.TransitiveTargets;
+import soot.jimple.toolkits.thread.transaction.DeadlockAvoidanceEdge;
+import soot.jimple.toolkits.thread.transaction.Transaction;
+import soot.jimple.toolkits.thread.transaction.TransactionTransformer;
+import soot.jimple.toolkits.thread.transaction.TransactionVisibleEdgesPred;
 import soot.toolkits.graph.HashMutableDirectedGraph;
 import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
 import soot.toolkits.graph.MutableDirectedGraph;

@@ -1,6 +1,7 @@
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import soot.jimple.toolkits.pointer.*;
+import soot.jimple.toolkits.thread.transaction.Transaction;
 
 class TransactionDataDependency
 {

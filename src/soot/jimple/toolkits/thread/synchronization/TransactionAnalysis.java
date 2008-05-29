@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 // PTFindTransactions - Analysis to locate transactional regions
 
 import java.util.*;
@@ -8,6 +8,9 @@ import soot.util.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
+import soot.jimple.toolkits.thread.transaction.Transaction;
+import soot.jimple.toolkits.thread.transaction.TransactionAwareSideEffectAnalysis;
+import soot.jimple.toolkits.thread.transaction.TransactionFlowPair;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 

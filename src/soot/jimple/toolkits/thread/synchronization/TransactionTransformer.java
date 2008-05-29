@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import java.util.*;
 
@@ -9,6 +9,16 @@ import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
 import soot.jimple.toolkits.thread.mhp.UnsynchronizedMhpAnalysis;
+import soot.jimple.toolkits.thread.transaction.LocksetAnalysis;
+import soot.jimple.toolkits.thread.transaction.NewStaticLock;
+import soot.jimple.toolkits.thread.transaction.Transaction;
+import soot.jimple.toolkits.thread.transaction.TransactionAnalysis;
+import soot.jimple.toolkits.thread.transaction.TransactionAwareSideEffectAnalysis;
+import soot.jimple.toolkits.thread.transaction.TransactionBodyTransformer;
+import soot.jimple.toolkits.thread.transaction.TransactionDataDependency;
+import soot.jimple.toolkits.thread.transaction.TransactionFlowPair;
+import soot.jimple.toolkits.thread.transaction.TransactionGroup;
+import soot.jimple.toolkits.thread.transaction.TransactionTransformer;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.infoflow.*;
 import soot.jimple.spark.pag.*;

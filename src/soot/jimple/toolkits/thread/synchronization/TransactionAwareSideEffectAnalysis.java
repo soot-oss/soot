@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
  *
@@ -23,6 +23,10 @@ import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.*;
+import soot.jimple.toolkits.thread.transaction.Transaction;
+import soot.jimple.toolkits.thread.transaction.TransactionVisibleEdgesPred;
+import soot.jimple.toolkits.thread.transaction.WholeObject;
+
 import java.util.*;
 
 

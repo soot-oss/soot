@@ -17,10 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import java.util.*;
 import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.toolkits.thread.transaction.Transaction;
 
 /** A predicate that accepts edges that are not part of the class library and do not have a source statement that falls inside a transaction.
  * @author Richard L. Halpert

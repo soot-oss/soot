@@ -1,8 +1,9 @@
-package soot.jimple.toolkits.thread.transaction;
+package soot.jimple.toolkits.thread.synchronization;
 
 import java.util.*;
 
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.thread.transaction.LockRegion;
 import soot.toolkits.scalar.Pair;
 
 public class LockRegion
