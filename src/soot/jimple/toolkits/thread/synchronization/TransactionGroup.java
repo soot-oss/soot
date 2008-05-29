@@ -5,12 +5,12 @@ import soot.*;
 import soot.jimple.toolkits.pointer.RWSet;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 
-class TransactionGroup implements Iterable<Transaction>
+class TransactionGroup implements Iterable<CriticalSection>
 {
 	int groupNum; 
 	
 	// Information about the group members
-	List<Transaction> transactions;
+	List<CriticalSection> criticalSections;
 	
 	// Group read/write set
 	RWSet rwSet;
@@ -24,7 +24,7 @@ class TransactionGroup implements Iterable<Transaction>
 	public TransactionGroup(int groupNum)
 	{
 		this.groupNum = groupNum;
-		this.transactions = new ArrayList<Transaction>();
+		this.criticalSections = new ArrayList<CriticalSection>();
 		this.rwSet = new CodeBlockRWSet();
 		
 		this.isDynamicLock = false;
@@ -40,25 +40,25 @@ class TransactionGroup implements Iterable<Transaction>
 	
 	public int size()
 	{
-		return transactions.size();
+		return criticalSections.size();
 	}
 	
-	public void add(Transaction tn)
+	public void add(CriticalSection tn)
 	{
 		tn.setNumber = groupNum;
 		tn.group = this;
-		if(!transactions.contains(tn))
-			transactions.add(tn);
+		if(!criticalSections.contains(tn))
+			criticalSections.add(tn);
 	}
 	
-	public boolean contains(Transaction tn)
+	public boolean contains(CriticalSection tn)
 	{
-		return transactions.contains(tn);
+		return criticalSections.contains(tn);
 	}
 	
-	public Iterator<Transaction> iterator()
+	public Iterator<CriticalSection> iterator()
 	{
-		return transactions.iterator();
+		return criticalSections.iterator();
 	}
 	
 	public void mergeGroups(TransactionGroup other)
@@ -66,12 +66,12 @@ class TransactionGroup implements Iterable<Transaction>
 		if(other == this)
 			return;
 			
-		Iterator<Transaction> tnIt = other.transactions.iterator();
+		Iterator<CriticalSection> tnIt = other.criticalSections.iterator();
 		while(tnIt.hasNext())
 		{
-			Transaction tn = tnIt.next();
+			CriticalSection tn = tnIt.next();
 			add(tn);
 		}
-		other.transactions.clear();
+		other.criticalSections.clear();
 	}
 }

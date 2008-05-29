@@ -22,7 +22,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 	SootMethod method;
 	TransactionAwareSideEffectAnalysis tasea;
 	RWSet contributingRWSet;
-	Transaction tn;
+	CriticalSection tn;
 	Stmt begin;
 	boolean lostObjects;
 		
@@ -57,7 +57,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		G.v().out.println(msg);
 	}
 
-	public List<EquivalentValue> getLocksetOf(TransactionAwareSideEffectAnalysis tasea, RWSet contributingRWSet, Transaction tn)
+	public List<EquivalentValue> getLocksetOf(TransactionAwareSideEffectAnalysis tasea, RWSet contributingRWSet, CriticalSection tn)
 	{
 		analyzing.add(method);
 

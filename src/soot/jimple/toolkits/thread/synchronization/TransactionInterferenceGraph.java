@@ -20,16 +20,16 @@ public class TransactionInterferenceGraph {
 	int nextGroup;
 	List<TransactionGroup> groups;
 	
-	List<Transaction> transactions;
+	List<CriticalSection> criticalSections;
 	MhpTester mhp;
 	PointsToAnalysis pta;
 	boolean optionOneGlobalLock = false;
 	boolean optionLeaveOriginalLocks = false;
 	boolean optionIncludeEmptyPossibleEdges = false;
 	
-	public TransactionInterferenceGraph(List<Transaction> transactions, MhpTester mhp, boolean optionOneGlobalLock, boolean optionLeaveOriginalLocks, boolean optionIncludeEmptyPossibleEdges)
+	public TransactionInterferenceGraph(List<CriticalSection> criticalSections, MhpTester mhp, boolean optionOneGlobalLock, boolean optionLeaveOriginalLocks, boolean optionIncludeEmptyPossibleEdges)
 	{
-		this.transactions = transactions;
+		this.criticalSections = criticalSections;
 		this.mhp = mhp;
 		this.pta = Scene.v().getPointsToAnalysis();
 		this.optionOneGlobalLock = optionOneGlobalLock;
@@ -58,10 +58,10 @@ public class TransactionInterferenceGraph {
 		if(optionOneGlobalLock) // use one group for all transactions
 		{
 			TransactionGroup onlyGroup = new TransactionGroup(nextGroup);
-	    	Iterator<Transaction> tnIt1 = transactions.iterator();
+	    	Iterator<CriticalSection> tnIt1 = criticalSections.iterator();
 	    	while(tnIt1.hasNext())
 	    	{
-	    		Transaction tn1 = tnIt1.next();
+	    		CriticalSection tn1 = tnIt1.next();
 	    		onlyGroup.add(tn1);
 			}
 			nextGroup++;
@@ -69,10 +69,10 @@ public class TransactionInterferenceGraph {
 		}
 		else // calculate separate groups for transactions
 		{
-	    	Iterator<Transaction> tnIt1 = transactions.iterator();
+	    	Iterator<CriticalSection> tnIt1 = criticalSections.iterator();
 	    	while(tnIt1.hasNext())
 	    	{
-	    		Transaction tn1 = tnIt1.next();
+	    		CriticalSection tn1 = tnIt1.next();
 	    		
 	    		// if this transaction has somehow already been marked for deletion
 	    		if(tn1.setNumber == -1)
@@ -88,10 +88,10 @@ public class TransactionInterferenceGraph {
 	    		}
 	    		else
 	    		{
-		        	Iterator<Transaction> tnIt2 = transactions.iterator();
+		        	Iterator<CriticalSection> tnIt2 = criticalSections.iterator();
 		    		while(tnIt2.hasNext())
 		    		{
-		    			Transaction tn2 = tnIt2.next();
+		    			CriticalSection tn2 = tnIt2.next();
 		    				    			
 		    			// check if this transactional region is going to be deleted
 		    			if(tn2.setNumber == -1)
@@ -238,7 +238,7 @@ public class TransactionInterferenceGraph {
 		}
 	}
 	
-    public boolean mayHappenInParallel(Transaction tn1, Transaction tn2)
+    public boolean mayHappenInParallel(CriticalSection tn1, CriticalSection tn2)
     {
     	if(mhp == null)
     	{

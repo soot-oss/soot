@@ -27,7 +27,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 	
 	List<Object> prepUnits;
 
-    Transaction methodTn;
+    CriticalSection methodTn;
 	
 	public boolean optionPrintDebug = false;
 	public boolean optionOpenNesting = true;
@@ -65,7 +65,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 		if(method.isSynchronized())
 		{
 			// Entire method is transactional
-			methodTn = new Transaction(true, method, 1);
+			methodTn = new CriticalSection(true, method, 1);
 			methodTn.beginning = ((JimpleBody) body).getFirstNonIdentityStmt();
 		}
         doAnalysis();
@@ -168,7 +168,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
         while(outIt.hasNext())
         {
             TransactionFlowPair tfp = (TransactionFlowPair) outIt.next();
-            Transaction tn = tfp.tn;
+            CriticalSection tn = tfp.tn;
             
             // Check if we are revisting the start of this existing transaction
             if(tn.entermonitor == stmt)
@@ -330,7 +330,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 		// create one.
         if(addSelf)
         {
-        	Transaction newTn = new Transaction(false, method, nestLevel + 1);
+        	CriticalSection newTn = new CriticalSection(false, method, nestLevel + 1);
 			newTn.entermonitor = stmt;
 			newTn.beginning = (Stmt) units.getSuccOf(stmt);
 			if(stmt instanceof EnterMonitorStmt)

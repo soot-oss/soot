@@ -29,14 +29,14 @@ public class DeadlockDetector {
 
 	boolean optionPrintDebug;
 	boolean optionRepairDeadlock;
-	List<Transaction> transactions;
+	List<CriticalSection> criticalSections;
 	TransitiveTargets tt;
 	
-	public DeadlockDetector(boolean optionPrintDebug, boolean optionRepairDeadlock, List<Transaction> transactions)
+	public DeadlockDetector(boolean optionPrintDebug, boolean optionRepairDeadlock, List<CriticalSection> criticalSections)
 	{
 		this.optionPrintDebug = optionPrintDebug;
 		this.optionRepairDeadlock = optionRepairDeadlock;
-		this.transactions = transactions;
+		this.criticalSections = criticalSections;
 		this.tt = new TransitiveTargets(Scene.v().getCallGraph(), new Filter(new TransactionVisibleEdgesPred(null)));
 	}
 	
@@ -53,10 +53,10 @@ public class DeadlockDetector {
 			lockOrder = new HashMutableDirectedGraph(); // start each iteration with a fresh graph
 
 			// Assemble the partial ordering of locks
-			Iterator<Transaction> deadlockIt1 = transactions.iterator();
+			Iterator<CriticalSection> deadlockIt1 = criticalSections.iterator();
 			while(deadlockIt1.hasNext() && !foundDeadlock)
 			{
-				Transaction tn1 = deadlockIt1.next();
+				CriticalSection tn1 = deadlockIt1.next();
 
 				// skip if unlocked
 				if( tn1.setNumber <= 0 )
@@ -81,10 +81,10 @@ public class DeadlockDetector {
 				}
 
 				// compare to each other tn
-				Iterator<Transaction> deadlockIt2 = transactions.iterator();
+				Iterator<CriticalSection> deadlockIt2 = criticalSections.iterator();
 				while(deadlockIt2.hasNext() && !foundDeadlock)
 				{
-					Transaction tn2 = deadlockIt2.next();
+					CriticalSection tn2 = deadlockIt2.next();
 
 					// skip if unlocked or in same set as tn1
 					if( tn2.setNumber <= 0 || tn2.setNumber == tn1.setNumber ) // this is wrong... dynamic locks in same group can be diff locks
@@ -134,16 +134,16 @@ public class DeadlockDetector {
 								if(optionPrintDebug)
 								{
 									G.v().out.println("tn1.setNumber was " + tn1.setNumber + " and tn2.setNumber was " + tn2.setNumber);
-									G.v().out.println("tn1.group.size was " + tn1.group.transactions.size() +
-											" and tn2.group.size was " + tn2.group.transactions.size());
+									G.v().out.println("tn1.group.size was " + tn1.group.criticalSections.size() +
+											" and tn2.group.size was " + tn2.group.criticalSections.size());
 									G.v().out.println("tn1.group.num was  " + tn1.group.num() + " and tn2.group.num was  " + tn2.group.num());
 								}
 								tn1.group.mergeGroups(tn2.group);
 								if(optionPrintDebug)
 								{
 									G.v().out.println("tn1.setNumber is  " + tn1.setNumber + " and tn2.setNumber is  " + tn2.setNumber);
-									G.v().out.println("tn1.group.size is  " + tn1.group.transactions.size() +
-											" and tn2.group.size is  " + tn2.group.transactions.size());
+									G.v().out.println("tn1.group.size is  " + tn1.group.criticalSections.size() +
+											" and tn2.group.size is  " + tn2.group.criticalSections.size());
 								}
 
 								foundDeadlock = true;
@@ -171,10 +171,10 @@ public class DeadlockDetector {
 			lockOrder = (HashMutableEdgeLabelledDirectedGraph) ((HashMutableEdgeLabelledDirectedGraph) permanentOrder).clone(); // start each iteration with a fresh copy of the permanent orders
 			
 			// Assemble the partial ordering of locks
-			Iterator<Transaction> deadlockIt1 = transactions.iterator();
+			Iterator<CriticalSection> deadlockIt1 = criticalSections.iterator();
 			while(deadlockIt1.hasNext() && !foundDeadlock)
 			{
-				Transaction tn1 = deadlockIt1.next();
+				CriticalSection tn1 = deadlockIt1.next();
 				
 				// skip if unlocked
 				if( tn1.group == null )
@@ -202,10 +202,10 @@ public class DeadlockDetector {
 		    	}
 				
 				// compare to each other tn
-				Iterator<Transaction> deadlockIt2 = transactions.iterator();
+				Iterator<CriticalSection> deadlockIt2 = criticalSections.iterator();
 				while(deadlockIt2.hasNext() && !foundDeadlock)
 				{
-					Transaction tn2 = deadlockIt2.next();
+					CriticalSection tn2 = deadlockIt2.next();
 					
 					// skip if unlocked
 					if( tn2.group == null )
@@ -247,7 +247,7 @@ public class DeadlockDetector {
 								{
 									for(Object l : labels)
 									{
-										Transaction labelTn = (Transaction) l;
+										CriticalSection labelTn = (CriticalSection) l;
 										
 										// Check if labelTn and tn1 share a static lock
 										boolean tnsShareAStaticLock = false;
@@ -333,7 +333,7 @@ public class DeadlockDetector {
 										{
 											for(Object t : forwardLabels)
 											{
-												Transaction tn = (Transaction) t;
+												CriticalSection tn = (CriticalSection) t;
 												if(!tn.lockset.contains(daeEqVal))
 												{
 													for(EquivalentValue lockEqVal : tn.lockset)
@@ -353,7 +353,7 @@ public class DeadlockDetector {
 										{
 											for(Object t : backwardLabels)
 											{
-												Transaction tn = (Transaction) t;
+												CriticalSection tn = (CriticalSection) t;
 												if(!tn.lockset.contains(daeEqVal))
 												{
 													for(EquivalentValue lockEqVal : tn.lockset)
@@ -390,13 +390,13 @@ public class DeadlockDetector {
 	}
 
 	public void reorderLocksets(Map<Value, Integer> lockToLockNum, MutableEdgeLabelledDirectedGraph lockOrder) {
-		for(Transaction tn : transactions)
+		for(CriticalSection tn : criticalSections)
 		{
 			// Get the portion of the lock order that is visible to tn
 			HashMutableDirectedGraph visibleOrder = new HashMutableDirectedGraph();
 			if(tn.group != null)
 			{
-				for(Transaction otherTn : transactions)
+				for(CriticalSection otherTn : criticalSections)
 				{
 					// Check if otherTn and tn share a static lock
 					boolean tnsShareAStaticLock = false;

@@ -5,7 +5,7 @@ import java.util.*;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.*;
 
-class Transaction extends LockRegion
+class CriticalSection extends SynchronizedRegion
 {
 	public static int nextIDNum = 1; 
 	
@@ -36,7 +36,7 @@ class Transaction extends LockRegion
 	public Value lockObjectArrayIndex;
 	public List<EquivalentValue> lockset;
 	
-	Transaction(boolean wholeMethod, SootMethod method, int nestLevel)
+	CriticalSection(boolean wholeMethod, SootMethod method, int nestLevel)
 	{
 		super();
 		this.IDNum = nextIDNum;
@@ -61,7 +61,7 @@ class Transaction extends LockRegion
 	    this.lockset = null;
 	}
 	
-	Transaction(Transaction tn)
+	CriticalSection(CriticalSection tn)
 	{
 		super(tn);
 		this.IDNum = tn.IDNum;
@@ -88,7 +88,7 @@ class Transaction extends LockRegion
 
 	protected Object clone()
 	{
-		return new Transaction(this);
+		return new CriticalSection(this);
 	}
 	
 	public String toString()

@@ -154,7 +154,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		Stmt newPrep = null;
 		while(fsIt.hasNext())
 		{
-			Transaction tn = ((TransactionFlowPair) fsIt.next()).tn;
+			CriticalSection tn = ((TransactionFlowPair) fsIt.next()).tn;
 			if(tn.setNumber == -1)
 				continue; // this tn should be deleted... for now just skip it!
 				
@@ -164,7 +164,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 			}
 
 			Local clo = null; // depends on type of locking
-			LockRegion clr = null; // current lock region
+			SynchronizedRegion csr = null; // current synchronized region
 			int lockNum = 0;
 			boolean moreLocks = true;
 			while(moreLocks)
@@ -196,7 +196,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						clo = (Local) lock;
 					else
 						throw new RuntimeException("Unknown type of lock (" + lock + "): expected Ref or Local");
-					clr = tn;
+					csr = tn;
 					moreLocks = false;
 				}
 				else if( tn.group.useLocksets )
@@ -237,24 +237,24 @@ public class TransactionBodyTransformer extends BodyTransformer
 
 					if( lockNum > 0 )
 					{
-						LockRegion nlr = new LockRegion();
+						SynchronizedRegion nsr = new SynchronizedRegion();
 
-						nlr.beginning = clr.beginning;
-						for (Pair earlyEnd : clr.earlyEnds) {
+						nsr.beginning = csr.beginning;
+						for (Pair earlyEnd : csr.earlyEnds) {
 							Stmt earlyExitmonitor = (Stmt) earlyEnd.getO2();
-							nlr.earlyEnds.add(new Pair(earlyExitmonitor, null)); // <early exitmonitor, null>
+							nsr.earlyEnds.add(new Pair(earlyExitmonitor, null)); // <early exitmonitor, null>
 						}
-						nlr.last = clr.last; // last stmt before exception handling
-						if(clr.end != null)
+						nsr.last = csr.last; // last stmt before exception handling
+						if(csr.end != null)
 						{
-							Stmt endExitmonitor = clr.end.getO2();
-							nlr.after = endExitmonitor;
+							Stmt endExitmonitor = csr.end.getO2();
+							nsr.after = endExitmonitor;
 						}
 						
-						clr = nlr;
+						csr = nsr;
 					}
 					else
-						clr = tn;
+						csr = tn;
 				}
 				else // global lock
 				{
@@ -268,7 +268,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					else
 						units.insertBefore(newPrep, tn.entermonitor);
 					clo = lockObj[tn.setNumber];
-					clr = tn;
+					csr = tn;
 					moreLocks = false;
 				}
 				
@@ -280,27 +280,27 @@ public class TransactionBodyTransformer extends BodyTransformer
 				if(true)
 				{
 					// Remove old prep stmt
-					if( clr.prepStmt != null )
+					if( csr.prepStmt != null )
 					{
 //						units.remove(clr.prepStmt); // seems to trigger bugs in code generation?
 					}
 					
 					// Reuse old entermonitor or insert new one, and insert prep
 					Stmt newEntermonitor = Jimple.v().newEnterMonitorStmt(clo);
-					if( clr.entermonitor != null )
+					if( csr.entermonitor != null )
 					{
-						units.insertBefore(newEntermonitor, clr.entermonitor);
+						units.insertBefore(newEntermonitor, csr.entermonitor);
 						// redirectTraps(b, clr.entermonitor, newEntermonitor); // EXPERIMENTAL
-						units.remove(clr.entermonitor);
-						clr.entermonitor = newEntermonitor;
+						units.remove(csr.entermonitor);
+						csr.entermonitor = newEntermonitor;
 
 						// units.insertBefore(newEntermonitor, newPrep); // already inserted
 						// clr.prepStmt = newPrep;
 					}
 					else
 					{
-						units.insertBeforeNoRedirect(newEntermonitor, clr.beginning);
-						clr.entermonitor = newEntermonitor;
+						units.insertBeforeNoRedirect(newEntermonitor, csr.beginning);
+						csr.entermonitor = newEntermonitor;
 						
 						// units.insertBefore(newEntermonitor, newPrep); // already inserted
 						// clr.prepStmt = newPrep;
@@ -308,7 +308,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					
 					// For each early end, reuse or insert exitmonitor stmt
 					List<Pair<Stmt, Stmt>> newEarlyEnds = new ArrayList<Pair<Stmt, Stmt>>();
-					for (Pair<Stmt, Stmt> end : clr.earlyEnds) {
+					for (Pair<Stmt, Stmt> end : csr.earlyEnds) {
 						Stmt earlyEnd = end.getO1();
 						Stmt exitmonitor = end.getO2();
 						
@@ -336,15 +336,15 @@ public class TransactionBodyTransformer extends BodyTransformer
 							newEarlyEnds.add(new Pair<Stmt, Stmt>(earlyEnd, newExitmonitor));
 						}
 					}
-					clr.earlyEnds = newEarlyEnds;
+					csr.earlyEnds = newEarlyEnds;
 					
 					// If fallthrough end, reuse or insert goto and exit
-					if( clr.after != null )
+					if( csr.after != null )
 					{
 						Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
-						if( clr.end != null )
+						if( csr.end != null )
 						{
-							Stmt exitmonitor = clr.end.getO2();
+							Stmt exitmonitor = csr.end.getO2();
 
 							if(newPrep != null)
 							{
@@ -354,28 +354,28 @@ public class TransactionBodyTransformer extends BodyTransformer
 							units.insertBefore(newExitmonitor, exitmonitor);
 							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
 							units.remove(exitmonitor);
-							clr.end = new Pair<Stmt, Stmt>(clr.end.getO1(), newExitmonitor);
+							csr.end = new Pair<Stmt, Stmt>(csr.end.getO1(), newExitmonitor);
 						}
 						else
 						{
 							if(newPrep != null)
 							{
 								Stmt tmp = (Stmt) newPrep.clone();
-								units.insertBefore(tmp, clr.after);
+								units.insertBefore(tmp, csr.after);
 							}
-							units.insertBefore(newExitmonitor, clr.after); // steal jumps to end, send them to monitorexit
-							Stmt newGotoStmt = Jimple.v().newGotoStmt(clr.after);
-							units.insertBeforeNoRedirect(newGotoStmt, clr.after);
-							clr.end = new Pair<Stmt, Stmt>(newGotoStmt, newExitmonitor);
-							clr.last = newGotoStmt;
+							units.insertBefore(newExitmonitor, csr.after); // steal jumps to end, send them to monitorexit
+							Stmt newGotoStmt = Jimple.v().newGotoStmt(csr.after);
+							units.insertBeforeNoRedirect(newGotoStmt, csr.after);
+							csr.end = new Pair<Stmt, Stmt>(newGotoStmt, newExitmonitor);
+							csr.last = newGotoStmt;
 						}
 					}
 					
 					// If exceptional end, reuse it, else insert it and traps
 					Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
-					if( clr.exceptionalEnd != null )
+					if( csr.exceptionalEnd != null )
 					{
-						Stmt exitmonitor = clr.exceptionalEnd.getO2();
+						Stmt exitmonitor = csr.exceptionalEnd.getO2();
 						
 						if(newPrep != null)
 						{
@@ -385,26 +385,26 @@ public class TransactionBodyTransformer extends BodyTransformer
 						units.insertBefore(newExitmonitor, exitmonitor);
 							
 						units.remove(exitmonitor);
-						clr.exceptionalEnd = new Pair<Stmt, Stmt>(clr.exceptionalEnd.getO1(), newExitmonitor);
+						csr.exceptionalEnd = new Pair<Stmt, Stmt>(csr.exceptionalEnd.getO1(), newExitmonitor);
 					}
 					else
 					{
 						// insert after the last end
 						Stmt lastEnd = null; // last end stmt (not same as last stmt)
-						if( clr.end != null )
+						if( csr.end != null )
 						{
-							lastEnd = clr.end.getO1();
+							lastEnd = csr.end.getO1();
 						}
 						else
 						{
-							for (Pair earlyEnd : clr.earlyEnds) {
+							for (Pair earlyEnd : csr.earlyEnds) {
 								Stmt end = (Stmt) earlyEnd.getO1();
 								if( lastEnd == null || (units.contains(lastEnd) && units.contains(end) && units.follows(end, lastEnd)) )
 									lastEnd = end;
 							}
 						}
-						if(clr.last == null) // || !units.contains(clr.last))
-							clr.last = lastEnd; // last stmt and last end are the same
+						if(csr.last == null) // || !units.contains(clr.last))
+							csr.last = lastEnd; // last stmt and last end are the same
 						if( lastEnd == null )
 							throw new RuntimeException("Lock Region has no ends!  Where should we put the exception handling???");
 
@@ -413,19 +413,19 @@ public class TransactionBodyTransformer extends BodyTransformer
 						b.getLocals().add(throwableLocal);
 						// Add stmts
 						Stmt newCatch = Jimple.v().newIdentityStmt(throwableLocal, Jimple.v().newCaughtExceptionRef());
-						if(clr.last == null)
+						if(csr.last == null)
 							throw new RuntimeException("WHY IS clr.last NULL???");
 						if(newCatch == null)
 							throw new RuntimeException("WHY IS newCatch NULL???");
-						units.insertAfter(newCatch, clr.last);
+						units.insertAfter(newCatch, csr.last);
 						units.insertAfter(newExitmonitor, newCatch);
 						Stmt newThrow = Jimple.v().newThrowStmt(throwableLocal);
 						units.insertAfter(newThrow, newExitmonitor);
 						// Add traps
 						SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
 						b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, newExitmonitor, newThrow, newCatch));
-						b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, clr.beginning, lastEnd, newCatch));
-						clr.exceptionalEnd = new Pair<Stmt, Stmt>(newThrow, newExitmonitor);
+						b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, csr.beginning, lastEnd, newCatch));
+						csr.exceptionalEnd = new Pair<Stmt, Stmt>(newThrow, newExitmonitor);
 					}
 				}
 				lockNum++;

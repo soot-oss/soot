@@ -99,7 +99,7 @@ public class TransactionAwareSideEffectAnalysis {
 	TransitiveTargets tt;
 	TransitiveTargets normaltt;
 	SideEffectAnalysis normalsea;
-	Collection<Transaction> transactions;
+	Collection<CriticalSection> criticalSections;
 	EncapsulatedObjectAnalysis eoa;
 	ThreadLocalObjectsAnalysis tlo;
 	
@@ -120,12 +120,12 @@ public class TransactionAwareSideEffectAnalysis {
 			boolean ignore = false;
 
 			// Ignore Reads/Writes inside another transaction
-			if(transactions != null)
+			if(criticalSections != null)
 			{
-				Iterator<Transaction> tnIt = transactions.iterator();
+				Iterator<CriticalSection> tnIt = criticalSections.iterator();
 				while(tnIt.hasNext())
 				{
-					Transaction tn = tnIt.next();
+					CriticalSection tn = tnIt.next();
 					if(tn.units.contains(s) || tn.prepStmt == s)
 					{
 						ignore = true;
@@ -193,7 +193,7 @@ public class TransactionAwareSideEffectAnalysis {
 		methodToNTWriteSet.put( method, write );
 	}
 	
-	public void setExemptTransaction( Transaction tn )
+	public void setExemptTransaction( CriticalSection tn )
 	{
 		tve.setExemptTransaction(tn);
 	}
@@ -208,14 +208,14 @@ public class TransactionAwareSideEffectAnalysis {
 		return methodToNTWriteSet.get( method );
 	}
 	
-	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection<Transaction> transactions, ThreadLocalObjectsAnalysis tlo ) {
+	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection<CriticalSection> criticalSections, ThreadLocalObjectsAnalysis tlo ) {
 		this.pa = pa;
 		this.cg = cg;
-		this.tve = new TransactionVisibleEdgesPred(transactions);
+		this.tve = new TransactionVisibleEdgesPred(criticalSections);
 		this.tt = new TransitiveTargets( cg, new Filter(tve) );
 		this.normaltt = new TransitiveTargets( cg, null );
 		this.normalsea = new SideEffectAnalysis( pa, cg );
-		this.transactions = transactions;
+		this.criticalSections = criticalSections;
 		this.eoa = new EncapsulatedObjectAnalysis();
 		this.tlo = tlo; // can be null
 		
@@ -367,7 +367,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet readSet( SootMethod method, Stmt stmt, Transaction tn, HashSet uses )
+	public RWSet readSet( SootMethod method, Stmt stmt, CriticalSection tn, HashSet uses )
 	{
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
@@ -617,7 +617,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet writeSet( SootMethod method, Stmt stmt, Transaction tn, Set uses )
+	public RWSet writeSet( SootMethod method, Stmt stmt, CriticalSection tn, Set uses )
 	{
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
@@ -751,7 +751,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet valueRWSet( Value v, SootMethod m, Stmt s, Transaction tn )
+	public RWSet valueRWSet( Value v, SootMethod m, Stmt s, CriticalSection tn )
 	{
 		RWSet ret = null;
 		

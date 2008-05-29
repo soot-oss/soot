@@ -3,10 +3,10 @@ package soot.jimple.toolkits.thread.synchronization;
 class TransactionFlowPair
 {
 	// Information about the transactional region
-	public Transaction tn;
+	public CriticalSection tn;
 	public boolean inside;
 
-	TransactionFlowPair(Transaction tn, boolean inside)
+	TransactionFlowPair(CriticalSection tn, boolean inside)
 	{
 		this.tn = tn;
 		this.inside = inside;

@@ -27,15 +27,15 @@ import soot.jimple.toolkits.callgraph.*;
  */
 public class TransactionVisibleEdgesPred implements EdgePredicate
 {
-	Collection<Transaction> tns;
-	Transaction exemptTn;
+	Collection<CriticalSection> tns;
+	CriticalSection exemptTn;
 	
-	public TransactionVisibleEdgesPred(Collection<Transaction> tns)
+	public TransactionVisibleEdgesPred(Collection<CriticalSection> tns)
 	{
 		this.tns = tns;
 	}
 	
-	public void setExemptTransaction(Transaction exemptTn)
+	public void setExemptTransaction(CriticalSection exemptTn)
 	{
 		this.exemptTn = exemptTn;
 	}
@@ -84,10 +84,10 @@ public class TransactionVisibleEdgesPred implements EdgePredicate
 		// one transaction is exempt - so that we may analyze calls within it
 	    if(tns != null)
 	    {
-			Iterator<Transaction> tnIt = tns.iterator();
+			Iterator<CriticalSection> tnIt = tns.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = tnIt.next();
+				CriticalSection tn = tnIt.next();
 				if(tn != exemptTn && tn.units.contains(e.srcStmt())) // if this method call originates inside a transaction...
 				{
 					return false; // ignore it

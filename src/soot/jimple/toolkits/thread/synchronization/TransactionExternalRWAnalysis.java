@@ -73,7 +73,7 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
     	Iterator tnIt = tns.iterator();
     	while(tnIt.hasNext())
     	{
-    		Transaction tn = (Transaction) tnIt.next();
+    		CriticalSection tn = (CriticalSection) tnIt.next();
     		if(stmtRead.hasNonEmptyIntersection(tn.write) || 
     			stmtWrite.hasNonEmptyIntersection(tn.read) ||
     			stmtWrite.hasNonEmptyIntersection(tn.write))
@@ -83,7 +83,7 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
         in.copy(out);
     	if(addSelf.booleanValue())
     	{
-    		Transaction tn = new Transaction(false, body.getMethod(), 0);
+    		CriticalSection tn = new CriticalSection(false, body.getMethod(), 0);
     		tn.entermonitor = (Stmt) unit;
     		tn.units.add((Unit) unit);
     		tn.read.union(stmtRead);

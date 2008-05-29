@@ -177,7 +177,7 @@ public class TransactionTransformer extends SceneTransformer
     	}    	
     	
     	// Create a composite list of all transactions
-    	List<Transaction> transactions = new Vector<Transaction>();
+    	List<CriticalSection> transactions = new Vector<CriticalSection>();
     	for(FlowSet fs : methodToFlowSet.values())
     	{
     		List fList = fs.toList();
@@ -204,10 +204,10 @@ public class TransactionTransformer extends SceneTransformer
 		tasea = new TransactionAwareSideEffectAnalysis(
 					pta, 
 					Scene.v().getCallGraph(), (optionOpenNesting ? transactions : null), tlo);
-    	Iterator<Transaction> tnIt = transactions.iterator();
+    	Iterator<CriticalSection> tnIt = transactions.iterator();
     	while(tnIt.hasNext())
     	{
-    		Transaction tn = tnIt.next();
+    		CriticalSection tn = tnIt.next();
     		for(Unit unit : tn.invokes)
     		{
     			Stmt stmt = (Stmt) unit;
@@ -289,7 +289,7 @@ public class TransactionTransformer extends SceneTransformer
 		{
 			// Calculate per-group contributing RWSet
 			// (Might be preferable to use per-transaction contributing RWSet)
-			for(Transaction tn : transactions)
+			for(CriticalSection tn : transactions)
 	    	{
 	    		if(tn.setNumber <= 0)
 	    			continue;
@@ -323,7 +323,7 @@ public class TransactionTransformer extends SceneTransformer
 			// print out locksets
 			if(optionUseLocksets)
 			{
-				for( Transaction tn : transactions )
+				for( CriticalSection tn : transactions )
 				{
 					if( tn.group != null )
 					{
@@ -388,16 +388,16 @@ public class TransactionTransformer extends SceneTransformer
 	    }
 	}
     
-	protected void findLockableReferences(List<Transaction> AllTransactions,
+	protected void findLockableReferences(List<CriticalSection> AllTransactions,
 			PointsToAnalysis pta, TransactionAwareSideEffectAnalysis tasea,
 			Map<Value, Integer> lockToLockNum,
 			List<PointsToSetInternal> lockPTSets) {
 		// For each transaction, if the group's R/Ws may be fields of the same object, 
 		// then check for the transaction if they must be fields of the same RUNTIME OBJECT
-		Iterator<Transaction> tnIt9 = AllTransactions.iterator();
+		Iterator<CriticalSection> tnIt9 = AllTransactions.iterator();
 		while(tnIt9.hasNext())
 		{
-			Transaction tn = tnIt9.next();
+			CriticalSection tn = tnIt9.next();
 			
 			int group = tn.setNumber - 1;
 			if(group < 0)
@@ -424,7 +424,7 @@ public class TransactionTransformer extends SceneTransformer
 						// Create a lockset containing a single placeholder static lock for each tn in the group
 						Value newStaticLock = new NewStaticLock(tn.method.getDeclaringClass());
 						EquivalentValue newStaticLockEqVal = new EquivalentValue(newStaticLock);
-						for(Transaction groupTn : tn.group)
+						for(CriticalSection groupTn : tn.group)
 						{
 							groupTn.lockset = new ArrayList<EquivalentValue>();
 							groupTn.lockset.add(newStaticLockEqVal);
@@ -600,16 +600,16 @@ public class TransactionTransformer extends SceneTransformer
 		}
 	}
 
-    private void analyzeExistingLocks(List<Transaction> AllTransactions,
+    private void analyzeExistingLocks(List<CriticalSection> AllTransactions,
 			TransactionInterferenceGraph ig) {
 		setFlagsForStaticAllocations(ig);
 		
 		// if for any lock there is any def to anything other than a static field, then it's a local lock.			
 		// for each transaction, check every def of the lock
-		Iterator<Transaction> tnAIt = AllTransactions.iterator();
+		Iterator<CriticalSection> tnAIt = AllTransactions.iterator();
 		while(tnAIt.hasNext())
 		{
-			Transaction tn = tnAIt.next();
+			CriticalSection tn = tnAIt.next();
 			if(tn.setNumber <= 0)
 				continue;
 			ExceptionalUnitGraph egraph = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
@@ -675,17 +675,17 @@ public class TransactionTransformer extends SceneTransformer
 		return ret + "]";
 	}
     
-    public void assignNamesToTransactions(List<Transaction> AllTransactions)
+    public void assignNamesToTransactions(List<CriticalSection> AllTransactions)
     {
        	// Give each method a unique, deterministic identifier
        	// Sort transactions into bins... one for each method name
        	
        	// Get list of method names
     	List<String> methodNamesTemp = new ArrayList<String>();
-    	Iterator<Transaction> tnIt5 = AllTransactions.iterator();
+    	Iterator<CriticalSection> tnIt5 = AllTransactions.iterator();
     	while (tnIt5.hasNext()) 
     	{
-    	    Transaction tn1 = tnIt5.next();
+    	    CriticalSection tn1 = tnIt5.next();
     	    String mname = tn1.method.getSignature(); //tn1.method.getSignature() + "." + tn1.method.getName();
     	    if(!methodNamesTemp.contains(mname))
     	    	methodNamesTemp.add(mname);
@@ -696,21 +696,21 @@ public class TransactionTransformer extends SceneTransformer
 
 		// Initialize method-named bins
 		// this matrix is <# method names> wide and <max txns possible in one method> + 1 tall
-		int identMatrix[][] = new int[methodNames.length][Transaction.nextIDNum - methodNames.length + 2];
+		int identMatrix[][] = new int[methodNames.length][CriticalSection.nextIDNum - methodNames.length + 2];
 		for(int i = 0; i < methodNames.length; i++)
 		{
 			identMatrix[i][0] = 0;
-			for(int j = 1; j < Transaction.nextIDNum - methodNames.length + 1; j++)
+			for(int j = 1; j < CriticalSection.nextIDNum - methodNames.length + 1; j++)
 			{
 				identMatrix[i][j] = 50000;
 			}
 		}
 		
 		// Put transactions into bins
-    	Iterator<Transaction> tnIt0 = AllTransactions.iterator();
+    	Iterator<CriticalSection> tnIt0 = AllTransactions.iterator();
     	while(tnIt0.hasNext())
     	{
-    		Transaction tn1 = tnIt0.next();
+    		CriticalSection tn1 = tnIt0.next();
 			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());
 			identMatrix[methodNum][0]++;
 			identMatrix[methodNum][identMatrix[methodNum][0]] = tn1.IDNum;
@@ -725,33 +725,33 @@ public class TransactionTransformer extends SceneTransformer
 		}
 		
 		// Generate a name based on the bin number and location within the bin
-    	Iterator<Transaction> tnIt4 = AllTransactions.iterator();
+    	Iterator<CriticalSection> tnIt4 = AllTransactions.iterator();
     	while(tnIt4.hasNext())
     	{
-    		Transaction tn1 = tnIt4.next();
+    		CriticalSection tn1 = tnIt4.next();
 			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());
 			int tnNum = Arrays.binarySearch(identMatrix[methodNum], tn1.IDNum) - 1;
     		tn1.name = "m" + (methodNum < 10? "00" : (methodNum < 100? "0" : "")) + methodNum + "n" + (tnNum < 10? "0" : "") + tnNum;
     	}
 	}	
 
-	public void printGraph(Collection<Transaction> AllTransactions, TransactionInterferenceGraph ig, Map<Value, Integer> lockToLockNum)
+	public void printGraph(Collection<CriticalSection> AllTransactions, TransactionInterferenceGraph ig, Map<Value, Integer> lockToLockNum)
 	{
 		final String[] colors = {"black", "blue", "blueviolet", "chartreuse", "crimson", "darkgoldenrod1", "darkseagreen", "darkslategray", "deeppink",
 			"deepskyblue1", "firebrick1", "forestgreen", "gold", "gray80", "navy", "pink", "red", "sienna", "turquoise1", "yellow"};
 		Map<Integer, String> lockColors = new HashMap<Integer, String>();
 		int colorNum = 0;
-		HashSet<Transaction> visited = new HashSet<Transaction>();
+		HashSet<CriticalSection> visited = new HashSet<CriticalSection>();
 		
 		G.v().out.println("[transaction-graph]" + (optionUseLocksets ? "" : " strict") + " graph transactions {"); // "\n[transaction-graph] start=1;");
 
 		for(int group = 0; group < ig.groups().size(); group++)
 		{
 			boolean printedHeading = false;
-			Iterator<Transaction> tnIt = AllTransactions.iterator();
+			Iterator<CriticalSection> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = tnIt.next();
+				CriticalSection tn = tnIt.next();
 				if(tn.setNumber == group + 1)
 				{
 					if(!printedHeading)
@@ -806,7 +806,7 @@ public class TransactionTransformer extends SceneTransformer
 						for(EquivalentValue lockEqVal : tn.lockset)
 						{
 							Integer lockNum = lockToLockNum.get(lockEqVal.getValue());
-							for(Transaction tn2 : tn.group)
+							for(CriticalSection tn2 : tn.group)
 							{
 								if(!visited.contains(tn2) && ig.mayHappenInParallel(tn, tn2))
 								{
@@ -838,7 +838,7 @@ public class TransactionTransformer extends SceneTransformer
 						while(tnedgeit.hasNext())
 						{
 							TransactionDataDependency edge = tnedgeit.next();
-							Transaction tnedge = edge.other;
+							CriticalSection tnedge = edge.other;
 							if(tnedge.setNumber == group + 1)
 								G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(3)\"];");
 						}
@@ -853,10 +853,10 @@ public class TransactionTransformer extends SceneTransformer
 		// Print nodes with no group
 		{
 			boolean printedHeading = false;
-			Iterator<Transaction> tnIt = AllTransactions.iterator();
+			Iterator<CriticalSection> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = tnIt.next();
+				CriticalSection tn = tnIt.next();
 				if(tn.setNumber == -1)
 				{
 					if(!printedHeading)
@@ -874,7 +874,7 @@ public class TransactionTransformer extends SceneTransformer
 					while(tnedgeit.hasNext())
 					{
 						TransactionDataDependency edge = tnedgeit.next();
-						Transaction tnedge = edge.other;
+						CriticalSection tnedge = edge.other;
 						if(tnedge.setNumber != tn.setNumber || tnedge.setNumber == -1)
 							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(1)\"];");
 					}
@@ -887,13 +887,13 @@ public class TransactionTransformer extends SceneTransformer
 		G.v().out.println("[transaction-graph] }");
 	}	
 
-	public void printTable(Collection<Transaction> AllTransactions, MhpTester mhp)
+	public void printTable(Collection<CriticalSection> AllTransactions, MhpTester mhp)
 	{
 		G.v().out.println("[transaction-table] ");
-		Iterator<Transaction> tnIt7 = AllTransactions.iterator();
+		Iterator<CriticalSection> tnIt7 = AllTransactions.iterator();
 		while(tnIt7.hasNext())
 		{
-			Transaction tn = tnIt7.next();
+			CriticalSection tn = tnIt7.next();
 			
 			// Figure out if it's reachable, and if it MHP itself
 			boolean reachable = false;
@@ -936,7 +936,7 @@ public class TransactionTransformer extends SceneTransformer
 		}
 	}
 	
-	public void printGroups(Collection<Transaction> AllTransactions, TransactionInterferenceGraph ig)
+	public void printGroups(Collection<CriticalSection> AllTransactions, TransactionInterferenceGraph ig)
 	{
 			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
 			for(int group = 0; group < ig.groupCount() - 1; group++)
@@ -947,10 +947,10 @@ public class TransactionTransformer extends SceneTransformer
 	    			G.v().out.print("Group " + (group + 1) + " ");
 					G.v().out.print("Locking: " + (tnGroup.useLocksets ? "using " : (tnGroup.isDynamicLock && tnGroup.useDynamicLock ? "Dynamic on " : "Static on ")) + (tnGroup.useLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
 					G.v().out.print("\n[transaction-groups]      : ");
-					Iterator<Transaction> tnIt = AllTransactions.iterator();
+					Iterator<CriticalSection> tnIt = AllTransactions.iterator();
 					while(tnIt.hasNext())
 					{
-						Transaction tn = tnIt.next();
+						CriticalSection tn = tnIt.next();
 						if(tn.setNumber == group + 1)
 							G.v().out.print(tn.name + " ");
 					}
@@ -959,10 +959,10 @@ public class TransactionTransformer extends SceneTransformer
 	    		}
 	    	}
 			G.v().out.print("Erasing \n[transaction-groups]      : ");
-			Iterator<Transaction> tnIt = AllTransactions.iterator();
+			Iterator<CriticalSection> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
-				Transaction tn = tnIt.next();
+				CriticalSection tn = tnIt.next();
 				if(tn.setNumber == -1)
 					G.v().out.print(tn.name + " ");
 			}
