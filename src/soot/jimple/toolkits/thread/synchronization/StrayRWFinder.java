@@ -1,5 +1,4 @@
 package soot.jimple.toolkits.thread.synchronization;
-// PTFindTransactions - Analysis to locate transactional regions
 
 import java.util.Iterator;
 import java.util.Map;
@@ -17,7 +16,11 @@ import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.BackwardFlowAnalysis;
 
-public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
+/**
+ * @author Richard L. Halpert
+ * StrayRWFinder - Analysis to locate reads/writes to shared data that appear outside synchronization
+ */
+public class StrayRWFinder extends BackwardFlowAnalysis
 {
     FlowSet emptySet = new ArraySparseSet();
     Map unitToGenerateSet;
@@ -25,7 +28,7 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
     SideEffectAnalysis sea;
     List tns;
 
-    TransactionExternalRWAnalysis(UnitGraph graph, Body b, List tns)
+    StrayRWFinder(UnitGraph graph, Body b, List tns)
 	{
 		super(graph);
 		body = b;

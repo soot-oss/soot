@@ -137,6 +137,6 @@ soot.dava.DavaStaticBlockCleaner
 soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder
 soot.jimple.spark.sets.AllSharedListNodes
 soot.jimple.spark.sets.AllSharedHybridNodes
-soot.jimple.toolkits.thread.transaction.TransactionTransformer
+soot.jimple.toolkits.thread.synchronization.LockAllocator
 soot.JastAddInitialResolver
 soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator

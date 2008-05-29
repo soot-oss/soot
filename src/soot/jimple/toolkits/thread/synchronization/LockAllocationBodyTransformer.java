@@ -8,12 +8,12 @@ import soot.toolkits.scalar.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.infoflow.*;
 
-public class TransactionBodyTransformer extends BodyTransformer
+public class LockAllocationBodyTransformer extends BodyTransformer
 {
-    private static final TransactionBodyTransformer instance = new TransactionBodyTransformer();
-    private TransactionBodyTransformer() {}
+    private static final LockAllocationBodyTransformer instance = new LockAllocationBodyTransformer();
+    private LockAllocationBodyTransformer() {}
 
-    public static TransactionBodyTransformer v() { return instance; }
+    public static LockAllocationBodyTransformer v() { return instance; }
     
     private static boolean addedGlobalLockDefs = false;
 	private static int throwableNum = 0; // doesn't matter if not reinitialized to 0
@@ -23,7 +23,7 @@ public class TransactionBodyTransformer extends BodyTransformer
     	throw new RuntimeException("Not Supported");
     }
     
-    protected void internalTransform(Body b, FlowSet fs, List<TransactionGroup> groups, boolean[] insertedGlobalLock)
+    protected void internalTransform(Body b, FlowSet fs, List<CriticalSectionGroup> groups, boolean[] insertedGlobalLock)
 	{
 		// 
 		JimpleBody j = (JimpleBody) b;
@@ -48,7 +48,7 @@ public class TransactionBodyTransformer extends BodyTransformer
         // Get references to them if they do already exist.
   		for(int i = 1; i < groups.size(); i++)
    		{
-   			TransactionGroup tnGroup = groups.get(i);
+   			CriticalSectionGroup tnGroup = groups.get(i);
 			if( !tnGroup.useDynamicLock && !tnGroup.useLocksets )
    			{
 	   			if( !insertedGlobalLock[i] )
@@ -106,7 +106,7 @@ public class TransactionBodyTransformer extends BodyTransformer
         	
     		for(int i = 1; i < groups.size(); i++)
     		{
-    			TransactionGroup tnGroup = groups.get(i);
+    			CriticalSectionGroup tnGroup = groups.get(i);
 //    			if( useGlobalLock[i - 1] )
 				if( !tnGroup.useDynamicLock && !tnGroup.useLocksets )
     			{
@@ -154,7 +154,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		Stmt newPrep = null;
 		while(fsIt.hasNext())
 		{
-			CriticalSection tn = ((TransactionFlowPair) fsIt.next()).tn;
+			CriticalSection tn = ((SynchronizedRegionFlowPair) fsIt.next()).tn;
 			if(tn.setNumber == -1)
 				continue; // this tn should be deleted... for now just skip it!
 				
@@ -480,9 +480,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 		}
 		FakeJimpleLocal fakeBase = (FakeJimpleLocal) lock.getBase();
 		
-		if(!(fakeBase.getInfo() instanceof LocksetAnalysis))
+		if(!(fakeBase.getInfo() instanceof LockableReferenceAnalysis))
 			throw new RuntimeException("InstanceFieldRef cannot be reconstructed due to missing LocksetAnalysis info: " + lock);
-		LocksetAnalysis la = (LocksetAnalysis) fakeBase.getInfo();
+		LockableReferenceAnalysis la = (LockableReferenceAnalysis) fakeBase.getInfo();
 		
 		EquivalentValue baseEqVal = la.baseFor(lock);
 		if(baseEqVal == null)

@@ -25,8 +25,8 @@ class CriticalSection extends SynchronizedRegion
 	// Information for analyzing conflicts with other transactions
 	public SootMethod method;
 	public int setNumber; // used for breaking the list of transactions into sets
-	public TransactionGroup group;
-	public HashSet<TransactionDataDependency> edges;
+	public CriticalSectionGroup group;
+	public HashSet<CriticalSectionDataDependency> edges;
 	public HashSet<Unit> waits;
 	public HashSet<Unit> notifys;
 	public HashSet<MethodOrMethodContext> transitiveTargets;
@@ -52,7 +52,7 @@ class CriticalSection extends SynchronizedRegion
 		this.method = method;
 		this.setNumber = 0; // 0 = no group, -1 = DELETE
 		this.group = null;
-		this.edges = new HashSet<TransactionDataDependency>();
+		this.edges = new HashSet<CriticalSectionDataDependency>();
 		this.waits = new HashSet<Unit>();
 		this.notifys = new HashSet<Unit>();
 		this.transitiveTargets = null;
@@ -77,7 +77,7 @@ class CriticalSection extends SynchronizedRegion
 		this.method = tn.method;
 		this.setNumber = tn.setNumber;
 		this.group = tn.group;
-		this.edges = (HashSet<TransactionDataDependency>) tn.edges.clone();
+		this.edges = (HashSet<CriticalSectionDataDependency>) tn.edges.clone();
 		this.waits = (HashSet<Unit>) tn.waits.clone();
 		this.notifys = (HashSet<Unit>) tn.notifys.clone();
 		this.transitiveTargets = (HashSet<MethodOrMethodContext>) (tn.transitiveTargets == null ? null : tn.transitiveTargets.clone());

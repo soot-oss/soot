@@ -89,13 +89,13 @@ class WholeObject
 	}
 }
 
-public class TransactionAwareSideEffectAnalysis {
+public class CriticalSectionAwareSideEffectAnalysis {
 	PointsToAnalysis pa;
 	CallGraph cg;
 	Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<SootMethod, CodeBlockRWSet>();
 	Map<SootMethod, CodeBlockRWSet> methodToNTWriteSet = new HashMap<SootMethod, CodeBlockRWSet>();
 	int rwsetcount = 0;
-	TransactionVisibleEdgesPred tve;
+	CriticalSectionVisibleEdgesPred tve;
 	TransitiveTargets tt;
 	TransitiveTargets normaltt;
 	SideEffectAnalysis normalsea;
@@ -208,10 +208,10 @@ public class TransactionAwareSideEffectAnalysis {
 		return methodToNTWriteSet.get( method );
 	}
 	
-	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection<CriticalSection> criticalSections, ThreadLocalObjectsAnalysis tlo ) {
+	public CriticalSectionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection<CriticalSection> criticalSections, ThreadLocalObjectsAnalysis tlo ) {
 		this.pa = pa;
 		this.cg = cg;
-		this.tve = new TransactionVisibleEdgesPred(criticalSections);
+		this.tve = new CriticalSectionVisibleEdgesPred(criticalSections);
 		this.tt = new TransitiveTargets( cg, new Filter(tve) );
 		this.normaltt = new TransitiveTargets( cg, null );
 		this.normalsea = new SideEffectAnalysis( pa, cg );

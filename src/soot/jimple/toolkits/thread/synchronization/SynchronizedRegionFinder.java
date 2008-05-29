@@ -1,5 +1,4 @@
 package soot.jimple.toolkits.thread.synchronization;
-// PTFindTransactions - Analysis to locate transactional regions
 
 import java.util.*;
 
@@ -11,7 +10,12 @@ import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 
-public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
+
+/**
+ * @author Richard L. Halpert
+ * Finds Synchronized Regions and creates a set of CriticalSection objects from them.
+ */
+public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
 {
     FlowSet emptySet = new ArraySparseSet();
 
@@ -22,7 +26,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 	SootMethod method;
 	ExceptionalUnitGraph egraph;
 	LocalUses slu;
-	TransactionAwareSideEffectAnalysis tasea;
+	CriticalSectionAwareSideEffectAnalysis tasea;
 //	SideEffectAnalysis sea;
 	
 	List<Object> prepUnits;
@@ -32,7 +36,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 	public boolean optionPrintDebug = false;
 	public boolean optionOpenNesting = true;
 	
-    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, boolean optionOpenNesting, ThreadLocalObjectsAnalysis tlo)
+    SynchronizedRegionFinder(UnitGraph graph, Body b, boolean optionPrintDebug, boolean optionOpenNesting, ThreadLocalObjectsAnalysis tlo)
 	{
 		super(graph);
 
@@ -56,7 +60,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 		    };
 		}
 		
-    	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
+    	tasea = new CriticalSectionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
     				Scene.v().getCallGraph(), null, tlo);
     	    				
     	prepUnits = new ArrayList<Object>();
@@ -87,7 +91,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 		FlowSet ret = emptySet.clone();
 		if(method.isSynchronized() && methodTn != null)
 		{
-			ret.add(new TransactionFlowPair(methodTn, true));
+			ret.add(new SynchronizedRegionFlowPair(methodTn, true));
 		}
         return ret;
     }
@@ -100,7 +104,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 		FlowSet ret = emptySet.clone();
 		if(method.isSynchronized() && methodTn != null)
 		{
-			ret.add(new TransactionFlowPair(methodTn, true));
+			ret.add(new SynchronizedRegionFlowPair(methodTn, true));
 		}
         return ret;
     }
@@ -155,9 +159,9 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
         Iterator outIt0 = out.iterator();
         while(outIt0.hasNext())
         {
-            TransactionFlowPair tfp = (TransactionFlowPair) outIt0.next();
-            if(tfp.tn.nestLevel > nestLevel && tfp.inside == true)
-            	nestLevel = tfp.tn.nestLevel;
+            SynchronizedRegionFlowPair srfp = (SynchronizedRegionFlowPair) outIt0.next();
+            if(srfp.tn.nestLevel > nestLevel && srfp.inside == true)
+            	nestLevel = srfp.tn.nestLevel;
         }
 
 		// Process this unit's effect on each txn
@@ -167,18 +171,18 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
         boolean printed = false;
         while(outIt.hasNext())
         {
-            TransactionFlowPair tfp = (TransactionFlowPair) outIt.next();
-            CriticalSection tn = tfp.tn;
+            SynchronizedRegionFlowPair srfp = (SynchronizedRegionFlowPair) outIt.next();
+            CriticalSection tn = srfp.tn;
             
             // Check if we are revisting the start of this existing transaction
             if(tn.entermonitor == stmt)
             {
-            	tfp.inside = true;
+            	srfp.inside = true;
             	addSelf = false; // this transaction already exists...
             }
             
             // if this is the immediately enclosing transaction
-        	if(tfp.inside == true && (tn.nestLevel == nestLevel || optionOpenNesting == false))
+        	if(srfp.inside == true && (tn.nestLevel == nestLevel || optionOpenNesting == false))
         	{
         		printed = true; // for debugging purposes, indicated that we'll print a debug output for this statement
         		
@@ -243,7 +247,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
             	else if(unit instanceof ExitMonitorStmt && tn.nestLevel == nestLevel) // only applies to outermost txn
             	{
             		// Mark this as end of this tn
-            		tfp.inside = false;
+            		srfp.inside = false;
             		
             		// Check if this is an early end or fallthrough end
             		Stmt nextUnit = (Stmt) units.getSuccOf(stmt);
@@ -338,7 +342,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 				
         	if(optionPrintDebug)
         		G.v().out.println("Transaction found in method: " + newTn.method.toString());
-			out.add(new TransactionFlowPair(newTn, true));
+			out.add(new SynchronizedRegionFlowPair(newTn, true));
 			
 			// This is a really stupid way to find out which prep applies to this txn.
 			Iterator<Object> prepUnitsIt = prepUnits.iterator();
@@ -375,7 +379,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis<Unit, FlowSet>
 		Iterator it = sourceSet.iterator();
 		while(it.hasNext())
 		{
-			TransactionFlowPair tfp = (TransactionFlowPair) it.next();
+			SynchronizedRegionFlowPair tfp = (SynchronizedRegionFlowPair) it.next();
 			destSet.add(tfp.clone());
 		}
     }

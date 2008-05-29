@@ -16,11 +16,11 @@ import soot.jimple.toolkits.infoflow.*;
 // Basically this is value numbering, done in reverse, interprocedurally, and
 // only tracking the values that contribute to the given set of side effects.
 
-public class LocksetAnalysis extends BackwardFlowAnalysis
+public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 {
 	UnitGraph graph;
 	SootMethod method;
-	TransactionAwareSideEffectAnalysis tasea;
+	CriticalSectionAwareSideEffectAnalysis tasea;
 	RWSet contributingRWSet;
 	CriticalSection tn;
 	Stmt begin;
@@ -32,7 +32,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 	
 	static HashSet analyzing = new HashSet();
 	
-	public LocksetAnalysis(UnitGraph g)
+	public LockableReferenceAnalysis(UnitGraph g)
 	{
 		super(g);
 		
@@ -57,7 +57,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		G.v().out.println(msg);
 	}
 
-	public List<EquivalentValue> getLocksetOf(TransactionAwareSideEffectAnalysis tasea, RWSet contributingRWSet, CriticalSection tn)
+	public List<EquivalentValue> getLocksetOf(CriticalSectionAwareSideEffectAnalysis tasea, RWSet contributingRWSet, CriticalSection tn)
 	{
 		analyzing.add(method);
 
@@ -280,7 +280,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 	}
 	
 	// adds a value from a subanalysis into this analysis, and returns the group it gets put into
-	public Integer addFromSubanalysis(LocksetFlowInfo outInfo, LocksetAnalysis la, Stmt stmt, Value lock)
+	public Integer addFromSubanalysis(LocksetFlowInfo outInfo, LockableReferenceAnalysis la, Stmt stmt, Value lock)
 	{
 		Map<EquivalentValue, Integer> out = outInfo.groups;
 		InvokeExpr ie = stmt.getInvokeExpr();
@@ -521,7 +521,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 							// find and add this callsite's uses
 							if(!analyzing.contains(called))
 							{
-								LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(called.retrieveActiveBody()));
+								LockableReferenceAnalysis la = new LockableReferenceAnalysis(new BriefUnitGraph(called.retrieveActiveBody()));
 								List<EquivalentValue> innerLockset = la.getLocksetOf(tasea, stmtRW, null);
 								
 								if(innerLockset == null || innerLockset.size() <= 0)

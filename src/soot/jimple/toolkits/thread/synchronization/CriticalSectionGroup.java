@@ -5,7 +5,7 @@ import soot.*;
 import soot.jimple.toolkits.pointer.RWSet;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 
-class TransactionGroup implements Iterable<CriticalSection>
+class CriticalSectionGroup implements Iterable<CriticalSection>
 {
 	int groupNum; 
 	
@@ -21,7 +21,7 @@ class TransactionGroup implements Iterable<CriticalSection>
 	public Value lockObject;
 	public boolean useLocksets;
 	
-	public TransactionGroup(int groupNum)
+	public CriticalSectionGroup(int groupNum)
 	{
 		this.groupNum = groupNum;
 		this.criticalSections = new ArrayList<CriticalSection>();
@@ -61,7 +61,7 @@ class TransactionGroup implements Iterable<CriticalSection>
 		return criticalSections.iterator();
 	}
 	
-	public void mergeGroups(TransactionGroup other)
+	public void mergeGroups(CriticalSectionGroup other)
 	{
 		if(other == this)
 			return;

@@ -16,12 +16,12 @@ import soot.jimple.spark.sets.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 
-public class TransactionTransformer extends SceneTransformer
+public class LockAllocator extends SceneTransformer
 {
-    public TransactionTransformer(Singletons.Global g){}
-    public static TransactionTransformer v() 
+    public LockAllocator(Singletons.Global g){}
+    public static LockAllocator v() 
 	{ 
-		return G.v().soot_jimple_toolkits_thread_transaction_TransactionTransformer();
+		return G.v().soot_jimple_toolkits_thread_synchronization_LockAllocator();
 	}
 	
 	// Lock options
@@ -165,7 +165,7 @@ public class TransactionTransformer extends SceneTransformer
     		    	methodToExcUnitGraph.put(method, eug);
     		    	
     	    		// run the intraprocedural analysis
-    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug, optionOpenNesting, tlo);
+    				SynchronizedRegionFinder ta = new SynchronizedRegionFinder(eug, b, optionPrintDebug, optionOpenNesting, tlo);
     				Chain units = b.getUnits();
     				Unit lastUnit = (Unit) units.getLast();
     				FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
@@ -182,7 +182,7 @@ public class TransactionTransformer extends SceneTransformer
     	{
     		List fList = fs.toList();
     		for(int i = 0; i < fList.size(); i++)
-    			transactions.add(((TransactionFlowPair) fList.get(i)).tn);
+    			transactions.add(((SynchronizedRegionFlowPair) fList.get(i)).tn);
     	}
 
 		// Assign Names To Transactions
@@ -200,8 +200,8 @@ public class TransactionTransformer extends SceneTransformer
     	// nesting model.
     	G.v().out.println("[wjtp.tn] *** Find Transitive Read/Write Sets *** " + (new Date()));
     	PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-    	TransactionAwareSideEffectAnalysis tasea = null;
-		tasea = new TransactionAwareSideEffectAnalysis(
+    	CriticalSectionAwareSideEffectAnalysis tasea = null;
+		tasea = new CriticalSectionAwareSideEffectAnalysis(
 					pta, 
 					Scene.v().getCallGraph(), (optionOpenNesting ? transactions : null), tlo);
     	Iterator<CriticalSection> tnIt = transactions.iterator();
@@ -267,8 +267,8 @@ public class TransactionTransformer extends SceneTransformer
     	// *** Calculate Locking Groups ***
     	// Search for data dependencies between transactions, and split them into disjoint sets
     	G.v().out.println("[wjtp.tn] *** Calculate Locking Groups *** " + (new Date()));
-    	TransactionInterferenceGraph ig = 
-    		new TransactionInterferenceGraph(
+    	CriticalSectionInterferenceGraph ig = 
+    		new CriticalSectionInterferenceGraph(
     				transactions, mhp, optionOneGlobalLock,
     				optionLeaveOriginalLocks, optionIncludeEmptyPossibleEdges);
     	
@@ -293,7 +293,7 @@ public class TransactionTransformer extends SceneTransformer
 	    	{
 	    		if(tn.setNumber <= 0)
 	    			continue;
-	    		for(TransactionDataDependency tdd : tn.edges)
+	    		for(CriticalSectionDataDependency tdd : tn.edges)
 	    			tn.group.rwSet.union(tdd.rw);
 	    	}
 	    }
@@ -369,7 +369,7 @@ public class TransactionTransformer extends SceneTransformer
 			insertedGlobalLock[0] = false;
 			for(int i = 1; i < ig.groupCount(); i++)
 			{
-				TransactionGroup tnGroup = ig.groups().get(i);
+				CriticalSectionGroup tnGroup = ig.groups().get(i);
 				insertedGlobalLock[i] = (!optionOneGlobalLock) && (tnGroup.useDynamicLock || tnGroup.useLocksets);
 			}
 			
@@ -381,7 +381,7 @@ public class TransactionTransformer extends SceneTransformer
 					{
 	    		    	FlowSet fs = methodToFlowSet.get(method);
 	    	    		if(fs != null) // (newly added methods need not be transformed)
-	    	    			TransactionBodyTransformer.v().internalTransform(method.getActiveBody(), fs, ig.groups(), insertedGlobalLock); 
+	    	    			LockAllocationBodyTransformer.v().internalTransform(method.getActiveBody(), fs, ig.groups(), insertedGlobalLock); 
 					}
 	    	    }
 	    	}
@@ -389,7 +389,7 @@ public class TransactionTransformer extends SceneTransformer
 	}
     
 	protected void findLockableReferences(List<CriticalSection> AllTransactions,
-			PointsToAnalysis pta, TransactionAwareSideEffectAnalysis tasea,
+			PointsToAnalysis pta, CriticalSectionAwareSideEffectAnalysis tasea,
 			Map<Value, Integer> lockToLockNum,
 			List<PointsToSetInternal> lockPTSets) {
 		// For each transaction, if the group's R/Ws may be fields of the same object, 
@@ -408,7 +408,7 @@ public class TransactionTransformer extends SceneTransformer
 				
 				// Get list of objects (FieldRef or Local) to be locked (lockset analysis)
 				G.v().out.println("[wjtp.tn] * " + tn.name + " *");
-				LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
+				LockableReferenceAnalysis la = new LockableReferenceAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
 				tn.lockset = la.getLocksetOf(tasea, tn.group.rwSet, tn);
 				
 				// Determine if list is suitable for the selected locking scheme
@@ -557,10 +557,10 @@ public class TransactionTransformer extends SceneTransformer
 			}
 		}
 	}
-	public void setFlagsForDynamicAllocations(TransactionInterferenceGraph ig) {
+	public void setFlagsForDynamicAllocations(CriticalSectionInterferenceGraph ig) {
 		for(int group = 0; group < ig.groupCount() - 1; group++)
 		{
-			TransactionGroup tnGroup = ig.groups().get(group + 1);
+			CriticalSectionGroup tnGroup = ig.groups().get(group + 1);
 
 			if(optionUseLocksets)
 			{
@@ -589,11 +589,11 @@ public class TransactionTransformer extends SceneTransformer
 			}
 		}
 	}
-	public void setFlagsForStaticAllocations(TransactionInterferenceGraph ig) {
+	public void setFlagsForStaticAllocations(CriticalSectionInterferenceGraph ig) {
 		// Allocate one new static lock for each group.
 		for(int group = 0; group < ig.groupCount() - 1; group++)
 		{
-			TransactionGroup tnGroup = ig.groups().get(group + 1);
+			CriticalSectionGroup tnGroup = ig.groups().get(group + 1);
 			tnGroup.isDynamicLock = false;
 			tnGroup.useDynamicLock = false; 
 			tnGroup.lockObject = null;
@@ -601,7 +601,7 @@ public class TransactionTransformer extends SceneTransformer
 	}
 
     private void analyzeExistingLocks(List<CriticalSection> AllTransactions,
-			TransactionInterferenceGraph ig) {
+			CriticalSectionInterferenceGraph ig) {
 		setFlagsForStaticAllocations(ig);
 		
 		// if for any lock there is any def to anything other than a static field, then it's a local lock.			
@@ -735,7 +735,7 @@ public class TransactionTransformer extends SceneTransformer
     	}
 	}	
 
-	public void printGraph(Collection<CriticalSection> AllTransactions, TransactionInterferenceGraph ig, Map<Value, Integer> lockToLockNum)
+	public void printGraph(Collection<CriticalSection> AllTransactions, CriticalSectionInterferenceGraph ig, Map<Value, Integer> lockToLockNum)
 	{
 		final String[] colors = {"black", "blue", "blueviolet", "chartreuse", "crimson", "darkgoldenrod1", "darkseagreen", "darkslategray", "deeppink",
 			"deepskyblue1", "firebrick1", "forestgreen", "gold", "gray80", "navy", "pink", "red", "sienna", "turquoise1", "yellow"};
@@ -834,10 +834,10 @@ public class TransactionTransformer extends SceneTransformer
 					}
 					else
 					{
-						Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
+						Iterator<CriticalSectionDataDependency> tnedgeit = tn.edges.iterator();
 						while(tnedgeit.hasNext())
 						{
-							TransactionDataDependency edge = tnedgeit.next();
+							CriticalSectionDataDependency edge = tnedgeit.next();
 							CriticalSection tnedge = edge.other;
 							if(tnedge.setNumber == group + 1)
 								G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(3)\"];");
@@ -870,10 +870,10 @@ public class TransactionTransformer extends SceneTransformer
 					else
 						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1 style=\"setlinewidth(1)\"];");
 
-					Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
+					Iterator<CriticalSectionDataDependency> tnedgeit = tn.edges.iterator();
 					while(tnedgeit.hasNext())
 					{
-						TransactionDataDependency edge = tnedgeit.next();
+						CriticalSectionDataDependency edge = tnedgeit.next();
 						CriticalSection tnedge = edge.other;
 						if(tnedge.setNumber != tn.setNumber || tnedge.setNumber == -1)
 							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(1)\"];");
@@ -922,7 +922,7 @@ public class TransactionTransformer extends SceneTransformer
 			else
 				G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] "); // label provided by previous print statement
 			G.v().out.print("Edges: (" + tn.edges.size() + ") "); // label provided by previous print statement
-			Iterator<TransactionDataDependency> tnedgeit = tn.edges.iterator();
+			Iterator<CriticalSectionDataDependency> tnedgeit = tn.edges.iterator();
 			while(tnedgeit.hasNext())
 				G.v().out.print(tnedgeit.next().other.name + " ");
 			if(tn.group != null && tn.group.useLocksets)
@@ -936,12 +936,12 @@ public class TransactionTransformer extends SceneTransformer
 		}
 	}
 	
-	public void printGroups(Collection<CriticalSection> AllTransactions, TransactionInterferenceGraph ig)
+	public void printGroups(Collection<CriticalSection> AllTransactions, CriticalSectionInterferenceGraph ig)
 	{
 			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
 			for(int group = 0; group < ig.groupCount() - 1; group++)
     		{
-    			TransactionGroup tnGroup = ig.groups().get(group + 1);
+    			CriticalSectionGroup tnGroup = ig.groups().get(group + 1);
     			if(tnGroup.size() > 0)
     			{
 	    			G.v().out.print("Group " + (group + 1) + " ");

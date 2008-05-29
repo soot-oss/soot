@@ -37,7 +37,7 @@ public class DeadlockDetector {
 		this.optionPrintDebug = optionPrintDebug;
 		this.optionRepairDeadlock = optionRepairDeadlock;
 		this.criticalSections = criticalSections;
-		this.tt = new TransitiveTargets(Scene.v().getCallGraph(), new Filter(new TransactionVisibleEdgesPred(null)));
+		this.tt = new TransitiveTargets(Scene.v().getCallGraph(), new Filter(new CriticalSectionVisibleEdgesPred(null)));
 	}
 	
 	public void detectComponentBasedDeadlock()
@@ -462,8 +462,8 @@ public class DeadlockDetector {
 					}
 					newLockset.add(i, lockEqVal);
 				}
-				G.v().out.println("reordered from " + TransactionTransformer.locksetToLockNumString(tn.lockset, lockToLockNum) +
-								" to " + TransactionTransformer.locksetToLockNumString(newLockset, lockToLockNum));
+				G.v().out.println("reordered from " + LockAllocator.locksetToLockNumString(tn.lockset, lockToLockNum) +
+								" to " + LockAllocator.locksetToLockNumString(newLockset, lockToLockNum));
 
 				tn.lockset = newLockset;
 			}

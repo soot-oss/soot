@@ -15,10 +15,10 @@ import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
 
-public class TransactionInterferenceGraph {
+public class CriticalSectionInterferenceGraph {
 
 	int nextGroup;
-	List<TransactionGroup> groups;
+	List<CriticalSectionGroup> groups;
 	
 	List<CriticalSection> criticalSections;
 	MhpTester mhp;
@@ -27,7 +27,7 @@ public class TransactionInterferenceGraph {
 	boolean optionLeaveOriginalLocks = false;
 	boolean optionIncludeEmptyPossibleEdges = false;
 	
-	public TransactionInterferenceGraph(List<CriticalSection> criticalSections, MhpTester mhp, boolean optionOneGlobalLock, boolean optionLeaveOriginalLocks, boolean optionIncludeEmptyPossibleEdges)
+	public CriticalSectionInterferenceGraph(List<CriticalSection> criticalSections, MhpTester mhp, boolean optionOneGlobalLock, boolean optionLeaveOriginalLocks, boolean optionIncludeEmptyPossibleEdges)
 	{
 		this.criticalSections = criticalSections;
 		this.mhp = mhp;
@@ -44,7 +44,7 @@ public class TransactionInterferenceGraph {
 		return nextGroup;
 	}
 	
-	public List<TransactionGroup> groups()
+	public List<CriticalSectionGroup> groups()
 	{
 		return groups;
 	}
@@ -52,12 +52,12 @@ public class TransactionInterferenceGraph {
 	public void calculateGroups()
 	{
 		nextGroup = 1;
-		groups = new ArrayList<TransactionGroup>();
-		groups.add(new TransactionGroup(0)); // dummy group
+		groups = new ArrayList<CriticalSectionGroup>();
+		groups.add(new CriticalSectionGroup(0)); // dummy group
 		
 		if(optionOneGlobalLock) // use one group for all transactions
 		{
-			TransactionGroup onlyGroup = new TransactionGroup(nextGroup);
+			CriticalSectionGroup onlyGroup = new CriticalSectionGroup(nextGroup);
 	    	Iterator<CriticalSection> tnIt1 = criticalSections.iterator();
 	    	while(tnIt1.hasNext())
 	    	{
@@ -185,7 +185,7 @@ public class TransactionInterferenceGraph {
 			    			}			    			
 		    				
 		    				// Record this 
-		    				tn1.edges.add(new TransactionDataDependency(tn2, size, rw));
+		    				tn1.edges.add(new CriticalSectionDataDependency(tn2, size, rw));
 	                        // Don't add opposite... all n^2 pairs will be visited separately
 		    				
 		    				if(size > 0)
@@ -213,7 +213,7 @@ public class TransactionInterferenceGraph {
 			    					// if tn2 is NOT already in a group
 			    					if(tn2.setNumber == 0)
 		 		    				{
-		 		    					TransactionGroup newGroup = new TransactionGroup(nextGroup);
+		 		    					CriticalSectionGroup newGroup = new CriticalSectionGroup(nextGroup);
 										newGroup.add(tn1);
 										newGroup.add(tn2);
 										groups.add(newGroup);

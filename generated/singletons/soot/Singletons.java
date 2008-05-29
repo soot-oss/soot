@@ -862,10 +862,10 @@ public class Singletons {
         return instance_soot_jimple_spark_sets_AllSharedHybridNodes;
     }
 
-    private soot.jimple.toolkits.thread.synchronization.TransactionTransformer instance_soot_jimple_toolkits_thread_transaction_TransactionTransformer;
-    public soot.jimple.toolkits.thread.synchronization.TransactionTransformer soot_jimple_toolkits_thread_transaction_TransactionTransformer() {
-        if( instance_soot_jimple_toolkits_thread_transaction_TransactionTransformer == null ) instance_soot_jimple_toolkits_thread_transaction_TransactionTransformer = new soot.jimple.toolkits.thread.synchronization.TransactionTransformer( g );
-        return instance_soot_jimple_toolkits_thread_transaction_TransactionTransformer;
+    private soot.jimple.toolkits.thread.synchronization.LockAllocator instance_soot_jimple_toolkits_thread_synchronization_LockAllocator;
+    public soot.jimple.toolkits.thread.synchronization.LockAllocator soot_jimple_toolkits_thread_synchronization_LockAllocator() {
+        if( instance_soot_jimple_toolkits_thread_synchronization_LockAllocator == null ) instance_soot_jimple_toolkits_thread_synchronization_LockAllocator = new soot.jimple.toolkits.thread.synchronization.LockAllocator( g );
+        return instance_soot_jimple_toolkits_thread_synchronization_LockAllocator;
     }
 
     private soot.JastAddInitialResolver instance_soot_JastAddInitialResolver;

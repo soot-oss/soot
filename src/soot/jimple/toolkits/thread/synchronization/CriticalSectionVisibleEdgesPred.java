@@ -25,12 +25,12 @@ import soot.jimple.toolkits.callgraph.*;
 /** A predicate that accepts edges that are not part of the class library and do not have a source statement that falls inside a transaction.
  * @author Richard L. Halpert
  */
-public class TransactionVisibleEdgesPred implements EdgePredicate
+public class CriticalSectionVisibleEdgesPred implements EdgePredicate
 {
 	Collection<CriticalSection> tns;
 	CriticalSection exemptTn;
 	
-	public TransactionVisibleEdgesPred(Collection<CriticalSection> tns)
+	public CriticalSectionVisibleEdgesPred(Collection<CriticalSection> tns)
 	{
 		this.tns = tns;
 	}
