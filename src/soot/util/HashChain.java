@@ -169,8 +169,11 @@ public class HashChain<E> extends AbstractCollection<E>
 
         if(map.containsKey(toInsert))
             throw new RuntimeException("Chain already contains object.");
-        stateCount++;
         Link temp = map.get(point);
+        if(temp==null) {
+        	throw new RuntimeException("Insertion point not found in chain!");
+        }
+        stateCount++;
         
         Link newLink = temp.insertBefore(toInsert);
         map.put(toInsert, newLink);
