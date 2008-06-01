@@ -1440,6 +1440,21 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         if (branchStmt.kind() == polyglot.ast.Branch.BREAK){
             if (branchStmt.label() == null) {
                 soot.jimple.Stmt gotoEndNoop = endControlNoop.pop();
+                
+                // handle monitor exits before break if necessary
+                if (monitorStack != null){
+                    Stack<Local> putBack = new Stack<Local>();
+                    while (!monitorStack.isEmpty()){
+                        soot.Local exitVal = (soot.Local)monitorStack.pop();
+                        putBack.push(exitVal);
+                        soot.jimple.ExitMonitorStmt emStmt = soot.jimple.Jimple.v().newExitMonitorStmt(exitVal);
+                        body.getUnits().add(emStmt);
+                    }
+                    while(!putBack.isEmpty()){
+                        monitorStack.push(putBack.pop());
+                    }
+                }
+                
                 soot.jimple.Stmt gotoEnd = soot.jimple.Jimple.v().newGotoStmt(gotoEndNoop);
                 endControlNoop.push(gotoEndNoop);
                 body.getUnits().add(gotoEnd);
@@ -1454,6 +1469,21 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         else if (branchStmt.kind() == polyglot.ast.Branch.CONTINUE){
             if (branchStmt.label() == null) {
                 soot.jimple.Stmt gotoCondNoop = condControlNoop.pop();
+
+                // handle monitor exits before continue if necessary
+                if (monitorStack != null){
+                    Stack<Local> putBack = new Stack<Local>();
+                    while (!monitorStack.isEmpty()){
+                        soot.Local exitVal = (soot.Local)monitorStack.pop();
+                        putBack.push(exitVal);
+                        soot.jimple.ExitMonitorStmt emStmt = soot.jimple.Jimple.v().newExitMonitorStmt(exitVal);
+                        body.getUnits().add(emStmt);
+                    }
+                    while(!putBack.isEmpty()){
+                        monitorStack.push(putBack.pop());
+                    }
+                }
+                
                 soot.jimple.Stmt gotoCond = soot.jimple.Jimple.v().newGotoStmt(gotoCondNoop);
                 condControlNoop.push(gotoCondNoop);
                 body.getUnits().add(gotoCond);
