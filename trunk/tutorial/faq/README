@@ -1,0 +1,3 @@
+Type "make" to build the latex document in DVI, PS, PDF and HTML.
+
+Type "make upload" to push everything to the Sable webpage.

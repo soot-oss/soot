@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+
+<project default="compile" name="Soot Build File">
+    <property file="ant.settings"/>
+    <target name="settings">
+        <fail
+            message="Please copy ant.settings.template to ant.settings, and set the variables in it."
+            unless="jasmin.jar"
+        />
+    </target>
+
+    <target name="compile" depends="settings,sablecc,jastadd,copypeephole,settings,singletons,options">
+    	<mkdir dir="classes"/>
+        <javac
+            destdir="classes"
+            debug="true"
+            deprecation="on"
+        	source="1.5"
+        	target="1.5"
+        	fork="true"
+        	memorymaximumsize="512m"
+        >
+        	<compilerarg value="-Xlint:all"/>
+        	<compilerarg value="-Xlint:-unchecked"/>
+        	<compilerarg value="-Xlint:-serial"/>
+        	<compilerarg value="-Xlint:-dep-ann"/>
+        	<compilerarg value="-Xlint:-cast"/>
+        	<classpath>
+        		<pathelement location="classes"/>
+        		<pathelement location="${polyglot.jar}"/>
+           		<pathelement location="${jasmin.jar}"/>
+        	</classpath>
+            <src path="src"/>
+            <src path="generated/singletons"/>
+            <src path="generated/sablecc"/>
+            <src path="generated/jastadd"/>
+            <src path="generated/options"/>
+        </javac>
+    </target>
+
+    <target name="singletons" depends="singletons-dep" unless="singletons-uptodate">
+        <exec executable="${basedir}/src/make_singletons" dir="${basedir}/src" output="${basedir}/generated/singletons/soot/Singletons.java"/>
+    </target>
+    <target name="singletons-dep">
+        <uptodate property="singletons-uptodate" targetfile="generated/singletons/soot/Singletons.java">
+            <srcfiles dir="src" includes="singletons.list"/>
+        </uptodate>
+    </target>
+
+    <target name="options" depends="settings">
+        <xslt
+            style="src/soot/options/make-soot-options.xsl"
+            in="src/soot/options/soot_options.xml"
+            out="generated/options/soot/options/Options.java"
+        />
+        <xslt
+            style="src/soot/options/ant-task.xsl"
+            in="src/soot/options/soot_options.xml"
+            out="generated/options/soot/AntTask.java"
+        />
+        <xslt
+            style="src/soot/options/phase_options_dialog.xsl"
+            in="src/soot/options/soot_options.xml"
+            out="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"
+        />
+    </target>
+
+    <target name="copypeephole" depends="sablecc,settings">
+        <copy file="src/soot/baf/toolkits/base/peephole.dat" tofile="classes/soot/baf/toolkits/base/peephole.dat"/>
+        <copy file="generated/sablecc/soot/jimple/parser/parser/parser.dat" tofile="classes/soot/jimple/parser/parser/parser.dat"/>
+        <copy file="generated/sablecc/soot/jimple/parser/lexer/lexer.dat" tofile="classes/soot/jimple/parser/lexer/lexer.dat"/>
+    </target>
+
+    <target name="determine-sablecc-uptodate">
+        <uptodate property="sablecc.uptodate" srcfile="src/jimple.scc" targetfile="generated/sablecc/soot/jimple/parser/parser/Parser.java"/>
+    </target>
+
+    <target name="sablecc" depends="determine-sablecc-uptodate,settings" unless="sablecc.uptodate">
+        <apply executable="sablecc">
+            <arg value="-d generated/sablecc"/>
+            <fileset dir="src" includes="jimple.scc"/>
+        </apply>
+    </target>
+	
+    <target name="determine-jastadd-uptodate" depends="settings" if="jastaddfrontend.loc">
+    	<uptodate property="jastadd.uptodate" targetfile="generated/jastadd/beaver/Action.java">
+    	    <srcfiles dir= "${jastaddfrontend.loc}" includes="**/*.jrag,**/*.flex,**/*.parser,**/*.scanner"/>
+    	</uptodate>
+    </target>
+
+    <target name="jastadd" depends="determine-jastadd-uptodate,settings" unless="jastadd.uptodate" if="jastaddfrontend.loc">
+    	<ant antfile="${jastaddfrontend.loc}/build.xml" target="gen" inheritall="false"/>
+    	<mkdir dir="generated/jastadd"/>
+    	<copy todir="generated/jastadd/soot">
+    	    <fileset dir="${jastaddfrontend.loc}/soot" includes="**/*.java"/>
+    	</copy>
+    	<copy todir="generated/jastadd/beaver">
+    	    <fileset dir="${jastaddfrontend.loc}/beaver" includes="**/*.java"/>
+    	</copy>
+    </target>
+
+    <target name="javadoc">
+        <javadoc
+            classpath="classes:${polyglot.jar}:${jasmin.jar}"
+            sourcepath="src:generated/singletons:generated/sablecc:generated/options"
+            destdir="doc"
+            maxmemory="400m"
+            link="${javaapi.url}"
+            windowtitle="Soot API"
+            verbose="true"
+            use="true"
+        >
+            <fileset dir="src" includes="**/*.java"/>
+        </javadoc>
+    </target>
+
+    <target name="clean">
+        <delete quiet="true">
+            <fileset dir="classes" includes="**/*.class" />
+            <fileset dir="testclasses" includes="**/*.class" />
+            <fileset dir="eclipse/ca.mcgill.sable.soot/classes" includes="**/*.class" />
+            <fileset dir="eclipse/ca.mcgill.sable.graph/classes" includes="**/*.class" />
+        </delete>
+    </target>
+
+    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-options,veryclean-sablecc,veryclean-jastadd"/>
+    <target name="veryclean-singletons">
+        <delete quiet="true">
+            <fileset dir="generated/singletons" includes="**/*" />
+        </delete>
+    </target>
+    <target name="veryclean-options">
+        <delete quiet="true">
+            <fileset dir="generated/options" includes="**/*" />
+        	<filename name="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"/>
+        </delete>
+    </target>
+    <target name="veryclean-sablecc">
+        <input
+            message="This will delete files that require SABLECC to be installed to regenerate. Are you sure?"
+            validargs="y,n"
+            addproperty="do.sablecc.delete"
+        />
+        <condition property="do.sablecc.abort">
+            <equals arg1="n" arg2="${do.sablecc.delete}"/>
+        </condition>
+        <fail if="do.sablecc.abort">Build aborted by user.</fail>
+        <delete quiet="true">
+            <fileset dir="generated/sablecc" includes="**/*" />
+        </delete>
+    </target>
+    <target name="veryclean-jastadd">
+        <input
+            message="This will delete files that require JastAdd to be installed to regenerate. Are you sure?"
+            validargs="y,n"
+            addproperty="do.jastadd.delete"
+        />
+        <condition property="do.jastadd.abort">
+            <equals arg1="n" arg2="${do.jastadd.delete}"/>
+        </condition>
+        <fail if="do.jastadd.abort">Build aborted by user.</fail>
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="generated/jastadd" includes="**/*" />
+        </delete>
+    </target>
+
+    <target name="badfields" depends="compile,settings">
+        <java
+            classname="soot.tools.BadFields"
+            maxmemory="200m"
+            fork="true"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}"
+        >
+            <arg value="-w"/>
+            <arg value="-f"/>
+            <arg value="none"/>
+            <arg value="-process-dir"/>
+            <arg value="classes"/>
+            <arg value="soot.Main"/>
+        </java>
+    </target>
+
+    <target name="buildtests" depends="compile,settings">
+        <mkdir dir="testclasses"/>
+        <javac
+            srcdir="tests"
+            destdir="testclasses"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}:${junit.jar}"
+            debug="true"
+            />
+    </target>
+
+    <target name="runtests" depends="buildtests,settings">
+        <junit printsummary="yes">
+            <classpath>
+                <pathelement location="testclasses"/>
+                <pathelement location="classes"/>
+                <pathelement location="${polyglot.jar}"/>
+                <pathelement location="${jasmin.jar}"/>
+            </classpath>
+
+            <formatter type="plain"/>
+            <batchtest>
+                <fileset dir="testclasses" includes="**/*.class"/>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="release" depends="barebones,javadoc,settings">
+    </target>
+
+    <target name="barebones" depends="clean,options,sablecc,settings">
+        <tar destfile="${release.loc}/sootsrc-${soot.version}.tar.gz" compression="gzip" longfile="gnu">
+            <tarfileset dir="."/>
+        </tar>
+        <jar destfile="${release.loc}/sootsrc-${soot.version}.jar">
+            <fileset dir="."/>
+        </jar>
+    </target>
+
+    <target name="classesjar" depends="settings,compile">
+        <jar destfile="${release.loc}/sootclasses-${soot.version}.jar">
+            <fileset dir="classes"/>
+        </jar>
+    </target>
+
+    <target name="eclipse-plugin" depends="compile,settings,graph-plugin">
+        <xslt
+            style="src/soot/options/phase_options_dialog.xsl"
+            in="src/soot/options/soot_options.xml"
+            out="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"
+        />
+        <javac
+            destdir="eclipse/ca.mcgill.sable.soot/classes"
+            debug="true"
+        >
+            <src path="eclipse/ca.mcgill.sable.soot/src"/>
+            <classpath>
+                <pathelement location="classes"/>
+                <pathelement location="eclipse/ca.mcgill.sable.graph/graph.jar"/>
+                <fileset dir="${eclipse.loc}/plugins/" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+        <jar destfile="eclipse/ca.mcgill.sable.soot/soot-plugin.jar">
+            <fileset dir="eclipse/ca.mcgill.sable.soot/classes"/>
+            <fileset dir="eclipse/ca.mcgill.sable.soot/src" includes="**/*.properties"/>
+        </jar>
+        <replaceregexp
+            match="sootclasses-.*\.jar"
+            replace="sootclasses-${soot.version}.jar"
+        >
+            <fileset dir="eclipse/ca.mcgill.sable.soot" includes="plugin.xml"/>
+        </replaceregexp>
+    </target>
+
+    <!-- build the graph plugin-->
+    <target name="graph-plugin">
+        <javac
+            destdir="eclipse/ca.mcgill.sable.graph/classes"
+            debug="true"
+        >
+        <src path="eclipse/ca.mcgill.sable.graph/src"/>
+        <classpath>
+            <pathelement location="classes"/>
+            <fileset dir="${eclipse.loc}/plugins/" includes="**/*.jar"/>
+        </classpath>
+        </javac>
+        <jar destfile="eclipse/ca.mcgill.sable.graph/graph.jar">
+            <fileset dir="eclipse/ca.mcgill.sable.graph/classes"/>
+        </jar>
+        
+    </target>
+    
+</project>

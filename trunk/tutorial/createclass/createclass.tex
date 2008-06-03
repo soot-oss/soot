@@ -1,0 +1,433 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{html}
+
+\title{Creating a class from scratch with Soot}
+\author{Feng Qian 
+(\htmladdnormallink{fqian@sable.mcgill.ca}{mailto:fqian@sable.mcgill.ca}) \\
+Patrick Lam 
+(\htmladdnormallink{plam@sable.mcgill.ca}{mailto:plam@sable.mcgill.ca}) \\
+Chris Goard 
+(\htmladdnormallink{cgoard@sable.mcgill.ca}{mailto:cgoard@sable.mcgill.ca})}
+\date{February 4, 2005}
+
+\begin{document}
+
+\maketitle
+
+This tutorial is based on the createclass example, written by
+Raja-Vall\'ee-Rai and distributed with the Ashes tools.
+
+\section{Goals}
+By the end of this lesson, the student should be able to:
+\begin{itemize}
+\item name the basic classes of Soot and describe their functionality
+\item create a simple program which uses Soot to create a classfile from scratch.
+\end{itemize}
+
+The {\tt createclass} example creates the Java class file {\tt
+HelloWorld.class} from scratch, using the Soot framework.
+
+The student should refer to the {\tt Main.java} file, which
+puts all of the steps together in a working Java file.  Even though 
+a typical use of Soot would be to write a new {\tt Transformer}, extending
+Soot's functionality, we illustrate a standalone application here;
+the same classes and methods are used in either case.
+
+\section{Creating a class file using Soot}
+
+First, we need to create a class to put methods into.
+The following steps are necessary to create a class file.
+
+\subsection{Loading {\tt java.lang.Object} and Library Classes}
+
+{\em Load {\tt java.lang.Object}, the root of the Java class 
+hierarchy.}
+
+This step is not necessary when building code that extends the
+Soot framework; in that case, loading of classfiles is already done
+when user code is called.
+
+\noindent
+\begin{verbatim}
+    Scene.v().loadClassAndSupport("java.lang.Object");
+\end{verbatim}
+
+This line of code causes Soot to load the {\tt java.lang.Object} class
+and create the corresponding {\tt SootClass} object, as well as {\tt
+SootMethods} and {\tt SootFields} for its fields.  Of course, {\tt
+java.lang.Object} has references to other objects.  The call to {\tt
+loadClassAndSupport} will load the transitive closure of the specified
+class, so that all types needed in order to load {\tt
+java.lang.Object} are themselves loaded.
+
+This process is known as {\em resolution}.
+
+Since our HelloWorld program will be using classes in the standard library, we 
+must also resolve these:
+
+\noindent
+\begin{verbatim}
+    Scene.v().loadClassAndSupport("java.lang.System");
+\end{verbatim}
+
+These lines reference {\tt Scene.v()}.  The {\tt Scene} is the
+container for all of the {\tt SootClasses} in a program, and provides
+various utility methods.  There is a singleton {\tt Scene} object,
+accessible by calling {\tt Scene.v()}.
+
+\noindent
+{\em Implementation note:} Soot loads these classes from either
+classfiles or {\tt .jimple} input files.  When the former is used,
+Soot will load all class names referred to in the constant pool of
+each class file.  Loading from {\tt .jimple} will make Soot load only
+the required types.
+
+
+\subsection{Creation of a new {\tt SootClass} object}
+
+{\em Create the `HelloWorld' {\tt SootClass}, and set its super class
+    as ``java.lang.Object''.}
+
+\noindent
+\begin{verbatim}    sClass = new SootClass("HelloWorld", Modifier.PUBLIC);\end{verbatim}
+
+This code creates a {\tt SootClass} object for a public class named {\tt
+HelloWorld}.
+
+\noindent
+\begin{verbatim}    sClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));\end{verbatim}
+
+This sets the superclass of the newly-created class to the {\tt SootClass}
+object for {\tt java.lang.Object}.  Note the use of the utility method
+{\tt getSootClass} on the Scene.
+
+\noindent
+\begin{verbatim}    Scene.v().addClass(sClass); \end{verbatim}
+
+This adds the newly-created {\tt HelloWorld} class to the {\tt Scene}.  All classes
+should belong to the {\tt Scene} once they are created.
+
+\section{Adding methods to {\tt SootClass}es}
+
+{\em Create a {\tt main()} method for {\tt HelloWorld} with an empty body.} 
+
+Now that we have a {\tt SootClass}, we need to add methods to it.
+
+\noindent
+\begin{verbatim}
+    method = new SootMethod("main",                 
+        Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}),
+        VoidType.v(), Modifier.PUBLIC | Modifier.STATIC); 
+\end{verbatim}
+
+We create a new {\tt public static} method, {\tt main}, declare that it takes
+an array of {\tt java.lang.String} objects, and that it returns {\tt void}.
+
+The constructor for {\tt SootMethod} takes a list, so we call the Java
+utility method {\tt Arrays.asList} to create a list from the
+one-element array which we generate on the fly with
+{\tt new Type[] { ... }}.  In the list, we put an array type,
+corresponding to a one-dimensional ArrayType of {\tt java.lang.String}
+objects.  The call to {\tt RefType} fetches the {\em type}
+corresponding to the {\tt java.lang.String} class.
+
+\paragraph{Types} Each {\tt SootClass} represents a Java object.  We can
+instantiate the class, giving an object with a given type.  The two
+notions -- type and class -- are closely related, but distinct.  To
+get the type for the {\tt java.lang.String} class, by name, we call
+{\tt RefType.v("java.lang.String")}.  Given a {\tt SootClass} object
+{\tt sc}, we could also call {\tt sc.getType()} to get the
+corresponding type.
+
+\noindent
+\begin{verbatim}    sClass.addMethod(method); \end{verbatim}
+
+This code adds the method to its containing class.
+
+\section{Adding code to methods}
+
+A method is useless if it doesn't contain any code.  We proceed to add some
+code to the {\tt main} method.  In order to do so, we must pick an intermediate
+representation for the code.
+
+\subsection{Create JimpleBody}
+
+In Soot, we attach a {\em Body} to a SootMethod to associate some code with
+the method.  Each Body knows which SootMethod it corresponds to, but a SootMethod
+only has one active Body at once (accessible via {\tt SootMethod.getActiveBody()}).
+Different types of Body's are provided by the various intermediate representations;
+Soot has {\tt JimpleBody}, {\tt BafBody} and {\tt GrimpBody}.
+
+More precisely, a {\tt Body} has three important features: chains of
+locals, traps and units.  A {\em chain} is a list-like structure that
+provides {\em O(1)} access to insert and delete elements.  {\em Locals}
+are the local variables in the body; {\em traps} say which units catch
+which exceptions; and {\em units} are the statements themselves.
+
+Note that ``unit'' is the term which denotes both statements (as in Jimple)
+and instructions (as in Baf).
+
+{\em Create a Jimple Body for 'main' class, adding locals and instructions to body.}
+
+\begin{verbatim}
+    JimpleBody body = Jimple.v().newBody(method);
+    method.setActiveBody(body);
+\end{verbatim}
+
+We call the Jimple singleton object to get a new {\tt JimpleBody} associated
+with our method, and make it the active body for our method.
+
+\subsection{Adding a Local}
+
+\begin{verbatim}
+    arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
+    body.getLocals().add(arg);
+\end{verbatim}
+
+We create a few new Jimple {\tt Local}s and add them to our Body.
+
+\subsection{Adding a Unit}
+
+\begin{verbatim}
+    units.add(Jimple.v().newIdentityStmt(arg, 
+          Jimple.v().newParameterRef(ArrayType.v
+            (RefType.v("java.lang.String"), 1), 0)));
+\end{verbatim}
+
+The {\tt SootMethod} declares that it has parameters, but these are not
+bound to the locals of the Body.  The IdentityStmt does this; it assigns
+into {\tt arg} the value of the first parameter, which has type ``array of
+strings''.
+
+\begin{verbatim}
+    // insert "tmpRef.println("Hello world!")"
+    {
+        SootMethod toCall = Scene.v().getMethod
+          ("<java.io.PrintStream: void println(java.lang.String)>");
+        units.add(Jimple.v().newInvokeStmt
+            (Jimple.v().newVirtualInvokeExpr
+               (tmpRef, toCall.makeRef(), StringConstant.v("Hello world!"))));
+    }
+\end{verbatim}                      
+
+We get the method with signature 
+{\tt <java.io.PrintStream: void println(java.lang.String)>}
+(it is named {\tt println}, belongs to {\tt PrintStream}, returns 
+{\tt void} and
+takes a {\tt String} as its argument -- this is enough to uniquely
+identify the method), and invoke it with the {\tt StringConstant} 
+``Hello world!''.
+
+\section{Write to class file}
+
+In order to write the program out to a {\tt .class} file, the method bodies 
+must be converted from Jimple to Jasmin, and assembled into bytecode. Assembly 
+into bytecode is performed by a {\tt JasminOutputStream}.
+
+We first construct the output stream that will take Jasmin source and output a 
+{\tt .class} file. We can either specify the filename manually, or we can let 
+soot determine the correct filename. We do the latter, here.
+
+\begin{verbatim}
+    String fileName = SourceLocator.v().getFileNameFor(sClass, Options.output_format_class);
+    OutputStream streamOut = new JasminOutputStream(
+                                 new FileOutputStream(fileName));
+    PrintWriter writerOut = new PrintWriter(
+                                new OutputStreamWriter(streamOut));
+\end{verbatim}
+
+We now convert from Jimple to Jasmin, and print the resulting Jasmin class to 
+the output stream.
+
+\begin{verbatim}
+    JasminClass jasminClass = new soot.jimple.JasminClass(sClass);
+    jasminClass.print(writerOut);
+    writerOut.flush();
+    streamOut.close();
+\end{verbatim}
+
+If we wished to output jimple source instead of a {\tt .class} file, we would 
+use the following code:
+
+\begin{verbatim}
+    String fileName = SourceLocator.v().getFileNameFor(sClass, Options.output_format_jimple);
+    OutputStream streamOut = new FileOutputStream(fileName);
+    PrintWriter writerOut = new PrintWriter(
+                                new OutputStreamWriter(streamOut));
+    Printer.v().printTo(sClass, writerOut);
+    writerOut.flush();
+    streamOut.close();
+\end{verbatim}
+
+We have omitted the {\tt JaminOuputStream}, and are calling the {\tt printTo} 
+method on {\tt Printer}.
+
+The Jimple created for the HelloWorld class is:
+
+\begin{verbatim}
+public class HelloWorld extends java.lang.Object
+{
+   public static void main(java.lang.String[])
+   {
+       java.lang.String[] r0;
+       java.io.PrintStream r1;
+
+       r0 := @parameter0: java.lang.String[];
+       r1 = <java.lang.System: java.io.PrintStream out>;
+       virtualinvoke r1.<java.io.PrintStream: void println(java.lang.String)>
+                  ("Hello world!");
+       return;
+   }
+}
+\end{verbatim}
+
+\section{Conclusion}
+
+We've seen how to use the basic objects and methods of
+Soot, and how to create Jimple statements.  This tutorial was
+brought to you by these classes: {\tt Scene, SootClass, SootMethod,
+Body, JimpleBody, Local,} and {\tt Unit}.
+
+\section*{Appendix A: Complete code for {\tt createclass} example}
+
+The code for this example is reproduced below. It can be downloaded
+at:
+
+ \htmladdnormallink{\tt http://www.sable.mcgill.ca/soot/tutorial/createclass/Main.java}
+{Main.java}.
+
+\begin{verbatim}
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
+
+import soot.*;
+import soot.jimple.*;
+import soot.options.Options;
+import soot.util.*;
+import java.io.*;
+import java.util.*;
+
+/** Example of using Soot to create a classfile from scratch.
+ * The 'createclass' example creates a HelloWorld class file using Soot.
+ * It proceeds as follows:
+ *
+ * - Create a SootClass <code>HelloWorld</code> extending java.lang.Object.
+ *
+ * - Create a 'main' method and add it to the class.
+ *
+ * - Create an empty JimpleBody and add it to the 'main' method.
+ *
+ * - Add locals and statements to JimpleBody.
+ *
+ * - Write the result out to a class file.
+ */
+
+public class Main
+{
+    public static void main(String[] args) throws FileNotFoundException, IOException
+    {
+        SootClass sClass;
+        SootMethod method;
+        
+        // Resolve Dependencies
+           Scene.v().loadClassAndSupport("java.lang.Object");
+           Scene.v().loadClassAndSupport("java.lang.System");
+           
+        // Declare 'public class HelloWorld'   
+           sClass = new SootClass("HelloWorld", Modifier.PUBLIC);
+        
+        // 'extends Object'
+           sClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
+           Scene.v().addClass(sClass);
+           
+        // Create the method, public static void main(String[])
+           method = new SootMethod("main",
+                Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}),
+                VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+        
+           sClass.addMethod(method);
+           
+        // Create the method body
+        {
+            // create empty body
+            JimpleBody body = Jimple.v().newBody(method);
+            
+            method.setActiveBody(body);
+            Chain units = body.getUnits();
+            Local arg, tmpRef;
+            
+            // Add some locals, java.lang.String l0
+                arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
+                body.getLocals().add(arg);
+            
+            // Add locals, java.io.printStream tmpRef
+                tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
+                body.getLocals().add(tmpRef);
+                
+            // add "l0 = @parameter0"
+                units.add(Jimple.v().newIdentityStmt(arg, 
+                     Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
+            
+            // add "tmpRef = java.lang.System.out"
+                units.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
+                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())));
+            
+            // insert "tmpRef.println("Hello world!")"
+            {
+                SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
+                units.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v("Hello world!"))));
+            }                        
+            
+            // insert "return"
+                units.add(Jimple.v().newReturnVoidStmt());
+                     
+        }
+
+        String fileName = SourceLocator.v().getFileNameFor(sClass, Options.output_format_class);
+        OutputStream streamOut = new JasminOutputStream(
+                                    new FileOutputStream(fileName));
+        PrintWriter writerOut = new PrintWriter(
+                                    new OutputStreamWriter(streamOut));
+        JasminClass jasminClass = new soot.jimple.JasminClass(sClass);
+        jasminClass.print(writerOut);
+        writerOut.flush();
+        streamOut.close();
+    }
+        
+}
+\end{verbatim}
+
+\section{History}
+\begin{itemize}
+\item March 8, 2000: Initial version.
+\item September 1, 2000: Changed syntax to conform with the current release.
+\item May 31, 2003: Updated for Soot 2.0.
+\item February 4, 2005: Updated for Soot 2.2.
+\end{itemize}
+
+\end{document}
+

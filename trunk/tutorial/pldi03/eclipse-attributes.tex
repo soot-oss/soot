@@ -1,0 +1,67 @@
+\begin{slide}{Motivation of Soot Attributes in Eclipse}
+\begin{itemize}
+\item The Soot - Eclipse plug-in provides a mechanism for viewing
+attribute information in visual ways within Eclipse.
+\item This can aid:
+\begin{itemize}
+\item software visualization
+\item program understanding
+\item analysis debugging
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Visual Representations}
+\begin{itemize}
+\item Three visual representations of attribute information:
+\begin{itemize}
+\item Text displayed in tooltips
+\item Color highlighting of chunks of code
+\item Pop-up links
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{String Tags}
+\begin{itemize}
+\item {\red StringTag}s attach a string of information to a {\red Host}.
+{\scriptsize
+\begin{verbatim}
+s.addTag(new StringTag(val+": NonNull"));
+\end{verbatim}
+}
+\item The Soot - Eclipse plug-in displays the string as a tooltip when the mouse hovers over a line of text in the Java editor and Jimple editor.
+\end{itemize}
+\sablefootnote{soot.tagkit.StringTag}
+\end{slide}
+
+\begin{slide}{Color Tags}
+\begin{itemize}
+\item {\red ColorTag}s attach a color to a {\red Host}.
+{\scriptsize
+\begin{verbatim}
+v.addTag(new ColorTag(ColorTag.GREEN));
+v.addTag(new ColorTag(255, 0, 0));
+\end{verbatim}
+}
+\item The Soot - Eclipse plug-in highlights the background color of the text in the editor at the appropriate positions with the given color in the Jimple editor.
+\end{itemize}
+\sablefootnote{soot.tagkit.ColorTag}
+\end{slide}
+
+\begin{slide}{Link Tags}
+\begin{itemize}
+\item {\red LinkTag}s attach a string of information, and a link to another part of code to a {\red Host}.
+{\scriptsize
+\begin{verbatim}
+String text = "Target:"+m.toString();
+Host h = m;
+String cName = m.getDeclaringClass().getName();
+s.addTag(new LinkTag(text, h, cName));
+\end{verbatim}
+}
+\item The Soot - Eclipse plug-in displays link which jumps to a another part of the code when clicked in the Jimple Editor.
+\end{itemize}
+\sablefootnote{soot.tagkit.LinkTag}
+\end{slide}
+

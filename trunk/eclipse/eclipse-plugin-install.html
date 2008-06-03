@@ -1,0 +1,72 @@
+<html>
+<title>
+Soot - Eclipse Plugin Installation
+</title>
+<body>
+<h4>Simple Installation</h4>
+<p>
+The easiest way to install the Soot-Eclipse plugin is to download the Eclipse
+Plugin Quickstart jar or tar.gz from the <a href="http://www.sable.mcgill.ca/software/#soot">Soot download page</a>, and expand it
+inside the <tt>plugins</tt> directory of your Eclipse installation.
+This package contains compiled versions of everything you need to run Soot
+in Eclipse: the plugin itself, Soot, Jasmin and Polyglot; these are all placed in
+a subdirectory of your Eclipse plugins directory.
+</p>
+
+<h4>Custom Installation</h4>
+<p>
+For various reasons (such as building Soot from source), you may not want
+to install everything in your Eclipse plugins directory. If you are installing
+the Soot-Eclipse plugin by hand, you must ensure the following:
+</p>
+
+<ol>
+<li><p>The plugin must be compiled.</p>
+
+<p>In the main soot directory there is a file calles <tt>ant.settings.template</tt>. Make a copy of this file, named <tt>ant.settings</tt>, and edit it to reflect the locations of your directories. This is the same settings file for all of Soot so you may have already modified it. Then you can run <tt>ant eclipse-plugin<tt> to compile the plugin.</p> 
+<!--<p>In the directory
+<tt>soot/eclipse/ca.mcgill.sable.soot</tt> of the Soot distribution, there is a
+file called <tt>Makefile.template</tt>. Make a copy of this file, named
+<tt>Makefile</tt>, and edit the first two lines to reflect the locations
+of your Eclipse plugins directory and your Soot classes directory.
+You can then run <tt>make</tt> to compile the plugin.</p>
+-->
+
+<li><p>The following files and directories from
+<tt>soot/eclipse/ca.mcgill.sable.soot</tt> must be copied or symlinked to a
+directory named <tt>ca.mcgill.sable.soot</tt> in your Eclipse plugins directory:
+<ul>
+<li><tt>soot-plugin.jar</tt>
+<li><tt>plugin.xml</tt>
+<li><tt>plugin.properties</tt>
+<li><tt>icons</tt>
+</ul>
+It is OK to just copy or symlink the whole <tt>ca.mcgill.sable.soot</tt>
+directory into the Eclipse plugins directory.</p>
+
+<li><p>The <tt>plugin.xml</tt> file is Eclipse's way of specifying, among other things,
+where to find class files (much the same information as is given in the CLASSPATH
+when running Java from the command line).</p>
+
+<p>The Soot plugin must be able to find the classes
+of Soot and of Jasmin and of Polyglot (this is new - a version of Polyglot can be downloaded from the Soot downloads page in a jar format).</p>
+
+<p>Their locations are specified inside the <tt>plugins.xml</tt>
+by <tt>&lt;library&gt;</tt> tags inside the <tt>&lt;runtime&gt;</tt> tag.
+The <tt>plugin.xml</tt> contains some sample paths that you can edit.
+As on the CLASSPATH, either jars or directories containing classes are allowed. 
+Pathnames can be absolute, or relative to the <tt>plugins/ca.mcgill.sable.soot</tt>
+directory. Eclipse seems to have a bug (or feature) which causes it to ignore
+<tt>..</tt> (parent directory) in the path.</p>
+
+<li>The online help for the plugin is located in the directory 
+<tt>soot/eclipse/ca.mcgill.sable.soot</tt> in the Soot distribution. In order to install it in Eclipse (recommended), the <tt>doc</tt> directory and the three files <tt>toc.xml</tt>, <tt>toc_Concepts.xml</tt> and <tt>toc_Reference.xml</tt> must be copied or symlinked into the ca.mcgill.sable.soot directory in your Eclispe plugins directory.
+<!--
+<li>The online help for the plugin is located in the directory
+<tt>soot/eclipse/ca.mcgill.sable.soot.help</tt> in the Soot
+distribution. In order to install it in Eclipse (recommended), this directory
+must be copied or symlinked into your Eclipse plugins directory.-->
+</ol>
+
+</body>
+</html>

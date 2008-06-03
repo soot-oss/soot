@@ -1,0 +1,60 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2005 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.javaToJimple.toolkits;
+
+import soot.*;
+import soot.jimple.*;
+import java.util.*;
+
+public class GotoEliminator extends BodyTransformer {
+    public GotoEliminator (Singletons.Global g) {}
+    public static GotoEliminator v() { 
+        return G.v().soot_javaToJimple_toolkits_GotoEliminator();
+    }
+
+
+    protected void internalTransform(Body b, String phaseName, Map options){
+
+        G.v().out.println("running goto eliminator");
+        /*
+         * the idea is to look for groups of statements of the form
+         *      goto L0
+         * L0:  goto L1
+         * 
+         * and transform to
+         *      goto L1
+         */
+        
+        Iterator it = b.getUnits().iterator();
+        while (it.hasNext()){
+            Stmt s = (Stmt)it.next();
+            Unit target = null;
+            if (s instanceof IfStmt){
+                target = ((IfStmt)s).getTarget();
+            }
+            else if (s instanceof GotoStmt){
+                target = ((GotoStmt)s).getTarget();
+            }
+            else continue;
+            
+        }
+    }
+
+}

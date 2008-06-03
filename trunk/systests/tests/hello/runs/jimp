@@ -1,0 +1,2 @@
+java soot.Main -cp classes:$CLASSPATH -f jimp Hello
+

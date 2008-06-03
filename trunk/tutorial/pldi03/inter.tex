@@ -1,0 +1,48 @@
+\begin{slide}{Program and Cast}
+\begin{description}
+\item[ACT I ({\em Warming Up}):] \hspace{1in} \\
+\begin{itemize}
+\item Introduction and Soot Basics {\blue (Laurie)}
+\item Intraprocedural Analysis in Soot {\blue (Patrick)}
+\end{itemize}
+\item[ACT II ({\em The Home Stretch}):] \hspace{1in} \\
+\begin{itemize}
+\item {\red Interprocedural Analyses and Call Graphs {\blue (Ond\v{r}ej)}}
+\item Attributes in Soot and Eclipse {\blue (Ond\v{r}ej,Feng,Jennifer)}
+\item Conclusion, Further Reading \& Homework {\blue (Laurie)}
+\end{itemize}
+\end{description}
+\end{slide}
+
+\begin{slide}{Interprocedural Outline}
+\begin{itemize}
+\item Soot's whole-program mode
+\item Call graph
+\item Points-to information (Spark)
+\begin{itemize}
+\item (Spark was my M.Sc. thesis)
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Soot's whole-program mode}
+\begin{itemize}
+\item Use \texttt{-w} switch for whole-program mode
+\item Enables cg, wjtp, wjap packs
+\item Whole-program information from these packs available to rest of Soot through Scene
+\begin{itemize}
+\item Call graph
+\item Points-to information
+\end{itemize}
+\item Whole program analyzed; only application classes written out, not library classes
+\item To also enable wjop, use \texttt{-W}
+\begin{itemize}
+\item Method inlining, static binding
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\input{interprocphases}
+
+\input{callgraph}
+\input{spark}

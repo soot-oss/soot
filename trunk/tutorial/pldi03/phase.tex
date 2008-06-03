@@ -1,0 +1,15 @@
+\newcommand{\rep}[1]{#1 #1 #1 #1}
+\newcommand{\scenephase}[2]{%
+\pstree[treemode=R]{\Tr{\psframebox{\vbox to6cm{\vspace{\fill}\hbox{\rotatebox{270}{#1}}\vspace{\fill}}}}}{#2}}
+\newcommand{\jbphase}[2]{%
+\pstree[treemode=L]{#2}{\rep{\Tr{\psframebox{\vbox to1cm{\vspace{\fill}\hbox{#1}\vspace{\fill}}}}}}}
+\newcommand{\bodyphase}[2]{%
+\pstree[treemode=R]{\Tr{\psframebox{\vbox to1cm{\vspace{\fill}\hbox{#1}\vspace{\fill}}}}}{#2}}
+
+\begin{slide}{Soot phases}
+\begin{center}
+\psset{levelsep=*.3,treesep=.4}
+\jbphase{jb}{\scenephase{cg}{\scenephase{wjtp}{\scenephase{wjop}{\scenephase{wjap}{%
+\rep{\bodyphase{jtp}{\bodyphase{jop}{\bodyphase{jap}{\bodyphase{bb}{\bodyphase{tag}{}}}}}}}}}}}
+\end{center}
+\end{slide}

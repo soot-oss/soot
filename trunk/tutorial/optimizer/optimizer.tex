@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{html}
+
+\title{Using Soot as a Program Optimizer}
+\author{Patrick Lam (\htmladdnormallink{plam@sable.mcgill.ca)}{mailto:plam@sable.mcgill.ca}}
+\date{March 23, 2000}
+
+\begin{document}
+
+\maketitle
+
+\section{Goals}
+
+This tutorial describes the use of Soot as an optimization tool.  
+After completing this tutorial, the user will be able to use Soot
+to optimize classfiles and whole applications.
+
+\paragraph{Prerequisites} The user should have a working installation
+of Soot; successful completion of the 
+\htmladdnormallink{introduction}{../intro}
+is one way to exercise one's installation of Soot.
+
+\section{Classfile Optimization}
+
+Soot is able to optimize individual classfiles.  Some of the transformations
+which can be carried out on individual classfiles include:
+common subexpression elimination, partial redundency elimination, 
+copy propagation, constant propagation and folding, conditional
+branch folding, dead assignment elimination, unreachable code elimination,
+unconditional branch folding, and unused local
+elimination.
+
+%% Common subexpression elimination has also been developed, but the
+%% current implementation is slow; it must be explicitly enabled.
+%% (This is described in the \htmladdnormallink{phase-options}
+%% {../phase-options/\#SECTION00040000000000000000} document.)
+%% Partial-redundancy elimination is being developed.
+
+In order to optimize the {\tt Hello} example from the previous tutorial,
+we issue the command:
+
+\begin{verbatim}
+> java soot.Main -O Hello
+Transforming Hello...
+\end{verbatim}
+
+Soot will then leave a new, improved {\tt Hello.class} file in the
+{\tt sootOutput} directory.  For this class, the improvement after
+Sootification is not so obvious.  Soot does, however, eliminate unused
+locals.  Try adding an unused local to {\tt Hello} and giving this command:
+
+\begin{verbatim}
+> java soot.Main -O -f jimple Hello
+Transforming Hello...
+\end{verbatim}
+
+You should see that the unused local is no longer present.
+
+Any number of classfiles can be specified to Soot in this mode, as
+long as they are in the {\tt CLASSPATH}.
+
+\paragraph{Hidden Trap} Note that your classfile may belong to some
+package; it may be called, for instance, {\tt soot.Scene}.  This
+indicates that the {\tt Scene} class belongs to the {\tt soot} package.
+It will be in a {\tt soot/} subdirectory.  In order to Sootify this
+file, you must be in the parent directory (not {\tt soot/}), and you
+must specify {\tt java soot.Main -O soot.Scene}.
+
+Unfortunately, our current optimizations with {\tt -O} tend to have
+little effect on the program execution time.
+
+\section{Program Optimization}
+
+Soot provides the {\tt -app} switch to make it work on all the class
+files in an applicaion. When this switch is present, the user specifies
+the main classfile, and Soot will load all needed classes.
+
+Soot has a whole-program mode in which allows it to carry out
+whole-program transformations; for instance, method inlining requires
+the whole program to correctly resolve virtual method calls.
+
+To specify that Soot should do whole-program optimizations ({\tt -W}),
+as well as single-class optimizations, use the command:
+
+\begin{verbatim}
+> java soot.Main --app -W Hello
+Transforming Hello...
+\end{verbatim}
+
+Soot will write out all classes except those in the {\tt java.*},
+{\tt javax.*} and {\tt sun.*} packages.
+
+The default behaviour of {\tt -W} is to statically inline methods.
+Soot is also capable of static method binding; use 
+
+\begin{verbatim}
+> java soot.Main --app -p wjop.smb on -p wjop.si off -W -O
+       Hello
+\end{verbatim}
+
+This type of optimization has produced significant speedups on
+some benchmarks.
+
+\section{Summary}
+This lesson has described how Soot can be used to optimize classfiles
+and whole applications.
+
+\section{History}
+\begin{itemize}
+\item March 14, 2000: Initial version.
+
+\item March 23, 2000: Changed documentation to reflect fact that -W
+includes -O.
+
+\item May 31, 2003: Updated for Soot 2.0.
+\end{itemize}
+
+\end{document}

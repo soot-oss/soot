@@ -1,0 +1,259 @@
+\newcommand{\comment}[1]{}
+
+
+\begin{slide}{Call Graph}
+\begin{itemize}
+\item Collection of edges representing {\red all} method invocations known to Soot
+\begin{itemize}
+\item explicit method invocations
+\item implicit invocations of static initializers
+\item implicit calls of {\tt Thread.run()}
+\item implicit calls of finalizers
+\item implicit calls by {\tt AccessController}
+\item \ldots
+\end{itemize}
+\item {\tt Filter} can be used to select specific kinds of edges
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Call Graph Edge}
+\begin{itemize}
+\vspace*{-5mm}
+\item Each {\tt Edge} contains
+\begin{itemize}
+\item Source method
+\item Source statement (if applicable)
+\item Target method
+\item Kind of edge
+\end{itemize}
+\end{itemize}
+\newcommand{\dott}[1]{\rnode{#1}{$\bullet$}}
+\begin{tabular}{|c|c|c|c|}
+\hline
+source m. & source stmt. & target m. & kind\\
+\hline
+\dott{src} & \dott{stmt} & \dott{tgt} & VIRTUAL \\
+\hline
+\end{tabular}
+\newcommand{\tab}{\hspace*{8mm}}
+\vspace*{6mm}\\
+\begin{minipage}{2in}
+\tt
+\rnode{foo}{foo()} \{\\
+\tab \rnode{foos}{o.bar();}\\
+\}
+\end{minipage}
+\begin{minipage}{2in}
+\tt
+\rnode{bar}{bar()} \{ \\
+\tab /* */ \\
+\}
+\end{minipage}
+\newcommand{\arrow}[2]{\nccurve[arrowsize=.3,angleA=270,angleB=45]{->}{#1}{#2}}
+\arrow{src}{foo}\arrow{tgt}{bar}\arrow{stmt}{foos}\nccurve[arrowsize=.3,linestyle=dashed,angleB=180]{->}{foos}{bar}
+\end{slide}
+
+\begin{slide}{Edge Kinds}
+\vspace*{-6mm}
+{
+\tiny\bf
+\begin{verbatim}
+/** Due to explicit invokestatic instruction. */
+public static final int STATIC = 1;
+/** Due to explicit invokevirtual instruction. */
+public static final int VIRTUAL = 2;
+/** Due to explicit invokeinterface instruction. */
+public static final int INTERFACE = 3;
+/** Due to explicit invokespecial instruction. */
+public static final int SPECIAL = 4;
+/** Implicit call to static initializer. */
+public static final int CLINIT = 5;
+/** Implicit call to Thread.run() due to Thread.start() call. */
+public static final int THREAD = 6;
+/** Implicit call to Thread.exit(). */
+public static final int EXIT = 7;
+/** Implicit call to non-trivial finalizer from constructor. */
+public static final int FINALIZE = 8;
+/** Implicit call to run() through AccessController.doPrivileged(). */
+public static final int PRIVILEGED = 9;
+/** Implicit call to constructor from java.lang.Class.newInstance(). */
+public static final int NEWINSTANCE = 10;
+\end{verbatim}
+}\sablefootnote{soot.jimple.toolkits.callgraph.Edge}
+\end{slide}
+
+\begin{slide}{Querying Call Graph}
+\begin{description}
+\item[\texttt{edgesOutOf(SootMethod)}] iterator over edges with given source method
+\item[\texttt{edgesOutOf(Unit)}] iterator over edges with given source statement
+\item[\texttt{edgesInto(SootMethod)}] iterator over edges with given target method
+\begin{tabular}{|c|c|c|c|}\hline {\red main()}&o.foo();&C1.foo()&VIRTUAL\\\hline\end{tabular}
+\begin{tabular}{|c|c|c|c|}\hline {\red main()}&o.goo();&C1.goo()&VIRTUAL\\\hline\end{tabular}
+\begin{tabular}{|c|c|c|c|}\hline {\red main()}&o.goo();&C2.goo()&VIRTUAL\\\hline\end{tabular}
+{\gray \begin{tabular}{|c|c|c|c|}\hline bar()&o.foo();&C2.foo()&VIRTUAL\\\hline\end{tabular}}
+\end{description}
+\sablefootnote{soot.jimple.toolkits.callgraph.CallGraph}
+\end{slide}
+
+\begin{slide}{Querying Call Graph}
+\begin{description}
+\item[\texttt{edgesOutOf(SootMethod)}] iterator over edges with given source method
+\item[\texttt{edgesOutOf(Unit)}] iterator over edges with given source statement
+\item[\texttt{edgesInto(SootMethod)}] iterator over edges with given target method
+\begin{tabular}{|c|c|c|c|}\hline main()&o.foo();&{\red C1.foo()}&VIRTUAL\\\hline\end{tabular}
+{\gray \begin{tabular}{|c|c|c|c|}\hline main()&o.goo();&C1.goo()&VIRTUAL\\\hline\end{tabular}}
+{\gray \begin{tabular}{|c|c|c|c|}\hline main()&o.goo();&C2.goo()&VIRTUAL\\\hline\end{tabular}}
+\begin{tabular}{|c|c|c|c|}\hline bar()&o.foo();&{\red C1.foo()}&VIRTUAL\\\hline\end{tabular}
+\end{description}
+\sablefootnote{soot.jimple.toolkits.callgraph.CallGraph}
+\end{slide}
+
+\begin{slide}{Adapters}
+\begin{itemize}
+\item Adapters make an iterator over edges into an iterator over
+\begin{description}
+\item[{\texttt{Sources}}] source methods
+\item[{\texttt{Units}}] source statements
+\item[{\texttt{Targets}}] target methods
+\end{description}
+\end{itemize}
+\newcommand{\src}[1]{\begin{tabular}{|c|}\hline {\red $src_#1$}\\\hline\end{tabular}}
+\newcommand{\edge}[1]{\begin{tabular}{|c|c|c|c|}\hline {\red $src_#1$}&$stmt_#1$&$tgt_#1$&$kind_#1$\\\hline\end{tabular}}
+\begin{minipage}{2.5in}
+\edge{1}\\
+\edge{2}\\
+\edge{3}\\
+\end{minipage}
+\begin{minipage}{1in}
+\src{1}\\
+\src{2}\\
+\src{3}\\
+\end{minipage}
+\sablefootnote{soot.jimple.toolkits.callgraph.\{Sources,Units,Targets\}}
+\end{slide}
+
+\begin{slide}{Code Example}
+\vspace*{-5mm}
+\begin{verbatim}
+void mayCall( SootMethod src ) {
+   CallGraph cg =
+            Scene.v().getCallGraph();
+   Iterator targets =
+     new Targets(cg.edgesOutOf(src));
+
+   while( targets.hasNext() ) {
+      SootMethod tgt =
+         (SootMethod) targets.next();
+      System.out.println( ""+
+        src+" may call "+tgt );
+   }
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Reachable Methods}
+\begin{itemize}
+\item \texttt{ReachableMethods} object keeps track of which methods are
+reachable from entry points
+\end{itemize}
+\begin{description}
+\item [\texttt{contains(SootMethod)}] tests whether method is reachable
+\item [\texttt{listener()}] returns an iterator over reachable methods
+\end{description}
+\end{slide}
+
+\begin{slide}{Code Example}
+\begin{verbatim}
+ReachableMethods rm =
+      Scene.v().getReachableMethods();
+
+if( rm.contains( myMethod ) ) 
+    // myMethod is reachable
+
+Iterator it = rm.listener();
+while( it.hasNext() ) {
+    SootMethod method = 
+        (SootMethod) it.next();
+    // method is reachable
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Transitive Targets}
+\begin{itemize}
+\item {\tt TransitiveTargets} class takes a {\tt CallGraph} and
+optional {\tt Filter} to select edges
+\end{itemize}
+\begin{description}
+\item [\texttt{iterator(SootMethod)}] iterator over methods transitively
+called from given method
+\item [\texttt{iterator(Unit)}] iterator over methods transitively
+called from targets of given statement
+\end{description}
+\end{slide}
+
+\begin{slide}{Implementation Big Picture}
+\newcommand{\cls}[2]{\rnode{#2}{\psframebox{\begin{tabular}{c}#1\end{tabular}}}}
+\vspace*{-5mm}
+\begin{psmatrix}[colsep=.2,rowsep=.4]
+\cls{Entry Points}{ep}\\
+&\cls{Scene}{scene}&\cls{Call Graph}{cg}\\\ \\
+\cls{Reachable\\Methods}{rm}&\cls{Call Graph\\Builder}{cgb}&\cls{Points-to}{pt}\\
+\ \\
+&&\cls{Naive}{naive} \cls{Spark}{spark}
+\end{psmatrix}
+\psset{arrowsize=.3}
+\nccurve[angleA=270,angleB=175]{->}{ep}{scene}\mput*{\tiny methods}
+\nccurve[angleA=185,angleB=90]{->}{scene}{rm}\mput*{\tiny methods}
+\nccurve[angleA=270,angleB=265]{->}{rm}{cgb}\mput*{\tiny methods}
+\nccurve[angleA=90,angleB=80]{->}{cgb}{rm}\mput*{\tiny edges}
+\nccurve[angleA=90,angleB=135]{->}{cgb}{pt}\mput*{\tiny edges}
+\nccurve[angleA=90,angleB=225]{->}{cgb}{cg}\mput*{\tiny edges}
+\nccurve[angleA=225,angleB=275]{->}{pt}{cgb}\mput*{\tiny receiver types}
+\ncangles[angleA=90,angleB=270,arrowinset=0]{->}{naive}{pt}
+\ncangles[angleA=90,angleB=270,arrowinset=0]{->}{spark}{pt}
+\end{slide}
+
+\comment{
+\begin{slide}{Reachable Methods}
+\begin{itemize}
+\item {\tt ReachableMethods} class requires
+\begin{itemize}
+\item collection of entry points
+\item call graph
+\item optional edge filter
+\end{itemize}
+\item Updates list of reachable methods as edges added to call graph
+\item Edge removals are ignored
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Queues}
+\begin{itemize}
+\item Used throughout Soot to communicate events
+\item Objects added to queue can be read by multiple QueueReaders
+\begin{itemize}
+\item QueueReaders are like Iterators
+\end{itemize}
+\item In Call Graph, there are Queues for
+\begin{itemize}
+\item added edges
+\item methods that become reachable
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Call Graph Builder}
+\begin{itemize}
+\item Analyzes methods that become reachable, adding edges
+to call graph
+\item Uses {\tt PointsToAnalysis} interface to resolve receiver
+types for virtual calls
+\begin{itemize}
+\item {\tt DumbPointsToAnalysis} gives CHA
+\item Spark gives RTA, VTA, more precise analyses
+\end{itemize}
+\end{itemize}
+\end{slide}
+}
+

@@ -1,0 +1,32 @@
+<HTML> <HEAD> <TITLE>NullTagAggregator.java</TITLE> </HEAD> <BODY> <PRE> 
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>java</FONT>.<FONT COLOR=CadetBlue>util</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>baf</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>tagkit</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>jimple</FONT>.<FONT COLOR=CadetBlue>toolkits</FONT>.<FONT COLOR=CadetBlue>annotation</FONT>.<FONT COLOR=CadetBlue>tags</FONT>.<FONT COLOR=CadetBlue>NullCheckTag</FONT>;
+
+<FONT COLOR=Firebrick>/** The aggregator for NullCheckAttribute. */</FONT>
+
+<FONT COLOR=Purple>public</FONT> <FONT COLOR=Purple>class</FONT> <FONT COLOR=ForestGreen>NullTagAggregator</FONT> <FONT COLOR=Purple>extends</FONT> <FONT COLOR=ForestGreen>ImportantTagAggregator</FONT>
+{    
+    <FONT COLOR=Purple>public</FONT> <FONT COLOR=ForestGreen>NullTagAggregator</FONT>() {}
+
+    <FONT COLOR=Purple>public</FONT> <FONT COLOR=ForestGreen>boolean</FONT> <FONT COLOR=Blue>wantTag</FONT>( <FONT COLOR=ForestGreen>Tag</FONT> <FONT COLOR=DarkGoldenrod>t</FONT> ) {
+	<FONT COLOR=Purple>return</FONT> (t <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>NullCheckTag</FONT>);
+    }
+    
+    <FONT COLOR=Purple>public</FONT> <FONT COLOR=ForestGreen>String</FONT> <FONT COLOR=Blue>aggregatedName</FONT>()
+    {
+        <FONT COLOR=Purple>return</FONT> <FONT COLOR=RosyBrown>"NullCheckAttribute"</FONT>; 
+    }
+}
+
+
+
+
+
+
+
+
+</PRE> </BODY> </HTML>

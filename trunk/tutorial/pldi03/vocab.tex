@@ -1,0 +1,341 @@
+\begin{slide}{Jimple}
+Jimple is:
+\begin{itemize}
+\item principal Soot Intermediate Representation
+\item 3-address code in a \emph{control-flow graph}
+\item a \emph{typed} intermediate representation
+\item \emph{stackless}
+\end{itemize}
+
+\quad
+
+Other IRs: Baf, Grimp, Shimple, Dava
+\end{slide}
+
+\begin{slide}{Soot Classes}
+\vspace*{-0.1in}
+\begin{center}
+\input{ecosystem.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{{\tt Body}-centric View}
+\begin{center}
+\input{body-bare.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{Getting a {\tt UnitGraph}}
+\begin{center}
+\input{body-ecosystem.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{What to do with a {\tt UnitGraph}}
+\begin{itemize}
+\item {\tt getBody()}
+\item {\tt getHeads()}, {\tt getTails()}
+\item {\tt getPredsOf(u)}, {\tt getSuccsOf(u)}
+\item {\tt getExtendedBasicBlockPathBetween\\
+                (from, to)}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Control-flow units}
+We create an OO hierarchy of units, allowing generic programming using
+{\tt Unit}s.
+
+\begin{itemize}
+\item {\tt Unit}: abstract interface
+
+\item {\tt Inst}: Baf's bytecode-level unit\\
+\qquad \qquad ({\tt load x})
+
+\item {\tt Stmt}: Jimple's three-address code units\\
+\qquad \qquad ({\tt z = x + y})
+
+\item {\tt Stmt}: also used in Grimp\\
+\qquad \qquad ({\tt z = x + y * 2 \% n;})
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Kinds of Jimple Stmts I}
+\vspace*{-0.1in}
+\begin{itemize}
+\item Core statements:
+\vspace*{-0.1in}
+{\tt 
+\begin{tabbing}
+\quad NopStmt \\
+\quad DefinitionStmt: \= IdentityStmt, \\
+                \>AssignStmt 
+\end{tabbing}}
+
+\vspace*{-0.1in}
+\item Intraprocedural control-flow:
+
+{\tt \quad IfStmt}
+
+{\tt \quad GotoStmt}
+
+{\tt \quad TableSwitchStmt,LookupSwitchStmt}
+
+\item Interprocedural control-flow:
+
+{\tt \quad InvokeStmt}
+
+{\tt \quad ReturnStmt, ReturnVoidStmt}
+
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Kinds of Jimple Stmts II}
+\begin{itemize}
+\item {\tt ThrowStmt}
+
+\qquad throws an exception
+
+\item {\tt RetStmt}
+
+\qquad not used; returns from a JSR
+
+\item {\tt \begin{tabbing}
+MonitorStmt: \= EnterMonitorStmt, \\
+                  \> ExitMonitorStmt
+\end{tabbing}}
+
+\qquad mutual exclusion
+\end{itemize}
+\end{slide}
+
+\begin{slide}{IdentityStmt}
+\begin{center}
+{\tt this.m(); }
+\end{center}
+
+Where's the definition of {\tt this}?
+
+\quad
+\vspace*{-0.08in}
+
+{\tt IdentityStmt}:
+\begin{itemize}
+\item Used for assigning parameter values and {\tt this} ref to locals.
+
+\item Gives each local at least one definition point.
+\end{itemize}
+
+\vspace*{0.03in}
+Jimple rep of {\tt IdentityStmt}s:
+\begin{verbatim}
+    r0 := @this;
+    i1 := @parameter0;
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Context: other Jimple {\tt Stmt}s}
+\vspace*{-0.15in}
+{\small
+\begin{verbatim}
+public int foo(java.lang.String) { // locals
+  r0 := @this;               // IdentityStmt
+  r1 := @parameter0;
+
+  if r1 != null goto label0; // IfStmt
+
+  $i0 = r1.length();         // AssignStmt
+  r1.toUpperCase();          // InvokeStmt
+  return $i0;                // ReturnStmt
+
+label0:          // created by Printer
+  return 2;
+}
+\end{verbatim}}
+%$
+\end{slide}
+
+\begin{slide}{Soot Philosophy on {\tt Unit}s}
+\vspace*{-0.1in}
+\begin{center}
+All Access should be Abstract!
+\end{center}
+
+\vspace*{0.05in}
+Accessing data:
+\begin{itemize}
+\item {\tt \red getUseBoxes(), getDefBoxes(),\\
+\qquad \qquad  getUseAndDefBoxes()}
+\end{itemize}
+
+{\small 
+(also control-flow information:)\\
+\qquad \begin{minipage}{0.8\textwidth}
+{\tt fallsThrough(), branches()},\\
+{\tt getBoxesPointingToThis(), \\
+ addBoxesPointingToThis(), \\
+ removeBoxesPointingToThis(),}\\
+{\tt redirectJumpsToThisTo()}
+\end{minipage}}
+\end{slide}
+
+\begin{slide}{What is a Box?}
+\vspace*{-0.25in}
+\begin{center}
+{\tt s: \fbox{x} = \fbox{\fbox{y} op \fbox{z}} }
+\end{center}
+
+\newcommand{\obox}[1]{\begin{psmatrix}[mnode=oval] #1 \end{psmatrix}}
+
+\begin{tabular}{c|c}
+\Tree [.\obox{AssignStmt} [.\fbox{\sf VB} {\red \obox{\tt x} } ] 
+                   [.\fbox{\sf VB} 
+                       [.\obox{OpExpr} [.\fbox{\sf VB} {\blue \obox{\tt y}} ] 
+                                [.\fbox{\sf VB} {\blue \obox{\tt z}} ] ] ] ] &
+\Tree [.AssignStmt x [.OpExpr y z ] ]
+\end{tabular}
+\end{slide}
+
+\begin{slide}{What is a {\tt DefBox}?}
+\vspace*{-0.1in}
+{\tt List defBoxes = ut.getDefBoxes();}
+
+\vspace*{-0.05in}
+\begin{itemize}
+\item method {\red \tt ut.getDefBoxes()} returns a list of {\tt
+ValueBox}es, corresponding to all {\tt Value}s which get defined
+in {\tt ut}, a {\tt Unit}. 
+
+\item non-empty for {\tt IdentityStmt} and {\tt AssignStmt}.
+\end{itemize}
+
+\vspace*{-0.08in}
+\begin{center}
+{\tt ut: {\red \fbox{x}} = {\blue \fbox{{\blue \fbox{y}} op {\blue \fbox{z}}}};}
+\end{center}
+
+\vspace*{0.05in}
+{\tt getDefBoxes(ut) = \{{\red \fbox{x}}\}}\\
+\qquad \qquad \begin{minipage}{0.7\textwidth} 
+({\tt List} containing a {\tt ValueBox} containing a {\tt Local})
+\end{minipage}
+
+\end{slide}
+
+\begin{slide}{On {\tt Value}s and {\tt Box}es}
+%% \vspace*{-0.1in}
+%% \verb+Iterator boxIt = +\\
+%% \verb+       ut.getDefBoxes().iterator();+\\
+%% \verb+while (boxIt.hasNext()) {+\\
+%% \verb+    ValueBox box = +\\
+%% \verb+        (ValueBox) boxIt.next();+\\
+{\red \verb+    Value value = defBox.getValue();+}
+
+\begin{itemize}
+\item {\tt getValue()}: Dereferencing a pointer.\\
+\qquad \qquad \qquad \qquad \fbox{\tt x} $\to$ {\tt x}
+\item {\tt setValue()}: mutates the value in the {\tt Box}.
+\end{itemize}
+
+\end{slide}
+
+\begin{slide}{On {\tt UseBoxes}}
+\vspace*{-0.1in}
+Opposite of defBoxes.
+
+{\tt List useBoxes = ut.getUseBoxes();}
+
+\vspace*{-0.05in}
+\begin{itemize}
+\item method {\red \tt ut.getUseBoxes()} returns a list of {\tt
+ValueBox}es, corresponding to all {\tt Value}s which get used
+in {\tt ut}, a {\tt Unit}. 
+
+\item non-empty for most Soot {\tt Unit}s.
+\end{itemize}
+
+\vspace*{-0.08in}
+\begin{center}
+{\tt ut: {\red \fbox{x}} = {\blue \fbox{\fbox{y} op \fbox{z}}};}
+\end{center}
+
+\vspace*{0.05in}
+{\tt getUseBoxes(ut) = \{{\blue \fbox{y}}, {\blue \fbox{z}}, {\blue \fbox{\fbox{y} op \fbox{z}}}\}}\\
+\qquad \qquad \begin{minipage}{0.8\textwidth} 
+({\tt List} containing 3 {\tt ValueBox}es, each containing a {\tt Local}, \&
+{\tt Expr})
+\end{minipage}
+
+\end{slide}
+
+\begin{slide}{Why Boxes?}
+\vspace*{-0.25in}
+Change all instances of {\tt x} to {\tt 1}:
+
+\newcommand{\obox}[1]{\begin{psmatrix}[mnode=oval] #1 \end{psmatrix}}
+
+{\small
+\begin{tabular}{c|c}
+\Tree [.\obox{AssignStmt} [.\fbox{\sf VB} {\red \obox{\tt x} } ] 
+                   [.\fbox{\sf VB} 
+                       [.\obox{OpExpr} [.\fbox{\sf VB} {\blue \obox{\tt y}} ] 
+                                [.\fbox{\sf VB} {\blue \obox{\tt z}} ] ] ] ] &
+\Tree [.AssignStmt x [.OpExpr y z ] ] \\
+{\tt setValue()} &
+{\tt ??}
+\end{tabular}}
+\end{slide}
+
+
+
+%% \begin{slide}{Search \& Replace}
+%% {\small
+%% \begin{verbatim}
+%% /** Replace all uses of x in body with y. */
+%% void replace( Body body, Value x, Value y ) {
+%%     Iterator unitIt = body.getUnits().iterator();
+%%     while( unitIt.hasNext() ) {
+%%         Unit u = (Unit) unitIt.next();
+%%         Iterator useIt = u.getUseBoxes().iterator();
+%%         while( useIt.hasNext() ) {
+%%             ValueBox vb = (ValueBox) useIt.next();
+%%             if( vb.getValue().equals(x) ) vb.setValue(y);
+%%         }
+%%     }
+%% }
+
+%% replace( x, IntConstant.v(1) );
+%% \end{verbatim}
+%% }
+%% \end{slide}
+
+\begin{slide}{Search \& Replace}
+{\small
+\begin{verbatim}
+/** Replace all uses of x in body with y. */
+void replace( Body body, Value x, Value y ) {
+  for (Unit ut : body.getUnits()) {
+    for (ValueBox vb : ut.getUseBoxes()) {
+      if( vb.getValue().equals(x) ) 
+        vb.setValue(y);
+    }
+  }
+}
+
+replace(b, x, IntConstant.v(1));
+\end{verbatim}
+}
+\end{slide}
+
+\begin{slide}{More Abstract Accessors: {\tt Stmt}}
+Jimple provides the following additional accessors for special kinds of {\tt Value}s:
+
+\begin{itemize}
+\item {\tt containsArrayRef(),
+ getArrayRef(),~getArrayRefBox()}
+\item {\tt containsInvokeExpr(), getInvokeExpr(),~getInvokeExprBox()}
+\item {\tt containsFieldRef(), getFieldRef(),~getFieldRefBox()}
+\end{itemize}
+
+\end{slide}
+
+

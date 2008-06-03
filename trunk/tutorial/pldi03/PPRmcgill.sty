@@ -1,0 +1,210 @@
+%%% PPRmcgill.sty --- A prosper style file
+%%% a modification of PPRpleasingblue.sty --- A prosper style file
+
+%% Copyright (C) 2002 by Nevin Kapur
+%% Author: Nevin Kapur <nevin@jhu.edu>
+%% Modified by Laurie Hendren <hendren@cs.mcgill.ca>
+
+%% This is free software; you can redistribute it and/or modify it
+%% under the terms of the GNU General Public License as published by
+%% the Free Software Foundation; either version 2, or (at your option)
+%% any later version.
+
+%% This is distributed in the hope that it will be useful, but
+%% WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+%% General Public License for more details.
+
+%%% Commentary:
+%% This style is inspired by the ConTeXt screen manual. Thanks to
+%% Jason DeVinney for his help.
+
+%% The picture below shows the look of each page.  All the colors are
+%% customizable using \newrgbcolor{[colorname]}{r g b}, and the
+%% defaults are mentioned below the picture.  I would like
+%% to hear from you if you have interesting color scheme.
+
+
+
+%%            |              titlecolor                    |
+%%          --+--------------------------------------------+--
+%%            |                                            |
+%%            | textcolor                                  |
+%%            |                                            |
+%%            |     - leveloneitem                         |
+%%            |          o leveltwoitem                    |
+%%            |              x levelthreeitem              |
+%%            |                                            |
+%%            |                                            |
+%%            |                                            |
+%%            |               textbackground               | frame-
+%%            |                                            | background
+%%            |                                            |
+%%            |                                            |
+%%            |                                            |<- frameline
+%%            |                                            |
+%%          --+--------------------------------------------+--
+%%            |                                            |
+%%
+
+\newcommand{\mywhite}{1 1 1}
+\newcommand{\almostwhite}{.900 .900 1}
+\newcommand{\mellow}{.847 .72 .525}
+\newcommand{\myorange}{1.00 0.65 0.00}
+\newcommand{\blueish}{.415 .600 .706}
+\newcommand{\mcgillred}{.855 .125 .125}
+\newcommand{\darkgoldenrod}{.545 .412 .078}
+\newcommand{\darkblue}{0 .125 .223}
+\newcommand{\indianred}{.804 0.361 0.361}
+\newcommand{\darkslategray}{.184 .310 .310}
+\newcommand{\lavender}{0.706 0.490 0.612}
+
+%% User-configurable colors: (default)
+%%  - framebackground (white)
+%%  - textbackground  (white)
+%%  - frameline       (bluish)
+%%  - titlecolor      (mcgill red)
+%%  - subtitlecolor   (dark goldenrod)
+%%  - textcolor       (dark bluish)
+%%  - leveloneitem    (indian red)
+%%  - leveltwoitem    (dark slate gray)
+%%  - levelthreeitem  (lavenderish)
+
+%%% Code:
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{PPRmcgill}[2002/10/10]
+\typeout{`mcgill' style for Prosper ---}
+\typeout{ }
+
+%% Color definitions
+\newrgbcolor{framebackground}{\mywhite}
+\newrgbcolor{textbackground}{\almostwhite}
+\newrgbcolor{frameline}{\blueish}
+\newrgbcolor{titlecolor}{\mcgillred}
+\newrgbcolor{subtitlecolor}{\darkgoldenrod}
+\newrgbcolor{textcolor}{\darkblue}
+\newrgbcolor{leveloneitem}{\indianred}
+\newrgbcolor{levelthreeitem}{\darkslategray}
+\newrgbcolor{leveltwoitem}{\blueish}
+
+\newcommand{\myfont}{phv}  %% chose ptm, phv or comic
+\newcommand{\myfonttype}{T1} %% chose OT1 (comic) or T1 (ptm, phv)
+
+\FontTitle{%
+ \usefont{\myfonttype}{\myfont}{b}{n}\fontsize{14.5pt}{14pt}\selectfont\titlecolor}{%
+ \usefont{\myfonttype}{\myfont}{b}{n}\fontsize{14.5pt}{14pt}\selectfont\black}
+ \FontSubtitle{%
+ \usefont{\myfonttype}{\myfont}{b}{n}\fontsize{14.5pt}{14pt}\selectfont\subtitlecolor}{%
+ \usefont{\myfonttype}{\myfont}{b}{n}\fontsize{14.5pt}{14pt}\selectfont\black}
+ \FontText{%
+ \usefont{\myfonttype}{\myfont}{m}{n}\fontsize{14.5pt}{14pt}\selectfont\textcolor}{%
+ \usefont{\myfonttype}{\myfont}{m}{n}\fontsize{14.5pt}{14pt}\selectfont\black}
+\ColorFoot{\textcolor}
+
+% Positioning of the title of a slide.
+\newcommand{\slidetitle}[1]{%
+  \rput[c](5.25,4.4){\fontTitle{#1}}%
+}
+
+% Positionning for a logo
+\LogoPosition{-1,-1.1}
+
+% Definition of this style for slides.
+
+\newcommand{\BasicFrame}[1]{%
+  \ifcolorBG%
+  \psframe*[linecolor=framebackground](-1.3,-1.4)(12.2,8.7)%
+  \psframe*[linecolor=textbackground](-.45,-.4)(11.0,7.65)%
+  \else%
+  \fi%
+  \ifinColor%
+  %% SW - SE
+  \psline[linecolor=frameline,linewidth=0](-.55,-.4)(11.1,-.4)%
+  %% SE - NE
+  \psline[linecolor=frameline,linewidth=0](11,-.5)(11,7.75)%
+  %% NW - NE
+  \psline[linecolor=frameline,linewidth=0](-.55,7.65)(11.1,7.65)%
+  %% SW - NW
+  \psline[linecolor=frameline,linewidth=0](-.45,-.5)(-.45,7.75)%
+  \else%
+  %% SW - SE
+  \psline[linecolor=black,linewidth=0](-.55,-.4)(11.1,-.4)%
+  %% SE - NE
+  \psline[linecolor=black,linewidth=0](11,-.5)(11,7.75)%
+  %% NW - NE
+  \psline[linecolor=black,linewidth=0](-.55,7.65)(11.1,7.65)%
+  %% SW - NW
+  \psline[linecolor=black,linewidth=0](-.45,-.5)(-.45,7.75)%
+  \fi%
+  %% Navigation buttons when in PDF
+%----
+  \onlyInPDF{%
+%    \rput[c](5.4,-.75){%
+%      \psframebox[linecolor=frameline,%
+%      fillcolor=textbackground,linewidth=0pt,%
+%      fillstyle=none]{%
+%        \ttfamily\small\textcolor%
+%        \Acrobatmenu{GoBack}{\makebox[\totalheight]{<}}~%
+%        \Acrobatmenu{GoForward}{\makebox[\totalheight]{>}}~%
+%        \Acrobatmenu{PrevPage}{\makebox[\totalheight]{-}}~%
+%        \Acrobatmenu{NextPage}{\makebox[\totalheight]{+}}%
+%      }%
+%    }%
+%----
+%     \rput[c](5,-.75){%
+%       \Acrobatmenu{NextPage}{%
+%         \psframebox[linecolor=frameline,%
+%         fillcolor=framebackground,linewidth=0pt,%
+%         fillstyle=solid]{%
+%           \ttfamily\small\textcolor+}%
+%       }%
+%     }%
+     \rput[c](-.75,-.75){%
+       \Acrobatmenu{GoBack}{%
+         \psframebox[linecolor=frameline,%
+         fillcolor=framebackground,linewidth=0pt,%
+         fillstyle=solid]{%
+           \ttfamily\small\textcolor\symbol{60}}%
+       }%
+     }%
+%     \rput[c](7,-.75){%
+%       \Acrobatmenu{GoForward}{%
+%         \psframebox[linecolor=frameline,%
+%         fillcolor=framebackground,linewidth=0pt,%
+%         fillstyle=solid]{%
+%           \ttfamily\small\textcolor\symbol{62}}%
+%       }%
+%     }%
+ }%
+  \PutLogo% Mandatory
+  \rput[tl](-.45,-.45){\sablefootnotetext}
+  \gdef\sablefootnotetext{}
+ {#1}}
+
+\NewSlideStyle{t}{5.3,3.2}{BasicFrame}
+\PDFCroppingBox{10 40 594 800}
+\RequirePackage{semhelv}
+
+\ifinColor%
+  \myitem{1}{\psframe*[linecolor=leveloneitem](-.15,.22)(0.03,.04)}%
+  \myitem{2}{\psframe*[linecolor=leveltwoitem](-.15,.22)(0.03,.04)}%
+  \myitem{3}{\psframe*[linecolor=levelthreeitem](-.15,.22)(0.03,.04)}%
+\else%
+\myitem{1}{\psframe[fillstyle=solid,fillcolor=black,%
+  linestyle=solid](-.15,.22)(0.03,.04)}%
+\myitem{2}{\psframe[fillstyle=crosshatch,hatchwidth=.2pt,%
+  hatchsep=1pt,fillcolor=black,%
+  linestyle=solid](-.15,.22)(0.03,.04)}%
+\myitem{3}{\psframe[fillstyle=none,fillcolor=black,%
+  linestyle=solid](-.15,.22)(0.03,.04)}%
+\fi
+
+\titleSpacing{\vspace*{10pt}}
+
+\newcommand{\sablefootnote}[1]{\gdef\sablefootnotetext{\begin{minipage}[t]{100mm}\small #1\end{minipage}}}
+\gdef\sablefootnotetext{}
+
+\endinput
+
+%%% PPRmcgill.sty ends here

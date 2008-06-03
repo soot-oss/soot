@@ -1,0 +1,61 @@
+In March 2003, we made several modifications to Soot to make it better
+suited to being used as a library or inside a GUI. The most significant
+change was moving all global variables to a single class called G, so
+that they could be reset in between different runs of Soot. In order to
+maintain interoperability as a library and with GUIs, the following
+coding rules have been imposed. A checker has been included which points
+out potential violations of these rules. To run it, enter:
+
+ant badfields
+
+Rules:
+
+1) System.out and System.err should not be used. G.v().out should be
+   used instead. It is normally mapped to System.out, but may be
+   remapped by a program using Soot as a library or by a GUI.
+   If you accidentally send stuff to System.out instead, the output
+   will not appear in Eclipse.
+
+2) There should be no calls to System.exit(). This will kill programs
+   using Soot as a library and GUIs. Instead, Soot should throw a
+   CompilationDeathException or a RuntimeException.
+
+3) Static fields should not be used, unless they are final AND of
+   an immutable type such as a primitive type, String, Object,
+   Integer or Boolean.
+
+4) Static initializers should not have any side-effects. In particular,
+   they should not read any static fields. In addition, in order to
+   ensure that static initializers have no side-effects, they should
+   not call any methods, except trivial ones known to have no side-effects.
+
+5) Singletons should be implemented as follows:
+   - add the name of the singleton to soot/src/singletons.list
+   - run soot/src/make_singletons > soot/src/soot/Singletons.java
+   - in your singleton, include the following two methods following
+     the model in soot.jimple.toolkits.base.Aggregator:
+
+    public Aggregator( Singletons.Global g ) {}
+    public static Aggregator v() { return G.v().Aggregator(); }
+
+     The Singletons.Global parameter to the only constructor ensures
+     that only the Singletons class may instantiate the singleton,
+     since only it can create a Singletons.Global. The v() method
+     fetches the singleton instance from the Singletons class.
+     THE SINGLETON SHOULD NOT HAVE ITS OWN STATIC FIELD CONTAINING
+     THE SINGLETON INSTANCE. soot.G is the only singleton holding
+     its own instance, meaning that all global variables and singletons
+     can be reset by resetting that one single instance.
+
+6) "ant badfields" should be run periodically to check that these rules
+   are being followed. It will report most violations. Unfortunately,
+   it also reports some false positives that must be checked by hand.
+   Many of these are final static arrays, whose elements are never
+   modified. Unfortunately, Java doesn't have a final keyword that
+   applies to elements of arrays. It must be checked by hand that these
+   elements are never written. Presumably Spark could be used to check
+   that elements of static arrays are not written, but this may make
+   the checker too clumsy; the intent is for the checker to be widely
+   used.
+
+EOF

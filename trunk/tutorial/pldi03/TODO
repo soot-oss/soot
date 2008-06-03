@@ -1,0 +1,18 @@
+May 12
+
+- implement widening
+
+plam:
+
+- vocab:
+    * Locals, Traps
+    * picture of various Soot things and how they link up
+
+- more pics for 1st flow analysis
+    * The Actual Flow Function:
+        need one more picture for the gen, kill step.
+    * Setting up Flow Universe:
+        a picture for the iteration
+    * a picture of the initial state for reaching defs
+
+- second flow analysis (rectangular?)

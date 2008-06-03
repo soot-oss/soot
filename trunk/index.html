@@ -1,0 +1,261 @@
+<html>
+<head><title>Soot: a Java Optimization Framework</title></head>
+
+<body background="background6.gif" TEXT="#000000" BGCOLOR="#F3F3F3" LINK="#0000CC">
+
+<table border=0 cellpadding=0 cellspacing=3>
+
+<TR>
+
+<!--LeftHandTable-->
+
+<TD ALIGN=LEFT VALIGN=TOP ROWSPACE="1" WIDTH=160>
+
+<p><font face="helvetica,arial" size="+1"><b>Soot Home</b></font>
+
+<p>
+<a href="#introduction"><font face="helvetica,arial" size="+0">Introduction</font></a><br>
+<a href="#obtaining"><font face="helvetica,arial" size="+0">Obtaining Soot</font></a><br>
+<a href="#resources"><font face="helvetica,arial" size="+0">Resources</font></a><br>
+<a href="#credits"><font face="helvetica,arial" size="+0">Credits</font></a><br>
+<a href="#users"><font face="helvetica,arial" size="+0">Soot Users</font></a><br>
+
+<p><a href="http://www.sable.mcgill.ca">Sable Home</a>
+
+</td>
+
+<!--ActualContents-->
+
+<td align=left valign=top>
+<center>
+<a name="top"><b><font face="helvetica,arial" size="+2">Soot: a Java Optimization Framework</font></b></center></a> <br>
+<center>
+<a name="top"><b><font face="helvetica,arial" size="+1">Latest version: 2.2.3 (Mar 18, 2006)</font></b></center></a> <br><br>
+
+Need help using Soot?  See the Soot <a href="tutorial/index.html"> tutorials</a>.<br><br>
+
+<!--Introduction-->
+<a name="introduction"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Introduction</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+
+Soot is a Java optimization framework.  It provides four intermediate
+representations for analyzing and transforming Java bytecode:
+
+<ol> 
+<li><b>Baf</b>: a streamlined representation of bytecode which is simple to
+manipulate.
+
+<li><b>Jimple</b>: a typed 3-address intermediate representation suitable for
+optimization.
+
+<li><b>Shimple</b>: an SSA variation of Jimple.
+
+<li><b>Grimp</b>: an aggregated version of Jimple suitable for decompilation and
+code inspection.
+</ol>
+
+Soot can be used as a stand alone tool to optimize or inspect class files, as well
+as a framework to develop optimizations or transformations on Java
+bytecode.
+
+<p>Soot is free software and is licensed under the <a
+href="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
+License</a>.
+
+</blockquote>
+
+<blockquote>
+<h4>Release Status:</h4>
+<p>The Soot Framework is an evolving research project. Our goal is to produce a
+robust, easy-to-use research framework for optimizing Java bytecode.  
+
+<!-- Release 2.2.2 --><p>
+The latest release is version 2.2.3 The new features since 2.2.2 are described in detail here: <a href="https://svn.sable.mcgill.ca/wiki/index.php/SootTwoTwoThreeReleaseNotice">new features</a>.
+
+<!-- Release 2.2.1 --> <p>
+<!--The latest release is version 2.2.1 The new features since 2.1.0 are described in  detail here: <a href="http://svn.sable.mcgill.ca/wiki/index.php/SootTwoTwoZeroReleaseNotice">new features</a>.-->
+</blockquote>
+
+<blockquote>
+<h4>Eclipse Plugin:</h4>
+Since version 2.0, Soot includes a <a href="eclipse/index.html">plugin</a> that makes it
+possible to use Soot from <a href="http://www.eclipse.org">Eclipse</a>.
+We have a separate <a href="eclipse/index.html">web page with instructions for
+installing and using the plugin.</a>
+<br>
+<p> You may also want to develop Soot within the Eclipse environment. Instructions for setting up Soot within Eclipse can be found here: <a href="soot_in_eclipse_howto.html">Setting Up Soot in Eclipse</a>.</p>
+</blockquote>
+
+<a name="obtaining"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Obtaining Soot</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+<h4>Downloads:</h4>
+
+Get Soot from our download page a <a
+href="soot_download.html">Soot Downloads</a>.
+
+<p>
+To install it you must unjar(untar) it, and add the classes directory
+<tt>soot-2.2.3/soot/classes</tt> to your CLASSPATH. The Jasmin and Polyglot
+classes jar files, or classes directories, must also be added to your CLASSPATH.If you are using the classes directories on your CLASSPATH, you must also add the Polyglot cup-classes directory (included in this distribution) to your CLASSPATH.
+
+To test your installation of Soot, try:
+
+<p>
+<tt>
+java soot.Main --help
+</tt>
+
+<p>for some options on processing classfiles.  They are documented in more detail in the
+<a href="tutorial/usage">usage document</a>.<p>
+
+Note that Soot requires at least JDK 1.3.
+The Eclipse plugin requires at least JDK 1.4.
+Soot now has partial support for JDK 1.5. 
+</blockquote>
+
+<blockquote>
+<h4>Repository Access:</h4>
+<p>We are using <a href="http://subversion.tigris.org/">Subversion</a> for
+revision control.</p>
+
+<p>With a Subversion client, you can obtain a copy of the
+development version of Soot, as well as any old versions. To obtain the
+latest development version of Soot, use one of the following commands:<br>
+<tt>svn checkout https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt><br>
+<tt>svn export https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt></p>
+
+<p>The <tt>checkout</tt> version records additional information required
+to update your checked out version of Soot with the repository at a
+later time (with the <tt>svn update</tt> command). The <tt>export</tt>
+version provides a "clean" copy of only the Soot files themselves.</p>
+
+<p>In order to compile Soot from source, you will also need a copy of
+the Jasmin and Polyglot classes, available from the
+<a href="soot_download.html">download page</a>.
+Moreover, the Java VM that ant allocates by default when compiling Soot
+may have too small a heap to compile a project as large as Soot. If you
+get an OutOfMemoryError, you will need to create a file called .antrc
+in your home directory containing the following line:
+</p>
+<pre>
+ANT_OPTS="$ANT_OPTS -Xmx700m"
+</pre>
+
+<p>From time to time we update Jasmin. If something Jasmin related seems broken you may need to get the latest Jasmin from the subversion repository:<br>
+<tt>svn checkout https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt><br>
+<tt>svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt></p>
+
+<p>You can also browse our latest version of the Soot repository, as well as a ViewCVS history, using
+just a web browser. For further instructions, please see
+<a href="http://svn.sable.mcgill.ca/">http://svn.sable.mcgill.ca/</a>.</p>
+</blockquote>
+<blockquote>
+<h4>Nightly Builds:</h4>
+<p>With release 2.2.1 we started to build Soot and Jasmin every night. To get the latest nightly build see: <a href="nightly.html">Nightly Builds</a>.
+</blockquote>
+
+<!--Documentation-->
+<a name="resources"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Resources</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+<h4>Documentation:</h4>
+We have developed a number of documents describing Soot.  Your main
+current sources of information are:
+
+<ul>
+<li>Our <a href="http://www.sable.mcgill.ca/publications">publication page</a> 
+has several conference papers describing Soot.  
+
+<li>A set of <a href="tutorial/">tutorials</a> describing Soot, both as a Java application optimizer and
+as a compiler framework.
+
+<li><a href="doc/index.html">The Soot API.</a> Most of the
+functionality is self-explanatory.  This API is included in the Soot
+distribution.
+
+<li>The Soot source itself.  It is full of examples on how to use the API.
+
+</blockquote>
+<blockquote>
+<h4>Mailing List:</h4>
+<p>If you have questions about Soot use the <a href="http://www.sable.mcgill.ca/mailman/listinfo/soot-list/">Soot Mailing List</a>. Note: You must subscribe before posting and you must post from the same address with which you used to subscribe.</p>
+
+<p>You can also <a href="http://www.sable.mcgill.ca/listarchives/soot-list/">view the recent list archives</a>.
+<!--or <a href="http://www.sable.mcgill.ca/listarchives/old_publicarchives/soot-list/">view the old list archives</a>.-->
+
+</blockquote>
+<blockquote>
+<h4>Wiki:</h4>
+<li>See the new <a href="https://svn.sable.mcgill.ca/wiki/index.php/SootProject">Soot Wiki</a> for up-to-date information. The Soot team will be using this site for discussing upcoming work, so if you would like to know what is going on look there.
+
+</blockquote>
+<blockquote>
+<h4>Bugzilla:</h4>
+<li>Use new <a href="https://svn.sable.mcgill.ca/bugzilla/">Soot Bugzilla</a>. We encourage you to add any Soot bugs there.
+
+</blockquote>
+
+<!--Credits-->
+
+<a name="credits"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Credits</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+ 
+Click <a href="./credits">here</a> for the complete list of contributors and acknowledgements.
+</blockquote>
+
+<!--Soot Users-->
+
+<a name="users"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Soot Users</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+ 
+
+<p>
+We maintain a list of people and projects that are making use of Soot:
+<A href="http://www.sable.mcgill.ca/~hendren/sootusers/">HTML</a>
+<A href="http://www.sable.mcgill.ca/~hendren/sootusers.pdf">PDF</a>
+</p>
+
+<p>
+Please let us know if you would like to be added to this list or have
+the description of your project updated.
+</p>
+
+<br>
+</blockquote>
+
+
+<hr width="85%" noshade> <br>
+
+<center>
+<blockquote>
+
+<font face="Arial, Helvetica"> <i>Last updated on Mar 18, 2006</i><br></font>
+          
+</blockquote>
+
+
+</td>
+
+</tr>
+</table>
+
+</html>

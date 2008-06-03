@@ -1,0 +1,20 @@
+<html>
+<body>
+<h3>Soot Configurations Manager Dialog</h3>
+<p>This dialog allows you to save and manage sets of Soot options as named configurations.</p>
+<img src="config_dialog.png">
+
+<p> The list at the left shows configurations you have already created. They can be given any unique name. At the right are buttons for managing the configurations. 
+<ul>
+<li>The <tt>New</tt> button is for creating a new configuration. Upon clicking it you will be prompted for a name. This name must be unique and must not be null. Then the Options Dialog will be shown with a <tt>Save</tt> intead of <tt>Run</tt> button at the bottom. Select you options and click <tt>Save</tt> to finish creating your new configuration. 
+</li>
+<li>The <tt>Edit</tt> button only works if you have first selected a configuration to edit. Upon clicking it an Options Dialog appears with the configuration options preset. You can then change them in any way and click <tt>Save</tt> to finish editting your configuration. </li>
+<li>The <tt>Delete</tt> button only works if you have first selected a configuration from the left to delete. Upon clicking it you will be asked to confirm that you actually want to delete the configuration and upon clicking <tt>Yes</tt> the configuration will be removed from the list and no longer available.</li>
+<li>The <tt>Rename</tt> button is for changing the name of an existing configuration and is only avaliable when a configuration is selected.
+</li>
+<li>The <tt>Clone</tt> button is for creating a new configuration that is similar to an existing one. It is only avaliable when you have selected a configuration. After creating the copy you can then use the <tt>Edit</tt> button to modify it.</li>
+
+</ul>
+Finally, at the bottom is a <tt>Run</tt> button for running a saved configuration. It is only available upon selecting a configuration. This is useful if you want to run a Soot with a particular set of options many times.</p>  
+</body>
+</html>

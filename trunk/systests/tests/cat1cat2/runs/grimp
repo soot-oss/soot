@@ -1,0 +1,1 @@
+java soot.Main -cp classes:$CLASSPATH -f grimp Cat1Cat2

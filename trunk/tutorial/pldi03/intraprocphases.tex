@@ -1,0 +1,34 @@
+\newcommand{\ph}[1]{\Rnode{#1}{\psframebox{\begin{tabular}{c}{#1}\end{tabular}}}}
+\newcommand{\ar}[2]{\ncline{->}{#1}{#2}}
+\newcommand{\arr}[2]{\ncline[linecolor=red]{->}{#1}{#2}}
+
+\begin{slide}{Generating Jimple}
+\psset{linearc=.25}
+\centerline{
+\begin{psmatrix}[colsep=.7,rowsep=.5]
+\ovalnode{class}{\tt .class} & \ph{coffi} \\
+&& \ph{jb} & \ovalnode{end}{Jimple}\\
+\ovalnode{jimple}{\tt .jimple} & \Rnode{parser}{\psframebox{\begin{tabular}{c}Jimple\\parser\end{tabular}}} \\
+\ar{class}{coffi}\ar{jimple}{parser}\nccurve[angleB=180]{->}{coffi}{jb}\nccurve[angleB=180]{->}{parser}{jb}\ar{jb}{end}
+\end{psmatrix}
+}
+\end{slide}
+
+\begin{slide}{Intra-procedural packs}
+\vspace*{-5mm}
+\psset{linearc=.25}
+\hspace*{-3mm}
+\begin{psmatrix}[colsep=.3,rowsep=.6]
+&\ph{stp} & \ph{sop} & \ph{sap}&Shimple\\
+\ovalnode{start}{Jimple}
+&\ph{jtp} & \ph{jop} & \ph{jap}&Jimple\\
+& \ph{bb} & \ph{bop} & \ph{tag}&Baf\\
+& \ph{gb} & \ph{gop} &&Grimp\\
+&&\ovalnode{Dava}{Dava}&\ovalnode{end}{Jasmin}&Output
+\nccurve[angleA=90,angleB=180,linecolor=red]{->}{start}{stp}\ar{start}{jtp}\ar{jtp}{jop}\ar{jop}{jap}\ar{bb}{bop}\ar{bop}{tag}\ar{gb}{gop}\arr{gop}{Dava}\ar{stp}{sop}\ar{sop}{sap}
+\ncloop[angleB=180,loopsize=-1,linecolor=red]{->}{sap}{jtp}
+\ncloop[angleB=180,loopsize=-1,linecolor=red]{->}{jap}{bb}
+\ncloop[angleB=180,loopsize=-1,linecolor=red]{->}{jap}{gb}
+\arr{tag}{end}\arr{gop}{end}
+\end{psmatrix}
+\end{slide}

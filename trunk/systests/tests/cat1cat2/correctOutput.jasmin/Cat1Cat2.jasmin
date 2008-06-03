@@ -1,0 +1,478 @@
+.source Cat1Cat2.jasmin
+.class  Cat1Cat2
+.super java/lang/Object
+
+
+.method public <init>()V
+    .limit stack 1
+    .limit locals 1
+    aload_0
+    invokespecial java/lang/Object/<init>()V
+    return
+.end method
+
+.method public static testCaseHart()Ljava/lang/Long;
+    .limit stack 4
+    .limit locals 0
+    new java/lang/Long
+    dup
+    invokestatic Cat1Cat2/f()J
+    invokespecial java/lang/Long/<init>(J)V
+    areturn
+.end method
+
+.method private static f()J
+    .limit stack 2
+    .limit locals 0
+    lconst_1
+    lreturn
+.end method
+
+.method private static g()F
+    .limit stack 1
+    .limit locals 0
+    fconst_1
+    freturn
+.end method
+
+.method public static test_dup_x2_cat1(FFI)V
+    .limit stack 4
+    .limit locals 3
+    iload_2
+    fload_0
+    fload_1
+    iload_2
+    invokestatic Cat1Cat2/printStack(IFFI)V
+    return
+.end method
+
+.method public static test_dup_x2_cat2(JI)V
+    .limit stack 4
+    .limit locals 3
+    iload_2
+    lload_0
+    iload_2
+    invokestatic Cat1Cat2/printStack(IJI)V
+    return
+.end method
+
+.method public static test_pop2_cat1(IFF)V
+    .limit stack 1
+    .limit locals 3
+    iload_0
+    invokestatic Cat1Cat2/printStack(I)V
+    invokestatic Cat1Cat2/g()F
+    pop
+    invokestatic Cat1Cat2/g()F
+    pop
+    iload_0
+    invokestatic Cat1Cat2/printStack(I)V
+    return
+.end method
+
+.method public static test_pop2_cat2(IJ)V
+    .limit stack 2
+    .limit locals 3
+    iload_0
+    invokestatic Cat1Cat2/printStack(I)V
+    invokestatic Cat1Cat2/f()J
+    pop2
+    iload_0
+    invokestatic Cat1Cat2/printStack(I)V
+    return
+.end method
+
+.method public static test_dup2_cat1(IFF)V
+    .limit stack 5
+    .limit locals 3
+    iload_0
+    fload_1
+    fload_2
+    fload_1
+    fload_2
+    invokestatic Cat1Cat2/printStack(IFFFF)V
+    return
+.end method
+
+.method public static test_dup2_cat2(ID)V
+    .limit stack 5
+    .limit locals 3
+    iload_0
+    dload_1
+    dload_1
+    invokestatic Cat1Cat2/printStack(IDD)V
+    return
+.end method
+
+.method public static test_dup2_x1_cat1(IFF)V
+    .limit stack 5
+    .limit locals 3
+    fload_1
+    fload_2
+    iload_0
+    fload_1
+    fload_2
+    invokestatic Cat1Cat2/printStack(FFIFF)V
+    return
+.end method
+
+.method public static test_dup2_x1_cat2(ID)V
+    .limit stack 5
+    .limit locals 3
+    dload_1
+    iload_0
+    dload_1
+    invokestatic Cat1Cat2/printStack(DID)V
+    return
+.end method
+
+.method public static test_dup2_x2_cat1cat1(IFFII)V
+    .limit stack 7
+    .limit locals 5
+    iload_0
+    iload_3
+    iload 4
+    fload_1
+    fload_2
+    iload_3
+    iload 4
+    invokestatic Cat1Cat2/printStack(IIIFFII)V
+    return
+.end method
+
+.method public static test_dup2_x2_cat1cat2(IFFD)V
+    .limit stack 7
+    .limit locals 5
+    iload_0
+    dload_3
+    fload_1
+    fload_2
+    dload_3
+    invokestatic Cat1Cat2/printStack(IDFFD)V
+    return
+.end method
+
+.method public static test_dup2_x2_cat2cat1(IJFF)V
+    .limit stack 7
+    .limit locals 5
+    iload_0
+    fload_3
+    fload 4
+    lload_1
+    fload_3
+    fload 4
+    invokestatic Cat1Cat2/printStack(IFFJFF)V
+    return
+.end method
+
+.method public static test_dup2_x2_cat2cat2(IJD)V
+    .limit stack 7
+    .limit locals 5
+    iload_0
+    dload_3
+    lload_1
+    dload_3
+    invokestatic Cat1Cat2/printStack(IDJD)V
+    return
+.end method
+
+.method public static printStack(IFFI)V
+    .limit stack 2
+    .limit locals 5
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 4
+    aload 4
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 4
+    fload_1
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 4
+    fload_2
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 4
+    iload_3
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 4
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(IJI)V
+    .limit stack 3
+    .limit locals 5
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 4
+    aload 4
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 4
+    lload_1
+    invokevirtual java/io/PrintStream/println(J)V
+    aload 4
+    iload_3
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 4
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(I)V
+    .limit stack 3
+    .limit locals 1
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    dup
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(IFFFF)V
+    .limit stack 2
+    .limit locals 6
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 5
+    aload 5
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 5
+    fload_1
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    fload_2
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    fload_3
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    fload 4
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(IDD)V
+    .limit stack 3
+    .limit locals 6
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 5
+    aload 5
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 5
+    dload_1
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 5
+    dload_3
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 5
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(FFIFF)V
+    .limit stack 2
+    .limit locals 6
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 5
+    aload 5
+    fload_0
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    fload_1
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    iload_2
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 5
+    fload_3
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    fload 4
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 5
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(DID)V
+    .limit stack 3
+    .limit locals 6
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 5
+    aload 5
+    dload_0
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 5
+    iload_2
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 5
+    dload_3
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 5
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(IIIFFII)V
+    .limit stack 2
+    .limit locals 8
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 7
+    aload 7
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    iload_1
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    iload_2
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    fload_3
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    fload 4
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    iload 5
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    iload 6
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(IDFFD)V
+    .limit stack 3
+    .limit locals 8
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 7
+    aload 7
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    dload_1
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 7
+    fload_3
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    fload 4
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    dload 5
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 7
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(IFFJFF)V
+    .limit stack 3
+    .limit locals 8
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 7
+    aload 7
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    fload_1
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    fload_2
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    lload_3
+    invokevirtual java/io/PrintStream/println(J)V
+    aload 7
+    fload 5
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    fload 6
+    invokevirtual java/io/PrintStream/println(F)V
+    aload 7
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static printStack(IDJD)V
+    .limit stack 3
+    .limit locals 8
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    astore 7
+    aload 7
+    iload_0
+    invokevirtual java/io/PrintStream/println(I)V
+    aload 7
+    dload_1
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 7
+    lload_3
+    invokevirtual java/io/PrintStream/println(J)V
+    aload 7
+    dload 5
+    invokevirtual java/io/PrintStream/println(D)V
+    aload 7
+    invokevirtual java/io/PrintStream/println()V
+    return
+.end method
+
+.method public static main([Ljava/lang/String;)V
+    .limit stack 5
+    .limit locals 1
+    ldc 1.1111F
+    ldc 2.2222F
+    iconst_3
+    invokestatic Cat1Cat2/test_dup_x2_cat1(FFI)V
+    ldc2_w 11111L
+    iconst_2
+    invokestatic Cat1Cat2/test_dup_x2_cat2(JI)V
+    iconst_1
+    ldc 2.2222F
+    ldc 3.3333F
+    invokestatic Cat1Cat2/test_pop2_cat1(IFF)V
+    iconst_1
+    ldc2_w 22222L
+    invokestatic Cat1Cat2/test_pop2_cat2(IJ)V
+    iconst_1
+    ldc 2.2222F
+    ldc 3.3333F
+    invokestatic Cat1Cat2/test_dup2_cat1(IFF)V
+    iconst_1
+    ldc2_w 2.2222
+    invokestatic Cat1Cat2/test_dup2_cat2(ID)V
+    iconst_1
+    ldc 2.2222F
+    ldc 3.3333F
+    invokestatic Cat1Cat2/test_dup2_x1_cat1(IFF)V
+    iconst_1
+    ldc2_w 2.2222
+    invokestatic Cat1Cat2/test_dup2_x1_cat2(ID)V
+    iconst_1
+    ldc 2.222F
+    ldc 3.333F
+    iconst_4
+    iconst_5
+    invokestatic Cat1Cat2/test_dup2_x2_cat1cat1(IFFII)V
+    iconst_1
+    ldc 2.222F
+    ldc 3.333F
+    ldc2_w 4444.44444
+    invokestatic Cat1Cat2/test_dup2_x2_cat1cat2(IFFD)V
+    iconst_1
+    ldc2_w 2222222L
+    ldc 3.3333F
+    ldc 4.4444F
+    invokestatic Cat1Cat2/test_dup2_x2_cat2cat1(IJFF)V
+    iconst_1
+    ldc2_w 2222222L
+    ldc2_w 3333.3333
+    invokestatic Cat1Cat2/test_dup2_x2_cat2cat2(IJD)V
+    return
+.end method
+

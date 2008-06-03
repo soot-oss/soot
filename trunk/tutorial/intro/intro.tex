@@ -1,0 +1,301 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{html}
+
+\title{Soot overview/Disassembling classfiles}
+\author{Raja Vall\'ee-Rai (\htmladdnormallink{rvalleerai@sable.mcgill.ca)}{mailto:rvalleerai@sable.mcgill.ca}}
+\date{March 15, 2000}
+
+\begin{document}
+
+\maketitle
+
+\section{Goals}
+
+By the end of this lesson, the student should be able to:
+\begin{itemize}
+\item understand what Soot is, and its two main uses
+\item have Soot correctly installed
+\item have the CLASSPATH environment variable properly set up
+\item produce baf, grimp or jimple code for any classfile
+\end{itemize}
+
+\section{Testing your Installation}
+
+This is an interactive tutorial.  So the first thing you must do is
+test your installation.  This can be done by typing {\tt java
+soot.Main} at the shell prompt.  If your installation is incorrect you
+should get a class "soot.Main" not found exception.  Please refer to
+the installation instructions which came with the Soot software if
+this occurs.  If your installation is correct you should see something
+like:
+
+\begin{verbatim}
+~ $ java soot.Main
+Soot version 2.0
+Copyright (C) 1997-2003 Raja Vallee-Rai and others.
+All rights reserved.
+
+Contributions are copyright (C) 1997-2003 by their respective contributors.
+See the file 'credits' for a list of contributors.
+See individual source files for details.
+
+Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,
+and you are welcome to redistribute it under certain conditions.
+See the accompanying file 'COPYING-LESSER.txt' for details.
+
+Visit the Soot website:
+  http://www.sable.mcgill.ca/soot/
+
+For a list of command line options, enter:
+  java soot.Main --help
+\end{verbatim}
+
+\section{What is Soot?}
+
+Soot has two fundamental uses; it can be used as a stand-alone command
+line tool or as a Java compiler framework.  As a command line tool,
+Soot can:
+\begin{enumerate}
+\item dissassemble classfiles
+\item assemble classfiles
+\item optimize classfiles
+\end{enumerate}
+
+As a Java compiler framework, Soot can be used as a testbed for
+developing new optimizations.  These new optimizations can then be
+added to the base set of optimizations invoked by the command line
+Soot tool.  The optimizations that can be added can either be applied
+to single classfiles or entire applications.
+
+Soot accomplishes these myriad tasks by being able to process
+classfiles in a variety of different forms.  Currently Soot inputs two
+different intermediate representations (classfiles or Jimple code),
+and outputs any of its intermediate representations.  By invoking Soot with
+the \texttt{--help} option,
+you can see the output formats:
+
+\begin{verbatim}
+> java soot.Main --help
+<...snip...>
+Output Options:
+  -d DIR -output-dir DIR       Store output files in DIR 
+  -f FORMAT -output-format FORMAT
+                               Set output format for Soot 
+     J jimple                    Produce .jimple Files 
+     j jimp                      Produce .jimp (abbreviated Jimple) files 
+     S shimple                   Produce .shimple files 
+     s shimp                     Produce .shimp (abbreviated Shimple) files 
+     B baf                       Produce .baf files 
+     b                           Produce .b (abbreviated Baf) files 
+     G grimple                   Produce .grimple files 
+     g grimp                     Produce .grimp (abbreviated Grimp) files 
+     X xml                       Produce .xml Files 
+     n none                      Produce no output 
+     jasmin                      Produce .jasmin files 
+     c class (default)           Produce .class Files 
+     d dava                      Produce dava-decompiled .java files 
+  -xml-attributes              Save tags to XML attributes for Eclipse 
+<...snip...>
+\end{verbatim}
+
+There are six intermediate representations currently being used in Soot: baf,
+jimple, shimple, grimp, jasmin, and classfiles.  A brief explanation of each form
+follows:
+
+\begin{enumerate}
+\item[baf] a streamlined representation of bytecode.  Used to inspect Java
+bytecode as stack code, but in a much nicer form.  Has two textual
+representations (one abbreviated ({\tt .b} files), one full ({\tt .baf} 
+files).)
+
+\item[jimple] typed 3-address code.  A very convenient representation
+for performing optimizations and inspecting bytecode.  Has two textual
+representations ({\tt .jimp} files, and {\tt .jimple} files.)
+
+\item[shimple] an SSA variation of jimple. Has two textual
+representations ({\tt .shimp} files, and {\tt .shimple} files.)
+
+\item[grimp] aggregated (with respect to expression trees) jimple.  The best
+intermediate representation for inspecting dissassembled code. Has two textual
+representations ({\tt .grimp} files, and {\tt .grimple} files.)
+
+\item[jasmin] a messy assembler format.  Used mainly for debugging 
+Soot.  Jasmin files end with "{\tt .jasmin}".
+
+\item[classfiles] the original Java bytecode format.  A binary (non-textual)
+representation.  The usual {\tt .class} files.
+\end{enumerate}
+
+\section{Setting up your {\tt CLASSPATH} and generating a Jimple file}
+
+Soot looks for classfiles by examining your {\tt CLASSPATH} environment
+variable or by looking at the contents of the {\tt -soot-classpath} command
+line option.  Included in this lesson is the {\htmladdnormallink{\tt Hello.java}{Hello.java}} program.
+Download this file, compile it (using javac or other compilers), and try the following
+command in the directory where {\tt Hello.class} is located.
+
+\begin{verbatim}
+> java soot.Main -f jimple Hello
+\end{verbatim}
+
+This may or not work.  If you get the following:
+
+\begin{verbatim}
+Exception in thread "main" java.lang.RuntimeException: couldn't find type: java.lang.Object (is your soot-class-path set properly?)
+\end{verbatim}
+
+This means that a classfile is not being located.  Either Soot can not
+find the {\tt Hello} classfile, or it can not load the Java
+Development Kit libraries.  Soot resolves classfiles by examining the
+directories in your {\tt CLASSPATH} environment variable or the
+{\tt -soot-classpath} command line option.
+
+Potential problem \#1: Soot can not locate the Hello classfile. To make
+sure that it can find the classfile {\tt "Hello"}, (1) add {\tt "."} 
+to your {\tt CLASSPATH} or (2) specify {\tt "."} on the command line.
+
+To carry out (1) on UNIX-style systems using bash,
+\begin{verbatim}
+> export CLASSPATH=$CLASSPATH:.
+\end{verbatim}
+and on Windows machines,
+\begin{verbatim}
+> SET CLASSPATH=%CLASSPATH%;.
+\end{verbatim}
+
+and to do (2), 
+\begin{verbatim}
+> java soot.Main --soot-classpath . -f jimple Hello
+\end{verbatim}
+
+Potential problem \#2: Soot cannot locate the class libraries.  In this
+case, Soot will report that the type {\tt "java.lang.Object"} could not
+be found.
+
+Under JDK1.2, the class libraries do not need to be explicitly
+specified in the {\tt CLASSPATH} for the Java Virtual Machine to
+operate.  Soot requires them to be specified either on the {\tt
+CLASSPATH} or in the soot-classpath command line option.
+Theoretically, this means adding the path to a {\tt "rt.jar"} file to the
+{\tt CLASSPATH} or the soot-classpath.
+
+\subsection{Locating the {\tt rt.jar} file}
+
+It is usually in a directory of the form "\$root/jdk1.2.2/jre/lib"
+where \$root is "/usr/local" or some similarly named directory.  If you
+can not find it, you can attempt a find command such as:
+
+\begin{verbatim}
+> cd /usr ; find . -name "rt.jar" -print
+\end{verbatim}
+
+which may be able to locate it for you.  Otherwise your best bet is to contact
+your system administrator.
+
+\paragraph{Important note for Windows users} Note that as of release 1,
+Soot will treat drive letters correctly, but under Windows the path
+separator {\em must} be a backslash ($\backslash$), not a forward slash.
+
+Summing up, you must issue a command of the form:
+
+\begin{verbatim}
+> export CLASSPATH=.:/usr/local/pkgs/jdk1.2.2/jre/lib/rt.jar
+\end{verbatim}
+
+or if you use the soot-classpath option which is more cumbersome:
+
+\begin{verbatim}
+> java soot.Main -f jimple --soot-classpath .:/usr/local/pkgs/jdk1.2.2/jre/lib/rt.jar Hello
+\end{verbatim}
+
+
+Once your {\em CLASSPATH} is set up properly, you should get:
+
+\begin{verbatim}
+> java soot.Main -f jimple Hello
+Transforming Hello...
+\end{verbatim}
+
+The file called Hello.jimple should contain:
+
+\begin{verbatim}
+public class Hello extends java.lang.Object
+{
+    public void <init>()
+    {
+        Hello r0;
+
+        r0 := @this: Hello;
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+        java.io.PrintStream $r1;
+
+        r0 := @parameter0: java.lang.String[];
+        $r1 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke $r1.<java.io.PrintStream: void println(java.lang.String
+)>("Hello world!");
+        return;
+    }
+}
+\end{verbatim}
+
+\section{Generating jimple, baf, grimp for java.lang.String}
+
+By simple extrapolation, you should be able to now generate {\tt .b, .baf,
+.jimp, .jimple, .grimp,} and {\tt .grimple} files for any of your favorite
+classfiles.  A particularly good test is a classfile from the JDK
+library.  So a command like:
+
+\begin{verbatim}
+> java soot.Main -f baf java.lang.String
+\end{verbatim}
+
+should yield a file java.lang.String.baf containing text of the form:
+
+\begin{verbatim}
+    public static java.lang.String valueOf(char[], int, int)
+    {
+        word r0, i0, i1;
+
+        r0 := @parameter0: char[];
+        i0 := @parameter1: int;
+        i1 := @parameter2: int;
+        new java.lang.String;
+        dup1.r;
+        load.r r0;
+        load.i i0;
+        load.i i1;
+        specialinvoke <java.lang.String: void <init>(char[],int,int)>;
+        return.r;
+    }
+\end{verbatim}
+
+\section{History}
+\begin{itemize}
+\item February 8, 2000: Initial version.
+
+\item February 16, 2000: Added changes for Soot version 021400 (Soot now prints
+the missing type) and emitted the title at the beginning. -PL
+
+\item March 1, 2000: Added changes for Release 1 (phantom class error
+printed instead) and emphasized that rt.jar should not occur in CLASSPATH. -PL
+
+\item March 11, 2000: Added note for Windows users in section about the
+classpath.
+
+\item March 15, 2000: Final tweaks for Release 1.
+
+\item January 29, 2001: Add the note of the release 1.2.1 .
+
+\item February 3, 2001: Added a hyperlink to Hello.java.
+
+\item June 6, 2003: Update for Soot 2.0.
+\end{itemize}
+
+\end{document}

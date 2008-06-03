@@ -1,0 +1,341 @@
+\documentclass{article}
+\usepackage{fullpage,html}
+
+\author{Patrick Lam (\htmladdnormallink{plam@sable.mcgill.ca}{mailto:plam@sable.mcgill.ca})}
+
+\title{On the Soot menagerie -- fundamental Soot objects}
+\date{March 1, 2000}
+
+\begin{document}
+
+\maketitle
+
+Soot has a large and complicated class hierarchy.  This document will
+introduce the reader to some of the most important classes for developing
+extensions to Soot.
+
+This document is meant to be read after the {\tt createclass} document 
+is understood.  It builds on the knowledge gained from that example.
+We describe here the notions of {\tt Body}, {\tt Unit}, {\tt Local}, {\tt Value},
+{\tt UnitBox} and {\tt ValueBox}.
+
+\section{All about {\tt Body}s}
+
+In the {\tt createclass} tutorial, the concept of a {\tt Body} was introduced
+briefly.  This section will describe {\tt Body} in more detail.
+
+Recapping from the previous lesson, Soot uses a {\tt Body} to store code
+for a method.  There are three kinds of {\tt Body} in Soot -- namely, 
+{\tt BafBody}, {\tt JimpleBody} and {\tt GrimpBody} -- one for each 
+intermediate representation.
+
+Also, recall that a chain is a list-like data structure providing constant-time
+access to chain elements, including insertion and removal.
+
+The three principal chains in a {\tt Body} are the {\tt Units} chain, the
+{\tt Locals} chain and the {\tt Traps} chain.  The following example will
+illustrate the role of each of these chains.
+
+Consider the following Java method:
+
+\begin{verbatim}
+    public static void main(String[] argv) throws Exception
+    {
+        int x = 2, y = 6;
+
+        System.out.println("Hi!");
+        System.out.println(x * y + y);
+        try
+        {
+            int z = y * x;
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+\end{verbatim}
+
+After Jimplification, we have the following abbreviated jimple code:
+
+\begin{verbatim}
+public static void main(java.lang.String[]) throws java.lang.Exception
+    {
+        java.lang.String[] r0;
+        int i0, i1, i2, $i3, $i4;
+        java.io.PrintStream $r1, $r2;
+        java.lang.Exception $r3, r4;
+
+        r0 := @parameter0;
+        i0 = 2;
+        i1 = 6;
+        $r1 = java.lang.System.out;
+        $r1.println(``Hi!'');
+        $r2 = java.lang.System.out;
+        $i3 = i0 * i1;
+        $i4 = $i3 + i1;
+        $r2.println($i4);
+
+     label0:
+        i2 = i1 * i0;
+
+     label1:
+        goto label3;
+
+     label2:
+        $r3 := @caughtexception;
+        r4 = $r3;
+        throw r4;
+
+     label3:
+        return;
+
+        catch java.lang.Exception from label0 to label1 with label2;
+    }
+\end{verbatim}
+%$ (to end the math mode for emacs).
+
+\subsection{Local variables}
+
+The locals in this method are seen at the top of the method:
+\begin{verbatim}
+        java.lang.String[] r0;
+        int i0, i1, i2, $i3, $i4;
+        java.io.PrintStream $r1, $r2;
+        java.lang.Exception $r3, r4;
+\end{verbatim}
+%$
+
+The collection of {\tt Local}s is stored in the {\tt localChain} and
+accessible via {\tt body.getLocals()}.  Each intermediate
+representation may define its own implementation of {\tt Local};
+however, it must always be possible, for every {\tt Local r0}, to call
+{\tt r0.getName()}, {\tt r0.getType()}, {\tt r0.setName()} and {\tt
+r0.setType}.  Note that local variables must be typed.
+
+\subsection{Traps}
+
+To support Java exception handling, Soot {\tt Body}'s define the notion
+of {\em traps}.  The idea is that in Java bytecode, exception handlers are
+represented by a tuple (exception, start, stop, handler); between the start
+and stop units (including start, but not including stop), if the exception is 
+thrown, execution continues at handler.
+
+In the example, there is one trap:
+\begin{verbatim}
+        catch java.lang.Exception from label0 to label1 with label2;
+\end{verbatim}
+
+\subsection{Units}
+
+The most interesting part of a {\tt Body} is its chain of {\tt Unit}s.
+This is the actual code contained in the {\tt Body}.  Jimple provides the
+{\tt Stmt} implementation of {\tt Unit}, while Grimp provides the {\tt Inst}
+implementation.  This reflects the fact that each IR has its own notion of
+statement.
+
+An example of a Jimple {\tt Stmt} is the {\tt AssignStmt}, which represents
+a Jimple assignment statement.  One {\tt AssignStmt} would be:
+\begin{verbatim}
+    x = y + z;
+\end{verbatim}
+
+After we describe {\tt Box}es, we will discuss the methods specified by
+{\tt Unit}.
+
+\section{Value}
+Code always acts on data.  To represent the data, Soot provides the
+{\tt Value} interface.  Some different types of {\tt Value}s are:
+\begin{itemize}
+\item Locals
+\item Constants
+\item Expressions ({\tt Expr})
+\item ParameterRefs, CaughtExceptionRefs and ThisRefs.
+\end{itemize}
+
+The {\tt Expr} interface, in turn, has a panoply of implementations;
+among them are {\tt NewExpr} and {\tt AddExpr}.  In general, an {\tt Expr}
+carries out some action on one or several {\tt Value}s and returns another
+{\tt Value}.
+
+Here's a real live use of some {\tt Value}s:
+\begin{verbatim}
+    x = y + 2;
+\end{verbatim}
+
+This is an {\tt AssignStmt}.  Its {\tt leftOp} is ``x'' and its rightOp
+is ``y+2'', an {\tt AddExpr}.  The {\tt AddExpr}, in turn, contains the
+{\tt Value}s ``y'' and ``2'' as its operands; the former is a {\tt Local}
+while the latter is a {\tt Constant}.
+
+In Jimple, we enforce the requirement that all {\tt Value}s contain at most
+1 expression.  Grimp lifts this restriction, producing easier-to-read
+but harder-to-analyse code.
+
+\section{Boxes}
+
+Boxes are ubiquitous in Soot.  The main idea to keep in mind is that
+{\em a Box is a pointer}.  It provides indirect access to Soot objects.
+
+A more descriptive name for {\tt Box} would have been {\tt Ref}.
+Unfortunately, {\tt Ref} has a different meaning for Soot.
+
+There are two kinds of {\tt Box}es in Soot -- the {\tt ValueBox} 
+and the {\tt UnitBox}.  Not surprisingly, a {\tt UnitBox} contains
+{\tt Unit}s while a {\tt ValueBox} contains {\tt Value}s.  In C++, these
+would be simply {\tt (Unit *)} and {\tt (Value *)} respectively.  
+
+We now describe each type of {\tt Box}.
+
+\subsection{The UnitBox}
+
+Some types of {\tt Units} will need to contain references to other
+{\tt Unit}s.  For instance, a {\tt GotoStmt} needs to know what its
+target is.  Hence, Soot provides the {\tt UnitBox}, a {\tt Box} that
+contains a {\tt Unit}.
+
+Consider the following {\tt jimp} code:
+\begin{verbatim}
+    x = 5;
+    goto l2;
+    y = 3;
+l2: z = 9;
+\end{verbatim}
+
+
+Each {\tt Unit} must provide {\tt getUnitBoxes()}.  For most {\tt
+UnitBoxes}, this returns the empty list.  However, in the cast of a
+{\tt GotoStmt}, then {\tt getUnitBoxes()} returns a one-element list,
+containing a {\tt Box} pointing to {\tt l2}.
+
+Note that a {\tt SwitchStmt} will, in general, return a list with many
+boxes.
+
+The notion of a Box comes in especially useful for modifying code.
+Say we have a statement {\tt s}:
+\begin{verbatim}
+  s: goto l2;
+\end{verbatim}
+and a stmt at {\tt l2}:
+\begin{verbatim}
+l2:  goto l3;
+\end{verbatim}
+
+It is clear that {\tt s} can point to {\tt l3}
+instead of {\tt l2}, regardless of the actual type of {\tt s};
+we can do this uniformly, for all kinds of {\tt Unit}s:
+\begin{verbatim}
+    public void readjustJumps(Unit s, Unit oldU, Unit newU)
+    {
+        Iterator ubIt = s.getUnitBoxes.iterator();
+        while (ubIt.hasNext())
+        {
+            StmtBox tb = (StmtBox)ubIt.next();
+            Stmt targ = (Stmt)tb.getUnit();
+
+            if (targ == oldU)
+                tb.setUnit(newU);
+        }
+    }
+\end{verbatim}
+
+Some code similar to this is used in {\tt Unit} itself, to enable the
+creation of {\tt PatchingChain}, an implementation of {\tt Chain}
+which adjusts pointers to {\tt Unit}s which get removed from the {\tt
+Chain}.
+
+\subsection{The ValueBox}
+
+Analogously to {\tt Unit}s, we often need a notion of a ``pointer to a 
+{\tt Value}''.  This is represented by the {\tt ValueBox} class.
+For a {\tt Unit}, we can always get a list of {\tt ValueBox}es,
+containing values {\em used} and {\em defined} in that {\tt Unit}.
+
+We can use these boxes to carry out constant folding: if an {\tt AssignStmt}
+evaluates an {\tt AddExpr} adding two constant values, we can statically
+add them and put the result into the {\tt UseBox}.
+
+Here is an example of folding {\tt AddExpr}s.
+
+\begin{verbatim}
+    public void foldAdds(Unit u)
+    {
+        Iterator ubIt = u.getUseBoxes().iterator();
+        while (ubIt.hasNext())
+        {
+            ValueBox vb = (ValueBox) ubIt.next();
+            Value v = vb.getValue();
+            if (v instanceof AddExpr)
+            {
+                AddExpr ae = (AddExpr) v;
+                Value lo = ae.getOp1(), ro = ae.getOp2();
+                if (lo instanceof IntConstant && ro instanceof IntConstant)
+                {
+                    IntConstant l = (IntConstant) lo,
+                          r = (IntConstant) ro;
+                    int sum = l.value + r.value;
+                    vb.setValue(IntConstant.v(sum));
+                }
+            }
+        }
+    }
+\end{verbatim}
+
+Note how this works for {\em any} {\tt Unit}, regardless of type.
+
+\section{{\tt Unit} revisited}
+
+We now discuss the different methods that any {\tt Unit} must provide.
+
+\begin{verbatim}
+    public List getUseBoxes();
+    public List getDefBoxes();
+    public List getUseAndDefBoxes();
+\end{verbatim}
+
+These methods return {\tt List}s of {\tt ValueBox}es for values used,
+defined, or both, in this {\tt Unit}.  For the {\tt getUseBoxes()} method,
+all values used are returned; this includes expressions as well as their
+constituent parts.
+
+\begin{verbatim}
+    public List getUnitBoxes();
+\end{verbatim}
+
+This method returns a {\tt List} of {\tt UnitBox}es for units
+pointed to by this method.
+
+\begin{verbatim}
+    public List getBoxesPointingToThis();
+\end{verbatim}
+
+This method returns a {\tt List} of {\tt UnitBox}es which contain
+this {\tt Unit} as their target.
+
+\begin{verbatim}
+    public boolean fallsThrough();
+    public boolean branches();        
+\end{verbatim}
+
+These methods have to do with the flow of execution after this
+{\tt Unit}. The former method returns true if execution can continue
+to the following {\tt Unit}, while the latter returns true if
+execution might continue to some {\tt Unit} which isn't immediately
+after this one.
+    
+\begin{verbatim}
+    public void redirectJumpsToThisTo(Unit newLocation);
+\end{verbatim}
+
+This method uses {\tt getBoxesPointingToThis} to change all
+jumps to this {\tt Unit}, pointing them instead at {\tt newLocation}.
+
+\section{History}
+\begin{itemize}
+\item March 1, 2000: Initial version.
+\item September 1, 2000: Fixed typo.
+\item January 7, 2005: Made .jimp example match actual Soot output
+\end{itemize}
+
+\end{document}
+

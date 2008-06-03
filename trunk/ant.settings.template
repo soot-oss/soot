@@ -1,0 +1,31 @@
+## Location of JastAdd classes jar file to link Soot against
+#  This can be found at:
+#  svn+ssh://musketeer.comlab.ox.ac.uk/srv/svn/projects/trunk/JastAddExtensions/
+#  check out this url and then set thiss variable to <prefix>/JastAddExtensions/SootJastAddJ 
+#
+# NOTE: You ONLY need to check this out and set this parameter if you wish to regenerate
+# the JastAdd-generated files in generated/jastadd!
+# 
+#jastaddfrontend.loc=../JastAddExtensions/SootJastAddJ
+
+## Location of Polyglot classes jar file to link Soot against
+polyglot.jar=${user.home}/polyglotclasses.jar
+
+## Location of Jasmin classes jar file
+jasmin.jar=${user.home}/jasminclasses.jar
+
+## Location of Eclipse installation.
+## This should have a directory called plugins in it.
+eclipse.loc=/usr/share/eclipse
+
+## Version of Soot for tagging tarballs.
+soot.version=trunk
+
+## Location in which to generate Soot release tarballs.
+release.loc=lib
+
+## URL for Java API documentation, for resolving things like
+## {@link Iterator} when generating documentation from 
+## javadoc comments.
+javaapi.url=http://java.sun.com/j2se/1.5.0/docs/api/
+

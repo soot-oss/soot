@@ -1,0 +1,71 @@
+% This is various discarded slides.  May want to keep them around.
+
+\begin{slide}{What is a Box?}
+We wanted to write this:
+
+\begin{tabbing}
+\qquad \= {\tt Value * pV = ...;}\\
+       \> {\tt *pV = new Local(...);}
+\end{tabbing}
+
+
+\vspace*{-0.05in}
+\begin{itemize}
+\item Pointers allow indirection.
+\end{itemize}
+
+Problem: Java doesn't expose pointers
+
+\vspace*{0.05in}
+\begin{tabbing}
+\quad \= {\tt ValueBox b = s.getUseBoxes().get(0);}\\
+       \>{\tt b.setValue(new Local(...));}
+\end{tabbing}
+
+\[ \fbox{\tt i} \: \mathop{\longrightarrow}^{\small \tt getValue()} \: \mbox{\tt i} \]
+
+\end{slide}
+
+\begin{slide}{{\tt getDefBoxes()} et al.}
+
+\begin{center}
+\fbox{\tt s: \fbox{x} = \fbox{y} op \fbox{z};}
+\end{center}
+
+\quad
+
+{\tt getDefBoxes(s) = \{\fbox{x}\}}\\
+
+\quad
+
+{\tt getUseBoxes(s) = \{\fbox{y}, \fbox{z}\}}\\
+
+\quad
+
+{\tt getUseAndDefBoxes(s) = \{\fbox{x}, \fbox{y}, \fbox{z}\}}\\
+
+\end{slide}
+
+\begin{slide}{Another Example of Live Locals}
+A local variable {\tt v} is {\red live} at $s$ if there exists some
+statement $s'$ using {\tt v} and a control-flow path from $s$ to $s'$ free
+of definitions of {\tt v}.
+
+\quad
+
+\begin{center}
+\input{lv-example-specific.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{Example: Branched nullness}
+
+A local variable {\tt v} is {\red non-null} at $s$ if all control-flow
+paths from a method's start node to $s$ result in {\tt v} being
+assigned a value different from {\tt null} at $s$.
+
+\begin{center}
+\input{lv-example-specific.eepic}
+\end{center}
+
+\end{slide}

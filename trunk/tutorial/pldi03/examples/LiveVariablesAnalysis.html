@@ -1,0 +1,74 @@
+<HTML> <HEAD> <TITLE>LiveVariablesAnalysis.java</TITLE> </HEAD> <BODY> <PRE> 
+<FONT COLOR=Purple>package</FONT> <FONT COLOR=CadetBlue>olhotak</FONT>.<FONT COLOR=CadetBlue>liveness</FONT>;
+
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>util</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>java</FONT>.<FONT COLOR=CadetBlue>util</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>jimple</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>toolkits</FONT>.<FONT COLOR=CadetBlue>graph</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>toolkits</FONT>.<FONT COLOR=CadetBlue>scalar</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+
+<FONT COLOR=Purple>class</FONT> <FONT COLOR=ForestGreen>LiveVariablesAnalysis</FONT> <FONT COLOR=Purple>extends</FONT> <FONT COLOR=ForestGreen>BackwardFlowAnalysis</FONT>
+{
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>copy</FONT>(<FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>src</FONT>, <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>dest</FONT>)
+    {
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>srcSet</FONT>  = (<FONT COLOR=ForestGreen>FlowSet</FONT>) src;
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>destSet</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) dest;
+            
+        srcSet.copy(destSet);
+    }
+
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>merge</FONT>(<FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>src1</FONT>, <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>src2</FONT>, <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>dest</FONT>)
+    {
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>srcSet1</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) src1;
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>srcSet2</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) src2;
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>destSet</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) dest;
+
+        srcSet1.union(srcSet2, destSet);
+    }
+
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>flowThrough</FONT>(<FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>srcValue</FONT>, <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>unit</FONT>,
+            <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>destValue</FONT>)
+    {
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>dest</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) destValue;
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>src</FONT>  = (<FONT COLOR=ForestGreen>FlowSet</FONT>) srcValue;
+        <FONT COLOR=ForestGreen>Unit</FONT>    <FONT COLOR=DarkGoldenrod>s</FONT>    = (<FONT COLOR=ForestGreen>Unit</FONT>)    unit;
+        src.copy (dest);
+
+        <FONT COLOR=Firebrick>// Take out kill set
+</FONT>        <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>boxIt</FONT> = s.getDefBoxes().iterator();
+        <FONT COLOR=Purple>while</FONT> (boxIt.hasNext()) {
+            <FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>box</FONT> = (<FONT COLOR=ForestGreen>ValueBox</FONT>) boxIt.next();
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>value</FONT> = box.getValue();
+            <FONT COLOR=Purple>if</FONT> (value <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT>)
+                dest.remove(value);
+        }
+
+        <FONT COLOR=Firebrick>// Add gen set
+</FONT>        boxIt = s.getUseBoxes().iterator();
+        <FONT COLOR=Purple>while</FONT> (boxIt.hasNext()) {
+            <FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>box</FONT> = (<FONT COLOR=ForestGreen>ValueBox</FONT>) boxIt.next();
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>value</FONT> = box.getValue();
+            <FONT COLOR=Purple>if</FONT> (value <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT>)
+                dest.add(value);
+        }
+    }
+
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=Blue>entryInitialFlow</FONT>()
+    {
+        <FONT COLOR=Purple>return</FONT> <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ArraySparseSet</FONT>();
+    }
+        
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=Blue>newInitialFlow</FONT>()
+    {
+        <FONT COLOR=Purple>return</FONT> <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ArraySparseSet</FONT>();
+    }
+
+    <FONT COLOR=ForestGreen>LiveVariablesAnalysis</FONT>(<FONT COLOR=ForestGreen>DirectedGraph</FONT> <FONT COLOR=DarkGoldenrod>g</FONT>)
+    {
+        <FONT COLOR=Purple>super</FONT>(g);
+
+        doAnalysis();
+    }
+}
+</PRE> </BODY> </HTML>

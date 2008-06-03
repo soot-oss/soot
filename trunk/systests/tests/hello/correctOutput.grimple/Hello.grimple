@@ -1,0 +1,21 @@
+public class Hello extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        Hello r0;
+
+        r0 := @this: Hello;
+        r0.<java.lang.Object: void <init>()>();
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+
+        r0 := @parameter0: java.lang.String[];
+        <java.lang.System: java.io.PrintStream out>.<java.io.PrintStream: void println(java.lang.String)>("Hello, World!");
+        return;
+    }
+}

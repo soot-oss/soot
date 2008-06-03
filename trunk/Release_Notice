@@ -1,0 +1,56 @@
+Dear Soot Users,
+
+We are pleased to announce that Soot version 2.3.0 is now available
+at: http://www.sable.mcgill.ca/soot/
+
+This release contains the following additions and improvements:
+
+1. Integrated new JastAdd-based frontend with support for Java 5
+   source code. Thanks to Torbjorn Ekman for contributing his
+   frontend and his implementation of Java2Jimple!
+   
+2. At the very least if -validate is on, Soot now checks that @this
+   is only assigned in the first statement of an instance method.
+   This has always been an implicit assumption for Jimple code
+   but up until now was not enforced. 
+   
+3. Integrated full support for preserving annotations in Jimple
+   and writing them to bytecode. SOURCE level annotations are
+   preserved if code is read from source and the flag
+   -p jb preserve-source-annotations is given. (does not hold for
+   package and local variable annotations) SOURCE level annotations
+   are not written into bytecode by Soot.
+   Annotations can easily be added to SootClass, SootMethod and
+   SootField instances using the utility class
+   soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator.
+   (Thanks to Will Benton!)   
+ 
+4. Java 5 Annotations for fields, classes, parameters and methods
+   are now fully preserved in bytecode. Jasmin was changed to
+   implement this support.   
+   
+5. Ben Bellamy contributed a new implementation for the type assigner.
+   This is to be published under the title 'Efficient Local Type
+   Inference' at OOPSLA '08. The new type assigner is usually
+   faster (it is applied when processing bytecode), and sometimes
+   more precise. In particular it should always infer the most
+   narrow type possible.   
+   
+Also we incorporated fixes to numerous bugs. Thanks for reporting bugs
+and/or prividing fixes!   
+
+See http://www.sable.mcgill.ca/soot/CHANGES for details.
+
+As of version 2.2.0 the Soot bugzilla is available at:
+http://svn.sable.mcgill.ca/bugzilla/. We encourage you to add any Soot
+bugs there.
+
+Also, as of version 2.2.0 the Soot wiki is available at:
+http://svn.sable.mcgill.ca/wiki/index.php/SootProject. The Soot team
+will be using this site for discussing upcoming work, so if you would
+like to know what's going on look there.
+
+Regards,
+
+Eric Bodden 
+Sable Research Group, McGill University

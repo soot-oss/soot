@@ -1,0 +1,56 @@
+\section{Dataflow Problems \& How to attack them}
+
+a.k.a six steps to flow analysis
+
+\begin{enumerate}
+\item Decide what you are approximating, and a partial ordering for approximation domain.
+
+e.g. reaching definitions: sets of definitions; ordering is set inclusion.
+
+\input{rd}
+
+\item State the problem precisely.
+
+usually stated in terms of a program point $p$ and paths to or from point $p$
+
+e.g. ``For a program point $p$, which definitions $d$ have a
+redefinition-free path from $d$ to $p$?''
+
+\item Forward or Backward?
+
+\begin{itemize}
+\item Forward analysis: facts about the past (reaching defs)
+
+Compute $\mbox{\tt out}(B_i)$ in terms of $\mbox{\tt in}(B_i)$:
+\[ \mbox{\tt out}(B_i) = f_s(\mbox{\tt in}(B_i)) \]
+
+\item Backward analysis: facts about the future (live variables)
+
+Compute $\mbox{\tt in}(B_i)$ in terms of $\mbox{\tt out}(B_i)$:
+\[ \mbox{\tt in}(B_i) = f_s(\mbox{\tt out}(B_i)) \]
+
+\end{itemize}
+
+\item Decide on a confluence operator.
+
+If we're approximating using sets, take $\cup$ or $\cap$.
+
+\begin{itemize}
+\item $\cup$: $\exists$ path on which some property holds
+\item $\cap$: $\forall$ paths, the property holds.
+\end{itemize}
+
+\item Write an equation for each kind of IR statement.
+
+\input{flow-generic.epic}
+
+\item State the Starting Approximation.
+
+forward: out(START) = safe solution
+         out(s_i) = unsafe solution
+
+backward: in(END) = safe solution
+          in(s_i) = maximally unsafe solution
+
+\end{enumerate}
+

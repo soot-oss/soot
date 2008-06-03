@@ -1,0 +1,488 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{html}
+\usepackage{epsfig}
+
+\title{Using the Soot flow analysis framework}
+\author{Patrick Lam (\htmladdnormallink{plam@sable.mcgill.ca)}{mailto:plam@sable.mcgill.ca}}
+\date{March 17, 2000}
+
+\begin{document}
+
+\maketitle
+
+Slides from a talk on the Soot flow analysis framework
+are at \htmladdnormallink{http://www.sable.mcgill.ca/soot/notes}{http://www.sable.mcgill.ca/soot/notes}.
+
+\section{Goals}
+
+By the end of this lesson, the student should be able to:
+\begin{itemize}
+\item understand the Soot Flow Analysis class hierarchy
+\item use an auxiliary class to package flow analysis results for use
+\item use the hooks in Soot to output the results of custom
+analyses
+\end{itemize}
+
+\section{Flow Sets}
+
+In dataflow analysis, we seek to associate some data with each node
+in the control-flow graph.  In Soot, we represent this data as flow
+sets.
+
+Typically, a flow set represents a set of facts.  For reaching
+definitions, the flow sets are the sets of pairs (variable, program
+point).  Soot defines the {\tt FlowSet} interface to be the canonical
+flow object.
+
+Soot also provides an implementation of {\tt FlowSet}, 
+{\tt ArraySparseSet}.  This represents the {\tt FlowSet} using an
+array.
+
+Often, we want a {\tt FlowSet} with complementation; this is a {\tt
+BoundedFlowSet}, and implemented by {\tt ArrayPackedSet}.  To speak of
+complementation, there must be some universe with respect to which we
+complement.  When the universe is not implicit in the definition of
+the flow set itself, then Soot provides the {\tt FlowUniverse} set;
+this is used by {\tt ArrayPackedSet}.
+
+The {\tt FlowSet} interface requires the following methods:
+\begin{itemize}
+\item {\tt clone()}
+\item {\tt clear()}
+\item {\tt isEmpty()}
+\item {\tt copy (FlowSet dest)}
+\item {\tt union (FlowSet other, FlowSet dest)}
+\item {\tt intersection (FlowSet other, FlowSet dest)}
+\item {\tt difference (FlowSet other, FlowSet dest)}
+\end{itemize}
+
+The first 3 methods are clear.  The {\tt copy()} method
+will put the contents of `this' {\tt FlowSet} into the
+destination {\tt FlowSet}.  
+
+For the last 3 methods, the following rule is used:
+
+\begin{verbatim}
+                       dest <- this op other
+\end{verbatim}
+
+Note that these operations give {\tt FlowSet} the necessary
+structure to be a lattice element.  
+
+Usually, we just need to represent sets for flow analysis.  In that
+case, the following optional methods are used:
+\begin{itemize}
+\item {\tt size()}
+\item {\tt add (Object obj, FlowSet dest)}
+\item {\tt remove (Object obj, FlowSet dest)}
+\item {\tt contains (Object obj)}
+\item {\tt toList()}
+\end{itemize}
+
+The {\tt add()} and {\tt remove} objects use the following rule:
+
+\begin{verbatim}
+                       dest <- this op obj
+\end{verbatim}
+
+The reference implementation, {\tt ArraySparseSet}, implements all
+of the methods for {\tt FlowSet}.
+
+\section{Graph creation}
+
+In order to do dataflow analysis, a control-flow graph is required.
+We will now describe how to create such a graph.
+
+The {\tt SootMethod} and {\tt Body} classes have been described in the
+example showing \htmladdnormallink{how to create a class from scratch}
+{..//createclass}.
+These concepts should now be understood.  
+
+Soot provides the {\tt UnitGraph} class to describe the notion of
+a control-flow graph.  There are two types of {\tt UnitGraphs}:
+{\tt ExceptionalUnitGraph} and {\tt BriefUnitGraph}.  The exceptional graph
+contains all of the edges in the brief graph, plus edges corresponding
+to potential exceptions being thrown.  It should be used for analysis.
+
+The {\tt UnitGraph} class implements the {\tt DirectedGraph} interface,
+which captures the essential features of directed graphs (on {\tt Directed}
+objects).
+
+Given a {\tt Body}, say {\tt b}, we can create a {\tt
+ExceptionalUnitGraph} by invoking {\tt new ExceptionalUnitGraph(b)}.
+
+\section{Flow Analysis}
+
+Now that we are armed with graphs and flow sets, we can proceed to
+carry out the actual analysis.
+
+Soot provides {\tt FlowAnalysis} classes.  All we need to plug in are
+a flow function, merge, copy, and initial flow sets, and we're all set!
+
+The following abstract methods must be implemented by a {\tt FlowAnalysis}:
+
+\begin{description}
+\item{{\tt newInitialFlow()}:} return the initial value for {\tt FlowSet}s in
+the graph.
+
+e.g. ``{\tt return emptySet.clone();}''
+
+\item{{\tt customizeInitialFlowGraph()}:} overriding {\tt
+customizeInitialFlowGraph()} will permit the user to give different
+flow sets to different graph nodes.  This method can adjust anything it
+needs to; it is called at the end of the constructor for {\tt
+Analysis}.  For instance, an all-paths analysis will often make the
+initial objects the full set, except at the start.
+
+\item{{\tt merge(inSet1, inSet2, outSet)}:} combine two {\tt FlowSet}s to produce
+an out-{\tt FlowSet}.
+
+e.g. ``{\tt inSet1.union(inSet2, outSet);}''
+
+\item{{\tt copy(sourceSet, destSet)}:} put the source into the destination.
+
+e.g. ``{\tt sourceSet.copy(destSet);}''
+
+\item{{\tt flowThrough(inSet, s, outSet)}:} given {\tt inSet} and {\tt s}, put
+the correct OUT value into the {\tt outSet}.
+
+If we have pre-computed the gen and preserve sets, this code could implement
+{\tt flowThrough()}:
+\begin{verbatim}
+inSet.intersection(unitToPreserveSet.get(s), outSet);
+outSet.union(unitToGenerateSet.get(s), outSet);
+\end{verbatim}
+\end{description}
+
+In appendix \ref{simpleAnalysis} we show a complete example of a simple
+analysis, for detecting live locals.
+
+\subsection{Pre-computing gen and preserve Sets}
+
+We made a passing reference to pre-computing sets in the above.
+Often, in a flow analysis, the flow-through function is actually quite
+simple:
+\[\mbox{OUT}(s) = \mbox{IN}(s) \cup \mbox{gen}(s) \cap \mbox{prsv}(s) \]
+
+In such a case, we can pre-compute the gen and preserve sets in the
+constructor.  Hopefully, this speeds up the analysis.
+
+We illustrate the pre-computation of a preserve set for live locals:
+
+\begin{verbatim}
+    Unit s = (Unit) unitIt.next();
+
+    BoundedFlowSet killSet = emptySet.clone();
+    Iterator boxIt = s.getDefBoxes().iterator();
+
+    while(boxIt.hasNext())
+    {
+        ValueBox box = (ValueBox) boxIt.next();
+
+        if(box.getValue() instanceof Local)
+            killSet.add(box.getValue(), killSet);
+    }
+
+    // Store complement
+        killSet.complement(killSet);
+        unitToPreserveSet.put(s, killSet);
+\end{verbatim}
+
+Note that all {\tt Unit} objects provide a {\tt getDefBoxes} 
+method.  This returns a list of values defined in the {\tt Unit}.
+
+In order to compute the {\tt gen} sets, we use {\tt getUseBoxes} instead;
+it is a fairly simple change.
+
+\section{Packaging Flow Analyses}
+
+Typically, we don't want to provide access to the underlying Analysis
+classes.  For instance, we would much rather pass around {\tt List}s of
+live locals, rather than {\tt FlowSet}s; we can make the {\tt List}s
+unmodifiable, while we're at it!
+
+In order to do that, we wrap the {\tt Analysis} object.  After running the
+Analysis, we run through the units and map the {\tt Unit}s in question
+to {\tt List}s of results.  Then, we can provide accessor methods:
+
+\begin{verbatim}
+    List lla = liveLocals.getLiveLocalsAfter(s);
+\end{verbatim}
+
+An example wrapper is in appendix \ref{simpleAnalysisWrapper}.
+
+We now have clean access to the analysis results.
+
+\section{Transforming Jimple}
+
+Often, we want to transform all of the {\tt JimpleBody} objects for a
+program.  This can be done, first, by creating a {\tt BodyTransformer}
+object.
+
+\begin{verbatim}
+public class NaiveCommonSubexpressionEliminator extends BodyTransformer
+{ 
+    private static NaiveCommonSubexpressionEliminator instance = 
+        new NaiveCommonSubexpressionEliminator();
+    private NaiveCommonSubexpressionEliminator() {}
+
+    public static NaiveCommonSubexpressionEliminator v() { return instance; }
+
+    /** Common subexpression eliminator. */
+    protected void internalTransform(Body b, String phaseName, Map options)
+    {
+\end{verbatim}
+
+The most important part of this class is the {\tt internalTransform}
+method.  It carries out the work of the transformer.  There are also
+{\em declared} options -- those that the transformer claims to understand;
+and {\em default} options.
+
+The code fragment above also has code to provide a singleton object,
+so that we may refer to the common subexpression eliminator as
+{\tt NaiveCommonSubexpressionEliminator.v()}, which is a Java object.
+
+Once we have done this, we want to ensure that the transformation
+is triggered at the appropriate times.  Soot runs a number of {\tt Pack}s 
+at different stages of its execution; they are built in the {\tt PackManager}'s
+constructor.  One notable {\tt Pack} is the Jimple transformation pack
+({\tt jtp}); the user may wish to add transformations to this pack:
+
+\begin{verbatim}
+        PackManager.v().getPack("jtp").add(
+             new Transform("jtp.gotoinstrumenter", GotoInstrumenter.v()));
+\end{verbatim}
+
+The {\tt Transform} object just keeps track of the pair (phase name,
+transformation object).  Phases are described in more detail in the
+\htmladdnormallink{document about phase
+options}{http://www.sable.mcgill.ca/soot/tutorial/phase}.
+
+\section{Extending Soot}
+
+The approved way of extending Soot is to provide a {\tt Main} class file
+in a custom package, say {\tt plam.Main}.  This class can make adjustments
+to the {\tt Pack}s contained in the PackManager, for instance adding a
+goto instrumentor:
+
+\begin{verbatim}
+    public static void main(String[] args) 
+    {
+        if(args.length == 0)
+        {
+            System.out.println("Syntax: java "+
+                "soot.examples.instrumentclass.Main --app mainClass "+
+                "[soot options]");
+            System.exit(0);
+        }            
+        
+        PackManager.v().getPack("jtp").add(
+             new Transform("jtp.gotoinstrumenter", GotoInstrumenter.v()));
+        soot.Main.main(args);
+    }
+\end{verbatim}
+
+\section{Conclusions}
+
+In this lesson, we have described the Soot flow analysis framework,
+described how to write a Body transformer, and how to integrate all of
+this into the Soot framework.
+
+\section{History}
+
+\begin{itemize}
+\item March 17, 2000: Initial version.
+\item May 31, 2003: Initial version.
+\end{itemize}
+
+\appendix
+
+\section*{Simple Live Locals Analysis}
+\label{simpleAnalysis}
+% this should be a real appendix.  Unfortunately I don't know how to
+% do it!
+
+\begin{verbatim}
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
+ *
+ * Licensed under LGPL. */
+
+package soot.toolkits.scalar;
+
+import soot.*;
+import soot.util.*;
+import java.util.*;
+import soot.jimple.*;
+import soot.toolkits.graph.*;
+
+class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
+{
+    FlowSet emptySet;
+    Map unitToGenerateSet;
+    Map unitToPreserveSet;
+
+    protected Object newInitialFlow()
+    {
+        return emptySet.clone();
+    }
+        
+    protected void flowThrough(Object inValue, Directed unit, Object outValue)
+    {
+        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
+
+        // Perform kill
+            in.intersection((FlowSet) unitToPreserveSet.get(unit), out);
+
+        // Perform generation
+            out.union((FlowSet) unitToGenerateSet.get(unit), out);
+    }
+
+    protected void merge(Object in1, Object in2, Object out)
+    {
+        FlowSet inSet1 = (FlowSet) in1,
+            inSet2 = (FlowSet) in2;
+
+        FlowSet outSet = (FlowSet) out;
+
+        inSet1.union(inSet2, outSet);
+    }
+    
+    protected void copy(Object source, Object dest)
+    {
+        FlowSet sourceSet = (FlowSet) source,
+            destSet = (FlowSet) dest;
+            
+        sourceSet.copy(destSet);
+    }
+
+    SimpleLiveLocalsAnalysis(UnitGraph g)
+    {
+        super(g);
+
+        // Generate list of locals and empty set
+        {
+            Chain locals = g.getBody().getLocals();
+            FlowUniverse localUniverse = new FlowUniverse(locals.toArray());
+
+            emptySet = new ArrayPackedSet(localUniverse);            
+        }
+
+        // Create preserve sets.
+        {
+            unitToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            Iterator unitIt = g.iterator();
+
+            while(unitIt.hasNext())
+            {
+                Unit s = (Unit) unitIt.next();
+
+                BoundedFlowSet killSet = (BoundedFlowSet) emptySet.clone();
+                Iterator boxIt = s.getDefBoxes().iterator();
+
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();
+
+                    if(box.getValue() instanceof Local)
+                        killSet.add(box.getValue(), killSet);
+                }
+
+                // Store complement
+                    killSet.complement(killSet);
+                    unitToPreserveSet.put(s, killSet);
+            }
+        }
+
+        // Create generate sets
+        {
+            unitToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            Iterator unitIt = g.iterator();
+
+            while(unitIt.hasNext())
+            {
+                Unit s = (Unit) unitIt.next();
+
+                FlowSet genSet = (FlowSet) emptySet.clone();
+                Iterator boxIt = s.getUseBoxes().iterator();
+
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();
+
+                    if(box.getValue() instanceof Local)
+                        genSet.add(box.getValue(), genSet);
+                }
+
+                unitToGenerateSet.put(s, genSet);
+            }
+        }
+
+        doAnalysis();
+    }
+}
+\end{verbatim}
+
+\section{Simple Live Locals Analysis Wrapper}
+\label{simpleAnalysisWrapper}
+
+\begin{verbatim}
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
+ *
+ * Licensed under LGPL. */
+
+package soot.toolkits.scalar;
+
+import soot.*;
+import soot.util.*;
+import java.util.*;
+import soot.jimple.*;
+import soot.toolkits.graph.*;
+
+/** Wrapper for Analysis class. */
+public class SimpleLiveLocals implements LiveLocals
+{
+    Map unitToLocalsAfter;
+    Map unitToLocalsBefore;
+
+    public SimpleLiveLocals(ExceptionalUnitGraph graph)
+    {                        
+        SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
+
+        // Build unitToLocals map
+        {
+            unitToLocalsAfter = new HashMap(graph.size() * 2 + 1, 0.7f);
+            unitToLocalsBefore = new HashMap(graph.size() * 2 + 1, 0.7f);
+
+            Iterator unitIt = graph.iterator();
+
+            while(unitIt.hasNext())
+            {
+                Unit s = (Unit) unitIt.next();
+ 
+                FlowSet set = (FlowSet) analysis.getFlowBefore(s);
+                unitToLocalsBefore.put(s, 
+                                   Collections.unmodifiableList(set.toList()));
+                
+                set = (FlowSet) analysis.getFlowAfter(s);
+                unitToLocalsAfter.put(s, 
+                                   Collections.unmodifiableList(set.toList()));
+            }            
+        }
+    }
+
+    public List getLiveLocalsAfter(Unit s)
+    {
+        return (List) unitToLocalsAfter.get(s);
+    }
+    
+    public List getLiveLocalsBefore(Unit s)
+    {
+        return (List) unitToLocalsBefore.get(s);
+    }
+}
+\end{verbatim}
+
+\end{document}

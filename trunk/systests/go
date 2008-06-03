@@ -1,0 +1,25 @@
+#!/bin/sh
+if [ $# -eq 0 ]; then
+    TESTS=`cd tests && ls`;
+else
+    TESTS=$*;
+fi
+for i in $TESTS; do
+    for j in `cd tests/$i/runs && ls`; do
+        echo -n -e "Running: $i.$j\r"
+        (
+        cd tests/$i
+        rm -rf sootOutput
+        mkdir sootOutput
+        runs/$j >& output.$j
+        rm -rf sootOutput.$j
+        mv sootOutput sootOutput.$j
+        if diff -Nrq --exclude .svn correctOutput.$j sootOutput.$j >& /dev/null; then
+            echo "passed  "
+        else
+            echo "FAILED!!"
+        fi
+        )
+    done;
+done;
+

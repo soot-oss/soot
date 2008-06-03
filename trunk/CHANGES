@@ -1,0 +1,532 @@
+Improvements and API changes in version 2.3.0
+
+1. Integrated new JastAdd-based frontend with support for Java 5
+   source code. Thanks to Torbjorn Ekman for contributing his
+   frontend and his implementation of Java2Jimple!
+   If you like to use the old polyglot-based frontend then
+   just give the -polyglot command line option (Java 1.4 only).
+   
+2. At the very least if -validate is on, Soot now checks that @this
+   is only assigned in the first statement of an instance method.
+   This has always been an implicit assumption for Jimple code
+   but up until now was not enforced. Code transformations written
+   by clients should make sure to restore this invariant before
+   transforming Jimple into another intermediate representation
+   or into bytecode. (Eric Bodden)  
+   
+3. Integrated full support for preserving annotations in Jimple
+   and writing them to bytecode. SOURCE level annotations are
+   preserved if code is read from source and the flag
+   -p jb preserve-source-annotations is given. (does not hold for
+   package and local variable annotations) SOURCE level annotations
+   are not written into bytecode by Soot.
+   Annotations can easily be added to SootClass, SootMethod and
+   SootField instances using the utility class
+   soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator.
+   (Thanks to Will Benton!)   
+ 
+4. Java 5 Annotations for fields, classes, parameters and methods
+   are now fully preserved in bytecode. Jasmin was changed to
+   implement this support. (Eric Bodden)   
+   
+5. Ben Bellamy contributed a new implementation for the type assigner.
+   This is to be published under the title 'Efficient Local Type
+   Inference' at OOPSLA '08. The new type assigner is usually
+   faster (it is applied when processing bytecode), and sometimes
+   more precise. In particular it should always infer the most
+   narrow type possible.   
+   Ben has tested this code, and verified that it provides a typing
+   that is at least as tight as the original algorithm (tighter in
+   2914 methods out of 295598) on a number of benchmarks. These are:
+   abc-complete.jar, BlueJ, CSO (Scala code), Gant, Groovy, havoc.jar,
+   Java 3D, jEdit, Java Grande Forum, Jigsaw, Jython, Kawa, rt.jar,
+   Kawa, Scala and tools.jar.
+   The mean execution time improvement is around 10 times,
+   but for the longest methods (abc parser methods and havoc with
+   >9000 statements) the improvement is between 200 and 500 times.
+   There are new phase options in jb.tr that allow to switch
+   back to the old type assigner or to compare both implementations.
+   The command line option -use-old-type-assigner was removed.
+   It used to enabled an even older version of the type assigner
+   (based on bit vectors) that was commented out any way.
+   The appropriate code was flagged as deprecated and may be removed
+   in future versions of Soot.   
+
+Improvements and API changes in version 2.2.5 
+
+1. Soot now has an option to prepend the classpath given on the
+   command line to the default classpath.  See the documentation on 
+   the option -pp for details.
+
+2. Included Manu Sridharan's demand-driven points-to analysis.  See
+   http://doi.acm.org/10.1145/1133255.1134027 for details.  It can be
+   activated via: -p cg.spark cs-demand:true, and also has two other
+   phase options to control the effort with which the analysis
+   tries to build context information.
+
+3. Added local must-alias and not-may alias analyses. See package
+   soot.jimple.toolkits.pointer.
+
+4. Updated NullnessAnalysis for better performance. Thanks to Julian
+   Tibble!
+
+5. The flow analysis framework is now generic. One can explicitly
+   declare the type of the abstraction and that is used for the fixed
+   point iteration and the node type for the graph that is iterated over.
+   This avoids a lot of casting one had to do in the past.
+
+6. Between versions 2.2.3 and 2.2.4, a bug was introduced to Spark:
+   PointsToSetInternal now implements equals/hashCode which confused the
+   propagator algorithm because it was relying on comparison by identity.
+   This lead to a five-fold slowdown on the points-to analyses and
+   potentially wrong results.  The bug has now been fixed by modifying
+   the propagator algorithm. Original speed was restored.
+
+7. Richard Halpert's lock allocator as published at PACT'07, see:
+   http://www.sable.mcgill.ca/publications/papers/#pact2007
+   It is accessible via the wjtn (whole-jimple transaction) pack.
+   
+8. Added option: empties-as-allocs (default:true)
+   When this option is set to true, Spark treats references to EMPTY_SET,
+   EMPTY_MAP, and EMPTY_LIST as allocation sites for HashSet, HashMap and
+   LinkedList objects, respectively, and references to
+   Hashtable.emptyIterator as allocation sites for
+   Hashtable$EmptyIterator. This enables subsequent analyses to
+   differentiate different uses of Java's immutable empty collections.
+        
+9. Added instance keys (see class InstanceKey). An instance key is a
+   static abstraction of one or multiple runtime objects. It's identity
+   is defined via an intraprocedural flow-sensitive must-alias analysis.
+   Further an instance key can be tested for must-not-aliasing with
+   other keys. This functionality is provided via both an intraprocedural
+   flow-sensitive must-not-alias analysis and the normal interprocedural
+   flow-insensitive points-to analysis (whichever present). See the
+   Technical Report SABLE-TR-2007-8 for details, at:
+   http://www.sable.mcgill.ca/publications/techreports/#report2007-8
+
+10. Building against polyglot version 1.3.5 (used to be 1.3.4).
+
+11.Multiple changes to the Soot Eclipse plugin:
+ - The SootOutput view is now deprecated. Instead Soot writes to a proper
+   console that provides better formatting and other options.
+ - Soot extenders do not longer have to put their code into Soot's plugin
+   directory. Instead one can put the code into a normal Eclipse Java
+   project and configure this project as "main project" in the Soot run
+   configuration. The Main class is then automatically loaded from that
+   project.
+ - Examples: Hit New -> Examples -> Soot to learn Soot by example.
+   Currently there are four example projects provided, from our well-known
+   tutorials.
+ - Soot classpath variables: The Soot example projects include
+   sootclasses.jar via a platform-independent build path variable
+   SOOTCLASSES. This variable always points to sootclasses.jar, and
+   programmers extending Soot can include Soot on their build path by just
+   using the variable, avoiding downloading Soot a second time.              
+
+Improvements and API changes in version 2.2.4 (Fri, Apr 27, 2007)
+
+1. Soot is now able to infer a main-class if no main-class attribute
+   is given.
+
+2. soot.jimple.toolkits.annotation.nullcheck.BranchedRefVarsAnalysis
+   has been deprecated and replaced by 
+   soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis.
+
+3. Added EXPERIMENTAL transactions/lock allocation code, including
+	- may-happen-in-parallel analysis
+	- interprocedural information flow analysis
+	- thread-local objects analysis
+	- thread-based side effect analysis
+
+Improvements in version 2.2.3 (Sat, Mar 18, 2006)
+
+1. Dava:
+    - Handling invocation of parent constructor and other constructors
+      within a constructor
+    - DeInlining final static fields.
+    - Ensuring initialization of all final fields
+    - Using copy propagation to remove un-necessary copy stmts
+    
+2. many bug fixes and improvements for Dava
+
+3. many bug fixes and improvements for Java To Jimple 
+
+Improvements in version 2.2.2
+
+Improvements in version 2.2.1 (Mon, Jan 3, 2005)
+
+1. update Soot - Eclipse plugin to work with Eclipse versions 3.x
+
+Improvements in version 2.2 (Fri, Dec 17, 2004)
+
+1. changes to class resolution see: 
+   http://svn.sable.mcgill.ca/wiki/index.php/ClassResolver
+2. major reorganization of control flow graphs and extended support for 
+   exception control flow see: 
+   http://svn.sable.mcgill.ca/wiki/index.php/CFG%20Reorganization
+3. complete and stable JavaToJimple module
+4. Java 1.4 sytle handling of method and field references see:
+   http://svn.sable.mcgill.ca/wiki/index.php/MethodAndFieldReferences
+5. minor fixes and cleanup of Shimple
+   * made dominator analysis and structure classes public
+   * Shimple factory added for finer grained control
+6. updates to Soot - Eclipse Plugin
+   * improved visual attributes in source
+   * attributes legend
+   * attribute management (for turning sets of attributes on/off)
+   * interactive cfgs see:
+   * growable graphical callgraph (experimental)
+7. jimple validator does partial type checking (-validate switch)
+8. testsuite
+9. minor bug fixes
+10. extended set of options
+
+Improvements in version 2.1 (Wed, 17 Dec 2003)
+1. bug fixes
+2. switched from make to ant
+3. many improvements to Shimple and Eclipse plugin
+4. first release of Java-to-Jimple compiler
+5. initial support for context-sensitive call graph and points-to analysis
+
+Improvements in version 2.0.1 (Fri, 18 Jun 2003)
+1. bug fixes
+2. minor improvements and cleanup of Shimple, including:
+ a) Significantly improved constant propagator analysis.
+3. ant build file
+4. new framework for adding Soot system tests
+
+Improvements in version 2.0 (Fri, 6 Jun 2003)
+1. a true whole-program mode
+2. rewrite of the call graph code to provide more information (particularly
+   about implicit calls) with a cleaner interface
+3. first release of Eclipse plugin
+4. first release of Shimple (SSA-Jimple)
+5. refactoring of tag aggregators to make it easier to introduce new
+   annotations for use by JITs
+6. new, better organized option parsing code, accessible to other code
+   (so you can set an option with a method call, rather than having to
+   pass in a command line string)
+7. elimination of most global variables; the remaining ones have been
+   isolated so that Soot is restartable, and could be easily modified to
+   allow concurrent Soot sessions on different threads.
+8. bug fixes
+
+Improvements in version 1.2.5 (Fri, 14 Feb 2003)
+1. Spark improvements:
+ a) now supports truly on-the-fly call graph construction, resulting
+    in much smaller call graphs.
+ b) alias edge algorithm tweaked to be faster.
+ c) bug fixes.
+2. General bug fixes.
+3. Some performance improvements, plugging of memory leaks.
+4. Reinstate support for JDK versions 1.2 through 1.4.
+
+Improvements in version 1.2.4 (Fri, 22 Nov 2002)
+
+1. main change is the inclusion of development version of Spark: Soot Pointer
+   Analysis Research Kit. Available documentation for Spark includes the
+   Spark poster (http://www.sable.mcgill.ca/publications/#poster-2002-1)
+   and the Spark options 
+   (http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps).
+   More detailed documentation in the form of a master's thesis is being
+   written. (olhotak)
+2. Soot should now correctly handle classes compiled with 1.4.x versions
+   of javac (olhotak)
+3. new FastHierarchy class designed to eventually replace inefficient and
+   confusing Hierarchy class (olhotak)
+4. fix for missing control-flow graph edges from predecessors of statements
+   in nested try blocks to some exception handlers (jjorge1)
+5. make virtual call resolution respect access modifiers (olhotak)
+6. other bug fixes
+
+Improvements in version 1.2.3 (Wed, 08 May 2002)
+
+1. fix to SourceLocator for the case where there are no actual
+     paths in the soot classpath. (plam)
+2. fix to HashMutableDirectedGraph to remove wayward extra
+     preds and succs edges to a removed node. (fabien)
+3. fix for Windows classpaths which contain less than two letters.
+     Formerly, this crashed in charAt(1).  (plam, reported by Mary Payne)
+4. add an option '-A LineNumber' to keep line number attributes in
+   source class files. (feng)
+5. make SootClass.containsBafBody() public (requested by David Airapetyan);
+     avoid creating duplicate names in CommonSubexpressionEliminator
+         (requested by Florian Mateoc).  Both changes by plam.
+6. added changes by Michael Pan (pan@math.tau.ac.il) which make Soot 
+     more parsimonious with respect to memory usage:
+     it may use up to 20% less maximum heap space.
+     Changes were: - sharing of coffi CONSTANT_Utf8_info objects
+                   - SootMethod exceptions list created on demand
+                   - get[Sub]Signature() storage hack useful for Sun JDK
+7. minor changes in HashChain (remove useless null checks, states increments
+   and modified insertBefore(List) ) (fabien)
+8. fix to AbstractHost to avoid creation of thousands of empty lists (fabien)
+9. added patch by Stephen Andrew Neuendorffer <neuendor@eecs.berkeley.edu>
+     to make DeadAssignmentEliminator more aggressive: we no longer declare
+     InstanceFieldRefs which read from 'this' in a non-static method to be
+     'isEssential'. (plam)
+10. Added some Timer.end() calls to JimpleBody.java
+    and CoffiMethodSource.java, so that the '--time' option no
+    longer causes runtime exceptions.  While this lets you
+    specify '--time' without crashing soot, the accuracy of the
+    reported times remains questionable. (jjorge1)
+11. Improved Psuedotopological ordering, replaced deprecated code 
+    (Vectors and Stacks), fixed line numbering, 
+    fixed a minor UnitGraph bug (berndl)
+12. Kludged together a bug fix for Alex Warshavsky (walex@il.ibm.com) where
+    use-original-names sometimes produced Jimple Locals with #'s 
+    in their names. (plam)
+13. Fixed bug reported by Stephen Andrew Neuendorffer where CopyPropagator
+     doesn't quite fail in the expected way when there's a variable used
+     without definition (plam)
+14. Added basic XML support in the form of an XMLStmtPrinter. Using
+     the --xml command option will generate an XML version of the 
+     class based on the Jimple statements and extended with static
+     program data and transformation/analysis results. (deng)
+15. Added entryInitialFlow method in FlowAnalysis, which allows a 
+    new analysis just return flow object for entry points. 
+	The customizeFlowGraph is still called. Currently it is 
+	compatible with old analyses, but new analysis should override
+	entryInitialFlow method rather than customizeFlowGraph.
+    Forward and backward flow analyses are changed respectively.
+	                                                (fqian)
+16. Fixed local variable name problem in coffi.LocalVariable....
+    reported by Nathan Kitchen. See fix 12 also.    (fqian)
+17. Small improvement in ArraySparseSet and BackwardFlowAnalysis pointed
+    out by Florian Loitsch.                         (fqian)
+18. Added several utility classes for drawing generate graphs. 
+    UnitGraph, BlockGraph, and Hierarchy can produce "dot" file
+	for generating postscript files. 
+	See soot/util/DotGraph*.java
+	(More function will be added on.)               (fqian)
+19. Added one flag in soot.Main.java to indicate the compilation for
+    J2ME library which does not have Cloneable and Serializable interfaces.
+	This affects the typing system which handcodes both interfaces.
+	Has not been tested on J2ME. But when the flag is set to false, 
+	original function is not affected.
+	Patch provided by Stephen Cheng.                (fqian)
+20. Fixed some obvious bugs in CFGViewer, added simple options. (fqian)
+21. Added a new implementation of PRE by Florian Loitsch, merging 
+    was done by Ondrej. The old implementation of PRE was obsoleted.
+    The new implementation to be tested.                (fqian)
+
+
+Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
+
+1. added \t case for soot.util.StringTools.getQuotedStringOf.
+    (reported by Thomas VanDrunen)
+2. CFG.java is improved to handle nested JSR/RETs
+3. improved some exception message reported by Olivier Zendra.
+4. The Jasmin package is also updated to 1.06-s10, the bug in grammar
+   for attributes is fixed.
+5. replaced 'getNodes().contains()' by 'containsNode()' in 
+   "jimple/toolkits/invoke/MethodCallGraph.java", which speeds up
+   the call graph construction significantly (by John Jorgensen.)
+
+Improvements in version 1.2.1 (Fri Jan 12 15:22:59 EST 2001)
+
+1. permissions changes and fix to Baf/JasminClass for BooleanType.
+2. removal of a UnitGraph hack that shouldn't have been there.
+3. internal changes to cmdline parsing, watch for bigger changes coming
+4. fix by patrice to work around stupid jar bug
+5. minor changes to jar bug workaround
+6. fix for grimp precedence
+7. improved error messages in the event of missing .dat files.
+8. new build system (via the SootCompiler class).
+
+
+Improvements in version 1.2.0 (Thu Sep 28 21:41:16 EDT 2000)
+
+1. An annotation framework is included in this release.
+2. A clean implementation of VTA is finally included in Soot.
+3. New implementation of typing system included
+     - contains nice integer typing system.
+4. HashChain has a fast 'contains' method.
+     (this was announced on the soot mailing list)
+5. A branched flow analysis framework is present.
+     - This allows different results to be propagated on
+        different edges of a branch.
+6. Implemented an Array Bounds Check and a Null Pointer Check algorithm.
+   The new option '-A' annotates class files with analysis results.
+      - See the new annotation tutorials.
+7. Other minor bugs were zapped.
+ 
+(release by Feng Qian)
+
+Improvements in version 1.0.1 (not released)
+
+1. Eliminated useless Directed interface.
+
+2. Fixed bug in HashChain where null could wheedle its way into a HashChain.  Bad stuff!
+
+3. Added attribute support and null pointer checks / array bounds checks.
+
+4. Added common subexpression elimination.
+
+Improvements in Release 1 (version 1.0.0)
+
+Some of these changes occurred earlier but are only mentioned now.
+
+1. Changed the version numbering scheme to follow the Linux
+version numbering scheme.
+
+2. Added warning for unconsumed phase options.
+
+3. Fixed bug with original name recovery.
+
+4. Added documentation.
+
+5. Fixed another aggregation bug where multiple field refs between
+def, use were not correctly handled.
+
+6. Added static class synchronizer.
+
+7. Changed format of Jimple source again, now removing the dots
+for keywords.
+
+8. Fixed issue with absolute paths in dos/windows
+
+Improvements in 021400
+
+1. Fixed the SootResolver so that it displays the name of
+the missing classfile before quitting.
+
+2. Merged in partial code for Partial Redundancy Elimination
+(not working yet).
+
+3. Added more documentation comments.  (Thanks patrice!)
+
+4. Added EquivTo interface, made all Jimple Values implement 
+EquivTo, and provided EquivalentValue wrapper objects.  Using an
+EquivalentValue allows Collections to see structurally equal 
+Values as satisfying .equals().  This is not universally useful;
+for instance, the Units chain should not use EquivalentValues!
+
+5. Added jikes.def and javac.def files.  Invoking "jams foo"
+will copy the .dat files from the src/ directories to the classes/
+directories.
+
+6. Patrice added some support for a framework allowing Baf peephole
+optimizations to be added in a uniform manner.
+
+7. Added soot.PackAdjuster and soot.jimple.StmtPrinter classes.
+These classes can be overridden by placing custom classes with the 
+same names earlier in the CLASSPATH.  This permits external classes
+to be called by Soot at strategic moments in Soot's execution.
+
+Improvements in 1.beta.6
+
+1. A Jimple parser has been added to the Soot framework.  Soot can
+now read both .class files and .jimple files (produced by the
+"--jimple" option).  Parsing .jimple files is faster than
+reading .class files, and these files can be modified easily in a text
+editor.
+
+2. Different phases of Sootification can now be passed command-line
+options.  For instance, the static inliner (si) in the
+whole-jimple optimization pack (wjop) can told that it is to
+expand code by no more than a factor of 5, by giving the following
+command-line option:  -p wjop.si expansion-factor:5.
+
+3. Some whole-program (excluding library) optimizations are
+included, namely a static method binder and a static inliner.  The
+inliner is enabled by default when the -W option is given.
+It can be disabled with the option  -p wjop.si disabled:true -p
+wjop.smb disabled:false.
+
+Improvements in 1.beta.5
+
+1. Baf, a streamlined form of bytecode has been added to Soot.  This is
+useful for performing low level bytecode optimizations.  We can produce code
+which is as good as javac now with the option "--final-rep baf".
+Unfortunately this option creates bytecode which is different than what the Java
+Virtual Machine is used to and so causes the JVM to crash.  For this reason, the
+option is not enabled by default.
+
+2. Major restructuring of the API has taken place.
+
+3. The entire SpecJVM98 suite can be processed by Soot correctly, as well as
+numerous other Java programs.
+
+4. Process times are reasonable: a program can be usually put through Soot
+within 2.5 times the execution time of javac on the original program.
+
+Improvements in 1.beta.4
+
+Date: Thu, 18 Mar 1999 01:05:44 -0500
+From: Raja Vallee-Rai <rvalleerai@sable.mcgill.ca>
+To: soot-list@sable.mcgill.ca
+Subject: Soot-1.beta.4 released.
+
+Hello soot-list subscribers,
+
+
+A new version of Soot has been released!  The notable improvements are:
+
+1. Grimp, an aggregated Jimple has been added to Soot. This is a
+medium-high level intermediate representation which
+allows you to manipulate statements as trees instead of 3-address code.
+This is particularly useful for code generation and
+decompilation. 
+
+2. The code produced by Soot from Jimple code (by first converting it to
+Grimp code) has been substantially improved. We
+are now 2 to 3 percent away from the original classfile in performance.
+(this is without any optimizations performed) 
+
+3. A subroutine duplicator has been installed as a temporary solution
+for the jsr bytecode. This means that there is no
+concept of the subroutines in the framework and that the classfiles
+produced by Soot are 'jsrless'. 
+
+4. The speed of the transformations has been improved. 
+
+5. Numerous bug fixes have been made. 
+
+
+See http://www.sable.mcgill.ca/soot for more details.
+
+
+Best regards,
+
+Raja Vallee-Rai
+Sable Research Group
+
+Improvements in 1.beta.3
+
+Date: Wed, 27 Jan 1999 21:11:49 -0500
+From: Raja Vallee-Rai <rvalleerai@sable.mcgill.ca>
+To: soot-list@sable.mcgill.ca
+Subject: Soot version 1.beta.3 available.
+
+Hello,
+
+A new version of Soot has just been released.  This version fixes
+numerous bugs and provides improved performance.  You can acquire the
+new version at
+
+http://www.sable.mcgill.ca/software
+
+See the release notes at
+http://www.sable.mcgill.ca/soot/releaseNotes.html for more details. 
+Make sure you download the latest version of SableUtil to benefit from
+the bug fixes and improvements in that package as well.
+
+--------------------------------
+
+For our next version we would like some feedback from our users.  Please
+vote on the feature you would like to see implemented next:
+
+A. Fix the handling of the JSR bytecode.
+B. Improve the efficiency of the bytecode being generated.
+C. Improve the speed of the bytecode -> Jimple transformation.
+
+Only one vote per person, please. :)
+
+
+Best regards,
+
+Raja Vallee-Rai
+Sable Research Group
+
+

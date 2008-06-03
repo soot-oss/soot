@@ -1,0 +1,319 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{html}
+
+\title{Adding profiling instructions to applications with Soot}
+\author{Feng Qian (\htmladdnormallink{fqian@sable.mcgill.ca)}{mailto:fqian@sable.mcgill.ca}\\
+Patrick Lam \htmladdnormallink{(plam@sable.mcgill.ca)}{mailto:plam@sable.mcgill.ca}}
+\date{March 8, 2000}
+
+\begin{document}
+
+\maketitle
+
+This tutorial is based on the {\tt countgotos} example, written by
+Raja-Vall\'ee-Rai and distributed with Ashes.  It is located in
+{\tt ashes.examples.countgotos} package. The code can be downloaded at
+
+\htmladdnormallink{http://www.sable.mcgill.ca/soot/tutorial/profiler/Main.java}
+{Main.java}
+
+At this stage, the developer should have a basic knowledge of Soot,
+including the SootClass, SootMethod and Unit classes.  They are
+described in \htmladdnormallink{the document about creating a class
+using Soot}{../createclass}.
+
+\section{Goals}
+
+This tutorial describes how to write a {\tt BodyTransformer} which annotates
+{\tt JimpleBody}'s with a goto-counter.  In particular, the developer will be
+able to write code to:
+\begin{itemize}
+\item Retrieve a desired method from the {\tt Scene} by signature.
+\item Add a field to a class file.
+\item Differentiate between various types of Jimple statements.
+\item Insert Jimple instructions at a certain point.
+\end{itemize}
+
+The {\tt GotoInstrumenter} example instruments a class or application to print
+out the number of {\tt goto} bytecodes executed at run time. 
+
+\section{Creating a GotoInstrumenter}
+
+We will instrument a class to print out the number of goto
+instructions executed at run time. The general strategy is:
+
+\begin{enumerate}
+\item Add a static field {\tt gotoCount} to the main class.
+\item Insert instructions incrementing {\tt gotoCount} before each
+{\tt goto} instruction in each method.
+\item Insert {\tt gotoCount} print-out instructions before each 
+return statement in 'main' method.
+\item Insert {\tt gotoCount} print-out statements before each
+{\tt System.exit()} invocation in each method.
+\end{enumerate}
+
+Once we create a {\tt BodyTransformer} class and add it to the appropriate
+{\tt Pack}, it will be invoked for each {\tt Body} in the program.
+
+\section{Subclassing {\tt BodyTransformer}}
+
+This example works by creating a {\tt Transformer} which is added to
+the appropriate pack.  We thus declare a subclass of {\tt
+BodyTransformer} to carry out our instrumentation:
+
+\begin{verbatim}
+public class GotoInstrumenter extends BodyTransformer
+{
+    private static GotoInstrumenter instance = new GotoInstrumenter();
+    private GotoInstrumenter() {}
+
+    public static GotoInstrumenter v() { return instance; }
+\end{verbatim}
+
+The above code creates a private static instance and an accessor to that
+instance.
+
+\begin{verbatim}
+    protected void internalTransform(Body body, String phaseName, Map options)
+    {
+\end{verbatim}
+
+Every {\tt BodyTransformer} must declare some {\tt internalTransform}
+method, carrying out the transformation.
+
+\section{Adding a Field}
+
+We already know how to add locals to a method body; this is seen in
+the {\tt createclass}
+\htmladdnormallink{example}{../createclass}.
+We now show how to add a field to a class.
+
+Here, we want to add a counter field to the main class.
+
+\subsection{Sanity check -- find main() method}
+
+First of all, we check the 'main' method declaration by its subsignature.
+\begin{verbatim}
+    if (!Scene.v().getMainClass().
+              declaresMethod("void main(java.lang.String[])"))
+        throw new RuntimeException("couldn't find main() in mainClass");
+\end{verbatim}
+
+A couple of notes about this snippet of code.  First, note that we
+call {\tt Scene.v().getMainClass()}.  This returns the {\tt Scene}'s
+idea of the main class; in application mode, it is the file specified
+on the command-line, and in single-file mode, it is the last file
+specified on the command-line.  Also, note that if we fail, then
+a {\tt RuntimeException} is thrown.  It is not worthwhile to use a checked
+exception in this case.
+
+The {\tt main} class for a Java program will always have subsignature
+(the Soot word for a complete method signature) {\tt .void
+main(java.lang.String[])}. The call to {\tt declaresMethod} 
+returns true if a method with this subsignature is declared in this
+class.
+
+\subsection{Fetching or adding the field}
+
+Now, if we've already added the field, we need only fetch it:
+\begin{verbatim}
+    if (addedFieldToMainClassAndLoadedPrintStream)
+        gotoCounter = Scene.v().getMainClass().getFieldByName("gotoCount");
+\end{verbatim}
+
+Otherwise, we need to add it.
+\begin{verbatim}
+    else
+    {
+        // Add gotoCounter field
+        gotoCounter = new SootField("gotoCount", LongType.v(), 
+                                        Modifier.STATIC);
+        Scene.v().getMainClass().addField(gotoCounter);
+\end{verbatim}
+
+Here, we create a new instance of {\tt SootField}, for a static field
+containing a {\tt long}, named {\tt gotoCount}.  This is the field
+which will be incremented each time we do a {\tt goto}.  We add it to
+the main class.
+
+\begin{verbatim}
+        // Just in case, resolve the PrintStream SootClass.
+        Scene.v().loadClassAndSupport("java.io.PrintStream");
+        javaIoPrintStream = Scene.v().getSootClass("java.io.PrintStream");
+    
+        addedFieldToMainClassAndLoadedPrintStream = true;
+    }
+\end{verbatim}
+We will use the {\tt java.io.PrintStream} method, so we load it just
+in case.
+
+\section{Add locals and statements}
+
+Recall that a {\tt BodyTransformer} operates on an existing method
+body.  In this step, locals are added to the body, and profiling structions
+are inserted while iterating over the statements of the body. 
+
+We first use the method's signature to check if it is a {\tt main}
+method or not:
+\begin{verbatim}
+    boolean isMainMethod = body.getMethod().getSubSignature()
+                .equals("void main(java.lang.String[])");
+\end{verbatim}
+We could also check to see if {\tt body.getMethod().getDeclaringClass()}
+is the main class, but we don't bother.
+
+Next, a local is added; we already know how to do this.
+\begin{verbatim}
+    Local tmpLocal = Jimple.v().newLocal("tmp", LongType.v());
+    body.getLocals().add(tmpLocal);
+\end{verbatim}
+
+Here, we are inserting statements at certain program
+points.  We look for specific statements by iterating over the
+{\tt Unit}s chain; in Jimple, this chain is filled with {\tt Stmt}s.
+
+\begin{verbatim}
+    Iterator stmtIt = body.getUnits().snapshotIterator();
+    while (stmtIt.hasNext())
+    {
+        Stmt s = (Stmt) stmtIt.next();
+        if (s instanceof GotoStmt)
+        {
+            /* Insert profiling instructions before s. */
+        }
+        else if (s instanceof InvokeStmt)
+        {
+            /* Check if it is a System.exit() statement.
+             * If it is, insert print-out statement before s.
+             */
+        }
+        else if (isMainMethod && (s instanceof ReturnStmt 
+                     || s instanceof ReturnVoidStmt))
+         {
+            /* In the main method, before the return statement, insert
+             * print-out statements.
+             */
+         }
+    }
+\end{verbatim}
+
+The call to {\tt getUnits()} is akin to that in the {\tt createclass}
+example. It returns a Chain of statements. 
+
+The {\tt snapshotIterator()} returns an iterator over the Chain,
+but modification of the underlying chain is permitted.  A usual iterator
+would throw a {\tt ConcurrentModificationException} in that case!
+
+We can determine the statement type by checking its class with {\tt
+instanceof}.  Here, we are looking at four different statement types:
+{\tt GotoStmt}, {\tt InvokeStmt}, {\tt ReturnStmt} and {\tt ReturnVoidStmt}.
+
+Before every {\tt GotoStmt}, we insert instructions that increase the
+counter. The instructions in Jimple are:
+
+\begin{verbatim}
+        tmpLong = <classname: long gotoCount>;
+        tmpLong = tmpLong + 1L;
+        <classname: long gotoCount> = tmpLong;
+\end{verbatim}
+
+Creating a reference to a static field is done via a call to
+{\tt Jimple.v().newStaticFieldRef(gotoCounter.makeRef())}. The entire
+assignment statement is created with the {\tt newAssignStmt} method.
+
+\begin{verbatim}
+    AssignStmt toAdd1 = Jimple.v().newAssignStmt(tmpLong,
+                                Jimple.v().newStaticFieldRef(gotoCounter.makeRef()));
+\end{verbatim}
+
+The new statements can then be added to the body by invoking the {\tt
+insertBefore()} method.  There are also some other methods that can
+add statements to a body.  We have seen one of them in {\tt
+createclass} example, {\tt add()}.  Note that above, we need to get a
+SootFieldRef from the SootField gotoCounter, in order to construct the
+Jimple StaticFieldRef grammar chunk properly.
+
+\begin{verbatim}
+    units.insertBefore(toAdd1, s);
+\end{verbatim}
+
+We have thus added profiling instructions before every {\tt goto} statement. 
+
+It is quite dandy to keep counters; they are useless unless
+outputted. We add printing statements before calls to {\tt
+System.exit()}.  This is done similarly to what we did for {\tt goto}
+statements, except that we will look more deeply into the Jimple
+statements and expressions.
+
+\begin{verbatim}
+    InvokeExpr iexpr = (InvokeExpr) ((InvokeStmt)s).getInvokeExpr();
+    if (iexpr instanceof StaticInvokeExpr)
+    {
+        SootMethod target = ((StaticInvokeExpr)iexpr).getMethod();
+        if (target.getSignature().equals
+                    ("<java.lang.System: void exit(int)>"))
+        {
+            /* insert printing statements here */
+        }
+    }
+\end{verbatim}
+
+Every {\tt InvokeStmt} has an {\tt InvokeExpr}. The 
+{\tt InvokeExpr} must be able to return the target method. 
+Again, we can use signatures to test for the wanted method. 
+
+We already saw how to make printing statements in {\tt createclass}
+example.  Here is the generated Jimple code.
+\begin{verbatim}
+    tmpRef = <java.lang.System: java.io.PrintStream out>;
+    tmpLong = <test: long gotoCount>;
+    virtualinvoke tmpRef.<java.io.PrintStream: void println(long)>(tmpLong);
+\end{verbatim}
+
+In the {\tt main()} method, we must also insert the same 
+statements before each {\tt return} statement.
+
+\section{Outputting annotated code}
+
+Since we are providing a {\tt BodyTransformer}, the modified {\tt Body}
+is treated as input to the next phase of Soot, and outputted at the end,
+as per the Soot options.
+
+\section{Adding this transformation to Soot}
+
+The preferred method of adding a transformation to Soot is by providing a
+{\tt Main} class in one's own package.  This class adds transformers
+to {\tt Pack}s, as needed.  It then calls {\tt soot.Main.main} with
+the arguments it has been passed.  This is demonstrated in 
+{\tt ashes.examples.countgotos.Main}.
+
+\section{Conclusions}
+
+In this tutorial, we have seen how to instrument class files in Soot.
+Usually, anything we want to do can be viewed as a transformer of
+class files. Here, we used more advanced methods than in the {\tt createclass}
+example.
+
+\section*{Where to find files}
+
+The {\tt GotoInstrumenter}, as described in this document (in {\tt
+BodyTransformer} form) is available in the {\tt ashesBase} package.
+There is one Java file, {\tt Main.java}, which contains the
+{\tt Main} and {\tt GotoInstrumenter} classes.
+Full class names are {\tt ashes.examples.countgotos.Main} and
+{\tt .GotoInstrumenter}.
+
+\section*{Change Log}
+\begin{itemize}
+\item March 9, 2000: Initial version.
+
+\item March 23, 2000: Changes reflecting that the gotocounter is
+distributed with ashes now.
+
+\item Feb 7, 2005: Update calls to Jimple constructors to pass
+  SootFieldRef's and SootMethodRef's where appropriate, using makeRef().
+\end{itemize}
+
+\end{document}
+

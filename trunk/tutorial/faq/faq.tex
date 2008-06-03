@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{html}
+\usepackage{verbatim}
+\usepackage[colorlinks,bookmarks=true]{hyperref}
+
+\hypersetup{
+  pdftitle = {Soot - Frequently asked questions},
+  pdfkeywords = {Soot, sable, McGill, FAQ},
+  pdfauthor = {Eric Bodden},
+  urlcolor=blue,   
+  linkcolor=blue,
+  citecolor=blue,                                                                                       
+}
+
+
+\title{Soot - Frequently asked questions}
+\author{Eric Bodden (\htmladdnormallink{ebodde@sable.mcgill.ca}{mailto:ebodde@sable.mcgill.ca})}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+%---------------------------------------------------------------------------------
+
+\section{I get an exception that \texttt{java.lang.Object} is not found.}
+You should make sure that \texttt{rt.jar} is on your \textit{soot-classpath}.
+This JAR file is usually contained in the \textit{lib} subdirectory of your Java
+runtime environment. An example invocation would be:
+
+\begin{verbatim}
+java soot.Main -cp <cp> -soot-classpath /usr/bin/sunSDK1.4/jre/lib/rt.jar:<scp> ...
+\end{verbatim}
+
+In general, \verb$<cp>$ is the classpath with which Soot is \textit{run}, however
+\verb$<scp>$ is the classpath of the program that Soot should \textit{analyze}!
+
+\section[Exception: \texttt{This operation requires resolving level BODIES...}]
+{Exception: \texttt{This operation requires resolving level BODIES but java.lang.System is at resolving level SIGNATURES}}
+
+You can generally resolve this problem in two different ways.
+\textbf{If you are using Soot as a command line tool}, add the \texttt{-w} switch
+to the command line. \textbf{If you are using Soot via its API}, add the
+following calls:
+
+\begin{verbatim}
+Scene.v().loadBasicClasses();
+Scene.v().loadNecessaryClasses();
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{html}
+
+\title{Whole-program Devirtualization Optimizations}
+\author{Felix Kwok \htmladdnormallink{(wkwok@sable.mcgill.ca)}{mailto:wkwok@sable.mcgill.ca}}
+\date{September 5, 2000}
+
+\begin{document}
+
+\maketitle
+
+This note explains how to use call graph information for whole-program devirtualization optimizations.
+The user should first be familiar with material in both 
+\htmladdnormallink{Soot command-line options}{../usage} and
+\htmladdnormallink{Phase options}{../phase}.
+
+\section{Running whole-program optimizations}
+
+Soot provides tools for whole-program optimizations in the {\tt wjop} pack.
+To use these tools, one must run {\tt soot} in whole-program mode and must have turned on optimization. This is
+accomplished by the command-line option {\tt -W}. Since we want Soot to output
+all the classes in our application, we should also use the {\tt -app} option.
+
+\section{The {\tt wjop} Pack}
+The {\tt wjop} pack contains two transformers, {\tt StaticMethodBinder} and {\tt StaticInliner}.
+Only one transformer should be applied for each execution. By default, {\tt StaticMethodBinder}
+is disabled and {\tt StaticInliner} enabled. This can be changed by setting the {\tt enabled}
+option for each transformer.
+
+\par 
+
+{\tt StaticInliner} (phase {\tt wjop.si}) does the following:
+\begin{enumerate}
+\item finds call sites which are monomorphic;
+\item checks whether the call sites can be safely inlined. The inlining criteria are listed in
+\htmladdnormallink{Vijay Sundaresan's Master's thesis}{http://www.sable.mcgill.ca/publications/\#vijayMastersThesis};
+\item if the call site is safe to inline, inlines the body of the target into that of the caller.
+\end{enumerate}
+
+\par
+
+{\tt StaticMethodBinder} (phase {\tt wjop.smb}) does the following: 
+\begin{enumerate}
+\item finds call sites which are monomorphic (i.e.~ has only one target);
+\item creates an new static method which has a body identical to the target, but whose first 
+parameter is the object that used to be the receiver;
+\item redirects the original call site to the newly-created static method.
+\end{enumerate}
+
+By default, the call graph is build using CHA. Spark can be used instead
+by enabling it with the option {\tt -p cg.spark on}. Spark can also simulate
+other analyses such as VTA ({\tt -p cg.spark vta}) or RTA ({\tt -p cg.spark rta}).
+
+\section{Including dynamically-loaded classes}
+If the program to be optimized loads classes dynamically using the {\tt newInstance} method, Soot will be
+unable to tell statically which classes need to be resolved. In this case, the user will need to tell Soot
+explicitly which classes are loaded. This can be done using one of the following command-line options:
+\begin{enumerate}
+\item {\tt -}{\tt -dynamic-dir} lets the user specify paths under which all classes are considered potentially
+dynamic. 
+\item {\tt -}{\tt -dynamic-package} lets the user specify packages
+for which all class files belonging to the package
+or any subpackage thereof are considered potentially dynamic. For instance, saying 
+\begin{verbatim}--dynamic-package sun.security.provider\end{verbatim}
+will mark a class like {\tt sun.security.provider.Provider} as potentially dynamic.
+\item {\tt -}{\tt -dynamic-class} lets the user specify specific dynamic classes.
+\end{enumerate}
+These options may be specified multiple times to specify multiple dynamic directories, packages, or classes.
+Note: \textit{The user must specify all potentially dynamic classes using one (or both) of the above, or the call graph may be incomplete.}
+
+\section{Examples}
+\begin{itemize}
+\item 
+\begin{verbatim} 
+    java -mx300m soot.Main --app -W -p wjop.smb on -p wjop.si off
+    spec.benchmarks._201_compress.Main
+\end{verbatim}
+This command runs {\tt StaticMethodBinder} instead of {\tt StaticInliner}. It does not include any dynamic packages. 
+The {\tt -mx300m} switch is present so that the virtual machine is allowed to use more memory 
+(300 Mb) than the default value (since whole-program analysis usually uses a lot of memory). Note
+that the switch for allowing more memory usage may be different depending on the virtual machine used.
+\item
+\begin{verbatim}
+    java -mx500m soot.Main --app -W --dynamic-package java.text.resources
+    --dynamic-package spec.benchmarks._213_javac SpecApplication
+\end{verbatim}
+This command runs {\tt StaticInliner}. It uses CHA to find monomorphic
+sites. It analyzes library classes, and it includes all classes in the packages
+{\tt java.text.resources}, 
+{\tt spec.benchmarks.\_213\_javac}, or any of their subpackages,
+as potentially dynamic classes. It allows the virtual machine to use 500 Mb of memory.
+\end{itemize}
+\section*{History}
+\begin{itemize}
+\item September 5, 2000: Initial version.
+\item May 31, 2003: Updated for Soot 2.0.
+\end{itemize}
+
+\end{document}
+
+
+

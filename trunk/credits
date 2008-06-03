@@ -1,0 +1,162 @@
+                      Soot Credits
+                 
+                 
+      Soot Maintainers: Patrick Lam, Feng Qian, Ondrej Lhotak, Eric Bodden
+    
+    
+-------------------- Soot Contributors ------------------------
+                  (in alphabetical order)
+
+Ben Bellamy
+    - New type assigner (see OOPSLA '08)
+
+Will Benton
+    - Annotation generator for Java 5 annotations
+
+Marc Berndl
+    - Soot framework optimization
+    - annotation
+
+Eric Bodden
+    - Improvements to the Eclipse plugin
+    - Re-implementation of nullness analysis
+    - Instance Keys
+      - Local must-alias analysis
+    - Integration of JastAdd frontend
+
+Phong Co (phong@hasc.com)
+    - Jimple scalar optimizations
+
+Archie Cobbs
+    - Added SourceFileTag, InnerClassTag, and the various ConstantValueTags
+    - Miscellaneous bug fixes
+
+Torbjorn Ekman
+    - JastAdd-based frontend with Java 5 support; including its own
+      version of Java2Jimple
+
+David Eng (flynn@sable.mcgill.ca)
+    - XML output
+
+Etienne Gagnon (gagnon@sable.mcgill.ca)
+    - Jimple typing algorithm
+
+Chris Goard (cgoard@sable.mcgill.ca)
+    - general bug fixes, hacks
+    - documentation
+
+Richard Halpert (rhalpe@sable.mcgill.ca)
+    - lock allocation
+    - thread-based side effect analysis
+    - may-happen-in-parallel (MHP) analysis
+
+Laurie Hendren (hendren@sable.mcgill.ca)
+    - project advisor
+
+John Jorgensen (jjorge1@sable.mcgill.ca)
+    - pruning unrealizable exceptions from CFGs
+    - bug fixes
+    - documentation
+       
+Felix Kwok (wkwok@sable.mcgill.ca)
+    - VTA re-implementation
+    
+Patrick Lam (plam@sable.mcgill.ca)
+    - general Soot hacker
+    - Grimp
+    - Baf implementation
+    - Aggregation
+    - second implementation of inlining and devirtualization
+    - Local must-not-alias analysis
+
+Jennifer Lhotak (jlhotak@sable.mcgill.ca)
+    - Eclipse Plugin
+    - Java To Jimple
+  
+Ondrej Lhotak (olhota@sable.mcgill.ca)
+    - General bug-fixes, soot hacker
+    - Spark
+    - call graph re-implementation
+
+Lin Li (lli31@sable.mcgill.ca)
+    - may-happen-in-parallel (MHP) analysis
+
+Florian Loitsch (florian@loitsch.net)
+    - PRE re-implementation
+
+Jerome Miecznikowski (jerome@sable.mcgill.ca)
+    - Dava decompiler
+
+Antoine Mine (Antoine.Mine@ens.fr)
+    - purity analysis 
+    
+Nomair Naeem (nomain.naeem@mail.mcgill.ca)
+    - Dava decompiler
+
+Chris Pickett (cpicke@sable.mcgill.ca)
+    - documentation
+    - minor Jasmin fixes
+
+Patrice Pominville (patrice@sable.mcgill.ca)
+    - Soot infrastructure
+    - Baf implementation & optimizations
+    - Jimple parser
+    - annotation
+    
+Feng Qian (fqian@sable.mcgill.ca)
+    - array bounds check and annotation
+    - contributed to documentation writing
+    - prepared 1.2.0 release
+    - Dot interface, CFGViewer
+    - prepared 1.2.2, 1.2.3 release
+
+Ganesh Sittampalam (ganesh@earth.li)
+   - contributed to resolver redesign
+
+Manu Sridharan (manu_s@eecs.berkeley.edu)
+   - demand-driven client-driven refinement-based context-sensitive points-to
+     analysis (PLDI '06)
+    
+Vijay Sundaresan (vijay@sable.mcgill.ca)
+    - first implementation of inlining and devirtualization
+    
+Julian Tibble
+    - Improved footprint of nullness analysis
+
+Navindra Umanee (navindra@cs.mcgill.ca)
+    - Shimple infrastructure
+    
+Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
+    - general Soot hacker    
+    - API freak
+    
+Clark Verbrugge (clump@cs.mcgill.ca)
+    - coffi hacker
+    - original Jimple hacker   
+
+-------------------- Funding Acknowledgements ------------------
+                    
+Funding support provided by:
+    - IBM's Centre for Advanced Studies 
+      http://cas.ibm.com
+
+    - Le Fonds pour la Formation de Chercheurs et l'Aide a la 
+      Recherche (Fonds FCAR)
+      http://www.fcar.qc.ca
+
+    - Natural Sciences and Engineering Research Council of 
+      Canada (NSERC)
+      http://www.nserc.ca
+
+    - Richard H. Tomlinson Fellowship
+
+    - IBM Eclipse Innovation Grant
+
+------------------------- Special Thanks -----------------------
+
+To:
+
+    - Jonathan Meyer for providing the free software community 
+      with Jasmin, a Java bytecode assembler. 
+
+    - Our users for their patience and continuing support! 

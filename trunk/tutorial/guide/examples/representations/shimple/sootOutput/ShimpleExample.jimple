@@ -1,0 +1,31 @@
+public class ShimpleExample extends java.lang.Object
+{
+    public boolean as_long_as_it_takes;
+
+    public void <init>()
+    {
+        ShimpleExample r0;
+
+        r0 := @this: ShimpleExample;
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+        r0.<ShimpleExample: boolean as_long_as_it_takes> = 1;
+        return;
+    }
+
+    public int test()
+    {
+        ShimpleExample r0;
+        boolean $z0;
+
+        r0 := @this: ShimpleExample;
+
+     label0:
+        $z0 = r0.<ShimpleExample: boolean as_long_as_it_takes>;
+        if $z0 == 0 goto label1;
+
+        goto label0;
+
+     label1:
+        return 100;
+    }
+}

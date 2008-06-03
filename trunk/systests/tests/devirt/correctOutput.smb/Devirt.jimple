@@ -1,0 +1,54 @@
+public class Devirt extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        Devirt r0;
+
+        r0 := @this: Devirt;
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+        return;
+    }
+
+    public static final void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+        Devirt $r1;
+        java.lang.NullPointerException r3;
+
+        r0 := @parameter0: java.lang.String[];
+        $r1 = new Devirt;
+        specialinvoke $r1.<Devirt: void <init>()>();
+        if $r1 == null goto label0;
+
+        staticinvoke <Devirt: void go_static(Devirt)>($r1);
+        return;
+
+     label0:
+        r3 = new java.lang.NullPointerException;
+        specialinvoke r3.<java.lang.NullPointerException: void <init>()>();
+        throw r3;
+    }
+
+    public void go()
+    {
+        Devirt r0;
+        java.io.PrintStream $r1;
+
+        r0 := @this: Devirt;
+        $r1 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke $r1.<java.io.PrintStream: void println(java.lang.String)>("Hi there");
+        return;
+    }
+
+    public static void go_static(Devirt)
+    {
+        Devirt r0;
+        java.io.PrintStream $r1;
+
+        r0 := @parameter0: Devirt;
+        $r1 = <java.lang.System: java.io.PrintStream out>;
+        virtualinvoke $r1.<java.io.PrintStream: void println(java.lang.String)>("Hi there");
+        return;
+    }
+}

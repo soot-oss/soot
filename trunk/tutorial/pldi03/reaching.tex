@@ -1,0 +1,395 @@
+%this is an old reaching defs example.
+
+\begin{slide}{Running Example: Reaching Def'ns}
+\vspace*{-0.2in}
+For a statement $s$, want to know which definition statements ({\tt x = rhs})
+{\green reach} $s$.
+\begin{center}
+\input{rd-example.eepic}
+\end{center}
+\end{slide}
+
+% slide: 6 steps to flow analysis
+
+\begin{slide}{Step 1: Abstraction domain}
+\vspace*{-0.2in}
+
+Domain for Reaching Definitions: sets of {\tt Stmt}s\\
+Partial order is subset inclusion
+
+\begin{center}
+\scalebox{0.95}{
+\input{rd.eepic}}
+\mbox{\qquad }
+\end{center}
+\vspace*{-0.1in}
+
+In Soot, we use a {\tt BoundedFlowSet}:
+\begin{center}
+{\tt soot.toolkits.scalar.ArrayPackedSet} 
+\end{center}
+\end{slide}
+
+% slide: abstraction implementation
+
+% slide: merge, copy signatures
+
+% slide: impl of copy
+
+\begin{slide}{Step 2: Reaching Defs Problem Stmt}
+
+For each program point $p$, which definitions $d$ have some
+redefinition-free path reaching from $d$ to $p$?
+
+\begin{center}
+\input{rd-example-specific.eepic}
+\end{center}
+
+(No Soot magic here.)
+
+\end{slide}
+
+
+\begin{slide}{Step 2: Reaching Defs Problem Stmt}
+
+For each program point $p$, which definitions $d$ have some
+redefinition-free path reaching from $d$ to $p$?
+
+\begin{center}
+\input{rd-example-specific.eepic}
+\end{center}
+
+(No Soot magic here.)
+
+\end{slide}
+
+\begin{slide}{Step 3: Forward or Backward?}
+
+Reaching definitions is a forward flow analysis, since flow f$^{\mbox{\scriptsize n}}$ makes
+{\sf OUT} sets from {\sf IN} sets.
+
+\qquad
+
+In Soot, we subclass {\tt \green ForwardFlowAnalysis}.
+
+\qquad
+
+For a backward analysis, instead subclass {\tt BackwardFlowAnalysis}.
+
+\qquad
+
+{\green \tt class ReachingDefsAnalysis \\ \qquad extends ForwardFlowAnalysis}
+\end{slide}
+
+\begin{slide}{Step 4: Join operator}
+In reaching definitions, there must exist a path from {\tt d} to
+{\tt p}, so we use union.
+
+\qquad
+
+Like {\tt copy()}, use {\tt FlowSet}'s {\tt union}:
+
+\vspace*{0.05in}
+
+\begin{verbatim}
+  void merge(...) {
+    // [cast Objects to FlowSets]
+\end{verbatim}
+{\green\verb+    inSet1.union(inSet2, outSet);+}\\
+\verb+  }+
+
+\vspace*{0.1in}
+
+Could also use {\tt intersection()}, or implement a more exotic merge.
+
+\end{slide}
+
+\begin{slide}{Step 5: Flow equations}
+\vspace*{-0.1in}
+
+Goal: At a def'n stmt {\tt u: x = ...}, add {\tt u} to
+flow set and remove other def'ns of {\tt x}.
+
+\vspace*{0.1in}
+
+Must implement this method:
+\begin{verbatim}
+    protected void flowThrough
+                 (Object inValue, 
+                  Object u, 
+                  Object outValue)
+\end{verbatim}
+
+We start by:
+\begin{itemize}
+\item casting {\tt inValue}, {\tt outValue} to {\tt FlowSet}.
+
+\item casting {\tt u} to {\tt Unit}.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 5: Implementing {\tt flowThrough}}
+\vspace*{-0.15in}
+{\small
+\begin{verbatim}
+List defBoxes = unit.getDefBoxes();
+if(defBoxes.size() == 1) {
+  Value value = 
+     ((ValueBox)defBoxes.get(0)).getValue();
+  if (value instanceof Local) {
+    Local defLocal = (Local) value;    
+    in.intersection((FlowSet)  // kill
+     localToPreserveSet.get(defLocal), out);
+    out.add(unit, out); // gen
+  }
+}
+in.copy(out);
+\end{verbatim}}
+\end{slide}
+
+\begin{slide}{On {\tt DefBoxes}}
+\vspace*{-0.1in}
+{\tt List defBoxes = unit.getDefBoxes();}
+
+\vspace*{-0.05in}
+\begin{itemize}
+\item method {\green \tt u.getDefBoxes()} returns a list of {\tt
+ValueBox}es, corresponding to all {\tt Value}s which get defined
+in {\tt u}, a {\tt Unit}. 
+
+\item non-empty for {\tt IdentityStmt} and {\tt AssignStmt}.
+\end{itemize}
+
+\vspace*{-0.08in}
+\begin{center}
+\fbox{\tt s: \fbox{x} = \fbox{y} op \fbox{z};}
+\end{center}
+
+\vspace*{0.05in}
+{\tt getDefBoxes(s) = \{\fbox{x}\}}\\
+\qquad \qquad \begin{minipage}{0.7\textwidth} 
+({\tt List} containing a {\tt ValueBox} containing a {\tt Local})
+\end{minipage}
+
+\end{slide}
+
+\begin{slide}{On {\tt Value}s and {\tt Box}es}
+\verb+ValueBox defBox = +\\
+\verb+          (ValueBox)defBoxes.get(0);+\\
+{\green \verb+Value value = defBox.getValue();+}
+
+\begin{itemize}
+\item {\tt getValue()}: Dereferencing a pointer.\\
+\qquad \qquad \qquad \qquad \fbox{\tt x} $\rightarrow$ {\tt x}
+\end{itemize}
+
+\verb+if (value instanceof Local) {+
+
+\begin{itemize}
+\item Only care about defs of {\tt Local}s here.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{The actual flow function}
+\vspace*{-0.2in}
+\[ \mbox{OUT}(\mbox{\tt s}) = \mbox{IN}(\mbox{\tt s}) \setminus 
+               \mbox{kill}(s) \cup \mbox{gen}(s) \]
+\vspace{-0.15in}
+
+\begin{verbatim}
+in.intersection((FlowSet)
+   localToPreserveSet.get(defLocal), 
+   out);
+\end{verbatim}
+\begin{itemize}
+\item use precomputed {\em preserve} sets, rather than
+set-differencing kill sets.
+\end{itemize}
+
+\begin{verbatim}
+out.add(unit, out);
+\end{verbatim}
+
+\begin{itemize}
+\item add this def$^{\mbox{\scriptsize n}}$ to set of reaching
+def$^{\mbox{\scriptsize n}}$s
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 5': Precomputing preserve sets}
+\vspace*{-0.2in}
+\[ \begin{array}{r@{\,}c@{\,}c@{\,}l}
+\fbox{\small \fbox{a} \fbox{b} \fbox{c}} \setminus 
+                     \fbox{\small \fbox{c}} &=& 
+    \fbox{\small \fbox{a} \fbox{b} \fbox{c}} \cap 
+                      \fbox{\small \fbox{a} \fbox{b} \fbox{d}}\vspace*{0.1in} \\ 
+\mbox{IN}(\mbox{\tt s}) \setminus \mbox{kill}(s) &=& \mbox{IN}(\mbox{\tt s}) \; \cap \; \overline{\mbox{kill}(s)\!}
+\end{array} \]
+
+To carry out complement, need to create a bounded {\tt
+ArrayFlowUniverse} of defs.
+
+\vspace*{0.09in}
+
+We create the {\tt FlowUniverse} and precompute the preserve ($\overline{\mbox{kill}}$) sets in
+the {\tt FlowAnalysis} constructor:
+\begin{verbatim}
+  public LocalDefsFlowAnalysis
+           (UnitGraph g);
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 5': Setting up Preserve Sets}
+{\small \tt
+\begin{tabbing}
+public LocalDefsFlowAnalysis(UnitGraph g) \{\\
+\quad \= // foreach Unit ut in g \{\\
+      \> \quad \= // foreach ValueBox b in u.getDefBoxes() \{\\
+      \>       \> \quad \= Value v = b.getValue(); \\
+      \>       \> \> if (v instanceof Local) \{ \\
+      \>       \> \> \quad \= defList.add(ut); \\
+      \>       \> \>       \> addElt(luMap, v, ut);\\
+      \>       \> \}
+      \> \}
+\}
+\end{tabbing}
+}
+\end{slide}
+
+\begin{slide}{addElt}
+Common idiom:
+{\small 
+\begin{verbatim}
+void addElt(Map m, Object loc, Object def) {
+    List defL = (List)m.get(loc);
+    // add list if needed
+    if (defL == null) {
+        defL = new LinkedList();
+        m.put(loc, defL);
+    }
+    // actually add def
+    defL.add(def);
+}
+\end{verbatim}
+}
+\end{slide}
+
+\begin{slide}{Step 5': Creating {\tt FlowSet}s}
+\vspace*{-0.2in}
+We convert {\tt List}s into {\tt FlowSet}s:
+{ \tt \small
+\begin{tabbing}
+\quad \= Iterator defsIt = defList.iterator(); \\
+      \> while (defsIt.hasNext())\\
+      \> \qquad \= Unit u = defsIt.next();\\
+      \>       \> Local loc = u.getDefBoxes() \\
+      \>       \> \qquad \qquad .get(0).getValue();\\
+      \>       \> FlowSet kills = luMap.get(loc);\\
+      \>       \> if (kills == null) \\
+      \>       \> \qquad \= kills = emptySet.clone(); \\
+      \>       \>        \> duMap.put(loc, kills); \\
+      \>       \> {\green kills.add(u, kills);} \\
+\end{tabbing}
+}
+\end{slide}
+
+\begin{slide}{Step 5': Inverting to get prsv sets}
+Now we have kill sets; want preserve sets:
+{\tt \small
+\begin{tabbing}
+\quad \= Iterator killSetsIt = \\
+      \> \qquad \qquad luMap.keySet().iterator(); \\
+      \> while (killSetsIt.hasNext())\\
+      \> \qquad \= Local key = killSetsIt.next();\\
+      \>        \> FlowSet val = luMap.get(key);\\
+      \>        \> {\green localToPreserveMap.put(key,} \\
+      \>        \> \qquad \qquad {\green val.complement(val));} \\
+\end{tabbing}
+}
+
+\end{slide}
+
+\begin{slide}{Step 5: {\tt flowThrough}, redux}
+\vspace*{-0.15in}
+{\small
+\begin{verbatim}
+List defBoxes = unit.getDefBoxes();
+if(defBoxes.size() == 1) {
+  Value value = 
+     ((ValueBox)defBoxes.get(0)).getValue();
+  if (value instanceof Local) {
+    Local defLocal = (Local) value;    
+    in.intersection((FlowSet)  // kill
+     localToPreserveSet.get(defLocal), out);
+    out.add(unit, out); // gen
+  }
+}
+in.copy(out);
+\end{verbatim}}
+\end{slide}
+
+\begin{slide}{Step 6: Initial values}
+\vspace*{-0.1in}
+$\bullet$ Soundly initialize IN, OUT sets prior to analysis.
+
+\begin{itemize}
+
+\item Create initial sets ({\tt emptySet} from constr.)\\
+\quad {\tt void newInitialFlow()}\\
+\qquad {\tt \{ return emptySet.clone(); \} }
+
+\item Create initial sets for entry nodes\\
+\quad {\tt entryInitialFlow()}
+
+\vspace*{0.09in}
+
+Usually {\tt newInitialFlow()} returns the \\ \quad most aggressive result
+$\top$; {\tt entryInitialFlow()} \\ \quad assigns
+ $\mbox{\tt OUT}(\mbox{start}) 
+\leftarrow\ \perp$.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Flow Sets and Soot}
+\vspace*{-0.1in}
+Using a {\tt FlowSet} is not mandatory, but helpful.
+
+\quad
+
+Impls: {\tt ToppedSet}, {\tt ArraySparseSet}, \\
+\qquad \qquad {\tt ArrayPackedSet}
+
+\quad
+
+\begin{tabular}{ll}
+\begin{minipage}{0.5\textwidth}
+{\small \tt 
+// $c = a \cap b$ \\
+a.intersection(b, c); \\
+
+// $d = \overline{c}$\\
+c.complement(d);
+}
+\end{minipage} &
+\begin{minipage}{0.3\textwidth}
+{\small \tt
+// $c = a \cup b$ \\
+a.union(b,c);\\
+
+// $d = d \cup \{ \mbox{v} \}$\\
+d.add(v);
+}
+\end{minipage}
+
+\end{tabular}
+
+\quad
+
+\begin{center}
+Read the JavaDoc!
+\end{center}
+% why flow universes?
+%  * efficient encoding 
+%  * we sometimes want to go a \cup \not b.
+\end{slide}
+

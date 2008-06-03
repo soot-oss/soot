@@ -1,0 +1,60 @@
+Once you have installed the soot-eclipse plugin and restarted Eclipse you must make the menus available by the following:
+
+Select Window -> Customize Perspective
+Expand Other option in the tree
+Click on soot then OK
+
+Now under the Project menu there should be a Soot section (the menu items may be grayed out at this point)
+
+You must also switch to the Java Perspective in Eclipse:
+
+Select Window -> Open Perspective -> Java
+
+As Soot runs on java classes you must create or import some
+Follow the Eclipse guidelines on creating a Java Project found at www.eclipse.org (look for Online Help section)
+
+One note, currently there are problems with the soot plugin in you don't make a src folder in your Java project and instead use the project as the source folder. So don't do this.
+
+Running Soot on all the classes in your project:
+
+First build the classes.
+Then select any java file in the project.
+The select Project -> Soot and any menu item under
+There are currently four:
+
+Create Jimple - creates Jimple files
+Dava Decompile - decompiles
+Soot Options - opens a dialog box containing all Soot options 
+Manage Configurations - opens a dialog where you can create and save, edit, remove and run different configurations of the Soot options
+
+Running Soot on imported folder of classes:
+
+Select any class file. Right click and select Soot -> and any menu item (they are similar to the project menu items)
+
+Select the foler. Right click and select Soot -> Dava Decompile (to decompile all the classes in your imported folder of classes)
+
+Running Soot on Jimple files:
+
+Select the file. Right click and select Soot -> and any menu item (they ar
+e similar to the project menu items)
+
+Attributes:
+Selecting Output Options -> Output Format -> Jimple File
+and under Jimple Annotations Pack: 
+
+Null Pointer Check Options
+	-> unselect Disabled 
+	-> select Only Array Ref
+
+Array Bounds Check Options
+	-> unselect Disabled
+	-> select With All
+
+Running this configuration causes a bunch of attribute tags to be generated.
+After running open a generated Jimple File and there should be markers in the file indicating attributes.
+Mouse over the line in the editor with a marker and you should see a tooltip with the attribute.
+Also these attributes tooltips should appear in the original Java source file.
+
+One other note: For long-running memory intensive Soot configurations Eclipse may run out of memory. To handle this start Eclipse with:
+
+eclipse -vmargs -Xmx300M 

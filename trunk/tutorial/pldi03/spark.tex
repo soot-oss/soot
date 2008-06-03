@@ -1,0 +1,117 @@
+\begin{slide}{Points-to analysis}
+\begin{itemize}
+\item Default points-to analysis assumes that any pointer can point to any object
+\item Spark provides variations of context-insensitive subset-based
+points-to analysis
+\begin{itemize}
+\item Work in progress on context-sensitive analyses
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Spark settings}
+\begin{itemize}
+\item \texttt{-p cg.spark on} turns on Spark
+\begin{itemize}
+\item Spark used for both call graph, and points-to information
+\item Default setting is on-the-fly call graph, field-sensitive,
+most efficient algorithm and data structures
+\end{itemize}
+\item \texttt{-p cg.spark vta} Spark as VTA
+\item \texttt{-p cg.spark rta} Spark as RTA
+\end{itemize}
+\end{slide}
+
+\begin{slide}{PointsToAnalysis interface}
+\begin{description}
+\item
+[\texttt{\small reachingObjects(Local)}]
+returns {\tt PointsToSet} of objects pointed to by a local variable\\
+{\tt x = y}
+
+\item
+[\texttt{\small reachingObjects(SootField)}]
+returns {\tt PointsToSet} of objects pointed to by a static field\\
+{\tt x = C.f}
+
+\item
+[\texttt{\small reachingObjects(Local,SootField)}]
+returns {\tt PointsToSet} of objects pointed to by given instance field
+of the objects pointed to by local variable\\
+{\tt x = y.f}
+\end{description}
+\sablefootnote{soot.PointsToAnalysis}
+\end{slide}
+
+\begin{slide}{PointsToSet interface}
+\begin{description}
+\item [\texttt{\small possibleTypes()}] returns a set of the possible types of the
+objects in the points-to set
+\item [\texttt{\small hasNonEmptyIntersection(PointsToSet)}] tells us whether
+two points-to sets may overlap (whether the pointers may be aliased)
+\end{description}
+\sablefootnote{soot.PointsToSet}
+\end{slide}
+
+\begin{slide}{If I want to know...}
+... the types of the receiver o in the call: \texttt{o.m(\ldots)}\\
+\hspace{10mm}
+\begin{alltt}
+Local o;
+PointsToAnalysis pa =
+     Scene.v().getPointsToAnalysis();
+PointsToSet ptset = 
+     pa.reachingObjects( o );
+java.util.Set types =
+     ptset.possibleTypes()
+\end{alltt}
+\end{slide}
+
+\begin{slide}{If I want to know...}
+... whether \texttt{x} and \texttt{y} may be aliases in\\
+\texttt{x.f = 5;\\ y.f = 6;\\ z = x.f;}\\
+\hspace{10mm}
+\begin{alltt}
+Local x, y;
+PointsToSet xset =
+    pa.reachingObjects( x );
+PointsToSet yset =
+    pa.reachingObjects( y );
+if(xset.hasNonEmptyIntersection(yset))
+    // they're possibly aliased
+\end{alltt}
+\end{slide}
+
+\begin{slide}{SideEffectTester interface}
+Reports side-effects of any statement, including calls
+\begin{description}
+\item [\texttt{newMethod(SootMethod)}] tells the side-effect tester that
+we are starting a new method
+\item [\texttt{unitCanReadFrom(Unit,Value)}]
+returns true if the Unit (statement) might read the Value
+\item [\texttt{unitCanWriteTo(Unit,Value)}]
+returns true if the Unit (statement) might write the Value
+\end{description}
+\sablefootnote{soot.SideEffectTester}
+\end{slide}
+
+\begin{slide}{Implementations of SideEffectTester}
+\begin{description}
+\item [\texttt{NaiveSideEffectTester}]\ \\
+\begin{itemize}
+\item is conservative
+\item does not use call graph or points-to information
+\item does not require whole-program mode
+\end{itemize}
+\item [\texttt{PASideEffectTester}]\ \\
+\begin{itemize}
+\item uses current call graph
+\item uses current points-to information
+\begin{itemize}
+\item this may be naive points-to information
+\end{itemize}
+\end{itemize}
+\end{description}
+\sablefootnote{soot.jimple.NaiveSideEffectTester\\soot.jimple.toolkits.pointer.PASideEffectTester}
+\end{slide}
+

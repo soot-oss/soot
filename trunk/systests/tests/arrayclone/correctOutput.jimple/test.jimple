@@ -1,0 +1,195 @@
+public class test extends java.lang.Object
+{
+/*test.java*/
+
+    public void <init>()
+    {
+        test r0;
+
+        r0 := @this: test;
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] r0;
+        test[] r1, r2;
+        java.lang.Object $r3;
+
+        r0 := @parameter0: java.lang.String[];
+/*AllocNode 4614 STRING_ARRAY_NODE in method null*/
+/*LocalVarNode 46615 Pair <test: void main(java.lang.String[])>,0 <test: void main(java.lang.String[])>*/
+        r1 = newarray (test)[1];
+/*AllocNode 4613 newarray (test)[1] in method <test: void main(java.lang.String[])>*/
+/*AllocNode 4613 newarray (test)[1] in method <test: void main(java.lang.String[])>*/
+/*CallGraph: Type: CLINIT Target Method/Context: <java.lang.Object: void <clinit>()>*/
+        $r3 = virtualinvoke r1.<java.lang.Object: java.lang.Object clone()>();
+/*AllocNode 5 Pair AbstractObject,Any_subtype_of_java.lang.ClassLoader in method null*/
+/*AllocNode 115 newarray (java.security.Principal)[0] in method <java.security.ProtectionDomain: void <init>(java.security.CodeSource,java.security.PermissionCollection)>*/
+/*AllocNode 116 newarray (java.security.Principal)[0] in method <java.security.ProtectionDomain: void <init>(java.security.CodeSource,java.security.PermissionCollection,java.lang.ClassLoader,java.security.Principal[])>*/
+/*AllocNode 161 DEFAULT_CLASS_LOADER in method null*/
+/*AllocNode 172 newarray (java.security.cert.Certificate)[0] in method <java.lang.ClassLoader: void checkCerts(java.lang.String,java.security.CodeSource)>*/
+/*AllocNode 176 newarray (java.security.ProtectionDomain)[1] in method <java.lang.ClassLoader: void checkPackageAccess(java.lang.Class,java.security.ProtectionDomain)>*/
+/*AllocNode 294 newarray (java.lang.Object)[$i0] in method <java.util.ArrayList: java.lang.Object[] toArray()>*/
+/*AllocNode 320 newarray (java.io.ObjectStreamField)[0] in method <java.io.ObjectStreamClass: void <clinit>()>*/
+/*AllocNode 328 newarray (java.io.ObjectStreamField)[s1] in method <java.io.ObjectStreamClass: void readNonProxy(java.io.ObjectInputStream)>*/
+/*AllocNode 340 newarray (java.lang.String)[$i10] in method <java.io.ObjectStreamClass: long computeDefaultSUID(java.lang.Class)>*/
+/*AllocNode 341 newarray (java.io.ObjectStreamClass$MemberSignature)[$i14] in method <java.io.ObjectStreamClass: long computeDefaultSUID(java.lang.Class)>*/
+/*AllocNode 344 newarray (java.io.ObjectStreamClass$MemberSignature)[$i21] in method <java.io.ObjectStreamClass: long computeDefaultSUID(java.lang.Class)>*/
+/*AllocNode 347 newarray (java.io.ObjectStreamClass$MemberSignature)[$i27] in method <java.io.ObjectStreamClass: long computeDefaultSUID(java.lang.Class)>*/
+/*AllocNode 371 newarray (java.io.ObjectStreamField)[$i5] in method <java.io.ObjectStreamClass: java.io.ObjectStreamField[] getDeclaredSerialFields(java.lang.Class)>*/
+/*AllocNode 378 newarray (java.io.ObjectStreamField)[i5] in method <java.io.ObjectStreamClass: java.io.ObjectStreamField[] getDefaultSerialFields(java.lang.Class)>*/
+/*AllocNode 394 newarray (java.io.ObjectStreamField)[$i2] in method <java.io.ObjectStreamClass: java.io.ObjectStreamField[] matchFields(java.io.ObjectStreamField[],java.io.ObjectStreamClass)>*/
+/*AllocNode 406 Pair AbstractObject,Any_subtype_of_java.security.PrivilegedActionException in method null*/
+/*AllocNode 646 Pair AbstractObject,Any_subtype_of_java.lang.Thread in method null*/
+/*AllocNode 659 newarray (java.net.InetAddress)[1] in method <java.net.InetAddress: void cacheInitIfNeeded()>*/
+/*AllocNode 662 newarray (java.net.InetAddress)[$i1] in method <java.net.InetAddress: java.lang.Object getAddressFromNameService(java.lang.String)>*/
+/*AllocNode 763 newarray (java.lang.String)[i1] in method <java.lang.Runtime: java.lang.Process exec(java.lang.String,java.lang.String[],java.io.File)>*/
+/*AllocNode 776 newarray (java.lang.Object)[$i0] in method <java.util.Vector: java.lang.Object[] toArray()>*/
+/*AllocNode 845 new java.util.jar.Manifest in method <java.util.jar.Manifest: java.lang.Object clone()>*/
+/*AllocNode 861 new java.util.jar.Attributes in method <java.util.jar.Attributes: java.lang.Object clone()>*/
+/*AllocNode 984 newarray (byte)[$i0] in method <java.io.ByteArrayOutputStream: byte[] toByteArray()>*/
+/*AllocNode 1112 new java.util.ResourceBundle$ResourceCacheKey in method <java.util.ResourceBundle: void <clinit>()>*/
+/*AllocNode 1144 new java.text.DecimalFormat in method <java.text.MessageFormat: void makeFormat(int,int,java.lang.StringBuffer[])>*/
+/*AllocNode 1145 new java.text.DecimalFormatSymbols in method <java.text.MessageFormat: void makeFormat(int,int,java.lang.StringBuffer[])>*/
+/*AllocNode 1146 new java.text.SimpleDateFormat in method <java.text.MessageFormat: void makeFormat(int,int,java.lang.StringBuffer[])>*/
+/*AllocNode 1147 new java.text.SimpleDateFormat in method <java.text.MessageFormat: void makeFormat(int,int,java.lang.StringBuffer[])>*/
+/*AllocNode 1148 new java.text.ChoiceFormat in method <java.text.MessageFormat: void makeFormat(int,int,java.lang.StringBuffer[])>*/
+/*AllocNode 1542 newarray (java.lang.Object)[$i1] in method <java.util.AbstractCollection: java.lang.Object[] toArray()>*/
+/*AllocNode 1583 newarray (byte)[4] in method <java.net.Inet4Address: byte[] textToNumericFormat(java.lang.String)>*/
+/*AllocNode 1585 newarray (byte)[4] in method <java.net.Inet6Address: byte[] convertFromIPv4MappedAddress(byte[])>*/
+/*AllocNode 1586 newarray (byte)[16] in method <java.net.Inet6Address: byte[] textToNumericFormat(java.lang.String)>*/
+/*AllocNode 1593 new java.util.Hashtable$Entry in method <java.util.Hashtable$Entry: java.lang.Object clone()>*/
+/*AllocNode 1725 new java.text.SimpleDateFormat in method <java.util.Date: java.lang.String toString()>*/
+/*AllocNode 1930 new java.security.MessageDigest$Delegate in method <java.security.MessageDigest$Delegate: java.lang.Object clone()>*/
+/*AllocNode 2049 newarray (java.security.cert.Certificate)[$i14] in method <sun.security.provider.PolicyFile: java.security.cert.Certificate[] getSignerCertificates(java.security.CodeSource)>*/
+/*AllocNode 2058 newarray (java.security.cert.Certificate)[1] in method <sun.security.provider.PolicyFile: boolean checkForTrustedIdentity(java.security.cert.Certificate,sun.security.provider.PolicyInfo)>*/
+/*AllocNode 2104 newarray (java.security.cert.Certificate)[$i2] in method <sun.security.provider.PolicyFile: java.security.cert.Certificate[] getCertificates(java.security.KeyStore,java.lang.String,sun.security.provider.PolicyInfo)>*/
+/*AllocNode 2227 newarray (double)[i1] in method <java.text.ChoiceFormat: void applyPattern(java.lang.String)>*/
+/*AllocNode 2228 newarray (java.lang.String)[i1] in method <java.text.ChoiceFormat: void applyPattern(java.lang.String)>*/
+/*AllocNode 2239 new java.text.DateFormatSymbols in method <java.text.SimpleDateFormat: void <init>(int,int,java.util.Locale)>*/
+/*AllocNode 2246 new java.text.DateFormatSymbols in method <java.text.SimpleDateFormat: void <init>(java.lang.String,java.util.Locale)>*/
+/*AllocNode 2250 new java.text.SimpleDateFormat in method <java.text.DateFormat: java.text.DateFormat get(int,int,int,java.util.Locale)>*/
+/*AllocNode 2251 new java.text.SimpleDateFormat in method <java.text.DateFormat: java.text.DateFormat get(int,int,int,java.util.Locale)>*/
+/*AllocNode 2256 new java.text.DecimalFormatSymbols in method <java.text.NumberFormat: java.text.NumberFormat getInstance(java.util.Locale,int)>*/
+/*AllocNode 2257 new java.text.DecimalFormat in method <java.text.NumberFormat: java.text.NumberFormat getInstance(java.util.Locale,int)>*/
+/*AllocNode 2287 new java.text.DigitList in method <java.text.DecimalFormat: void <init>(java.lang.String,java.text.DecimalFormatSymbols)>*/
+/*AllocNode 2353 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2354 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2355 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2356 newarray (int)[7] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2357 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2358 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2359 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2360 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2361 newarray (int)[7] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2362 newarray (int)[7] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2363 newarray (int)[7] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2364 newarray (int)[7] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2365 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2366 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2367 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2368 newarray (int)[6] in method <sun.security.x509.AlgorithmId: void <clinit>()>*/
+/*AllocNode 2406 new sun.security.util.DerInputBuffer in method <sun.security.util.DerValue: void <init>(byte,byte[])>*/
+/*AllocNode 2418 new sun.security.util.DerInputBuffer in method <sun.security.util.DerValue: void init(boolean,java.io.InputStream)>*/
+/*AllocNode 2435 new sun.security.util.DerInputBuffer in method <sun.security.util.DerValue: void init(byte,java.lang.String)>*/
+/*AllocNode 2443 new sun.security.util.DerInputBuffer in method <sun.security.util.DerValue: void <init>(sun.security.util.DerInputBuffer)>*/
+/*AllocNode 2615 newarray (byte[])[$i6] in method <sun.security.util.DerOutputStream: void putOrderedSet(byte,sun.security.util.DerEncoder[],java.util.Comparator)>*/
+/*AllocNode 2619 newarray (byte)[4] in method <sun.security.x509.IPAddressName: java.lang.String getName()>*/
+/*AllocNode 2620 newarray (byte)[4] in method <sun.security.x509.IPAddressName: java.lang.String getName()>*/
+/*AllocNode 2621 newarray (byte)[16] in method <sun.security.x509.IPAddressName: java.lang.String getName()>*/
+/*AllocNode 2634 new sun.security.util.DerInputBuffer in method <sun.security.util.DerInputStream: void init(byte[],int,int)>*/
+/*AllocNode 2635 new sun.security.util.DerInputBuffer in method <sun.security.util.DerInputStream: void init(byte[],int,int)>*/
+/*AllocNode 2651 new sun.security.util.DerInputBuffer in method <sun.security.util.DerInputStream: sun.security.util.DerValue[] readVector(int)>*/
+/*AllocNode 2743 newarray (java.lang.Object)[$i1] in method <java.util.LinkedList: java.lang.Object[] toArray()>*/
+/*AllocNode 2823 new sun.util.BuddhistCalendar in method <java.util.Calendar: java.util.Calendar createCalendar(java.util.TimeZone,java.util.Locale)>*/
+/*AllocNode 2824 new java.util.GregorianCalendar in method <java.util.Calendar: java.util.Calendar createCalendar(java.util.TimeZone,java.util.Locale)>*/
+/*AllocNode 2848 new sun.util.calendar.ZoneInfo in method <java.util.TimeZone: java.util.TimeZone getTimeZone(java.lang.String,boolean)>*/
+/*AllocNode 2913 new sun.net.www.MimeEntry in method <sun.net.www.MimeEntry: java.lang.Object clone()>*/
+/*AllocNode 2953 newarray (java.security.cert.Certificate)[$i4] in method <sun.security.util.SignatureFileVerifier: void updateCerts(java.security.cert.Certificate[],java.util.Hashtable,java.lang.String)>*/
+/*AllocNode 2956 newarray (java.security.cert.Certificate)[$i2] in method <sun.security.util.SignatureFileVerifier: java.security.cert.Certificate[] getCertificates(sun.security.pkcs.SignerInfo[],sun.security.pkcs.PKCS7)>*/
+/*AllocNode 3109 new sun.security.provider.PolicyParser$GrantEntry in method <sun.security.provider.PolicyParser$GrantEntry: java.lang.Object clone()>*/
+/*AllocNode 3114 newarray (java.security.cert.Certificate)[$i14] in method <sun.security.provider.SelfPermission: void <init>(java.lang.String,java.lang.String,java.lang.String,java.security.cert.Certificate[])>*/
+/*AllocNode 3271 new java.util.Vector in method <java.text.AttributedString: void setAttributes(java.util.Map,int)>*/
+/*AllocNode 3272 new java.util.Vector in method <java.text.AttributedString: void setAttributes(java.util.Map,int)>*/
+/*AllocNode 3277 new java.util.Vector in method <java.text.AttributedString: void addAttributeRunData(java.text.AttributedCharacterIterator$Attribute,java.lang.Object,int,int)>*/
+/*AllocNode 3278 new java.util.Vector in method <java.text.AttributedString: void addAttributeRunData(java.text.AttributedCharacterIterator$Attribute,java.lang.Object,int,int)>*/
+/*AllocNode 3367 newarray (byte)[i0] in method <sun.security.util.DerInputBuffer: byte[] toByteArray()>*/
+/*AllocNode 3374 newarray (byte)[$i4] in method <sun.security.util.DerInputBuffer: byte[] getBitString(int)>*/
+/*AllocNode 3416 newarray (byte)[i1] in method <sun.security.util.BitArray: void <init>(int,byte[])>*/
+/*AllocNode 3417 newarray (byte)[$i4] in method <sun.security.util.BitArray: void <init>(boolean[])>*/
+/*AllocNode 3418 new sun.security.util.BitArray in method <sun.security.util.BitArray: java.lang.Object clone()>*/
+/*AllocNode 3525 newarray (java.security.cert.X509Certificate)[$i0] in method <sun.security.pkcs.PKCS7: void parseNetscapeCertChain(sun.security.util.DerValue)>*/
+/*AllocNode 3533 newarray (java.security.cert.X509Certificate)[i3] in method <sun.security.pkcs.PKCS7: void parseOldSignedData(sun.security.util.DerValue)>*/
+/*AllocNode 3543 newarray (java.security.cert.X509Certificate)[i5] in method <sun.security.pkcs.PKCS7: void parseSignedData(sun.security.util.DerValue)>*/
+/*AllocNode 3560 new java.security.Signature$Delegate in method <java.security.Signature$Delegate: java.lang.Object clone()>*/
+/*AllocNode 3567 new sun.security.x509.GeneralSubtrees in method <sun.security.x509.GeneralSubtrees: java.lang.Object clone()>*/
+/*AllocNode 3750 new sun.util.calendar.ZoneInfo in method <sun.util.calendar.ZoneInfoFile: sun.util.calendar.ZoneInfo createZoneInfo(java.lang.String)>*/
+/*AllocNode 3753 new sun.util.calendar.ZoneInfo in method <sun.util.calendar.ZoneInfoFile: sun.util.calendar.ZoneInfo getCustomTimeZone(java.lang.String,int)>*/
+/*AllocNode 3800 newarray (int)[6] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3801 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3802 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3803 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3804 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3805 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3806 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3807 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3808 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 3809 newarray (int)[7] in method <sun.security.pkcs.ContentInfo: void <clinit>()>*/
+/*AllocNode 4146 newarray (java.security.ProtectionDomain)[$i5] in method <javax.security.auth.SubjectDomainCombiner: java.security.ProtectionDomain[] combineJavaxPolicy(java.security.ProtectionDomain[],java.security.ProtectionDomain[])>*/
+/*AllocNode 4152 newarray (java.security.ProtectionDomain)[$i4] in method <javax.security.auth.SubjectDomainCombiner: java.security.ProtectionDomain[] optimize(java.security.ProtectionDomain[],java.security.ProtectionDomain[])>*/
+/*AllocNode 4153 newarray (java.security.ProtectionDomain)[i0] in method <javax.security.auth.SubjectDomainCombiner: java.security.ProtectionDomain[] optimize(java.security.ProtectionDomain[],java.security.ProtectionDomain[])>*/
+/*AllocNode 4273 newarray (java.security.cert.Certificate)[$i14] in method <com.sun.security.auth.PolicyFile: java.security.cert.Certificate[] getSignerCertificates(java.security.CodeSource)>*/
+/*AllocNode 4290 newarray (java.security.cert.Certificate)[$i2] in method <com.sun.security.auth.PolicyFile: java.security.cert.Certificate[] getCertificates(java.security.KeyStore,java.lang.String)>*/
+/*AllocNode 4613 newarray (test)[1] in method <test: void main(java.lang.String[])>*/
+/*LocalVarNode 19072 Parm -2 to <java.security.MessageDigest$Delegate: java.lang.Object clone()> <java.security.MessageDigest$Delegate: java.lang.Object clone()>*/
+/*LocalVarNode 35509 Parm -2 to <java.security.Signature$Delegate: java.lang.Object clone()> <java.security.Signature$Delegate: java.lang.Object clone()>*/
+/*LocalVarNode 21369 Parm -2 to <sun.text.CompactCharArray: java.lang.Object clone()> <sun.text.CompactCharArray: java.lang.Object clone()>*/
+/*LocalVarNode 8766 Parm -2 to <java.util.jar.Manifest: java.lang.Object clone()> <java.util.jar.Manifest: java.lang.Object clone()>*/
+/*LocalVarNode 40826 Parm -2 to <java.util.TreeSet: java.lang.Object clone()> <java.util.TreeSet: java.lang.Object clone()>*/
+/*LocalVarNode 22789 Parm -2 to <java.text.DecimalFormatSymbols: java.lang.Object clone()> <java.text.DecimalFormatSymbols: java.lang.Object clone()>*/
+/*LocalVarNode 22377 Parm -2 to <java.util.ResourceBundle$ResourceCacheKey: java.lang.Object clone()> <java.util.ResourceBundle$ResourceCacheKey: java.lang.Object clone()>*/
+/*LocalVarNode 35583 Parm -2 to <sun.security.x509.GeneralSubtrees: java.lang.Object clone()> <sun.security.x509.GeneralSubtrees: java.lang.Object clone()>*/
+/*LocalVarNode 23559 Parm -2 to <java.text.DecimalFormat: java.lang.Object clone()> <java.text.DecimalFormat: java.lang.Object clone()>*/
+/*LocalVarNode 5576 Parm -2 to <java.util.HashMap: java.lang.Object clone()> <java.util.HashMap: java.lang.Object clone()>*/
+/*LocalVarNode 39880 Parm -2 to <java.text.AttributedString$AttributedStringIterator: java.lang.Object clone()> <java.text.AttributedString$AttributedStringIterator: java.lang.Object clone()>*/
+/*LocalVarNode 8014 Parm -2 to <java.util.Vector: java.lang.Object clone()> <java.util.Vector: java.lang.Object clone()>*/
+/*LocalVarNode 3176 Parm -2 to <java.util.ArrayList: java.lang.Object clone()> <java.util.ArrayList: java.lang.Object clone()>*/
+/*LocalVarNode 2477 Parm -2 to <java.util.HashSet: java.lang.Object clone()> <java.util.HashSet: java.lang.Object clone()>*/
+/*LocalVarNode 12127 Parm -2 to <java.text.MessageFormat: java.lang.Object clone()> <java.text.MessageFormat: java.lang.Object clone()>*/
+/*LocalVarNode 16173 Parm -2 to <java.util.Date: java.lang.Object clone()> <java.util.Date: java.lang.Object clone()>*/
+/*LocalVarNode 31556 Parm -2 to <sun.security.provider.PolicyParser$GrantEntry: java.lang.Object clone()> <sun.security.provider.PolicyParser$GrantEntry: java.lang.Object clone()>*/
+/*LocalVarNode 13679 Parm -2 to <java.util.AbstractMap: java.lang.Object clone()> <java.util.AbstractMap: java.lang.Object clone()>*/
+/*LocalVarNode 14343 Parm -2 to <java.util.Hashtable$Entry: java.lang.Object clone()> <java.util.Hashtable$Entry: java.lang.Object clone()>*/
+/*LocalVarNode 28715 Parm -2 to <java.util.BitSet: java.lang.Object clone()> <java.util.BitSet: java.lang.Object clone()>*/
+/*LocalVarNode 34458 Parm -2 to <sun.security.util.BitArray: java.lang.Object clone()> <sun.security.util.BitArray: java.lang.Object clone()>*/
+/*LocalVarNode 23035 Parm -2 to <java.text.SimpleDateFormat: java.lang.Object clone()> <java.text.SimpleDateFormat: java.lang.Object clone()>*/
+/*LocalVarNode 28306 Parm -2 to <java.util.Calendar: java.lang.Object clone()> <java.util.Calendar: java.lang.Object clone()>*/
+/*LocalVarNode 34002 Parm -2 to <java.util.SimpleTimeZone: java.lang.Object clone()> <java.util.SimpleTimeZone: java.lang.Object clone()>*/
+/*LocalVarNode 32838 Parm -2 to <java.util.TreeMap: java.lang.Object clone()> <java.util.TreeMap: java.lang.Object clone()>*/
+/*LocalVarNode 21329 Parm -2 to <java.text.StringCharacterIterator: java.lang.Object clone()> <java.text.StringCharacterIterator: java.lang.Object clone()>*/
+/*LocalVarNode 21420 Parm -2 to <sun.text.CompactByteArray: java.lang.Object clone()> <sun.text.CompactByteArray: java.lang.Object clone()>*/
+/*LocalVarNode 394 Parm -2 to <java.lang.Object: java.lang.Object clone()> <java.lang.Object: java.lang.Object clone()>*/
+/*LocalVarNode 11342 Parm -2 to <sun.text.Normalizer: java.lang.Object clone()> <sun.text.Normalizer: java.lang.Object clone()>*/
+/*LocalVarNode 29329 Parm -2 to <sun.net.www.MimeEntry: java.lang.Object clone()> <sun.net.www.MimeEntry: java.lang.Object clone()>*/
+/*LocalVarNode 33762 Parm -2 to <java.text.DateFormatSymbols: java.lang.Object clone()> <java.text.DateFormatSymbols: java.lang.Object clone()>*/
+/*LocalVarNode 34193 Parm -2 to <java.text.DigitList: java.lang.Object clone()> <java.text.DigitList: java.lang.Object clone()>*/
+/*LocalVarNode 8923 Parm -2 to <java.util.jar.Attributes: java.lang.Object clone()> <java.util.jar.Attributes: java.lang.Object clone()>*/
+/*LocalVarNode 17207 Parm -2 to <java.util.zip.ZipEntry: java.lang.Object clone()> <java.util.zip.ZipEntry: java.lang.Object clone()>*/
+/*LocalVarNode 27408 Parm -2 to <java.util.LinkedList: java.lang.Object clone()> <java.util.LinkedList: java.lang.Object clone()>*/
+/*LocalVarNode 22896 Parm -2 to <java.text.ChoiceFormat: java.lang.Object clone()> <java.text.ChoiceFormat: java.lang.Object clone()>*/
+/*LocalVarNode 4370 Parm -2 to <java.util.Locale: java.lang.Object clone()> <java.util.Locale: java.lang.Object clone()>*/
+/*LocalVarNode 28541 Parm -2 to <java.util.TimeZone: java.lang.Object clone()> <java.util.TimeZone: java.lang.Object clone()>*/
+/*LocalVarNode 6117 Parm -2 to <java.util.Hashtable: java.lang.Object clone()> <java.util.Hashtable: java.lang.Object clone()>*/
+/*CallGraph: Type: VIRTUAL Target Method/Context: <java.lang.Object: java.lang.Object clone()>*/
+        r2 = (test[]) $r3;
+/*AllocNode 5 Pair AbstractObject,Any_subtype_of_java.lang.ClassLoader in method null*/
+/*AllocNode 161 DEFAULT_CLASS_LOADER in method null*/
+/*AllocNode 406 Pair AbstractObject,Any_subtype_of_java.security.PrivilegedActionException in method null*/
+/*AllocNode 646 Pair AbstractObject,Any_subtype_of_java.lang.Thread in method null*/
+/*AllocNode 4613 newarray (test)[1] in method <test: void main(java.lang.String[])>*/
+/*LocalVarNode 46620 Pair (test[]) $r3,CAST_NODE <test: void main(java.lang.String[])>*/
+        return;
+    }
+}

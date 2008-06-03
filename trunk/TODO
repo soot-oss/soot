@@ -1,0 +1,115 @@
+Todo (as of 2.0.1)
+
+VERY HIGH - fix problem that xml attribute tags are only generated if output == jimple (they should work if other output formats are selected also) - fixed
+
+VERY HIGH - fix the mechanism used to generate attributes in the source viewers in Eclipse - fixed - needs more work - fixed
+
+HIGH - finish coloring for stmts - fixed 
+
+HIGH - make visual attributes display in inner classes in source - done
+
+HIGH - implement getting the actual Soot Output dir from Soot so the plugin can find the xml attributes file (right now if you use a dir other then the default the attributes cannot be found) 
+
+HIGH - minimize amount of XML being generated - done
+
+HIGH - write documentation and howto's - done
+
+HIGH - implement running on all source files in project from project menu (currently can only run for all class files - unless process-dir is changed manually)
+- done
+
+HIGH - implement being able to run Soot on a package of java files (not classes) and being able to do more then just decompile when a package/folder is selected
+
+HIGH - fix the paths problems when plugin is automatically finding and adding to soot-class-path all jars required by the project (or all jars in the project) -
+- fixed 
+
+MEDIUM - when cloning a configuration, give the old name of the cloned configuration as a starting point for the new name for the new configuration - done
+
+MEDIUM - decide what to do while Soot is running
+    1) don't allow the user to do anything
+    2) don't allow the user to do Soot related things
+    3) don't restrict the user from doing anything
+
+MEDIUM - implement the Java to Jimple translations for assert and anon inner classes - done
+
+MEDIUM - implement analyses 
+
+MEDIUM - fix selection process so if multiple selections are made in package explorer/ navigator - have Soot run with list of classes selected (not just first one as currently happens) - done
+
+MEDIUM - implement a view with the key for colors when displaying color attributes
+
+MEDIUM - determine in soot why fields and methods don't have line number tags when starting from class files
+
+MEDIUM - add tooltips to the entries in the manage configurations dialog with the soot command line of what they save (w/o Eclipse defs in list)
+
+LOW - fix and start using: when dava runs creating a dava project automatically and copying the generated classes there
+                                     
+LOW - fix the problem of polyglot not being able to find classes in jars 
+
+LOW - implement import/export a set of options to plugin
+
+LOW - make long_desc be tooltips in pages in Options Dialog (currently the short descriptions are shown)
+
+LOW - Soot Output View possibly limiting the #characters in this view to something (wrapping)
+
+LOW - have dependencies for options dialog
+
+LOW - implement textlistener for updating content outliner as one types
+
+LOW - implement a progress monitor at bottom when running soot
+
+LOW - create better jimple and soot icons 
+
+LOW - fix the delete from managed configurations (the configuration name disappears from the list but the configuration never gets deleted from the underlying file where it is saved)
+
+VERY LOW - pop-up generated files after running Soot
+
+VERY LOW - have soot menu from right click on file (jimple only) - when in full screen
+
+VERY LOW - impl an option to run Dava in popup menu Open With ...
+
+VERY LOW - getting decompiled library classes to know their project
+
+Todo (as of 1.2.5)
+1. continued work on Spark (points-to) package, Ondrej
+2. SSA-Jimple (Navindra)
+3. Decompiler (Jerome)
+4. Solve UnitGraph for infinite loops (without exit points).
+5. More projects from CS621.
+6. Precise exception modelling (John)
+7. Refactor global variables.
+8. Clean up and document options.
+
+Todo (as of 1.2.4)
+1. continued work on Spark (points-to) package, Ondrej
+2. SSA-Jimple (Navindra)
+3. Decompiler (Jerome)
+4. Solve UnitGraph for infinite loops (without exit points).
+5. More projects from CS621.
+6. Precise exception modelling (John)
+7. Java 1.4 support.
+
+Todo (as of 1.2.3)
+1. Spark (points-to) package, Ondrej
+2. SSA-Jimple (Navindra)
+3. Decompiler (Jerome)
+4. Solve UnitGraph for infinite loops (without exit points).
+5. More projects from CS621.
+
+Todo (as of 1.2.2)
+1. waiting for more improvements on speed and memory usage
+   John is working on that.
+2. how soot works on other VMs ( such as Kaffe )
+
+Todo (as of 1.2.1)
+1. test new command line options provided by Fabien
+
+Open problems (as of 1.2.0):
+
+1. improve our naming scheme to make Soot run on Macintosh.
+2. improve the invoke graph builder.
+3. include an interprocedural flow analysis framework
+      and improve the whole-program analysis features.
+4. improve soot.toolkits.graph.Block so that we keep a state counter for
+      the Body and don't trample stuff; this is needed to keep the 
+      BlockLength up to date.  Actually, that is somewhat complicated.
+

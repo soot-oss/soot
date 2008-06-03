@@ -1,0 +1,8 @@
+<HTML> <HEAD> <TITLE>Main.java</TITLE> </HEAD> <BODY> <PRE> 
+<FONT COLOR=Purple>class</FONT> <FONT COLOR=ForestGreen>Main</FONT> {
+  <FONT COLOR=Purple>public</FONT> <FONT COLOR=Purple>static</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>main</FONT>(<FONT COLOR=ForestGreen>String</FONT>[] <FONT COLOR=DarkGoldenrod>args</FONT>) {
+    soot.G.v().<FONT COLOR=ForestGreen>PackManager</FONT>().getPack(<FONT COLOR=RosyBrown>"tag"</FONT>).add(<FONT COLOR=Purple>new</FONT> soot.<FONT COLOR=ForestGreen>Transform</FONT>(<FONT COLOR=RosyBrown>"tag.null"</FONT>, <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullTagAggregator</FONT>()));
+	soot.Main.main(args);
+  }
+}
+</PRE> </BODY> </HTML>

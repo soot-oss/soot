@@ -1,0 +1,1 @@
+java soot.Main -cp classes:$CLASSPATH -f jasmin Hello

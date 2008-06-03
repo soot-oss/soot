@@ -1,0 +1,50 @@
+<html>
+<title>
+Soot - Eclipse Plugin Help
+</title>
+<body>
+<h3>Soot Tags related to the Soot - Eclipse Plugin</h3>
+
+<p>A number of tags have been created to facilitate the communication between Soot and Eclipse. For more information about tags in Soot see <a href="">Tags</a>.</p>
+
+<h5>JimpleLineNumberTag</h5>
+<p>When the options xml-attributes and output Jimple are selected a tag containing the start line number and end line number is added to each Jimple value box, statement, field and method automatically as needed. </p>
+
+<h5>PositionTag</h5>
+<p>When the options xml-attributes and output Jimple are selected a tag containing the start column and end column is added to each Jimple value box, statement, field and method automatically.</p>
+
+<h5>SourceLnPosTag</h5>
+<p>When the options xml-attributes and src-prec Java are selected line number and column position tags are added to each Jimple value box, statement, field and method with information indicating the position of the Java source code related to the Jimple.</p>
+
+<p>These first three types of tags are generated automatically as needed and require no work for the analysis developer. The next three tags are added by the analysis developer to annotate their analysis as the like. </p>
+
+<h5>StringTag</h5>
+<p>String tags can be attatched to a statement, field or method, and take a string as a paremeter, indicating a textual representatio of the analysis results.</p>
+
+<h6>ex:</h6>
+<pre><tt>stmt.addTag(new StringTag(val+": "+analysisResult(val)));</tt></pre>
+
+<h5>ColorTag</h5>
+<p>This tag must be added manually to a value box, statement, field or method. It has six predefined colors red, yellow, blue, green, orange and purple. You may use one of these or define your own using a rgb color specification. Keep in mind that dark colors make text difficult to see. In addition, you may specify whether with a boolean if the background or foreground should be coloured. By default the background is coloured.</p>
+
+<h6>ex:</h6>
+<pre><tt>stmt.addTag(new ColorTag(ColorTag.GREEN)));</tt></pre>
+<h6>ex:</h6>
+<pre><tt>stmt.addTag(new ColorTag(245, 200, 34)));</tt></pre>
+<h6>ex:</h6>
+<pre><tt>method.addTag(new ColorTag(Color.RED, true)));</tt></pre>
+
+<h5>LinkTag</h5>
+<p>This tag extends StringTag and takes a string for a label. It also needs a host (this is where the link is to) a className (the class that contains the host)</p><!-- and a packageName (the package that contains the class)</p>-->
+
+<h6>ex:</h6>
+<pre>
+<tt>String text = "Target:"+m.toString()";</tt>
+<tt>Host h = m;</tt>
+<tt>String className = m.getDeclaringClass().getName();</tt>
+<tt>stmt.addTag(new LinkTag(text, h, className));</tt></pre>
+
+<br>
+<br>
+</body>
+<html>

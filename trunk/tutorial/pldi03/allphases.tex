@@ -1,0 +1,117 @@
+\begin{slide}{Adding transformations to Soot (easy way)}
+\vspace*{-0.1in}
+\begin{enumerate}
+\item Implement a \texttt{BodyTransformer} or\\ a \texttt{SceneTransformer}
+\begin{itemize}
+\item \texttt{internalTransform} method \\does the transformation
+\end{itemize}
+\item Choose a pack for your transformation (usually \texttt{jtp})
+\item Write a \texttt{main} method that adds the transform to the pack, then
+runs Soot's main
+\item (Optional) If your transformation needs command-line options,
+call \texttt{setDeclaredOptions()}
+\end{enumerate}
+\end{slide}
+
+\begin{slide}{On {\tt Pack}s}
+\vspace*{-0.2in}
+Want to run a set of {\tt Transformer} objects with one method call.\\
+$\qquad \Rightarrow$ Group them in a {\tt Pack}.
+
+\vspace{0.1in}
+Soot defines default {\tt Pack}s which are run automatically.
+To add a {\tt Transformer} to the {\tt jtp} {\tt Pack}:
+{\small
+\begin{verbatim}
+  Pack jtp = G.v().PackManager().
+                     getPack("jtp");
+  jtp.add(new Transform("jtp.nt", 
+            new NullTransformer()));
+  jtp.add(new Transform("jtp.nac", 
+            new NullnessAnalysisColorer()));
+\end{verbatim}}
+\sablefootnote{soot.Pack}
+\end{slide}
+
+\begin{slide}{Extending Soot (hard way)}
+Some don't like calling {\texttt{soot.Main.main()}}.\\
+What does \texttt{main()} do?
+\begin{enumerate}
+\item \texttt{processCmdLine()}
+\item \texttt{Scene.v().loadNecessaryClasses()}
+\item \texttt{PackManager.v().runPacks()}
+\item \texttt{PackManager.v().writeOutput()}
+\end{enumerate}
+You can do any or all of these yourself:
+\begin{itemize}
+\item \texttt{Options.v()} contains setter methods for all options
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Running Soot more than once}
+\begin{itemize}
+\item All Soot global variables are stored in \texttt{G.v()}
+\item \texttt{G.reset()} re-initializes all of Soot
+\end{itemize}
+\end{slide}
+
+\input{intraprocphases}
+
+\begin{slide}{Soot Pack Naming Scheme}
+\vspace*{-0.2in}
+\[ w^? (j|s|b|g) (b|t|o|a)p \]
+\sablefootnote{The p is sometimes silent.}
+
+\begin{itemize}
+\item w $\Rightarrow$ Whole-program phase
+\item j, s, b, g $\Rightarrow$ Jimple, Shimple, Baf, Grimp
+\item b, t, o, a $\Rightarrow$
+\begin{itemize}
+\item (b) Body creation
+\item (t) User-defined transformations
+\item (o) Optimizations with -O option
+\item (a) Attribute generation
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+
+\begin{slide}{Soot Packs (Jimple Body)}
+\begin{description}
+\item[jb] converts naive Jimple generated from bytecode into
+typed Jimple with split variables
+\end{description}
+\end{slide}
+
+\begin{slide}{Soot Packs (Jimple)}
+\begin{description}
+\item[jtp] performs user-defined intra-procedural transformations
+\item[jop] performs intra-procedural optimizations
+\begin{itemize}
+\item CSE, PRE, constant propagation, \ldots
+\end{itemize}
+\item[jap] generates annotations using whole-program analyses
+\begin{itemize}
+\item null-pointer check
+\item array bounds check
+\item side-effect analysis
+\end{itemize}
+\end{description}
+\end{slide}
+
+\begin{slide}{Soot Packs (Back-end)}
+\begin{description}
+\item[bb] performs transformations to create Baf
+\item[bop] performs user-defined Baf optimizations
+\end{description}
+\begin{description}
+\item[gb] performs transformations to create Grimp
+\item[gop] performs user-defined Grimp optimizations
+\end{description}
+\begin{description}
+\item[tag] aggregates annotations into \\bytecode attributes
+\end{description}
+\end{slide}
+
+
+

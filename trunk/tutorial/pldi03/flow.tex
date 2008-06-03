@@ -1,0 +1,721 @@
+\begin{slide}{Flow Analysis in Soot}
+\vspace*{0.2in}
+\begin{itemize}
+\item Flow analysis is key part of compiler framework
+\item Soot has easy-to-use framework for intraprocedural flow analysis
+\item Soot itself, and its flow analysis framework, are object-oriented.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Four Steps to Flow Analysis}
+\begin{enumerate}
+\item Forward or backward?  Branched or not?
+
+\item Decide what you are approximating.\\
+What is the domain's confluence operator?
+
+\item Write equation for each kind of IR statement.
+
+\item State the starting approximation.
+\end{enumerate}
+\end{slide}
+
+\begin{slide}{HOWTO: Soot Flow Analysis}
+A checklist of your obligations:
+\begin{enumerate}
+\item Subclass \verb+*FlowAnalysis+
+\item Implement abstraction: {\tt merge()}, {\tt copy()}
+\item Implement flow function {\tt flowThrough()}
+\item Implement initial values: {\tt newInitialFlow()} and {\tt
+entryInitialFlow()}
+\item Implement constructor \\ \quad (it must call {\tt doAnalysis()})
+\end{enumerate}
+\end{slide}
+
+\begin{slide}{HOWTO: Soot Flow Analysis II}
+Soot provides you with:
+\begin{itemize}
+\item impls of abstraction domains (flow sets)
+\begin{itemize}
+\item standard abstractions trivial to implement;
+\end{itemize}
+\item an implemented flow analysis namely,
+\begin{itemize}
+\item {\tt doAnalysis()} method:
+executes intraprocedural analyses on a
+CFG using a worklist algorithm.
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Flow Analysis Hierarchy}
+\Tree [.AbstractFlowAnalysis [.FlowAnalysis Forward- Backward- ] [.BranchedFlowAnalysis Forward- ] ]
+\sablefootnote{soot.toolkits.scalar}
+\end{slide}
+
+\begin{slide}{Soot Flow Analyses}
+\begin{center}
+{\small 
+\Tree [.AbstractFlowAnalysis 
+[.FlowAnalysis [.Forward- {PRE analy's\\Avail. Expr.\\Array Bds} ] [.Backward- { PRE analy's \\ Liveness }  ] ] 
+[.BranchedFlowAnalysis [.Forward- Casts Nullness ] ] 
+]
+}
+\end{center}
+\sablefootnote{soot.toolkits.scalar}
+\end{slide}
+
+\begin{slide}{Backward vs. Forward Analyses}
+\vspace*{-0.24in}
+A forward analysis computes {\sf OUT} from {\sf IN}:
+
+\vspace*{-0.05in}
+\begin{center}
+\input{flow-fwd.eepic}
+\end{center}
+
+\vspace*{-0.05in}
+A backward analysis computes {\sf IN} from {\sf OUT}:
+
+\begin{center}
+\input{flow-bkwd.eepic}
+\end{center}
+
+\end{slide}
+
+\begin{slide}{Outline: Soot Flow Analysis Examples}
+Will describe how to implement a flow analysis in Soot and present examples:
+\begin{itemize}
+\item live locals
+\item branched nullness testing
+\end{itemize}
+\end{slide}
+
+
+\begin{slide}{Running Example 1: Live Variables}
+\vspace*{-0.2in} 
+A local variable {\tt v} is {\red live} at $s$ if there exists some
+statement $s'$ using {\tt v} and a control-flow path from $s$ to $s'$ free
+of definitions of {\tt v}.
+
+\quad
+
+\begin{center}
+\input{lv-example.eepic}
+\end{center}
+\end{slide}
+
+\begin{slide}{Steps to a Flow Analysis}
+As we've seen before:
+\begin{enumerate}
+\item Subclass \verb+*FlowAnalysis+
+\item Implement abstraction: {\tt merge()}, {\tt copy()}
+\item Implement flow function {\tt flowThrough()}
+\item Implement initial values: {\tt newInitialFlow()} and {\tt
+entryInitialFlow()}
+\item Implement constructor \\ \quad (it must call {\tt doAnalysis()})
+\end{enumerate}
+\end{slide}
+
+\begin{slide}{Step 1: Forward or Backward?}
+
+Live variables is a backward flow analysis, since flow
+f$^{\mbox{\scriptsize n}}$ computes {\sf IN} sets from {\sf OUT} sets.
+
+\qquad
+
+In Soot, we subclass {\tt \red BackwardFlowAnalysis}.
+\sablefootnote{soot.toolkits.scalar.BackwardFlowAnalysis}
+
+\qquad
+
+{\red \tt class LiveVariablesAnalysis \\ \qquad extends BackwardFlowAnalysis}
+\end{slide}
+
+\begin{slide}{Step 2: Abstraction domain}
+\vspace*{-0.2in}
+
+Domain for Live Variables: sets of {\tt Local}s
+
+\qquad e.g. {\tt  \{x, y, z\}}
+
+\begin{itemize}
+
+\item Partial order is subset inclusion
+
+\item Merge operator is union 
+
+\end{itemize} 
+
+In Soot, we use the provided {\tt ArraySparseSet} implementation of {\tt
+FlowSet}.
+\sablefootnote{soot.toolkits.scalar.FlowSet}
+\sablefootnote{soot.toolkits.scalar.ArraySparseSet}
+\end{slide}
+
+\begin{slide}{Implementing an Abstraction}
+\vspace*{-0.2in}
+Need to implement {\tt copy()}, {\tt merge()} methods:
+\begin{center}
+\input{copy-bkwd.eepic}
+\end{center}
+{\tt copy()} brings IN set to predecessor's OUT set.
+
+\begin{center}
+\input{merge-bkwd.eepic}
+\end{center}
+{\tt merge()} joins two IN sets to make an OUT set.
+\end{slide}
+
+\begin{slide}{More on Implementing an Abstraction}
+Signatures:
+{\small 
+\[ \mbox{\tt \begin{tabular}{r@{}l}
+                 void merge(&Object src1, Object src2,\\
+                            &Object dest);\\
+                 void copy(&Object src, Object dest);
+\end{tabular}}\]
+}
+
+We delegate implementation to {\tt FlowSet}.
+\end{slide}
+
+\begin{slide}{Flow Sets and Soot}
+\vspace*{-0.1in}
+Using a {\tt FlowSet} is not mandatory, but helpful.
+
+\quad
+
+Impls: {\tt ToppedSet}, {\tt ArraySparseSet}, \\
+\qquad \qquad {\tt ArrayPackedSet}
+
+\quad
+
+\begin{tabular}{ll}
+\begin{minipage}{0.5\textwidth}
+{\small \tt 
+// $c = a \cap b$ \\
+a.intersection(b, c); \\
+
+// $d = \overline{c}$\\
+c.complement(d);
+}
+\end{minipage} &
+\begin{minipage}{0.3\textwidth}
+{\small \tt
+// $c = a \cup b$ \\
+a.union(b,c);\\
+
+// $d = d \cup \{ \mbox{v} \}$\\
+d.add(v);
+}
+\end{minipage}
+
+\end{tabular}
+
+\quad
+
+\sablefootnote{soot.toolkits.scalar.FlowSet}
+
+% why flow universes?
+%  * efficient encoding 
+%  * we sometimes want to go a \cup \not b.
+\end{slide}
+
+\begin{slide}{Digression: types of {\tt FlowSet}s}
+\vspace*{-0.1in}
+Which {\tt FlowSet} do you want?
+\sablefootnote{soot.toolkits.scalar.*Set}
+\begin{itemize}
+%\item {\tt ArraySparseSet}: represents as simple array; 
+%can't be complemented, needs no initial universe
+\item {\tt ArraySparseSet}: simple list
+
+\qquad \begin{tabular}{|c|c|c|c|c|} \hline
+foo & bar & z & \\ \hline
+\end{tabular}
+
+(simplest possible)
+
+%% \item {\tt ArrayPackedSet}: represents as bitvector array;
+%% can be complemented, needs initial universe
+
+\item {\tt ArrayPackedSet}: bitvector w/ map
+
+\qquad \begin{tabular}{|c|c|c|} \hline
+00100101 & 10101111 & 10000000 \\ \hline
+\end{tabular}
+
+(can complement, need universe)
+
+\item {\tt ToppedSet}: 
+
+\qquad {\tt FlowSet \& {\tt isTop()} }
+
+(adjoins a $\top$ to another {\tt FlowSet})
+
+%$\top$ is above all other flowset elts (used in CSE).
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 2: {\tt copy()} for live variables}
+\begin{verbatim}
+protected void copy(Object src, 
+                    Object dest) {
+  FlowSet sourceSet = (FlowSet)src,
+      destSet = (FlowSet) dest;
+
+\end{verbatim}    
+{\red\verb+  sourceSet.copy(destSet);+}
+\begin{verbatim}
+}
+\end{verbatim}
+
+\qquad
+
+Use {\tt copy()} method from {\tt FlowSet}.
+\end{slide}
+
+\begin{slide}{Step 2: {\tt merge()} for live variables}
+In live variables, a variable {\tt v} is live if there exists {\red any} path
+from {\tt d} to {\tt p}, so we use {\red union}.
+
+\qquad
+
+Like {\tt copy()}, use {\tt FlowSet}'s {\tt union}:
+
+\vspace*{0.05in}
+
+\begin{verbatim}
+  void merge(...) {
+    // [cast Objects to FlowSets]
+\end{verbatim}
+{\red\verb+    src1Set.union(src2Set, destSet);+}\\
+\verb+  }+
+
+\vspace*{0.1in}
+
+One might also use {\tt intersection()}, or implement a more exotic merge.
+
+\end{slide}
+
+\begin{slide}{Step 3: Flow equations}
+\vspace*{-0.1in}
+
+Goal: At a unit like {\tt x = y * z}:\\
+\qquad \qquad {\red kill \quad } def {\tt x};\\
+\qquad \qquad {\red gen $\- \- \- $ } uses {\tt y}, {\tt z}.
+
+\vspace*{0.1in}
+
+How? Implement this method:
+\begin{verbatim}
+    protected void flowThrough
+                 (Object srcValue, 
+                  Object u, 
+                  Object destValue)
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 3: Casting}
+Soot's flow analysis framework is polymorphic.
+Need to cast to do useful work.
+
+$\quad$
+
+Start by:
+\begin{itemize}
+\item casting {\tt srcValue}, {\tt destValue} to {\tt FlowSet}.
+
+\item casting {\tt u} to {\tt Unit ut}.
+\end{itemize}
+
+In code:
+
+\begin{verbatim}
+   FlowSet src = (FlowSet)srcValue,
+           dest = (FlowSet)destValue;
+   Unit ut = (Unit)u;
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 3: Copying}
+Need to copy {\tt src} to {\tt dest} to allow manipulation.
+
+\begin{center}
+\input{copy-bkwd.eepic}
+\end{center}
+
+\begin{verbatim}
+   src.copy (dest);
+\end{verbatim}
+
+$\quad$
+
+Use {\tt FlowSet} methods.
+\end{slide}
+
+\begin{slide}{Step 3: Implementing {\tt flowThrough}}
+Must decide what happens at each statement (in general, need to switch
+on unit type):
+\begin{center}
+\scalebox{1.3}{
+\input{flowthrough-bkwd.eepic}}
+\end{center}
+{\tt flowThrough} is the brains of a flow analysis.
+\end{slide}
+
+\begin{slide}{Step 3: {\tt flowThrough} for live locals}
+\vspace*{0.1in}
+A local variable {\tt v} is {\red live} at $s$ if there exists some
+statement $s'$ containing a use of {\tt v},
+and a control-flow path from $s$ to $s'$ free
+of def'ns of {\tt v}.
+
+$\quad$
+
+Don't care about the type of unit we're analyzing: Soot provides
+abstract accessors to values used and defined in a unit.
+
+\end{slide}
+
+\begin{slide}{Step 3: Implementing {\tt flowThrough}: removing kills}
+\begin{verbatim}
+// Take out kill set:
+//  for each local v def'd in 
+//  this unit, remove v from dest
+for (ValueBox box : ut.getDefBoxes()) 
+{
+  Value value = box.getValue();
+  if( value instanceof Local )
+    dest.remove( value );
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 3: Implementing {\tt flowThrough}: adding gens}
+\vspace*{-0.2in}
+\begin{verbatim}
+// Add gen set
+//  for each local v used in 
+//  this unit, add v to dest
+for (ValueBox box : ut.getUseBoxes()) 
+{
+  Value value = box.getValue();
+  if (value instanceof Local)
+    dest.add(value);
+}
+\end{verbatim}
+
+\vspace*{0.05in}
+
+N.B. our analysis is generic, not restricted to Jimple.
+\end{slide}
+
+\begin{slide}{Step 4: Initial values}
+\vspace*{-0.15in}
+$\bullet$ Soundly initialize IN, OUT sets prior to analysis.
+
+\vspace*{-0.1in}
+\begin{itemize}
+\item Create initial sets\\
+{\tt Object newInitialFlow()}\\
+\qquad {\tt \{return new ArraySparseSet();\} }
+
+\item Create initial sets for exit nodes\\
+{\tt Object entryInitialFlow() \\ 
+\qquad \{return new ArraySparseSet();\} }
+
+\end{itemize}
+
+Want conservative initial value at exit nodes, optimistic
+value at all other nodes.
+\end{slide}
+
+\begin{slide}{Step 5: Implement constructor}
+\begin{verbatim}
+LiveVariablesAnalysis(UnitGraph g)
+{
+    super(g);
+
+    doAnalysis();
+}
+\end{verbatim}
+Causes the flow sets to be computed, using Soot's flow
+analysis engine.
+
+\quad
+
+In other analyses, we precompute values.
+\end{slide}
+
+\begin{slide}{Enjoy: Flow Analysis Results}
+You can instantiate an analysis and collect
+results:
+\begin{verbatim}
+  LiveVariablesAnalysis lv = 
+      new LiveVariablesAnalysis(g);
+
+// return SparseArraySets
+// of live variables:
+  lv.getFlowBefore(s);
+  lv.getFlowAfter(s);
+\end{verbatim}
+\end{slide}
+
+% branching flow analysis
+
+\begin{slide}{Running Example 2: Branched Nullness}
+\vspace*{-0.2in} 
+A local variable {\tt v} is {\red non-null} at $s$ if all
+control-flow paths reaching $s$ result in {\tt v} being
+assigned a value different from {\tt null}.
+
+\begin{center}
+\scalebox{0.95}{\input{br-example.eepic}}
+\end{center}
+\end{slide}
+
+\begin{slide}{HOWTO: Soot Flow Analysis}
+Again, here's what to do:
+\begin{enumerate}
+\item Subclass \verb+*FlowAnalysis+
+\item Implement abstraction: {\tt merge()}, {\tt copy()}
+\item Implement flow function {\tt flowThrough()}
+\item Implement initial values: {\tt newInitialFlow()} and {\tt
+entryInitialFlow()}
+\item Implement constructor \\ \quad (it must call {\tt doAnalysis()})
+\end{enumerate}
+\end{slide}
+
+\begin{slide}{Step 1: Forward or Backward?}
+
+Nullness is a branched forward flow analysis, since flow
+f$^{\mbox{\scriptsize n}}$ computes {\sf OUT} sets from {\sf IN} sets, 
+sensitive to branches
+
+\qquad
+
+Now subclass {\small \tt \red ForwardBranchedFlowAnalysis}\sablefootnote{soot.toolkits.scalar.ForwardBranchedFlowAnalysis}.
+
+\qquad
+
+{\small \red \tt class NullnessAnalysis \\ 
+           \qquad extends ForwardBranchedFlowAnalysis \{ }
+\end{slide}
+
+\begin{slide}{Step 2: Abstraction domain}
+\vspace*{-0.2in}
+
+Domain: sets of {\tt Local}s known to be non-null\\
+Partial order is subset inclusion.
+
+\quad
+\vspace*{-0.05in}
+
+(More complicated abstractions possible$^{*}$ for this problem; e.g. 
+$\perp, \top, \mbox{\tt null}, \mbox{non-{\tt null}}$ per-local.)
+
+\quad
+\vspace*{-0.05in}
+
+Again use {\tt ArraySparseSet} to implement:
+{\small 
+\[ \mbox{\tt \begin{tabular}{r@{}l}
+                 void merge(&Object in1, Object in2,\\
+                            &Object out);\\
+                 void copy(&Object src, Object dest);
+\end{tabular}}\]
+}
+
+\sablefootnote{$^*$ see soot.jimple.toolkits.annotation.nullcheck.BranchedRefVarsAnalysis}
+\end{slide}
+
+\begin{slide}{Implementing an Abstraction}
+\vspace*{-0.2in}
+For a forward analysis, {\tt copy} and {\tt merge} mean:
+\begin{center}
+\input{copy-fwd.eepic}
+\end{center}
+{\tt copy()} brings OUT set to predecessor's IN set.
+
+\begin{center}
+\input{merge-fwd.eepic}
+\end{center}
+{\tt merge()} joins two OUT sets to make an IN set.
+\end{slide}
+
+\begin{slide}{Step 2: {\tt copy()} for nullness}
+Same as for live locals.
+
+\begin{verbatim}
+protected void copy(Object src, 
+                    Object dest) {
+  FlowSet sourceSet = (FlowSet)src,
+      destSet = (FlowSet) dest;
+
+\end{verbatim}    
+{\red\verb+  sourceSet.copy(destSet);+}
+\begin{verbatim}
+}
+\end{verbatim}
+
+\qquad
+
+Use {\tt copy()} method from {\tt FlowSet}.
+\end{slide}
+
+\begin{slide}{Step 2: {\tt merge()} for nullness}
+In branched nullness, a variable {\tt v} is non-null if it is non-null
+on all paths from {\tt start} to {\tt s}, so we use intersection.
+
+\qquad
+
+Like {\tt copy()}, use {\tt FlowSet} method -- here, {\tt intersection()}:
+
+\vspace*{0.05in}
+
+\begin{verbatim}
+  void merge(...) {
+    // [cast Objects to FlowSets]
+\end{verbatim}
+{\red\verb+    srcSet1.intersection(srcSet2,+\\
+     \verb+                         destSet);+}\\
+\verb+  }+
+
+\end{slide}
+
+\newcounter{plamfoo}
+
+\begin{slide}{Step 3: Branched Flow Function}
+Need to differentiate between branch and fall-through OUT sets.
+
+\begin{verbatim}
+protected void 
+    flowThrough(Object srcValue, 
+                Unit unit,
+                List fallOut, 
+                List branchOuts)
+\end{verbatim}
+
+{\tt fallOut} is a one-element list.
+
+{\tt branchOuts} contains a {\tt FlowSet} for each non-fallthrough
+successor.
+\end{slide}
+
+\overlays{6}{
+\begin{slide}{Step 3: Flow equations}
+\vspace*{-0.1in}
+We do the following things in our flow function:
+
+\begin{itemstep}
+\item Create copy of src set.
+\item Remove kill set (defined {\tt Local}s).\\
+\qquad \qquad {\tt y} in {\tt y = y.next};
+\item Add gen set.\\
+\qquad \qquad {\tt x} in {\tt x.foo()};
+\item Handle copy statements.
+\item Copy to branch and fallthrough lists.
+\item Patch sets for {\tt if} statements.
+\end{itemstep}
+\end{slide}}
+
+\begin{slide}{Step 4: Initial values}
+\vspace*{-0.1in}
+Initialize IN, OUT sets.
+\begin{itemize}
+
+\item Create initial sets ($\top$ from constr.)\\
+{\tt Object newInitialFlow() \{\\
+\qquad \tt \{ return fullSet.clone(); \} }
+
+\vspace*{0.1in}
+
+\item Create entry sets ({\tt emptySet} from constr.)\\
+{\tt Object entryInitialFlow()}\\
+\qquad {\tt \{ return emptySet.clone(); \} }
+\end{itemize}
+
+(To be created in constructor!)
+\end{slide}
+
+\begin{slide}{Step 5: Constructor: Prologue}
+\vspace*{-0.1in}
+Create auxiliary objects.
+\vspace*{0.05in}
+\begin{verbatim}
+public NullnessAnalysis(UnitGraph g)
+{
+  super(g);
+
+  unitToGenerateSet = new HashMap();
+  Body b = g.getBody();
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 5: Constructor: Finding All Locals}
+Create flowsets, finding all locals in body:
+
+\begin{verbatim}
+emptySet = new ArraySparseSet();
+fullSet = new ArraySparseSet();
+
+for (Local l : b.getLocals()) {
+  if (l.getType() 
+          instanceof RefLikeType)
+    fullSet.add(l);
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Step 5: Creating gen sets}
+Precompute, for each statement, which locals become non-null after execution of that stmt.
+
+\begin{itemize}
+\item {\tt x} gets non-null value:\\
+{\tt x = *}, where {\tt *} is {\tt NewExpr}, {\tt ThisRef}, etc.
+\item successful use of {\tt x}:\\
+{\tt x.f}, {\tt x.m()}, {\tt entermonitor x}, etc.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Step 5: Constructor: Doing work}
+\vspace*{-0.1in}
+Don't forget to call {\tt doAnalysis()}!
+
+\vspace*{0.05in}
+\begin{verbatim}
+        ...
+
+        doAnalysis();
+    }
+}
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{Enjoy: Branched Flow Analysis Results}
+\vspace*{-0.2in}
+To instantiate a branched analysis \& collect results:
+{\small
+\begin{verbatim}
+NullnessAnalysis na=new NullnessAnalysis(b);
+
+// a SparseArraySet of non-null variables.
+na.getFlowBefore(s);  
+
+// another SparseArraySet
+if (s.fallsThrough()) na.getFallFlowAfter(s);
+
+// a List of SparseArraySets
+if (s.branches()) na.getBranchFlowAfter(s);
+\end{verbatim}}
+\end{slide}
+
+
+% do we really need 'copy'?  I wonder how much time is spent on that.
+% if our flow set implementation has immutability, then 'copy' can be
+% simple pointer assignment.
+
+% why 'Object' rather than 'FlowSet'?  We sometimes don't want to
+% wrap a HashSet into an adapting FlowSet (design choice)

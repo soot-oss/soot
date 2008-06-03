@@ -1,0 +1,2 @@
+#!/bin/sh
+java -Xmx350m soot.Main -cp classes:$CLASSPATH -W -p cg.spark on-fly-cg:true -f jimple Devirt

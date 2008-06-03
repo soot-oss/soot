@@ -1,0 +1,50 @@
+Soot in Eclipse Plugin
+
+The plugin currently works with the release candidate version R3 of Eclipse and the development version of Soot.
+
+The plugin is set up to find Soot in a Soot classes directory containing
+class files. If you use a sootclasses jar instead of a directory of
+classes, edit the .classpath file in this directory:
+
+uncomment the <classpathentry kind="lib" path="sootclasses.jar"/> line
+and comment the <classpathentry kind="lib" path="soot/classes/"/> line
+
+Install Eclipse somewhere, change to the plugins directory
+in the Eclipse installation, and enter:
+mkdir -p ca.mcgill.sable.soot/soot
+
+Put a symlink called classes in this ca.mcgill.sable.soot/soot directory
+to the classes directory of your Soot installation (or, if you are using
+a jar file, put a symlink called sootclasses.jar in ca.mcgill.sable.soot
+to the sootclasses jar file).
+
+Put a symlink called jasminclasses-sable-1.2.jar in ca.mcgill.sable.soot
+to the jasminclasses-sable-1.2.jar file that you can download from the
+Soot download page.
+
+example:
+ln -s `pwd`/jasminclasses-sable-1.2.jar eclipse/plugins/ca.mcgill.sable.soot/jasminclasses-sable-1.2.jar
+ln -s `pwd`/classes ../eclipse/plugins/ca.mcgill.sable.soot/soot/classes
+
+To create soot-plugin.jar jar file: 
+
+mkdir classes
+
+edit Makefile and set the variables:
+ECLIPSE_HOME
+SOOT_DIR
+
+run make
+
+To Set-up:
+
+cp to eclipse/plugins/ca.mcgill.sable.soot/  dir:
+soot-plugin.jar
+plugin.xml
+plugin.properties
+
+Make a directory eclipse/plugins/ca.mcgill.sable.soot/icons and copy
+icons/*.jpg and icons/*.gif to it.
+
+Restart Eclipse
+

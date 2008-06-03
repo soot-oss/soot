@@ -1,0 +1,40 @@
+#!/bin/bash
+
+OPTIONS=`pwd`/../src/soot/options
+
+function process_file
+{
+	echo ""
+	echo " ---- processing $1 ..."
+	latex $1
+	bibtex $1
+	latex $1
+	dvips -o $1.ps $1
+	latex2html $1 -split 0 -nonavigation -dir ./
+	rm -f $1.aux
+	latex $1
+	latex $1
+        dvips $1
+        ps2pdf $1.ps
+}
+
+if [ $# == 0 ] ; then
+    FILES=$(ls);
+else
+    FILES=$(echo $*);
+fi
+for f in $FILES ; do
+	if [ -d $f ] ; then
+		cd $f
+		if [ -f $f.xsl ] ; then
+                    xsltproc $f.xsl ${OPTIONS}/soot_options.xml > $f.tex
+                fi
+		if [ -f $f.tex ] ; then
+			process_file $f
+		fi
+		cd ..
+	fi
+done
+
+echo ""
+

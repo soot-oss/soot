@@ -1,0 +1,55 @@
+<HTML> <HEAD> <TITLE>NullnessDriver.java</TITLE> </HEAD> <BODY> <PRE> 
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>Body</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>Main</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>Pack</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>PackManager</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>Transform</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>Unit</FONT>;
+
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>tagkit</FONT>.<FONT COLOR=CadetBlue>StringTag</FONT>;
+
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>toolkits</FONT>.<FONT COLOR=CadetBlue>scalar</FONT>.<FONT COLOR=CadetBlue>ArraySparseSet</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>toolkits</FONT>.<FONT COLOR=CadetBlue>graph</FONT>.<FONT COLOR=CadetBlue>BriefUnitGraph</FONT>;
+
+<FONT COLOR=Purple>public</FONT> <FONT COLOR=Purple>class</FONT> <FONT COLOR=ForestGreen>NullnessDriver</FONT>
+{
+    <FONT COLOR=Purple>public</FONT> <FONT COLOR=Purple>static</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>main</FONT>(<FONT COLOR=ForestGreen>String</FONT>[] <FONT COLOR=DarkGoldenrod>argv</FONT>)
+    {
+        <FONT COLOR=ForestGreen>Pack</FONT> <FONT COLOR=DarkGoldenrod>jtp</FONT> = soot.G.v().<FONT COLOR=ForestGreen>PackManager</FONT>().getPack(<FONT COLOR=RosyBrown>"jtp"</FONT>);
+        jtp.add(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>Transform</FONT>(<FONT COLOR=RosyBrown>"jtp.nt"</FONT>, <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullTransformer</FONT>()));
+        jtp.add(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>Transform</FONT>(<FONT COLOR=RosyBrown>"jtp.nac"</FONT>, <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullnessAnalysisColorer</FONT>()));
+
+        soot.Main.main(argv);
+    }
+}
+
+<FONT COLOR=Purple>class</FONT> <FONT COLOR=ForestGreen>NullTransformer</FONT> <FONT COLOR=Purple>extends</FONT> soot.<FONT COLOR=ForestGreen>BodyTransformer</FONT>
+{
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>internalTransform</FONT>(<FONT COLOR=ForestGreen>Body</FONT> <FONT COLOR=DarkGoldenrod>b</FONT>, <FONT COLOR=ForestGreen>String</FONT> <FONT COLOR=DarkGoldenrod>phaseName</FONT>, 
+                                     java.util.<FONT COLOR=ForestGreen>Map</FONT> <FONT COLOR=DarkGoldenrod>options</FONT>)
+    {
+        <FONT COLOR=ForestGreen>NullnessAnalysis</FONT> <FONT COLOR=DarkGoldenrod>na</FONT> = <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullnessAnalysis</FONT>(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>BriefUnitGraph</FONT>(b));
+
+        java.util.<FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>uIt</FONT> = b.getUnits().iterator();
+        <FONT COLOR=Purple>while</FONT> (uIt.hasNext())
+        {
+            <FONT COLOR=ForestGreen>Unit</FONT> <FONT COLOR=DarkGoldenrod>u</FONT> = (<FONT COLOR=ForestGreen>Unit</FONT>)uIt.next();
+
+            <FONT COLOR=ForestGreen>StringBuffer</FONT> <FONT COLOR=DarkGoldenrod>n</FONT> = <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>StringBuffer</FONT>();
+            u.addTag(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>StringTag</FONT>(<FONT COLOR=RosyBrown>"IN: "</FONT>+na.getFlowBefore(u).toString()));
+
+            <FONT COLOR=Purple>if</FONT> (u.fallsThrough())
+            { 
+                <FONT COLOR=ForestGreen>ArraySparseSet</FONT> <FONT COLOR=DarkGoldenrod>s</FONT> = (<FONT COLOR=ForestGreen>ArraySparseSet</FONT>)na.getFallFlowAfter(u);
+                u.addTag(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>StringTag</FONT>(<FONT COLOR=RosyBrown>"FALL: "</FONT>+s.toString())); 
+            }
+            <FONT COLOR=Purple>if</FONT> (u.branches())
+            { 
+                <FONT COLOR=ForestGreen>ArraySparseSet</FONT> <FONT COLOR=DarkGoldenrod>t</FONT> = (<FONT COLOR=ForestGreen>ArraySparseSet</FONT>)na.
+                    getBranchFlowAfter(u).get(0);
+                u.addTag(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>StringTag</FONT>(<FONT COLOR=RosyBrown>"BRANCH: "</FONT>+t.toString())); 
+            }
+        }
+    }
+}
+</PRE> </BODY> </HTML>
