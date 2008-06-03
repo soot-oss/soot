@@ -1,4 +1,4 @@
-Improvements and API changes in version 2.2.6
+Improvements and API changes in version 2.3.0
 
 1. Integrated new JastAdd-based frontend with support for Java 5
    source code. Thanks to Torbjorn Ekman for contributing his

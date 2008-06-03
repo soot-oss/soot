@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2008.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -40,9 +40,9 @@ public class Main {
         return G.v().soot_Main();
     }
     // TODO: the following string should be updated by the source control
-    // No it shouldn't. Prcs is horribly borken in this respect, and causes
+    // No it shouldn't. Prcs is horribly broken in this respect, and causes
     // the code to not compile all the time.
-    public final String versionString = "2.2.5";
+    public final String versionString = "2.3.0";
 
     private Date start;
     private Date finish;
