@@ -244,7 +244,7 @@ public class VarAccess extends Access implements Cloneable {
     // Declared in InnerClasses.jrag at line 25
 
 
-  private TypeDecl refined_InnerClasses_fieldQualifierType() {
+  private TypeDecl refined_InnerClasses_VarAccess_fieldQualifierType() {
     if(hasPrevExpr())
       return prevExpr().type();
     TypeDecl typeDecl = hostType();
@@ -286,7 +286,7 @@ public class VarAccess extends Access implements Cloneable {
     // Declared in Expressions.jrag at line 189
 
 
-  public soot.Value refined_Expressions_eval(Body b) {
+  public soot.Value refined_Expressions_VarAccess_eval(Body b) {
     Variable v = decl();
     if(v instanceof VariableDeclaration) {
       VariableDeclaration decl = (VariableDeclaration)v;
@@ -336,7 +336,7 @@ public class VarAccess extends Access implements Cloneable {
 
     // Declared in Expressions.jrag at line 264
 
-  public soot.Value refined_Expressions_emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
+  public soot.Value refined_Expressions_VarAccess_emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
     Variable v = decl();
     if(v instanceof FieldDeclaration) {
       FieldDeclaration f = (FieldDeclaration)v;
@@ -442,8 +442,8 @@ public class VarAccess extends Access implements Cloneable {
     // Declared in GenericsCodegen.jrag at line 308
 
 
-    protected TypeDecl refined_GenericsCodegen_fieldQualifierType() {
-    TypeDecl typeDecl = refined_InnerClasses_fieldQualifierType();
+    protected TypeDecl refined_GenericsCodegen_VarAccess_fieldQualifierType() {
+    TypeDecl typeDecl = refined_InnerClasses_VarAccess_fieldQualifierType();
     return typeDecl == null ? null : typeDecl.erasure();
   }
 
@@ -485,7 +485,7 @@ public class VarAccess extends Access implements Cloneable {
       return result;
     }
     else
-      return refined_Expressions_eval(b);
+      return refined_Expressions_VarAccess_eval(b);
   }
 
     // Declared in GenericsCodegen.jrag at line 73
@@ -523,7 +523,7 @@ public class VarAccess extends Access implements Cloneable {
         }
       }
     }
-    return refined_Expressions_emitStore(b, lvalue, rvalue);
+    return refined_Expressions_VarAccess_emitStore(b, lvalue, rvalue);
   }
 
     // Declared in GenericsCodegen.jrag at line 106
@@ -550,7 +550,7 @@ public class VarAccess extends Access implements Cloneable {
     // Declared in StaticImportsCodegen.jrag at line 11
 
     protected TypeDecl fieldQualifierType() {
-    TypeDecl typeDecl = refined_GenericsCodegen_fieldQualifierType();
+    TypeDecl typeDecl = refined_GenericsCodegen_VarAccess_fieldQualifierType();
     if(typeDecl != null)
       return typeDecl;
     return decl().hostType();

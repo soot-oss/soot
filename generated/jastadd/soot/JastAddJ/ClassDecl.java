@@ -638,7 +638,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
 
     // Declared in TypeAnalysis.jrag at line 84
-private boolean refined_TypeAnalysis_castingConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_TypeAnalysis_ClassDecl_castingConversionTo_TypeDecl(TypeDecl type)
 {
     if(type.isArrayDecl()) {
       return isObject();
@@ -653,7 +653,7 @@ private boolean refined_TypeAnalysis_castingConversionTo_TypeDecl(TypeDecl type)
   }
 
     // Declared in Generics.jrag at line 37
-private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl type)
 {
     TypeDecl S = this;
     TypeDecl T = type;
@@ -667,7 +667,7 @@ private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
     }
     if(T.isClassDecl() && (S.erasure() != S || T.erasure() != T))
         return S.erasure().castingConversionTo(T.erasure());
-    return refined_TypeAnalysis_castingConversionTo_TypeDecl(type);
+    return refined_TypeAnalysis_ClassDecl_castingConversionTo_TypeDecl(type);
   }
 
     // Declared in ConstantExpression.jrag at line 318
@@ -1027,7 +1027,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     }
 
     private boolean castingConversionTo_compute(TypeDecl type) {
-    if(refined_Generics_castingConversionTo_TypeDecl(type))
+    if(refined_Generics_ClassDecl_castingConversionTo_TypeDecl(type))
       return true;
     boolean canUnboxThis = !unboxed().isUnknown();
     boolean canUnboxType = !type.unboxed().isUnknown();

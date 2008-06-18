@@ -160,7 +160,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     // Declared in BooleanExpressions.jrag at line 156
 
   
-  public void refined_BooleanExpressions_emitEvalBranch(Body b) {
+  public void refined_BooleanExpressions_Expr_emitEvalBranch(Body b) {
     b.setLine(this);
     if(isTrue())
       b.add(Jimple.v().newGotoStmt(true_label()));
@@ -262,7 +262,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     }
     else
-      refined_BooleanExpressions_emitEvalBranch(b);
+      refined_BooleanExpressions_Expr_emitEvalBranch(b);
   }
 
     // Declared in TypeAnalysis.jrag at line 276

@@ -366,7 +366,7 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
     }
 
     // Declared in TypeAnalysis.jrag at line 120
-private boolean refined_TypeAnalysis_castingConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_TypeAnalysis_ArrayDecl_castingConversionTo_TypeDecl(TypeDecl type)
 {
     if(type.isArrayDecl()) {
       TypeDecl SC = componentType();
@@ -501,7 +501,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
       return false;
     }
     else
-      return refined_TypeAnalysis_castingConversionTo_TypeDecl(type);
+      return refined_TypeAnalysis_ArrayDecl_castingConversionTo_TypeDecl(type);
   }
 
     // Declared in TypeAnalysis.jrag at line 214

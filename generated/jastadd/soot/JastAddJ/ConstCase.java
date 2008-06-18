@@ -54,7 +54,7 @@ public class ConstCase extends Case implements Cloneable {
     // Declared in TypeCheck.jrag at line 349
 
 
-  public void refined_TypeCheck_typeCheck() {
+  public void refined_TypeCheck_ConstCase_typeCheck() {
     TypeDecl switchType = switchType();
     TypeDecl type = getValue().type();
     if(!type.assignConversionTo(switchType, getValue()))
@@ -128,11 +128,11 @@ public class ConstCase extends Case implements Cloneable {
     if(switchType().isEnumDecl() && (!(getValue() instanceof VarAccess) || !(getValue().varDecl() instanceof EnumConstant)))
       error("Unqualified enumeration constant required");
     else
-      refined_TypeCheck_typeCheck();
+      refined_TypeCheck_ConstCase_typeCheck();
   }
 
     // Declared in NameCheck.jrag at line 427
-private boolean refined_NameCheck_constValue_Case(Case c)
+private boolean refined_NameCheck_ConstCase_constValue_Case(Case c)
 {
     if(!(c instanceof ConstCase) || !getValue().isConstant())
       return false;
@@ -154,7 +154,7 @@ private boolean refined_NameCheck_constValue_Case(Case c)
       return getValue().varDecl() == ((ConstCase)c).getValue().varDecl();
     }
     else
-      return refined_NameCheck_constValue_Case(c);
+      return refined_NameCheck_ConstCase_constValue_Case(c);
   }
 
     // Declared in Enums.jrag at line 477

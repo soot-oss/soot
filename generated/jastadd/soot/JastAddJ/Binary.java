@@ -148,7 +148,7 @@ public abstract class Binary extends Expr implements Cloneable {
     }
 
     // Declared in ConstantExpression.jrag at line 516
-private TypeDecl refined_ConstantExpression_binaryNumericPromotedType()
+private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 {
     TypeDecl leftType = left().type();
     TypeDecl rightType = right().type();
@@ -250,7 +250,7 @@ private TypeDecl refined_ConstantExpression_binaryNumericPromotedType()
     if(leftType.isBoolean() && rightType.isBoolean()) {
       return leftType.isReferenceType() ? leftType.unboxed() : leftType;
     }
-    return refined_ConstantExpression_binaryNumericPromotedType();
+    return refined_ConstantExpression_Binary_binaryNumericPromotedType();
   }
 
     protected java.util.Map isDAafterTrue_Variable_values;

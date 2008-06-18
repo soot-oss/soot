@@ -349,7 +349,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     setCompilationUnitList(list);
   }
 
-    // Declared in ErrorCheck.jrag at line 210
+    // Declared in ErrorCheck.jrag at line 208
 
 
   public void errorCheck(Collection collection) {
@@ -362,7 +362,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in ErrorCheck.jrag at line 219
+    // Declared in ErrorCheck.jrag at line 217
 
   public void errorCheck(Collection collection, Collection warn) {
     for(Iterator iter = compilationUnitIterator(); iter.hasNext(); ) {
@@ -375,7 +375,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in ErrorCheck.jrag at line 240
+    // Declared in ErrorCheck.jrag at line 238
 
   
   public boolean errorCheck() {
@@ -854,7 +854,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     // Declared in java.ast at line 15
 
 
-    public void refined_java_addCompilationUnit(CompilationUnit node) {
+    public void refined_java_Program_addCompilationUnit(CompilationUnit node) {
         List<CompilationUnit> list = getCompilationUnitList();
         list.addChild(node);
     }
@@ -979,7 +979,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       }
     } catch (IOException e) {
     }
-    refined_java_addCompilationUnit(unit);
+    refined_java_Program_addCompilationUnit(unit);
   }
 
     protected boolean typeObject_computed = false;

@@ -267,7 +267,7 @@ public class MethodAccess extends Access implements Cloneable {
     // Declared in InnerClasses.jrag at line 48
 
 
-  private TypeDecl refined_InnerClasses_methodQualifierType() {
+  private TypeDecl refined_InnerClasses_MethodAccess_methodQualifierType() {
     if(hasPrevExpr())
       return prevExpr().type();
     TypeDecl typeDecl = hostType();
@@ -312,7 +312,7 @@ public class MethodAccess extends Access implements Cloneable {
   }*/
 
   // remote collection / demand driven creation of accessor
-  public void refined_Transformations_transformation() {
+  public void refined_Transformations_MethodAccess_transformation() {
     MethodDecl m = decl();
 
 
@@ -515,8 +515,8 @@ public class MethodAccess extends Access implements Cloneable {
     // Declared in GenericsCodegen.jrag at line 296
 
 
-    protected TypeDecl refined_GenericsCodegen_methodQualifierType() {
-    TypeDecl typeDecl = refined_InnerClasses_methodQualifierType();
+    protected TypeDecl refined_GenericsCodegen_MethodAccess_methodQualifierType() {
+    TypeDecl typeDecl = refined_InnerClasses_MethodAccess_methodQualifierType();
     if(typeDecl == null)
       return null;
     typeDecl = typeDecl.erasure();
@@ -552,7 +552,7 @@ public class MethodAccess extends Access implements Cloneable {
       // replace argument list with augemented argument list
       setArgList(list);
     }
-    refined_Transformations_transformation();
+    refined_Transformations_MethodAccess_transformation();
   }
 
     // Declared in GenericsCodegen.jrag at line 125
@@ -661,14 +661,14 @@ public class MethodAccess extends Access implements Cloneable {
 
 
     protected TypeDecl methodQualifierType() {
-    TypeDecl typeDecl = refined_GenericsCodegen_methodQualifierType();
+    TypeDecl typeDecl = refined_GenericsCodegen_MethodAccess_methodQualifierType();
     if(typeDecl != null)
       return typeDecl;
     return decl().hostType();
   }
 
     // Declared in TypeAnalysis.jrag at line 284
-private TypeDecl refined_TypeAnalysis_type()
+private TypeDecl refined_TypeAnalysis_MethodAccess_type()
 { return decl().type(); }
 
     protected java.util.Map computeDAbefore_int_Variable_values;
@@ -950,7 +950,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
       return ((GenericClassDecl)lookupType("java.lang", "Class")).lookupParTypeDecl(args);
     }
     else
-      return refined_TypeAnalysis_type();
+      return refined_TypeAnalysis_MethodAccess_type();
   }
 
     // Declared in MethodSignature.jrag at line 166

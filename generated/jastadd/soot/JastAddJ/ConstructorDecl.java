@@ -798,7 +798,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   }
 
     // Declared in LookupConstructor.jrag at line 155
-private boolean refined_LookupConstructor_moreSpecificThan_ConstructorDecl(ConstructorDecl m)
+private boolean refined_LookupConstructor_ConstructorDecl_moreSpecificThan_ConstructorDecl(ConstructorDecl m)
 {
     for(int i = 0; i < getNumParameter(); i++) {
       if(!getParameter(i).type().instanceOf(m.getParameter(i).type()))
@@ -976,7 +976,7 @@ if(moreSpecificThan_ConstructorDecl_values == null) moreSpecificThan_Constructor
 
     private boolean moreSpecificThan_compute(ConstructorDecl m) {
     if(!isVariableArity() && !m.isVariableArity())
-      return refined_LookupConstructor_moreSpecificThan_ConstructorDecl(m);
+      return refined_LookupConstructor_ConstructorDecl_moreSpecificThan_ConstructorDecl(m);
     int num = Math.max(getNumParameter(), m.getNumParameter());
     for(int i = 0; i < num; i++) {
       TypeDecl t1 = i < getNumParameter() - 1 ? getParameter(i).type() : getParameter(getNumParameter()-1).type().componentType();

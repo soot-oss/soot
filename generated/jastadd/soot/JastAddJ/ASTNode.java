@@ -2,7 +2,7 @@
 package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
-// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080527
+// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080605
 
 public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Cloneable, Iterable<T> {
     public void flushCache() {
@@ -171,28 +171,26 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return end;
   }
 
-    // Declared in ErrorCheck.jrag at line 57
-
-
+    // Declared in ErrorCheck.jrag at line 55
 
 
   public String location() {
     return "" + lineNumber();
   }
 
-    // Declared in ErrorCheck.jrag at line 60
+    // Declared in ErrorCheck.jrag at line 58
 
   public String errorPrefix() {
     return sourceFile() + ":" + location() + ":\n" + "  *** Semantic Error: ";
   }
 
-    // Declared in ErrorCheck.jrag at line 63
+    // Declared in ErrorCheck.jrag at line 61
 
   public String warningPrefix() {
     return sourceFile() + ":" + location() + ":\n" + "  *** WARNING: ";
   }
 
-    // Declared in ErrorCheck.jrag at line 173
+    // Declared in ErrorCheck.jrag at line 171
 
 
   protected void error(String s) {
@@ -211,7 +209,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       cu.errors.add(new Problem(sourceFile(), s, lineNumber(), Problem.Severity.ERROR, Problem.Kind.SEMANTIC));
   }
 
-    // Declared in ErrorCheck.jrag at line 189
+    // Declared in ErrorCheck.jrag at line 187
 
 
   protected void warning(String s) {
@@ -222,7 +220,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     cu.warnings.add(new Problem(sourceFile(), "WARNING: " + s, lineNumber(), Problem.Severity.WARNING));
   }
 
-    // Declared in ErrorCheck.jrag at line 197
+    // Declared in ErrorCheck.jrag at line 195
 
   
   public void collectErrors() {
@@ -398,6 +396,16 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
 
   void checkUnreachableStmt() {
+  }
+
+    // Declared in VariableDeclaration.jrag at line 141
+
+
+  public void clearLocations() {
+    setStart(0);
+    setEnd(0);
+    for(int i = 0; i < getNumChild(); i++)
+      getChild(i).clearLocations();
   }
 
     // Declared in Enums.jrag at line 128

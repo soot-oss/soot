@@ -237,6 +237,10 @@ public ASTNode rewriteTo() {
           );
         if(j == 0)
           f.setStart(start);
+        else {
+          f.getModifiersNoTransform().clearLocations();
+          f.getTypeAccessNoTransform().clearLocations();
+        }
         varList.add(f);
       }
       return varList;

@@ -72,29 +72,29 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
     fromSource = value;
   }
 
-    // Declared in ErrorCheck.jrag at line 67
+    // Declared in ErrorCheck.jrag at line 65
 
 
   protected java.util.ArrayList errors = new java.util.ArrayList();
 
-    // Declared in ErrorCheck.jrag at line 68
+    // Declared in ErrorCheck.jrag at line 66
 
   protected java.util.ArrayList warnings = new java.util.ArrayList();
 
-    // Declared in ErrorCheck.jrag at line 70
+    // Declared in ErrorCheck.jrag at line 68
 
 
   public Collection parseErrors() { return parseErrors; }
 
-    // Declared in ErrorCheck.jrag at line 71
+    // Declared in ErrorCheck.jrag at line 69
 
   public void addParseError(Problem msg) { parseErrors.add(msg); }
 
-    // Declared in ErrorCheck.jrag at line 72
+    // Declared in ErrorCheck.jrag at line 70
 
   protected Collection parseErrors = new ArrayList();
 
-    // Declared in ErrorCheck.jrag at line 230
+    // Declared in ErrorCheck.jrag at line 228
 
 
   public void errorCheck(Collection collection) {
@@ -102,7 +102,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
     collection.addAll(errors);
   }
 
-    // Declared in ErrorCheck.jrag at line 234
+    // Declared in ErrorCheck.jrag at line 232
 
   public void errorCheck(Collection err, Collection warn) {
     collectErrors();
@@ -113,7 +113,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
     // Declared in NameCheck.jrag at line 35
 
 
-  public void refined_NameCheck_nameCheck() {
+  public void refined_NameCheck_CompilationUnit_nameCheck() {
     for(int i = 0; i < getNumImportDecl(); i++) {
       ImportDecl decl = getImportDecl(i);
       if(decl instanceof SingleTypeImportDecl) {
@@ -397,7 +397,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
   and the compilation unit also declares a top level type (\ufffd7.6) whose simple
   name is n, a compile-time error occurs.*/
     public void nameCheck() {
-    refined_NameCheck_nameCheck();
+    refined_NameCheck_CompilationUnit_nameCheck();
     for(int i = 0; i < getNumImportDecl(); i++) {
       if(getImportDecl(i) instanceof SingleStaticImportDecl) {
         SingleStaticImportDecl decl = (SingleStaticImportDecl)getImportDecl(i);
@@ -412,7 +412,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
   }
 
     // Declared in LookupType.jrag at line 182
-private SimpleSet refined_LookupType_Child_lookupType_String(String name)
+private SimpleSet refined_LookupType_CompilationUnit_Child_lookupType_String(String name)
 {
     // locally declared types in compilation unit
     SimpleSet set = localLookupType(name);
@@ -769,7 +769,7 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
    int childIndex = this.getIndexOfChild(caller);
 {
     SimpleSet result = SimpleSet.emptySet;
-    for(Iterator iter = refined_LookupType_Child_lookupType_String(name).iterator(); iter.hasNext(); ) {
+    for(Iterator iter = refined_LookupType_CompilationUnit_Child_lookupType_String(name).iterator(); iter.hasNext(); ) {
       TypeDecl typeDecl = (TypeDecl)iter.next();
       if(typeDecl instanceof ParTypeDecl)
         result = result.add(((ParTypeDecl)typeDecl).genericDecl());

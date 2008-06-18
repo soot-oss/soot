@@ -221,7 +221,7 @@ public class ConditionalExpr extends Expr implements Cloneable {
     }
 
     // Declared in TypeAnalysis.jrag at line 364
-private TypeDecl refined_TypeAnalysis_type()
+private TypeDecl refined_TypeAnalysis_ConditionalExpr_type()
 {
     TypeDecl trueType = getTrueExpr().type();
     TypeDecl falseType = getFalseExpr().type();
@@ -260,7 +260,7 @@ private TypeDecl refined_TypeAnalysis_type()
   }
 
     // Declared in AutoBoxing.jrag at line 180
-private TypeDecl refined_AutoBoxing_type()
+private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 {
     TypeDecl trueType = getTrueExpr().type();
     TypeDecl falseType = getFalseExpr().type();
@@ -271,7 +271,7 @@ private TypeDecl refined_AutoBoxing_type()
         return trueType.unboxed();
       return trueType;
     }
-    return refined_TypeAnalysis_type();
+    return refined_TypeAnalysis_ConditionalExpr_type();
   }
 
     protected boolean constant_computed = false;
@@ -385,7 +385,7 @@ private TypeDecl refined_AutoBoxing_type()
     }
 
     private TypeDecl type_compute() {
-    TypeDecl type = refined_AutoBoxing_type();
+    TypeDecl type = refined_AutoBoxing_ConditionalExpr_type();
     TypeDecl trueType = getTrueExpr().type();
     TypeDecl falseType = getFalseExpr().type();
 

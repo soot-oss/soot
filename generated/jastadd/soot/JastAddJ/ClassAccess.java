@@ -138,7 +138,7 @@ public class ClassAccess extends Access implements Cloneable {
   public boolean mayHaveRewrite() { return false; }
 
     // Declared in TypeAnalysis.jrag at line 401
-private TypeDecl refined_TypeAnalysis_type()
+private TypeDecl refined_TypeAnalysis_ClassAccess_type()
 { return lookupType("java.lang", "Class"); }
 
     // Declared in ResolveAmbiguousNames.jrag at line 47
@@ -170,7 +170,7 @@ private TypeDecl refined_TypeAnalysis_type()
     }
 
     private TypeDecl type_compute() {
-    GenericClassDecl d = (GenericClassDecl)refined_TypeAnalysis_type();
+    GenericClassDecl d = (GenericClassDecl)refined_TypeAnalysis_ClassAccess_type();
     TypeDecl type = qualifier().type();
     if(type.isPrimitive())
       type = type.boxed();

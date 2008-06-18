@@ -174,7 +174,7 @@ public class PackageOrTypeAccess extends Access implements Cloneable {
     private NameType predNameType_compute() {  return NameType.PACKAGE_OR_TYPE_NAME;  }
 
 public ASTNode rewriteTo() {
-    // Declared in ResolveAmbiguousNames.jrag at line 169
+    // Declared in ResolveAmbiguousNames.jrag at line 171
     if(!duringSyntacticClassification()) {
         duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule0();
@@ -185,7 +185,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 169
+    // Declared in ResolveAmbiguousNames.jrag at line 171
     private Access rewriteRule0() {
 {
       if(!lookupType(name()).isEmpty())

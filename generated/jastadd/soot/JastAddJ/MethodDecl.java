@@ -838,7 +838,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   }
 
     // Declared in LookupMethod.jrag at line 142
-private boolean refined_LookupMethod_moreSpecificThan_MethodDecl(MethodDecl m)
+private boolean refined_LookupMethod_MethodDecl_moreSpecificThan_MethodDecl(MethodDecl m)
 {
     if(getNumParameter() == 0)
       return false;
@@ -850,7 +850,7 @@ private boolean refined_LookupMethod_moreSpecificThan_MethodDecl(MethodDecl m)
   }
 
     // Declared in EmitJimple.jrag at line 108
-private int refined_EmitJimple_sootTypeModifiers()
+private int refined_EmitJimple_MethodDecl_sootTypeModifiers()
 {
     int result = 0;
     if(isPublic()) result |= soot.Modifier.PUBLIC;
@@ -1010,7 +1010,7 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
 
     private boolean moreSpecificThan_compute(MethodDecl m) {
     if(!isVariableArity() && !m.isVariableArity())
-      return refined_LookupMethod_moreSpecificThan_MethodDecl(m);
+      return refined_LookupMethod_MethodDecl_moreSpecificThan_MethodDecl(m);
     int num = Math.max(getNumParameter(), m.getNumParameter());
     for(int i = 0; i < num; i++) {
       TypeDecl t1 = i < getNumParameter() - 1 ? getParameter(i).type() : getParameter(getNumParameter()-1).type().componentType();
@@ -1295,7 +1295,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     }
 
     private int sootTypeModifiers_compute() {
-    int res = refined_EmitJimple_sootTypeModifiers();
+    int res = refined_EmitJimple_MethodDecl_sootTypeModifiers();
     if(isVariableArity())
       res |= Modifiers.ACC_VARARGS;
     return res;

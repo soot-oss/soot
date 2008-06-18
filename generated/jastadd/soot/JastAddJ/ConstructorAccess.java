@@ -141,7 +141,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
 
   // remote collection / demand driven creation of accessor
-  public void refined_Transformations_transformation() {
+  public void refined_Transformations_ConstructorAccess_transformation() {
     // this$val
     addEnclosingVariables();
     // touch accessorIndex go force creation of private constructorAccessor
@@ -318,7 +318,7 @@ public class ConstructorAccess extends Access implements Cloneable {
       // replace argument list with augemented argument list
       setArgList(list);
     }
-    refined_Transformations_transformation();
+    refined_Transformations_ConstructorAccess_transformation();
   }
 
     // Declared in GenericsCodegen.jrag at line 214

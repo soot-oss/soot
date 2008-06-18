@@ -494,7 +494,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     // Declared in TypeHierarchyCheck.jrag at line 157
 
 
-  public void refined_TypeHierarchyCheck_typeCheck() {
+  public void refined_TypeHierarchyCheck_TypeDecl_typeCheck() {
     // 8.4.6.4 & 9.4.1
     for(Iterator iter1 = localMethodsIterator(); iter1.hasNext(); ) {
       MethodDecl m = (MethodDecl)iter1.next();
@@ -1250,7 +1250,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
 
   // different parameterizations of the same generic interface may not be implemented
     public void typeCheck() {
-    refined_TypeHierarchyCheck_typeCheck();
+    refined_TypeHierarchyCheck_TypeDecl_typeCheck();
     ArrayList list = new ArrayList();
     list.addAll(implementedInterfaces());
     for(int i = 0; i < list.size(); i++) {
@@ -1288,7 +1288,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   }
 
     // Declared in TypeAnalysis.jrag at line 59
-private boolean refined_TypeAnalysis_assignConversionTo_TypeDecl_Expr(TypeDecl type, Expr expr)
+private boolean refined_TypeAnalysis_TypeDecl_assignConversionTo_TypeDecl_Expr(TypeDecl type, Expr expr)
 {
     //System.out.println("@@@ " + fullName() + " assign conversion to " + type.fullName() + ", expr: " + expr);
     boolean sourceIsConstant = expr != null ? expr.isConstant() : false;
@@ -1306,18 +1306,18 @@ private boolean refined_TypeAnalysis_assignConversionTo_TypeDecl_Expr(TypeDecl t
   }
 
     // Declared in TypeAnalysis.jrag at line 76
-private boolean refined_TypeAnalysis_methodInvocationConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_TypeAnalysis_TypeDecl_methodInvocationConversionTo_TypeDecl(TypeDecl type)
 {
     return identityConversionTo(type) || wideningConversionTo(type);
   }
 
     // Declared in TypeAnalysis.jrag at line 81
-private boolean refined_TypeAnalysis_castingConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_TypeAnalysis_TypeDecl_castingConversionTo_TypeDecl(TypeDecl type)
 { return identityConversionTo(type) ||
     wideningConversionTo(type) || narrowingConversionTo(type); }
 
     // Declared in EmitJimple.jrag at line 31
-private SootClass refined_EmitJimple_getSootClassDecl()
+private SootClass refined_EmitJimple_TypeDecl_getSootClassDecl()
 {
     if(compilationUnit().fromSource()) {
       return sootClass();
@@ -1332,11 +1332,11 @@ private SootClass refined_EmitJimple_getSootClassDecl()
   }
 
     // Declared in EmitJimple.jrag at line 45
-private Type refined_EmitJimple_getSootType()
+private Type refined_EmitJimple_TypeDecl_getSootType()
 { return getSootClassDecl().getType(); }
 
     // Declared in EmitJimple.jrag at line 64
-private SootClass refined_EmitJimple_sootClass()
+private SootClass refined_EmitJimple_TypeDecl_sootClass()
 { return null; }
 
     protected java.util.Map accessibleFromPackage_String_values;
@@ -2383,7 +2383,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
     }
 
     private boolean assignConversionTo_compute(TypeDecl type, Expr expr) {
-    if(refined_TypeAnalysis_assignConversionTo_TypeDecl_Expr(type, expr))
+    if(refined_TypeAnalysis_TypeDecl_assignConversionTo_TypeDecl_Expr(type, expr))
       return true;
     boolean canBoxThis = this instanceof PrimitiveType;
     boolean canBoxType = type instanceof PrimitiveType;
@@ -2419,7 +2419,7 @@ if(methodInvocationConversionTo_TypeDecl_values == null) methodInvocationConvers
     }
 
     private boolean methodInvocationConversionTo_compute(TypeDecl type) {
-    if(refined_TypeAnalysis_methodInvocationConversionTo_TypeDecl(type))
+    if(refined_TypeAnalysis_TypeDecl_methodInvocationConversionTo_TypeDecl(type))
       return true;
     boolean canBoxThis = this instanceof PrimitiveType;
     boolean canBoxType = type instanceof PrimitiveType;
@@ -2448,7 +2448,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     }
 
     private boolean castingConversionTo_compute(TypeDecl type) {
-    if(refined_TypeAnalysis_castingConversionTo_TypeDecl(type))
+    if(refined_TypeAnalysis_TypeDecl_castingConversionTo_TypeDecl(type))
       return true;
     boolean canBoxThis = this instanceof PrimitiveType;
     boolean canBoxType = type instanceof PrimitiveType;
@@ -3908,7 +3908,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     }
 
     private SootClass sootClass_compute() {  return erasure() != this ?
-    erasure().sootClass() : refined_EmitJimple_sootClass();  }
+    erasure().sootClass() : refined_EmitJimple_TypeDecl_sootClass();  }
 
     // Declared in EmitJimple.jrag at line 86
  @SuppressWarnings({"unchecked", "cast"})     public String sourceNameWithoutPath() {

@@ -94,7 +94,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     // Declared in NameCheck.jrag at line 137
 
 
-  public void refined_NameCheck_nameCheck() {
+  public void refined_NameCheck_ClassInstanceExpr_nameCheck() {
     super.nameCheck();
     if(decls().isEmpty())
       error("can not instantiate " + type().typeName() + " no matching constructor found in " + type().typeName());
@@ -289,7 +289,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
 
 
   // remote collection / demand driven creation of accessor
-  public void refined_Transformations_transformation() {
+  public void refined_Transformations_ClassInstanceExpr_transformation() {
     // this$val
     addEnclosingVariables();
     // touch accessorIndex go force creation of private constructorAccessor
@@ -558,7 +558,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     if(getAccess().type().isEnumDecl() && !enclosingBodyDecl().isEnumConstant())
       error("enum types may not be instantiated explicitly");
     else
-      refined_NameCheck_nameCheck();
+      refined_NameCheck_ClassInstanceExpr_nameCheck();
   }
 
     // Declared in VariableArityParametersCodegen.jrag at line 36
@@ -581,7 +581,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
       // replace argument list with augemented argument list
       setArgList(list);
     }
-    refined_Transformations_transformation();
+    refined_Transformations_ClassInstanceExpr_transformation();
   }
 
     protected java.util.Map isDAafterInstance_Variable_values;

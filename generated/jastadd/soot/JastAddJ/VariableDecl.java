@@ -33,7 +33,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
         }
         return res;
     }
-    // Declared in VariableDeclaration.jrag at line 173
+    // Declared in VariableDeclaration.jrag at line 189
 
 
   public VariableDeclaration createVariableDeclarationFrom(Modifiers modifiers, Access type) {
@@ -50,7 +50,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
     return decl;
   }
 
-    // Declared in VariableDeclaration.jrag at line 187
+    // Declared in VariableDeclaration.jrag at line 203
 
 
   public FieldDeclaration createFieldDeclarationFrom(Modifiers modifiers, Access type) {

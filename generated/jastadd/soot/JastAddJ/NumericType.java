@@ -244,7 +244,7 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
     }
 
     // Declared in TypeAnalysis.jrag at line 155
-private TypeDecl refined_TypeAnalysis_binaryNumericPromotion_TypeDecl(TypeDecl type)
+private TypeDecl refined_TypeAnalysis_NumericType_binaryNumericPromotion_TypeDecl(TypeDecl type)
 {
     if(!type.isNumericType())
       return unknownType();
@@ -285,7 +285,7 @@ if(binaryNumericPromotion_TypeDecl_values == null) binaryNumericPromotion_TypeDe
     private TypeDecl binaryNumericPromotion_compute(TypeDecl type) {
     if(type.isReferenceType())
       type = type.unboxed();
-    return refined_TypeAnalysis_binaryNumericPromotion_TypeDecl(type);
+    return refined_TypeAnalysis_NumericType_binaryNumericPromotion_TypeDecl(type);
   }
 
     // Declared in TypeAnalysis.jrag at line 174

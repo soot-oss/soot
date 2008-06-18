@@ -500,7 +500,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     }
 
     // Declared in Generics.jrag at line 53
-private boolean refined_Generics_castingConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_Generics_InterfaceDecl_castingConversionTo_TypeDecl(TypeDecl type)
 {
     TypeDecl S = this;
     TypeDecl T = type;
@@ -681,7 +681,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     }
 
     private boolean castingConversionTo_compute(TypeDecl type) {
-    if(refined_Generics_castingConversionTo_TypeDecl(type))
+    if(refined_Generics_InterfaceDecl_castingConversionTo_TypeDecl(type))
       return true;
     boolean canUnboxThis = !unboxed().isUnknown();
     boolean canUnboxType = !type.unboxed().isUnknown();

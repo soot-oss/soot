@@ -3,7 +3,7 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
 public class Problem extends java.lang.Object implements Comparable {
-    // Declared in ErrorCheck.jrag at line 75
+    // Declared in ErrorCheck.jrag at line 73
 
     public int compareTo(Object o) {
       if(o instanceof Problem) {
@@ -17,7 +17,7 @@ public class Problem extends java.lang.Object implements Comparable {
       return 0;
     }
 
-    // Declared in ErrorCheck.jrag at line 86
+    // Declared in ErrorCheck.jrag at line 84
 
     public static class Severity {
       public static final Severity ERROR = new Severity();
@@ -25,7 +25,7 @@ public class Problem extends java.lang.Object implements Comparable {
       private Severity() { }
     }
 
-    // Declared in ErrorCheck.jrag at line 91
+    // Declared in ErrorCheck.jrag at line 89
 
     public static class Kind {
       public static final Kind OTHER = new Kind();
@@ -35,89 +35,89 @@ public class Problem extends java.lang.Object implements Comparable {
       private Kind() { }
     }
 
-    // Declared in ErrorCheck.jrag at line 98
+    // Declared in ErrorCheck.jrag at line 96
 
     protected int line = -1;
 
-    // Declared in ErrorCheck.jrag at line 99
+    // Declared in ErrorCheck.jrag at line 97
 
     public int line() { return line; }
 
-    // Declared in ErrorCheck.jrag at line 100
+    // Declared in ErrorCheck.jrag at line 98
 
     protected int column = -1;
 
-    // Declared in ErrorCheck.jrag at line 101
+    // Declared in ErrorCheck.jrag at line 99
 
     public int column() { return column; }
 
-    // Declared in ErrorCheck.jrag at line 102
+    // Declared in ErrorCheck.jrag at line 100
 
     protected int endLine = -1;
 
-    // Declared in ErrorCheck.jrag at line 103
+    // Declared in ErrorCheck.jrag at line 101
 
     public int endLine() { return endLine; }
 
-    // Declared in ErrorCheck.jrag at line 104
+    // Declared in ErrorCheck.jrag at line 102
 
     protected int endColumn = -1;
 
-    // Declared in ErrorCheck.jrag at line 105
+    // Declared in ErrorCheck.jrag at line 103
 
     public int endColumn() { return endColumn; }
 
-    // Declared in ErrorCheck.jrag at line 106
+    // Declared in ErrorCheck.jrag at line 104
 
     protected String fileName;
 
-    // Declared in ErrorCheck.jrag at line 107
+    // Declared in ErrorCheck.jrag at line 105
 
     public String fileName() { return fileName; }
 
-    // Declared in ErrorCheck.jrag at line 108
+    // Declared in ErrorCheck.jrag at line 106
 
     public void setFileName(String fileName) { this.fileName = fileName; }
 
-    // Declared in ErrorCheck.jrag at line 109
+    // Declared in ErrorCheck.jrag at line 107
 
     protected String message;
 
-    // Declared in ErrorCheck.jrag at line 110
+    // Declared in ErrorCheck.jrag at line 108
 
     public String message() { return message; }
 
-    // Declared in ErrorCheck.jrag at line 111
+    // Declared in ErrorCheck.jrag at line 109
 
     protected Severity severity = Severity.ERROR;
 
-    // Declared in ErrorCheck.jrag at line 112
+    // Declared in ErrorCheck.jrag at line 110
 
     public Severity severity() { return severity; }
 
-    // Declared in ErrorCheck.jrag at line 113
+    // Declared in ErrorCheck.jrag at line 111
 
     protected Kind kind = Kind.OTHER;
 
-    // Declared in ErrorCheck.jrag at line 114
+    // Declared in ErrorCheck.jrag at line 112
 
     public Kind kind() { return kind; }
 
-    // Declared in ErrorCheck.jrag at line 115
+    // Declared in ErrorCheck.jrag at line 113
 
     public Problem(String fileName, String message) {
       this.fileName = fileName;
       this.message = message;
     }
 
-    // Declared in ErrorCheck.jrag at line 119
+    // Declared in ErrorCheck.jrag at line 117
 
     public Problem(String fileName, String message, int line) {
       this(fileName, message);
       this.line = line;
     }
 
-    // Declared in ErrorCheck.jrag at line 123
+    // Declared in ErrorCheck.jrag at line 121
 
     public Problem(String fileName, String message, int line, Severity severity) {
       this(fileName, message);
@@ -125,7 +125,7 @@ public class Problem extends java.lang.Object implements Comparable {
       this.severity = severity;
     }
 
-    // Declared in ErrorCheck.jrag at line 128
+    // Declared in ErrorCheck.jrag at line 126
 
     public Problem(String fileName, String message, int line, int column, Severity severity) {
       this(fileName, message);
@@ -134,7 +134,7 @@ public class Problem extends java.lang.Object implements Comparable {
       this.severity = severity;
     }
 
-    // Declared in ErrorCheck.jrag at line 134
+    // Declared in ErrorCheck.jrag at line 132
 
     public Problem(String fileName, String message, int line, Severity severity, Kind kind) {
       this(fileName, message);
@@ -143,7 +143,7 @@ public class Problem extends java.lang.Object implements Comparable {
       this.severity = severity;
     }
 
-    // Declared in ErrorCheck.jrag at line 140
+    // Declared in ErrorCheck.jrag at line 138
 
     public Problem(String fileName, String message, int line, int column, Severity severity, Kind kind) {
       this(fileName, message);
@@ -153,7 +153,7 @@ public class Problem extends java.lang.Object implements Comparable {
       this.severity = severity;
     }
 
-    // Declared in ErrorCheck.jrag at line 147
+    // Declared in ErrorCheck.jrag at line 145
 
     public Problem(String fileName, String message, int line, int column, int endLine, int endColumn, Severity severity, Kind kind) {
       this(fileName, message);
@@ -165,7 +165,7 @@ public class Problem extends java.lang.Object implements Comparable {
       this.severity = severity;
     }
 
-    // Declared in ErrorCheck.jrag at line 156
+    // Declared in ErrorCheck.jrag at line 154
 
     public String toString() {
       String location = "";

@@ -274,7 +274,7 @@ public class TypeAccess extends Access implements Cloneable {
     }
 
     // Declared in LookupType.jrag at line 150
-private TypeDecl refined_LookupType_decl()
+private TypeDecl refined_LookupType_TypeAccess_decl()
 {
     SimpleSet decls = decls();
     if(decls.size() == 1) {
@@ -323,7 +323,7 @@ private TypeDecl refined_LookupType_decl()
     }
 
     private TypeDecl decl_compute() {
-    TypeDecl decl = refined_LookupType_decl();
+    TypeDecl decl = refined_LookupType_TypeAccess_decl();
     if(decl instanceof GenericTypeDecl && isRaw())
       return ((GenericTypeDecl)decl).lookupParTypeDecl(new ArrayList());
     return decl;

@@ -144,7 +144,7 @@ public class ThisAccess extends Access implements Cloneable {
     }
 
     // Declared in LookupType.jrag at line 162
-private TypeDecl refined_LookupType_decl()
+private TypeDecl refined_LookupType_ThisAccess_decl()
 { return isQualified() ? qualifier().type() : hostType(); }
 
     // Declared in LookupType.jrag at line 160
@@ -170,7 +170,7 @@ private TypeDecl refined_LookupType_decl()
     }
 
     private TypeDecl decl_compute() {
-    TypeDecl typeDecl = refined_LookupType_decl();
+    TypeDecl typeDecl = refined_LookupType_ThisAccess_decl();
     if(typeDecl instanceof ParTypeDecl)
       typeDecl = ((ParTypeDecl)typeDecl).genericDecl();
     return typeDecl;

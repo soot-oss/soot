@@ -36,6 +36,8 @@ public abstract class Access extends Expr implements Cloneable {
         a = new ArrayTypeWithSizeAccess(a, (Expr)opt.getChildNoTransform(0));
       else
         a = new ArrayTypeAccess(a);
+      a.setStart(dims.start());
+      a.setEnd(dims.end());
     }
     return a;
   }
