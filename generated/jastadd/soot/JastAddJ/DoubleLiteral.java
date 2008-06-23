@@ -109,14 +109,6 @@ public class DoubleLiteral extends Literal implements Cloneable {
 
     // Declared in java.ast at line 5
 
-    public int LITERALstart;
-
-    // Declared in java.ast at line 6
-
-    public int LITERALend;
-
-    // Declared in java.ast at line 7
-
     public void setLITERAL(beaver.Symbol symbol) {
         if(symbol.value != null && !(symbol.value instanceof String))
           throw new UnsupportedOperationException("setLITERAL is only valid for String lexemes");
@@ -125,7 +117,7 @@ public class DoubleLiteral extends Literal implements Cloneable {
         LITERALend = symbol.getEnd();
     }
 
-    // Declared in java.ast at line 14
+    // Declared in java.ast at line 12
 
     public String getLITERAL() {
         return tokenString_LITERAL != null ? tokenString_LITERAL : "";

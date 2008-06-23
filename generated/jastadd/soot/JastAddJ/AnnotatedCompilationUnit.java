@@ -124,14 +124,6 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
 
     // Declared in java.ast at line 5
 
-    public int PackageDeclstart;
-
-    // Declared in java.ast at line 6
-
-    public int PackageDeclend;
-
-    // Declared in java.ast at line 7
-
     public void setPackageDecl(beaver.Symbol symbol) {
         if(symbol.value != null && !(symbol.value instanceof String))
           throw new UnsupportedOperationException("setPackageDecl is only valid for String lexemes");
@@ -140,7 +132,7 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
         PackageDeclend = symbol.getEnd();
     }
 
-    // Declared in java.ast at line 14
+    // Declared in java.ast at line 12
 
     public java.lang.String getPackageDecl() {
         return tokenjava_lang_String_PackageDecl != null ? tokenjava_lang_String_PackageDecl : "";

@@ -970,7 +970,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     );
   }
 
-    // Declared in EmitJimple.jrag at line 585
+    // Declared in EmitJimple.jrag at line 596
 
 
   public void jimplify2clinit() {
@@ -1001,7 +1001,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       b.add(Jimple.v().newReturnVoidStmt());
   }
 
-    // Declared in EmitJimple.jrag at line 613
+    // Declared in EmitJimple.jrag at line 624
 
 
   public void jimplify2() {
@@ -3945,7 +3945,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean hasClinit_computed = false;
     protected boolean hasClinit_value;
-    // Declared in EmitJimple.jrag at line 569
+    // Declared in EmitJimple.jrag at line 580
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasClinit() {
         if(hasClinit_computed)
             return hasClinit_value;
@@ -3975,7 +3975,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean innerClassesAttributeEntries_computed = false;
     protected Collection innerClassesAttributeEntries_value;
-    // Declared in EmitJimple.jrag at line 643
+    // Declared in EmitJimple.jrag at line 654
  @SuppressWarnings({"unchecked", "cast"})     public Collection innerClassesAttributeEntries() {
         if(innerClassesAttributeEntries_computed)
             return innerClassesAttributeEntries_value;
@@ -3999,7 +3999,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
   }
 
     protected java.util.Map getSootField_String_TypeDecl_values;
-    // Declared in EmitJimple.jrag at line 677
+    // Declared in EmitJimple.jrag at line 688
  @SuppressWarnings({"unchecked", "cast"})     public SootField getSootField(String name, TypeDecl type) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(name);

@@ -2,7 +2,7 @@
 package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
-// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080605
+// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080622
 
 public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Cloneable, Iterable<T> {
     public void flushCache() {
@@ -550,14 +550,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Need to convert " + v.getClass().getName() + " to RValue");
   }
 
-    // Declared in EmitJimple.jrag at line 561
+    // Declared in EmitJimple.jrag at line 572
 
 
   protected soot.jimple.Stmt newLabel() {
     return soot.jimple.Jimple.v().newNopStmt();
   }
 
-    // Declared in EmitJimple.jrag at line 640
+    // Declared in EmitJimple.jrag at line 651
 
 
   public void addAttributes() {

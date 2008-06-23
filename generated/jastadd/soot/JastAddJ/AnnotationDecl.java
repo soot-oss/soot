@@ -142,14 +142,6 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
 
     // Declared in java.ast at line 5
 
-    public int IDstart;
-
-    // Declared in java.ast at line 6
-
-    public int IDend;
-
-    // Declared in java.ast at line 7
-
     public void setID(beaver.Symbol symbol) {
         if(symbol.value != null && !(symbol.value instanceof String))
           throw new UnsupportedOperationException("setID is only valid for String lexemes");
@@ -158,7 +150,7 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
         IDend = symbol.getEnd();
     }
 
-    // Declared in java.ast at line 14
+    // Declared in java.ast at line 12
 
     public String getID() {
         return tokenString_ID != null ? tokenString_ID : "";
