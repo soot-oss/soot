@@ -589,10 +589,10 @@ public class ClassInstanceExpr extends Access implements Cloneable {
 if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values = new java.util.HashMap(4);
         if(isDAafterInstance_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafterInstance_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterInstance_Variable_value = isDAafterInstance_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafterInstance_Variable_values.put(_parameters, Boolean.valueOf(isDAafterInstance_Variable_value));
         return isDAafterInstance_Variable_value;
     }
@@ -620,10 +620,10 @@ if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values 
 if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_values = new java.util.HashMap(4);
         if(computeDAbefore_int_Variable_values.containsKey(_parameters))
             return ((Boolean)computeDAbefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDAbefore_int_Variable_value = computeDAbefore_compute(i, v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             computeDAbefore_int_Variable_values.put(_parameters, Boolean.valueOf(computeDAbefore_int_Variable_value));
         return computeDAbefore_int_Variable_value;
     }
@@ -659,10 +659,10 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_values = new java.util.HashMap(4);
         if(computeDUbefore_int_Variable_values.containsKey(_parameters))
             return ((Boolean)computeDUbefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDUbefore_int_Variable_value = computeDUbefore_compute(i, v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             computeDUbefore_int_Variable_values.put(_parameters, Boolean.valueOf(computeDUbefore_int_Variable_value));
         return computeDUbefore_int_Variable_value;
     }
@@ -684,10 +684,10 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed)
             return decls_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decls_computed = true;
         return decls_value;
     }
@@ -703,10 +703,10 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl decl() {
         if(decl_computed)
             return decl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decl_computed = true;
         return decl_value;
     }
@@ -740,10 +740,10 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
 if(localLookupType_String_values == null) localLookupType_String_values = new java.util.HashMap(4);
         if(localLookupType_String_values.containsKey(_parameters))
             return (SimpleSet)localLookupType_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet localLookupType_String_value = localLookupType_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             localLookupType_String_values.put(_parameters, localLookupType_String_value);
         return localLookupType_String_value;
     }
@@ -779,10 +779,10 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }

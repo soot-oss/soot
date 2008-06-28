@@ -171,10 +171,10 @@ public abstract class Access extends Expr implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Expr prevExpr() {
         if(prevExpr_computed)
             return prevExpr_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         prevExpr_value = prevExpr_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             prevExpr_computed = true;
         return prevExpr_value;
     }
@@ -195,10 +195,10 @@ public abstract class Access extends Expr implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasPrevExpr() {
         if(hasPrevExpr_computed)
             return hasPrevExpr_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         hasPrevExpr_value = hasPrevExpr_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             hasPrevExpr_computed = true;
         return hasPrevExpr_value;
     }
@@ -227,10 +227,10 @@ public abstract class Access extends Expr implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }

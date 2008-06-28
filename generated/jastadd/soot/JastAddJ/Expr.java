@@ -634,10 +634,10 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt false_label() {
         if(false_label_computed)
             return false_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         false_label_value = false_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             false_label_computed = true;
         return false_label_value;
     }
@@ -650,10 +650,10 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt true_label() {
         if(true_label_computed)
             return true_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         true_label_value = true_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             true_label_computed = true;
         return true_label_value;
     }

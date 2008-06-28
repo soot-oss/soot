@@ -190,10 +190,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
 if(checkReturnDA_Variable_values == null) checkReturnDA_Variable_values = new java.util.HashMap(4);
         if(checkReturnDA_Variable_values.containsKey(_parameters))
             return ((Boolean)checkReturnDA_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean checkReturnDA_Variable_value = checkReturnDA_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             checkReturnDA_Variable_values.put(_parameters, Boolean.valueOf(checkReturnDA_Variable_value));
         return checkReturnDA_Variable_value;
     }
@@ -218,10 +218,10 @@ if(checkReturnDA_Variable_values == null) checkReturnDA_Variable_values = new ja
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
         if(isDAafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
         return isDAafter_Variable_value;
     }
@@ -243,10 +243,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 if(checkReturnDU_Variable_values == null) checkReturnDU_Variable_values = new java.util.HashMap(4);
         if(checkReturnDU_Variable_values.containsKey(_parameters))
             return ((Boolean)checkReturnDU_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean checkReturnDU_Variable_value = checkReturnDU_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             checkReturnDU_Variable_values.put(_parameters, Boolean.valueOf(checkReturnDU_Variable_value));
         return checkReturnDU_Variable_value;
     }
@@ -271,10 +271,10 @@ if(checkReturnDU_Variable_values == null) checkReturnDU_Variable_values = new ja
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
         if(isDUafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
         return isDUafter_Variable_value;
     }
@@ -288,10 +288,10 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 if(localVariableDeclaration_String_values == null) localVariableDeclaration_String_values = new java.util.HashMap(4);
         if(localVariableDeclaration_String_values.containsKey(_parameters))
             return (VariableDeclaration)localVariableDeclaration_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         VariableDeclaration localVariableDeclaration_String_value = localVariableDeclaration_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             localVariableDeclaration_String_values.put(_parameters, localVariableDeclaration_String_value);
         return localVariableDeclaration_String_value;
     }
@@ -323,10 +323,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
         if(canCompleteNormally_computed)
             return canCompleteNormally_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             canCompleteNormally_computed = true;
         return canCompleteNormally_value;
     }
@@ -340,10 +340,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 if(lookupType_String_values == null) lookupType_String_values = new java.util.HashMap(4);
         if(lookupType_String_values.containsKey(_parameters))
             return (SimpleSet)lookupType_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             lookupType_String_values.put(_parameters, lookupType_String_value);
         return lookupType_String_value;
     }
@@ -355,10 +355,10 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
 if(lookupVariable_String_values == null) lookupVariable_String_values = new java.util.HashMap(4);
         if(lookupVariable_String_values.containsKey(_parameters))
             return (SimpleSet)lookupVariable_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
         return lookupVariable_String_value;
     }

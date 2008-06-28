@@ -680,10 +680,10 @@ private TypeDecl refined_TypeAnalysis_MethodAccess_type()
 if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_values = new java.util.HashMap(4);
         if(computeDAbefore_int_Variable_values.containsKey(_parameters))
             return ((Boolean)computeDAbefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDAbefore_int_Variable_value = computeDAbefore_compute(i, v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             computeDAbefore_int_Variable_values.put(_parameters, Boolean.valueOf(computeDAbefore_int_Variable_value));
         return computeDAbefore_int_Variable_value;
     }
@@ -704,10 +704,10 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public Collection exceptionCollection() {
         if(exceptionCollection_computed)
             return exceptionCollection_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         exceptionCollection_value = exceptionCollection_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             exceptionCollection_computed = true;
         return exceptionCollection_value;
     }
@@ -777,10 +777,10 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed)
             return decls_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decls_computed = true;
         return decls_value;
     }
@@ -835,10 +835,10 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl decl() {
         if(decl_computed)
             return decl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decl_computed = true;
         return decl_value;
     }
@@ -934,10 +934,10 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }
@@ -1043,10 +1043,10 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = new java.util.HashMap(4);
         if(typeArguments_MethodDecl_values.containsKey(_parameters))
             return (ArrayList)typeArguments_MethodDecl_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         ArrayList typeArguments_MethodDecl_value = typeArguments_compute(m);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeArguments_MethodDecl_values.put(_parameters, typeArguments_MethodDecl_value);
         return typeArguments_MethodDecl_value;
     }

@@ -2,7 +2,7 @@
 package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
-// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080622
+// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20080628
 
 public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Cloneable, Iterable<T> {
     public void flushCache() {
@@ -304,14 +304,10 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return (TypeDecl)c.iterator().next();
   }
 
-    // Declared in Options.jadd at line 13
-
-  private static Options options = new Options();
-
     // Declared in Options.jadd at line 14
 
   public Options options() {
-    return options;
+    return state().options;
   }
 
     // Declared in PrettyPrint.jadd at line 13
@@ -623,83 +619,55 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     // Declared in ASTNode.ast at line 9
 
 
-   static public boolean generatedWithCircularEnabled = true;
+   public static final boolean generatedWithCircularEnabled = true;
 
     // Declared in ASTNode.ast at line 10
 
-   static public boolean generatedWithCacheCycle = false;
+   public static final boolean generatedWithCacheCycle = false;
 
     // Declared in ASTNode.ast at line 11
 
-   static public boolean generatedWithComponentCheck = false;
+   public static final boolean generatedWithComponentCheck = false;
 
     // Declared in ASTNode.ast at line 12
 
-  static public boolean IN_CIRCLE = false;
+   private static ASTNode$State state = new ASTNode$State();
 
     // Declared in ASTNode.ast at line 13
 
-  static public int CIRCLE_INDEX;
+   public final ASTNode$State state() { return state; }
 
     // Declared in ASTNode.ast at line 14
 
-  static public boolean CHANGE = false;
+  public boolean in$Circle = false;
 
     // Declared in ASTNode.ast at line 15
 
-  static public boolean RESET_CYCLE = false;
+  public boolean in$Circle() { return in$Circle; }
 
     // Declared in ASTNode.ast at line 16
 
-  public static int boundariesCrossed = 0;
-
-    // Declared in ASTNode.ast at line 43
-
-  protected static ASTNode$State state = new ASTNode$State();
-
-    // Declared in ASTNode.ast at line 44
-
-  public boolean in$Circle = false;
-
-    // Declared in ASTNode.ast at line 45
-
-  public boolean in$Circle() { return in$Circle; }
-
-    // Declared in ASTNode.ast at line 46
-
   public void in$Circle(boolean b) { in$Circle = b; }
 
-    // Declared in ASTNode.ast at line 47
+    // Declared in ASTNode.ast at line 17
 
   public boolean is$Final = false;
 
-    // Declared in ASTNode.ast at line 48
+    // Declared in ASTNode.ast at line 18
 
   public boolean is$Final() { return is$Final; }
 
-    // Declared in ASTNode.ast at line 49
+    // Declared in ASTNode.ast at line 19
 
   public void is$Final(boolean b) { is$Final = b; }
 
-    // Declared in ASTNode.ast at line 50
-
-  protected static final int REWRITE_CHANGE = 1;
-
-    // Declared in ASTNode.ast at line 51
-
-  protected static final int REWRITE_NOCHANGE = 2;
-
-    // Declared in ASTNode.ast at line 52
-
-  protected static final int REWRITE_INTERRUPT = 3;
-
-    // Declared in ASTNode.ast at line 53
+    // Declared in ASTNode.ast at line 20
 
   @SuppressWarnings("cast") public T getChild(int i) {
     return (T)ASTNode.getChild(this, i);
   }
 
-    // Declared in ASTNode.ast at line 56
+    // Declared in ASTNode.ast at line 23
 
   public static ASTNode getChild(ASTNode that, int i) {
     ASTNode node = that.getChildNoTransform(i);
@@ -710,31 +678,31 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
     if(!node.in$Circle()) {
       int rewriteState;
-      int num = ASTNode.boundariesCrossed;
+      int num = that.state().boundariesCrossed;
       do {
-        ASTNode.state.push(ASTNode.REWRITE_CHANGE);
+        that.state().push(ASTNode$State.REWRITE_CHANGE);
         ASTNode oldNode = node;
         oldNode.in$Circle(true);
         node = node.rewriteTo();
         if(node != oldNode)
           that.setChild(node, i);
         oldNode.in$Circle(false);
-        rewriteState = state.pop();
-      } while(rewriteState == ASTNode.REWRITE_CHANGE);
-      if(rewriteState == ASTNode.REWRITE_NOCHANGE && that.is$Final()) {
+        rewriteState = that.state().pop();
+      } while(rewriteState == ASTNode$State.REWRITE_CHANGE);
+      if(rewriteState == ASTNode$State.REWRITE_NOCHANGE && that.is$Final()) {
         node.is$Final(true);
-        ASTNode.boundariesCrossed = num;
+        that.state().boundariesCrossed = num;
       }
     }
-    else if(that.is$Final() != node.is$Final()) boundariesCrossed++;
+    else if(that.is$Final() != node.is$Final()) that.state().boundariesCrossed++;
     return node;
   }
 
-    // Declared in ASTNode.ast at line 84
+    // Declared in ASTNode.ast at line 51
 
   private int childIndex;
 
-    // Declared in ASTNode.ast at line 85
+    // Declared in ASTNode.ast at line 52
 
   public int getIndexOfChild(ASTNode node) {
     if(node != null && node.childIndex < getNumChildNoTransform() && node == getChildNoTransform(node.childIndex))
@@ -747,50 +715,50 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return -1;
   }
 
-    // Declared in ASTNode.ast at line 96
+    // Declared in ASTNode.ast at line 63
 
 
   public void addChild(T node) {
     setChild(node, getNumChildNoTransform());
   }
 
-    // Declared in ASTNode.ast at line 99
+    // Declared in ASTNode.ast at line 66
 
   @SuppressWarnings("cast") public final T getChildNoTransform(int i) {
     return (T)children[i];
   }
 
-    // Declared in ASTNode.ast at line 102
+    // Declared in ASTNode.ast at line 69
 
   protected ASTNode parent;
 
-    // Declared in ASTNode.ast at line 103
+    // Declared in ASTNode.ast at line 70
 
   protected ASTNode[] children;
 
-    // Declared in ASTNode.ast at line 104
+    // Declared in ASTNode.ast at line 71
 
   protected int numChildren;
 
-    // Declared in ASTNode.ast at line 105
+    // Declared in ASTNode.ast at line 72
 
   protected int numChildren() {
     return numChildren;
   }
 
-    // Declared in ASTNode.ast at line 108
+    // Declared in ASTNode.ast at line 75
 
   public int getNumChild() {
     return numChildren();
   }
 
-    // Declared in ASTNode.ast at line 111
+    // Declared in ASTNode.ast at line 78
 
   public final int getNumChildNoTransform() {
     return numChildren();
   }
 
-    // Declared in ASTNode.ast at line 114
+    // Declared in ASTNode.ast at line 81
 
   public void setChild(T node, int i) {
     if(children == null) {
@@ -805,7 +773,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(node != null) { node.setParent(this); node.childIndex = i; }
   }
 
-    // Declared in ASTNode.ast at line 126
+    // Declared in ASTNode.ast at line 93
 
   public void insertChild(T node, int i) {
     if(children == null) {
@@ -823,7 +791,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(node != null) { node.setParent(this); node.childIndex = i; }
   }
 
-    // Declared in ASTNode.ast at line 141
+    // Declared in ASTNode.ast at line 108
 
   public void removeChild(int i) {
     if(children != null) {
@@ -837,263 +805,165 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
   }
 
-    // Declared in ASTNode.ast at line 152
+    // Declared in ASTNode.ast at line 119
 
   public ASTNode getParent() {
     if(parent != null && parent.is$Final() != is$Final()) {
-      boundariesCrossed++;
+      state().boundariesCrossed++;
     }
     return parent;
   }
 
-    // Declared in ASTNode.ast at line 158
+    // Declared in ASTNode.ast at line 125
 
   public void setParent(ASTNode node) {
     parent = node;
   }
 
-    // Declared in ASTNode.ast at line 161
+    // Declared in ASTNode.ast at line 129
 
-    protected static int duringEnums = 0;
+    protected boolean duringEnums() {
+        if(state().duringEnums == 0) {
+            return false;
+        }
+        else {
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
+            return true;
+        }
+    }
+
+    // Declared in ASTNode.ast at line 140
+
+    protected boolean duringResolveAmbiguousNames() {
+        if(state().duringResolveAmbiguousNames == 0) {
+            return false;
+        }
+        else {
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
+            return true;
+        }
+    }
+
+    // Declared in ASTNode.ast at line 151
+
+    protected boolean duringAnnotations() {
+        if(state().duringAnnotations == 0) {
+            return false;
+        }
+        else {
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
+            return true;
+        }
+    }
 
     // Declared in ASTNode.ast at line 162
 
-    protected static boolean duringEnums() {
-        if(duringEnums == 0) {
+    protected boolean duringConstantExpression() {
+        if(state().duringConstantExpression == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
-
-    // Declared in ASTNode.ast at line 172
-
-    protected static int duringResolveAmbiguousNames = 0;
 
     // Declared in ASTNode.ast at line 173
 
-    protected static boolean duringResolveAmbiguousNames() {
-        if(duringResolveAmbiguousNames == 0) {
+    protected boolean duringAnonymousClasses() {
+        if(state().duringAnonymousClasses == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
-
-    // Declared in ASTNode.ast at line 183
-
-    protected static int duringAnnotations = 0;
 
     // Declared in ASTNode.ast at line 184
 
-    protected static boolean duringAnnotations() {
-        if(duringAnnotations == 0) {
+    protected boolean duringLookupConstructor() {
+        if(state().duringLookupConstructor == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
-
-    // Declared in ASTNode.ast at line 194
-
-    protected static int duringConstantExpression = 0;
 
     // Declared in ASTNode.ast at line 195
 
-    protected static boolean duringConstantExpression() {
-        if(duringConstantExpression == 0) {
+    protected boolean duringVariableDeclaration() {
+        if(state().duringVariableDeclaration == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
-
-    // Declared in ASTNode.ast at line 205
-
-    protected static int duringAnonymousClasses = 0;
 
     // Declared in ASTNode.ast at line 206
 
-    protected static boolean duringAnonymousClasses() {
-        if(duringAnonymousClasses == 0) {
+    protected boolean duringDefiniteAssignment() {
+        if(state().duringDefiniteAssignment == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
-
-    // Declared in ASTNode.ast at line 216
-
-    protected static int duringLookupConstructor = 0;
 
     // Declared in ASTNode.ast at line 217
 
-    protected static boolean duringLookupConstructor() {
-        if(duringLookupConstructor == 0) {
+    protected boolean duringGenericTypeVariables() {
+        if(state().duringGenericTypeVariables == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
-
-    // Declared in ASTNode.ast at line 227
-
-    protected static int duringVariableDeclaration = 0;
 
     // Declared in ASTNode.ast at line 228
 
-    protected static boolean duringVariableDeclaration() {
-        if(duringVariableDeclaration == 0) {
+    protected boolean duringSyntacticClassification() {
+        if(state().duringSyntacticClassification == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
-
-    // Declared in ASTNode.ast at line 238
-
-    protected static int duringDefiniteAssignment = 0;
 
     // Declared in ASTNode.ast at line 239
 
-    protected static boolean duringDefiniteAssignment() {
-        if(duringDefiniteAssignment == 0) {
+    protected boolean duringBoundNames() {
+        if(state().duringBoundNames == 0) {
             return false;
         }
         else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
+            state().pop();
+            state().push(ASTNode$State.REWRITE_INTERRUPT);
             return true;
         }
     }
 
-    // Declared in ASTNode.ast at line 249
-
-    protected static int duringGenericTypeVariables = 0;
-
-    // Declared in ASTNode.ast at line 250
-
-    protected static boolean duringGenericTypeVariables() {
-        if(duringGenericTypeVariables == 0) {
-            return false;
-        }
-        else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
-            return true;
-        }
-    }
-
-    // Declared in ASTNode.ast at line 260
-
-    protected static int duringSyntacticClassification = 0;
-
-    // Declared in ASTNode.ast at line 261
-
-    protected static boolean duringSyntacticClassification() {
-        if(duringSyntacticClassification == 0) {
-            return false;
-        }
-        else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
-            return true;
-        }
-    }
-
-    // Declared in ASTNode.ast at line 271
-
-    protected static int duringBoundNames = 0;
-
-    // Declared in ASTNode.ast at line 272
-
-    protected static boolean duringBoundNames() {
-        if(duringBoundNames == 0) {
-            return false;
-        }
-        else {
-            state.pop();
-            state.push(ASTNode.REWRITE_INTERRUPT);
-            return true;
-        }
-    }
-
-    // Declared in ASTNode.ast at line 282
-
-    public static void reset() {
-        IN_CIRCLE = false;
-        CIRCLE_INDEX = 0;
-        CHANGE = false;
-        boundariesCrossed = 0;
-        state = new ASTNode$State();
-        if(duringEnums != 0) {
-            System.out.println("Warning: resetting duringEnums");
-            duringEnums = 0;
-        }
-        if(duringResolveAmbiguousNames != 0) {
-            System.out.println("Warning: resetting duringResolveAmbiguousNames");
-            duringResolveAmbiguousNames = 0;
-        }
-        if(duringAnnotations != 0) {
-            System.out.println("Warning: resetting duringAnnotations");
-            duringAnnotations = 0;
-        }
-        if(duringConstantExpression != 0) {
-            System.out.println("Warning: resetting duringConstantExpression");
-            duringConstantExpression = 0;
-        }
-        if(duringAnonymousClasses != 0) {
-            System.out.println("Warning: resetting duringAnonymousClasses");
-            duringAnonymousClasses = 0;
-        }
-        if(duringLookupConstructor != 0) {
-            System.out.println("Warning: resetting duringLookupConstructor");
-            duringLookupConstructor = 0;
-        }
-        if(duringVariableDeclaration != 0) {
-            System.out.println("Warning: resetting duringVariableDeclaration");
-            duringVariableDeclaration = 0;
-        }
-        if(duringDefiniteAssignment != 0) {
-            System.out.println("Warning: resetting duringDefiniteAssignment");
-            duringDefiniteAssignment = 0;
-        }
-        if(duringGenericTypeVariables != 0) {
-            System.out.println("Warning: resetting duringGenericTypeVariables");
-            duringGenericTypeVariables = 0;
-        }
-        if(duringSyntacticClassification != 0) {
-            System.out.println("Warning: resetting duringSyntacticClassification");
-            duringSyntacticClassification = 0;
-        }
-        if(duringBoundNames != 0) {
-            System.out.println("Warning: resetting duringBoundNames");
-            duringBoundNames = 0;
-        }
-    }
-
-    // Declared in ASTNode.ast at line 333
+    // Declared in ASTNode.ast at line 299
 
     public java.util.Iterator<T> iterator() {
         return new java.util.Iterator<T>() {
@@ -1113,7 +983,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         };
     }
 
-    // Declared in ASTNode.ast at line 350
+    // Declared in ASTNode.ast at line 316
 
   public boolean mayHaveRewrite() { return false; }
 
@@ -1217,9 +1087,9 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     private boolean definesLabel_compute() {  return false;  }
 
 public ASTNode rewriteTo() {
-    if(state.peek() == ASTNode.REWRITE_CHANGE) {
-        state.pop();
-        state.push(ASTNode.REWRITE_NOCHANGE);
+    if(state().peek() == ASTNode$State.REWRITE_CHANGE) {
+        state().pop();
+        state().push(ASTNode$State.REWRITE_NOCHANGE);
     }
     return this;
 }

@@ -575,44 +575,44 @@ public class VarAccess extends Access implements Cloneable {
             isConstant_initialized = true;
             isConstant_value = false;
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             do {
-                isConstant_visited = CIRCLE_INDEX;
-                CHANGE = false;
+                isConstant_visited = state().CIRCLE_INDEX;
+                state().CHANGE = false;
                 boolean new_isConstant_value = isConstant_compute();
                 if (new_isConstant_value!=isConstant_value)
-                    CHANGE = true;
+                    state().CHANGE = true;
                 isConstant_value = new_isConstant_value; 
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             isConstant_computed = true;
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             isConstant_compute();
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
               isConstant_computed = false;
               isConstant_initialized = false;
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return isConstant_value;
         }
-        if(isConstant_visited != CIRCLE_INDEX) {
-            isConstant_visited = CIRCLE_INDEX;
-            if (RESET_CYCLE) {
+        if(isConstant_visited != state().CIRCLE_INDEX) {
+            isConstant_visited = state().CIRCLE_INDEX;
+            if (state().RESET_CYCLE) {
                 isConstant_computed = false;
                 isConstant_initialized = false;
                 return isConstant_value;
             }
             boolean new_isConstant_value = isConstant_compute();
             if (new_isConstant_value!=isConstant_value)
-                CHANGE = true;
+                state().CHANGE = true;
             isConstant_value = new_isConstant_value; 
             return isConstant_value;
         }
@@ -644,10 +644,10 @@ public class VarAccess extends Access implements Cloneable {
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
         if(isDAafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
         return isDAafter_Variable_value;
     }
@@ -687,10 +687,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed)
             return decls_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decls_computed = true;
         return decls_value;
     }
@@ -717,10 +717,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public Variable decl() {
         if(decl_computed)
             return decl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decl_computed = true;
         return decl_value;
     }
@@ -788,10 +788,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFieldAccess() {
         if(isFieldAccess_computed)
             return isFieldAccess_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isFieldAccess_value = isFieldAccess_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isFieldAccess_computed = true;
         return isFieldAccess_value;
     }
@@ -810,10 +810,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }
@@ -853,10 +853,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 if(base_Body_values == null) base_Body_values = new java.util.HashMap(4);
         if(base_Body_values.containsKey(_parameters))
             return (soot.Local)base_Body_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         soot.Local base_Body_value = base_compute(b);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             base_Body_values.put(_parameters, base_Body_value);
         return base_Body_value;
     }

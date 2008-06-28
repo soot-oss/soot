@@ -794,10 +794,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
         if(typeObject_computed)
             return typeObject_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeObject_value = typeObject_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeObject_computed = true;
         return typeObject_value;
     }
@@ -810,10 +810,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeCloneable() {
         if(typeCloneable_computed)
             return typeCloneable_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeCloneable_value = typeCloneable_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeCloneable_computed = true;
         return typeCloneable_value;
     }
@@ -826,10 +826,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeSerializable() {
         if(typeSerializable_computed)
             return typeSerializable_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeSerializable_value = typeSerializable_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeSerializable_computed = true;
         return typeSerializable_value;
     }
@@ -842,10 +842,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeBoolean() {
         if(typeBoolean_computed)
             return typeBoolean_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeBoolean_value = typeBoolean_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeBoolean_computed = true;
         return typeBoolean_value;
     }
@@ -858,10 +858,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeByte() {
         if(typeByte_computed)
             return typeByte_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeByte_value = typeByte_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeByte_computed = true;
         return typeByte_value;
     }
@@ -874,10 +874,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeShort() {
         if(typeShort_computed)
             return typeShort_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeShort_value = typeShort_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeShort_computed = true;
         return typeShort_value;
     }
@@ -890,10 +890,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeChar() {
         if(typeChar_computed)
             return typeChar_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeChar_value = typeChar_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeChar_computed = true;
         return typeChar_value;
     }
@@ -906,10 +906,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeInt() {
         if(typeInt_computed)
             return typeInt_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeInt_value = typeInt_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeInt_computed = true;
         return typeInt_value;
     }
@@ -922,10 +922,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeLong() {
         if(typeLong_computed)
             return typeLong_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeLong_value = typeLong_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeLong_computed = true;
         return typeLong_value;
     }
@@ -938,10 +938,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeFloat() {
         if(typeFloat_computed)
             return typeFloat_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeFloat_value = typeFloat_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeFloat_computed = true;
         return typeFloat_value;
     }
@@ -954,10 +954,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeDouble() {
         if(typeDouble_computed)
             return typeDouble_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeDouble_value = typeDouble_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeDouble_computed = true;
         return typeDouble_value;
     }
@@ -970,10 +970,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeString() {
         if(typeString_computed)
             return typeString_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeString_value = typeString_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeString_computed = true;
         return typeString_value;
     }
@@ -986,10 +986,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeVoid() {
         if(typeVoid_computed)
             return typeVoid_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeVoid_value = typeVoid_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeVoid_computed = true;
         return typeVoid_value;
     }
@@ -1002,10 +1002,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNull() {
         if(typeNull_computed)
             return typeNull_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeNull_value = typeNull_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeNull_computed = true;
         return typeNull_value;
     }
@@ -1018,10 +1018,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
         if(unknownType_computed)
             return unknownType_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         unknownType_value = unknownType_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             unknownType_computed = true;
         return unknownType_value;
     }
@@ -1035,10 +1035,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
 if(hasPackage_String_values == null) hasPackage_String_values = new java.util.HashMap(4);
         if(hasPackage_String_values.containsKey(_parameters))
             return ((Boolean)hasPackage_String_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean hasPackage_String_value = hasPackage_compute(packageName);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             hasPackage_String_values.put(_parameters, Boolean.valueOf(hasPackage_String_value));
         return hasPackage_String_value;
     }
@@ -1056,10 +1056,10 @@ if(hasPackage_String_values == null) hasPackage_String_values = new java.util.Ha
 if(lookupType_String_String_values == null) lookupType_String_String_values = new java.util.HashMap(4);
         if(lookupType_String_String_values.containsKey(_parameters))
             return (TypeDecl)lookupType_String_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupType_String_String_value = lookupType_compute(packageName, typeName);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             lookupType_String_String_values.put(_parameters, lookupType_String_String_value);
         return lookupType_String_String_value;
     }
@@ -1096,10 +1096,10 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl unknownConstructor() {
         if(unknownConstructor_computed)
             return unknownConstructor_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         unknownConstructor_value = unknownConstructor_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             unknownConstructor_computed = true;
         return unknownConstructor_value;
     }
@@ -1114,7 +1114,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public WildcardsCompilationUnit wildcards() {
         if(wildcards_computed)
             return wildcards_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         wildcards_value = wildcards_compute();
         wildcards_value.setParent(this);

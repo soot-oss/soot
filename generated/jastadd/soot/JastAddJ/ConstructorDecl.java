@@ -810,10 +810,10 @@ private boolean refined_LookupConstructor_ConstructorDecl_moreSpecificThan_Const
 if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
         if(accessibleFrom_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
         return accessibleFrom_TypeDecl_value;
     }
@@ -839,10 +839,10 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
         if(isDAafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
         return isDAafter_Variable_value;
     }
@@ -855,10 +855,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
         if(isDUafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
         return isDUafter_Variable_value;
     }
@@ -872,10 +872,10 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = new java.util.HashMap(4);
         if(throwsException_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)throwsException_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean throwsException_TypeDecl_value = throwsException_compute(exceptionType);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             throwsException_TypeDecl_values.put(_parameters, Boolean.valueOf(throwsException_TypeDecl_value));
         return throwsException_TypeDecl_value;
     }
@@ -893,10 +893,10 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
         if(name_computed)
             return name_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         name_value = name_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             name_computed = true;
         return name_value;
     }
@@ -909,10 +909,10 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public String signature() {
         if(signature_computed)
             return signature_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         signature_value = signature_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             signature_computed = true;
         return signature_value;
     }
@@ -936,10 +936,10 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
 if(sameSignature_ConstructorDecl_values == null) sameSignature_ConstructorDecl_values = new java.util.HashMap(4);
         if(sameSignature_ConstructorDecl_values.containsKey(_parameters))
             return ((Boolean)sameSignature_ConstructorDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean sameSignature_ConstructorDecl_value = sameSignature_compute(c);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sameSignature_ConstructorDecl_values.put(_parameters, Boolean.valueOf(sameSignature_ConstructorDecl_value));
         return sameSignature_ConstructorDecl_value;
     }
@@ -962,10 +962,10 @@ if(sameSignature_ConstructorDecl_values == null) sameSignature_ConstructorDecl_v
 if(moreSpecificThan_ConstructorDecl_values == null) moreSpecificThan_ConstructorDecl_values = new java.util.HashMap(4);
         if(moreSpecificThan_ConstructorDecl_values.containsKey(_parameters))
             return ((Boolean)moreSpecificThan_ConstructorDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean moreSpecificThan_ConstructorDecl_value = moreSpecificThan_compute(m);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             moreSpecificThan_ConstructorDecl_values.put(_parameters, Boolean.valueOf(moreSpecificThan_ConstructorDecl_value));
         return moreSpecificThan_ConstructorDecl_value;
     }
@@ -990,10 +990,10 @@ if(moreSpecificThan_ConstructorDecl_values == null) moreSpecificThan_Constructor
 if(parameterDeclaration_String_values == null) parameterDeclaration_String_values = new java.util.HashMap(4);
         if(parameterDeclaration_String_values.containsKey(_parameters))
             return (SimpleSet)parameterDeclaration_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet parameterDeclaration_String_value = parameterDeclaration_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             parameterDeclaration_String_values.put(_parameters, parameterDeclaration_String_value);
         return parameterDeclaration_String_value;
     }
@@ -1044,10 +1044,10 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation_ConstructorDecl_values = new java.util.HashMap(4);
         if(circularThisInvocation_ConstructorDecl_values.containsKey(_parameters))
             return ((Boolean)circularThisInvocation_ConstructorDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean circularThisInvocation_ConstructorDecl_value = circularThisInvocation_compute(decl);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             circularThisInvocation_ConstructorDecl_values.put(_parameters, Boolean.valueOf(circularThisInvocation_ConstructorDecl_value));
         return circularThisInvocation_ConstructorDecl_value;
     }
@@ -1103,10 +1103,10 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed)
             return sourceConstructorDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceConstructorDecl_value = sourceConstructorDecl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sourceConstructorDecl_computed = true;
         return sourceConstructorDecl_value;
     }
@@ -1257,10 +1257,10 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed)
             return sootMethod_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootMethod_value = sootMethod_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sootMethod_computed = true;
         return sootMethod_value;
     }
@@ -1287,10 +1287,10 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootRef_value = sootRef_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sootRef_computed = true;
         return sootRef_value;
     }
@@ -1319,10 +1319,10 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
  @SuppressWarnings({"unchecked", "cast"})     public int localNumOfFirstParameter() {
         if(localNumOfFirstParameter_computed)
             return localNumOfFirstParameter_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         localNumOfFirstParameter_value = localNumOfFirstParameter_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             localNumOfFirstParameter_computed = true;
         return localNumOfFirstParameter_value;
     }
@@ -1342,10 +1342,10 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
  @SuppressWarnings({"unchecked", "cast"})     public int offsetFirstEnclosingVariable() {
         if(offsetFirstEnclosingVariable_computed)
             return offsetFirstEnclosingVariable_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         offsetFirstEnclosingVariable_value = offsetFirstEnclosingVariable_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             offsetFirstEnclosingVariable_computed = true;
         return offsetFirstEnclosingVariable_value;
     }
@@ -1369,10 +1369,10 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = new java.util.HashMap(4);
         if(handlesException_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)handlesException_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             handlesException_TypeDecl_values.put(_parameters, Boolean.valueOf(handlesException_TypeDecl_value));
         return handlesException_TypeDecl_value;
     }
@@ -1603,9 +1603,9 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
 public ASTNode rewriteTo() {
     // Declared in LookupConstructor.jrag at line 186
     if(!hasConstructorInvocation() && !hostType().isObject()) {
-        duringLookupConstructor++;
+        state().duringLookupConstructor++;
         ASTNode result = rewriteRule0();
-        duringLookupConstructor--;
+        state().duringLookupConstructor--;
         return result;
     }
 

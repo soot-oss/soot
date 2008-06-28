@@ -236,44 +236,44 @@ public class WildcardSuperType extends AbstractWildcardType implements Cloneable
             involvesTypeParameters_initialized = true;
             involvesTypeParameters_value = false;
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             do {
-                involvesTypeParameters_visited = CIRCLE_INDEX;
-                CHANGE = false;
+                involvesTypeParameters_visited = state().CIRCLE_INDEX;
+                state().CHANGE = false;
                 boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
                 if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-                    CHANGE = true;
+                    state().CHANGE = true;
                 involvesTypeParameters_value = new_involvesTypeParameters_value; 
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             involvesTypeParameters_computed = true;
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             involvesTypeParameters_compute();
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
               involvesTypeParameters_computed = false;
               involvesTypeParameters_initialized = false;
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return involvesTypeParameters_value;
         }
-        if(involvesTypeParameters_visited != CIRCLE_INDEX) {
-            involvesTypeParameters_visited = CIRCLE_INDEX;
-            if (RESET_CYCLE) {
+        if(involvesTypeParameters_visited != state().CIRCLE_INDEX) {
+            involvesTypeParameters_visited = state().CIRCLE_INDEX;
+            if (state().RESET_CYCLE) {
                 involvesTypeParameters_computed = false;
                 involvesTypeParameters_initialized = false;
                 return involvesTypeParameters_value;
             }
             boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
             if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-                CHANGE = true;
+                state().CHANGE = true;
             involvesTypeParameters_value = new_involvesTypeParameters_value; 
             return involvesTypeParameters_value;
         }
@@ -305,44 +305,44 @@ public class WildcardSuperType extends AbstractWildcardType implements Cloneable
             usesTypeVariable_initialized = true;
             usesTypeVariable_value = false;
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             do {
-                usesTypeVariable_visited = CIRCLE_INDEX;
-                CHANGE = false;
+                usesTypeVariable_visited = state().CIRCLE_INDEX;
+                state().CHANGE = false;
                 boolean new_usesTypeVariable_value = usesTypeVariable_compute();
                 if (new_usesTypeVariable_value!=usesTypeVariable_value)
-                    CHANGE = true;
+                    state().CHANGE = true;
                 usesTypeVariable_value = new_usesTypeVariable_value; 
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             usesTypeVariable_computed = true;
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             usesTypeVariable_compute();
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
               usesTypeVariable_computed = false;
               usesTypeVariable_initialized = false;
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return usesTypeVariable_value;
         }
-        if(usesTypeVariable_visited != CIRCLE_INDEX) {
-            usesTypeVariable_visited = CIRCLE_INDEX;
-            if (RESET_CYCLE) {
+        if(usesTypeVariable_visited != state().CIRCLE_INDEX) {
+            usesTypeVariable_visited = state().CIRCLE_INDEX;
+            if (state().RESET_CYCLE) {
                 usesTypeVariable_computed = false;
                 usesTypeVariable_initialized = false;
                 return usesTypeVariable_value;
             }
             boolean new_usesTypeVariable_value = usesTypeVariable_compute();
             if (new_usesTypeVariable_value!=usesTypeVariable_value)
-                CHANGE = true;
+                state().CHANGE = true;
             usesTypeVariable_value = new_usesTypeVariable_value; 
             return usesTypeVariable_value;
         }
@@ -381,45 +381,45 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
             subtype_TypeDecl_initialized.add(_parameters);
             subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-                CHANGE = false;
+                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+                state().CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
                 if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    CHANGE = true;
+                    state().CHANGE = true;
                 subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             subtype_TypeDecl_computed.add(_parameters);
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             subtype_compute(type);
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
             subtype_TypeDecl_computed.remove(_parameters);
             subtype_TypeDecl_initialized.remove(_parameters);
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-            if (RESET_CYCLE) {
+        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
+            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+            if (state().RESET_CYCLE) {
                 subtype_TypeDecl_computed.remove(_parameters);
                 subtype_TypeDecl_initialized.remove(_parameters);
                 return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
             }
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
             if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                CHANGE = true;
+                state().CHANGE = true;
             subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
             return new_subtype_TypeDecl_value;
         }
@@ -514,45 +514,45 @@ if(containedIn_TypeDecl_values == null) containedIn_TypeDecl_values = new java.u
             containedIn_TypeDecl_initialized.add(_parameters);
             containedIn_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             boolean new_containedIn_TypeDecl_value;
             do {
-                containedIn_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-                CHANGE = false;
+                containedIn_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+                state().CHANGE = false;
                 new_containedIn_TypeDecl_value = containedIn_compute(type);
                 if (new_containedIn_TypeDecl_value!=((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue())
-                    CHANGE = true;
+                    state().CHANGE = true;
                 containedIn_TypeDecl_values.put(_parameters, Boolean.valueOf(new_containedIn_TypeDecl_value));
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             containedIn_TypeDecl_computed.add(_parameters);
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             containedIn_compute(type);
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
             containedIn_TypeDecl_computed.remove(_parameters);
             containedIn_TypeDecl_initialized.remove(_parameters);
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return new_containedIn_TypeDecl_value;
         }
-        if(!new Integer(CIRCLE_INDEX).equals(containedIn_TypeDecl_visited.get(_parameters))) {
-            containedIn_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-            if (RESET_CYCLE) {
+        if(!new Integer(state().CIRCLE_INDEX).equals(containedIn_TypeDecl_visited.get(_parameters))) {
+            containedIn_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+            if (state().RESET_CYCLE) {
                 containedIn_TypeDecl_computed.remove(_parameters);
                 containedIn_TypeDecl_initialized.remove(_parameters);
                 return ((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue();
             }
             boolean new_containedIn_TypeDecl_value = containedIn_compute(type);
             if (new_containedIn_TypeDecl_value!=((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue())
-                CHANGE = true;
+                state().CHANGE = true;
             containedIn_TypeDecl_values.put(_parameters, Boolean.valueOf(new_containedIn_TypeDecl_value));
             return new_containedIn_TypeDecl_value;
         }
@@ -582,45 +582,45 @@ if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new ja
             sameStructure_TypeDecl_initialized.add(_parameters);
             sameStructure_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             boolean new_sameStructure_TypeDecl_value;
             do {
-                sameStructure_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-                CHANGE = false;
+                sameStructure_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+                state().CHANGE = false;
                 new_sameStructure_TypeDecl_value = sameStructure_compute(t);
                 if (new_sameStructure_TypeDecl_value!=((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue())
-                    CHANGE = true;
+                    state().CHANGE = true;
                 sameStructure_TypeDecl_values.put(_parameters, Boolean.valueOf(new_sameStructure_TypeDecl_value));
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             sameStructure_TypeDecl_computed.add(_parameters);
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             sameStructure_compute(t);
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
             sameStructure_TypeDecl_computed.remove(_parameters);
             sameStructure_TypeDecl_initialized.remove(_parameters);
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return new_sameStructure_TypeDecl_value;
         }
-        if(!new Integer(CIRCLE_INDEX).equals(sameStructure_TypeDecl_visited.get(_parameters))) {
-            sameStructure_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-            if (RESET_CYCLE) {
+        if(!new Integer(state().CIRCLE_INDEX).equals(sameStructure_TypeDecl_visited.get(_parameters))) {
+            sameStructure_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+            if (state().RESET_CYCLE) {
                 sameStructure_TypeDecl_computed.remove(_parameters);
                 sameStructure_TypeDecl_initialized.remove(_parameters);
                 return ((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue();
             }
             boolean new_sameStructure_TypeDecl_value = sameStructure_compute(t);
             if (new_sameStructure_TypeDecl_value!=((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue())
-                CHANGE = true;
+                state().CHANGE = true;
             sameStructure_TypeDecl_values.put(_parameters, Boolean.valueOf(new_sameStructure_TypeDecl_value));
             return new_sameStructure_TypeDecl_value;
         }
@@ -636,10 +636,10 @@ if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new ja
 if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
         if(instanceOf_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
         return instanceOf_TypeDecl_value;
     }

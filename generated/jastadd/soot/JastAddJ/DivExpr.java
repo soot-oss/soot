@@ -130,44 +130,44 @@ public class DivExpr extends MultiplicativeExpr implements Cloneable {
             isConstant_initialized = true;
             isConstant_value = false;
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             do {
-                isConstant_visited = CIRCLE_INDEX;
-                CHANGE = false;
+                isConstant_visited = state().CIRCLE_INDEX;
+                state().CHANGE = false;
                 boolean new_isConstant_value = isConstant_compute();
                 if (new_isConstant_value!=isConstant_value)
-                    CHANGE = true;
+                    state().CHANGE = true;
                 isConstant_value = new_isConstant_value; 
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             isConstant_computed = true;
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             isConstant_compute();
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
               isConstant_computed = false;
               isConstant_initialized = false;
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return isConstant_value;
         }
-        if(isConstant_visited != CIRCLE_INDEX) {
-            isConstant_visited = CIRCLE_INDEX;
-            if (RESET_CYCLE) {
+        if(isConstant_visited != state().CIRCLE_INDEX) {
+            isConstant_visited = state().CIRCLE_INDEX;
+            if (state().RESET_CYCLE) {
                 isConstant_computed = false;
                 isConstant_initialized = false;
                 return isConstant_value;
             }
             boolean new_isConstant_value = isConstant_compute();
             if (new_isConstant_value!=isConstant_value)
-                CHANGE = true;
+                state().CHANGE = true;
             isConstant_value = new_isConstant_value; 
             return isConstant_value;
         }

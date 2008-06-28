@@ -105,10 +105,10 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
         if(isDAafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
         return isDAafter_Variable_value;
     }
@@ -121,10 +121,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
         if(isDUafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
         return isDUafter_Variable_value;
     }
@@ -135,10 +135,10 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
         if(canCompleteNormally_computed)
             return canCompleteNormally_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             canCompleteNormally_computed = true;
         return canCompleteNormally_value;
     }

@@ -398,10 +398,10 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 if(targetOf_ContinueStmt_values == null) targetOf_ContinueStmt_values = new java.util.HashMap(4);
         if(targetOf_ContinueStmt_values.containsKey(_parameters))
             return ((Boolean)targetOf_ContinueStmt_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean targetOf_ContinueStmt_value = targetOf_compute(stmt);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             targetOf_ContinueStmt_values.put(_parameters, Boolean.valueOf(targetOf_ContinueStmt_value));
         return targetOf_ContinueStmt_value;
     }
@@ -415,10 +415,10 @@ if(targetOf_ContinueStmt_values == null) targetOf_ContinueStmt_values = new java
 if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.HashMap(4);
         if(targetOf_BreakStmt_values.containsKey(_parameters))
             return ((Boolean)targetOf_BreakStmt_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean targetOf_BreakStmt_value = targetOf_compute(stmt);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             targetOf_BreakStmt_values.put(_parameters, Boolean.valueOf(targetOf_BreakStmt_value));
         return targetOf_BreakStmt_value;
     }
@@ -431,10 +431,10 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
         if(isDAafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
         return isDAafter_Variable_value;
     }
@@ -464,10 +464,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
         if(isDUafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
         return isDUafter_Variable_value;
     }
@@ -510,45 +510,45 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
             isDUbeforeCondition_Variable_initialized.add(_parameters);
             isDUbeforeCondition_Variable_values.put(_parameters, Boolean.valueOf(true));
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             boolean new_isDUbeforeCondition_Variable_value;
             do {
-                isDUbeforeCondition_Variable_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-                CHANGE = false;
+                isDUbeforeCondition_Variable_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+                state().CHANGE = false;
                 new_isDUbeforeCondition_Variable_value = isDUbeforeCondition_compute(v);
                 if (new_isDUbeforeCondition_Variable_value!=((Boolean)isDUbeforeCondition_Variable_values.get(_parameters)).booleanValue())
-                    CHANGE = true;
+                    state().CHANGE = true;
                 isDUbeforeCondition_Variable_values.put(_parameters, Boolean.valueOf(new_isDUbeforeCondition_Variable_value));
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             isDUbeforeCondition_Variable_computed.add(_parameters);
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             isDUbeforeCondition_compute(v);
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
             isDUbeforeCondition_Variable_computed.remove(_parameters);
             isDUbeforeCondition_Variable_initialized.remove(_parameters);
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return new_isDUbeforeCondition_Variable_value;
         }
-        if(!new Integer(CIRCLE_INDEX).equals(isDUbeforeCondition_Variable_visited.get(_parameters))) {
-            isDUbeforeCondition_Variable_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-            if (RESET_CYCLE) {
+        if(!new Integer(state().CIRCLE_INDEX).equals(isDUbeforeCondition_Variable_visited.get(_parameters))) {
+            isDUbeforeCondition_Variable_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+            if (state().RESET_CYCLE) {
                 isDUbeforeCondition_Variable_computed.remove(_parameters);
                 isDUbeforeCondition_Variable_initialized.remove(_parameters);
                 return ((Boolean)isDUbeforeCondition_Variable_values.get(_parameters)).booleanValue();
             }
             boolean new_isDUbeforeCondition_Variable_value = isDUbeforeCondition_compute(v);
             if (new_isDUbeforeCondition_Variable_value!=((Boolean)isDUbeforeCondition_Variable_values.get(_parameters)).booleanValue())
-                CHANGE = true;
+                state().CHANGE = true;
             isDUbeforeCondition_Variable_values.put(_parameters, Boolean.valueOf(new_isDUbeforeCondition_Variable_value));
             return new_isDUbeforeCondition_Variable_value;
         }
@@ -591,10 +591,10 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 if(localLookup_String_values == null) localLookup_String_values = new java.util.HashMap(4);
         if(localLookup_String_values.containsKey(_parameters))
             return (SimpleSet)localLookup_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet localLookup_String_value = localLookup_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             localLookup_String_values.put(_parameters, localLookup_String_value);
         return localLookup_String_value;
     }
@@ -612,10 +612,10 @@ if(localLookup_String_values == null) localLookup_String_values = new java.util.
 if(localVariableDeclaration_String_values == null) localVariableDeclaration_String_values = new java.util.HashMap(4);
         if(localVariableDeclaration_String_values.containsKey(_parameters))
             return (VariableDeclaration)localVariableDeclaration_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         VariableDeclaration localVariableDeclaration_String_value = localVariableDeclaration_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             localVariableDeclaration_String_values.put(_parameters, localVariableDeclaration_String_value);
         return localVariableDeclaration_String_value;
     }
@@ -639,10 +639,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
         if(canCompleteNormally_computed)
             return canCompleteNormally_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             canCompleteNormally_computed = true;
         return canCompleteNormally_value;
     }
@@ -663,10 +663,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt cond_label() {
         if(cond_label_computed)
             return cond_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         cond_label_value = cond_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             cond_label_computed = true;
         return cond_label_value;
     }
@@ -679,10 +679,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt begin_label() {
         if(begin_label_computed)
             return begin_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         begin_label_value = begin_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             begin_label_computed = true;
         return begin_label_value;
     }
@@ -695,10 +695,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt update_label() {
         if(update_label_computed)
             return update_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         update_label_value = update_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             update_label_computed = true;
         return update_label_value;
     }
@@ -711,10 +711,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt end_label() {
         if(end_label_computed)
             return end_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         end_label_value = end_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             end_label_computed = true;
         return end_label_value;
     }
@@ -744,10 +744,10 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 if(lookupVariable_String_values == null) lookupVariable_String_values = new java.util.HashMap(4);
         if(lookupVariable_String_values.containsKey(_parameters))
             return (SimpleSet)lookupVariable_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
         return lookupVariable_String_value;
     }
@@ -893,9 +893,9 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 public ASTNode rewriteTo() {
     // Declared in DefiniteAssignment.jrag at line 1167
     if(!hasCondition()) {
-        duringDefiniteAssignment++;
+        state().duringDefiniteAssignment++;
         ASTNode result = rewriteRule0();
-        duringDefiniteAssignment--;
+        state().duringDefiniteAssignment--;
         return result;
     }
 

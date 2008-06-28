@@ -318,10 +318,10 @@ public class Annotation extends Modifier implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
         if(decl_computed)
             return decl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decl_computed = true;
         return decl_value;
     }

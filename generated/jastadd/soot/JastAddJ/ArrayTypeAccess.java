@@ -140,11 +140,11 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public String getPackage() {
         if(getPackage_computed)
             return getPackage_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getPackage_value = getPackage_compute();
             setPackage(getPackage_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getPackage_computed = true;
         return getPackage_value;
     }
@@ -157,11 +157,11 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public String getID() {
         if(getID_computed)
             return getID_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getID_value = getID_compute();
             setID(getID_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getID_computed = true;
         return getID_value;
     }
@@ -188,10 +188,10 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
         if(decl_computed)
             return decl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decl_computed = true;
         return decl_value;
     }

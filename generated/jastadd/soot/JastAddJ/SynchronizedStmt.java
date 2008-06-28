@@ -210,10 +210,10 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
         if(isDAafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
         return isDAafter_Variable_value;
     }
@@ -242,10 +242,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
         if(isDUafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
         return isDUafter_Variable_value;
     }
@@ -256,10 +256,10 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
         if(canCompleteNormally_computed)
             return canCompleteNormally_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             canCompleteNormally_computed = true;
         return canCompleteNormally_value;
     }
@@ -273,10 +273,10 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
         if(monitor_Body_values.containsKey(_parameters))
             return (soot.Local)monitor_Body_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         soot.Local monitor_Body_value = monitor_compute(b);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             monitor_Body_values.put(_parameters, monitor_Body_value);
         return monitor_Body_value;
     }
@@ -299,10 +299,10 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
         if(exceptionRanges_computed)
             return exceptionRanges_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         exceptionRanges_value = exceptionRanges_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             exceptionRanges_computed = true;
         return exceptionRanges_value;
     }
@@ -315,10 +315,10 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_begin() {
         if(label_begin_computed)
             return label_begin_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_begin_value = label_begin_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             label_begin_computed = true;
         return label_begin_value;
     }
@@ -331,10 +331,10 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_end() {
         if(label_end_computed)
             return label_end_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_end_value = label_end_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             label_end_computed = true;
         return label_end_value;
     }
@@ -347,10 +347,10 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally() {
         if(label_finally_computed)
             return label_finally_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_finally_value = label_finally_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             label_finally_computed = true;
         return label_finally_value;
     }
@@ -363,10 +363,10 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally_block() {
         if(label_finally_block_computed)
             return label_finally_block_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_finally_block_value = label_finally_block_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             label_finally_block_computed = true;
         return label_finally_block_value;
     }
@@ -379,10 +379,10 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_exception_handler() {
         if(label_exception_handler_computed)
             return label_exception_handler_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_exception_handler_value = label_exception_handler_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             label_exception_handler_computed = true;
         return label_exception_handler_value;
     }

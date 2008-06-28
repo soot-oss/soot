@@ -557,10 +557,10 @@ public class EnumDecl extends ClassDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
         if(isStatic_computed)
             return isStatic_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isStatic_value = isStatic_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isStatic_computed = true;
         return isStatic_value;
     }
@@ -573,11 +573,11 @@ public class EnumDecl extends ClassDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Opt getSuperClassAccessOpt() {
         if(getSuperClassAccessOpt_computed)
             return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
         setSuperClassAccessOpt(getSuperClassAccessOpt_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getSuperClassAccessOpt_computed = true;
         return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
     }
@@ -616,10 +616,10 @@ public class EnumDecl extends ClassDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList enumConstants() {
         if(enumConstants_computed)
             return enumConstants_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         enumConstants_value = enumConstants_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             enumConstants_computed = true;
         return enumConstants_value;
     }
@@ -690,9 +690,9 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 public ASTNode rewriteTo() {
     // Declared in Enums.jrag at line 88
     if(!done()) {
-        duringEnums++;
+        state().duringEnums++;
         ASTNode result = rewriteRule0();
-        duringEnums--;
+        state().duringEnums--;
         return result;
     }
 

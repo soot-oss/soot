@@ -392,10 +392,10 @@ public class ConstructorAccess extends Access implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed)
             return decls_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decls_computed = true;
         return decls_value;
     }
@@ -410,10 +410,10 @@ public class ConstructorAccess extends Access implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl decl() {
         if(decl_computed)
             return decl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decl_computed = true;
         return decl_value;
     }
@@ -458,10 +458,10 @@ public class ConstructorAccess extends Access implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }

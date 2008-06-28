@@ -200,10 +200,10 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
         if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)narrowingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean narrowingConversionTo_TypeDecl_value = narrowingConversionTo_compute(type);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             narrowingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(narrowingConversionTo_TypeDecl_value));
         return narrowingConversionTo_TypeDecl_value;
     }
@@ -270,10 +270,10 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unboxed() {
         if(unboxed_computed)
             return unboxed_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         unboxed_value = unboxed_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             unboxed_computed = true;
         return unboxed_value;
     }
@@ -361,10 +361,10 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public String jvmName() {
         if(jvmName_computed)
             return jvmName_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         jvmName_value = jvmName_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             jvmName_computed = true;
         return jvmName_value;
     }

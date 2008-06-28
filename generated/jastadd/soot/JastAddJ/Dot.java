@@ -146,17 +146,17 @@ public class Dot extends AbstractDot implements Cloneable {
 public ASTNode rewriteTo() {
     // Declared in ResolveAmbiguousNames.jrag at line 206
     if(!duringSyntacticClassification() && leftSide().isPackageAccess() && rightSide().isPackageAccess()) {
-        duringResolveAmbiguousNames++;
+        state().duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule0();
-        duringResolveAmbiguousNames--;
+        state().duringResolveAmbiguousNames--;
         return result;
     }
 
     // Declared in ResolveAmbiguousNames.jrag at line 218
     if(!duringSyntacticClassification() && leftSide().isPackageAccess() && !((Access)leftSide()).hasPrevExpr() && rightSide() instanceof TypeAccess) {
-        duringResolveAmbiguousNames++;
+        state().duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule1();
-        duringResolveAmbiguousNames--;
+        state().duringResolveAmbiguousNames--;
         return result;
     }
 

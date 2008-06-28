@@ -434,10 +434,10 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed)
             return sourceMethodDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceMethodDecl_value = sourceMethodDecl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sourceMethodDecl_computed = true;
         return sourceMethodDecl_value;
     }
@@ -450,10 +450,10 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
 if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_values = new java.util.HashMap(4);
         if(moreSpecificThan_MethodDecl_values.containsKey(_parameters))
             return ((Boolean)moreSpecificThan_MethodDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean moreSpecificThan_MethodDecl_value = moreSpecificThan_compute(m);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             moreSpecificThan_MethodDecl_values.put(_parameters, Boolean.valueOf(moreSpecificThan_MethodDecl_value));
         return moreSpecificThan_MethodDecl_value;
     }
@@ -474,10 +474,10 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
  @SuppressWarnings({"unchecked", "cast"})     public GenericMethodDecl genericMethodDecl() {
         if(genericMethodDecl_computed)
             return genericMethodDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         genericMethodDecl_value = getParent().Define_GenericMethodDecl_genericMethodDecl(this, null);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             genericMethodDecl_computed = true;
         return genericMethodDecl_value;
     }

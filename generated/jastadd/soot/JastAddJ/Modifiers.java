@@ -341,10 +341,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPublic() {
         if(isPublic_computed)
             return isPublic_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isPublic_value = isPublic_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isPublic_computed = true;
         return isPublic_value;
     }
@@ -357,10 +357,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrivate() {
         if(isPrivate_computed)
             return isPrivate_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isPrivate_value = isPrivate_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isPrivate_computed = true;
         return isPrivate_value;
     }
@@ -373,10 +373,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isProtected() {
         if(isProtected_computed)
             return isProtected_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isProtected_value = isProtected_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isProtected_computed = true;
         return isProtected_value;
     }
@@ -389,10 +389,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
         if(isStatic_computed)
             return isStatic_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isStatic_value = isStatic_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isStatic_computed = true;
         return isStatic_value;
     }
@@ -405,10 +405,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
         if(isFinal_computed)
             return isFinal_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isFinal_value = isFinal_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isFinal_computed = true;
         return isFinal_value;
     }
@@ -421,10 +421,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAbstract() {
         if(isAbstract_computed)
             return isAbstract_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isAbstract_value = isAbstract_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isAbstract_computed = true;
         return isAbstract_value;
     }
@@ -437,10 +437,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVolatile() {
         if(isVolatile_computed)
             return isVolatile_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isVolatile_value = isVolatile_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isVolatile_computed = true;
         return isVolatile_value;
     }
@@ -453,10 +453,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTransient() {
         if(isTransient_computed)
             return isTransient_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isTransient_value = isTransient_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isTransient_computed = true;
         return isTransient_value;
     }
@@ -469,10 +469,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStrictfp() {
         if(isStrictfp_computed)
             return isStrictfp_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isStrictfp_value = isStrictfp_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isStrictfp_computed = true;
         return isStrictfp_value;
     }
@@ -485,10 +485,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynchronized() {
         if(isSynchronized_computed)
             return isSynchronized_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isSynchronized_value = isSynchronized_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isSynchronized_computed = true;
         return isSynchronized_value;
     }
@@ -501,10 +501,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNative() {
         if(isNative_computed)
             return isNative_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isNative_value = isNative_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isNative_computed = true;
         return isNative_value;
     }
@@ -517,10 +517,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
         if(isSynthetic_computed)
             return isSynthetic_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isSynthetic_value = isSynthetic_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isSynthetic_computed = true;
         return isSynthetic_value;
     }
@@ -550,10 +550,10 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 if(numModifier_String_values == null) numModifier_String_values = new java.util.HashMap(4);
         if(numModifier_String_values.containsKey(_parameters))
             return ((Integer)numModifier_String_values.get(_parameters)).intValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         int numModifier_String_value = numModifier_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             numModifier_String_values.put(_parameters, new Integer(numModifier_String_value));
         return numModifier_String_value;
     }

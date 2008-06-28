@@ -176,9 +176,9 @@ public class PackageOrTypeAccess extends Access implements Cloneable {
 public ASTNode rewriteTo() {
     // Declared in ResolveAmbiguousNames.jrag at line 171
     if(!duringSyntacticClassification()) {
-        duringResolveAmbiguousNames++;
+        state().duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule0();
-        duringResolveAmbiguousNames--;
+        state().duringResolveAmbiguousNames--;
         return result;
     }
 

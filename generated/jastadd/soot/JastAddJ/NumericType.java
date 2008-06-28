@@ -249,10 +249,10 @@ private TypeDecl refined_TypeAnalysis_NumericType_binaryNumericPromotion_TypeDec
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
         if(unaryNumericPromotion_computed)
             return unaryNumericPromotion_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         unaryNumericPromotion_value = unaryNumericPromotion_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             unaryNumericPromotion_computed = true;
         return unaryNumericPromotion_value;
     }
@@ -266,10 +266,10 @@ private TypeDecl refined_TypeAnalysis_NumericType_binaryNumericPromotion_TypeDec
 if(binaryNumericPromotion_TypeDecl_values == null) binaryNumericPromotion_TypeDecl_values = new java.util.HashMap(4);
         if(binaryNumericPromotion_TypeDecl_values.containsKey(_parameters))
             return (TypeDecl)binaryNumericPromotion_TypeDecl_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             binaryNumericPromotion_TypeDecl_values.put(_parameters, binaryNumericPromotion_TypeDecl_value);
         return binaryNumericPromotion_TypeDecl_value;
     }

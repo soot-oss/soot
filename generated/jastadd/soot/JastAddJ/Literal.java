@@ -216,10 +216,10 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             constant_computed = true;
         return constant_value;
     }

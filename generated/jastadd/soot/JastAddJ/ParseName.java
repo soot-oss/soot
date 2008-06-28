@@ -137,9 +137,9 @@ public class ParseName extends Access implements Cloneable {
 
 public ASTNode rewriteTo() {
     // Declared in SyntacticClassification.jrag at line 15
-        duringSyntacticClassification++;
+        state().duringSyntacticClassification++;
         ASTNode result = rewriteRule0();
-        duringSyntacticClassification--;
+        state().duringSyntacticClassification--;
         return result;
 }
 

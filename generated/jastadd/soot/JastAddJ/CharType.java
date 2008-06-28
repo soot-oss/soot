@@ -255,10 +255,10 @@ public class CharType extends IntegralType implements Cloneable {
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
         if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)narrowingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean narrowingConversionTo_TypeDecl_value = narrowingConversionTo_compute(type);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             narrowingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(narrowingConversionTo_TypeDecl_value));
         return narrowingConversionTo_TypeDecl_value;
     }
@@ -269,10 +269,10 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
         if(unaryNumericPromotion_computed)
             return unaryNumericPromotion_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         unaryNumericPromotion_value = unaryNumericPromotion_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             unaryNumericPromotion_computed = true;
         return unaryNumericPromotion_value;
     }
@@ -291,10 +291,10 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl boxed() {
         if(boxed_computed)
             return boxed_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boxed_value = boxed_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             boxed_computed = true;
         return boxed_value;
     }
@@ -305,10 +305,10 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public String jvmName() {
         if(jvmName_computed)
             return jvmName_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         jvmName_value = jvmName_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             jvmName_computed = true;
         return jvmName_value;
     }
@@ -327,10 +327,10 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public Type getSootType() {
         if(getSootType_computed)
             return getSootType_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootType_value = getSootType_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getSootType_computed = true;
         return getSootType_value;
     }

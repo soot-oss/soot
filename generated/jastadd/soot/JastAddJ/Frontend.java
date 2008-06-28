@@ -11,8 +11,8 @@ public class Frontend extends java.lang.Object {
 
 
     protected Frontend() {
-      ASTNode.reset(); // reset global state and possible debug info
       program = new Program();
+      program.state().reset();
     }
 
     // Declared in FrontendMain.jrag at line 19

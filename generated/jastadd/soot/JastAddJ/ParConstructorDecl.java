@@ -395,10 +395,10 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed)
             return sourceConstructorDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceConstructorDecl_value = sourceConstructorDecl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sourceConstructorDecl_computed = true;
         return sourceConstructorDecl_value;
     }
@@ -411,10 +411,10 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public GenericConstructorDecl genericConstructorDecl() {
         if(genericConstructorDecl_computed)
             return genericConstructorDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         genericConstructorDecl_value = getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, null);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             genericConstructorDecl_computed = true;
         return genericConstructorDecl_value;
     }

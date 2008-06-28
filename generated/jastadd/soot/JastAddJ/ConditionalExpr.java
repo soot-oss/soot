@@ -280,10 +280,10 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             constant_computed = true;
         return constant_value;
     }
@@ -296,10 +296,10 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         if(isConstant_computed)
             return isConstant_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isConstant_value = isConstant_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isConstant_computed = true;
         return isConstant_value;
     }
@@ -312,10 +312,10 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
  @SuppressWarnings({"unchecked", "cast"})     public boolean booleanOperator() {
         if(booleanOperator_computed)
             return booleanOperator_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         booleanOperator_value = booleanOperator_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             booleanOperator_computed = true;
         return booleanOperator_value;
     }
@@ -376,10 +376,10 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }
@@ -438,10 +438,10 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt else_branch_label() {
         if(else_branch_label_computed)
             return else_branch_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         else_branch_label_value = else_branch_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             else_branch_label_computed = true;
         return else_branch_label_value;
     }
@@ -454,10 +454,10 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt then_branch_label() {
         if(then_branch_label_computed)
             return then_branch_label_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         then_branch_label_value = then_branch_label_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             then_branch_label_computed = true;
         return then_branch_label_value;
     }

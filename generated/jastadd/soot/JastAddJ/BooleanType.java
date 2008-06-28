@@ -313,10 +313,10 @@ public class BooleanType extends PrimitiveType implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl boxed() {
         if(boxed_computed)
             return boxed_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boxed_value = boxed_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             boxed_computed = true;
         return boxed_value;
     }
@@ -327,10 +327,10 @@ public class BooleanType extends PrimitiveType implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public String jvmName() {
         if(jvmName_computed)
             return jvmName_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         jvmName_value = jvmName_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             jvmName_computed = true;
         return jvmName_value;
     }
@@ -349,10 +349,10 @@ public class BooleanType extends PrimitiveType implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Type getSootType() {
         if(getSootType_computed)
             return getSootType_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootType_value = getSootType_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getSootType_computed = true;
         return getSootType_value;
     }

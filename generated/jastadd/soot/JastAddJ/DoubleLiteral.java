@@ -129,10 +129,10 @@ public class DoubleLiteral extends Literal implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isZero() {
         if(isZero_computed)
             return isZero_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isZero_value = isZero_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isZero_computed = true;
         return isZero_value;
     }
@@ -154,10 +154,10 @@ public class DoubleLiteral extends Literal implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             constant_computed = true;
         return constant_value;
     }
@@ -179,10 +179,10 @@ public class DoubleLiteral extends Literal implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }

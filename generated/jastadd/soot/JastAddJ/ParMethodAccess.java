@@ -267,10 +267,10 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
 if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = new java.util.HashMap(4);
         if(typeArguments_MethodDecl_values.containsKey(_parameters))
             return (ArrayList)typeArguments_MethodDecl_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         ArrayList typeArguments_MethodDecl_value = typeArguments_compute(m);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             typeArguments_MethodDecl_values.put(_parameters, typeArguments_MethodDecl_value);
         return typeArguments_MethodDecl_value;
     }

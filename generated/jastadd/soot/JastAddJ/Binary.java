@@ -176,44 +176,44 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
             isConstant_initialized = true;
             isConstant_value = false;
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             do {
-                isConstant_visited = CIRCLE_INDEX;
-                CHANGE = false;
+                isConstant_visited = state().CIRCLE_INDEX;
+                state().CHANGE = false;
                 boolean new_isConstant_value = isConstant_compute();
                 if (new_isConstant_value!=isConstant_value)
-                    CHANGE = true;
+                    state().CHANGE = true;
                 isConstant_value = new_isConstant_value; 
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             isConstant_computed = true;
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             isConstant_compute();
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
               isConstant_computed = false;
               isConstant_initialized = false;
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return isConstant_value;
         }
-        if(isConstant_visited != CIRCLE_INDEX) {
-            isConstant_visited = CIRCLE_INDEX;
-            if (RESET_CYCLE) {
+        if(isConstant_visited != state().CIRCLE_INDEX) {
+            isConstant_visited = state().CIRCLE_INDEX;
+            if (state().RESET_CYCLE) {
                 isConstant_computed = false;
                 isConstant_initialized = false;
                 return isConstant_value;
             }
             boolean new_isConstant_value = isConstant_compute();
             if (new_isConstant_value!=isConstant_value)
-                CHANGE = true;
+                state().CHANGE = true;
             isConstant_value = new_isConstant_value; 
             return isConstant_value;
         }
@@ -260,10 +260,10 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 if(isDAafterTrue_Variable_values == null) isDAafterTrue_Variable_values = new java.util.HashMap(4);
         if(isDAafterTrue_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafterTrue_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafterTrue_Variable_values.put(_parameters, Boolean.valueOf(isDAafterTrue_Variable_value));
         return isDAafterTrue_Variable_value;
     }
@@ -277,10 +277,10 @@ if(isDAafterTrue_Variable_values == null) isDAafterTrue_Variable_values = new ja
 if(isDAafterFalse_Variable_values == null) isDAafterFalse_Variable_values = new java.util.HashMap(4);
         if(isDAafterFalse_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafterFalse_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafterFalse_Variable_values.put(_parameters, Boolean.valueOf(isDAafterFalse_Variable_value));
         return isDAafterFalse_Variable_value;
     }
@@ -294,10 +294,10 @@ if(isDAafterFalse_Variable_values == null) isDAafterFalse_Variable_values = new 
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
         if(isDAafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
         return isDAafter_Variable_value;
     }
@@ -311,10 +311,10 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
         if(isDUafter_Variable_values.containsKey(_parameters))
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
         return isDUafter_Variable_value;
     }
@@ -328,10 +328,10 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
         if(isDUbefore_Variable_values.containsKey(_parameters))
             return ((Boolean)isDUbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isDUbefore_Variable_values.put(_parameters, Boolean.valueOf(isDUbefore_Variable_value));
         return isDUbefore_Variable_value;
     }

@@ -75,10 +75,10 @@ public abstract class ImportDecl extends ASTNode<ASTNode> implements Cloneable {
 if(importedTypes_String_values == null) importedTypes_String_values = new java.util.HashMap(4);
         if(importedTypes_String_values.containsKey(_parameters))
             return (SimpleSet)importedTypes_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet importedTypes_String_value = importedTypes_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             importedTypes_String_values.put(_parameters, importedTypes_String_value);
         return importedTypes_String_value;
     }
@@ -118,10 +118,10 @@ if(importedTypes_String_values == null) importedTypes_String_values = new java.u
 if(importedFields_String_values == null) importedFields_String_values = new java.util.HashMap(4);
         if(importedFields_String_values.containsKey(_parameters))
             return (SimpleSet)importedFields_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet importedFields_String_value = importedFields_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             importedFields_String_values.put(_parameters, importedFields_String_value);
         return importedFields_String_value;
     }
@@ -135,10 +135,10 @@ if(importedFields_String_values == null) importedFields_String_values = new java
 if(importedMethods_String_values == null) importedMethods_String_values = new java.util.HashMap(4);
         if(importedMethods_String_values.containsKey(_parameters))
             return (Collection)importedMethods_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         Collection importedMethods_String_value = importedMethods_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             importedMethods_String_values.put(_parameters, importedMethods_String_value);
         return importedMethods_String_value;
     }

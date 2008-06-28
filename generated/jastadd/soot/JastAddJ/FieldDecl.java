@@ -196,22 +196,22 @@ public class FieldDecl extends MemberDecl implements Cloneable {
 public ASTNode rewriteTo() {
     // Declared in VariableDeclaration.jrag at line 109
     if(getNumVariableDecl() == 1) {
-        duringVariableDeclaration++;
+        state().duringVariableDeclaration++;
         ASTNode result = rewriteRule0();
-        duringVariableDeclaration--;
+        state().duringVariableDeclaration--;
         return result;
     }
 
     // Declared in VariableDeclaration.jrag at line 120
     if(getParent().getParent() instanceof TypeDecl && 
         ((TypeDecl)getParent().getParent()).getBodyDeclListNoTransform() == getParent() && getNumVariableDecl() > 1) {
-        duringVariableDeclaration++;
+        state().duringVariableDeclaration++;
       List newList = rewriteTypeDecl_getBodyDecl();
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       for(int j = 1; j < newList.getNumChild(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
-        duringVariableDeclaration--;
+        state().duringVariableDeclaration--;
       return newList.getChildNoTransform(0);
     }
     return super.rewriteTo();

@@ -278,10 +278,10 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed)
             return decls_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             decls_computed = true;
         return decls_value;
     }

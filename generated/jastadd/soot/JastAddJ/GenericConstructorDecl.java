@@ -509,7 +509,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
  @SuppressWarnings({"unchecked", "cast"})     public List getParConstructorDeclList() {
         if(getParConstructorDeclList_computed)
             return (List)ASTNode.getChild(this, getParConstructorDeclListChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getParConstructorDeclList_value = getParConstructorDeclList_compute();
         setParConstructorDeclList(getParConstructorDeclList_value);

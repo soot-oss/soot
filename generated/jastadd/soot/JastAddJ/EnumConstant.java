@@ -450,11 +450,11 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Access getTypeAccess() {
         if(getTypeAccess_computed)
             return (Access)ASTNode.getChild(this, getTypeAccessChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getTypeAccess_value = getTypeAccess_compute();
             setTypeAccess(getTypeAccess_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getTypeAccess_computed = true;
         return (Access)ASTNode.getChild(this, getTypeAccessChildPosition());
     }
@@ -469,11 +469,11 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Opt getInitOpt() {
         if(getInitOpt_computed)
             return (Opt)ASTNode.getChild(this, getInitOptChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getInitOpt_value = getInitOpt_compute();
         setInitOpt(getInitOpt_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getInitOpt_computed = true;
         return (Opt)ASTNode.getChild(this, getInitOptChildPosition());
     }

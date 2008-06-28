@@ -523,10 +523,10 @@ private SimpleSet refined_LookupType_CompilationUnit_Child_lookupType_String(Str
  @SuppressWarnings({"unchecked", "cast"})     public String packageName() {
         if(packageName_computed)
             return packageName_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         packageName_value = packageName_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             packageName_computed = true;
         return packageName_value;
     }
@@ -604,10 +604,10 @@ private SimpleSet refined_LookupType_CompilationUnit_Child_lookupType_String(Str
 if(lookupType_String_values == null) lookupType_String_values = new java.util.HashMap(4);
         if(lookupType_String_values.containsKey(_parameters))
             return (SimpleSet)lookupType_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             lookupType_String_values.put(_parameters, lookupType_String_value);
         return lookupType_String_value;
     }

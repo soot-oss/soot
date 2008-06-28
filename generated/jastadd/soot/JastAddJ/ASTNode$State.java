@@ -2,23 +2,56 @@
 package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
-class ASTNode$State extends java.lang.Object {
-    // Declared in ASTNode.ast at line 19
+public class ASTNode$State extends java.lang.Object {
+    // Declared in ASTNode at line 2
+
+  public boolean IN_CIRCLE = false;
+
+    // Declared in ASTNode at line 3
+
+  public int CIRCLE_INDEX;
+
+    // Declared in ASTNode at line 4
+
+  public boolean CHANGE = false;
+
+    // Declared in ASTNode at line 5
+
+  public boolean RESET_CYCLE = false;
+
+    // Declared in ASTNode at line 6
+
+  public static final int REWRITE_CHANGE = 1;
+
+    // Declared in ASTNode at line 7
+
+  public static final int REWRITE_NOCHANGE = 2;
+
+    // Declared in ASTNode at line 8
+
+  public static final int REWRITE_INTERRUPT = 3;
+
+    // Declared in ASTNode at line 9
+
+  public int boundariesCrossed = 0;
+
+    // Declared in ASTNode at line 11
+
 
    private int[] stack;
 
-    // Declared in ASTNode.ast at line 20
+    // Declared in ASTNode at line 12
 
    private int pos;
 
-    // Declared in ASTNode.ast at line 21
+    // Declared in ASTNode at line 13
 
    public ASTNode$State() {
      stack = new int[64];
      pos = 0;
    }
 
-    // Declared in ASTNode.ast at line 25
+    // Declared in ASTNode at line 17
 
    private void ensureSize(int size) {
      if(size < stack.length)
@@ -28,24 +61,125 @@ class ASTNode$State extends java.lang.Object {
      stack = newStack;
    }
 
-    // Declared in ASTNode.ast at line 32
+    // Declared in ASTNode at line 24
 
    public void push(int i) {
      ensureSize(pos+1);
      stack[pos++] = i;
    }
 
-    // Declared in ASTNode.ast at line 36
+    // Declared in ASTNode at line 28
 
    public int pop() {
      return stack[--pos];
    }
 
-    // Declared in ASTNode.ast at line 39
+    // Declared in ASTNode at line 31
 
    public int peek() {
      return stack[pos-1];
    }
+
+    // Declared in Options.jadd at line 13
+
+  public Options options = new Options();
+
+    // Declared in ASTNode.ast at line 128
+
+    protected int duringEnums = 0;
+
+    // Declared in ASTNode.ast at line 139
+
+    protected int duringResolveAmbiguousNames = 0;
+
+    // Declared in ASTNode.ast at line 150
+
+    protected int duringAnnotations = 0;
+
+    // Declared in ASTNode.ast at line 161
+
+    protected int duringConstantExpression = 0;
+
+    // Declared in ASTNode.ast at line 172
+
+    protected int duringAnonymousClasses = 0;
+
+    // Declared in ASTNode.ast at line 183
+
+    protected int duringLookupConstructor = 0;
+
+    // Declared in ASTNode.ast at line 194
+
+    protected int duringVariableDeclaration = 0;
+
+    // Declared in ASTNode.ast at line 205
+
+    protected int duringDefiniteAssignment = 0;
+
+    // Declared in ASTNode.ast at line 216
+
+    protected int duringGenericTypeVariables = 0;
+
+    // Declared in ASTNode.ast at line 227
+
+    protected int duringSyntacticClassification = 0;
+
+    // Declared in ASTNode.ast at line 238
+
+    protected int duringBoundNames = 0;
+
+    // Declared in ASTNode.ast at line 249
+
+    public void reset() {
+        IN_CIRCLE = false;
+        CIRCLE_INDEX = 0;
+        CHANGE = false;
+        boundariesCrossed = 0;
+        if(duringEnums != 0) {
+            System.out.println("Warning: resetting duringEnums");
+            duringEnums = 0;
+        }
+        if(duringResolveAmbiguousNames != 0) {
+            System.out.println("Warning: resetting duringResolveAmbiguousNames");
+            duringResolveAmbiguousNames = 0;
+        }
+        if(duringAnnotations != 0) {
+            System.out.println("Warning: resetting duringAnnotations");
+            duringAnnotations = 0;
+        }
+        if(duringConstantExpression != 0) {
+            System.out.println("Warning: resetting duringConstantExpression");
+            duringConstantExpression = 0;
+        }
+        if(duringAnonymousClasses != 0) {
+            System.out.println("Warning: resetting duringAnonymousClasses");
+            duringAnonymousClasses = 0;
+        }
+        if(duringLookupConstructor != 0) {
+            System.out.println("Warning: resetting duringLookupConstructor");
+            duringLookupConstructor = 0;
+        }
+        if(duringVariableDeclaration != 0) {
+            System.out.println("Warning: resetting duringVariableDeclaration");
+            duringVariableDeclaration = 0;
+        }
+        if(duringDefiniteAssignment != 0) {
+            System.out.println("Warning: resetting duringDefiniteAssignment");
+            duringDefiniteAssignment = 0;
+        }
+        if(duringGenericTypeVariables != 0) {
+            System.out.println("Warning: resetting duringGenericTypeVariables");
+            duringGenericTypeVariables = 0;
+        }
+        if(duringSyntacticClassification != 0) {
+            System.out.println("Warning: resetting duringSyntacticClassification");
+            duringSyntacticClassification = 0;
+        }
+        if(duringBoundNames != 0) {
+            System.out.println("Warning: resetting duringBoundNames");
+            duringBoundNames = 0;
+        }
+    }
 
 
 }

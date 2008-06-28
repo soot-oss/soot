@@ -318,44 +318,44 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
             isCircular_initialized = true;
             isCircular_value = true;
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             do {
-                isCircular_visited = CIRCLE_INDEX;
-                CHANGE = false;
+                isCircular_visited = state().CIRCLE_INDEX;
+                state().CHANGE = false;
                 boolean new_isCircular_value = isCircular_compute();
                 if (new_isCircular_value!=isCircular_value)
-                    CHANGE = true;
+                    state().CHANGE = true;
                 isCircular_value = new_isCircular_value; 
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             isCircular_computed = true;
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             isCircular_compute();
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
               isCircular_computed = false;
               isCircular_initialized = false;
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return isCircular_value;
         }
-        if(isCircular_visited != CIRCLE_INDEX) {
-            isCircular_visited = CIRCLE_INDEX;
-            if (RESET_CYCLE) {
+        if(isCircular_visited != state().CIRCLE_INDEX) {
+            isCircular_visited = state().CIRCLE_INDEX;
+            if (state().RESET_CYCLE) {
                 isCircular_computed = false;
                 isCircular_initialized = false;
                 return isCircular_value;
             }
             boolean new_isCircular_value = isCircular_compute();
             if (new_isCircular_value!=isCircular_value)
-                CHANGE = true;
+                state().CHANGE = true;
             isCircular_value = new_isCircular_value; 
             return isCircular_value;
         }
@@ -370,11 +370,11 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public Opt getSuperClassAccessOpt() {
         if(getSuperClassAccessOpt_computed)
             return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
         setSuperClassAccessOpt(getSuperClassAccessOpt_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getSuperClassAccessOpt_computed = true;
         return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
     }
@@ -392,11 +392,11 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public List getImplementsList() {
         if(getImplementsList_computed)
             return (List)ASTNode.getChild(this, getImplementsListChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getImplementsList_value = getImplementsList_compute();
         setImplementsList(getImplementsList_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getImplementsList_computed = true;
         return (List)ASTNode.getChild(this, getImplementsListChildPosition());
     }
@@ -429,9 +429,9 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
 public ASTNode rewriteTo() {
     // Declared in AnonymousClasses.jrag at line 52
     if(noConstructor()) {
-        duringAnonymousClasses++;
+        state().duringAnonymousClasses++;
         ASTNode result = rewriteRule0();
-        duringAnonymousClasses--;
+        state().duringAnonymousClasses--;
         return result;
     }
 

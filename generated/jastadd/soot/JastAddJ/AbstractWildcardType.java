@@ -178,10 +178,10 @@ public abstract class AbstractWildcardType extends TypeDecl implements Cloneable
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootClassDecl_value = getSootClassDecl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getSootClassDecl_computed = true;
         return getSootClassDecl_value;
     }

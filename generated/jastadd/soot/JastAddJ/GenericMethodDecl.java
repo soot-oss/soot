@@ -556,7 +556,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public List getParMethodDeclList() {
         if(getParMethodDeclList_computed)
             return (List)ASTNode.getChild(this, getParMethodDeclListChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getParMethodDeclList_value = getParMethodDeclList_compute();
         setParMethodDeclList(getParMethodDeclList_value);
@@ -573,7 +573,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl rawMethodDecl() {
         if(rawMethodDecl_computed)
             return rawMethodDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         rawMethodDecl_value = rawMethodDecl_compute();
         if(true)
@@ -590,10 +590,10 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
 if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_values = new java.util.HashMap(4);
         if(lookupParMethodDecl_ArrayList_values.containsKey(_parameters))
             return (MethodDecl)lookupParMethodDecl_ArrayList_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         MethodDecl lookupParMethodDecl_ArrayList_value = lookupParMethodDecl_compute(typeArguments);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             lookupParMethodDecl_ArrayList_values.put(_parameters, lookupParMethodDecl_ArrayList_value);
         return lookupParMethodDecl_ArrayList_value;
     }

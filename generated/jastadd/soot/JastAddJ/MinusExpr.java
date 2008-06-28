@@ -126,10 +126,10 @@ public class MinusExpr extends Unary implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }
@@ -139,17 +139,17 @@ public class MinusExpr extends Unary implements Cloneable {
 public ASTNode rewriteTo() {
     // Declared in ConstantExpression.jrag at line 246
     if(getOperand() instanceof IntegerLiteral && ((IntegerLiteral)getOperand()).isDecimal() && getOperand().isPositive()) {
-        duringConstantExpression++;
+        state().duringConstantExpression++;
         ASTNode result = rewriteRule0();
-        duringConstantExpression--;
+        state().duringConstantExpression--;
         return result;
     }
 
     // Declared in ConstantExpression.jrag at line 251
     if(getOperand() instanceof LongLiteral && ((LongLiteral)getOperand()).isDecimal() && getOperand().isPositive()) {
-        duringConstantExpression++;
+        state().duringConstantExpression++;
         ASTNode result = rewriteRule1();
-        duringConstantExpression--;
+        state().duringConstantExpression--;
         return result;
     }
 

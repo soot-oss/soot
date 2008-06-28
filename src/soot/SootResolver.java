@@ -63,7 +63,7 @@ public class SootResolver
         
         
         program = new Program();
-        ASTNode.reset();
+	program.state().reset();
 
         program.initBytecodeReader(new BytecodeParser());
         program.initJavaParser(

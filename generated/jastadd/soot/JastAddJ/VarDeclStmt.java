@@ -196,10 +196,10 @@ public class VarDeclStmt extends Stmt implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
         if(canCompleteNormally_computed)
             return canCompleteNormally_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             canCompleteNormally_computed = true;
         return canCompleteNormally_value;
     }
@@ -226,34 +226,34 @@ public class VarDeclStmt extends Stmt implements Cloneable {
 public ASTNode rewriteTo() {
     // Declared in VariableDeclaration.jrag at line 151
     if(getNumVariableDecl() == 1) {
-        duringVariableDeclaration++;
+        state().duringVariableDeclaration++;
         ASTNode result = rewriteRule0();
-        duringVariableDeclaration--;
+        state().duringVariableDeclaration--;
         return result;
     }
 
     // Declared in VariableDeclaration.jrag at line 162
     if(getParent().getParent() instanceof Block && 
         ((Block)getParent().getParent()).getStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
-        duringVariableDeclaration++;
+        state().duringVariableDeclaration++;
       List newList = rewriteBlock_getStmt();
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       for(int j = 1; j < newList.getNumChild(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
-        duringVariableDeclaration--;
+        state().duringVariableDeclaration--;
       return newList.getChildNoTransform(0);
     }
     // Declared in VariableDeclaration.jrag at line 166
     if(getParent().getParent() instanceof ForStmt && 
         ((ForStmt)getParent().getParent()).getInitStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
-        duringVariableDeclaration++;
+        state().duringVariableDeclaration++;
       List newList = rewriteForStmt_getInitStmt();
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       for(int j = 1; j < newList.getNumChild(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
-        duringVariableDeclaration--;
+        state().duringVariableDeclaration--;
       return newList.getChildNoTransform(0);
     }
     return super.rewriteTo();

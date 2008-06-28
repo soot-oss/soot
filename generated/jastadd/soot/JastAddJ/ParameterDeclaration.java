@@ -286,10 +286,10 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }
@@ -382,10 +382,10 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed)
             return sourceVariableDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceVariableDecl_value = sourceVariableDecl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sourceVariableDecl_computed = true;
         return sourceVariableDecl_value;
     }
@@ -448,10 +448,10 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
  @SuppressWarnings({"unchecked", "cast"})     public int localNum() {
         if(localNum_computed)
             return localNum_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         localNum_value = getParent().Define_int_localNum(this, null);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             localNum_computed = true;
         return localNum_value;
     }

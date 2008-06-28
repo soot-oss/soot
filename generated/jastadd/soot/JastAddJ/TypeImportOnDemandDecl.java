@@ -104,10 +104,10 @@ public class TypeImportOnDemandDecl extends ImportDecl implements Cloneable {
 if(importedTypes_String_values == null) importedTypes_String_values = new java.util.HashMap(4);
         if(importedTypes_String_values.containsKey(_parameters))
             return (SimpleSet)importedTypes_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet importedTypes_String_value = importedTypes_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             importedTypes_String_values.put(_parameters, importedTypes_String_value);
         return importedTypes_String_value;
     }

@@ -310,45 +310,45 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
             subtype_TypeDecl_initialized.add(_parameters);
             subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-                CHANGE = false;
+                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+                state().CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
                 if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    CHANGE = true;
+                    state().CHANGE = true;
                 subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             subtype_TypeDecl_computed.add(_parameters);
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             subtype_compute(type);
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
             subtype_TypeDecl_computed.remove(_parameters);
             subtype_TypeDecl_initialized.remove(_parameters);
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-            if (RESET_CYCLE) {
+        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
+            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+            if (state().RESET_CYCLE) {
                 subtype_TypeDecl_computed.remove(_parameters);
                 subtype_TypeDecl_initialized.remove(_parameters);
                 return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
             }
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
             if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                CHANGE = true;
+                state().CHANGE = true;
             subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
             return new_subtype_TypeDecl_value;
         }
@@ -369,10 +369,10 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootClassDecl_value = getSootClassDecl_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getSootClassDecl_computed = true;
         return getSootClassDecl_value;
     }

@@ -292,11 +292,11 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public List getSuperInterfaceIdList() {
         if(getSuperInterfaceIdList_computed)
             return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSuperInterfaceIdList_value = getSuperInterfaceIdList_compute();
         setSuperInterfaceIdList(getSuperInterfaceIdList_value);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             getSuperInterfaceIdList_computed = true;
         return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
     }
@@ -327,45 +327,45 @@ if(containsElementOf_TypeDecl_values == null) containsElementOf_TypeDecl_values 
             containsElementOf_TypeDecl_initialized.add(_parameters);
             containsElementOf_TypeDecl_values.put(_parameters, Boolean.valueOf(false));
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             boolean new_containsElementOf_TypeDecl_value;
             do {
-                containsElementOf_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-                CHANGE = false;
+                containsElementOf_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+                state().CHANGE = false;
                 new_containsElementOf_TypeDecl_value = containsElementOf_compute(typeDecl);
                 if (new_containsElementOf_TypeDecl_value!=((Boolean)containsElementOf_TypeDecl_values.get(_parameters)).booleanValue())
-                    CHANGE = true;
+                    state().CHANGE = true;
                 containsElementOf_TypeDecl_values.put(_parameters, Boolean.valueOf(new_containsElementOf_TypeDecl_value));
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             containsElementOf_TypeDecl_computed.add(_parameters);
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             containsElementOf_compute(typeDecl);
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
             containsElementOf_TypeDecl_computed.remove(_parameters);
             containsElementOf_TypeDecl_initialized.remove(_parameters);
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return new_containsElementOf_TypeDecl_value;
         }
-        if(!new Integer(CIRCLE_INDEX).equals(containsElementOf_TypeDecl_visited.get(_parameters))) {
-            containsElementOf_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-            if (RESET_CYCLE) {
+        if(!new Integer(state().CIRCLE_INDEX).equals(containsElementOf_TypeDecl_visited.get(_parameters))) {
+            containsElementOf_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+            if (state().RESET_CYCLE) {
                 containsElementOf_TypeDecl_computed.remove(_parameters);
                 containsElementOf_TypeDecl_initialized.remove(_parameters);
                 return ((Boolean)containsElementOf_TypeDecl_values.get(_parameters)).booleanValue();
             }
             boolean new_containsElementOf_TypeDecl_value = containsElementOf_compute(typeDecl);
             if (new_containsElementOf_TypeDecl_value!=((Boolean)containsElementOf_TypeDecl_values.get(_parameters)).booleanValue())
-                CHANGE = true;
+                state().CHANGE = true;
             containsElementOf_TypeDecl_values.put(_parameters, Boolean.valueOf(new_containsElementOf_TypeDecl_value));
             return new_containsElementOf_TypeDecl_value;
         }

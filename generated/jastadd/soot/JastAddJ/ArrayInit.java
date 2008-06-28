@@ -222,10 +222,10 @@ public class ArrayInit extends Expr implements Cloneable {
 if(computeDABefore_int_Variable_values == null) computeDABefore_int_Variable_values = new java.util.HashMap(4);
         if(computeDABefore_int_Variable_values.containsKey(_parameters))
             return ((Boolean)computeDABefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDABefore_int_Variable_value = computeDABefore_compute(childIndex, v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             computeDABefore_int_Variable_values.put(_parameters, Boolean.valueOf(computeDABefore_int_Variable_value));
         return computeDABefore_int_Variable_value;
     }
@@ -255,10 +255,10 @@ if(computeDABefore_int_Variable_values == null) computeDABefore_int_Variable_val
 if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_values = new java.util.HashMap(4);
         if(computeDUbefore_int_Variable_values.containsKey(_parameters))
             return ((Boolean)computeDUbefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDUbefore_int_Variable_value = computeDUbefore_compute(childIndex, v);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             computeDUbefore_int_Variable_values.put(_parameters, Boolean.valueOf(computeDUbefore_int_Variable_value));
         return computeDUbefore_int_Variable_value;
     }
@@ -277,10 +277,10 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed)
             return type_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             type_computed = true;
         return type_value;
     }
@@ -293,10 +293,10 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl declType() {
         if(declType_computed)
             return declType_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         declType_value = getParent().Define_TypeDecl_declType(this, null);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             declType_computed = true;
         return declType_value;
     }

@@ -89,10 +89,10 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
  @SuppressWarnings({"unchecked", "cast"})     public boolean reachableBreak() {
         if(reachableBreak_computed)
             return reachableBreak_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         reachableBreak_value = reachableBreak_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             reachableBreak_computed = true;
         return reachableBreak_value;
     }
@@ -112,10 +112,10 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
  @SuppressWarnings({"unchecked", "cast"})     public boolean reachableContinue() {
         if(reachableContinue_computed)
             return reachableContinue_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         reachableContinue_value = reachableContinue_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             reachableContinue_computed = true;
         return reachableContinue_value;
     }
@@ -135,10 +135,10 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
  @SuppressWarnings({"unchecked", "cast"})     public Collection targetBranches() {
         if(targetBranches_computed)
             return targetBranches_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         targetBranches_value = targetBranches_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             targetBranches_computed = true;
         return targetBranches_value;
     }
@@ -161,10 +161,10 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
  @SuppressWarnings({"unchecked", "cast"})     public Collection escapedBranches() {
         if(escapedBranches_computed)
             return escapedBranches_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         escapedBranches_value = escapedBranches_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             escapedBranches_computed = true;
         return escapedBranches_value;
     }
@@ -189,10 +189,10 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
  @SuppressWarnings({"unchecked", "cast"})     public Collection branches() {
         if(branches_computed)
             return branches_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         branches_value = branches_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             branches_computed = true;
         return branches_value;
     }
@@ -209,10 +209,10 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
  @SuppressWarnings({"unchecked", "cast"})     public Collection targetContinues() {
         if(targetContinues_computed)
             return targetContinues_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         targetContinues_value = targetContinues_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             targetContinues_computed = true;
         return targetContinues_value;
     }
@@ -240,10 +240,10 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
  @SuppressWarnings({"unchecked", "cast"})     public Collection targetBreaks() {
         if(targetBreaks_computed)
             return targetBreaks_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         targetBreaks_value = targetBreaks_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             targetBreaks_computed = true;
         return targetBreaks_value;
     }

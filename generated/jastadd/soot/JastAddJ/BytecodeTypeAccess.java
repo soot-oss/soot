@@ -117,9 +117,9 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
 
 public ASTNode rewriteTo() {
     // Declared in BoundNames.jrag at line 95
-        duringBoundNames++;
+        state().duringBoundNames++;
         ASTNode result = rewriteRule0();
-        duringBoundNames--;
+        state().duringBoundNames--;
         return result;
 }
 
@@ -147,7 +147,7 @@ public ASTNode rewriteTo() {
               set = set.add(typeDecl);
           }
           if(!set.isEmpty()) {
-            a = a == null ? new TypeAccess(packageName(), newName) : a.qualifiesAccess(new TypeAccess(newName));
+            a = a == null ? (Access)new TypeAccess(packageName(), newName) : (Access)a.qualifiesAccess(new TypeAccess(newName));
             type = (TypeDecl)set.iterator().next();
             newName = null; // reset subname
           }

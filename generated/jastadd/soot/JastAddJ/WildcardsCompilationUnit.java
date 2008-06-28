@@ -247,7 +247,7 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeWildcard() {
         if(typeWildcard_computed)
             return typeWildcard_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeWildcard_value = typeWildcard_compute();
         typeWildcard_value.setParent(this);
@@ -274,7 +274,7 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
 if(lookupWildcardExtends_TypeDecl_values == null) lookupWildcardExtends_TypeDecl_values = new java.util.HashMap(4);
         if(lookupWildcardExtends_TypeDecl_values.containsKey(_parameters))
             return (TypeDecl)lookupWildcardExtends_TypeDecl_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupWildcardExtends_TypeDecl_value = lookupWildcardExtends_compute(bound);
         if(lookupWildcardExtends_TypeDecl_list == null) {
@@ -307,7 +307,7 @@ if(lookupWildcardExtends_TypeDecl_values == null) lookupWildcardExtends_TypeDecl
 if(lookupWildcardSuper_TypeDecl_values == null) lookupWildcardSuper_TypeDecl_values = new java.util.HashMap(4);
         if(lookupWildcardSuper_TypeDecl_values.containsKey(_parameters))
             return (TypeDecl)lookupWildcardSuper_TypeDecl_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupWildcardSuper_TypeDecl_value = lookupWildcardSuper_compute(bound);
         if(lookupWildcardSuper_TypeDecl_list == null) {
@@ -340,7 +340,7 @@ if(lookupWildcardSuper_TypeDecl_values == null) lookupWildcardSuper_TypeDecl_val
 if(lookupLUBType_Collection_values == null) lookupLUBType_Collection_values = new java.util.HashMap(4);
         if(lookupLUBType_Collection_values.containsKey(_parameters))
             return (LUBType)lookupLUBType_Collection_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         LUBType lookupLUBType_Collection_value = lookupLUBType_compute(bounds);
         if(lookupLUBType_Collection_list == null) {
@@ -380,7 +380,7 @@ if(lookupLUBType_Collection_values == null) lookupLUBType_Collection_values = ne
 if(lookupGLBType_ArrayList_values == null) lookupGLBType_ArrayList_values = new java.util.HashMap(4);
         if(lookupGLBType_ArrayList_values.containsKey(_parameters))
             return (GLBType)lookupGLBType_ArrayList_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         GLBType lookupGLBType_ArrayList_value = lookupGLBType_compute(bounds);
         if(lookupGLBType_ArrayList_list == null) {

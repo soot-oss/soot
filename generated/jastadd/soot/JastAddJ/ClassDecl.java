@@ -718,10 +718,10 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public boolean noConstructor() {
         if(noConstructor_computed)
             return noConstructor_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         noConstructor_value = noConstructor_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             noConstructor_computed = true;
         return noConstructor_value;
     }
@@ -751,10 +751,10 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public HashMap interfacesMethodsSignatureMap() {
         if(interfacesMethodsSignatureMap_computed)
             return interfacesMethodsSignatureMap_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         interfacesMethodsSignatureMap_value = interfacesMethodsSignatureMap_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             interfacesMethodsSignatureMap_computed = true;
         return interfacesMethodsSignatureMap_value;
     }
@@ -775,10 +775,10 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsSignatureMap() {
         if(methodsSignatureMap_computed)
             return methodsSignatureMap_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         methodsSignatureMap_value = methodsSignatureMap_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             methodsSignatureMap_computed = true;
         return methodsSignatureMap_value;
     }
@@ -818,10 +818,10 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 if(ancestorMethods_String_values == null) ancestorMethods_String_values = new java.util.HashMap(4);
         if(ancestorMethods_String_values.containsKey(_parameters))
             return (SimpleSet)ancestorMethods_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet ancestorMethods_String_value = ancestorMethods_compute(signature);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             ancestorMethods_String_values.put(_parameters, ancestorMethods_String_value);
         return ancestorMethods_String_value;
     }
@@ -867,10 +867,10 @@ if(ancestorMethods_String_values == null) ancestorMethods_String_values = new ja
 if(memberTypes_String_values == null) memberTypes_String_values = new java.util.HashMap(4);
         if(memberTypes_String_values.containsKey(_parameters))
             return (SimpleSet)memberTypes_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet memberTypes_String_value = memberTypes_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             memberTypes_String_values.put(_parameters, memberTypes_String_value);
         return memberTypes_String_value;
     }
@@ -901,10 +901,10 @@ if(memberTypes_String_values == null) memberTypes_String_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public HashMap memberFieldsMap() {
         if(memberFieldsMap_computed)
             return memberFieldsMap_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         memberFieldsMap_value = memberFieldsMap_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             memberFieldsMap_computed = true;
         return memberFieldsMap_value;
     }
@@ -935,10 +935,10 @@ if(memberTypes_String_values == null) memberTypes_String_values = new java.util.
 if(memberFields_String_values == null) memberFields_String_values = new java.util.HashMap(4);
         if(memberFields_String_values.containsKey(_parameters))
             return (SimpleSet)memberFields_String_values.get(_parameters);
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet memberFields_String_value = memberFields_compute(name);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             memberFields_String_values.put(_parameters, memberFields_String_value);
         return memberFields_String_value;
     }
@@ -969,10 +969,10 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public Collection unimplementedMethods() {
         if(unimplementedMethods_computed)
             return unimplementedMethods_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         unimplementedMethods_value = unimplementedMethods_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             unimplementedMethods_computed = true;
         return unimplementedMethods_value;
     }
@@ -1028,10 +1028,10 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAbstract() {
         if(hasAbstract_computed)
             return hasAbstract_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         hasAbstract_value = hasAbstract_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             hasAbstract_computed = true;
         return hasAbstract_value;
     }
@@ -1044,10 +1044,10 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_values = new java.util.HashMap(4);
         if(castingConversionTo_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)castingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean castingConversionTo_TypeDecl_value = castingConversionTo_compute(type);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             castingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(castingConversionTo_TypeDecl_value));
         return castingConversionTo_TypeDecl_value;
     }
@@ -1079,10 +1079,10 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
  @SuppressWarnings({"unchecked", "cast"})     public boolean isString() {
         if(isString_computed)
             return isString_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isString_value = isString_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isString_computed = true;
         return isString_value;
     }
@@ -1093,10 +1093,10 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
  @SuppressWarnings({"unchecked", "cast"})     public boolean isObject() {
         if(isObject_computed)
             return isObject_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         isObject_value = isObject_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             isObject_computed = true;
         return isObject_value;
     }
@@ -1109,10 +1109,10 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
         if(instanceOf_TypeDecl_values.containsKey(_parameters))
             return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
         return instanceOf_TypeDecl_value;
     }
@@ -1170,44 +1170,44 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
             isCircular_initialized = true;
             isCircular_value = true;
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             do {
-                isCircular_visited = CIRCLE_INDEX;
-                CHANGE = false;
+                isCircular_visited = state().CIRCLE_INDEX;
+                state().CHANGE = false;
                 boolean new_isCircular_value = isCircular_compute();
                 if (new_isCircular_value!=isCircular_value)
-                    CHANGE = true;
+                    state().CHANGE = true;
                 isCircular_value = new_isCircular_value; 
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             isCircular_computed = true;
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             isCircular_compute();
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
               isCircular_computed = false;
               isCircular_initialized = false;
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return isCircular_value;
         }
-        if(isCircular_visited != CIRCLE_INDEX) {
-            isCircular_visited = CIRCLE_INDEX;
-            if (RESET_CYCLE) {
+        if(isCircular_visited != state().CIRCLE_INDEX) {
+            isCircular_visited = state().CIRCLE_INDEX;
+            if (state().RESET_CYCLE) {
                 isCircular_computed = false;
                 isCircular_initialized = false;
                 return isCircular_value;
             }
             boolean new_isCircular_value = isCircular_compute();
             if (new_isCircular_value!=isCircular_value)
-                CHANGE = true;
+                state().CHANGE = true;
             isCircular_value = new_isCircular_value; 
             return isCircular_value;
         }
@@ -1256,10 +1256,10 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public HashSet implementedInterfaces() {
         if(implementedInterfaces_computed)
             return implementedInterfaces_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         implementedInterfaces_value = implementedInterfaces_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             implementedInterfaces_computed = true;
         return implementedInterfaces_value;
     }
@@ -1290,45 +1290,45 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
             subtype_TypeDecl_initialized.add(_parameters);
             subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
         }
-        if (!IN_CIRCLE) {
-            IN_CIRCLE = true;
-            int num = boundariesCrossed;
+        if (!state().IN_CIRCLE) {
+            state().IN_CIRCLE = true;
+            int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
-            CIRCLE_INDEX = 1;
+            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-                CHANGE = false;
+                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+                state().CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
                 if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    CHANGE = true;
+                    state().CHANGE = true;
                 subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                CIRCLE_INDEX++;
-            } while (CHANGE);
-            if(isFinal && num == boundariesCrossed)
+                state().CIRCLE_INDEX++;
+            } while (state().CHANGE);
+            if(isFinal && num == state().boundariesCrossed)
 {
             subtype_TypeDecl_computed.add(_parameters);
             }
             else {
-            RESET_CYCLE = true;
+            state().RESET_CYCLE = true;
             subtype_compute(type);
-            RESET_CYCLE = false;
+            state().RESET_CYCLE = false;
             subtype_TypeDecl_computed.remove(_parameters);
             subtype_TypeDecl_initialized.remove(_parameters);
             }
-            IN_CIRCLE = false; 
+            state().IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(CIRCLE_INDEX));
-            if (RESET_CYCLE) {
+        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
+            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
+            if (state().RESET_CYCLE) {
                 subtype_TypeDecl_computed.remove(_parameters);
                 subtype_TypeDecl_initialized.remove(_parameters);
                 return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
             }
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
             if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                CHANGE = true;
+                state().CHANGE = true;
             subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
             return new_subtype_TypeDecl_value;
         }
@@ -1378,10 +1378,10 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
         if(sootClass_computed)
             return sootClass_value;
-        int num = boundariesCrossed;
+        int num = state().boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootClass_value = sootClass_compute();
-        if(isFinal && num == boundariesCrossed)
+        if(isFinal && num == state().boundariesCrossed)
             sootClass_computed = true;
         return sootClass_value;
     }
