@@ -18,7 +18,7 @@ public abstract class Unary extends Expr implements Cloneable {
         node.is$Final(false);
     return node;
     }
-    // Declared in PrettyPrint.jadd at line 382
+    // Declared in PrettyPrint.jadd at line 361
 
 
   // Pre and post operations for unary expression
@@ -133,7 +133,7 @@ public abstract class Unary extends Expr implements Cloneable {
 
     private boolean isDUafter_compute(Variable v) {  return getOperand().isDUafter(v);  }
 
-    // Declared in PrettyPrint.jadd at line 388
+    // Declared in PrettyPrint.jadd at line 367
  @SuppressWarnings({"unchecked", "cast"})     public String printPostOp() {
         String printPostOp_value = printPostOp_compute();
         return printPostOp_value;
@@ -141,7 +141,7 @@ public abstract class Unary extends Expr implements Cloneable {
 
     private String printPostOp_compute() {  return "";  }
 
-    // Declared in PrettyPrint.jadd at line 392
+    // Declared in PrettyPrint.jadd at line 371
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;

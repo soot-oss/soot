@@ -75,14 +75,15 @@ public class ContinueStmt extends Stmt implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 684
+    // Declared in PrettyPrint.jadd at line 670
 
 
   public void toString(StringBuffer s) {
+    s.append(indent());
     s.append("continue ");
     if(hasLabel())
       s.append(getLabel());
-    s.append(";\n");
+    s.append(";");
   }
 
     // Declared in Statements.jrag at line 233

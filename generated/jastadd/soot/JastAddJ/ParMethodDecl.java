@@ -430,7 +430,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         return (List<Access>)getChildNoTransform(5);
     }
 
-    // Declared in Generics.jrag at line 1300
+    // Declared in Generics.jrag at line 1266
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed)
             return sourceMethodDecl_value;

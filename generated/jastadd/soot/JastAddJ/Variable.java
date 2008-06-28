@@ -73,6 +73,6 @@ public interface Variable {
 
     public Constant constant();
 
-    // Declared in Generics.jrag at line 1307
+    // Declared in Generics.jrag at line 1273
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl();
 }

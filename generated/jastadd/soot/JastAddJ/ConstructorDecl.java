@@ -115,7 +115,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       error("The constructor " + signature() + " may not directly or indirectly invoke itself");
   }
 
-    // Declared in PrettyPrint.jadd at line 135
+    // Declared in PrettyPrint.jadd at line 119
 
   
   public void toString(StringBuffer s) {
@@ -139,19 +139,15 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       }
     }
     
-    s.append(" {\n");
-    indent++;
+    s.append(" {");
     if(hasConstructorInvocation()) {
-      s.append(indent());
       getConstructorInvocation().toString(s);
     }
     for(int i = 0; i < getBlock().getNumStmt(); i++) {
-      s.append(indent());
       getBlock().getStmt(i).toString(s);
     }
-    indent--;
     s.append(indent());
-    s.append("}\n");
+    s.append("}");
   }
 
     // Declared in TypeCheck.jrag at line 424
@@ -190,7 +186,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     );
   }
 
-    // Declared in Generics.jrag at line 1072
+    // Declared in Generics.jrag at line 1038
 
   
 
@@ -1103,7 +1099,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sourceConstructorDecl_computed = false;
     protected ConstructorDecl sourceConstructorDecl_value;
-    // Declared in Generics.jrag at line 1303
+    // Declared in Generics.jrag at line 1269
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed)
             return sourceConstructorDecl_value;
@@ -1387,35 +1383,28 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return unknownType_value;
     }
 
-    // Declared in VariableDeclaration.jrag at line 78
-    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 300
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getBlockNoTransform()) {
+            return hasConstructorInvocation() ? getConstructorInvocation().isDAafter(v) : isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 117
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getConstructorInvocationOptNoTransform()) {
+            return NameType.EXPRESSION_NAME;
+        }
+        if(caller == getExceptionListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.TYPE_NAME;
+        }
         if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return true;
+            return NameType.TYPE_NAME;
         }
-        return getParent().Define_boolean_isConstructorParameter(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 282
-    public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBePrivate(this, caller);
-    }
-
-    // Declared in LookupMethod.jrag at line 45
-    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-        if(caller == getConstructorInvocationOptNoTransform()){
-    Collection c = new ArrayList();
-    for(Iterator iter = lookupMethod(name).iterator(); iter.hasNext(); ) {
-      MethodDecl m = (MethodDecl)iter.next();
-      if(!hostType().memberMethods(name).contains(m) || m.isStatic())
-        c.add(m);
-    }
-    return c;
-  }
-        return getParent().Define_Collection_lookupMethod(this, caller, name);
+        return getParent().Define_NameType_nameType(this, caller);
     }
 
     // Declared in LookupVariable.jrag at line 64
@@ -1453,6 +1442,47 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
+    // Declared in Statements.jrag at line 349
+    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return getNumException() != 0;
+        }
+        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 756
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getBlockNoTransform()) {
+            return hasConstructorInvocation() ? getConstructorInvocation().isDUafter(v) : isDUbefore(v);
+        }
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in TypeCheck.jrag at line 517
+    public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
+        if(caller == getConstructorInvocationOptNoTransform()) {
+            return unknownType();
+        }
+        return getParent().Define_TypeDecl_enclosingInstance(this, caller);
+    }
+
+    // Declared in Annotations.jrag at line 89
+    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
+        if(caller == getModifiersNoTransform()) {
+            return name.equals("CONSTRUCTOR");
+        }
+        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
+
+    // Declared in VariableDeclaration.jrag at line 78
+    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+        if(caller == getParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return true;
+        }
+        return getParent().Define_boolean_isConstructorParameter(this, caller);
+    }
+
     // Declared in UnreachableStatements.jrag at line 32
     public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
@@ -1464,28 +1494,49 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_reachable(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 300
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    // Declared in VariableDeclaration.jrag at line 79
+    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
+        if(caller == getParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+    }
+
+    // Declared in VariableArityParameters.jrag at line 21
+    public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
+        if(caller == getParameterListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return i == getNumParameter() - 1;
+        }
+        return getParent().Define_boolean_variableArityValid(this, caller);
+    }
+
+    // Declared in NameCheck.jrag at line 242
+    public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
-            return hasConstructorInvocation() ? getConstructorInvocation().isDAafter(v) : isDAbefore(v);
+            return this;
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_ASTNode_enclosingBlock(this, caller);
     }
 
-    // Declared in Annotations.jrag at line 89
-    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
+    // Declared in Modifiers.jrag at line 281
+    public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
-            return name.equals("CONSTRUCTOR");
-        }
-        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
-    }
-
-    // Declared in TypeHierarchyCheck.jrag at line 132
-    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
-        if(caller == getConstructorInvocationOptNoTransform()) {
             return true;
         }
-        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+        return getParent().Define_boolean_mayBeProtected(this, caller);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 144
+    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
+        if(caller == getConstructorInvocationOptNoTransform()) {
+            return false;
+        }
+        if(caller == getBlockNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_inStaticContext(this, caller);
     }
 
     // Declared in VariableDeclaration.jrag at line 77
@@ -1497,12 +1548,34 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isMethodParameter(this, caller);
     }
 
-    // Declared in Modifiers.jrag at line 280
-    public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
+    // Declared in Modifiers.jrag at line 282
+    public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return true;
         }
-        return getParent().Define_boolean_mayBePublic(this, caller);
+        return getParent().Define_boolean_mayBePrivate(this, caller);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 132
+    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
+        if(caller == getConstructorInvocationOptNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+    }
+
+    // Declared in LookupMethod.jrag at line 45
+    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
+        if(caller == getConstructorInvocationOptNoTransform()){
+    Collection c = new ArrayList();
+    for(Iterator iter = lookupMethod(name).iterator(); iter.hasNext(); ) {
+      MethodDecl m = (MethodDecl)iter.next();
+      if(!hostType().memberMethods(name).contains(m) || m.isStatic())
+        c.add(m);
+    }
+    return c;
+  }
+        return getParent().Define_Collection_lookupMethod(this, caller, name);
     }
 
     // Declared in LocalNum.jrag at line 45
@@ -1519,89 +1592,12 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_int_localNum(this, caller);
     }
 
-    // Declared in Modifiers.jrag at line 281
-    public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
+    // Declared in Modifiers.jrag at line 280
+    public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return true;
         }
-        return getParent().Define_boolean_mayBeProtected(this, caller);
-    }
-
-    // Declared in NameCheck.jrag at line 242
-    public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return this;
-        }
-        return getParent().Define_ASTNode_enclosingBlock(this, caller);
-    }
-
-    // Declared in VariableArityParameters.jrag at line 21
-    public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
-        if(caller == getParameterListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return i == getNumParameter() - 1;
-        }
-        return getParent().Define_boolean_variableArityValid(this, caller);
-    }
-
-    // Declared in VariableDeclaration.jrag at line 79
-    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
-        if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
-    }
-
-    // Declared in Statements.jrag at line 349
-    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return getNumException() != 0;
-        }
-        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 117
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getConstructorInvocationOptNoTransform()) {
-            return NameType.EXPRESSION_NAME;
-        }
-        if(caller == getExceptionListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
-        }
-        if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
-    // Declared in TypeCheck.jrag at line 517
-    public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
-        if(caller == getConstructorInvocationOptNoTransform()) {
-            return unknownType();
-        }
-        return getParent().Define_TypeDecl_enclosingInstance(this, caller);
-    }
-
-    // Declared in TypeHierarchyCheck.jrag at line 144
-    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-        if(caller == getConstructorInvocationOptNoTransform()) {
-            return false;
-        }
-        if(caller == getBlockNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_inStaticContext(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 756
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getBlockNoTransform()) {
-            return hasConstructorInvocation() ? getConstructorInvocation().isDUafter(v) : isDUbefore(v);
-        }
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
+        return getParent().Define_boolean_mayBePublic(this, caller);
     }
 
 public ASTNode rewriteTo() {

@@ -37,17 +37,18 @@ public class AssertStmt extends Stmt implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 733
+    // Declared in PrettyPrint.jadd at line 724
 
 
   public void toString(StringBuffer s) {
+    s.append(indent());
     s.append("assert ");
     getfirst().toString(s);
     if(hasExpr()) {
       s.append(" : ");
       getExpr().toString(s);
     }
-    s.append(";\n");
+    s.append(";");
   }
 
     // Declared in TypeCheck.jrag at line 378

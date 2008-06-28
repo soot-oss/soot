@@ -106,7 +106,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     this(new Modifiers(new List()), type.createQualifiedAccess(), name);
   }
 
-    // Declared in PrettyPrint.jadd at line 251
+    // Declared in PrettyPrint.jadd at line 232
 
 
   public void toString(StringBuffer s) {
@@ -272,7 +272,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private boolean isSynthetic_compute() {  return getModifiers().isSynthetic();  }
 
-    // Declared in PrettyPrint.jadd at line 792
+    // Declared in PrettyPrint.jadd at line 807
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -378,7 +378,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     protected boolean sourceVariableDecl_computed = false;
     protected Variable sourceVariableDecl_value;
-    // Declared in Generics.jrag at line 1311
+    // Declared in Generics.jrag at line 1277
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed)
             return sourceVariableDecl_value;

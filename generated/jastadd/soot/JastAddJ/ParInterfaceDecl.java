@@ -990,7 +990,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return false;
   }
 
-    // Declared in Generics.jrag at line 1100
+    // Declared in Generics.jrag at line 1066
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         TypeDecl original_value = original_compute();
         return original_value;
@@ -998,7 +998,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
 
     private TypeDecl original_compute() {  return genericDecl().original();  }
 
-    // Declared in Generics.jrag at line 1293
+    // Declared in Generics.jrag at line 1259
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed)
             return sourceTypeDecl_value;
@@ -1238,6 +1238,15 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
         return genericDecl_value;
     }
 
+    // Declared in Generics.jrag at line 444
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getArgumentListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.TYPE_NAME;
+        }
+        return super.Define_NameType_nameType(caller, child);
+    }
+
     // Declared in GenericsParTypeDecl.jrag at line 56
     public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) { 
@@ -1251,15 +1260,6 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
   }
 }
         return getParent().Define_TypeDecl_genericDecl(this, caller);
-    }
-
-    // Declared in Generics.jrag at line 444
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getArgumentListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
-        }
-        return super.Define_NameType_nameType(caller, child);
     }
 
 public ASTNode rewriteTo() {

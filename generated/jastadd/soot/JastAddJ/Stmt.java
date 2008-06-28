@@ -109,6 +109,14 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean continueLabel_compute() {  return false;  }
 
+    // Declared in PrettyPrint.jadd at line 756
+ @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        boolean addsIndentationLevel_value = addsIndentationLevel_compute();
+        return addsIndentationLevel_value;
+    }
+
+    private boolean addsIndentationLevel_compute() {  return true;  }
+
     protected boolean canCompleteNormally_computed = false;
     protected boolean canCompleteNormally_value;
     // Declared in UnreachableStatements.jrag at line 29

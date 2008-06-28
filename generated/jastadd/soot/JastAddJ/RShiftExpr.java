@@ -117,7 +117,7 @@ public class RShiftExpr extends ShiftExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().rshift(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 423
+    // Declared in PrettyPrint.jadd at line 402
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

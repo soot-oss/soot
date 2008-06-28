@@ -34,42 +34,8 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
     // terminate search if body declaration is reached
   }
 
-    // Declared in Generics.jrag at line 1031
+    // Declared in Generics.jrag at line 997
 
-
-  // TODO: for a substituted class decl we need to search the original, substitute with the enclosing type of this
-  // substituted type that is a paramterized type, and return the new value
-  /*
-  eq ClassDeclSubstituted.localMethodsSignatureMap() = original().localMethodsSignatureMap();
-  eq ClassDeclSubstituted.memberFields(String name) = original().memberFields(name);
-  eq ClassDeclSubstituted.localFields(String name) = original().localFields(name);
-  eq ClassDeclSubstituted.memberTypes(String name) = original().memberTypes(name);
-  eq ClassDeclSubstituted.localTypeDecls(String name) = original().localTypeDecls(name);
-  eq ClassDeclSubstituted.constructors() = original().constructors();
-
-  eq InterfaceDeclSubstituted.localMethodsSignatureMap() = original().localMethodsSignatureMap();
-  eq InterfaceDeclSubstituted.memberFields(String name) = original().memberFields(name);
-  eq InterfaceDeclSubstituted.localFields(String name) = original().localFields(name);
-  eq InterfaceDeclSubstituted.memberTypes(String name) = original().memberTypes(name);
-  eq InterfaceDeclSubstituted.localTypeDecls(String name) = original().localTypeDecls(name);
-  eq InterfaceDeclSubstituted.constructors() = original().constructors();
-  */
-  /*
-
-  eq GenericClassDeclSubstituted.localMethodsSignatureMap() = original().localMethodsSignatureMap();
-  eq GenericClassDeclSubstituted.memberFields(String name) = original().memberFields(name);
-  eq GenericClassDeclSubstituted.localFields(String name) = original().localFields(name);
-  eq GenericClassDeclSubstituted.memberTypes(String name) = original().memberTypes(name);
-  eq GenericClassDeclSubstituted.localTypeDecls(String name) = original().localTypeDecls(name);
-  eq GenericClassDeclSubstituted.constructors() = original().constructors();
-
-  eq GenericInterfaceDeclSubstituted.localMethodsSignatureMap() = original().localMethodsSignatureMap();
-  eq GenericInterfaceDeclSubstituted.memberFields(String name) = original().memberFields(name);
-  eq GenericInterfaceDeclSubstituted.localFields(String name) = original().localFields(name);
-  eq GenericInterfaceDeclSubstituted.memberTypes(String name) = original().memberTypes(name);
-  eq GenericInterfaceDeclSubstituted.localTypeDecls(String name) = original().localTypeDecls(name);
-  eq GenericInterfaceDeclSubstituted.constructors() = original().constructors();
-  */
 
   public BodyDecl p(Parameterization parTypeDecl) {
     throw new Error("Operation p not supported for " + getClass().getName());
@@ -156,6 +122,14 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     }
 
     private TypeDecl type_compute(String name) {  return null;  }
+
+    // Declared in PrettyPrint.jadd at line 755
+ @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        boolean addsIndentationLevel_value = addsIndentationLevel_compute();
+        return addsIndentationLevel_value;
+    }
+
+    private boolean addsIndentationLevel_compute() {  return true;  }
 
     // Declared in TypeAnalysis.jrag at line 271
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {

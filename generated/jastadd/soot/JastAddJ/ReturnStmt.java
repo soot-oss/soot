@@ -61,15 +61,16 @@ public class ReturnStmt extends Stmt implements Cloneable {
     this(new Opt(expr));
   }
 
-    // Declared in PrettyPrint.jadd at line 691
+    // Declared in PrettyPrint.jadd at line 678
 
 
   public void toString(StringBuffer s) {
+    s.append(indent());
     s.append("return ");
     if(hasResult()) {
       getResult().toString(s);
     }
-    s.append(";\n");
+    s.append(";");
   }
 
     // Declared in TypeCheck.jrag at line 408
@@ -353,20 +354,20 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return exceptionRanges_value;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 38
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-        if(caller == getResultOptNoTransform()) {
-            return returnType();
-        }
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 653
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getResultOptNoTransform()) {
             return isDAbefore(v);
         }
         return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in GenericMethodsInference.jrag at line 38
+    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+        if(caller == getResultOptNoTransform()) {
+            return returnType();
+        }
+        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1179

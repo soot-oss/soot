@@ -185,7 +185,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     return typeDecl.createBoundAccess();
   }
 
-    // Declared in Generics.jrag at line 1283
+    // Declared in Generics.jrag at line 1249
 
 
   public Access createQualifiedAccess() {
@@ -730,7 +730,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean usesTypeVariable_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 1287
+    // Declared in Generics.jrag at line 1253
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFrom(TypeDecl type) {
         Object _parameters = type;
 if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
@@ -746,7 +746,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean accessibleFrom_compute(TypeDecl type) {  return true;  }
 
-    // Declared in Generics.jrag at line 1289
+    // Declared in Generics.jrag at line 1255
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
         if(typeName_computed)
             return typeName_value;

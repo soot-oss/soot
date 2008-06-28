@@ -62,13 +62,11 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   public void toString(StringBuffer s) {
     getModifiers().toString(s);
     s.append("@interface " + name());
-    s.append(" {\n");
-    indent++;
+    s.append(" {");
     for(int i=0; i < getNumBodyDecl(); i++) {
       getBodyDecl(i).toString(s);
     }
-    indent--;
-    s.append(indent() + "}\n");
+    s.append(indent() + "}");
   }
 
     // Declared in Annotations.ast at line 3

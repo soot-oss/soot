@@ -40,12 +40,12 @@ public class DefaultCase extends Case implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 583
+    // Declared in PrettyPrint.jadd at line 564
 
 
   public void toString(StringBuffer s) {
     s.append(indent());
-    s.append("default:\n");
+    s.append("default:");
   }
 
     // Declared in java.ast at line 3

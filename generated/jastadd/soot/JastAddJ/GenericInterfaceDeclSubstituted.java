@@ -425,7 +425,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         return 4;
     }
 
-    // Declared in Generics.jrag at line 1099
+    // Declared in Generics.jrag at line 1065
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         TypeDecl original_value = original_compute();
         return original_value;
@@ -433,7 +433,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
     private TypeDecl original_compute() {  return getOriginal().original();  }
 
-    // Declared in Generics.jrag at line 1297
+    // Declared in Generics.jrag at line 1263
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed)
             return sourceTypeDecl_value;

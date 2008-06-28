@@ -112,7 +112,7 @@ public class PlusExpr extends Unary implements Cloneable {
 
     private boolean isConstant_compute() {  return getOperand().isConstant();  }
 
-    // Declared in PrettyPrint.jadd at line 396
+    // Declared in PrettyPrint.jadd at line 375
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;

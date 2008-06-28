@@ -119,7 +119,7 @@ public class LTExpr extends RelationalExpr implements Cloneable {
 
     private Constant constant_compute() {  return Constant.create(binaryNumericPromotedType().ltIsTrue(left(), right()));  }
 
-    // Declared in PrettyPrint.jadd at line 430
+    // Declared in PrettyPrint.jadd at line 409
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

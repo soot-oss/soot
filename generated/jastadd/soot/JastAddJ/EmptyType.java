@@ -32,12 +32,12 @@ public class EmptyType extends PrimitiveType implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 234
+    // Declared in PrettyPrint.jadd at line 215
 
 
   public void toString(StringBuffer s) {
     s.append(indent());
-    s.append(";\n");
+    s.append(";");
   }
 
     // Declared in java.ast at line 3

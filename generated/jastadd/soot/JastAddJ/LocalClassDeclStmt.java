@@ -39,7 +39,7 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 743
+    // Declared in PrettyPrint.jadd at line 735
 
   
   public void toString(StringBuffer s) {

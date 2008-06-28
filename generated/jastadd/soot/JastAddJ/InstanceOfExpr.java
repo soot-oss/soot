@@ -37,7 +37,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 437
+    // Declared in PrettyPrint.jadd at line 416
 
 
   public void toString(StringBuffer s) {

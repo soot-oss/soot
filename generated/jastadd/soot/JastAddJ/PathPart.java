@@ -105,7 +105,7 @@ public class PathPart extends java.lang.Object {
       long startTime = System.currentTimeMillis();
       if(!isSource) {
         try {
-          if(Program.verbose())
+          if(program.options().verbose())
             System.out.print("Loading .class file: " + fullName + " ");
 
           CompilationUnit u = program.bytecodeReader.read(is, fullName, program);
@@ -117,7 +117,7 @@ public class PathPart extends java.lang.Object {
           is.close();
           is = null;
           
-          if(Program.verbose())
+          if(program.options().verbose())
             System.out.println("from " + pathName + " in " + (System.currentTimeMillis() - startTime) + " ms");
           return u;
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class PathPart extends java.lang.Object {
       } 
       else {
         try {  
-          if(Program.verbose())
+          if(program.options().verbose())
             System.out.print("Loading .java file: " + fullName + " ");
             
           CompilationUnit u = program.javaParser.parse(is, fullName);
@@ -137,7 +137,7 @@ public class PathPart extends java.lang.Object {
           u.setRelativeName(relativeName);
           u.setFromSource(true);
 
-          if(Program.verbose())
+          if(program.options().verbose())
             System.out.println("in " + (System.currentTimeMillis() - startTime) + " ms");
           return u;
         } catch (Exception e) {

@@ -40,7 +40,7 @@ public class LongLiteral extends Literal implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 293
+    // Declared in PrettyPrint.jadd at line 274
 
 
   public void toString(StringBuffer s) {

@@ -40,7 +40,7 @@ public class StringLiteral extends Literal implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 285
+    // Declared in PrettyPrint.jadd at line 266
 
   
   public void toString(StringBuffer s) {

@@ -32,7 +32,7 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 224
+    // Declared in PrettyPrint.jadd at line 205
 
 
   public void toString(StringBuffer s) {

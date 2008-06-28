@@ -87,13 +87,14 @@ public class ThrowStmt extends Stmt implements Cloneable {
     return super.reachedException(catchType);
   }
 
-    // Declared in PrettyPrint.jadd at line 699
+    // Declared in PrettyPrint.jadd at line 687
 
 
   public void toString(StringBuffer s) {
+    s.append(indent());
     s.append("throw ");
     getExpr().toString(s);
-    s.append(";\n");
+    s.append(";");
   }
 
     // Declared in TypeCheck.jrag at line 373

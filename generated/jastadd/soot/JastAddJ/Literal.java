@@ -94,7 +94,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
     return neg ? -x : x;
   }
 
-    // Declared in PrettyPrint.jadd at line 281
+    // Declared in PrettyPrint.jadd at line 262
 
 
   // Literals
@@ -103,7 +103,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
     s.append(getLITERAL());
   }
 
-    // Declared in PrettyPrint.jadd at line 308
+    // Declared in PrettyPrint.jadd at line 289
 
 
   protected static String escape(String s) {
@@ -129,7 +129,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
     return result.toString();
   }
 
-    // Declared in PrettyPrint.jadd at line 330
+    // Declared in PrettyPrint.jadd at line 311
 
   protected static String asEscape(int value) {
     StringBuffer s = new StringBuffer("\\u");
@@ -237,7 +237,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
 
     private boolean isConstant_compute() {  return true;  }
 
-    // Declared in PrettyPrint.jadd at line 795
+    // Declared in PrettyPrint.jadd at line 810
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

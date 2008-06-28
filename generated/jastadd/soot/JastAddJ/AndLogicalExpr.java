@@ -213,7 +213,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isDUafter_compute(Variable v) {  return isDUafterTrue(v) && isDUafterFalse(v);  }
 
-    // Declared in PrettyPrint.jadd at line 428
+    // Declared in PrettyPrint.jadd at line 407
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;
@@ -253,15 +253,15 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt next_test_label_compute() {  return newLabel();  }
 
-    // Declared in BooleanExpressions.jrag at line 74
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 371
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getRightOperandNoTransform()) {
-            return false_label();
+            return getLeftOperand().isDAafterTrue(v);
         }
         if(caller == getLeftOperandNoTransform()) {
-            return false_label();
+            return isDAbefore(v);
         }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+        return super.Define_boolean_isDAbefore(caller, child, v);
     }
 
     // Declared in BooleanExpressions.jrag at line 75
@@ -275,15 +275,15 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 371
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    // Declared in BooleanExpressions.jrag at line 74
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
         if(caller == getRightOperandNoTransform()) {
-            return getLeftOperand().isDAafterTrue(v);
+            return false_label();
         }
         if(caller == getLeftOperandNoTransform()) {
-            return isDAbefore(v);
+            return false_label();
         }
-        return super.Define_boolean_isDAbefore(caller, child, v);
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 806

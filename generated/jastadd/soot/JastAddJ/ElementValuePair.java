@@ -45,7 +45,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
       error(type().typeName() + " is not commensurate with " + getElementValue().type().typeName());
   }
 
-    // Declared in Annotations.jrag at line 591
+    // Declared in Annotations.jrag at line 589
 
   public void toString(StringBuffer s) {
     s.append(getName() + " = ");

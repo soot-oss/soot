@@ -46,7 +46,7 @@ public class ClassAccess extends Access implements Cloneable {
       error("class literal may only contain type names");
   }
 
-    // Declared in PrettyPrint.jadd at line 536
+    // Declared in PrettyPrint.jadd at line 515
 
 
   public void toString(StringBuffer s) {

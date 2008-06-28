@@ -223,14 +223,13 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         getImplements(i).toString(s);
       }
     }
-    s.append(" {\n");
-    indent++;
+    s.append(" {");
     for(int i=0; i < getNumBodyDecl(); i++) {
       BodyDecl d = getBodyDecl(i);
       if(d instanceof EnumConstant) {
         d.toString(s);
         if(i + 1 < getNumBodyDecl() && !(getBodyDecl(i + 1) instanceof EnumConstant))
-          s.append(indent() + ";\n");
+          s.append(indent() + ";");
       }
       else if(d instanceof ConstructorDecl) {
         ConstructorDecl c = (ConstructorDecl)d;
@@ -254,15 +253,12 @@ public class EnumDecl extends ClassDecl implements Cloneable {
               c.getException(j).toString(s);
             }
           }
-          s.append(" {\n");
-          indent++;
+          s.append(" {");
           for(int j = 0; j < c.getBlock().getNumStmt(); j++) {
-            s.append(indent());
             c.getBlock().getStmt(j).toString(s);
           }
-          indent--;
           s.append(indent());
-          s.append("}\n");
+          s.append("}");
         }
       }
       else if(d instanceof MethodDecl) {
@@ -278,8 +274,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
       else
         d.toString(s);
     }
-    indent--;
-    s.append(indent() + "}\n");
+    s.append(indent() + "}");
   }
 
     // Declared in Enums.ast at line 3
@@ -668,20 +663,20 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         return typeString_value;
     }
 
-    // Declared in Enums.jrag at line 33
-    public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return false;
-        }
-        return super.Define_boolean_mayBeAbstract(caller, child);
-    }
-
     // Declared in Enums.jrag at line 254
     public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return false;
         }
         return super.Define_boolean_mayBeFinal(caller, child);
+    }
+
+    // Declared in Enums.jrag at line 33
+    public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return false;
+        }
+        return super.Define_boolean_mayBeAbstract(caller, child);
     }
 
     // Declared in Enums.jrag at line 40

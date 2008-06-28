@@ -15,6 +15,8 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         methodsSignatureMap_value = null;
         ancestorMethods_String_values = null;
         memberTypes_String_values = null;
+        memberFieldsMap_computed = false;
+        memberFieldsMap_value = null;
         memberFields_String_values = null;
         unimplementedMethods_computed = false;
         unimplementedMethods_value = null;
@@ -41,6 +43,8 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         node.methodsSignatureMap_value = null;
         node.ancestorMethods_String_values = null;
         node.memberTypes_String_values = null;
+        node.memberFieldsMap_computed = false;
+        node.memberFieldsMap_value = null;
         node.memberFields_String_values = null;
         node.unimplementedMethods_computed = false;
         node.unimplementedMethods_value = null;
@@ -144,10 +148,11 @@ public class ClassDecl extends ReferenceType implements Cloneable {
 
   }
 
-    // Declared in PrettyPrint.jadd at line 74
+    // Declared in PrettyPrint.jadd at line 62
 
     
   public void toString(StringBuffer s) {
+    s.append(indent());
     getModifiers().toString(s);
     s.append("class " + name());
     if(hasSuperClassAccess()) {
@@ -162,14 +167,11 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         getImplements(i).toString(s);
       }
     }
-    s.append(" {\n");
-    indent++;
+    s.append(" {");
     for(int i=0; i < getNumBodyDecl(); i++) {
       getBodyDecl(i).toString(s);
     }
-
-    indent--;
-    s.append(indent() + "}\n");
+    s.append(indent() + "}");
   }
 
     // Declared in TypeAnalysis.jrag at line 593
@@ -330,7 +332,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1102
+    // Declared in Generics.jrag at line 1068
 
 
   public ClassDecl p(Parameterization parTypeDecl) {
@@ -895,7 +897,39 @@ if(memberTypes_String_values == null) memberTypes_String_values = new java.util.
     return set;
   }
 
-    // Declared in LookupVariable.jrag at line 275
+    // Declared in LookupVariable.jrag at line 272
+ @SuppressWarnings({"unchecked", "cast"})     public HashMap memberFieldsMap() {
+        if(memberFieldsMap_computed)
+            return memberFieldsMap_value;
+        int num = boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        memberFieldsMap_value = memberFieldsMap_compute();
+        if(isFinal && num == boundariesCrossed)
+            memberFieldsMap_computed = true;
+        return memberFieldsMap_value;
+    }
+
+    private HashMap memberFieldsMap_compute() {
+    HashMap map = new HashMap(localFieldsMap());
+    if(hasSuperclass()) {
+      for(Iterator iter = superclass().fieldsIterator(); iter.hasNext(); ) {
+        FieldDeclaration decl = (FieldDeclaration)iter.next();
+        if(!decl.isPrivate() && decl.accessibleFrom(this) && !localFieldsMap().containsKey(decl.name()))
+          putSimpleSetElement(map, decl.name(), decl);
+      }
+    }
+    for(Iterator outerIter = interfacesIterator(); outerIter.hasNext(); ) {
+      TypeDecl type = (TypeDecl)outerIter.next();
+      for(Iterator iter = type.fieldsIterator(); iter.hasNext(); ) {
+        FieldDeclaration decl = (FieldDeclaration)iter.next();
+        if(!decl.isPrivate() && decl.accessibleFrom(this) && !localFieldsMap().containsKey(decl.name()))
+          putSimpleSetElement(map, decl.name(), decl);
+      }
+    }
+    return map;
+  }
+
+    // Declared in LookupVariable.jrag at line 323
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet memberFields(String name) {
         Object _parameters = name;
 if(memberFields_String_values == null) memberFields_String_values = new java.util.HashMap(4);
@@ -1374,7 +1408,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
       needAddclass = true;
     }
     if(needAddclass) {
-      if(Program.verbose())
+      if(options().verbose())
         System.out.println("Creating from source " + jvmName());        
       sc = new SootClass(jvmName());
       sc.setResolvingLevel(SootClass.DANGLING);
@@ -1404,16 +1438,16 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return set;
   }
 
-    // Declared in Annotations.jrag at line 377
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+    // Declared in SyntacticClassification.jrag at line 74
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getImplementsListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return isDeprecated() || withinDeprecatedAnnotation();
+            return NameType.TYPE_NAME;
         }
         if(caller == getSuperClassAccessOptNoTransform()) {
-            return isDeprecated() || withinDeprecatedAnnotation();
+            return NameType.TYPE_NAME;
         }
-        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
+        return super.Define_NameType_nameType(caller, child);
     }
 
     // Declared in TypeAnalysis.jrag at line 576
@@ -1440,24 +1474,24 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinSuppressWarnings(caller, child, s);
     }
 
-    // Declared in SyntacticClassification.jrag at line 74
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getImplementsListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
-        }
-        if(caller == getSuperClassAccessOptNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return super.Define_NameType_nameType(caller, child);
-    }
-
     // Declared in Modifiers.jrag at line 257
     public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return true;
         }
         return super.Define_boolean_mayBeFinal(caller, child);
+    }
+
+    // Declared in Annotations.jrag at line 377
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+        if(caller == getImplementsListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return isDeprecated() || withinDeprecatedAnnotation();
+        }
+        if(caller == getSuperClassAccessOptNoTransform()) {
+            return isDeprecated() || withinDeprecatedAnnotation();
+        }
+        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
 public ASTNode rewriteTo() {

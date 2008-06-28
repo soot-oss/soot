@@ -41,14 +41,14 @@ public class ConstCase extends Case implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 576
+    // Declared in PrettyPrint.jadd at line 557
 
 
   public void toString(StringBuffer s) {
     s.append(indent());
     s.append("case ");
     getValue().toString(s);
-    s.append(":\n");
+    s.append(":");
   }
 
     // Declared in TypeCheck.jrag at line 349

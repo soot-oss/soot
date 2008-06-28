@@ -66,7 +66,7 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
       error(" generic class " + typeName() + " may not directly or indirectly inherit java.lang.Throwable");
   }
 
-    // Declared in Generics.jrag at line 1113
+    // Declared in Generics.jrag at line 1079
 
   public ClassDecl p(Parameterization parTypeDecl) {
     GenericClassDecl c = new GenericClassDeclSubstituted(
@@ -81,7 +81,7 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     return c;
   }
 
-    // Declared in GenericsPrettyPrint.jrag at line 69
+    // Declared in GenericsPrettyPrint.jrag at line 67
 
 
 	public void toString(StringBuffer s) {
@@ -123,13 +123,11 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     }
     */
     
-		s.append(" {\n");
-		indent++;
+		s.append(" {");
 		for(int i=0; i < getNumBodyDecl(); i++) {
 			getBodyDecl(i).toString(s);
 		}
-		indent--;
-		s.append(indent() + "}\n");
+		s.append(indent() + "}");
     
     /*
     for(int i = 0; i < getNumParTypeDecl(); i++) {
@@ -831,6 +829,15 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return typeThrowable_value;
     }
 
+    // Declared in Generics.jrag at line 448
+    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return true;
+        }
+        return super.Define_boolean_isNestedType(caller, child);
+    }
+
     // Declared in GenericsParTypeDecl.jrag at line 47
     public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
         if(caller == getParTypeDeclListNoTransform()) {
@@ -847,15 +854,6 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
             return this;
         }
         return super.Define_TypeDecl_enclosingType(caller, child);
-    }
-
-    // Declared in Generics.jrag at line 448
-    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return super.Define_boolean_isNestedType(caller, child);
     }
 
     // Declared in Generics.jrag at line 498

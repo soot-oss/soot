@@ -38,11 +38,12 @@ public class EmptyStmt extends Stmt implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 554
+    // Declared in PrettyPrint.jadd at line 532
 
 
   public void toString(StringBuffer s) {
-    s.append(";\n");
+    s.append(indent());
+    s.append(";");
   }
 
     // Declared in Statements.jrag at line 20

@@ -42,7 +42,7 @@ public class MemberInterfaceDecl extends MemberTypeDecl implements Cloneable {
       error("*** Inner classes may not declare member interfaces");
   }
 
-    // Declared in PrettyPrint.jadd at line 229
+    // Declared in PrettyPrint.jadd at line 210
 
 
   public void toString(StringBuffer s) {

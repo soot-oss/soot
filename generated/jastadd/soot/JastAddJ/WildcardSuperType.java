@@ -351,7 +351,7 @@ public class WildcardSuperType extends AbstractWildcardType implements Cloneable
 
     private boolean usesTypeVariable_compute() {  return getAccess().type().usesTypeVariable();  }
 
-    // Declared in Generics.jrag at line 1156
+    // Declared in Generics.jrag at line 1122
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superType() {
         TypeDecl superType_value = superType_compute();
         return superType_value;

@@ -352,7 +352,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
 
     private boolean usesTypeVariable_compute() {  return getAccess().type().usesTypeVariable();  }
 
-    // Declared in Generics.jrag at line 1155
+    // Declared in Generics.jrag at line 1121
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl extendsType() {
         TypeDecl extendsType_value = extendsType_compute();
         return extendsType_value;

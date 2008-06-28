@@ -134,7 +134,7 @@ public class Annotation extends Modifier implements Cloneable {
     checkOverride();
   }
 
-    // Declared in Annotations.jrag at line 580
+    // Declared in Annotations.jrag at line 578
 
   public void toString(StringBuffer s) {
     s.append("@");
@@ -417,6 +417,14 @@ public class Annotation extends Modifier implements Cloneable {
         return hostType_value;
     }
 
+    // Declared in Annotations.jrag at line 545
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getAccessNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
     // Declared in Annotations.jrag at line 460
     public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
         if(caller == getElementValuePairListNoTransform()) {
@@ -424,14 +432,6 @@ public class Annotation extends Modifier implements Cloneable {
             return decl();
         }
         return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
-    }
-
-    // Declared in Annotations.jrag at line 545
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getAccessNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
     }
 
 public ASTNode rewriteTo() {

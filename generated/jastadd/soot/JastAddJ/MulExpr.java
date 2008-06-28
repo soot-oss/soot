@@ -113,7 +113,7 @@ public class MulExpr extends MultiplicativeExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().mul(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 417
+    // Declared in PrettyPrint.jadd at line 396
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

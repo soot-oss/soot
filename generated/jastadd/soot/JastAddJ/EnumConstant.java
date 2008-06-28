@@ -106,7 +106,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     }
   }
 
-    // Declared in Enums.jrag at line 568
+    // Declared in Enums.jrag at line 563
 
 
   public void toString(StringBuffer s) {
@@ -123,13 +123,11 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     }
     s.append(")");
     if(getNumBodyDecl() > 0) {
-      s.append(" {\n");
-      indent++;
+      s.append(" {");
       for(int i=0; i < getNumBodyDecl(); i++) {
         BodyDecl d = getBodyDecl(i);
         d.toString(s);
       }
-      indent--;
       s.append(indent() + "}");
     }
     s.append(",\n");

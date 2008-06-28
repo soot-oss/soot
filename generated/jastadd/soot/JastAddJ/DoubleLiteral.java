@@ -42,7 +42,7 @@ public class DoubleLiteral extends Literal implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 303
+    // Declared in PrettyPrint.jadd at line 284
 
 
   public void toString(StringBuffer s) {

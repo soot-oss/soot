@@ -212,7 +212,7 @@ public class VarAccess extends Access implements Cloneable {
     this.end = end;
   }
 
-    // Declared in PrettyPrint.jadd at line 469
+    // Declared in PrettyPrint.jadd at line 448
 
 
   public void toString(StringBuffer s) {
@@ -766,7 +766,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean inDeclaringClass_compute() {  return hostType() == decl().hostType();  }
 
-    // Declared in PrettyPrint.jadd at line 781
+    // Declared in PrettyPrint.jadd at line 796
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

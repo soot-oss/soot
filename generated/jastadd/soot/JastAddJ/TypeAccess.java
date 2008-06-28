@@ -92,7 +92,7 @@ public class TypeAccess extends Access implements Cloneable {
     this("", typeName);
   }
 
-    // Declared in PrettyPrint.jadd at line 499
+    // Declared in PrettyPrint.jadd at line 478
 
   
   public void toString(StringBuffer s) {
@@ -346,7 +346,7 @@ private TypeDecl refined_LookupType_TypeAccess_decl()
     return SimpleSet.emptySet;
   }
 
-    // Declared in PrettyPrint.jadd at line 783
+    // Declared in PrettyPrint.jadd at line 798
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

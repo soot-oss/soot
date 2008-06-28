@@ -120,7 +120,7 @@ public class MethodAccess extends Access implements Cloneable {
     setEnd(end);
   }
 
-    // Declared in PrettyPrint.jadd at line 473
+    // Declared in PrettyPrint.jadd at line 452
 
 
   public void toString(StringBuffer s) {
@@ -898,7 +898,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return true;
   }
 
-    // Declared in PrettyPrint.jadd at line 782
+    // Declared in PrettyPrint.jadd at line 797
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -1129,13 +1129,22 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
         return typeObject_value;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 41
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+    // Declared in SyntacticClassification.jrag at line 120
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return typeObject();
+            return NameType.EXPRESSION_NAME;
         }
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 413
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getArgListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return computeDAbefore(i, v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in LookupVariable.jrag at line 130
@@ -1145,6 +1154,24 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
             return unqualifiedScope().lookupVariable(name);
         }
         return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in GenericMethodsInference.jrag at line 41
+    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return typeObject();
+        }
+        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 17
+    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return unqualifiedScope().methodHost();
+        }
+        return getParent().Define_String_methodHost(this, caller);
     }
 
     // Declared in LookupMethod.jrag at line 28
@@ -1163,33 +1190,6 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
             return unqualifiedScope().hasPackage(packageName);
         }
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
-    }
-
-    // Declared in TypeHierarchyCheck.jrag at line 17
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-        if(true) {
-      int childIndex = this.getIndexOfChild(caller);
-            return unqualifiedScope().methodHost();
-        }
-        return getParent().Define_String_methodHost(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 120
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 413
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getArgListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return computeDAbefore(i, v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in LookupType.jrag at line 165

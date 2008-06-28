@@ -119,7 +119,7 @@ public class EQExpr extends EqualityExpr implements Cloneable {
 
     private Constant constant_compute() {  return Constant.create(binaryNumericPromotedType().eqIsTrue(left(), right()));  }
 
-    // Declared in PrettyPrint.jadd at line 434
+    // Declared in PrettyPrint.jadd at line 413
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

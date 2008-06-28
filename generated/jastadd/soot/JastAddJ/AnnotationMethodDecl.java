@@ -44,7 +44,7 @@ public class AnnotationMethodDecl extends MethodDecl implements Cloneable {
       error(type().typeName() + " is not commensurate with " + getDefaultValue().type().typeName());
   }
 
-    // Declared in Annotations.jrag at line 569
+    // Declared in Annotations.jrag at line 567
 
   public void toString(StringBuffer s) {
     s.append(indent());

@@ -118,7 +118,7 @@ public class LShiftExpr extends ShiftExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().lshift(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 422
+    // Declared in PrettyPrint.jadd at line 401
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

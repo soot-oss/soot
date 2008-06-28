@@ -42,7 +42,7 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 298
+    // Declared in PrettyPrint.jadd at line 279
 
 
   public void toString(StringBuffer s) {

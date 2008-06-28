@@ -169,7 +169,7 @@ public class AssignPlusExpr extends AssignAdditiveExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in PrettyPrint.jadd at line 270
+    // Declared in PrettyPrint.jadd at line 251
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

@@ -10,6 +10,8 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         methodsSignatureMap_value = null;
         ancestorMethods_String_values = null;
         memberTypes_String_values = null;
+        memberFieldsMap_computed = false;
+        memberFieldsMap_value = null;
         memberFields_String_values = null;
         isStatic_computed = false;
         castingConversionTo_TypeDecl_values = null;
@@ -29,6 +31,8 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         node.methodsSignatureMap_value = null;
         node.ancestorMethods_String_values = null;
         node.memberTypes_String_values = null;
+        node.memberFieldsMap_computed = false;
+        node.memberFieldsMap_value = null;
         node.memberFields_String_values = null;
         node.isStatic_computed = false;
         node.castingConversionTo_TypeDecl_values = null;
@@ -95,10 +99,11 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     super.checkModifiers();
   }
 
-    // Declared in PrettyPrint.jadd at line 99
+    // Declared in PrettyPrint.jadd at line 85
 
   
   public void toString(StringBuffer s) {
+    s.append(indent());
     getModifiers().toString(s);
     s.append("interface " + name());
     if(getNumSuperInterfaceId() > 0) {
@@ -109,14 +114,11 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         getSuperInterfaceId(i).toString(s);
       }
     }
-    s.append(" {\n");
-    indent++;
+    s.append(" {");
     for(int i=0; i < getNumBodyDecl(); i++) {
       getBodyDecl(i).toString(s);
     }
-    
-    indent--;
-    s.append(indent() + "}\n");
+    s.append(indent() + "}");
   }
 
     // Declared in TypeAnalysis.jrag at line 641
@@ -204,7 +206,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1125
+    // Declared in Generics.jrag at line 1091
 
   public InterfaceDecl p(Parameterization parTypeDecl) {
     InterfaceDecl c = new InterfaceDeclSubstituted(
@@ -606,7 +608,33 @@ if(memberTypes_String_values == null) memberTypes_String_values = new java.util.
     return set;
   }
 
-    // Declared in LookupVariable.jrag at line 297
+    // Declared in LookupVariable.jrag at line 291
+ @SuppressWarnings({"unchecked", "cast"})     public HashMap memberFieldsMap() {
+        if(memberFieldsMap_computed)
+            return memberFieldsMap_value;
+        int num = boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        memberFieldsMap_value = memberFieldsMap_compute();
+        if(isFinal && num == boundariesCrossed)
+            memberFieldsMap_computed = true;
+        return memberFieldsMap_value;
+    }
+
+    private HashMap memberFieldsMap_compute() {
+    HashMap map = new HashMap(localFieldsMap());
+    for(Iterator outerIter = superinterfacesIterator(); outerIter.hasNext(); ) {
+      TypeDecl typeDecl = (TypeDecl)outerIter.next();
+      for(Iterator iter = typeDecl.fieldsIterator(); iter.hasNext(); ) {
+        FieldDeclaration f = (FieldDeclaration)iter.next();
+        if(f.accessibleFrom(this) && !f.isPrivate() && !localFieldsMap().containsKey(f.name())) {
+          putSimpleSetElement(map, f.name(), f);
+        }
+      }
+    }
+    return map;
+  }
+
+    // Declared in LookupVariable.jrag at line 345
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet memberFields(String name) {
         Object _parameters = name;
 if(memberFields_String_values == null) memberFields_String_values = new java.util.HashMap(4);
@@ -977,7 +1005,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     }
 
     private SootClass sootClass_compute() {
-    if(Program.verbose())
+    if(options().verbose())
       System.out.println("Creating from source " + jvmName());
     SootClass sc = SootResolver.v().makeClassRef(jvmName());
     sc.setModifiers(sootTypeModifiers()); // turn it into an interface
@@ -1014,13 +1042,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return unknownMethod_value;
     }
 
-    // Declared in Annotations.jrag at line 378
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+    // Declared in SyntacticClassification.jrag at line 75
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getSuperInterfaceIdListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return isDeprecated() || withinDeprecatedAnnotation();
+            return NameType.TYPE_NAME;
         }
-        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
+        return super.Define_NameType_nameType(caller, child);
     }
 
     // Declared in TypeAnalysis.jrag at line 577
@@ -1041,13 +1069,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinSuppressWarnings(caller, child, s);
     }
 
-    // Declared in SyntacticClassification.jrag at line 75
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    // Declared in Annotations.jrag at line 378
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
         if(caller == getSuperInterfaceIdListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
+            return isDeprecated() || withinDeprecatedAnnotation();
         }
-        return super.Define_NameType_nameType(caller, child);
+        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
 public ASTNode rewriteTo() {

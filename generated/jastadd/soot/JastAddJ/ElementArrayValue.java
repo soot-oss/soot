@@ -32,7 +32,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
         }
         return res;
     }
-    // Declared in Annotations.jrag at line 601
+    // Declared in Annotations.jrag at line 599
 
   public void toString(StringBuffer s) {
     s.append("{");

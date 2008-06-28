@@ -30,7 +30,7 @@ public abstract class Binary extends Expr implements Cloneable {
         node.is$Final(false);
     return node;
     }
-    // Declared in PrettyPrint.jadd at line 410
+    // Declared in PrettyPrint.jadd at line 389
 
 
   // Binary Expr
@@ -163,7 +163,7 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
     return unknownType();
   }
 
-    // Declared in PrettyPrint.jadd at line 416
+    // Declared in PrettyPrint.jadd at line 395
  @SuppressWarnings({"unchecked", "cast"})     public abstract String printOp();
     protected int isConstant_visited;
     protected boolean isConstant_computed = false;

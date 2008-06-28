@@ -72,10 +72,11 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
     super.collectFinally(branchStmt, list);
   }
 
-    // Declared in PrettyPrint.jadd at line 705
+    // Declared in PrettyPrint.jadd at line 694
 
 
   public void toString(StringBuffer s) {
+    s.append(indent());
     s.append("synchronized(");
     getExpr().toString(s);
     s.append(") ");
@@ -400,6 +401,17 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
         return typeThrowable_value;
     }
 
+    // Declared in DefiniteAssignment.jrag at line 658
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getBlockNoTransform()) {
+            return getExpr().isDAafter(v);
+        }
+        if(caller == getExprNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
     // Declared in Statements.jrag at line 445
     public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
@@ -416,31 +428,12 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
         return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
-    // Declared in UnreachableStatements.jrag at line 111
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
     // Declared in Statements.jrag at line 351
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 658
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getBlockNoTransform()) {
-            return getExpr().isDAafter(v);
-        }
-        if(caller == getExprNoTransform()) {
-            return isDAbefore(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1184
@@ -452,6 +445,14 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 111
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

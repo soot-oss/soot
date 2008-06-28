@@ -114,7 +114,7 @@ public class MinusExpr extends Unary implements Cloneable {
 
     private boolean isConstant_compute() {  return getOperand().isConstant();  }
 
-    // Declared in PrettyPrint.jadd at line 395
+    // Declared in PrettyPrint.jadd at line 374
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;

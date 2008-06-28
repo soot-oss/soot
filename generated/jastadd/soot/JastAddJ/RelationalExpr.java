@@ -196,17 +196,6 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
 
     private boolean definesLabel_compute() {  return false;  }
 
-    // Declared in BooleanExpressions.jrag at line 69
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getRightOperandNoTransform()) {
-            return false_label();
-        }
-        if(caller == getLeftOperandNoTransform()) {
-            return false_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-
     // Declared in BooleanExpressions.jrag at line 70
     public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
         if(caller == getRightOperandNoTransform()) {
@@ -216,6 +205,17 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
             return true_label();
         }
         return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 69
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getRightOperandNoTransform()) {
+            return false_label();
+        }
+        if(caller == getLeftOperandNoTransform()) {
+            return false_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
 
 public ASTNode rewriteTo() {

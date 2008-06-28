@@ -84,7 +84,7 @@ public class PostIncExpr extends PostfixExpr implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in PrettyPrint.jadd at line 389
+    // Declared in PrettyPrint.jadd at line 368
  @SuppressWarnings({"unchecked", "cast"})     public String printPostOp() {
         String printPostOp_value = printPostOp_compute();
         return printPostOp_value;

@@ -39,7 +39,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 372
+    // Declared in PrettyPrint.jadd at line 351
 
 
   public void toString(StringBuffer s) {
@@ -237,22 +237,6 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
     return i;
   }
 
-    // Declared in InnerClasses.jrag at line 63
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-        if(caller == getArrayInitOptNoTransform()) {
-            return type().componentType();
-        }
-        return getParent().Define_TypeDecl_expectedType(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 262
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-        if(caller == getArrayInitOptNoTransform()) {
-            return type();
-        }
-        return getParent().Define_TypeDecl_declType(this, caller);
-    }
-
     // Declared in SyntacticClassification.jrag at line 87
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeAccessNoTransform()) {
@@ -269,12 +253,28 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
+    // Declared in InnerClasses.jrag at line 63
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+        if(caller == getArrayInitOptNoTransform()) {
+            return type().componentType();
+        }
+        return getParent().Define_TypeDecl_expectedType(this, caller);
+    }
+
     // Declared in DefiniteAssignment.jrag at line 867
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getArrayInitOptNoTransform()) {
             return isDUafterCreation(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 262
+    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
+        if(caller == getArrayInitOptNoTransform()) {
+            return type();
+        }
+        return getParent().Define_TypeDecl_declType(this, caller);
     }
 
 public ASTNode rewriteTo() {

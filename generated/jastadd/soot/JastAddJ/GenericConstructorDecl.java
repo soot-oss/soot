@@ -67,8 +67,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
       }
     }
 
-    s.append(" {\n");
-    indent++;
+    s.append(" {");
     if(hasConstructorInvocation()) {
       s.append(indent());
       getConstructorInvocation().toString(s);
@@ -77,12 +76,11 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
       s.append(indent());
       getBlock().getStmt(i).toString(s);
     }
-    indent--;
     s.append(indent());
-    s.append("}\n");
+    s.append("}");
   }
 
-    // Declared in Generics.jrag at line 1069
+    // Declared in Generics.jrag at line 1035
 
   public GenericConstructorDecl original;
 
@@ -536,7 +534,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     return SimpleSet.emptySet;
   }
 
-    // Declared in Generics.jrag at line 1068
+    // Declared in Generics.jrag at line 1034
  @SuppressWarnings({"unchecked", "cast"})     public GenericConstructorDecl original() {
         GenericConstructorDecl original_value = original_compute();
         return original_value;
@@ -559,15 +557,6 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 117
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-        if(true) {
-      int childIndex = this.getIndexOfChild(caller);
-            return localLookupType(name).isEmpty() ? lookupType(name) : localLookupType(name);
-        }
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
-    }
-
     // Declared in GenericMethods.jrag at line 35
     public GenericConstructorDecl Define_GenericConstructorDecl_genericConstructorDecl(ASTNode caller, ASTNode child) {
         if(caller == getParConstructorDeclListNoTransform()) {
@@ -575,6 +564,15 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
             return this;
         }
         return getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, caller);
+    }
+
+    // Declared in GenericMethods.jrag at line 117
+    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return localLookupType(name).isEmpty() ? lookupType(name) : localLookupType(name);
+        }
+        return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
 
 public ASTNode rewriteTo() {

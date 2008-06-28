@@ -349,7 +349,7 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
         return tokenConstructorDecl_Original;
     }
 
-    // Declared in Generics.jrag at line 1305
+    // Declared in Generics.jrag at line 1271
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed)
             return sourceConstructorDecl_value;

@@ -108,7 +108,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1050
+    // Declared in Generics.jrag at line 1016
 
 
   public BodyDecl p(Parameterization parTypeDecl) {
@@ -127,7 +127,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     return m;
   }
 
-    // Declared in Generics.jrag at line 1066
+    // Declared in Generics.jrag at line 1032
 
   public GenericMethodDecl original;
 
@@ -629,7 +629,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
     return SimpleSet.emptySet;
   }
 
-    // Declared in Generics.jrag at line 1065
+    // Declared in Generics.jrag at line 1031
  @SuppressWarnings({"unchecked", "cast"})     public GenericMethodDecl original() {
         GenericMethodDecl original_value = original_compute();
         return original_value;
@@ -643,15 +643,6 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
         return lookupType_String_value;
     }
 
-    // Declared in GenericMethods.jrag at line 32
-    public GenericMethodDecl Define_GenericMethodDecl_genericMethodDecl(ASTNode caller, ASTNode child) {
-        if(caller == getParMethodDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return this;
-        }
-        return getParent().Define_GenericMethodDecl_genericMethodDecl(this, caller);
-    }
-
     // Declared in GenericMethods.jrag at line 91
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeParameterListNoTransform()) {
@@ -659,6 +650,15 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
             return NameType.TYPE_NAME;
         }
         return super.Define_NameType_nameType(caller, child);
+    }
+
+    // Declared in GenericMethods.jrag at line 32
+    public GenericMethodDecl Define_GenericMethodDecl_genericMethodDecl(ASTNode caller, ASTNode child) {
+        if(caller == getParMethodDeclListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return this;
+        }
+        return getParent().Define_GenericMethodDecl_genericMethodDecl(this, caller);
     }
 
     // Declared in GenericMethods.jrag at line 101

@@ -42,7 +42,7 @@ public class TypeImportOnDemandDecl extends ImportDecl implements Cloneable {
       error("On demand type import " + typeName() + ".* is not the canonical name of type " + getAccess().type().typeName());
   }
 
-    // Declared in PrettyPrint.jadd at line 68
+    // Declared in PrettyPrint.jadd at line 56
 
 
   public void toString(StringBuffer s) {

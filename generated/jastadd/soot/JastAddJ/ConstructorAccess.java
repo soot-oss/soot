@@ -83,7 +83,7 @@ public class ConstructorAccess extends Access implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 486
+    // Declared in PrettyPrint.jadd at line 465
 
 
   public void toString(StringBuffer s) {
@@ -508,6 +508,15 @@ public class ConstructorAccess extends Access implements Cloneable {
         return unknownConstructor_value;
     }
 
+    // Declared in SyntacticClassification.jrag at line 121
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.EXPRESSION_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
     // Declared in LookupVariable.jrag at line 131
     public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
         if(caller == getArgListNoTransform()) {
@@ -515,6 +524,24 @@ public class ConstructorAccess extends Access implements Cloneable {
             return unqualifiedScope().lookupVariable(name);
         }
         return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 18
+    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return unqualifiedScope().methodHost();
+        }
+        return getParent().Define_String_methodHost(this, caller);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 130
+    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return true;
+        }
+        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
     }
 
     // Declared in LookupMethod.jrag at line 29
@@ -535,24 +562,6 @@ public class ConstructorAccess extends Access implements Cloneable {
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
-    // Declared in TypeHierarchyCheck.jrag at line 18
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-        if(true) {
-      int childIndex = this.getIndexOfChild(caller);
-            return unqualifiedScope().methodHost();
-        }
-        return getParent().Define_String_methodHost(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 121
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in LookupType.jrag at line 166
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getArgListNoTransform()) {
@@ -560,15 +569,6 @@ public class ConstructorAccess extends Access implements Cloneable {
             return unqualifiedScope().lookupType(name);
         }
         return getParent().Define_SimpleSet_lookupType(this, caller, name);
-    }
-
-    // Declared in TypeHierarchyCheck.jrag at line 130
-    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
     }
 
 public ASTNode rewriteTo() {

@@ -37,7 +37,7 @@ public class ArrayAccess extends Access implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 530
+    // Declared in PrettyPrint.jadd at line 509
 
 
   public void toString(StringBuffer s) {
@@ -176,6 +176,14 @@ public class ArrayAccess extends Access implements Cloneable {
         return unknownType_value;
     }
 
+    // Declared in SyntacticClassification.jrag at line 122
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getExprNoTransform()) {
+            return NameType.EXPRESSION_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
     // Declared in DefiniteAssignment.jrag at line 35
     public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
         if(caller == getExprNoTransform()) {
@@ -208,28 +216,20 @@ public class ArrayAccess extends Access implements Cloneable {
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 34
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-        if(caller == getExprNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isDest(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 122
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getExprNoTransform()) {
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in LookupType.jrag at line 167
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getExprNoTransform()) {
             return unqualifiedScope().lookupType(name);
         }
         return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 34
+    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+        if(caller == getExprNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isDest(this, caller);
     }
 
 public ASTNode rewriteTo() {

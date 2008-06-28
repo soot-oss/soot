@@ -113,7 +113,7 @@ public class AndBitwiseExpr extends BitwiseExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().andBitwise(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 425
+    // Declared in PrettyPrint.jadd at line 404
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

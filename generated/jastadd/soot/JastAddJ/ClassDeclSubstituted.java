@@ -331,7 +331,7 @@ public class ClassDeclSubstituted extends ClassDecl implements Cloneable, Member
         return tokenTypeDecl_Original;
     }
 
-    // Declared in Generics.jrag at line 1096
+    // Declared in Generics.jrag at line 1062
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         TypeDecl original_value = original_compute();
         return original_value;
@@ -339,7 +339,7 @@ public class ClassDeclSubstituted extends ClassDecl implements Cloneable, Member
 
     private TypeDecl original_compute() {  return getOriginal().original();  }
 
-    // Declared in Generics.jrag at line 1294
+    // Declared in Generics.jrag at line 1260
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed)
             return sourceTypeDecl_value;

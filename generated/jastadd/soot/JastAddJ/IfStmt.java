@@ -61,10 +61,11 @@ public class IfStmt extends Stmt implements Cloneable {
     this(cond, thenBranch, new Opt(elseBranch));
   }
 
-    // Declared in PrettyPrint.jadd at line 588
+    // Declared in PrettyPrint.jadd at line 569
 
 
   public void toString(StringBuffer s) {
+    s.append(indent());
     s.append("if(");
     getCondition().toString(s);
     s.append(") ");
@@ -310,12 +311,18 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt then_branch_label_compute() {  return newLabel();  }
 
-    // Declared in BooleanExpressions.jrag at line 38
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionNoTransform()) {
-            return else_branch_label();
+    // Declared in DefiniteAssignment.jrag at line 529
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getElseOptNoTransform()) {
+            return getCondition().isDAafterFalse(v);
         }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+        if(caller == getThenNoTransform()) {
+            return getCondition().isDAafterTrue(v);
+        }
+        if(caller == getConditionNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in BooleanExpressions.jrag at line 39
@@ -337,29 +344,12 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
-    // Declared in UnreachableStatements.jrag at line 142
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getElseOptNoTransform()) {
-            return reachable();
-        }
-        if(caller == getThenNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 529
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getElseOptNoTransform()) {
-            return getCondition().isDAafterFalse(v);
-        }
-        if(caller == getThenNoTransform()) {
-            return getCondition().isDAafterTrue(v);
-        }
+    // Declared in BooleanExpressions.jrag at line 38
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
         if(caller == getConditionNoTransform()) {
-            return isDAbefore(v);
+            return else_branch_label();
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1001
@@ -374,6 +364,17 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 142
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getElseOptNoTransform()) {
+            return reachable();
+        }
+        if(caller == getThenNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

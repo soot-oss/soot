@@ -340,7 +340,7 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
         return tokenMethodDecl_Original;
     }
 
-    // Declared in Generics.jrag at line 1301
+    // Declared in Generics.jrag at line 1267
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed)
             return sourceMethodDecl_value;

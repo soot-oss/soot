@@ -287,7 +287,7 @@ public class InterfaceDeclSubstituted extends InterfaceDecl implements Cloneable
         return tokenTypeDecl_Original;
     }
 
-    // Declared in Generics.jrag at line 1097
+    // Declared in Generics.jrag at line 1063
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         TypeDecl original_value = original_compute();
         return original_value;
@@ -295,7 +295,7 @@ public class InterfaceDeclSubstituted extends InterfaceDecl implements Cloneable
 
     private TypeDecl original_compute() {  return getOriginal().original();  }
 
-    // Declared in Generics.jrag at line 1295
+    // Declared in Generics.jrag at line 1261
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed)
             return sourceTypeDecl_value;

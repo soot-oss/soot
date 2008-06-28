@@ -191,7 +191,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().add(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 420
+    // Declared in PrettyPrint.jadd at line 399
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

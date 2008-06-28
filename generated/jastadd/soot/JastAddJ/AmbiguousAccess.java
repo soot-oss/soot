@@ -133,7 +133,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
     private SimpleSet qualifiedLookupVariable_compute(String name) {  return SimpleSet.emptySet;  }
 
-    // Declared in PrettyPrint.jadd at line 788
+    // Declared in PrettyPrint.jadd at line 803
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

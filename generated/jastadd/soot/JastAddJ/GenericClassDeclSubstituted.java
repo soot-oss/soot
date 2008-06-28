@@ -468,7 +468,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
         return 5;
     }
 
-    // Declared in Generics.jrag at line 1098
+    // Declared in Generics.jrag at line 1064
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         TypeDecl original_value = original_compute();
         return original_value;
@@ -476,7 +476,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
 
     private TypeDecl original_compute() {  return getOriginal().original();  }
 
-    // Declared in Generics.jrag at line 1296
+    // Declared in Generics.jrag at line 1262
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed)
             return sourceTypeDecl_value;

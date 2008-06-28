@@ -32,7 +32,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
         }
         return res;
     }
-    // Declared in Annotations.jrag at line 598
+    // Declared in Annotations.jrag at line 596
 
   public void toString(StringBuffer s) {
     getAnnotation().toString(s);
@@ -117,20 +117,20 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
         return lookupAnnotation_TypeDecl_value;
     }
 
-    // Declared in Annotations.jrag at line 427
-    public Annotation Define_Annotation_lookupAnnotation(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-        if(caller == getAnnotationNoTransform()) {
-            return getAnnotation().type() == typeDecl ? getAnnotation() : lookupAnnotation(typeDecl);
-        }
-        return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
-    }
-
     // Declared in Annotations.jrag at line 95
     public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
         if(caller == getAnnotationNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
+
+    // Declared in Annotations.jrag at line 427
+    public Annotation Define_Annotation_lookupAnnotation(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
+        if(caller == getAnnotationNoTransform()) {
+            return getAnnotation().type() == typeDecl ? getAnnotation() : lookupAnnotation(typeDecl);
+        }
+        return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
     }
 
 public ASTNode rewriteTo() {

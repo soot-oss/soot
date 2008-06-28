@@ -113,7 +113,7 @@ public class XorBitwiseExpr extends BitwiseExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().xorBitwise(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 427
+    // Declared in PrettyPrint.jadd at line 406
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

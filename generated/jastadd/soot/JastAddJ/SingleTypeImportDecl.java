@@ -44,7 +44,7 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
       error(getAccess().type().name() + " is imported multiple times");
   }
 
-    // Declared in PrettyPrint.jadd at line 62
+    // Declared in PrettyPrint.jadd at line 50
 
 
   public void toString(StringBuffer s) {

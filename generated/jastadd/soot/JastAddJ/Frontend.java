@@ -25,13 +25,13 @@ public class Frontend extends java.lang.Object {
       initOptions();
       processArgs(args);
 
-      Collection files = program.files();
+      Collection files = program.options().files();
 
-      if(program.hasOption("-version")) {
+      if(program.options().hasOption("-version")) {
         printVersion();
         return false;
       }
-      if(program.hasOption("-help") || files.isEmpty()) {
+      if(program.options().hasOption("-help") || files.isEmpty()) {
         printUsage();
         return false;
       }
@@ -51,7 +51,7 @@ public class Frontend extends java.lang.Object {
             Collection warnings = new LinkedList();
             // compute static semantic errors when there are no parse errors or 
             // the recover from parse errors option is specified
-            if(errors.isEmpty() || program.hasOption("-recover"))
+            if(errors.isEmpty() || program.options().hasOption("-recover"))
               unit.errorCheck(errors, warnings);
             if(!errors.isEmpty()) {
               processErrors(errors, unit);
@@ -74,36 +74,37 @@ public class Frontend extends java.lang.Object {
 
 
     protected void initOptions() {
-      program.initOptions();
-      program.addKeyOption("-version");
-      program.addKeyOption("-print");
-      program.addKeyOption("-g");
-      program.addKeyOption("-g:none");
-      program.addKeyOption("-g:lines,vars,source");
-      program.addKeyOption("-nowarn");
-      program.addKeyOption("-verbose");
-      program.addKeyOption("-deprecation");
-      program.addKeyValueOption("-classpath");
-      program.addKeyValueOption("-sourcepath");
-      program.addKeyValueOption("-bootclasspath");
-      program.addKeyValueOption("-extdirs");
-      program.addKeyValueOption("-d");
-      program.addKeyValueOption("-encoding");
-      program.addKeyValueOption("-source");
-      program.addKeyValueOption("-target");
-      program.addKeyOption("-help");
-      program.addKeyOption("-O");
-      program.addKeyOption("-J-Xmx128M");
-      program.addKeyOption("-recover");
+      Options options = program.options();
+      options.initOptions();
+      options.addKeyOption("-version");
+      options.addKeyOption("-print");
+      options.addKeyOption("-g");
+      options.addKeyOption("-g:none");
+      options.addKeyOption("-g:lines,vars,source");
+      options.addKeyOption("-nowarn");
+      options.addKeyOption("-verbose");
+      options.addKeyOption("-deprecation");
+      options.addKeyValueOption("-classpath");
+      options.addKeyValueOption("-sourcepath");
+      options.addKeyValueOption("-bootclasspath");
+      options.addKeyValueOption("-extdirs");
+      options.addKeyValueOption("-d");
+      options.addKeyValueOption("-encoding");
+      options.addKeyValueOption("-source");
+      options.addKeyValueOption("-target");
+      options.addKeyOption("-help");
+      options.addKeyOption("-O");
+      options.addKeyOption("-J-Xmx128M");
+      options.addKeyOption("-recover");
     }
 
-    // Declared in FrontendMain.jrag at line 94
+    // Declared in FrontendMain.jrag at line 95
 
     protected void processArgs(String[] args) {
-      program.addOptions(args);
+      program.options().addOptions(args);
     }
 
-    // Declared in FrontendMain.jrag at line 98
+    // Declared in FrontendMain.jrag at line 99
 
 
     protected void processErrors(Collection errors, CompilationUnit unit) {
@@ -113,7 +114,7 @@ public class Frontend extends java.lang.Object {
       }
     }
 
-    // Declared in FrontendMain.jrag at line 104
+    // Declared in FrontendMain.jrag at line 105
 
     protected void processWarnings(Collection warnings, CompilationUnit unit) {
       for(Iterator iter2 = warnings.iterator(); iter2.hasNext(); ) {
@@ -121,12 +122,12 @@ public class Frontend extends java.lang.Object {
       }
     }
 
-    // Declared in FrontendMain.jrag at line 109
+    // Declared in FrontendMain.jrag at line 110
 
     protected void processNoErrors(CompilationUnit unit) {
     }
 
-    // Declared in FrontendMain.jrag at line 112
+    // Declared in FrontendMain.jrag at line 113
 
 
     protected void printUsage() {
@@ -145,27 +146,27 @@ public class Frontend extends java.lang.Object {
           );
     }
 
-    // Declared in FrontendMain.jrag at line 128
+    // Declared in FrontendMain.jrag at line 129
 
 
     protected void printVersion() {
       System.out.println(name() + " " + url() + " Version " + version());
     }
 
-    // Declared in FrontendMain.jrag at line 132
+    // Declared in FrontendMain.jrag at line 133
 
 
     protected String name() {
       return "Java1.4Frontend";
     }
 
-    // Declared in FrontendMain.jrag at line 135
+    // Declared in FrontendMain.jrag at line 136
 
     protected String url() {
       return "(http://jastadd.cs.lth.se)";
     }
 
-    // Declared in FrontendMain.jrag at line 139
+    // Declared in FrontendMain.jrag at line 140
 
 
     protected String version() {

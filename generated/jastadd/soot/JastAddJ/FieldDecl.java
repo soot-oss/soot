@@ -176,6 +176,14 @@ public class FieldDecl extends MemberDecl implements Cloneable {
 
     private boolean isStatic_compute() {  return getModifiers().isStatic();  }
 
+    // Declared in SyntacticClassification.jrag at line 77
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeAccessNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
     // Declared in TypeAnalysis.jrag at line 257
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getVariableDeclListNoTransform()) {
@@ -183,14 +191,6 @@ public class FieldDecl extends MemberDecl implements Cloneable {
             return null;
         }
         return getParent().Define_TypeDecl_declType(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 77
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeAccessNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
     }
 
 public ASTNode rewriteTo() {

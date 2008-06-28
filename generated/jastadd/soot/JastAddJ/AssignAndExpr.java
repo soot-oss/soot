@@ -105,7 +105,7 @@ public class AssignAndExpr extends AssignBitwiseExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in PrettyPrint.jadd at line 275
+    // Declared in PrettyPrint.jadd at line 256
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

@@ -107,7 +107,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
       error("modifier native not allowed in this context");
   }
 
-    // Declared in PrettyPrint.jadd at line 451
+    // Declared in PrettyPrint.jadd at line 430
 
 
   public void toString(StringBuffer s) {
