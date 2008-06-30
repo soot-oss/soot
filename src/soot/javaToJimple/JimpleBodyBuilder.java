@@ -1765,14 +1765,19 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
          */
         List<Stmt>  before = beforeReturn.get(beforeReturn.size()-1); //last element
         List<Stmt>  after = afterReturn.get(afterReturn.size()-1); //last element
+        
         if (before.size() > 0)
-        {
+        {      	  
 	        addToExceptionList(startNoop, before.get(0), catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
 	        for (int i = 1; i < before.size(); i++)
 	        {
 	      	  addToExceptionList(after.get(i-1), before.get(i), catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
 	        }
 	        addToExceptionList(after.get(after.size()-1), endNoop, catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
+        }
+        else
+        {
+      	  addToExceptionList(startNoop, endNoop, catchAllBeforeNoop, soot.Scene.v().getSootClass("java.lang.Throwable"));
         }
         beforeReturn.remove(before);
         afterReturn.remove(after);
