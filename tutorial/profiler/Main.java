@@ -48,8 +48,9 @@ public class Main
         
         PackManager.v().getPack("jtp").add(new Transform("jtp.instrumenter", GotoInstrumenter.v()));
 
-	// Just in case, resolve the PrintStream SootClass.
+	// Just in case, resolve the PrintStream and System SootClasses.
 	Scene.v().addBasicClass("java.io.PrintStream",SootClass.SIGNATURES);
+        Scene.v().addBasicClass("java.lang.System",SootClass.SIGNATURES);
         soot.Main.main(args);
     }
 }
