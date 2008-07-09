@@ -1372,16 +1372,22 @@ public class CFG {
 			
 			newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
 
-			// changed to account for catch blocks which are also part of normal control flow
-            //units.insertBefore(newTarget, firstTargetStmt);			
-            ((PatchingChain)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
+			((PatchingChain)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
 
 			targetToHandler.put(firstTargetStmt, newTarget);
-            if (units.getFirst()!=newTarget) {
-              Unit prev = (Unit)units.getPredOf(newTarget);
-              if (prev != null && prev.fallsThrough())
-                units.insertAfter(Jimple.v().newGotoStmt(firstTargetStmt), prev);
-            }
+			if (units.getFirst()!=newTarget) {
+			    Unit prev = (Unit)units.getPredOf(newTarget);
+			    if (prev != null && prev.fallsThrough())
+				units.insertAfter(Jimple.v().newGotoStmt(firstTargetStmt), prev);
+			}
+
+			// Bug reported by Silviu Andrica:
+			// rN := @caughtexception gets ignored by future
+			// trap generation.
+			for (Map.Entry<Instruction,Stmt> e : instructionToFirstStmt.entrySet()) {
+			    if (e.getValue() == firstTargetStmt)
+				e.setValue(newTarget);
+			}
 		    }
 		}
 
