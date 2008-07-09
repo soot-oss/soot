@@ -1042,13 +1042,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return unknownMethod_value;
     }
 
-    // Declared in SyntacticClassification.jrag at line 75
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    // Declared in Annotations.jrag at line 378
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
         if(caller == getSuperInterfaceIdListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
+            return isDeprecated() || withinDeprecatedAnnotation();
         }
-        return super.Define_NameType_nameType(caller, child);
+        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
     // Declared in TypeAnalysis.jrag at line 577
@@ -1069,13 +1069,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinSuppressWarnings(caller, child, s);
     }
 
-    // Declared in Annotations.jrag at line 378
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+    // Declared in SyntacticClassification.jrag at line 75
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getSuperInterfaceIdListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return isDeprecated() || withinDeprecatedAnnotation();
+            return NameType.TYPE_NAME;
         }
-        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
+        return super.Define_NameType_nameType(caller, child);
     }
 
 public ASTNode rewriteTo() {

@@ -908,21 +908,6 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return typeThrowable_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 666
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getFinallyOptNoTransform()) {
-            return isDAbefore(v);
-        }
-        if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return getBlock().isDAbefore(v);
-        }
-        if(caller == getBlockNoTransform()) {
-            return isDAbefore(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
     // Declared in Statements.jrag at line 444
     public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
         if(caller == getCatchClauseListNoTransform()) {
@@ -933,21 +918,6 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
             return exceptionRanges();
         }
         return getParent().Define_ArrayList_exceptionRanges(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 154
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getFinallyOptNoTransform()) {
-            return reachable();
-        }
-        if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return reachable();
-        }
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
     // Declared in ExceptionHandling.jrag at line 179
@@ -971,12 +941,72 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
+    // Declared in UnreachableStatements.jrag at line 154
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getFinallyOptNoTransform()) {
+            return reachable();
+        }
+        if(caller == getCatchClauseListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return reachable();
+        }
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 121
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getFinallyOptNoTransform()) {
+            return reachable();
+        }
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
     // Declared in Statements.jrag at line 350
     public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 666
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getFinallyOptNoTransform()) {
+            return isDAbefore(v);
+        }
+        if(caller == getCatchClauseListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return getBlock().isDAbefore(v);
+        }
+        if(caller == getBlockNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 125
+    public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child) {
+        if(caller == getCatchClauseListNoTransform()) { 
+   int childIndex = caller.getIndexOfChild(child);
+{
+    TypeDecl type = getCatchClause(childIndex).getParameter().type();
+    for(int i = 0; i < childIndex; i++)
+      if(getCatchClause(i).handles(type))
+        return false;
+    if(reachableThrow(getCatchClause(childIndex)))
+      return true;
+    if(type.mayCatch(typeError()) || type.mayCatch(typeRuntimeException()))
+      return true;
+    return false;
+  }
+}
+        return getParent().Define_boolean_reachableCatchClause(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1216
@@ -1003,36 +1033,6 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 121
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getFinallyOptNoTransform()) {
-            return reachable();
-        }
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 125
-    public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child) {
-        if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
-    TypeDecl type = getCatchClause(childIndex).getParameter().type();
-    for(int i = 0; i < childIndex; i++)
-      if(getCatchClause(i).handles(type))
-        return false;
-    if(reachableThrow(getCatchClause(childIndex)))
-      return true;
-    if(type.mayCatch(typeError()) || type.mayCatch(typeRuntimeException()))
-      return true;
-    return false;
-  }
-}
-        return getParent().Define_boolean_reachableCatchClause(this, caller);
     }
 
 public ASTNode rewriteTo() {

@@ -237,7 +237,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
 
     private boolean isConstant_compute() {  return true;  }
 
-    // Declared in PrettyPrint.jadd at line 810
+    // Declared in PrettyPrint.jadd at line 811
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

@@ -464,18 +464,18 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     private soot.jimple.Stmt then_branch_label_compute() {  return newLabel();  }
 
-    // Declared in DefiniteAssignment.jrag at line 390
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    // Declared in BooleanExpressions.jrag at line 64
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
         if(caller == getFalseExprNoTransform()) {
-            return getCondition().isDAafterFalse(v);
+            return false_label();
         }
         if(caller == getTrueExprNoTransform()) {
-            return getCondition().isDAafterTrue(v);
+            return false_label();
         }
         if(caller == getConditionNoTransform()) {
-            return isDAbefore(v);
+            return else_branch_label();
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
 
     // Declared in BooleanExpressions.jrag at line 65
@@ -492,18 +492,18 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
         return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
-    // Declared in BooleanExpressions.jrag at line 64
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 390
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getFalseExprNoTransform()) {
-            return false_label();
+            return getCondition().isDAafterFalse(v);
         }
         if(caller == getTrueExprNoTransform()) {
-            return false_label();
+            return getCondition().isDAafterTrue(v);
         }
         if(caller == getConditionNoTransform()) {
-            return else_branch_label();
+            return isDAbefore(v);
         }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in DefiniteAssignment.jrag at line 824

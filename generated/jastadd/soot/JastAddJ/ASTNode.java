@@ -327,7 +327,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Operation toString(StringBuffer s) not implemented for " + getClass().getName());
   }
 
-    // Declared in PrettyPrint.jadd at line 764
+    // Declared in PrettyPrint.jadd at line 765
 
 
   // dump the AST to standard output
@@ -338,7 +338,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return s.toString();
   }
 
-    // Declared in PrettyPrint.jadd at line 770
+    // Declared in PrettyPrint.jadd at line 771
 
 
   public void dumpTree(StringBuffer s, int j) {
@@ -350,7 +350,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).dumpTree(s, j + 1);
   }
 
-    // Declared in PrettyPrint.jadd at line 779
+    // Declared in PrettyPrint.jadd at line 780
 
 
   public String dumpTreeNoRewrite() {
@@ -359,7 +359,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return s.toString();
   }
 
-    // Declared in PrettyPrint.jadd at line 784
+    // Declared in PrettyPrint.jadd at line 785
 
   protected void dumpTreeNoRewrite(StringBuffer s, int indent) {
     for(int i = 0; i < indent; i++)
@@ -822,8 +822,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 129
 
-    protected boolean duringEnums() {
-        if(state().duringEnums == 0) {
+    protected boolean duringDefiniteAssignment() {
+        if(state().duringDefiniteAssignment == 0) {
             return false;
         }
         else {
@@ -835,8 +835,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 140
 
-    protected boolean duringResolveAmbiguousNames() {
-        if(state().duringResolveAmbiguousNames == 0) {
+    protected boolean duringGenericTypeVariables() {
+        if(state().duringGenericTypeVariables == 0) {
             return false;
         }
         else {
@@ -848,8 +848,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 151
 
-    protected boolean duringAnnotations() {
-        if(state().duringAnnotations == 0) {
+    protected boolean duringVariableDeclaration() {
+        if(state().duringVariableDeclaration == 0) {
             return false;
         }
         else {
@@ -861,8 +861,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 162
 
-    protected boolean duringConstantExpression() {
-        if(state().duringConstantExpression == 0) {
+    protected boolean duringBoundNames() {
+        if(state().duringBoundNames == 0) {
             return false;
         }
         else {
@@ -874,8 +874,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 173
 
-    protected boolean duringAnonymousClasses() {
-        if(state().duringAnonymousClasses == 0) {
+    protected boolean duringEnums() {
+        if(state().duringEnums == 0) {
             return false;
         }
         else {
@@ -900,8 +900,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 195
 
-    protected boolean duringVariableDeclaration() {
-        if(state().duringVariableDeclaration == 0) {
+    protected boolean duringConstantExpression() {
+        if(state().duringConstantExpression == 0) {
             return false;
         }
         else {
@@ -913,8 +913,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 206
 
-    protected boolean duringDefiniteAssignment() {
-        if(state().duringDefiniteAssignment == 0) {
+    protected boolean duringAnonymousClasses() {
+        if(state().duringAnonymousClasses == 0) {
             return false;
         }
         else {
@@ -926,8 +926,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 217
 
-    protected boolean duringGenericTypeVariables() {
-        if(state().duringGenericTypeVariables == 0) {
+    protected boolean duringAnnotations() {
+        if(state().duringAnnotations == 0) {
             return false;
         }
         else {
@@ -952,8 +952,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 239
 
-    protected boolean duringBoundNames() {
-        if(state().duringBoundNames == 0) {
+    protected boolean duringResolveAmbiguousNames() {
+        if(state().duringResolveAmbiguousNames == 0) {
             return false;
         }
         else {
@@ -1049,7 +1049,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     private boolean addsIndentationLevel_compute() {  return false;  }
 
-    // Declared in PrettyPrint.jadd at line 794
+    // Declared in PrettyPrint.jadd at line 795
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -1094,167 +1094,170 @@ public ASTNode rewriteTo() {
     return this;
 }
 
-    public Expr Define_Expr_nestedScope(ASTNode caller, ASTNode child) {
-        return getParent().Define_Expr_nestedScope(this, caller);
+    public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
+        return getParent().Define_LUBType_lookupLUBType(this, caller, bounds);
     }
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-    public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeWildcard(this, caller);
-    }
-    public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
-    }
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isConstructorParameter(this, caller);
-    }
-    public MethodDecl Define_MethodDecl_unknownMethod(ASTNode caller, ASTNode child) {
-        return getParent().Define_MethodDecl_unknownMethod(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
-    }
-    public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_variableArityValid(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeCloneable(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeCloneable(this, caller);
-    }
-    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isMethodParameter(this, caller);
-    }
-    public Annotation Define_Annotation_lookupAnnotation(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-        return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
-    }
-    public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeAbstract(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeSerializable(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeSerializable(this, caller);
-    }
-    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_enclosingInstance(this, caller);
-    }
-    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
-    }
-    public TypeDecl Define_TypeDecl_typeByte(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeByte(this, caller);
-    }
-    public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeVolatile(this, caller);
-    }
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
-    }
-    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
-    }
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
-    }
-    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_insideLoop(this, caller);
-    }
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-    public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeSynchronized(this, caller);
-    }
-    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isIncOrDec(this, caller);
-    }
-    public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeTransient(this, caller);
-    }
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isDest(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_lookupType(ASTNode caller, ASTNode child, String packageName, String typeName) {
-        return getParent().Define_TypeDecl_lookupType(this, caller, packageName, typeName);
-    }
-    public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
-        return getParent().Define_Collection_lookupSuperConstructor(this, caller);
-    }
-    public GenericConstructorDecl Define_GenericConstructorDecl_genericConstructorDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_expectedType(this, caller);
-    }
-    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_inStaticContext(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeLong(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeLong(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeString(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeString(this, caller);
+    public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
+        return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
     public GenericMethodDecl Define_GenericMethodDecl_genericMethodDecl(ASTNode caller, ASTNode child) {
         return getParent().Define_GenericMethodDecl_genericMethodDecl(this, caller);
     }
-    public TypeDecl Define_TypeDecl_typeInt(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeInt(this, caller);
-    }
-    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isNestedType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_declType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_returnType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_componentType(this, caller);
-    }
-    public SimpleSet Define_SimpleSet_allImportedTypes(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_SimpleSet_allImportedTypes(this, caller, name);
-    }
-    public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeStatic(this, caller);
+    public TypeDecl Define_TypeDecl_typeNullPointerException(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeNullPointerException(this, caller);
     }
     public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
         return getParent().Define_Collection_lookupConstructor(this, caller);
     }
-    public TypeDecl Define_TypeDecl_typeObject(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeObject(this, caller);
+    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeFinal(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeThrowable(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeThrowable(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_expectedType(this, caller);
+    }
+    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_insideLoop(this, caller);
+    }
+    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isMethodParameter(this, caller);
+    }
+    public LabeledStmt Define_LabeledStmt_lookupLabel(ASTNode caller, ASTNode child, String name) {
+        return getParent().Define_LabeledStmt_lookupLabel(this, caller, name);
+    }
+    public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBePublic(this, caller);
+    }
+    public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
+        return getParent().Define_Collection_lookupSuperConstructor(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeRuntimeException(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeRuntimeException(this, caller);
+    }
+    public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeProtected(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeWildcard(this, caller);
+    }
+    public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_variableArityValid(this, caller);
+    }
+    public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isMemberType(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeBoolean(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeBoolean(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_componentType(this, caller);
+    }
+    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
     }
     public GLBType Define_GLBType_lookupGLBType(ASTNode caller, ASTNode child, ArrayList bounds) {
         return getParent().Define_GLBType_lookupGLBType(this, caller, bounds);
     }
-    public ConstructorDecl Define_ConstructorDecl_unknownConstructor(ASTNode caller, ASTNode child) {
-        return getParent().Define_ConstructorDecl_unknownConstructor(this, caller);
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
-    public TypeDecl Define_TypeDecl_typeNull(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeNull(this, caller);
-    }
-    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_Collection_lookupMethod(this, caller, name);
+    public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeStrictfp(this, caller);
     }
     public TypeDecl Define_TypeDecl_switchType(ASTNode caller, ASTNode child) {
         return getParent().Define_TypeDecl_switchType(this, caller);
     }
-    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_hostType(this, caller);
+    public TypeDecl Define_TypeDecl_typeObject(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeObject(this, caller);
     }
-    public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
-        return getParent().Define_Case_bind(this, caller, c);
+    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
     }
-    public String Define_String_hostPackage(ASTNode caller, ASTNode child) {
-        return getParent().Define_String_hostPackage(this, caller);
+    public TypeDecl Define_TypeDecl_typeShort(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeShort(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeCloneable(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeCloneable(this, caller);
+    }
+    public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isLocalClass(this, caller);
+    }
+    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isNestedType(this, caller);
+    }
+    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+        return getParent().Define_String_methodHost(this, caller);
+    }
+    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isDest(this, caller);
+    }
+    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isSource(this, caller);
     }
     public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
         return getParent().Define_ArrayList_exceptionRanges(this, caller);
+    }
+    public ConstructorDecl Define_ConstructorDecl_unknownConstructor(ASTNode caller, ASTNode child) {
+        return getParent().Define_ConstructorDecl_unknownConstructor(this, caller);
+    }
+    public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
+        return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_declType(this, caller);
+    }
+    public GenericConstructorDecl Define_GenericConstructorDecl_genericConstructorDecl(ASTNode caller, ASTNode child) {
+        return getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, caller);
+    }
+    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isConstructorParameter(this, caller);
+    }
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeChar(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeChar(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_lookupType(ASTNode caller, ASTNode child, String packageName, String typeName) {
+        return getParent().Define_TypeDecl_lookupType(this, caller, packageName, typeName);
+    }
+    public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeAbstract(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
+        return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
+    }
+    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isAnonymous(this, caller);
+    }
+    public SimpleSet Define_SimpleSet_allImportedTypes(ASTNode caller, ASTNode child, String name) {
+        return getParent().Define_SimpleSet_allImportedTypes(this, caller, name);
+    }
+    public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
+        return getParent().Define_TypeDecl_lookupWildcardSuper(this, caller, typeDecl);
+    }
+    public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
+        return getParent().Define_ASTNode_enclosingBlock(this, caller);
+    }
+    public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeSynchronized(this, caller);
+    }
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_enclosingInstance(this, caller);
+    }
+    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+        return getParent().Define_VariableScope_outerScope(this, caller);
+    }
+    public CompilationUnit Define_CompilationUnit_compilationUnit(ASTNode caller, ASTNode child) {
+        return getParent().Define_CompilationUnit_compilationUnit(this, caller);
     }
     public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
         return getParent().Define_boolean_mayBePrivate(this, caller);
@@ -1262,148 +1265,145 @@ public ASTNode rewriteTo() {
     public TypeDecl Define_TypeDecl_unknownType(ASTNode caller, ASTNode child) {
         return getParent().Define_TypeDecl_unknownType(this, caller);
     }
-    public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBePublic(this, caller);
+    public TypeDecl Define_TypeDecl_typeSerializable(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeSerializable(this, caller);
     }
-    public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-        return getParent().Define_TypeDecl_lookupWildcardSuper(this, caller, typeDecl);
-    }
-    public Variable Define_Variable_unknownField(ASTNode caller, ASTNode child) {
-        return getParent().Define_Variable_unknownField(this, caller);
-    }
-    public LabeledStmt Define_LabeledStmt_lookupLabel(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_LabeledStmt_lookupLabel(this, caller, name);
-    }
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
-    }
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    public TypeDecl Define_TypeDecl_typeLong(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeLong(this, caller);
     }
     public TypeDecl Define_TypeDecl_typeError(ASTNode caller, ASTNode child) {
         return getParent().Define_TypeDecl_typeError(this, caller);
     }
-    public TypeDecl Define_TypeDecl_typeThrowable(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeThrowable(this, caller);
+    public Annotation Define_Annotation_lookupAnnotation(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
+        return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
+    }
+    public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeTransient(this, caller);
     }
     public String Define_String_packageName(ASTNode caller, ASTNode child) {
         return getParent().Define_String_packageName(this, caller);
     }
-    public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
-        return getParent().Define_LUBType_lookupLUBType(this, caller, bounds);
-    }
-    public TypeDecl Define_TypeDecl_typeShort(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeShort(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeNullPointerException(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeNullPointerException(this, caller);
-    }
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeFinal(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeException(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeException(this, caller);
-    }
     public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
         return getParent().Define_boolean_mayBeNative(this, caller);
     }
-    public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_insideSwitch(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeChar(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeChar(this, caller);
-    }
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
-    public ElementValue Define_ElementValue_lookupElementTypeValue(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
-    }
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-        return getParent().Define_String_methodHost(this, caller);
-    }
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-    public TypeDecl Define_TypeDecl_typeVoid(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeVoid(this, caller);
-    }
-    public CompilationUnit Define_CompilationUnit_compilationUnit(ASTNode caller, ASTNode child) {
-        return getParent().Define_CompilationUnit_compilationUnit(this, caller);
-    }
-    public BodyDecl Define_BodyDecl_enclosingBodyDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeDouble(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeDouble(this, caller);
-    }
-    public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isMemberType(this, caller);
-    }
-    public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
-        return getParent().Define_ASTNode_enclosingBlock(this, caller);
-    }
-    public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeProtected(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeBoolean(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeBoolean(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_superType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_superType(this, caller);
-    }
-    public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_reachableCatchClause(this, caller);
+    public MethodDecl Define_MethodDecl_unknownMethod(ASTNode caller, ASTNode child) {
+        return getParent().Define_MethodDecl_unknownMethod(this, caller);
     }
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         return getParent().Define_NameType_nameType(this, caller);
     }
-    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isAnonymous(this, caller);
+    public TypeDecl Define_TypeDecl_typeNull(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeNull(this, caller);
     }
-    public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
-        return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_inStaticContext(this, caller);
     }
-    public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isLocalClass(this, caller);
+    public TypeDecl Define_TypeDecl_typeString(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeString(this, caller);
+    }
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    }
+    public Variable Define_Variable_unknownField(ASTNode caller, ASTNode child) {
+        return getParent().Define_Variable_unknownField(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeInt(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeInt(this, caller);
+    }
+    public String Define_String_hostPackage(ASTNode caller, ASTNode child) {
+        return getParent().Define_String_hostPackage(this, caller);
+    }
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+    }
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+    public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_insideSwitch(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeByte(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeByte(this, caller);
     }
     public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
         return getParent().Define_TypeDecl_genericDecl(this, caller);
     }
-    public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-        return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
+    public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_returnType(this, caller);
     }
-    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
-        return getParent().Define_boolean_hasPackage(this, caller, packageName);
+    public TypeDecl Define_TypeDecl_superType(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_superType(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
+    }
+    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
+    public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeStatic(this, caller);
     }
     public TypeDecl Define_TypeDecl_typeFloat(ASTNode caller, ASTNode child) {
         return getParent().Define_TypeDecl_typeFloat(this, caller);
     }
-    public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeStrictfp(this, caller);
+    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
+        return getParent().Define_Collection_lookupMethod(this, caller, name);
     }
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        return getParent().Define_VariableScope_outerScope(this, caller);
+    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_hostType(this, caller);
+    }
+    public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_reachableCatchClause(this, caller);
+    }
+    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
+        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
+    public Expr Define_Expr_nestedScope(ASTNode caller, ASTNode child) {
+        return getParent().Define_Expr_nestedScope(this, caller);
+    }
+    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+    }
+    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
+        return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
     public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
         return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
     }
-    public TypeDecl Define_TypeDecl_typeRuntimeException(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeRuntimeException(this, caller);
-    }
-    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+    public TypeDecl Define_TypeDecl_typeVoid(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeVoid(this, caller);
     }
     public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
         return getParent().Define_TypeDecl_enclosingType(this, caller);
     }
+    public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
+        return getParent().Define_Case_bind(this, caller, c);
+    }
+    public TypeDecl Define_TypeDecl_typeException(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeException(this, caller);
+    }
     public int Define_int_localNum(ASTNode caller, ASTNode child) {
         return getParent().Define_int_localNum(this, caller);
+    }
+    public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_mayBeVolatile(this, caller);
+    }
+    public ElementValue Define_ElementValue_lookupElementTypeValue(ASTNode caller, ASTNode child, String name) {
+        return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
+    }
+    public BodyDecl Define_BodyDecl_enclosingBodyDecl(ASTNode caller, ASTNode child) {
+        return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
+    }
+    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
+        return getParent().Define_boolean_isIncOrDec(this, caller);
+    }
+    public TypeDecl Define_TypeDecl_typeDouble(ASTNode caller, ASTNode child) {
+        return getParent().Define_TypeDecl_typeDouble(this, caller);
     }
 }

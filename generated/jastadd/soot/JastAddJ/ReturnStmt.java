@@ -354,20 +354,20 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return exceptionRanges_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 653
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getResultOptNoTransform()) {
-            return isDAbefore(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
     // Declared in GenericMethodsInference.jrag at line 38
     public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
         if(caller == getResultOptNoTransform()) {
             return returnType();
         }
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 653
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getResultOptNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1179

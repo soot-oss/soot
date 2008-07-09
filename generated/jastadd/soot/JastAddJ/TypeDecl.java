@@ -2319,7 +2319,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     private boolean addsIndentationLevel_compute() {  return true;  }
 
-    // Declared in PrettyPrint.jadd at line 804
+    // Declared in PrettyPrint.jadd at line 805
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -4582,6 +4582,299 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return lookupGLBType_ArrayList_value;
     }
 
+    // Declared in Modifiers.jrag at line 301
+    public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBePrivate(this, caller);
+    }
+
+    // Declared in LookupMethod.jrag at line 34
+    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return unqualifiedLookupMethod(name);
+        }
+        return getParent().Define_Collection_lookupMethod(this, caller, name);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 572
+    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return hostType();
+        }
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return hostType();
+        }
+        return getParent().Define_TypeDecl_hostType(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 20
+    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_isDest(this, caller);
+    }
+
+    // Declared in LookupConstructor.jrag at line 16
+    public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return constructors();
+        }
+        return getParent().Define_Collection_lookupConstructor(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 303
+    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_mayBeFinal(this, caller);
+    }
+
+    // Declared in Annotations.jrag at line 74
+    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
+        if(caller == getModifiersNoTransform()) {
+            return name.equals("TYPE");
+        }
+        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
+
+    // Declared in NameCheck.jrag at line 364
+    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_insideLoop(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 299
+    public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBePublic(this, caller);
+    }
+
+    // Declared in LookupConstructor.jrag at line 20
+    public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return lookupSuperConstructor();
+        }
+        return getParent().Define_Collection_lookupSuperConstructor(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 30
+    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return true;
+        }
+        return getParent().Define_boolean_isSource(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 300
+    public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBeProtected(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 306
+    public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_mayBeTransient(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 309
+    public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_mayBeNative(this, caller);
+    }
+
+    // Declared in Annotations.jrag at line 271
+    public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return getBodyDecl(i).hasAnnotationSuppressWarnings(s) || hasAnnotationSuppressWarnings(s) ||
+    withinSuppressWarnings(s);
+        }
+        return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
+    }
+
+    // Declared in Arrays.jrag at line 20
+    public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
+        if(caller == arrayType_value) {
+            return this;
+        }
+        return getParent().Define_TypeDecl_componentType(this, caller);
+    }
+
+    // Declared in Statements.jrag at line 347
+    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 118
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.EXPRESSION_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 138
+    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return isStatic() || inStaticContext();
+        }
+        return getParent().Define_boolean_inStaticContext(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 713
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getBodyDeclListNoTransform()) { 
+   int childIndex = caller.getIndexOfChild(child);
+{
+    BodyDecl b = getBodyDecl(childIndex);
+    if(b instanceof MethodDecl || b instanceof MemberTypeDecl) {
+      return false;
+    }
+    if(v.isClassVariable() || v.isInstanceVariable()) {
+      int index = childIndex - 1;
+      if(b instanceof ConstructorDecl)
+        index = getNumBodyDecl() - 1;
+        
+      for(int i = index; i >= 0; i--) {
+        b = getBodyDecl(i);
+        if(b instanceof FieldDeclaration) {
+          FieldDeclaration f = (FieldDeclaration)b;
+          //System.err.println("  working on field " + f.name() + " which is child " + i);
+          if(f == v)
+            return !f.hasInit();
+          if((v.isClassVariable() && f.isStatic()) || (v.isInstanceVariable() && !f.isStatic()))
+            return f.isDUafter(v);
+          //System.err.println("  field " + f.name() + " can not affect " + v.name());
+        }
+        else if(b instanceof StaticInitializer && v.isClassVariable()) {
+          StaticInitializer si = (StaticInitializer)b;
+          //System.err.println("  working on static initializer which is child " + i);
+          return si.isDUafter(v);
+        }
+        else if(b instanceof InstanceInitializer && v.isInstanceVariable()) {
+          InstanceInitializer ii = (InstanceInitializer)b;
+          //System.err.println("  working on instance initializer which is child " + i);
+          return ii.isDUafter(v);
+        }
+      }
+    }
+    //System.err.println("Reached TypeDecl when searching for DU for variable");
+    return isDUbefore(v);
+  }
+}
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in Annotations.jrag at line 374
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return getBodyDecl(i).isDeprecated() || isDeprecated() || withinDeprecatedAnnotation();
+        }
+        return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 495
+    public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return this;
+        }
+        return getParent().Define_TypeDecl_enclosingType(this, caller);
+    }
+
+    // Declared in LookupVariable.jrag at line 27
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getBodyDeclListNoTransform()) { 
+   int i = caller.getIndexOfChild(child);
+{
+    SimpleSet list = memberFields(name);
+    if(!list.isEmpty()) return list;
+    list = lookupVariable(name);
+    if(inStaticContext() || isStatic())
+      list = removeInstanceVariables(list);
+    return list;
+  }
+}
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in Modifiers.jrag at line 304
+    public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBeAbstract(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 307
+    public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBeStrictfp(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 218
+    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_isAnonymous(this, caller);
+    }
+
     // Declared in DefiniteAssignment.jrag at line 247
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBodyDeclListNoTransform()) { 
@@ -4636,41 +4929,67 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in LookupVariable.jrag at line 27
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getBodyDeclListNoTransform()) { 
-   int i = caller.getIndexOfChild(child);
-{
-    SimpleSet list = memberFields(name);
-    if(!list.isEmpty()) return list;
-    list = lookupVariable(name);
-    if(inStaticContext() || isStatic())
-      list = removeInstanceVariables(list);
-    return list;
-  }
-}
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    // Declared in NameCheck.jrag at line 371
+    public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_insideSwitch(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 572
-    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return hostType();
-        }
+    // Declared in TypeCheck.jrag at line 404
+    public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return hostType();
+            return typeVoid();
         }
-        return getParent().Define_TypeDecl_hostType(this, caller);
+        return getParent().Define_TypeDecl_returnType(this, caller);
     }
 
-    // Declared in LookupConstructor.jrag at line 20
-    public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
+    // Declared in Modifiers.jrag at line 305
+    public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return lookupSuperConstructor();
+            return false;
         }
-        return getParent().Define_Collection_lookupSuperConstructor(this, caller);
+        return getParent().Define_boolean_mayBeVolatile(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 308
+    public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_mayBeSynchronized(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 157
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return true;
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 543
+    public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return false;
+        }
+        return getParent().Define_boolean_isLocalClass(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 521
+    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+        if(caller == getBodyDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return true;
+        }
+        return getParent().Define_boolean_isNestedType(this, caller);
     }
 
     // Declared in TypeHierarchyCheck.jrag at line 12
@@ -4680,134 +4999,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return typeName();
         }
         return getParent().Define_String_methodHost(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 713
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getBodyDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
-    BodyDecl b = getBodyDecl(childIndex);
-    if(b instanceof MethodDecl || b instanceof MemberTypeDecl) {
-      return false;
-    }
-    if(v.isClassVariable() || v.isInstanceVariable()) {
-      int index = childIndex - 1;
-      if(b instanceof ConstructorDecl)
-        index = getNumBodyDecl() - 1;
-        
-      for(int i = index; i >= 0; i--) {
-        b = getBodyDecl(i);
-        if(b instanceof FieldDeclaration) {
-          FieldDeclaration f = (FieldDeclaration)b;
-          //System.err.println("  working on field " + f.name() + " which is child " + i);
-          if(f == v)
-            return !f.hasInit();
-          if((v.isClassVariable() && f.isStatic()) || (v.isInstanceVariable() && !f.isStatic()))
-            return f.isDUafter(v);
-          //System.err.println("  field " + f.name() + " can not affect " + v.name());
-        }
-        else if(b instanceof StaticInitializer && v.isClassVariable()) {
-          StaticInitializer si = (StaticInitializer)b;
-          //System.err.println("  working on static initializer which is child " + i);
-          return si.isDUafter(v);
-        }
-        else if(b instanceof InstanceInitializer && v.isInstanceVariable()) {
-          InstanceInitializer ii = (InstanceInitializer)b;
-          //System.err.println("  working on instance initializer which is child " + i);
-          return ii.isDUafter(v);
-        }
-      }
-    }
-    //System.err.println("Reached TypeDecl when searching for DU for variable");
-    return isDUbefore(v);
-  }
-}
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in TypeHierarchyCheck.jrag at line 138
-    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return isStatic() || inStaticContext();
-        }
-        return getParent().Define_boolean_inStaticContext(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 300
-    public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBeProtected(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 301
-    public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBePrivate(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 299
-    public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBePublic(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 304
-    public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBeAbstract(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 118
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 218
-    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_isAnonymous(this, caller);
-    }
-
-    // Declared in Statements.jrag at line 347
-    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
     }
 
     // Declared in TypeCheck.jrag at line 509
@@ -4825,65 +5016,13 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_TypeDecl_enclosingInstance(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 543
-    public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
+    // Declared in NameCheck.jrag at line 292
+    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_isLocalClass(this, caller);
-    }
-
-    // Declared in Annotations.jrag at line 74
-    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
-        if(caller == getModifiersNoTransform()) {
-            return name.equals("TYPE");
-        }
-        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 521
-    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return getParent().Define_boolean_isNestedType(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 305
-    public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_mayBeVolatile(this, caller);
-    }
-
-    // Declared in Annotations.jrag at line 374
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return getBodyDecl(i).isDeprecated() || isDeprecated() || withinDeprecatedAnnotation();
-        }
-        return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
-    }
-
-    // Declared in TypeCheck.jrag at line 404
-    public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return typeVoid();
-        }
-        return getParent().Define_TypeDecl_returnType(this, caller);
-    }
-
-    // Declared in Arrays.jrag at line 20
-    public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
-        if(caller == arrayType_value) {
             return this;
         }
-        return getParent().Define_TypeDecl_componentType(this, caller);
+        return getParent().Define_VariableScope_outerScope(this, caller);
     }
 
     // Declared in LookupType.jrag at line 270
@@ -4925,145 +5064,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return true;
         }
         return getParent().Define_boolean_mayBeStatic(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 307
-    public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBeStrictfp(this, caller);
-    }
-
-    // Declared in LookupConstructor.jrag at line 16
-    public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return constructors();
-        }
-        return getParent().Define_Collection_lookupConstructor(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 30
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-
-    // Declared in NameCheck.jrag at line 364
-    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_insideLoop(this, caller);
-    }
-
-    // Declared in NameCheck.jrag at line 292
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return this;
-        }
-        return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 308
-    public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_mayBeSynchronized(this, caller);
-    }
-
-    // Declared in Annotations.jrag at line 271
-    public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return getBodyDecl(i).hasAnnotationSuppressWarnings(s) || hasAnnotationSuppressWarnings(s) ||
-    withinSuppressWarnings(s);
-        }
-        return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 157
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(true) {
-      int childIndex = this.getIndexOfChild(caller);
-            return true;
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 303
-    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_mayBeFinal(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 309
-    public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_mayBeNative(this, caller);
-    }
-
-    // Declared in LookupMethod.jrag at line 34
-    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return unqualifiedLookupMethod(name);
-        }
-        return getParent().Define_Collection_lookupMethod(this, caller, name);
-    }
-
-    // Declared in NameCheck.jrag at line 371
-    public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_insideSwitch(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 495
-    public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return this;
-        }
-        return getParent().Define_TypeDecl_enclosingType(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 306
-    public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_mayBeTransient(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 20
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-        if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return false;
-        }
-        return getParent().Define_boolean_isDest(this, caller);
     }
 
 public ASTNode rewriteTo() {

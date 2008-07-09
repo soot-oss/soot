@@ -40,6 +40,12 @@ public class VoidType extends TypeDecl implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 853
+
+	public void toString(StringBuffer s) {
+		s.append("void");
+	}
+
     // Declared in java.ast at line 3
     // Declared in java.ast line 45
 

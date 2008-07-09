@@ -50,6 +50,12 @@ public class ByteType extends IntegralType implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 829
+
+	public void toString(StringBuffer s) {
+		s.append("byte");
+	}
+
     // Declared in java.ast at line 3
     // Declared in java.ast line 53
 

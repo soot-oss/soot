@@ -337,15 +337,6 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
         return super.Define_SimpleSet_lookupVariable(caller, child, name);
     }
 
-    // Declared in TypeHierarchyCheck.jrag at line 131
-    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return super.Define_boolean_inExplicitConstructorInvocation(caller, child);
-    }
-
     // Declared in LookupType.jrag at line 89
     public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
         if(caller == getArgListNoTransform()) {
@@ -353,6 +344,15 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
             return unqualifiedScope().hasPackage(packageName);
         }
         return super.Define_boolean_hasPackage(caller, child, packageName);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 131
+    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return true;
+        }
+        return super.Define_boolean_inExplicitConstructorInvocation(caller, child);
     }
 
 public ASTNode rewriteTo() {

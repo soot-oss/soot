@@ -50,6 +50,12 @@ public class CharType extends IntegralType implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 841
+
+	public void toString(StringBuffer s) {
+		s.append("char");
+	}
+
     // Declared in java.ast at line 3
     // Declared in java.ast line 57
 

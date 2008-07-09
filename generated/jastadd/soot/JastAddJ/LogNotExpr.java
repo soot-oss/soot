@@ -210,12 +210,12 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private boolean canBeFalse_compute() {  return getOperand().canBeTrue();  }
 
-    // Declared in DefiniteAssignment.jrag at line 383
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    // Declared in BooleanExpressions.jrag at line 57
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
         if(caller == getOperandNoTransform()) {
-            return isDAbefore(v);
+            return true_label();
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
 
     // Declared in BooleanExpressions.jrag at line 58
@@ -226,12 +226,12 @@ public class LogNotExpr extends Unary implements Cloneable {
         return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
-    // Declared in BooleanExpressions.jrag at line 57
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 383
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getOperandNoTransform()) {
-            return true_label();
+            return isDAbefore(v);
         }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in DefiniteAssignment.jrag at line 817

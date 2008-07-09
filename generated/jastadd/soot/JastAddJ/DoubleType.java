@@ -44,6 +44,12 @@ public class DoubleType extends FloatingPointType implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 847
+
+	public void toString(StringBuffer s) {
+		s.append("double");
+	}
+
     // Declared in java.ast at line 3
     // Declared in java.ast line 60
 

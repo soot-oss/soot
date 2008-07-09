@@ -198,7 +198,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     private TypeDecl decl_compute() {  return getAccess().type().arrayType();  }
 
-    // Declared in PrettyPrint.jadd at line 799
+    // Declared in PrettyPrint.jadd at line 800
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

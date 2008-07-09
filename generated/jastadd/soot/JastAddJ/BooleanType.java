@@ -44,6 +44,13 @@ public class BooleanType extends PrimitiveType implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 826
+
+
+	public void toString(StringBuffer s) {
+		s.append("boolean");
+	}
+
     // Declared in Expressions.jrag at line 45
 
   public static soot.Value emitConstant(boolean b) {

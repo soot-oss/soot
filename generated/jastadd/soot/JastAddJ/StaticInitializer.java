@@ -166,14 +166,6 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return handlesException_TypeDecl_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 440
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getBlockNoTransform()) {
-            return isDAbefore(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
     // Declared in ExceptionHandling.jrag at line 170
     public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
         if(caller == getBlockNoTransform()) {
@@ -182,12 +174,12 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
-    // Declared in TypeHierarchyCheck.jrag at line 139
-    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
+    // Declared in UnreachableStatements.jrag at line 34
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
             return true;
         }
-        return getParent().Define_boolean_inStaticContext(this, caller);
+        return getParent().Define_boolean_reachable(this, caller);
     }
 
     // Declared in TypeCheck.jrag at line 507
@@ -198,12 +190,20 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_TypeDecl_enclosingInstance(this, caller);
     }
 
-    // Declared in UnreachableStatements.jrag at line 34
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 440
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getBlockNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 139
+    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
             return true;
         }
-        return getParent().Define_boolean_reachable(this, caller);
+        return getParent().Define_boolean_inStaticContext(this, caller);
     }
 
 public ASTNode rewriteTo() {

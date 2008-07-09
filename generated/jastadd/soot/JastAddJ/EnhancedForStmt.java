@@ -538,6 +538,14 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return lookupVariable_String_value;
     }
 
+    // Declared in EnhancedFor.jrag at line 71
+    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+        if(caller == getVariableDeclarationNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isConstructorParameter(this, caller);
+    }
+
     // Declared in EnhancedFor.jrag at line 112
     public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
         if(caller == getStmtNoTransform()) {
@@ -546,23 +554,23 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_insideLoop(this, caller);
     }
 
-    // Declared in EnhancedFor.jrag at line 96
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getStmtNoTransform()) {
-            return getExpr().isDAafter(v);
+    // Declared in EnhancedFor.jrag at line 70
+    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+        if(caller == getVariableDeclarationNoTransform()) {
+            return false;
         }
-        if(caller == getExprNoTransform()) {
-            return v == getVariableDeclaration() || isDAbefore(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_boolean_isMethodParameter(this, caller);
     }
 
-    // Declared in EnhancedFor.jrag at line 43
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getVariableDeclarationNoTransform()) {
-            return NameType.TYPE_NAME;
+    // Declared in EnhancedForCodegen.jrag at line 18
+    public int Define_int_localNum(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return getVariableDeclaration().localNum() + getVariableDeclaration().type().size();
         }
-        return getParent().Define_NameType_nameType(this, caller);
+        if(caller == getVariableDeclarationNoTransform()) {
+            return localNum() + (getExpr().type().isArrayDecl() ? 2 : 1);
+        }
+        return getParent().Define_int_localNum(this, caller);
     }
 
     // Declared in EnhancedFor.jrag at line 41
@@ -579,6 +587,33 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
+    // Declared in EnhancedFor.jrag at line 72
+    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
+        if(caller == getVariableDeclarationNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+    }
+
+    // Declared in EnhancedFor.jrag at line 79
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in EnhancedFor.jrag at line 96
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getStmtNoTransform()) {
+            return getExpr().isDAafter(v);
+        }
+        if(caller == getExprNoTransform()) {
+            return v == getVariableDeclaration() || isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
     // Declared in EnhancedFor.jrag at line 48
     public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
         if(caller == getStmtNoTransform()) {
@@ -593,6 +628,14 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_VariableScope_outerScope(this, caller);
     }
 
+    // Declared in EnhancedFor.jrag at line 43
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getVariableDeclarationNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
     // Declared in EnhancedFor.jrag at line 110
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtNoTransform()) {
@@ -602,49 +645,6 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return v != getVariableDeclaration() && isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in EnhancedFor.jrag at line 70
-    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
-        if(caller == getVariableDeclarationNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isMethodParameter(this, caller);
-    }
-
-    // Declared in EnhancedFor.jrag at line 79
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in EnhancedFor.jrag at line 71
-    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-        if(caller == getVariableDeclarationNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isConstructorParameter(this, caller);
-    }
-
-    // Declared in EnhancedForCodegen.jrag at line 18
-    public int Define_int_localNum(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return getVariableDeclaration().localNum() + getVariableDeclaration().type().size();
-        }
-        if(caller == getVariableDeclarationNoTransform()) {
-            return localNum() + (getExpr().type().isArrayDecl() ? 2 : 1);
-        }
-        return getParent().Define_int_localNum(this, caller);
-    }
-
-    // Declared in EnhancedFor.jrag at line 72
-    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
-        if(caller == getVariableDeclarationNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
     }
 
 public ASTNode rewriteTo() {

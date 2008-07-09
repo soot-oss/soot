@@ -557,15 +557,6 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 35
-    public GenericConstructorDecl Define_GenericConstructorDecl_genericConstructorDecl(ASTNode caller, ASTNode child) {
-        if(caller == getParConstructorDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return this;
-        }
-        return getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, caller);
-    }
-
     // Declared in GenericMethods.jrag at line 117
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(true) {
@@ -573,6 +564,15 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
             return localLookupType(name).isEmpty() ? lookupType(name) : localLookupType(name);
         }
         return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
+
+    // Declared in GenericMethods.jrag at line 35
+    public GenericConstructorDecl Define_GenericConstructorDecl_genericConstructorDecl(ASTNode caller, ASTNode child) {
+        if(caller == getParConstructorDeclListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return this;
+        }
+        return getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, caller);
     }
 
 public ASTNode rewriteTo() {

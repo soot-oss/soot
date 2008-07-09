@@ -95,14 +95,6 @@ public abstract class PostfixExpr extends Unary implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in SyntacticClassification.jrag at line 98
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getOperandNoTransform()) {
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 53
     public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
         if(caller == getOperandNoTransform()) {
@@ -117,6 +109,14 @@ public abstract class PostfixExpr extends Unary implements Cloneable {
             return true;
         }
         return getParent().Define_boolean_isDest(this, caller);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 98
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getOperandNoTransform()) {
+            return NameType.EXPRESSION_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
     }
 
 public ASTNode rewriteTo() {

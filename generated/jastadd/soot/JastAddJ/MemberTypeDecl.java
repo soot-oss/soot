@@ -61,6 +61,14 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     private boolean isStatic_compute() {  return typeDecl().isStatic();  }
 
+    // Declared in PrettyPrint.jadd at line 756
+ @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        boolean addsIndentationLevel_value = addsIndentationLevel_compute();
+        return addsIndentationLevel_value;
+    }
+
+    private boolean addsIndentationLevel_compute() {  return false;  }
+
     // Declared in Annotations.jrag at line 284
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAnnotationSuppressWarnings(String s) {
         boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);

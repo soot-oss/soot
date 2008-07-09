@@ -263,6 +263,28 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     private TypeDecl sourceType_compute() {  return getSource().type().isPrimitive() ? getSource().type() : unknownType();  }
 
+    // Declared in DefiniteAssignment.jrag at line 29
+    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+        if(caller == getSourceNoTransform()) {
+            return true;
+        }
+        if(caller == getDestNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isSource(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 19
+    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+        if(caller == getSourceNoTransform()) {
+            return false;
+        }
+        if(caller == getDestNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isDest(this, caller);
+    }
+
     // Declared in SyntacticClassification.jrag at line 99
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getDestNoTransform()) {
@@ -282,17 +304,6 @@ public abstract class AssignExpr extends Expr implements Cloneable {
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 29
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        if(caller == getSourceNoTransform()) {
-            return true;
-        }
-        if(caller == getDestNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 829
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getDestNoTransform()) {
@@ -302,17 +313,6 @@ public abstract class AssignExpr extends Expr implements Cloneable {
             return getDest().isDUafter(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 19
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-        if(caller == getSourceNoTransform()) {
-            return false;
-        }
-        if(caller == getDestNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isDest(this, caller);
     }
 
 public ASTNode rewriteTo() {

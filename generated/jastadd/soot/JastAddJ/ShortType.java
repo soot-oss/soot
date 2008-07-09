@@ -50,6 +50,12 @@ public class ShortType extends IntegralType implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 832
+
+	public void toString(StringBuffer s) {
+		s.append("short");
+	}
+
     // Declared in java.ast at line 3
     // Declared in java.ast line 54
 

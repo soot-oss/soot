@@ -643,15 +643,6 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
         return lookupType_String_value;
     }
 
-    // Declared in GenericMethods.jrag at line 91
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
-        }
-        return super.Define_NameType_nameType(caller, child);
-    }
-
     // Declared in GenericMethods.jrag at line 32
     public GenericMethodDecl Define_GenericMethodDecl_genericMethodDecl(ASTNode caller, ASTNode child) {
         if(caller == getParMethodDeclListNoTransform()) {
@@ -659,6 +650,15 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
             return this;
         }
         return getParent().Define_GenericMethodDecl_genericMethodDecl(this, caller);
+    }
+
+    // Declared in GenericMethods.jrag at line 91
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.TYPE_NAME;
+        }
+        return super.Define_NameType_nameType(caller, child);
     }
 
     // Declared in GenericMethods.jrag at line 101

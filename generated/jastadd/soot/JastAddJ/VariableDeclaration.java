@@ -424,7 +424,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isSynthetic_compute() {  return getModifiers().isSynthetic();  }
 
-    // Declared in PrettyPrint.jadd at line 806
+    // Declared in PrettyPrint.jadd at line 807
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -584,20 +584,12 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return localNum_value;
     }
 
-    // Declared in SyntacticClassification.jrag at line 85
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeAccessNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 498
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    // Declared in InnerClasses.jrag at line 65
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
         if(caller == getInitOptNoTransform()) {
-            return isDAbefore(v);
+            return type().componentType();
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_TypeDecl_expectedType(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 40
@@ -616,20 +608,28 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
-    // Declared in InnerClasses.jrag at line 65
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+    // Declared in TypeAnalysis.jrag at line 261
+    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getInitOptNoTransform()) {
-            return type().componentType();
+            return type();
         }
-        return getParent().Define_TypeDecl_expectedType(this, caller);
+        return getParent().Define_TypeDecl_declType(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 884
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getInitOptNoTransform()) {
-            return isDUbefore(v);
+    // Declared in SyntacticClassification.jrag at line 85
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeAccessNoTransform()) {
+            return NameType.TYPE_NAME;
         }
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 498
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getInitOptNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in Modifiers.jrag at line 284
@@ -648,12 +648,12 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
     }
 
-    // Declared in TypeAnalysis.jrag at line 261
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 884
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getInitOptNoTransform()) {
-            return type();
+            return isDUbefore(v);
         }
-        return getParent().Define_TypeDecl_declType(this, caller);
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
 
 public ASTNode rewriteTo() {

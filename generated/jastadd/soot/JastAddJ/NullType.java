@@ -36,6 +36,12 @@ public class NullType extends TypeDecl implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 850
+
+	public void toString(StringBuffer s) {
+		s.append("null");
+	}
+
     // Declared in EmitJimple.jrag at line 439
 
   public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type) {

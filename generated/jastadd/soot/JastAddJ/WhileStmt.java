@@ -424,15 +424,12 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
         return getParent().Define_boolean_insideLoop(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 588
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getStmtNoTransform()) {
-            return getCondition().isDAafterTrue(v);
-        }
+    // Declared in BooleanExpressions.jrag at line 40
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
         if(caller == getConditionNoTransform()) {
-            return isDAbefore(v);
+            return end_label();
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
 
     // Declared in BooleanExpressions.jrag at line 41
@@ -451,12 +448,23 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
         return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
-    // Declared in BooleanExpressions.jrag at line 40
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionNoTransform()) {
-            return end_label();
+    // Declared in UnreachableStatements.jrag at line 86
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable() && !getCondition().isFalse();
         }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 588
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getStmtNoTransform()) {
+            return getCondition().isDAafterTrue(v);
+        }
+        if(caller == getConditionNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1070
@@ -468,14 +476,6 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
             return isDUbeforeCondition(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 86
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable() && !getCondition().isFalse();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

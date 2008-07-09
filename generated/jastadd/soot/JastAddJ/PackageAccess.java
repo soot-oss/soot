@@ -168,7 +168,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     private SimpleSet qualifiedLookupVariable_compute(String name) {  return SimpleSet.emptySet;  }
 
-    // Declared in PrettyPrint.jadd at line 800
+    // Declared in PrettyPrint.jadd at line 801
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

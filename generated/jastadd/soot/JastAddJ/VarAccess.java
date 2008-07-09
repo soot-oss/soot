@@ -766,7 +766,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean inDeclaringClass_compute() {  return hostType() == decl().hostType();  }
 
-    // Declared in PrettyPrint.jadd at line 796
+    // Declared in PrettyPrint.jadd at line 797
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

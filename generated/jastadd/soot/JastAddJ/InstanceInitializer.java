@@ -180,14 +180,6 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return handlesException_TypeDecl_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 439
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getBlockNoTransform()) {
-            return isDAbefore(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
     // Declared in NameCheck.jrag at line 243
     public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
@@ -213,20 +205,28 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
-    // Declared in TypeHierarchyCheck.jrag at line 140
-    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_inStaticContext(this, caller);
-    }
-
     // Declared in UnreachableStatements.jrag at line 35
     public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 439
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getBlockNoTransform()) {
+            return isDAbefore(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in TypeHierarchyCheck.jrag at line 140
+    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_inStaticContext(this, caller);
     }
 
 public ASTNode rewriteTo() {

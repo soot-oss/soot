@@ -760,6 +760,69 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_insideLoop(this, caller);
     }
 
+    // Declared in LookupVariable.jrag at line 90
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getStmtNoTransform()) {
+            return localLookup(name);
+        }
+        if(caller == getUpdateStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return localLookup(name);
+        }
+        if(caller == getConditionOptNoTransform()) {
+            return localLookup(name);
+        }
+        if(caller == getInitStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return localLookup(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 44
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionOptNoTransform()) {
+            return end_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 45
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionOptNoTransform()) {
+            return begin_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 149
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 103
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable() && (!hasCondition() || (!getCondition().isConstant() || !getCondition().isFalse()));
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in NameCheck.jrag at line 294
+    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return this;
+        }
+        if(caller == getInitStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return this;
+        }
+        return getParent().Define_VariableScope_outerScope(this, caller);
+    }
+
     // Declared in DefiniteAssignment.jrag at line 637
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getUpdateStmtListNoTransform()) { 
@@ -790,61 +853,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return i == 0 ? isDAbefore(v) : getInitStmt(i-1).isDAafter(v);
         }
         return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 45
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionOptNoTransform()) {
-            return begin_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
-
-    // Declared in LookupVariable.jrag at line 90
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getStmtNoTransform()) {
-            return localLookup(name);
-        }
-        if(caller == getUpdateStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return localLookup(name);
-        }
-        if(caller == getConditionOptNoTransform()) {
-            return localLookup(name);
-        }
-        if(caller == getInitStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return localLookup(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
-    // Declared in NameCheck.jrag at line 294
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return this;
-        }
-        if(caller == getInitStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return this;
-        }
-        return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 149
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 44
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionOptNoTransform()) {
-            return end_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1149
@@ -880,14 +888,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return childIndex == 0 ? isDUbefore(v) : getInitStmt(childIndex-1).isDUafter(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 103
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable() && (!hasCondition() || (!getCondition().isConstant() || !getCondition().isFalse()));
-        }
-        return getParent().Define_boolean_reachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

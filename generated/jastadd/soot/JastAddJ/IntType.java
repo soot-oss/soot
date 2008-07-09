@@ -44,6 +44,12 @@ public class IntType extends IntegralType implements Cloneable {
         }
         return res;
     }
+    // Declared in PrettyPrint.jadd at line 835
+
+	public void toString(StringBuffer s) {
+		s.append("int");
+	}
+
     // Declared in Expressions.jrag at line 42
 
 

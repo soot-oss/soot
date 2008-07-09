@@ -849,6 +849,68 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return inExplicitConstructorInvocation_value;
     }
 
+    // Declared in AnonymousClasses.jrag at line 15
+    public TypeDecl Define_TypeDecl_superType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()) {
+            return getAccess().type();
+        }
+        return getParent().Define_TypeDecl_superType(this, caller);
+    }
+
+    // Declared in LookupVariable.jrag at line 135
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().lookupVariable(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in MethodSignature.jrag at line 68
+    public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()){
+    Collection c = getAccess().type().constructors();
+    SimpleSet maxSpecific = chooseConstructor(c, getArgList());
+    if(maxSpecific.size() == 1)
+      return (ConstructorDecl)maxSpecific.iterator().next();
+    return unknownConstructor();
+  }
+        return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 573
+    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()) {
+            return hostType();
+        }
+        return getParent().Define_TypeDecl_hostType(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 531
+    public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isMemberType(this, caller);
+    }
+
+    // Declared in LookupType.jrag at line 92
+    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().hasPackage(packageName);
+        }
+        return getParent().Define_boolean_hasPackage(this, caller, packageName);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 217
+    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isAnonymous(this, caller);
+    }
+
     // Declared in SyntacticClassification.jrag at line 127
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getArgListNoTransform()) {
@@ -874,78 +936,6 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
             return computeDAbefore(i, v);
         }
         return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
-    // Declared in LookupVariable.jrag at line 135
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupVariable(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 531
-    public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isMemberType(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 573
-    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()) {
-            return hostType();
-        }
-        return getParent().Define_TypeDecl_hostType(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 217
-    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isAnonymous(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 860
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getArgListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return computeDUbefore(i, v);
-        }
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in TypeHierarchyCheck.jrag at line 147
-    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()) {
-            return isQualified() ?
-    qualifier().staticContextQualifier() : inStaticContext();
-        }
-        return getParent().Define_boolean_inStaticContext(this, caller);
-    }
-
-    // Declared in MethodSignature.jrag at line 68
-    public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()){
-    Collection c = getAccess().type().constructors();
-    SimpleSet maxSpecific = chooseConstructor(c, getArgList());
-    if(maxSpecific.size() == 1)
-      return (ConstructorDecl)maxSpecific.iterator().next();
-    return unknownConstructor();
-  }
-        return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
-    }
-
-    // Declared in LookupType.jrag at line 92
-    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().hasPackage(packageName);
-        }
-        return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
     // Declared in LookupType.jrag at line 316
@@ -974,12 +964,22 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
 
-    // Declared in AnonymousClasses.jrag at line 15
-    public TypeDecl Define_TypeDecl_superType(ASTNode caller, ASTNode child) {
+    // Declared in TypeHierarchyCheck.jrag at line 147
+    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclOptNoTransform()) {
-            return getAccess().type();
+            return isQualified() ?
+    qualifier().staticContextQualifier() : inStaticContext();
         }
-        return getParent().Define_TypeDecl_superType(this, caller);
+        return getParent().Define_boolean_inStaticContext(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 860
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getArgListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return computeDUbefore(i, v);
+        }
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
 
 public ASTNode rewriteTo() {

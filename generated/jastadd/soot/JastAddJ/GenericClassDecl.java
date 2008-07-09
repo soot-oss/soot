@@ -829,15 +829,6 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return typeThrowable_value;
     }
 
-    // Declared in Generics.jrag at line 448
-    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return super.Define_boolean_isNestedType(caller, child);
-    }
-
     // Declared in GenericsParTypeDecl.jrag at line 47
     public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
         if(caller == getParTypeDeclListNoTransform()) {
@@ -854,6 +845,15 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
             return this;
         }
         return super.Define_TypeDecl_enclosingType(caller, child);
+    }
+
+    // Declared in Generics.jrag at line 448
+    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return true;
+        }
+        return super.Define_boolean_isNestedType(caller, child);
     }
 
     // Declared in Generics.jrag at line 498

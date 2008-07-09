@@ -86,23 +86,23 @@ public class ASTNode$State extends java.lang.Object {
 
     // Declared in ASTNode.ast at line 128
 
-    protected int duringEnums = 0;
+    protected int duringDefiniteAssignment = 0;
 
     // Declared in ASTNode.ast at line 139
 
-    protected int duringResolveAmbiguousNames = 0;
+    protected int duringGenericTypeVariables = 0;
 
     // Declared in ASTNode.ast at line 150
 
-    protected int duringAnnotations = 0;
+    protected int duringVariableDeclaration = 0;
 
     // Declared in ASTNode.ast at line 161
 
-    protected int duringConstantExpression = 0;
+    protected int duringBoundNames = 0;
 
     // Declared in ASTNode.ast at line 172
 
-    protected int duringAnonymousClasses = 0;
+    protected int duringEnums = 0;
 
     // Declared in ASTNode.ast at line 183
 
@@ -110,15 +110,15 @@ public class ASTNode$State extends java.lang.Object {
 
     // Declared in ASTNode.ast at line 194
 
-    protected int duringVariableDeclaration = 0;
+    protected int duringConstantExpression = 0;
 
     // Declared in ASTNode.ast at line 205
 
-    protected int duringDefiniteAssignment = 0;
+    protected int duringAnonymousClasses = 0;
 
     // Declared in ASTNode.ast at line 216
 
-    protected int duringGenericTypeVariables = 0;
+    protected int duringAnnotations = 0;
 
     // Declared in ASTNode.ast at line 227
 
@@ -126,7 +126,7 @@ public class ASTNode$State extends java.lang.Object {
 
     // Declared in ASTNode.ast at line 238
 
-    protected int duringBoundNames = 0;
+    protected int duringResolveAmbiguousNames = 0;
 
     // Declared in ASTNode.ast at line 249
 
@@ -135,17 +135,29 @@ public class ASTNode$State extends java.lang.Object {
         CIRCLE_INDEX = 0;
         CHANGE = false;
         boundariesCrossed = 0;
+        if(duringDefiniteAssignment != 0) {
+            System.out.println("Warning: resetting duringDefiniteAssignment");
+            duringDefiniteAssignment = 0;
+        }
+        if(duringGenericTypeVariables != 0) {
+            System.out.println("Warning: resetting duringGenericTypeVariables");
+            duringGenericTypeVariables = 0;
+        }
+        if(duringVariableDeclaration != 0) {
+            System.out.println("Warning: resetting duringVariableDeclaration");
+            duringVariableDeclaration = 0;
+        }
+        if(duringBoundNames != 0) {
+            System.out.println("Warning: resetting duringBoundNames");
+            duringBoundNames = 0;
+        }
         if(duringEnums != 0) {
             System.out.println("Warning: resetting duringEnums");
             duringEnums = 0;
         }
-        if(duringResolveAmbiguousNames != 0) {
-            System.out.println("Warning: resetting duringResolveAmbiguousNames");
-            duringResolveAmbiguousNames = 0;
-        }
-        if(duringAnnotations != 0) {
-            System.out.println("Warning: resetting duringAnnotations");
-            duringAnnotations = 0;
+        if(duringLookupConstructor != 0) {
+            System.out.println("Warning: resetting duringLookupConstructor");
+            duringLookupConstructor = 0;
         }
         if(duringConstantExpression != 0) {
             System.out.println("Warning: resetting duringConstantExpression");
@@ -155,29 +167,17 @@ public class ASTNode$State extends java.lang.Object {
             System.out.println("Warning: resetting duringAnonymousClasses");
             duringAnonymousClasses = 0;
         }
-        if(duringLookupConstructor != 0) {
-            System.out.println("Warning: resetting duringLookupConstructor");
-            duringLookupConstructor = 0;
-        }
-        if(duringVariableDeclaration != 0) {
-            System.out.println("Warning: resetting duringVariableDeclaration");
-            duringVariableDeclaration = 0;
-        }
-        if(duringDefiniteAssignment != 0) {
-            System.out.println("Warning: resetting duringDefiniteAssignment");
-            duringDefiniteAssignment = 0;
-        }
-        if(duringGenericTypeVariables != 0) {
-            System.out.println("Warning: resetting duringGenericTypeVariables");
-            duringGenericTypeVariables = 0;
+        if(duringAnnotations != 0) {
+            System.out.println("Warning: resetting duringAnnotations");
+            duringAnnotations = 0;
         }
         if(duringSyntacticClassification != 0) {
             System.out.println("Warning: resetting duringSyntacticClassification");
             duringSyntacticClassification = 0;
         }
-        if(duringBoundNames != 0) {
-            System.out.println("Warning: resetting duringBoundNames");
-            duringBoundNames = 0;
+        if(duringResolveAmbiguousNames != 0) {
+            System.out.println("Warning: resetting duringResolveAmbiguousNames");
+            duringResolveAmbiguousNames = 0;
         }
     }
 

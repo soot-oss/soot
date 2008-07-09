@@ -109,7 +109,7 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
         return tokenString_ID != null ? tokenString_ID : "";
     }
 
-    // Declared in PrettyPrint.jadd at line 809
+    // Declared in PrettyPrint.jadd at line 810
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

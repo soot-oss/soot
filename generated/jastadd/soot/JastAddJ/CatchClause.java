@@ -233,12 +233,20 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return hostType_value;
     }
 
-    // Declared in SyntacticClassification.jrag at line 86
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    // Declared in VariableDeclaration.jrag at line 84
+    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterNoTransform()) {
-            return NameType.TYPE_NAME;
+            return false;
         }
-        return getParent().Define_NameType_nameType(this, caller);
+        return getParent().Define_boolean_isConstructorParameter(this, caller);
+    }
+
+    // Declared in VariableDeclaration.jrag at line 83
+    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+        if(caller == getParameterNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isMethodParameter(this, caller);
     }
 
     // Declared in LookupVariable.jrag at line 83
@@ -254,36 +262,12 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
-    // Declared in NameCheck.jrag at line 290
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        if(caller == getParameterNoTransform()) {
-            return this;
-        }
-        return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-
-    // Declared in VariableDeclaration.jrag at line 83
-    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+    // Declared in VariableArityParameters.jrag at line 23
+    public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
         if(caller == getParameterNoTransform()) {
             return false;
         }
-        return getParent().Define_boolean_isMethodParameter(this, caller);
-    }
-
-    // Declared in VariableDeclaration.jrag at line 84
-    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-        if(caller == getParameterNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isConstructorParameter(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 122
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return reachableCatchClause();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
+        return getParent().Define_boolean_variableArityValid(this, caller);
     }
 
     // Declared in VariableDeclaration.jrag at line 85
@@ -294,12 +278,28 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
     }
 
-    // Declared in VariableArityParameters.jrag at line 23
-    public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
-        if(caller == getParameterNoTransform()) {
-            return false;
+    // Declared in UnreachableStatements.jrag at line 122
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return reachableCatchClause();
         }
-        return getParent().Define_boolean_variableArityValid(this, caller);
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 86
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getParameterNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in NameCheck.jrag at line 290
+    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+        if(caller == getParameterNoTransform()) {
+            return this;
+        }
+        return getParent().Define_VariableScope_outerScope(this, caller);
     }
 
 public ASTNode rewriteTo() {

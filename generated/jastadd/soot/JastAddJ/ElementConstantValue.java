@@ -200,20 +200,20 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
         return lookupElementTypeValue_String_value;
     }
 
-    // Declared in Annotations.jrag at line 546
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getExprNoTransform()) {
-            return NameType.AMBIGUOUS_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in Annotations.jrag at line 551
     public String Define_String_methodHost(ASTNode caller, ASTNode child) {
         if(caller == getExprNoTransform()) {
             return enclosingAnnotationDecl().typeName();
         }
         return getParent().Define_String_methodHost(this, caller);
+    }
+
+    // Declared in Annotations.jrag at line 546
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getExprNoTransform()) {
+            return NameType.AMBIGUOUS_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
     }
 
 public ASTNode rewriteTo() {

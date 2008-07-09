@@ -153,22 +153,6 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
 
     private boolean isDUafter_compute(Variable v) {  return getExpr().isDUafter(v);  }
 
-    // Declared in SyntacticClassification.jrag at line 123
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getExprNoTransform()) {
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 362
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getExprNoTransform()) {
-            return getAccess().isDAafter(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 37
     public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
         if(caller == getExprNoTransform()) {
@@ -183,14 +167,6 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
             return unqualifiedScope().lookupVariable(name);
         }
         return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 843
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getExprNoTransform()) {
-            return getAccess().isDUafter(v);
-        }
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
 
     // Declared in LookupMethod.jrag at line 31
@@ -209,6 +185,30 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
+    // Declared in DefiniteAssignment.jrag at line 36
+    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+        if(caller == getExprNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isDest(this, caller);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 123
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getExprNoTransform()) {
+            return NameType.EXPRESSION_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 362
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getExprNoTransform()) {
+            return getAccess().isDAafter(v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
     // Declared in LookupType.jrag at line 168
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getExprNoTransform()) {
@@ -217,12 +217,12 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
         return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 36
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 843
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getExprNoTransform()) {
-            return false;
+            return getAccess().isDUafter(v);
         }
-        return getParent().Define_boolean_isDest(this, caller);
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
 
 public ASTNode rewriteTo() {

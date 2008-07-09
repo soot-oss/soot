@@ -1339,15 +1339,6 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
         return genericDecl_value;
     }
 
-    // Declared in Generics.jrag at line 443
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getArgumentListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
-        }
-        return super.Define_NameType_nameType(caller, child);
-    }
-
     // Declared in GenericsParTypeDecl.jrag at line 49
     public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) { 
@@ -1361,6 +1352,15 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
   }
 }
         return getParent().Define_TypeDecl_genericDecl(this, caller);
+    }
+
+    // Declared in Generics.jrag at line 443
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getArgumentListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.TYPE_NAME;
+        }
+        return super.Define_NameType_nameType(caller, child);
     }
 
 public ASTNode rewriteTo() {

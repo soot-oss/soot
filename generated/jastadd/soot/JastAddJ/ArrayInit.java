@@ -307,13 +307,13 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
         return expectedType_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 501
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    // Declared in InnerClasses.jrag at line 67
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
         if(caller == getInitListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return computeDABefore(childIndex, v);
+            return expectedType().componentType();
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_TypeDecl_expectedType(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 42
@@ -334,13 +334,22 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
-    // Declared in InnerClasses.jrag at line 67
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+    // Declared in TypeAnalysis.jrag at line 263
+    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getInitListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return expectedType().componentType();
+            return declType().componentType();
         }
-        return getParent().Define_TypeDecl_expectedType(this, caller);
+        return getParent().Define_TypeDecl_declType(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 501
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getInitListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return computeDABefore(childIndex, v);
+        }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in DefiniteAssignment.jrag at line 887
@@ -350,15 +359,6 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
             return computeDUbefore(childIndex, v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 263
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-        if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return declType().componentType();
-        }
-        return getParent().Define_TypeDecl_declType(this, caller);
     }
 
 public ASTNode rewriteTo() {

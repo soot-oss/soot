@@ -1438,16 +1438,16 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return set;
   }
 
-    // Declared in SyntacticClassification.jrag at line 74
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    // Declared in Annotations.jrag at line 377
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
         if(caller == getImplementsListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
+            return isDeprecated() || withinDeprecatedAnnotation();
         }
         if(caller == getSuperClassAccessOptNoTransform()) {
-            return NameType.TYPE_NAME;
+            return isDeprecated() || withinDeprecatedAnnotation();
         }
-        return super.Define_NameType_nameType(caller, child);
+        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
     // Declared in TypeAnalysis.jrag at line 576
@@ -1474,24 +1474,24 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinSuppressWarnings(caller, child, s);
     }
 
+    // Declared in SyntacticClassification.jrag at line 74
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getImplementsListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.TYPE_NAME;
+        }
+        if(caller == getSuperClassAccessOptNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return super.Define_NameType_nameType(caller, child);
+    }
+
     // Declared in Modifiers.jrag at line 257
     public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return true;
         }
         return super.Define_boolean_mayBeFinal(caller, child);
-    }
-
-    // Declared in Annotations.jrag at line 377
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
-        if(caller == getImplementsListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return isDeprecated() || withinDeprecatedAnnotation();
-        }
-        if(caller == getSuperClassAccessOptNoTransform()) {
-            return isDeprecated() || withinDeprecatedAnnotation();
-        }
-        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
 public ASTNode rewriteTo() {
