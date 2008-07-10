@@ -1312,7 +1312,7 @@ public class CFG {
 
         // Insert beginCatch/endCatch statements for exception handling
         {
-            Map<Stmt, Stmt> targetToHandler = new HashMap<Stmt, Stmt>();
+	    Set<Stmt> newTargets = new HashSet<Stmt>();
             
 	    for(int i = 0; i < codeAttribute.exception_table_length; i++)
 	    {
@@ -1362,9 +1362,8 @@ public class CFG {
 		    Stmt firstTargetStmt = 
 			instructionToFirstStmt.get(targetIns);
                         
-		    if(targetToHandler.containsKey(firstTargetStmt))
-			newTarget = 
-			    targetToHandler.get(firstTargetStmt);
+		    if(newTargets.contains(firstTargetStmt))
+			newTarget = firstTargetStmt;
 		    else
                     {
 			Local local = 
@@ -1374,7 +1373,7 @@ public class CFG {
 
 			((PatchingChain)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
 
-			targetToHandler.put(firstTargetStmt, newTarget);
+			newTargets.add(newTarget);
 			if (units.getFirst()!=newTarget) {
 			    Unit prev = (Unit)units.getPredOf(newTarget);
 			    if (prev != null && prev.fallsThrough())
@@ -1408,18 +1407,17 @@ public class CFG {
 			afterEndStmt = (Stmt) units.getLast();
 		    } else {
 			afterEndStmt = instructionToLastStmt.get(endIns);
-			IdentityStmt catchStart = 
-			    (IdentityStmt) targetToHandler.get(afterEndStmt); 
-			                    // (Cast to IdentityStmt as an assertion check.)
-			if (catchStart != null) {
+			if (newTargets.contains(afterEndStmt)) {
 			    // The protected region extends to the beginning of an
 			    // exception handler, so we need to reset afterEndStmt
 			    // to the identity statement which we have inserted
 			    // before the old afterEndStmt.
-			    if (catchStart != units.getPredOf(afterEndStmt)) {
+			    if (!(afterEndStmt instanceof IdentityStmt))
+				throw new IllegalStateException("exception handler doesn't start with IdentityStmt");
+
+			    if (afterEndStmt != units.getPredOf(afterEndStmt)) {
 				throw new IllegalStateException("Assertion failure: catchStart != pred of afterEndStmt");
 			    }
-			    afterEndStmt = catchStart;
 			}
 		    }
 
