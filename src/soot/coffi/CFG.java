@@ -1406,7 +1406,7 @@ public class CFG {
 			// the protected area.
 			afterEndStmt = (Stmt) units.getLast();
 		    } else {
-			afterEndStmt = instructionToLastStmt.get(endIns);
+			afterEndStmt = (Stmt)units.getSuccOf(instructionToLastStmt.get(endIns));
 			if (newTargets.contains(afterEndStmt)) {
 			    // The protected region extends to the beginning of an
 			    // exception handler, so we need to reset afterEndStmt
@@ -1414,10 +1414,11 @@ public class CFG {
 			    // before the old afterEndStmt.
 			    if (!(afterEndStmt instanceof IdentityStmt))
 				throw new IllegalStateException("exception handler doesn't start with IdentityStmt");
-
-			    if (afterEndStmt != units.getPredOf(afterEndStmt)) {
-				throw new IllegalStateException("Assertion failure: catchStart != pred of afterEndStmt");
+			    
+			    if (instructionToLastStmt.get(endIns) != units.getPredOf(afterEndStmt)) {
+				throw new IllegalStateException("Assertion failure: pred(afterEndStmt) != endIns");
 			    }
+			    afterEndStmt = newTarget;
 			}
 		    }
 
