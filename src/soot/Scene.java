@@ -921,6 +921,9 @@ public class Scene  //extends AbstractHost
 
     private List<SootClass> dynamicClasses;
     public Collection<SootClass> dynamicClasses() {
+    	if(dynamicClasses==null) {
+    		throw new IllegalStateException("Have to call loadDynamicClasses() first!");
+    	}
         return dynamicClasses;
     }
 
