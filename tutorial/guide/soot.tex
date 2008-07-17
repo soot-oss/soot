@@ -31,9 +31,10 @@
 \normalsize{}\'{A}rni Einarsson and Janus Dam Nielsen\\
 \normalsize{}BRICS, Department of Computer Science\\
 \normalsize{}University of Aarhus, Denmark\\
-\texttt{\normalsize{}\texttt{\{arni,jdn\}@brics.dk}}
+\texttt{\normalsize{}\texttt{\{arni,jdn\}@brics.dk}}\\
+\normalsize{}\texttt{Version 1.1}
 }
-\date{}
+\date{07/17/2008}
 \maketitle
 
 \begin{abstract}
@@ -42,9 +43,9 @@
   the parts of Soot that we have used in various projects: parsing
   class files, performing points-to and null pointer analyses,
   performing data-flow analysis, and extracting abstract control-flow
-  graphs. Since the full Soot API in our experience leaves novice
-  users in a state of shock and awe, these notes also contain the
-  important code snippets that make everything work.
+  graphs. The notes also contain the important code snippets that make
+  everything work since it is our experience, that the full Soot API
+  leaves novice users in a state of shock and awe.
 \end{abstract}
 
 \newpage
@@ -72,7 +73,7 @@ and helping us get Paddle to work.
 This guide provides detailed descriptions and instructions on the use
 of Soot, a Java optimization framework \cite{vall99soot}. More
 specifically on how we have used and are using Soot in various
-projects involving different forms of analyses. Soot is a large
+projects involving different forms of analysis. Soot is a large
 framework which can be quite challenging to navigate without getting
 quickly lost. With this guide, we hope to provide the insight
 necessary to make that navigation a little more comfortable. The
@@ -119,18 +120,20 @@ Soot is available to download from the Sable group's website:
 \url{http://www.sable.mcgill.ca/soot/soot_download.html}. The easiest
 and fastest way is to get the pre-compiled Jars, you will need all of
 sootclasses, jasminclasses and polyglotclasses. During the compilation
-of this manual we have used version 2.2.2 of Soot, but have not tested
-the instructions contained herein on the new release (2.2.3). To use
-Soot these three Jars need to be in your classpath. To test the setup,
-try executing:
+of this guide we have used Soot version 2.2.2, but we have not tested
+any newer release. \footnote{The call-graph example has been updated
+  to Soot version 2.3.0.}
+
+To use Soot you need the soot, jasmin, and polyglot jars to be on the
+classpath. To test the setup, try executing:
 \begin{center}
-  \code{java soot.Main --help}
+  \code{java -cp jasminclasses-2.3.0.jar:polyglot.jar:sootclasses-2.3.0.jar:. soot.Main --help}
 \end{center}
 at the command line and you should receive instructions on how to use
 the tool.
 
 Note that you need at least JDK 1.3 to use Soot and at least JDK 1.4
-to use the Eclipse plugin. The new release has some support for JDK
+to use the Eclipse plugin. The newer releases has some support for JDK
 1.5 but we have not tested that.
 
 \subsubsection*{Developing with Soot in Eclipse}
@@ -1569,12 +1572,10 @@ of getting access to the call graph using CHA.
 \begin{center}
   \begin{minipage}{0.9 \linewidth}
 \begin{verbatim}
-Options.v().set_whole_program(true);
-// ...
-// Code for setting up which classes to 
-// use as application classes
-// ...
 CHATransformer.v().transform();
+SootClass a = Scene.v().getSootClass("testers.A");
+
+SootMethod src = Scene.v().getMainClass().getMethodByName("doStuff");
 CallGraph cg = Scene.v().getCallGraph();
 \end{verbatim}
   \end{minipage}
@@ -1705,7 +1706,7 @@ setup and use each of the two frameworks in the following subsections.
 \subsection{SPARK}
 SPARK is a framework for experimenting with points-to analysis in Java
 and supports both subset-based and equivalence based points-to
-analyses and anything in between. SPARK is very modular which makes it
+analysis and anything in between. SPARK is very modular which makes it
 excellent for benchmarking different techniques for implementing parts
 of points-to analysis.
 
@@ -2268,7 +2269,7 @@ number of the many options and even more possible combinations are
 available and you should use the source example to learn more about
 the many features of Paddle. But be aware that Paddle is still
 $\alpha$-software and that a number of options might only work in some
-combinations with other options. Check the Soot mailinglist or visit
+combinations with other options. Check the Soot mailing-list or visit
 the Paddle homepage and download the nightly build often.
 
 %% - What to do with a points-to analysis.
@@ -2281,11 +2282,11 @@ rather complicated to setup the two frameworks so it is natural to say
 a few words why we should bother to do so in the first place.
 
 Points-to (or alias) information is a necessity in order to obtain
-precision in many analyses and transformations. For example a precise
+precision in many analysis and transformations. For example a precise
 points-to analysis can be used to get a precise null pointer analysis
 or a more precise call graph, 
 %% than the one obtained in Section \ref{sec:call:graph:construction} 
-which in turn may lead to more precision in other analyses. Precise
+which in turn may lead to more precision in other analysis. Precise
 points-to information is also vital for the accuracy of e.g. partial
 evaluation of imperative and object oriented languages.
 
@@ -2296,7 +2297,7 @@ evaluation of imperative and object oriented languages.
 
 In this section we will show how to use Soot to extract a custom
 \emph{intermediate representation} of an abstract control-flow graph
-usable as a starting point for your own analyses and transformations.
+usable as a starting point for your own analysis and transformations.
 
 %% Abstract control-flow graph
 %% What
@@ -2522,7 +2523,7 @@ points for the translation and work very well.
 In the previous sections we have presented our own documentation for
 the Soot framework. We have documented the parts of the Soot framework
 we have used earlier in various projects: parsing class files,
-performing points-to and null pointer analyses, performing data-flow
+performing points-to and null pointer analysis, performing data-flow
 analysis, and extracting abstract control-flow graphs. It is our hope
 that this note will leave a novice users in a less of a state of shock
 and awe and so may provide some of the stepping stones which could make
