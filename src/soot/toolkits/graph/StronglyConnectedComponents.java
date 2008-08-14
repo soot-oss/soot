@@ -36,8 +36,10 @@ import java.util.*;
  *  Identifies and provides an interface to query the strongly-connected
  *  components of DirectedGraph instances.
  *  @see DirectedGraph
+ *  @deprecated implementation is inefficient; use {@link StronglyConnectedComponentsFast} instead
  */
 
+@Deprecated
 public class StronglyConnectedComponents
 {
     private HashMap<Object, Object> nodeToColor;

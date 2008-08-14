@@ -30,6 +30,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.StronglyConnectedComponents;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
 
 /**
@@ -58,22 +59,19 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
         /*
          * Find all SCCs, then invalidate all instance keys for variable defined within an SCC.
          */
-        StronglyConnectedComponents sccAnalysis = new StronglyConnectedComponents(g);
-        for (List<Unit> scc : sccAnalysis.getComponents()) {
-        	//if we have a loop
-			if(scc.size()>1) {
-				for (Unit unit : scc) {
-					for (ValueBox vb : unit.getDefBoxes()) {
-						Value defValue = vb.getValue();
-						if(defValue instanceof Local) {
-							Local defLocal = (Local) defValue;
-							if(defLocal.getType() instanceof RefLikeType) {
-								Object instanceKey = getFlowBefore(unit).get(defLocal);
-								//if key is not already UNKNOWN
-								if(instanceKey instanceof Integer) {
-									Integer intKey = (Integer) instanceKey;
-									invalidInstanceKeys.add(intKey);
-								}
+        StronglyConnectedComponentsFast<Unit> sccAnalysis = new StronglyConnectedComponentsFast<Unit>(g);
+        for (List<Unit> scc : sccAnalysis.getTrueComponents()) {
+			for (Unit unit : scc) {
+				for (ValueBox vb : unit.getDefBoxes()) {
+					Value defValue = vb.getValue();
+					if(defValue instanceof Local) {
+						Local defLocal = (Local) defValue;
+						if(defLocal.getType() instanceof RefLikeType) {
+							Object instanceKey = getFlowBefore(unit).get(defLocal);
+							//if key is not already UNKNOWN
+							if(instanceKey instanceof Integer) {
+								Integer intKey = (Integer) instanceKey;
+								invalidInstanceKeys.add(intKey);
 							}
 						}
 					}

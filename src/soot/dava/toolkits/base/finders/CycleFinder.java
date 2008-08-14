@@ -217,7 +217,7 @@ public class CycleFinder implements FactFinder
     private List<List> build_component_list( AugmentedStmtGraph asg){
         List<List> c_list = new LinkedList<List>();
 
-        StronglyConnectedComponents scc = new StronglyConnectedComponents( asg);
+        StronglyConnectedComponentsFast scc = new StronglyConnectedComponentsFast( asg);
 
 	//makes sure that all scc's with only one statement in them are removed
 	/*

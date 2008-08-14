@@ -198,7 +198,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
     private void find_VariableIncreasing( AugmentedStmtGraph asg, HashMap local2level_template, 
 					  LinkedList<AugmentedStmt> viAugStmts, HashMap<AugmentedStmt, LinkedList<Value>> as2locals) {
-    	StronglyConnectedComponents scc = new StronglyConnectedComponents(asg);
+    	StronglyConnectedComponentsFast scc = new StronglyConnectedComponentsFast(asg);
 	IterableSet viSeeds = new IterableSet();
 	HashMap 
 	    as2color = new HashMap(),
@@ -212,14 +212,10 @@ public class SynchronizedBlockFinder implements FactFinder
 
 
 	// loop through all the strongly connected components in the graph
-	Iterator<List> sccit = scc.getComponents().iterator();
+	Iterator<List> sccit = scc.getTrueComponents().iterator();
 	while (sccit.hasNext()) {
 	    //componentList contains augmentedstmts belonging to a particular scc
 	    List componentList = sccit.next();
-
-	    // skip trivial strongly connected components
-	    if (componentList.size() < 2)
-		continue;
 
 	    //component contains augmentedstmts belonging to a particular scc
 	    IterableSet component = new IterableSet();
