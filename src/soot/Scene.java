@@ -80,13 +80,8 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.NEWINSTANCE );
 
         addSootBasicClasses();
-        
-        OBJECT_TYPE = getRefType("java.lang.Object");
     }
     public static Scene  v() { return G.v().soot_Scene (); }
-
-    
-    private final RefType OBJECT_TYPE;
     
     Chain<SootClass> classes = new HashChain<SootClass>();
     Chain<SootClass> applicationClasses = new HashChain<SootClass>();
@@ -417,7 +412,7 @@ public class Scene  //extends AbstractHost
      * Returns the {@link RefType} for {@link Object}.
      */
     public RefType getObjectType() {
-    	return OBJECT_TYPE;
+    	return getRefType("java.lang.Object");
     }
 
     /**

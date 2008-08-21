@@ -62,12 +62,13 @@ public class RefType extends RefLikeType implements Comparable
      */
     public static RefType v(String className)
     {
-        RefType ret = Scene.v().getRefType( className );
-        if( ret == null ) {
-            ret = new RefType(className);
-            Scene.v().addRefType( ret );
+        if(Scene.v().containsClass(className)) {
+        	return Scene.v().getRefType( className );
+        } else {
+	        RefType ret = new RefType(className);
+	        Scene.v().addRefType( ret );
+	        return ret;
         }
-        return ret;
     }
 
     public int compareTo(Object o) throws ClassCastException
