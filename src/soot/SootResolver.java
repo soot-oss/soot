@@ -171,8 +171,18 @@ public class SootResolver
         ClassSource is = SourceLocator.v().getClassSource(className);
         if( is == null ) {
             if(!Scene.v().allowsPhantomRefs()) {
+            	String suffix="";
+            	if(className.equals("java.lang.Object")) {
+            		suffix = " Try adding rt.jar to Soot's classpath, e.g.:\n" +
+            				"java -cp sootclasses.jar soot.Main -cp " +
+            				".:/path/to/jdk/jre/lib/rt.jar <other options>";
+            	} else if(className.equals("javax.crypto.Cipher")) {
+            		suffix = " Try adding jce.jar to Soot's classpath, e.g.:\n" +
+            				"java -cp sootclasses.jar soot.Main -cp " +
+            				".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
+            	}
                 throw new RuntimeException("couldn't find class: " +
-                    className + " (is your soot-class-path set properly?)");
+                    className + " (is your soot-class-path set properly?)"+suffix);
             } else {
                 G.v().out.println(
                         "Warning: " + className + " is a phantom class!");

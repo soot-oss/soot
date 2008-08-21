@@ -399,10 +399,18 @@ public class Scene  //extends AbstractHost
     
     /**
      * Returns the RefType with the given className.  
+     * @throws IllegalStateException if the RefType for this class cannot be found.
+     * Use {@link #containsClass(String)} to check if the class was loaded.
      */
     public RefType getRefType(String className) 
     {
-        return (RefType) nameToClass.get(className);
+        RefType refType = (RefType) nameToClass.get(className);
+        if(refType==null) {
+        	throw new IllegalStateException("RefType "+className+" not loaded. " +
+        			"If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? " +
+        			"Otherwise please check Soot's classpath.");
+        }
+		return refType;
     }
     
     /**
