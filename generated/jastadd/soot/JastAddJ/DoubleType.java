@@ -44,7 +44,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 847
+    // Declared in PrettyPrint.jadd at line 851
 
 	public void toString(StringBuffer s) {
 		s.append("double");
@@ -184,22 +184,18 @@ public class DoubleType extends FloatingPointType implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -207,7 +203,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -215,33 +211,33 @@ public class DoubleType extends FloatingPointType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(2);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
         return (List<BodyDecl>)getChildNoTransform(2);
     }
 
-    // Declared in ConstantExpression.jrag at line 316
+    // Declared in ConstantExpression.jrag at line 317
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
@@ -249,7 +245,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant cast_compute(Constant c) {  return Constant.create(c.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 327
+    // Declared in ConstantExpression.jrag at line 328
  @SuppressWarnings({"unchecked", "cast"})     public Constant plus(Constant c) {
         Constant plus_Constant_value = plus_compute(c);
         return plus_Constant_value;
@@ -257,7 +253,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant plus_compute(Constant c) {  return c;  }
 
-    // Declared in ConstantExpression.jrag at line 336
+    // Declared in ConstantExpression.jrag at line 337
  @SuppressWarnings({"unchecked", "cast"})     public Constant minus(Constant c) {
         Constant minus_Constant_value = minus_compute(c);
         return minus_Constant_value;
@@ -265,7 +261,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant minus_compute(Constant c) {  return Constant.create(-c.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 352
+    // Declared in ConstantExpression.jrag at line 353
  @SuppressWarnings({"unchecked", "cast"})     public Constant mul(Constant c1, Constant c2) {
         Constant mul_Constant_Constant_value = mul_compute(c1, c2);
         return mul_Constant_Constant_value;
@@ -273,7 +269,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant mul_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() * c2.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 361
+    // Declared in ConstantExpression.jrag at line 362
  @SuppressWarnings({"unchecked", "cast"})     public Constant div(Constant c1, Constant c2) {
         Constant div_Constant_Constant_value = div_compute(c1, c2);
         return div_Constant_Constant_value;
@@ -281,7 +277,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant div_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() / c2.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 370
+    // Declared in ConstantExpression.jrag at line 371
  @SuppressWarnings({"unchecked", "cast"})     public Constant mod(Constant c1, Constant c2) {
         Constant mod_Constant_Constant_value = mod_compute(c1, c2);
         return mod_Constant_Constant_value;
@@ -289,7 +285,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant mod_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() % c2.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 379
+    // Declared in ConstantExpression.jrag at line 380
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
@@ -297,7 +293,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant add_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() + c2.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 389
+    // Declared in ConstantExpression.jrag at line 390
  @SuppressWarnings({"unchecked", "cast"})     public Constant sub(Constant c1, Constant c2) {
         Constant sub_Constant_Constant_value = sub_compute(c1, c2);
         return sub_Constant_Constant_value;
@@ -305,7 +301,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant sub_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() - c2.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 443
+    // Declared in ConstantExpression.jrag at line 444
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
@@ -313,7 +309,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.doubleValue() : c2.doubleValue());  }
 
-    // Declared in ConstantExpression.jrag at line 547
+    // Declared in ConstantExpression.jrag at line 548
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
@@ -321,7 +317,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private boolean eqIsTrue_compute(Expr left, Expr right) {  return left.constant().doubleValue() == right.constant().doubleValue();  }
 
-    // Declared in ConstantExpression.jrag at line 555
+    // Declared in ConstantExpression.jrag at line 556
  @SuppressWarnings({"unchecked", "cast"})     public boolean ltIsTrue(Expr left, Expr right) {
         boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
         return ltIsTrue_Expr_Expr_value;
@@ -329,7 +325,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 
     private boolean ltIsTrue_compute(Expr left, Expr right) {  return left.constant().doubleValue() < right.constant().doubleValue();  }
 
-    // Declared in ConstantExpression.jrag at line 561
+    // Declared in ConstantExpression.jrag at line 562
  @SuppressWarnings({"unchecked", "cast"})     public boolean leIsTrue(Expr left, Expr right) {
         boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
         return leIsTrue_Expr_Expr_value;

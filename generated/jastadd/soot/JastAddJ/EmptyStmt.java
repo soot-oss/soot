@@ -38,7 +38,7 @@ public class EmptyStmt extends Stmt implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 532
+    // Declared in PrettyPrint.jadd at line 536
 
 
   public void toString(StringBuffer s) {

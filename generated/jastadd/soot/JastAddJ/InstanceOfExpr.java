@@ -37,7 +37,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 416
+    // Declared in PrettyPrint.jadd at line 420
 
 
   public void toString(StringBuffer s) {
@@ -145,7 +145,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
         return (Access)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 492
+    // Declared in ConstantExpression.jrag at line 493
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

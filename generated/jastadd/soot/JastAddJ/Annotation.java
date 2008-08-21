@@ -255,22 +255,18 @@ public class Annotation extends Modifier implements Cloneable {
     // Declared in Annotations.ast at line 6
 
 
-    private int getNumElementValuePair = 0;
-
-    // Declared in Annotations.ast at line 7
-
     public int getNumElementValuePair() {
         return getElementValuePairList().getNumChild();
     }
 
-    // Declared in Annotations.ast at line 11
+    // Declared in Annotations.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ElementValuePair getElementValuePair(int i) {
         return (ElementValuePair)getElementValuePairList().getChild(i);
     }
 
-    // Declared in Annotations.ast at line 15
+    // Declared in Annotations.ast at line 14
 
 
     public void addElementValuePair(ElementValuePair node) {
@@ -278,7 +274,7 @@ public class Annotation extends Modifier implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Annotations.ast at line 20
+    // Declared in Annotations.ast at line 19
 
 
     public void setElementValuePair(ElementValuePair node, int i) {
@@ -286,26 +282,26 @@ public class Annotation extends Modifier implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Annotations.ast at line 24
+    // Declared in Annotations.ast at line 23
 
     public List<ElementValuePair> getElementValuePairs() {
         return getElementValuePairList();
     }
 
-    // Declared in Annotations.ast at line 27
+    // Declared in Annotations.ast at line 26
 
     public List<ElementValuePair> getElementValuePairsNoTransform() {
         return getElementValuePairListNoTransform();
     }
 
-    // Declared in Annotations.ast at line 31
+    // Declared in Annotations.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValuePair> getElementValuePairList() {
         return (List<ElementValuePair>)getChild(1);
     }
 
-    // Declared in Annotations.ast at line 35
+    // Declared in Annotations.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValuePair> getElementValuePairListNoTransform() {

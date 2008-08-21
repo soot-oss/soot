@@ -37,7 +37,7 @@ public class CastExpr extends Expr implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 380
+    // Declared in PrettyPrint.jadd at line 384
 
   
 
@@ -143,7 +143,7 @@ public class CastExpr extends Expr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 110
+    // Declared in ConstantExpression.jrag at line 111
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -151,7 +151,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     private Constant constant_compute() {  return type().cast(getExpr().constant());  }
 
-    // Declared in ConstantExpression.jrag at line 485
+    // Declared in ConstantExpression.jrag at line 486
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

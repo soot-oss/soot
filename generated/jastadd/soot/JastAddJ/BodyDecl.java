@@ -123,7 +123,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private TypeDecl type_compute(String name) {  return null;  }
 
-    // Declared in PrettyPrint.jadd at line 755
+    // Declared in PrettyPrint.jadd at line 759
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
@@ -281,6 +281,15 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return null;
         }
         return getParent().Define_ArrayList_exceptionRanges(this, caller);
+    }
+
+    // Declared in PrettyPrint.jadd at line 352
+    public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return indent();
+        }
+        return getParent().Define_String_typeDeclIndent(this, caller);
     }
 
     // Declared in TypeAnalysis.jrag at line 515

@@ -3,29 +3,29 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 // load files from a folder
 public class FolderPart extends PathPart {
-    // Declared in ClassPath.jrag at line 378
+    // Declared in ClassPath.jrag at line 383
 
     private HashMap map = new HashMap();
 
-    // Declared in ClassPath.jrag at line 379
+    // Declared in ClassPath.jrag at line 384
 
     private File folder;
 
-    // Declared in ClassPath.jrag at line 381
+    // Declared in ClassPath.jrag at line 386
 
 
     public FolderPart(File folder) {
       this.folder = folder;
     }
 
-    // Declared in ClassPath.jrag at line 385
+    // Declared in ClassPath.jrag at line 390
 
 
     public boolean hasPackage(String name) {
       return filesInPackage(name) != null;
     }
 
-    // Declared in ClassPath.jrag at line 389
+    // Declared in ClassPath.jrag at line 394
 
 
     public boolean hasCompilationUnit(String canonicalName) {
@@ -37,7 +37,7 @@ public class FolderPart extends PathPart {
       return result;
     }
 
-    // Declared in ClassPath.jrag at line 398
+    // Declared in ClassPath.jrag at line 403
 
     
     private Collection filesInPackage(String packageName) {
@@ -59,7 +59,7 @@ public class FolderPart extends PathPart {
       return (Collection)map.get(packageName);
     }
 
-    // Declared in ClassPath.jrag at line 417
+    // Declared in ClassPath.jrag at line 422
 
     
     public boolean selectCompilationUnit(String canonicalName) throws IOException {

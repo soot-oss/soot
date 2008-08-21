@@ -53,7 +53,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
       error("no type named " + decl().elementType().typeName());
   }
 
-    // Declared in PrettyPrint.jadd at line 485
+    // Declared in PrettyPrint.jadd at line 489
 
   
   public void toString(StringBuffer s) {
@@ -198,7 +198,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     private TypeDecl decl_compute() {  return getAccess().type().arrayType();  }
 
-    // Declared in PrettyPrint.jadd at line 800
+    // Declared in PrettyPrint.jadd at line 804
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

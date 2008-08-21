@@ -46,7 +46,7 @@ public class FieldInfo extends java.lang.Object {
       if((flags & Flags.ACC_ENUM) != 0)
         //EnumConstant : FieldDeclaration ::= Modifiers <ID:String> Arg:Expr* BodyDecl* /TypeAccess:Access/ /[Init:Expr]/;
         f = new EnumConstant(
-            this.p.modifiers(flags),
+            BytecodeParser.modifiers(flags),
             name,
             new List(),
             new List()
@@ -55,7 +55,7 @@ public class FieldInfo extends java.lang.Object {
         Signatures.FieldSignature s = attributes.fieldSignature;
         Access type = s != null ? s.fieldTypeAccess() : fieldDescriptor.type();
         f = new FieldDeclaration(
-            this.p.modifiers(flags),
+            BytecodeParser.modifiers(flags),
             type,
             name,
             new Opt()

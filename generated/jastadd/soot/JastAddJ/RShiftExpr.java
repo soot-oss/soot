@@ -109,7 +109,7 @@ public class RShiftExpr extends ShiftExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 125
+    // Declared in ConstantExpression.jrag at line 126
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -117,7 +117,7 @@ public class RShiftExpr extends ShiftExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().rshift(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 402
+    // Declared in PrettyPrint.jadd at line 406
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

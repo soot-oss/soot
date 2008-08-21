@@ -135,22 +135,18 @@ public class VarDeclStmt extends Stmt implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumVariableDecl = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumVariableDecl() {
         return getVariableDeclList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public VariableDecl getVariableDecl(int i) {
         return (VariableDecl)getVariableDeclList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addVariableDecl(VariableDecl node) {
@@ -158,7 +154,7 @@ public class VarDeclStmt extends Stmt implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setVariableDecl(VariableDecl node, int i) {
@@ -166,26 +162,26 @@ public class VarDeclStmt extends Stmt implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<VariableDecl> getVariableDecls() {
         return getVariableDeclList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<VariableDecl> getVariableDeclsNoTransform() {
         return getVariableDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<VariableDecl> getVariableDeclList() {
         return (List<VariableDecl>)getChild(2);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<VariableDecl> getVariableDeclListNoTransform() {
@@ -236,9 +232,9 @@ public ASTNode rewriteTo() {
     if(getParent().getParent() instanceof Block && 
         ((Block)getParent().getParent()).getStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
         state().duringVariableDeclaration++;
-      List newList = rewriteBlock_getStmt();
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
+      List newList = rewriteBlock_getStmt();
       for(int j = 1; j < newList.getNumChild(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
         state().duringVariableDeclaration--;
@@ -248,9 +244,9 @@ public ASTNode rewriteTo() {
     if(getParent().getParent() instanceof ForStmt && 
         ((ForStmt)getParent().getParent()).getInitStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
         state().duringVariableDeclaration++;
-      List newList = rewriteForStmt_getInitStmt();
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
+      List newList = rewriteForStmt_getInitStmt();
       for(int j = 1; j < newList.getNumChild(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
         state().duringVariableDeclaration--;

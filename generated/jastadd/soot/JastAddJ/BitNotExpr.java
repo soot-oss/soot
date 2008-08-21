@@ -105,7 +105,7 @@ public class BitNotExpr extends Unary implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 115
+    // Declared in ConstantExpression.jrag at line 116
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -113,7 +113,7 @@ public class BitNotExpr extends Unary implements Cloneable {
 
     private Constant constant_compute() {  return type().bitNot(getOperand().constant());  }
 
-    // Declared in ConstantExpression.jrag at line 489
+    // Declared in ConstantExpression.jrag at line 490
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
@@ -121,7 +121,7 @@ public class BitNotExpr extends Unary implements Cloneable {
 
     private boolean isConstant_compute() {  return getOperand().isConstant();  }
 
-    // Declared in PrettyPrint.jadd at line 376
+    // Declared in PrettyPrint.jadd at line 380
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;

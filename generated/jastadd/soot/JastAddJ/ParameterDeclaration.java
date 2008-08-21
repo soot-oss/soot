@@ -272,7 +272,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     private boolean isSynthetic_compute() {  return getModifiers().isSynthetic();  }
 
-    // Declared in PrettyPrint.jadd at line 808
+    // Declared in PrettyPrint.jadd at line 812
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

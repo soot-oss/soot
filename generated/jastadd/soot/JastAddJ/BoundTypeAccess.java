@@ -158,7 +158,7 @@ public class BoundTypeAccess extends TypeAccess implements Cloneable {
 
     private SimpleSet decls_compute() {  return SimpleSet.emptySet.add(getTypeDecl());  }
 
-    // Declared in PrettyPrint.jadd at line 813
+    // Declared in PrettyPrint.jadd at line 817
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

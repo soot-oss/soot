@@ -41,7 +41,7 @@ public class ConstCase extends Case implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 557
+    // Declared in PrettyPrint.jadd at line 561
 
 
   public void toString(StringBuffer s) {

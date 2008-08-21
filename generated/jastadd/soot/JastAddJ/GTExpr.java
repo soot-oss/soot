@@ -111,7 +111,7 @@ public class GTExpr extends RelationalExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 535
+    // Declared in ConstantExpression.jrag at line 536
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -119,7 +119,7 @@ public class GTExpr extends RelationalExpr implements Cloneable {
 
     private Constant constant_compute() {  return Constant.create(!binaryNumericPromotedType().leIsTrue(left(), right()));  }
 
-    // Declared in PrettyPrint.jadd at line 410
+    // Declared in PrettyPrint.jadd at line 414
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

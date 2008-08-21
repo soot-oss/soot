@@ -136,7 +136,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         if(!(decl.getBodyDecl(i) instanceof ConstructorDecl))
           decl.getBodyDecl(i).toString(s);
       }
-      s.append(enclosingStmt().indent());
+      s.append(typeDeclIndent());
       s.append("}");
     }
   }
@@ -264,13 +264,13 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         warning(decl().signature() + " in " + decl().hostType().typeName() + " has been deprecated");
   }
 
-    // Declared in InnerClasses.jrag at line 460
+    // Declared in InnerClasses.jrag at line 468
 
 
   // add val$name as arguments to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 461
+    // Declared in InnerClasses.jrag at line 469
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -452,22 +452,18 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumArg = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumArg() {
         return getArgList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Expr getArg(int i) {
         return (Expr)getArgList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addArg(Expr node) {
@@ -475,7 +471,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setArg(Expr node, int i) {
@@ -483,26 +479,26 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
         return (List<Expr>)getChild(1);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -835,6 +831,12 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl unknownConstructor() {
         ConstructorDecl unknownConstructor_value = getParent().Define_ConstructorDecl_unknownConstructor(this, null);
         return unknownConstructor_value;
+    }
+
+    // Declared in PrettyPrint.jadd at line 350
+ @SuppressWarnings({"unchecked", "cast"})     public String typeDeclIndent() {
+        String typeDeclIndent_value = getParent().Define_String_typeDeclIndent(this, null);
+        return typeDeclIndent_value;
     }
 
     // Declared in TypeCheck.jrag at line 504

@@ -32,27 +32,27 @@ public class Dot extends AbstractDot implements Cloneable {
         }
         return res;
     }
-    // Declared in ResolveAmbiguousNames.jrag at line 105
+    // Declared in ResolveAmbiguousNames.jrag at line 99
+
+
+  public Dot lastDot() {
+    Dot node = this;
+    while(node.getRightNoTransform() instanceof Dot)
+      node = (Dot)node.getRightNoTransform();
+    return node;
+  }
+
+    // Declared in ResolveAmbiguousNames.jrag at line 111
 
   
-  public Dot lastDot = null;
-
-    // Declared in ResolveAmbiguousNames.jrag at line 106
-
   public Dot qualifiesAccess(Access access) {
-    if(lastDot == null) {
-      Dot node = this;
-      while(node.getRightNoTransform() instanceof Dot)
-        node = (Dot)node.getRightNoTransform();
-      lastDot = node;
-    }
+    Dot lastDot = lastDot();
     Dot dot = new Dot(lastDot.getRightNoTransform(), access);
     lastDot.setRight(dot);
-    lastDot = dot;
     return this;
   }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 120
+    // Declared in ResolveAmbiguousNames.jrag at line 119
 
   
   // Used when replacing pairs from a list to concatenate the result to the tail of the current location.
@@ -64,16 +64,16 @@ public class Dot extends AbstractDot implements Cloneable {
     return expr;
   }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 137
+    // Declared in ResolveAmbiguousNames.jrag at line 136
 
   public Access extractLast() {
-    return lastDot.getRightNoTransform();
+    return lastDot().getRightNoTransform();
   }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 140
+    // Declared in ResolveAmbiguousNames.jrag at line 139
 
   public void replaceLast(Access access) {
-    lastDot.setRight(access);
+    lastDot().setRight(access);
   }
 
     // Declared in java.ast at line 3
@@ -144,7 +144,7 @@ public class Dot extends AbstractDot implements Cloneable {
     }
 
 public ASTNode rewriteTo() {
-    // Declared in ResolveAmbiguousNames.jrag at line 206
+    // Declared in ResolveAmbiguousNames.jrag at line 205
     if(!duringSyntacticClassification() && leftSide().isPackageAccess() && rightSide().isPackageAccess()) {
         state().duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule0();
@@ -152,7 +152,7 @@ public ASTNode rewriteTo() {
         return result;
     }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 218
+    // Declared in ResolveAmbiguousNames.jrag at line 217
     if(!duringSyntacticClassification() && leftSide().isPackageAccess() && !((Access)leftSide()).hasPrevExpr() && rightSide() instanceof TypeAccess) {
         state().duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule1();
@@ -163,7 +163,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 206
+    // Declared in ResolveAmbiguousNames.jrag at line 205
     private Access rewriteRule0() {
 {
       PackageAccess left = (PackageAccess)leftSide();
@@ -172,7 +172,7 @@ public ASTNode rewriteTo() {
       left.setEnd(right.end());
       return qualifyTailWith(left);
     }    }
-    // Declared in ResolveAmbiguousNames.jrag at line 218
+    // Declared in ResolveAmbiguousNames.jrag at line 217
     private Access rewriteRule1() {
 {
       PackageAccess left = (PackageAccess)leftSide();

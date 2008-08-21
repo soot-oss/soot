@@ -46,7 +46,7 @@ public class CatchClause extends ASTNode<ASTNode> implements Cloneable, Variable
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 717
+    // Declared in PrettyPrint.jadd at line 721
 
 
   public void toString(StringBuffer s) {

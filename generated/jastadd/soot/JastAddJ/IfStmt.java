@@ -61,7 +61,7 @@ public class IfStmt extends Stmt implements Cloneable {
     this(cond, thenBranch, new Opt(elseBranch));
   }
 
-    // Declared in PrettyPrint.jadd at line 569
+    // Declared in PrettyPrint.jadd at line 573
 
 
   public void toString(StringBuffer s) {

@@ -106,22 +106,18 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
     // Declared in java.ast at line 6
 
 
-    private int getNumArg = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumArg() {
         return getArgList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Expr getArg(int i) {
         return (Expr)getArgList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addArg(Expr node) {
@@ -129,7 +125,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setArg(Expr node, int i) {
@@ -137,26 +133,26 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
         return (List<Expr>)getChild(1);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -212,22 +208,18 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
     // Declared in GenericMethods.ast at line 6
 
 
-    private int getNumTypeArgument = 0;
-
-    // Declared in GenericMethods.ast at line 7
-
     public int getNumTypeArgument() {
         return getTypeArgumentList().getNumChild();
     }
 
-    // Declared in GenericMethods.ast at line 11
+    // Declared in GenericMethods.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getTypeArgument(int i) {
         return (Access)getTypeArgumentList().getChild(i);
     }
 
-    // Declared in GenericMethods.ast at line 15
+    // Declared in GenericMethods.ast at line 14
 
 
     public void addTypeArgument(Access node) {
@@ -235,7 +227,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         list.addChild(node);
     }
 
-    // Declared in GenericMethods.ast at line 20
+    // Declared in GenericMethods.ast at line 19
 
 
     public void setTypeArgument(Access node, int i) {
@@ -243,26 +235,26 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         list.setChild(node, i);
     }
 
-    // Declared in GenericMethods.ast at line 24
+    // Declared in GenericMethods.ast at line 23
 
     public List<Access> getTypeArguments() {
         return getTypeArgumentList();
     }
 
-    // Declared in GenericMethods.ast at line 27
+    // Declared in GenericMethods.ast at line 26
 
     public List<Access> getTypeArgumentsNoTransform() {
         return getTypeArgumentListNoTransform();
     }
 
-    // Declared in GenericMethods.ast at line 31
+    // Declared in GenericMethods.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentList() {
         return (List<Access>)getChild(3);
     }
 
-    // Declared in GenericMethods.ast at line 35
+    // Declared in GenericMethods.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentListNoTransform() {

@@ -281,22 +281,18 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     // Declared in Generics.ast at line 6
 
 
-    private int getNumImplements = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumImplements() {
         return getImplementsList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getImplements(int i) {
         return (Access)getImplementsList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addImplements(Access node) {
@@ -304,7 +300,7 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setImplements(Access node, int i) {
@@ -312,26 +308,26 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<Access> getImplementss() {
         return getImplementsList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<Access> getImplementssNoTransform() {
         return getImplementsListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsList() {
         return (List<Access>)getChild(2);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsListNoTransform() {
@@ -347,22 +343,18 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     // Declared in Generics.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -370,7 +362,7 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -378,26 +370,26 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(3);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -413,22 +405,18 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     // Declared in Generics.ast at line 6
 
 
-    private int getNumTypeParameter = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumTypeParameter() {
         return getTypeParameterList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public TypeVariable getTypeParameter(int i) {
         return (TypeVariable)getTypeParameterList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addTypeParameter(TypeVariable node) {
@@ -436,7 +424,7 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setTypeParameter(TypeVariable node, int i) {
@@ -444,26 +432,26 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<TypeVariable> getTypeParameters() {
         return getTypeParameterList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<TypeVariable> getTypeParametersNoTransform() {
         return getTypeParameterListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterList() {
         return (List<TypeVariable>)getChild(4);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterListNoTransform() {
@@ -479,22 +467,18 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     // Declared in Generics.ast at line 6
 
 
-    private int getNumParTypeDecl = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumParTypeDecl() {
         return getParTypeDeclList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ParClassDecl getParTypeDecl(int i) {
         return (ParClassDecl)getParTypeDeclList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addParTypeDecl(ParClassDecl node) {
@@ -502,7 +486,7 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setParTypeDecl(ParClassDecl node, int i) {
@@ -510,26 +494,26 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<ParClassDecl> getParTypeDecls() {
         return getParTypeDeclList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<ParClassDecl> getParTypeDeclsNoTransform() {
         return getParTypeDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
     public List<ParClassDecl> getParTypeDeclListNoTransform() {
         return (List<ParClassDecl>)getChildNoTransform(5);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
     protected int getParTypeDeclListChildPosition() {

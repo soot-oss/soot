@@ -56,7 +56,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     // Declared in LookupVariable.jrag at line 187
 
 
-  private boolean mayAccess(FieldDeclaration f) {
+  public boolean mayAccess(FieldDeclaration f) {
     if(f.isPublic()) 
       return true;
     else if(f.isProtected()) {
@@ -77,12 +77,11 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
       return f.hostPackage().equals(hostType().hostPackage());
   }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 99
+    // Declared in ResolveAmbiguousNames.jrag at line 106
 
 
   public Dot qualifiesAccess(Access access) {
     Dot dot = new Dot(this, access);
-    dot.lastDot = dot;
     return dot;
   }
 
@@ -267,7 +266,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 276
  @SuppressWarnings({"unchecked", "cast"})     public abstract TypeDecl type();
-    // Declared in ConstantExpression.jrag at line 98
+    // Declared in ConstantExpression.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -278,7 +277,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 241
+    // Declared in ConstantExpression.jrag at line 242
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPositive() {
         boolean isPositive_value = isPositive_compute();
         return isPositive_value;
@@ -286,7 +285,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     private boolean isPositive_compute() {  return false;  }
 
-    // Declared in ConstantExpression.jrag at line 454
+    // Declared in ConstantExpression.jrag at line 455
  @SuppressWarnings({"unchecked", "cast"})     public boolean representableIn(TypeDecl t) {
         boolean representableIn_TypeDecl_value = representableIn_compute(t);
         return representableIn_TypeDecl_value;
@@ -307,7 +306,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 	  return false;
   }
 
-    // Declared in ConstantExpression.jrag at line 482
+    // Declared in ConstantExpression.jrag at line 483
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
@@ -315,7 +314,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     private boolean isConstant_compute() {  return false;  }
 
-    // Declared in ConstantExpression.jrag at line 511
+    // Declared in ConstantExpression.jrag at line 512
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTrue() {
         boolean isTrue_value = isTrue_compute();
         return isTrue_value;
@@ -323,7 +322,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     private boolean isTrue_compute() {  return isConstant() && type() instanceof BooleanType && constant().booleanValue();  }
 
-    // Declared in ConstantExpression.jrag at line 512
+    // Declared in ConstantExpression.jrag at line 513
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFalse() {
         boolean isFalse_value = isFalse_compute();
         return isFalse_value;

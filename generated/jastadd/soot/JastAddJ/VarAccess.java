@@ -212,7 +212,7 @@ public class VarAccess extends Access implements Cloneable {
     this.end = end;
   }
 
-    // Declared in PrettyPrint.jadd at line 448
+    // Declared in PrettyPrint.jadd at line 452
 
 
   public void toString(StringBuffer s) {
@@ -556,7 +556,7 @@ public class VarAccess extends Access implements Cloneable {
     return decl().hostType();
   }
 
-    // Declared in ConstantExpression.jrag at line 108
+    // Declared in ConstantExpression.jrag at line 109
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -766,7 +766,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean inDeclaringClass_compute() {  return hostType() == decl().hostType();  }
 
-    // Declared in PrettyPrint.jadd at line 797
+    // Declared in PrettyPrint.jadd at line 801
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -828,7 +828,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isVariable_compute() {  return true;  }
 
-    // Declared in InnerClasses.jrag at line 353
+    // Declared in InnerClasses.jrag at line 361
  @SuppressWarnings({"unchecked", "cast"})     public boolean requiresAccessor() {
         boolean requiresAccessor_value = requiresAccessor_compute();
         return requiresAccessor_value;

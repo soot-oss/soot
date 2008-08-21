@@ -125,7 +125,7 @@ public class DoubleLiteral extends Literal implements Cloneable {
 
     protected boolean isZero_computed = false;
     protected boolean isZero_value;
-    // Declared in ConstantExpression.jrag at line 147
+    // Declared in ConstantExpression.jrag at line 148
  @SuppressWarnings({"unchecked", "cast"})     public boolean isZero() {
         if(isZero_computed)
             return isZero_value;
@@ -150,7 +150,7 @@ public class DoubleLiteral extends Literal implements Cloneable {
     return true;
   }
 
-    // Declared in ConstantExpression.jrag at line 292
+    // Declared in ConstantExpression.jrag at line 293
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

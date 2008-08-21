@@ -105,7 +105,7 @@ public class OrBitwiseExpr extends BitwiseExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 130
+    // Declared in ConstantExpression.jrag at line 131
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -113,7 +113,7 @@ public class OrBitwiseExpr extends BitwiseExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().orBitwise(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 405
+    // Declared in PrettyPrint.jadd at line 409
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

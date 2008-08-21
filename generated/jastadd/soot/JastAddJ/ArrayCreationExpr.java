@@ -39,7 +39,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 351
+    // Declared in PrettyPrint.jadd at line 355
 
 
   public void toString(StringBuffer s) {

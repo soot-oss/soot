@@ -133,7 +133,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
     private SimpleSet qualifiedLookupVariable_compute(String name) {  return SimpleSet.emptySet;  }
 
-    // Declared in PrettyPrint.jadd at line 804
+    // Declared in PrettyPrint.jadd at line 808
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -158,7 +158,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
     private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
 
 public ASTNode rewriteTo() {
-    // Declared in ResolveAmbiguousNames.jrag at line 190
+    // Declared in ResolveAmbiguousNames.jrag at line 189
     if(!duringSyntacticClassification()) {
         state().duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule0();
@@ -169,7 +169,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 190
+    // Declared in ResolveAmbiguousNames.jrag at line 189
     private Access rewriteRule0() {
 {
       if(!lookupVariable(name()).isEmpty()) {

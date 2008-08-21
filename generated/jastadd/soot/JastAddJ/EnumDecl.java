@@ -374,22 +374,18 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     // Declared in Enums.ast at line 6
 
 
-    private int getNumImplements = 0;
-
-    // Declared in Enums.ast at line 7
-
     public int getNumImplements() {
         return getImplementsList().getNumChild();
     }
 
-    // Declared in Enums.ast at line 11
+    // Declared in Enums.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getImplements(int i) {
         return (Access)getImplementsList().getChild(i);
     }
 
-    // Declared in Enums.ast at line 15
+    // Declared in Enums.ast at line 14
 
 
     public void addImplements(Access node) {
@@ -397,7 +393,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Enums.ast at line 20
+    // Declared in Enums.ast at line 19
 
 
     public void setImplements(Access node, int i) {
@@ -405,26 +401,26 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 24
+    // Declared in Enums.ast at line 23
 
     public List<Access> getImplementss() {
         return getImplementsList();
     }
 
-    // Declared in Enums.ast at line 27
+    // Declared in Enums.ast at line 26
 
     public List<Access> getImplementssNoTransform() {
         return getImplementsListNoTransform();
     }
 
-    // Declared in Enums.ast at line 31
+    // Declared in Enums.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsList() {
         return (List<Access>)getChild(1);
     }
 
-    // Declared in Enums.ast at line 35
+    // Declared in Enums.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsListNoTransform() {
@@ -440,22 +436,18 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     // Declared in Enums.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in Enums.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in Enums.ast at line 11
+    // Declared in Enums.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in Enums.ast at line 15
+    // Declared in Enums.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -463,7 +455,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Enums.ast at line 20
+    // Declared in Enums.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -471,26 +463,26 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 24
+    // Declared in Enums.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Enums.ast at line 27
+    // Declared in Enums.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Enums.ast at line 31
+    // Declared in Enums.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(2);
     }
 
-    // Declared in Enums.ast at line 35
+    // Declared in Enums.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {

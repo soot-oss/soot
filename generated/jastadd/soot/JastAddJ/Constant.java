@@ -74,11 +74,12 @@ public class Constant extends java.lang.Object {
       private boolean value;
       public ConstantBoolean(boolean b) { this.value = b; }
       boolean booleanValue() { return value; }
+      int intValue() { return value?1:0; }
       String stringValue() { return new Boolean(value).toString(); }
       Literal buildLiteral() { return new BooleanLiteral(stringValue()); }
     }
 
-    // Declared in ConstantExpression.jrag at line 69
+    // Declared in ConstantExpression.jrag at line 70
 
     static class ConstantString extends Constant {
       private String value;
@@ -87,72 +88,72 @@ public class Constant extends java.lang.Object {
       Literal buildLiteral() { return new StringLiteral(stringValue()); }
     }
 
-    // Declared in ConstantExpression.jrag at line 76
+    // Declared in ConstantExpression.jrag at line 77
 
 
     int intValue() { throw new UnsupportedOperationException(); }
 
-    // Declared in ConstantExpression.jrag at line 77
+    // Declared in ConstantExpression.jrag at line 78
 
     long longValue() { throw new UnsupportedOperationException(); }
 
-    // Declared in ConstantExpression.jrag at line 78
+    // Declared in ConstantExpression.jrag at line 79
 
     float floatValue() { throw new UnsupportedOperationException(); }
 
-    // Declared in ConstantExpression.jrag at line 79
+    // Declared in ConstantExpression.jrag at line 80
 
     double doubleValue() { throw new UnsupportedOperationException(); }
 
-    // Declared in ConstantExpression.jrag at line 80
+    // Declared in ConstantExpression.jrag at line 81
 
     boolean booleanValue() { throw new UnsupportedOperationException(getClass().getName()); }
 
-    // Declared in ConstantExpression.jrag at line 81
+    // Declared in ConstantExpression.jrag at line 82
 
     String stringValue() { throw new UnsupportedOperationException(); }
 
-    // Declared in ConstantExpression.jrag at line 82
+    // Declared in ConstantExpression.jrag at line 83
 
     Literal buildLiteral() { throw new UnsupportedOperationException(); }
 
-    // Declared in ConstantExpression.jrag at line 84
+    // Declared in ConstantExpression.jrag at line 85
 
       
     protected Constant() {
     }
 
-    // Declared in ConstantExpression.jrag at line 87
+    // Declared in ConstantExpression.jrag at line 88
 
     
     public boolean error = false;
 
-    // Declared in ConstantExpression.jrag at line 89
+    // Declared in ConstantExpression.jrag at line 90
 
 
     static Constant create(int i) { return new ConstantInt(i); }
 
-    // Declared in ConstantExpression.jrag at line 90
+    // Declared in ConstantExpression.jrag at line 91
 
     static Constant create(long l) { return new ConstantLong(l); }
 
-    // Declared in ConstantExpression.jrag at line 91
+    // Declared in ConstantExpression.jrag at line 92
 
     static Constant create(float f) { return new ConstantFloat(f); }
 
-    // Declared in ConstantExpression.jrag at line 92
+    // Declared in ConstantExpression.jrag at line 93
 
     static Constant create(double d) { return new ConstantDouble(d); }
 
-    // Declared in ConstantExpression.jrag at line 93
+    // Declared in ConstantExpression.jrag at line 94
 
     static Constant create(boolean b) { return new ConstantBoolean(b); }
 
-    // Declared in ConstantExpression.jrag at line 94
+    // Declared in ConstantExpression.jrag at line 95
 
     static Constant create(char c) { return new ConstantChar(c); }
 
-    // Declared in ConstantExpression.jrag at line 95
+    // Declared in ConstantExpression.jrag at line 96
 
     static Constant create(String s) { return new ConstantString(s); }
 

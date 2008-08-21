@@ -144,22 +144,18 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -167,7 +163,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -175,26 +171,26 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(1);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -250,22 +246,18 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumImplements = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumImplements() {
         return getImplementsList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getImplements(int i) {
         return (Access)getImplementsList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addImplements(Access node) {
@@ -273,7 +265,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setImplements(Access node, int i) {
@@ -281,26 +273,26 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Access> getImplementss() {
         return getImplementsList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Access> getImplementssNoTransform() {
         return getImplementsListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
     public List<Access> getImplementsListNoTransform() {
         return (List<Access>)getChildNoTransform(3);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
     protected int getImplementsListChildPosition() {
@@ -420,7 +412,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         return constructorDecl_value;
     }
 
-    // Declared in AnonymousClasses.jrag at line 109
+    // Declared in AnonymousClasses.jrag at line 163
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNullPointerException() {
         TypeDecl typeNullPointerException_value = getParent().Define_TypeDecl_typeNullPointerException(this, null);
         return typeNullPointerException_value;
@@ -441,6 +433,59 @@ public ASTNode rewriteTo() {
     // Declared in AnonymousClasses.jrag at line 52
     private AnonymousDecl rewriteRule0() {
 {
+            setModifiers(new Modifiers(new List().add(new Modifier("final"))));
+      
+      ConstructorDecl decl = constructorDecl();
+      Modifiers modifiers = decl.getModifiers().fullCopy();
+      String name = "Anonymous" + nextAnonymousIndex();
+
+      List parameterList = new List();
+      for(int i = 0; i < decl.getNumParameter(); i++) {
+        parameterList.add(
+          new ParameterDeclaration(
+            decl.getParameter(i).type().createBoundAccess(),
+            decl.getParameter(i).name()
+          )
+        );
+      }
+      
+      ConstructorDecl constructor = new ConstructorDecl(modifiers, name, parameterList, new List(), new Opt(), new Block());  
+      addBodyDecl(constructor);
+
+      setID(name);
+      
+      List argList = new List();
+      for(int i = 0; i < constructor.getNumParameter(); i++)
+        argList.add(new VarAccess(constructor.getParameter(i).name()));
+      constructor.setConstructorInvocation(
+        new ExprStmt(
+          new SuperConstructorAccess("super", argList)
+        )
+      );
+
+      HashSet set = new HashSet();
+      for(int i = 0; i < getNumBodyDecl(); i++) {
+        if(getBodyDecl(i) instanceof InstanceInitializer) {
+          InstanceInitializer init = (InstanceInitializer)getBodyDecl(i);
+          set.addAll(init.exceptions());
+        }
+        else if(getBodyDecl(i) instanceof FieldDeclaration) {
+          FieldDeclaration f = (FieldDeclaration)getBodyDecl(i);
+          if(f.isInstanceVariable()) {
+            set.addAll(f.exceptions());
+          }
+        }
+      }
+      List exceptionList = new List();
+      for(Iterator iter = set.iterator(); iter.hasNext(); ) {
+        TypeDecl exceptionType = (TypeDecl)iter.next();
+        if(exceptionType.isNull())
+          exceptionType = typeNullPointerException();
+        exceptionList.add(exceptionType.createQualifiedAccess());
+      }
+      constructor.setExceptionList(exceptionList);
+      return this;
+      /*
       setModifiers(new Modifiers(new List().add(new Modifier("final"))));
       
       ConstructorDecl constructor = new ConstructorDecl();
@@ -494,5 +539,6 @@ public ASTNode rewriteTo() {
       }
       constructor.setExceptionList(exceptionList);
       return this;
+      */
     }    }
 }

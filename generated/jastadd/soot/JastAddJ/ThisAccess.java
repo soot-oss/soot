@@ -40,7 +40,7 @@ public class ThisAccess extends Access implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 497
+    // Declared in PrettyPrint.jadd at line 501
 
 
   public void toString(StringBuffer s) {

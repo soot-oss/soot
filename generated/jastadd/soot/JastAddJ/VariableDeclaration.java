@@ -424,7 +424,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isSynthetic_compute() {  return getModifiers().isSynthetic();  }
 
-    // Declared in PrettyPrint.jadd at line 807
+    // Declared in PrettyPrint.jadd at line 811
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

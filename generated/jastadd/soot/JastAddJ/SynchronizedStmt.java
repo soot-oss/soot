@@ -72,7 +72,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
     super.collectFinally(branchStmt, list);
   }
 
-    // Declared in PrettyPrint.jadd at line 694
+    // Declared in PrettyPrint.jadd at line 698
 
 
   public void toString(StringBuffer s) {

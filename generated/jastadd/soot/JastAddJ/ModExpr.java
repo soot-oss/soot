@@ -111,7 +111,7 @@ public class ModExpr extends MultiplicativeExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 119
+    // Declared in ConstantExpression.jrag at line 120
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -176,7 +176,7 @@ public class ModExpr extends MultiplicativeExpr implements Cloneable {
 
     private boolean isConstant_compute() {  return getLeftOperand().isConstant() && getRightOperand().isConstant() && !(getRightOperand().type().isInt() && getRightOperand().constant().intValue() == 0);  }
 
-    // Declared in PrettyPrint.jadd at line 398
+    // Declared in PrettyPrint.jadd at line 402
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

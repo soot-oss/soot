@@ -66,7 +66,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 599
+    // Declared in PrettyPrint.jadd at line 603
 
 
   public void toString(StringBuffer s) {
@@ -209,22 +209,18 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     // Declared in java.ast at line 6
 
 
-    private int getNumInitStmt = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumInitStmt() {
         return getInitStmtList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Stmt getInitStmt(int i) {
         return (Stmt)getInitStmtList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addInitStmt(Stmt node) {
@@ -232,7 +228,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setInitStmt(Stmt node, int i) {
@@ -240,26 +236,26 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Stmt> getInitStmts() {
         return getInitStmtList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Stmt> getInitStmtsNoTransform() {
         return getInitStmtListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getInitStmtList() {
         return (List<Stmt>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getInitStmtListNoTransform() {
@@ -315,22 +311,18 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     // Declared in java.ast at line 6
 
 
-    private int getNumUpdateStmt = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumUpdateStmt() {
         return getUpdateStmtList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Stmt getUpdateStmt(int i) {
         return (Stmt)getUpdateStmtList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addUpdateStmt(Stmt node) {
@@ -338,7 +330,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setUpdateStmt(Stmt node, int i) {
@@ -346,26 +338,26 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Stmt> getUpdateStmts() {
         return getUpdateStmtList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Stmt> getUpdateStmtsNoTransform() {
         return getUpdateStmtListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getUpdateStmtList() {
         return (List<Stmt>)getChild(2);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getUpdateStmtListNoTransform() {

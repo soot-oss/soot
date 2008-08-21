@@ -40,33 +40,33 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         }
         return res;
     }
-    // Declared in ClassPath.jrag at line 148
+    // Declared in ClassPath.jrag at line 153
 
 
   private String relativeName;
 
-    // Declared in ClassPath.jrag at line 149
+    // Declared in ClassPath.jrag at line 154
 
   private String pathName;
 
-    // Declared in ClassPath.jrag at line 150
+    // Declared in ClassPath.jrag at line 155
 
   private boolean fromSource;
 
-    // Declared in ClassPath.jrag at line 152
+    // Declared in ClassPath.jrag at line 157
 
 
   public void setRelativeName(String name) {
     relativeName = name;
   }
 
-    // Declared in ClassPath.jrag at line 155
+    // Declared in ClassPath.jrag at line 160
 
   public void setPathName(String name) {
     pathName = name;
   }
 
-    // Declared in ClassPath.jrag at line 158
+    // Declared in ClassPath.jrag at line 163
 
   public void setFromSource(boolean value) {
     fromSource = value;
@@ -245,22 +245,18 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumImportDecl = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumImportDecl() {
         return getImportDeclList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ImportDecl getImportDecl(int i) {
         return (ImportDecl)getImportDeclList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addImportDecl(ImportDecl node) {
@@ -268,7 +264,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setImportDecl(ImportDecl node, int i) {
@@ -276,26 +272,26 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<ImportDecl> getImportDecls() {
         return getImportDeclList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<ImportDecl> getImportDeclsNoTransform() {
         return getImportDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclList() {
         return (List<ImportDecl>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclListNoTransform() {
@@ -311,22 +307,18 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumTypeDecl = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumTypeDecl() {
         return getTypeDeclList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public TypeDecl getTypeDecl(int i) {
         return (TypeDecl)getTypeDeclList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addTypeDecl(TypeDecl node) {
@@ -334,7 +326,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setTypeDecl(TypeDecl node, int i) {
@@ -342,26 +334,26 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<TypeDecl> getTypeDecls() {
         return getTypeDeclList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<TypeDecl> getTypeDeclsNoTransform() {
         return getTypeDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclList() {
         return (List<TypeDecl>)getChild(1);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclListNoTransform() {
@@ -509,7 +501,7 @@ private SimpleSet refined_LookupType_CompilationUnit_Child_lookupType_String(Str
     return set;
   }
 
-    // Declared in PrettyPrint.jadd at line 796
+    // Declared in PrettyPrint.jadd at line 800
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -531,7 +523,7 @@ private SimpleSet refined_LookupType_CompilationUnit_Child_lookupType_String(Str
         return packageName_value;
     }
 
-    private String packageName_compute() {  return getPackageDecl();  }
+    private String packageName_compute() {return getPackageDecl();}
 
     // Declared in StaticImports.jrag at line 112
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedFields(String name) {

@@ -61,7 +61,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
     this(new Opt(expr));
   }
 
-    // Declared in PrettyPrint.jadd at line 678
+    // Declared in PrettyPrint.jadd at line 682
 
 
   public void toString(StringBuffer s) {

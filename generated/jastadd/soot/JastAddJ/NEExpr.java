@@ -111,7 +111,7 @@ public class NEExpr extends EqualityExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 532
+    // Declared in ConstantExpression.jrag at line 533
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -119,7 +119,7 @@ public class NEExpr extends EqualityExpr implements Cloneable {
 
     private Constant constant_compute() {  return Constant.create(!binaryNumericPromotedType().eqIsTrue(left(), right()));  }
 
-    // Declared in PrettyPrint.jadd at line 414
+    // Declared in PrettyPrint.jadd at line 418
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

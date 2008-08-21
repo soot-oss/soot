@@ -143,22 +143,18 @@ public class GLBType extends ReferenceType implements Cloneable {
     // Declared in Generics.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -166,7 +162,7 @@ public class GLBType extends ReferenceType implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -174,26 +170,26 @@ public class GLBType extends ReferenceType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(1);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -209,22 +205,18 @@ public class GLBType extends ReferenceType implements Cloneable {
     // Declared in Generics.ast at line 6
 
 
-    private int getNumTypeBound = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumTypeBound() {
         return getTypeBoundList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getTypeBound(int i) {
         return (Access)getTypeBoundList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addTypeBound(Access node) {
@@ -232,7 +224,7 @@ public class GLBType extends ReferenceType implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setTypeBound(Access node, int i) {
@@ -240,26 +232,26 @@ public class GLBType extends ReferenceType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<Access> getTypeBounds() {
         return getTypeBoundList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<Access> getTypeBoundsNoTransform() {
         return getTypeBoundListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeBoundList() {
         return (List<Access>)getChild(2);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeBoundListNoTransform() {

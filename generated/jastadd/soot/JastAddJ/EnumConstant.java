@@ -230,22 +230,18 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     // Declared in Enums.ast at line 6
 
 
-    private int getNumArg = 0;
-
-    // Declared in Enums.ast at line 7
-
     public int getNumArg() {
         return getArgList().getNumChild();
     }
 
-    // Declared in Enums.ast at line 11
+    // Declared in Enums.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Expr getArg(int i) {
         return (Expr)getArgList().getChild(i);
     }
 
-    // Declared in Enums.ast at line 15
+    // Declared in Enums.ast at line 14
 
 
     public void addArg(Expr node) {
@@ -253,7 +249,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Enums.ast at line 20
+    // Declared in Enums.ast at line 19
 
 
     public void setArg(Expr node, int i) {
@@ -261,26 +257,26 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 24
+    // Declared in Enums.ast at line 23
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in Enums.ast at line 27
+    // Declared in Enums.ast at line 26
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in Enums.ast at line 31
+    // Declared in Enums.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
         return (List<Expr>)getChild(1);
     }
 
-    // Declared in Enums.ast at line 35
+    // Declared in Enums.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -296,22 +292,18 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     // Declared in Enums.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in Enums.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in Enums.ast at line 11
+    // Declared in Enums.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in Enums.ast at line 15
+    // Declared in Enums.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -319,7 +311,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Enums.ast at line 20
+    // Declared in Enums.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -327,26 +319,26 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 24
+    // Declared in Enums.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Enums.ast at line 27
+    // Declared in Enums.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Enums.ast at line 31
+    // Declared in Enums.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(2);
     }
 
-    // Declared in Enums.ast at line 35
+    // Declared in Enums.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {

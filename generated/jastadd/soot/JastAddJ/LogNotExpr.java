@@ -100,7 +100,7 @@ public class LogNotExpr extends Unary implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 490
+    // Declared in ConstantExpression.jrag at line 491
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
@@ -108,7 +108,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private boolean isConstant_compute() {  return getOperand().isConstant();  }
 
-    // Declared in ConstantExpression.jrag at line 530
+    // Declared in ConstantExpression.jrag at line 531
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -164,7 +164,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private boolean isDUafter_compute(Variable v) {  return isDUafterTrue(v) && isDUafterFalse(v);  }
 
-    // Declared in PrettyPrint.jadd at line 377
+    // Declared in PrettyPrint.jadd at line 381
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;

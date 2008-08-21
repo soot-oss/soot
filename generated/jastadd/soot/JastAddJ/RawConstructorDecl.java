@@ -134,22 +134,18 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
     // Declared in java.ast at line 6
 
 
-    private int getNumParameter = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumParameter() {
         return getParameterList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ParameterDeclaration getParameter(int i) {
         return (ParameterDeclaration)getParameterList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addParameter(ParameterDeclaration node) {
@@ -157,7 +153,7 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -165,26 +161,26 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
         return (List<ParameterDeclaration>)getChild(1);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -200,22 +196,18 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
     // Declared in java.ast at line 6
 
 
-    private int getNumException = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumException() {
         return getExceptionList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getException(int i) {
         return (Access)getExceptionList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addException(Access node) {
@@ -223,7 +215,7 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setException(Access node, int i) {
@@ -231,26 +223,26 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
         return (List<Access>)getChild(2);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -325,22 +317,18 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
     // Declared in GenericMethods.ast at line 6
 
 
-    private int getNumTypeArgument = 0;
-
-    // Declared in GenericMethods.ast at line 7
-
     public int getNumTypeArgument() {
         return getTypeArgumentList().getNumChild();
     }
 
-    // Declared in GenericMethods.ast at line 11
+    // Declared in GenericMethods.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getTypeArgument(int i) {
         return (Access)getTypeArgumentList().getChild(i);
     }
 
-    // Declared in GenericMethods.ast at line 15
+    // Declared in GenericMethods.ast at line 14
 
 
     public void addTypeArgument(Access node) {
@@ -348,7 +336,7 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
         list.addChild(node);
     }
 
-    // Declared in GenericMethods.ast at line 20
+    // Declared in GenericMethods.ast at line 19
 
 
     public void setTypeArgument(Access node, int i) {
@@ -356,26 +344,26 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
         list.setChild(node, i);
     }
 
-    // Declared in GenericMethods.ast at line 24
+    // Declared in GenericMethods.ast at line 23
 
     public List<Access> getTypeArguments() {
         return getTypeArgumentList();
     }
 
-    // Declared in GenericMethods.ast at line 27
+    // Declared in GenericMethods.ast at line 26
 
     public List<Access> getTypeArgumentsNoTransform() {
         return getTypeArgumentListNoTransform();
     }
 
-    // Declared in GenericMethods.ast at line 31
+    // Declared in GenericMethods.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentList() {
         return (List<Access>)getChild(5);
     }
 
-    // Declared in GenericMethods.ast at line 35
+    // Declared in GenericMethods.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentListNoTransform() {

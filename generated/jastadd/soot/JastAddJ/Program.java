@@ -179,7 +179,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Could not find nested type " + name);
   }
 
-    // Declared in ClassPath.jrag at line 132
+    // Declared in ClassPath.jrag at line 137
 
   
   // is there a package named name on the path
@@ -199,24 +199,24 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     return false;
   }
 
-    // Declared in ClassPath.jrag at line 162
+    // Declared in ClassPath.jrag at line 167
 
 
   private boolean pathsInitialized = false;
 
-    // Declared in ClassPath.jrag at line 163
+    // Declared in ClassPath.jrag at line 168
 
   private java.util.ArrayList classPath;
 
-    // Declared in ClassPath.jrag at line 164
+    // Declared in ClassPath.jrag at line 169
 
   private java.util.ArrayList sourcePath;
 
-    // Declared in ClassPath.jrag at line 165
+    // Declared in ClassPath.jrag at line 170
 
   private FileNamesPart sourceFiles = new FileNamesPart(this);
 
-    // Declared in ClassPath.jrag at line 167
+    // Declared in ClassPath.jrag at line 172
 
 
   public void pushClassPath(String name) {
@@ -234,7 +234,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in ClassPath.jrag at line 181
+    // Declared in ClassPath.jrag at line 186
 
   public void popClassPath() {
     if(sourcePath.size() > 0)
@@ -243,7 +243,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       classPath.remove(classPath.size()-1);
   }
 
-    // Declared in ClassPath.jrag at line 188
+    // Declared in ClassPath.jrag at line 193
 
 
   public void initPaths() {
@@ -332,7 +332,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in ClassPath.jrag at line 541
+    // Declared in ClassPath.jrag at line 546
 
 
   // remove user defined classes from this program but keep library classes
@@ -408,7 +408,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 815
+    // Declared in PrettyPrint.jadd at line 819
 
 
   public String dumpTree() {
@@ -642,22 +642,18 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumCompilationUnit = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumCompilationUnit() {
         return getCompilationUnitList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public CompilationUnit getCompilationUnit(int i) {
         return (CompilationUnit)getCompilationUnitList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void refined_java_Program_addCompilationUnit(CompilationUnit node) {
@@ -665,7 +661,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setCompilationUnit(CompilationUnit node, int i) {
@@ -673,26 +669,26 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<CompilationUnit> getCompilationUnits() {
         return getCompilationUnitList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<CompilationUnit> getCompilationUnitsNoTransform() {
         return getCompilationUnitListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
-     @SuppressWarnings({"unchecked", "cast"})  public List<CompilationUnit> getCompilationUnitList() {
+     @SuppressWarnings({"unchecked", "cast"})  public List<CompilationUnit> refined_java_Program_getCompilationUnitList() {
         return (List<CompilationUnit>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<CompilationUnit> getCompilationUnitListNoTransform() {
@@ -786,6 +782,14 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     } catch (IOException e) {
     }
     refined_java_Program_addCompilationUnit(unit);
+  }
+
+    // Declared in ClassPath.jrag at line 84
+
+
+    public List getCompilationUnitList() {
+    initPaths();
+    return refined_java_Program_getCompilationUnitList();
   }
 
     protected boolean typeObject_computed = false;
@@ -1489,6 +1493,15 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
             return unknownType().findSingleVariable("unknown");
         }
         return getParent().Define_Variable_unknownField(this, caller);
+    }
+
+    // Declared in PrettyPrint.jadd at line 353
+    public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return "";
+        }
+        return getParent().Define_String_typeDeclIndent(this, caller);
     }
 
     // Declared in LookupType.jrag at line 35

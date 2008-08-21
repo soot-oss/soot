@@ -56,7 +56,7 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 590
+    // Declared in PrettyPrint.jadd at line 594
 
 
   public void toString(StringBuffer s) {

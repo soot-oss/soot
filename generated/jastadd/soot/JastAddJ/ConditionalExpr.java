@@ -54,7 +54,7 @@ public class ConditionalExpr extends Expr implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 422
+    // Declared in PrettyPrint.jadd at line 426
 
 
   public void toString(StringBuffer s) {
@@ -276,7 +276,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     protected boolean constant_computed = false;
     protected Constant constant_value;
-    // Declared in ConstantExpression.jrag at line 132
+    // Declared in ConstantExpression.jrag at line 133
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;
@@ -292,7 +292,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     protected boolean isConstant_computed = false;
     protected boolean isConstant_value;
-    // Declared in ConstantExpression.jrag at line 493
+    // Declared in ConstantExpression.jrag at line 494
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         if(isConstant_computed)
             return isConstant_value;

@@ -59,7 +59,7 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 549
+    // Declared in PrettyPrint.jadd at line 553
 
 
   public void toString(StringBuffer s) {

@@ -110,7 +110,7 @@ public class InstanceInitializer extends BodyDecl implements Cloneable {
 
     protected boolean exceptions_computed = false;
     protected Collection exceptions_value;
-    // Declared in AnonymousClasses.jrag at line 125
+    // Declared in AnonymousClasses.jrag at line 179
  @SuppressWarnings({"unchecked", "cast"})     public Collection exceptions() {
         if(exceptions_computed)
             return exceptions_value;

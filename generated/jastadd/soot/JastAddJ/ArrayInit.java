@@ -135,22 +135,18 @@ public class ArrayInit extends Expr implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumInit = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumInit() {
         return getInitList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Expr getInit(int i) {
         return (Expr)getInitList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addInit(Expr node) {
@@ -158,7 +154,7 @@ public class ArrayInit extends Expr implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setInit(Expr node, int i) {
@@ -166,33 +162,33 @@ public class ArrayInit extends Expr implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Expr> getInits() {
         return getInitList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Expr> getInitsNoTransform() {
         return getInitListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getInitList() {
         return (List<Expr>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getInitListNoTransform() {
         return (List<Expr>)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 469
+    // Declared in ConstantExpression.jrag at line 470
  @SuppressWarnings({"unchecked", "cast"})     public boolean representableIn(TypeDecl t) {
         boolean representableIn_TypeDecl_value = representableIn_compute(t);
         return representableIn_TypeDecl_value;

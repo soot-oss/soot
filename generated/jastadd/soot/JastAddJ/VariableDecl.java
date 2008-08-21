@@ -152,22 +152,18 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumDims = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumDims() {
         return getDimsList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Dims getDims(int i) {
         return (Dims)getDimsList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addDims(Dims node) {
@@ -175,7 +171,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setDims(Dims node, int i) {
@@ -183,26 +179,26 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Dims> getDimss() {
         return getDimsList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Dims> getDimssNoTransform() {
         return getDimsListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Dims> getDimsList() {
         return (List<Dims>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Dims> getDimsListNoTransform() {

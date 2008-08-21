@@ -109,7 +109,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean continueLabel_compute() {  return false;  }
 
-    // Declared in PrettyPrint.jadd at line 757
+    // Declared in PrettyPrint.jadd at line 761
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
@@ -225,6 +225,15 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         if(isFinal && num == state().boundariesCrossed)
             localNum_computed = true;
         return localNum_value;
+    }
+
+    // Declared in PrettyPrint.jadd at line 351
+    public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return indent();
+        }
+        return getParent().Define_String_typeDeclIndent(this, caller);
     }
 
 public ASTNode rewriteTo() {

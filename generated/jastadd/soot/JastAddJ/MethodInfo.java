@@ -98,20 +98,20 @@ public class MethodInfo extends java.lang.Object {
 
       BodyDecl b;
       if(isConstructor()) {
-        b = new ConstructorDecl(p.modifiers(flags), name, parameterList, 
+        b = new ConstructorDecl(BytecodeParser.modifiers(flags), name, parameterList, 
             exceptionList, new Opt(), new Block());
       }
       else if(attributes.elementValue() != null) {
-        b = new AnnotationMethodDecl(p.modifiers(flags), returnType, name, 
+        b = new AnnotationMethodDecl(BytecodeParser.modifiers(flags), returnType, name, 
             parameterList, exceptionList, 
             new Opt(new Block()), new Opt(attributes.elementValue()));
       }
       else if(s != null && s.hasFormalTypeParameters()) {
-        b = new GenericMethodDecl(p.modifiers(flags), returnType, name, parameterList, 
+        b = new GenericMethodDecl(BytecodeParser.modifiers(flags), returnType, name, parameterList, 
             exceptionList, new Opt(new Block()), s.typeParameters());
       }
       else {
-        b = new MethodDecl(p.modifiers(flags), returnType, name, parameterList, 
+        b = new MethodDecl(BytecodeParser.modifiers(flags), returnType, name, parameterList, 
             exceptionList, new Opt(new Block()));
       }
       if(attributes.annotations != null) {

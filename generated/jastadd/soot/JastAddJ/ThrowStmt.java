@@ -52,7 +52,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
         }
         return res;
     }
-    // Declared in AnonymousClasses.jrag at line 141
+    // Declared in AnonymousClasses.jrag at line 195
 
 
   protected void collectExceptions(Collection c, ASTNode target) {
@@ -87,7 +87,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
     return super.reachedException(catchType);
   }
 
-    // Declared in PrettyPrint.jadd at line 687
+    // Declared in PrettyPrint.jadd at line 691
 
 
   public void toString(StringBuffer s) {

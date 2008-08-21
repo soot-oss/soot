@@ -52,7 +52,7 @@ public class MethodAccess extends Access implements Cloneable {
         }
         return res;
     }
-    // Declared in AnonymousClasses.jrag at line 149
+    // Declared in AnonymousClasses.jrag at line 203
 
 
   protected void collectExceptions(Collection c, ASTNode target) {
@@ -120,7 +120,7 @@ public class MethodAccess extends Access implements Cloneable {
     setEnd(end);
   }
 
-    // Declared in PrettyPrint.jadd at line 452
+    // Declared in PrettyPrint.jadd at line 456
 
 
   public void toString(StringBuffer s) {
@@ -434,22 +434,18 @@ public class MethodAccess extends Access implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumArg = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumArg() {
         return getArgList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Expr getArg(int i) {
         return (Expr)getArgList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addArg(Expr node) {
@@ -457,7 +453,7 @@ public class MethodAccess extends Access implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setArg(Expr node, int i) {
@@ -465,26 +461,26 @@ public class MethodAccess extends Access implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
         return (List<Expr>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -898,7 +894,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return true;
   }
 
-    // Declared in PrettyPrint.jadd at line 798
+    // Declared in PrettyPrint.jadd at line 802
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;
@@ -1090,7 +1086,7 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
     return getArg(getNumArg()-1).type().methodInvocationConversionTo(decl().lastParameter().type());
   }
 
-    // Declared in InnerClasses.jrag at line 365
+    // Declared in InnerClasses.jrag at line 373
  @SuppressWarnings({"unchecked", "cast"})     public boolean requiresAccessor() {
         boolean requiresAccessor_value = requiresAccessor_compute();
         return requiresAccessor_value;

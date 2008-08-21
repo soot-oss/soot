@@ -43,7 +43,7 @@ public class AbstractDot extends Access implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 441
+    // Declared in PrettyPrint.jadd at line 445
 
 
   public void toString(StringBuffer s) {
@@ -53,7 +53,7 @@ public class AbstractDot extends Access implements Cloneable {
     getRight().toString(s);
   }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 131
+    // Declared in ResolveAmbiguousNames.jrag at line 130
 
 
 
@@ -63,7 +63,7 @@ public class AbstractDot extends Access implements Cloneable {
     return getRightNoTransform();
  }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 134
+    // Declared in ResolveAmbiguousNames.jrag at line 133
 
   public void replaceLast(Access access) {
     setRight(access);
@@ -154,7 +154,7 @@ public class AbstractDot extends Access implements Cloneable {
         return (Access)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 109
+    // Declared in ConstantExpression.jrag at line 110
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -162,7 +162,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     private Constant constant_compute() {  return lastAccess().constant();  }
 
-    // Declared in ConstantExpression.jrag at line 495
+    // Declared in ConstantExpression.jrag at line 496
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

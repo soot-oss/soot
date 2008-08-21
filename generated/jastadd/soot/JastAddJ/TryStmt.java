@@ -147,7 +147,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     return hasFinally() && getFinally().reachedException(type);
   }
 
-    // Declared in PrettyPrint.jadd at line 702
+    // Declared in PrettyPrint.jadd at line 706
 
 
   public void toString(StringBuffer s) {
@@ -338,22 +338,18 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     // Declared in java.ast at line 6
 
 
-    private int getNumCatchClause = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumCatchClause() {
         return getCatchClauseList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public CatchClause getCatchClause(int i) {
         return (CatchClause)getCatchClauseList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addCatchClause(CatchClause node) {
@@ -361,7 +357,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setCatchClause(CatchClause node, int i) {
@@ -369,26 +365,26 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<CatchClause> getCatchClauses() {
         return getCatchClauseList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<CatchClause> getCatchClausesNoTransform() {
         return getCatchClauseListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<CatchClause> getCatchClauseList() {
         return (List<CatchClause>)getChild(1);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<CatchClause> getCatchClauseListNoTransform() {

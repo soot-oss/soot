@@ -107,7 +107,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
       error("modifier native not allowed in this context");
   }
 
-    // Declared in PrettyPrint.jadd at line 430
+    // Declared in PrettyPrint.jadd at line 434
 
 
   public void toString(StringBuffer s) {
@@ -278,22 +278,18 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumModifier = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumModifier() {
         return getModifierList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Modifier getModifier(int i) {
         return (Modifier)getModifierList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addModifier(Modifier node) {
@@ -301,7 +297,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setModifier(Modifier node, int i) {
@@ -309,26 +305,26 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Modifier> getModifiers() {
         return getModifierList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Modifier> getModifiersNoTransform() {
         return getModifierListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Modifier> getModifierList() {
         return (List<Modifier>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Modifier> getModifierListNoTransform() {

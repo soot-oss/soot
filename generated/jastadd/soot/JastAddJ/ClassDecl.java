@@ -508,22 +508,18 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumImplements = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumImplements() {
         return getImplementsList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getImplements(int i) {
         return (Access)getImplementsList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addImplements(Access node) {
@@ -531,7 +527,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setImplements(Access node, int i) {
@@ -539,26 +535,26 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Access> getImplementss() {
         return getImplementsList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Access> getImplementssNoTransform() {
         return getImplementsListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsList() {
         return (List<Access>)getChild(2);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsListNoTransform() {
@@ -574,22 +570,18 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -597,7 +589,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -605,26 +597,26 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(3);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -664,7 +656,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
     return refined_TypeAnalysis_ClassDecl_castingConversionTo_TypeDecl(type);
   }
 
-    // Declared in ConstantExpression.jrag at line 318
+    // Declared in ConstantExpression.jrag at line 319
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
@@ -672,7 +664,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 
     private Constant cast_compute(Constant c) {  return Constant.create(c.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 380
+    // Declared in ConstantExpression.jrag at line 381
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
@@ -680,7 +672,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 
     private Constant add_compute(Constant c1, Constant c2) {  return Constant.create(c1.stringValue() + c2.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 445
+    // Declared in ConstantExpression.jrag at line 446
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
@@ -688,7 +680,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 
     private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.stringValue() : c2.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 549
+    // Declared in ConstantExpression.jrag at line 550
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;

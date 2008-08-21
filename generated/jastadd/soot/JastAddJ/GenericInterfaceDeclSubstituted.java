@@ -154,22 +154,18 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     // Declared in Generics.ast at line 6
 
 
-    private int getNumSuperInterfaceId = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumSuperInterfaceId() {
         return getSuperInterfaceIdList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getSuperInterfaceId(int i) {
         return (Access)getSuperInterfaceIdList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addSuperInterfaceId(Access node) {
@@ -177,7 +173,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setSuperInterfaceId(Access node, int i) {
@@ -185,26 +181,26 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<Access> getSuperInterfaceIds() {
         return getSuperInterfaceIdList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<Access> getSuperInterfaceIdsNoTransform() {
         return getSuperInterfaceIdListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getSuperInterfaceIdList() {
         return (List<Access>)getChild(1);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getSuperInterfaceIdListNoTransform() {
@@ -220,22 +216,18 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     // Declared in Generics.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -243,7 +235,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -251,26 +243,26 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
         return (List<BodyDecl>)getChild(2);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -286,22 +278,18 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     // Declared in Generics.ast at line 6
 
 
-    private int getNumTypeParameter = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumTypeParameter() {
         return getTypeParameterList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public TypeVariable getTypeParameter(int i) {
         return (TypeVariable)getTypeParameterList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addTypeParameter(TypeVariable node) {
@@ -309,7 +297,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setTypeParameter(TypeVariable node, int i) {
@@ -317,26 +305,26 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<TypeVariable> getTypeParameters() {
         return getTypeParameterList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<TypeVariable> getTypeParametersNoTransform() {
         return getTypeParameterListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterList() {
         return (List<TypeVariable>)getChild(3);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterListNoTransform() {
@@ -368,22 +356,18 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     // Declared in Generics.ast at line 6
 
 
-    private int getNumParTypeDecl = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumParTypeDecl() {
         return getParTypeDeclList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ParInterfaceDecl getParTypeDecl(int i) {
         return (ParInterfaceDecl)getParTypeDeclList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addParTypeDecl(ParInterfaceDecl node) {
@@ -391,7 +375,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setParTypeDecl(ParInterfaceDecl node, int i) {
@@ -399,26 +383,26 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<ParInterfaceDecl> getParTypeDecls() {
         return getParTypeDeclList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<ParInterfaceDecl> getParTypeDeclsNoTransform() {
         return getParTypeDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
     public List<ParInterfaceDecl> getParTypeDeclListNoTransform() {
         return (List<ParInterfaceDecl>)getChildNoTransform(4);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
     protected int getParTypeDeclListChildPosition() {

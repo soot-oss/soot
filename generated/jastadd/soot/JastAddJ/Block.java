@@ -64,7 +64,7 @@ public class Block extends Stmt implements Cloneable, VariableScope {
     return indexDecl <= indexUse;
   }
 
-    // Declared in PrettyPrint.jadd at line 521
+    // Declared in PrettyPrint.jadd at line 525
 
 
   // Stmts
@@ -126,22 +126,18 @@ public class Block extends Stmt implements Cloneable, VariableScope {
     // Declared in java.ast at line 6
 
 
-    private int getNumStmt = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumStmt() {
         return getStmtList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Stmt getStmt(int i) {
         return (Stmt)getStmtList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addStmt(Stmt node) {
@@ -149,7 +145,7 @@ public class Block extends Stmt implements Cloneable, VariableScope {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setStmt(Stmt node, int i) {
@@ -157,26 +153,26 @@ public class Block extends Stmt implements Cloneable, VariableScope {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Stmt> getStmts() {
         return getStmtList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Stmt> getStmtsNoTransform() {
         return getStmtListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getStmtList() {
         return (List<Stmt>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getStmtListNoTransform() {
@@ -303,7 +299,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
     return null;
   }
 
-    // Declared in PrettyPrint.jadd at line 758
+    // Declared in PrettyPrint.jadd at line 762
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
@@ -311,7 +307,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     private boolean addsIndentationLevel_compute() {  return shouldHaveIndent();  }
 
-    // Declared in PrettyPrint.jadd at line 760
+    // Declared in PrettyPrint.jadd at line 764
  @SuppressWarnings({"unchecked", "cast"})     public boolean shouldHaveIndent() {
         boolean shouldHaveIndent_value = shouldHaveIndent_compute();
         return shouldHaveIndent_value;

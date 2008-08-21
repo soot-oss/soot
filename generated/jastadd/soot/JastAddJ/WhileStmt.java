@@ -56,7 +56,7 @@ public class WhileStmt extends BranchTargetStmt implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 582
+    // Declared in PrettyPrint.jadd at line 586
 
 
   public void toString(StringBuffer s) {

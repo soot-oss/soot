@@ -240,7 +240,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     return f;
   }
 
-    // Declared in InnerClasses.jrag at line 270
+    // Declared in InnerClasses.jrag at line 278
 
 
   public MethodDecl createAccessor(TypeDecl fieldQualifier) {
@@ -276,7 +276,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     return m;
   }
 
-    // Declared in InnerClasses.jrag at line 303
+    // Declared in InnerClasses.jrag at line 311
 
 
   public MethodDecl createAccessorWrite(TypeDecl fieldQualifier) {
@@ -324,7 +324,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     return m;
   }
 
-    // Declared in InnerClasses.jrag at line 348
+    // Declared in InnerClasses.jrag at line 356
 
 
   private Access createAccess() {
@@ -567,7 +567,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     protected boolean exceptions_computed = false;
     protected Collection exceptions_value;
-    // Declared in AnonymousClasses.jrag at line 112
+    // Declared in AnonymousClasses.jrag at line 166
  @SuppressWarnings({"unchecked", "cast"})     public Collection exceptions() {
         if(exceptions_computed)
             return exceptions_value;
@@ -592,7 +592,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     return set;
   }
 
-    // Declared in ConstantExpression.jrag at line 479
+    // Declared in ConstantExpression.jrag at line 480
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
@@ -728,7 +728,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isVolatile_compute() {  return getModifiers().isVolatile();  }
 
-    // Declared in PrettyPrint.jadd at line 806
+    // Declared in PrettyPrint.jadd at line 810
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

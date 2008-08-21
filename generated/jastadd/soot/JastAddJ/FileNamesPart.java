@@ -3,15 +3,15 @@ package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 // load files specified explicitly (on the command line)
 public class FileNamesPart extends PathPart {
-    // Declared in ClassPath.jrag at line 485
+    // Declared in ClassPath.jrag at line 490
 
     private HashMap sourceFiles = new HashMap();
 
-    // Declared in ClassPath.jrag at line 486
+    // Declared in ClassPath.jrag at line 491
 
     private HashSet packages = new HashSet();
 
-    // Declared in ClassPath.jrag at line 488
+    // Declared in ClassPath.jrag at line 493
 
 
     public FileNamesPart(Program p) {
@@ -19,20 +19,20 @@ public class FileNamesPart extends PathPart {
       program = p;
     }
 
-    // Declared in ClassPath.jrag at line 493
+    // Declared in ClassPath.jrag at line 498
 
 
     public boolean hasPackage(String name) { return packages.contains(name); }
 
-    // Declared in ClassPath.jrag at line 494
+    // Declared in ClassPath.jrag at line 499
 
     public boolean isEmpty() { return sourceFiles.isEmpty(); }
 
-    // Declared in ClassPath.jrag at line 495
+    // Declared in ClassPath.jrag at line 500
 
     public Collection keySet() { return sourceFiles.keySet(); }
 
-    // Declared in ClassPath.jrag at line 497
+    // Declared in ClassPath.jrag at line 502
 
 
     public boolean selectCompilationUnit(String canonicalName) throws IOException {
@@ -51,7 +51,7 @@ public class FileNamesPart extends PathPart {
       return false;
     }
 
-    // Declared in ClassPath.jrag at line 512
+    // Declared in ClassPath.jrag at line 517
 
     public void addSourceFile(String name) {
       try {

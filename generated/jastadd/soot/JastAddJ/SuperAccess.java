@@ -40,7 +40,7 @@ public class SuperAccess extends Access implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 501
+    // Declared in PrettyPrint.jadd at line 505
 
   
   public void toString(StringBuffer s) {

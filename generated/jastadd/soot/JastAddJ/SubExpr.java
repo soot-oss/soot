@@ -105,7 +105,7 @@ public class SubExpr extends AdditiveExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 122
+    // Declared in ConstantExpression.jrag at line 123
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -113,7 +113,7 @@ public class SubExpr extends AdditiveExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().sub(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 400
+    // Declared in PrettyPrint.jadd at line 404
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

@@ -119,7 +119,7 @@ public class ParseName extends Access implements Cloneable {
 
     private SimpleSet qualifiedLookupVariable_compute(String name) {  return SimpleSet.emptySet;  }
 
-    // Declared in PrettyPrint.jadd at line 802
+    // Declared in PrettyPrint.jadd at line 806
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

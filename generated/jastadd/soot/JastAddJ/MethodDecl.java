@@ -261,6 +261,14 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     if(m != null) return m;
 
     int accessorIndex = methodQualifier.accessorCounter++;
+    
+    List parameterList = new List();
+    for(int i = 0; i < getNumParameter(); i++)
+      parameterList.add(new ParameterDeclaration(getParameter(i).type(), getParameter(i).name()));
+    List exceptionList = new List();
+    for(int i = 0; i < getNumException(); i++)
+      exceptionList.add(getException(i).type().createQualifiedAccess());
+
     // add synthetic flag to modifiers
     Modifiers modifiers = new Modifiers(new List());
     if(getModifiers().isStatic())
@@ -272,8 +280,8 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
       modifiers,
       type().createQualifiedAccess(),
       name() + "$access$" + accessorIndex,
-      (List)getParameterList().fullCopy(),
-      (List)getExceptionList().fullCopy(),
+      parameterList,
+      exceptionList,
       new Opt(
         new Block(
           new List().add(
@@ -287,7 +295,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     return m;
   }
 
-    // Declared in InnerClasses.jrag at line 227
+    // Declared in InnerClasses.jrag at line 235
 
   
   private Stmt createAccessorStmt() {
@@ -300,7 +308,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     return isVoid() ? (Stmt) new ExprStmt(access) : new ReturnStmt(new Opt(access));
   }
 
-    // Declared in InnerClasses.jrag at line 237
+    // Declared in InnerClasses.jrag at line 245
 
 
   public MethodDecl createSuperAccessor(TypeDecl methodQualifier) {
@@ -311,7 +319,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     List parameters = new List();
     List args = new List();
     for(int i = 0; i < getNumParameter(); i++) {
-      parameters.add(getParameter(i).fullCopy());
+      parameters.add(new ParameterDeclaration(getParameter(i).type(), getParameter(i).name()));
       args.add(new VarAccess(getParameter(i).name()));
     }
     Stmt stmt;
@@ -648,22 +656,18 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     // Declared in java.ast at line 6
 
 
-    private int getNumParameter = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumParameter() {
         return getParameterList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ParameterDeclaration getParameter(int i) {
         return (ParameterDeclaration)getParameterList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addParameter(ParameterDeclaration node) {
@@ -671,7 +675,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -679,26 +683,26 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
         return (List<ParameterDeclaration>)getChild(2);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -714,22 +718,18 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     // Declared in java.ast at line 6
 
 
-    private int getNumException = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumException() {
         return getExceptionList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getException(int i) {
         return (Access)getExceptionList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addException(Access node) {
@@ -737,7 +737,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setException(Access node, int i) {
@@ -745,26 +745,26 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
         return (List<Access>)getChild(3);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -1159,7 +1159,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     private boolean isStrictfp_compute() {  return getModifiers().isStrictfp();  }
 
-    // Declared in PrettyPrint.jadd at line 809
+    // Declared in PrettyPrint.jadd at line 813
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
         String dumpString_value = dumpString_compute();
         return dumpString_value;

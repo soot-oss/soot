@@ -32,7 +32,7 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 490
+    // Declared in PrettyPrint.jadd at line 494
 
 
   public void toString(StringBuffer s) {

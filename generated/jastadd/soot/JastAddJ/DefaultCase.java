@@ -40,7 +40,7 @@ public class DefaultCase extends Case implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 564
+    // Declared in PrettyPrint.jadd at line 568
 
 
   public void toString(StringBuffer s) {

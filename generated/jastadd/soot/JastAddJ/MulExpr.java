@@ -105,7 +105,7 @@ public class MulExpr extends MultiplicativeExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 117
+    // Declared in ConstantExpression.jrag at line 118
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -113,7 +113,7 @@ public class MulExpr extends MultiplicativeExpr implements Cloneable {
 
     private Constant constant_compute() {  return type().mul(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    // Declared in PrettyPrint.jadd at line 396
+    // Declared in PrettyPrint.jadd at line 400
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
         String printOp_value = printOp_compute();
         return printOp_value;

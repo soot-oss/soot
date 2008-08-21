@@ -90,22 +90,18 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
     // Declared in Annotations.ast at line 6
 
 
-    private int getNumElementValue = 0;
-
-    // Declared in Annotations.ast at line 7
-
     public int getNumElementValue() {
         return getElementValueList().getNumChild();
     }
 
-    // Declared in Annotations.ast at line 11
+    // Declared in Annotations.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ElementValue getElementValue(int i) {
         return (ElementValue)getElementValueList().getChild(i);
     }
 
-    // Declared in Annotations.ast at line 15
+    // Declared in Annotations.ast at line 14
 
 
     public void addElementValue(ElementValue node) {
@@ -113,7 +109,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in Annotations.ast at line 20
+    // Declared in Annotations.ast at line 19
 
 
     public void setElementValue(ElementValue node, int i) {
@@ -121,26 +117,26 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Annotations.ast at line 24
+    // Declared in Annotations.ast at line 23
 
     public List<ElementValue> getElementValues() {
         return getElementValueList();
     }
 
-    // Declared in Annotations.ast at line 27
+    // Declared in Annotations.ast at line 26
 
     public List<ElementValue> getElementValuesNoTransform() {
         return getElementValueListNoTransform();
     }
 
-    // Declared in Annotations.ast at line 31
+    // Declared in Annotations.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValue> getElementValueList() {
         return (List<ElementValue>)getChild(0);
     }
 
-    // Declared in Annotations.ast at line 35
+    // Declared in Annotations.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValue> getElementValueListNoTransform() {

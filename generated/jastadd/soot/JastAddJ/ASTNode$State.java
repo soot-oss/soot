@@ -84,6 +84,10 @@ public class ASTNode$State extends java.lang.Object {
 
   public Options options = new Options();
 
+    // Declared in Transformations.jrag at line 219
+
+  public int replacePos = 0;
+
     // Declared in ASTNode.ast at line 128
 
     protected int duringDefiniteAssignment = 0;

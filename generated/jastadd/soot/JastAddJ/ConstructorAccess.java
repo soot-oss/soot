@@ -83,7 +83,7 @@ public class ConstructorAccess extends Access implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 465
+    // Declared in PrettyPrint.jadd at line 469
 
 
   public void toString(StringBuffer s) {
@@ -119,13 +119,13 @@ public class ConstructorAccess extends Access implements Cloneable {
     getArgList().insertChild(new VarAccess("@p1"),1);
   }
 
-    // Declared in InnerClasses.jrag at line 448
+    // Declared in InnerClasses.jrag at line 456
 
 
   // add val$name as arguments to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 449
+    // Declared in InnerClasses.jrag at line 457
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -240,22 +240,18 @@ public class ConstructorAccess extends Access implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumArg = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumArg() {
         return getArgList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Expr getArg(int i) {
         return (Expr)getArgList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addArg(Expr node) {
@@ -263,7 +259,7 @@ public class ConstructorAccess extends Access implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setArg(Expr node, int i) {
@@ -271,26 +267,26 @@ public class ConstructorAccess extends Access implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
         return (List<Expr>)getChild(0);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {

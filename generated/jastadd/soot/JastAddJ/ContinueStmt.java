@@ -75,7 +75,7 @@ public class ContinueStmt extends Stmt implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 670
+    // Declared in PrettyPrint.jadd at line 674
 
 
   public void toString(StringBuffer s) {

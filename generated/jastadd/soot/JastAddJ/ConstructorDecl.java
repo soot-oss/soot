@@ -203,13 +203,13 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return c;
   }
 
-    // Declared in InnerClasses.jrag at line 436
+    // Declared in InnerClasses.jrag at line 444
 
 
   // add val$name as parameters to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 437
+    // Declared in InnerClasses.jrag at line 445
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -221,7 +221,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in InnerClasses.jrag at line 471
+    // Declared in InnerClasses.jrag at line 479
 
 
   public ConstructorDecl createAccessor() {
@@ -236,6 +236,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     modifiers.addModifier(new Modifier("public"));
 
     List parameters = createAccessorParameters();
+
+    List exceptionList = new List(); 
+    for(int i = 0; i < getNumException(); i++)
+      exceptionList.add(getException(i).type().createQualifiedAccess());
     
     // add all parameters as arguments except for the dummy parameter
     List args = new List();
@@ -248,7 +252,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       modifiers,
       name(),
       parameters,
-      (List)getExceptionList().fullCopy(),
+      exceptionList,
       new Opt(
         new ExprStmt(
           access
@@ -264,7 +268,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return c;
   }
 
-    // Declared in InnerClasses.jrag at line 511
+    // Declared in InnerClasses.jrag at line 523
 
 
   protected List createAccessorParameters() {
@@ -275,7 +279,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return parameters;
   }
 
-    // Declared in InnerClasses.jrag at line 519
+    // Declared in InnerClasses.jrag at line 531
 
 
   protected TypeDecl createAnonymousJavaTypeDecl() {
@@ -532,22 +536,18 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumParameter = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumParameter() {
         return getParameterList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public ParameterDeclaration getParameter(int i) {
         return (ParameterDeclaration)getParameterList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addParameter(ParameterDeclaration node) {
@@ -555,7 +555,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -563,26 +563,26 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
         return (List<ParameterDeclaration>)getChild(1);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -598,22 +598,18 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     // Declared in java.ast at line 6
 
 
-    private int getNumException = 0;
-
-    // Declared in java.ast at line 7
-
     public int getNumException() {
         return getExceptionList().getNumChild();
     }
 
-    // Declared in java.ast at line 11
+    // Declared in java.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getException(int i) {
         return (Access)getExceptionList().getChild(i);
     }
 
-    // Declared in java.ast at line 15
+    // Declared in java.ast at line 14
 
 
     public void addException(Access node) {
@@ -621,7 +617,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         list.addChild(node);
     }
 
-    // Declared in java.ast at line 20
+    // Declared in java.ast at line 19
 
 
     public void setException(Access node, int i) {
@@ -629,26 +625,26 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 24
+    // Declared in java.ast at line 23
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 27
+    // Declared in java.ast at line 26
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 31
+    // Declared in java.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
         return (List<Access>)getChild(2);
     }
 
-    // Declared in java.ast at line 35
+    // Declared in java.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -1205,7 +1201,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private ParameterDeclaration lastParameter_compute() {  return getParameter(getNumParameter() - 1);  }
 
-    // Declared in InnerClasses.jrag at line 413
+    // Declared in InnerClasses.jrag at line 421
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsEnclosing() {
         boolean needsEnclosing_value = needsEnclosing_compute();
         return needsEnclosing_value;
@@ -1213,7 +1209,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private boolean needsEnclosing_compute() {  return hostType().needsEnclosing();  }
 
-    // Declared in InnerClasses.jrag at line 414
+    // Declared in InnerClasses.jrag at line 422
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsSuperEnclosing() {
         boolean needsSuperEnclosing_value = needsSuperEnclosing_compute();
         return needsSuperEnclosing_value;
@@ -1221,7 +1217,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private boolean needsSuperEnclosing_compute() {  return hostType().needsSuperEnclosing();  }
 
-    // Declared in InnerClasses.jrag at line 416
+    // Declared in InnerClasses.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosing() {
         TypeDecl enclosing_value = enclosing_compute();
         return enclosing_value;
@@ -1229,7 +1225,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private TypeDecl enclosing_compute() {  return hostType().enclosing();  }
 
-    // Declared in InnerClasses.jrag at line 417
+    // Declared in InnerClasses.jrag at line 425
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superEnclosing() {
         TypeDecl superEnclosing_value = superEnclosing_compute();
         return superEnclosing_value;

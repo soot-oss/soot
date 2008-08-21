@@ -37,7 +37,7 @@ public class ArrayAccess extends Access implements Cloneable {
         }
         return res;
     }
-    // Declared in PrettyPrint.jadd at line 509
+    // Declared in PrettyPrint.jadd at line 513
 
 
   public void toString(StringBuffer s) {

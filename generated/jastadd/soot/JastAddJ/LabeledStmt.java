@@ -64,7 +64,7 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
     }
   }
 
-    // Declared in PrettyPrint.jadd at line 537
+    // Declared in PrettyPrint.jadd at line 541
 
 
   public void toString(StringBuffer s) {

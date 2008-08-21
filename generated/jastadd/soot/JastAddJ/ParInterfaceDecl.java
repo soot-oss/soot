@@ -202,22 +202,18 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     // Declared in Generics.ast at line 6
 
 
-    private int getNumArgument = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumArgument() {
         return getArgumentList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getArgument(int i) {
         return (Access)getArgumentList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addArgument(Access node) {
@@ -225,7 +221,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setArgument(Access node, int i) {
@@ -233,26 +229,26 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<Access> getArguments() {
         return getArgumentList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<Access> getArgumentsNoTransform() {
         return getArgumentListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getArgumentList() {
         return (List<Access>)getChild(1);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getArgumentListNoTransform() {
@@ -268,22 +264,18 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     // Declared in Generics.ast at line 6
 
 
-    private int getNumSuperInterfaceId = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumSuperInterfaceId() {
         return getSuperInterfaceIdList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public Access getSuperInterfaceId(int i) {
         return (Access)getSuperInterfaceIdList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addSuperInterfaceId(Access node) {
@@ -291,7 +283,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setSuperInterfaceId(Access node, int i) {
@@ -299,26 +291,26 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<Access> getSuperInterfaceIds() {
         return getSuperInterfaceIdList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<Access> getSuperInterfaceIdsNoTransform() {
         return getSuperInterfaceIdListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
     public List<Access> getSuperInterfaceIdListNoTransform() {
         return (List<Access>)getChildNoTransform(2);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
     protected int getSuperInterfaceIdListChildPosition() {
@@ -334,22 +326,18 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     // Declared in Generics.ast at line 6
 
 
-    private int getNumBodyDecl = 0;
-
-    // Declared in Generics.ast at line 7
-
     public int getNumBodyDecl() {
         return getBodyDeclList().getNumChild();
     }
 
-    // Declared in Generics.ast at line 11
+    // Declared in Generics.ast at line 10
 
 
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
         return (BodyDecl)getBodyDeclList().getChild(i);
     }
 
-    // Declared in Generics.ast at line 15
+    // Declared in Generics.ast at line 14
 
 
     public void addBodyDecl(BodyDecl node) {
@@ -357,7 +345,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         list.addChild(node);
     }
 
-    // Declared in Generics.ast at line 20
+    // Declared in Generics.ast at line 19
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -365,26 +353,26 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 24
+    // Declared in Generics.ast at line 23
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Generics.ast at line 27
+    // Declared in Generics.ast at line 26
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 31
+    // Declared in Generics.ast at line 30
 
 
     public List<BodyDecl> getBodyDeclListNoTransform() {
         return (List<BodyDecl>)getChildNoTransform(3);
     }
 
-    // Declared in Generics.ast at line 35
+    // Declared in Generics.ast at line 34
 
 
     protected int getBodyDeclListChildPosition() {
