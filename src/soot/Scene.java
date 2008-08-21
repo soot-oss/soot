@@ -207,7 +207,7 @@ public class Scene  //extends AbstractHost
 	public String defaultClassPath() {
 		String defaultSootClassPath = System.getProperty("java.class.path")+File.pathSeparator+
 			System.getProperty("java.home")+File.separator+"lib"+File.separator+"rt.jar";
-		if(Options.v().whole_program()) {
+		if(Options.v().whole_program() || Options.v().output_format()==Options.output_format_dava) {
 			//add jce.jar, which is necessary for whole program mode
 			//(java.security.Signature from rt.jar import javax.crypto.Cipher from jce.jar            	
 			defaultSootClassPath += File.pathSeparator+
