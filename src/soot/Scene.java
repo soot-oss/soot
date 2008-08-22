@@ -267,6 +267,11 @@ public class Scene  //extends AbstractHost
         SootClass c = type.getSootClass();
         return c.isInScene();
     }
+    
+    public boolean containsType(String className)
+    {
+        return nameToClass.containsKey(className);
+    }
 
     public String signatureToClass(String sig) {
         if( sig.charAt(0) != '<' ) throw new RuntimeException("oops "+sig);
@@ -395,7 +400,7 @@ public class Scene  //extends AbstractHost
     /**
      * Returns the RefType with the given className.  
      * @throws IllegalStateException if the RefType for this class cannot be found.
-     * Use {@link #containsClass(String)} to check if the class was loaded.
+     * Use {@link #containsType(String)} to check if type is registered
      */
     public RefType getRefType(String className) 
     {
