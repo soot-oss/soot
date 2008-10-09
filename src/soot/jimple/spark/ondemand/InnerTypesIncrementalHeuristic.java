@@ -91,7 +91,12 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
         RefType declaringType = sootField.getDeclaringClass().getType();
         String declaringTypeStr = declaringType.toString();
         String topLevel = Util.topLevelTypeString(declaringTypeStr);
-        RefType refType = Scene.v().getRefType(topLevel);
+        RefType refType;
+        if(Scene.v().containsType(topLevel)) {
+            refType = Scene.v().getRefType(topLevel);
+        } else {
+        	refType=null;
+        }
         for (RefType checkedType : typesToCheck) {
             if (manager.castNeverFails(checkedType, refType)) {
                 // System.err.println("validate " + declaringTypeStr);
