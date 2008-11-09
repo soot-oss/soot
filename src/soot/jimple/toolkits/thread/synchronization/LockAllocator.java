@@ -23,6 +23,8 @@ public class LockAllocator extends SceneTransformer
 	{ 
 		return G.v().soot_jimple_toolkits_thread_synchronization_LockAllocator();
 	}
+    
+    CriticalSectionInterferenceGraph interferenceGraph = null;
 	
 	// Lock options
 	boolean optionOneGlobalLock = false;
@@ -271,6 +273,7 @@ public class LockAllocator extends SceneTransformer
     		new CriticalSectionInterferenceGraph(
     				transactions, mhp, optionOneGlobalLock,
     				optionLeaveOriginalLocks, optionIncludeEmptyPossibleEdges);
+    	interferenceGraph = ig; // save in field for later retrieval
     	
     	
     	
@@ -967,5 +970,12 @@ public class LockAllocator extends SceneTransformer
 					G.v().out.print(tn.name + " ");
 			}
 			G.v().out.println("\n[transaction-groups] ");
+	}
+	public CriticalSectionInterferenceGraph getInterferenceGraph() {
+		return interferenceGraph;
+	}
+	public void setInterferenceGraph(
+			CriticalSectionInterferenceGraph interferenceGraph) {
+		this.interferenceGraph = interferenceGraph;
 	}
 }
