@@ -35,7 +35,7 @@ import java.util.*;
  *   an interface to add/delete nodes and edges.
  */
 
-public interface MutableDirectedGraph extends DirectedGraph
+public interface MutableDirectedGraph<N> extends DirectedGraph<N>
 {
     /**
      *  Adds an edge to the graph between 2 nodes.
@@ -43,7 +43,7 @@ public interface MutableDirectedGraph extends DirectedGraph
      *  @param from  out node for the edge.
      *  @param to    in node for the edge.
      */
-    public void addEdge(Object from, Object to);
+    public void addEdge(N from, N to);
 
 
 
@@ -53,16 +53,16 @@ public interface MutableDirectedGraph extends DirectedGraph
      *  @param from  out node for the edge to remove.
      *  @param to    in node for the edge to remove.
      */
-    public void removeEdge(Object from, Object to);
+    public void removeEdge(N from, N to);
 
 
     /** @return true if the graph contains an edge the 2 nodes 
      *           false otherwise.
      */ 
-    public boolean containsEdge(Object from, Object to);
+    public boolean containsEdge(N from, N to);
 
     /** @return a list of the nodes that compose the graph. No ordering is implied.*/
-    public List<Object> getNodes();
+    public List<N> getNodes();
 
     /**
      *  Adds a node to the graph. Initially the added node has no successors or predecessors.
@@ -71,21 +71,21 @@ public interface MutableDirectedGraph extends DirectedGraph
      *  @see #getHeads
      *  @see #getTails
      */
-    public void addNode(Object node);
+    public void addNode(N node);
 
     /**
      *  Removes a node from the graph. If the node is not
      *  found in the graph, no change is made.
      *  @param node the node to be removed.
      */
-    public void removeNode(Object node);
+    public void removeNode(N node);
 
     /**
      *   @param node node that we want to know if the graph constains.
      *   @return  true if the graph contains the node.
      *            false otherwise.
      */
-    public boolean containsNode(Object node);
+    public boolean containsNode(N node);
 }
 
  
