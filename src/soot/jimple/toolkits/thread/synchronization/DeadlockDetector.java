@@ -40,9 +40,9 @@ public class DeadlockDetector {
 		this.tt = new TransitiveTargets(Scene.v().getCallGraph(), new Filter(new CriticalSectionVisibleEdgesPred(null)));
 	}
 	
-	public void detectComponentBasedDeadlock()
+	public MutableDirectedGraph<CriticalSectionGroup> detectComponentBasedDeadlock()
 	{
-		MutableDirectedGraph lockOrder;
+		MutableDirectedGraph<CriticalSectionGroup> lockOrder;
 		boolean foundDeadlock;
 		int iteration = 0;
 		do
@@ -82,7 +82,7 @@ public class DeadlockDetector {
 
 				// compare to each other tn
 				Iterator<CriticalSection> deadlockIt2 = criticalSections.iterator();
-				while(deadlockIt2.hasNext() && !foundDeadlock)
+				while(deadlockIt2.hasNext() && (!optionRepairDeadlock || !foundDeadlock))
 				{
 					CriticalSection tn2 = deadlockIt2.next();
 
@@ -96,7 +96,7 @@ public class DeadlockDetector {
 						lockOrder.addNode(tn2.group);
 					}	
 
-					if( tn1.transitiveTargets.contains(tn2.method) && !foundDeadlock )
+					if( tn1.transitiveTargets.contains(tn2.method) )
 					{
 						// This implies the partial ordering tn1lock before tn2lock
 						if(optionPrintDebug)
@@ -110,7 +110,7 @@ public class DeadlockDetector {
 						afterTn2.addAll( lockOrder.getSuccsOf(tn2.group) );
 						for( int i = 0; i < afterTn2.size(); i++ )
 						{
-							List succs = lockOrder.getSuccsOf(afterTn2.get(i));
+							List succs = lockOrder.getSuccsOf((CriticalSectionGroup) afterTn2.get(i));
 							for( Object o : succs )
 							{
 								if(!afterTn2.contains(o))
@@ -155,6 +155,7 @@ public class DeadlockDetector {
 				}
 			}
 		} while(foundDeadlock && optionRepairDeadlock);
+		return lockOrder;
 	}
 
 	public MutableEdgeLabelledDirectedGraph detectLocksetDeadlock(

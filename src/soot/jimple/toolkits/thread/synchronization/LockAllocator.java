@@ -24,7 +24,9 @@ public class LockAllocator extends SceneTransformer
 		return G.v().soot_jimple_toolkits_thread_synchronization_LockAllocator();
 	}
     
+    List<CriticalSection> criticalSections = null;
     CriticalSectionInterferenceGraph interferenceGraph = null;
+    DirectedGraph deadlockGraph = null;
 	
 	// Lock options
 	boolean optionOneGlobalLock = false;
@@ -179,16 +181,16 @@ public class LockAllocator extends SceneTransformer
     	}    	
     	
     	// Create a composite list of all transactions
-    	List<CriticalSection> transactions = new Vector<CriticalSection>();
+    	criticalSections = new Vector<CriticalSection>();
     	for(FlowSet fs : methodToFlowSet.values())
     	{
     		List fList = fs.toList();
     		for(int i = 0; i < fList.size(); i++)
-    			transactions.add(((SynchronizedRegionFlowPair) fList.get(i)).tn);
+    			criticalSections.add(((SynchronizedRegionFlowPair) fList.get(i)).tn);
     	}
 
 		// Assign Names To Transactions
-		assignNamesToTransactions(transactions);
+		assignNamesToTransactions(criticalSections);
 
     	if(optionOnFlyTLO)
     	{
@@ -205,8 +207,8 @@ public class LockAllocator extends SceneTransformer
     	CriticalSectionAwareSideEffectAnalysis tasea = null;
 		tasea = new CriticalSectionAwareSideEffectAnalysis(
 					pta, 
-					Scene.v().getCallGraph(), (optionOpenNesting ? transactions : null), tlo);
-    	Iterator<CriticalSection> tnIt = transactions.iterator();
+					Scene.v().getCallGraph(), (optionOpenNesting ? criticalSections : null), tlo);
+    	Iterator<CriticalSection> tnIt = criticalSections.iterator();
     	while(tnIt.hasNext())
     	{
     		CriticalSection tn = tnIt.next();
@@ -271,7 +273,7 @@ public class LockAllocator extends SceneTransformer
     	G.v().out.println("[wjtp.tn] *** Calculate Locking Groups *** " + (new Date()));
     	CriticalSectionInterferenceGraph ig = 
     		new CriticalSectionInterferenceGraph(
-    				transactions, mhp, optionOneGlobalLock,
+    				criticalSections, mhp, optionOneGlobalLock,
     				optionLeaveOriginalLocks, optionIncludeEmptyPossibleEdges);
     	interferenceGraph = ig; // save in field for later retrieval
     	
@@ -279,9 +281,9 @@ public class LockAllocator extends SceneTransformer
     	
 		// *** Detect the Possibility of Deadlock ***
 		G.v().out.println("[wjtp.tn] *** Detect the Possibility of Deadlock *** " + (new Date()));
-		DeadlockDetector dd = new DeadlockDetector(optionPrintDebug, optionAvoidDeadlock, transactions);
+		DeadlockDetector dd = new DeadlockDetector(optionPrintDebug, optionAvoidDeadlock, criticalSections);
 		if(!optionUseLocksets) // deadlock detection for all single-lock-per-region allocations
-			dd.detectComponentBasedDeadlock();
+			deadlockGraph = dd.detectComponentBasedDeadlock();
 
 		
 
@@ -292,7 +294,7 @@ public class LockAllocator extends SceneTransformer
 		{
 			// Calculate per-group contributing RWSet
 			// (Might be preferable to use per-transaction contributing RWSet)
-			for(CriticalSection tn : transactions)
+			for(CriticalSection tn : criticalSections)
 	    	{
 	    		if(tn.setNumber <= 0)
 	    			continue;
@@ -307,7 +309,7 @@ public class LockAllocator extends SceneTransformer
 		List<PointsToSetInternal> lockPTSets = null;
 		if(optionLeaveOriginalLocks)
 		{
-			analyzeExistingLocks(transactions, ig);
+			analyzeExistingLocks(criticalSections, ig);
 		}
 		else if(optionStaticLocks)
 		{
@@ -321,12 +323,12 @@ public class LockAllocator extends SceneTransformer
 			lockPTSets = new ArrayList<PointsToSetInternal>();
 			lockToLockNum = new HashMap<Value, Integer>();
 
-			findLockableReferences(transactions, pta, tasea, lockToLockNum,lockPTSets);
+			findLockableReferences(criticalSections, pta, tasea, lockToLockNum,lockPTSets);
 
 			// print out locksets
 			if(optionUseLocksets)
 			{
-				for( CriticalSection tn : transactions )
+				for( CriticalSection tn : criticalSections )
 				{
 					if( tn.group != null )
 					{
@@ -342,12 +344,12 @@ public class LockAllocator extends SceneTransformer
 		if(optionUseLocksets) // deadlock detection and lock ordering for lockset allocations
 		{
 			G.v().out.println("[wjtp.tn] *** Detect " + (optionAvoidDeadlock ? "and Correct " : "") + "the Possibility of Deadlock for Locksets *** " + (new Date()));
-			MutableEdgeLabelledDirectedGraph lockOrder = dd.detectLocksetDeadlock(lockToLockNum, lockPTSets);
+			deadlockGraph = dd.detectLocksetDeadlock(lockToLockNum, lockPTSets);
 			if(optionPrintDebug)
-				((HashMutableEdgeLabelledDirectedGraph) lockOrder).printGraph();
+				((HashMutableEdgeLabelledDirectedGraph) deadlockGraph).printGraph();
 		
 			G.v().out.println("[wjtp.tn] *** Reorder Locksets to Avoid Deadlock *** " + (new Date()));
-			dd.reorderLocksets(lockToLockNum, lockOrder);
+			dd.reorderLocksets(lockToLockNum, (HashMutableEdgeLabelledDirectedGraph) deadlockGraph);
 		}
 		
 		// *** Print Output and Transform Program ***
@@ -355,13 +357,13 @@ public class LockAllocator extends SceneTransformer
 
 		// Print topological graph in graphviz format
 		if(optionPrintGraph)
-			printGraph(transactions, ig, lockToLockNum);
+			printGraph(criticalSections, ig, lockToLockNum);
 
 		// Print table of transaction information
 		if(optionPrintTable)
 		{
-			printTable(transactions, mhp);
-			printGroups(transactions, ig);
+			printTable(criticalSections, mhp);
+			printGroups(criticalSections, ig);
 		}
 
     	// For all methods, run the lock transformer
@@ -974,8 +976,10 @@ public class LockAllocator extends SceneTransformer
 	public CriticalSectionInterferenceGraph getInterferenceGraph() {
 		return interferenceGraph;
 	}
-	public void setInterferenceGraph(
-			CriticalSectionInterferenceGraph interferenceGraph) {
-		this.interferenceGraph = interferenceGraph;
+	public DirectedGraph getDeadlockGraph() {
+		return deadlockGraph;
+	}
+	public List<CriticalSection> getCriticalSections() {
+		return criticalSections;
 	}
 }
