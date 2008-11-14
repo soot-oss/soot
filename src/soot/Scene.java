@@ -989,6 +989,17 @@ public class Scene  //extends AbstractHost
 
             dynamicClasses.add( Scene.v().loadClassAndSupport(className) );
         }
+        
+        //remove non-concrete classes that may accidentally have been loaded
+        for (Iterator<SootClass> iterator = dynamicClasses.iterator(); iterator.hasNext();) {
+			SootClass c = iterator.next();
+			if(!c.isConcrete()) {
+				if(Options.v().verbose()) {
+					G.v().out.println("Warning: dynamic class "+c.getName()+" is abstract or an interface, and it will not be considered.");
+				}
+				iterator.remove();
+			}
+		}
     }
 
 
