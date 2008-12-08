@@ -5,6 +5,7 @@ import java.util.*;
 import soot.*;
 import soot.util.*;
 import soot.jimple.*;
+import soot.jimple.internal.JNopStmt;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.toolkits.scalar.*;
@@ -250,7 +251,11 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
             		srfp.inside = false;
             		
             		// Check if this is an early end or fallthrough end
-            		Stmt nextUnit = (Stmt) units.getSuccOf(stmt);
+            		Stmt nextUnit = stmt;
+            		do
+            		{
+            			nextUnit = (Stmt) units.getSuccOf(nextUnit);
+            		} while (nextUnit instanceof JNopStmt);
             		if( nextUnit instanceof ReturnStmt ||
             			nextUnit instanceof ReturnVoidStmt ||
             			nextUnit instanceof ExitMonitorStmt )
