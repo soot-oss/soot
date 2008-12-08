@@ -1312,7 +1312,7 @@ public class CFG {
 
         // Insert beginCatch/endCatch statements for exception handling
         {
-	    Set<Stmt> newTargets = new HashSet<Stmt>();
+            Map<Stmt, Stmt> targetToHandler = new HashMap<Stmt, Stmt>();
             
 	    for(int i = 0; i < codeAttribute.exception_table_length; i++)
 	    {
@@ -1362,8 +1362,9 @@ public class CFG {
 		    Stmt firstTargetStmt = 
 			instructionToFirstStmt.get(targetIns);
                         
-		    if(newTargets.contains(firstTargetStmt))
-			newTarget = firstTargetStmt;
+		    if(targetToHandler.containsKey(firstTargetStmt))
+			newTarget = 
+			    targetToHandler.get(firstTargetStmt);
 		    else
                     {
 			Local local = 
@@ -1371,22 +1372,16 @@ public class CFG {
 			
 			newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
 
-			((PatchingChain)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
+			// changed to account for catch blocks which are also part of normal control flow
+            //units.insertBefore(newTarget, firstTargetStmt);			
+            ((PatchingChain)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
 
-			newTargets.add(newTarget);
-			if (units.getFirst()!=newTarget) {
-			    Unit prev = (Unit)units.getPredOf(newTarget);
-			    if (prev != null && prev.fallsThrough())
-				units.insertAfter(Jimple.v().newGotoStmt(firstTargetStmt), prev);
-			}
-
-			// Bug reported by Silviu Andrica:
-			// rN := @caughtexception gets ignored by future
-			// trap generation.
-			for (Map.Entry<Instruction,Stmt> e : instructionToFirstStmt.entrySet()) {
-			    if (e.getValue() == firstTargetStmt)
-				e.setValue(newTarget);
-			}
+			targetToHandler.put(firstTargetStmt, newTarget);
+            if (units.getFirst()!=newTarget) {
+              Unit prev = (Unit)units.getPredOf(newTarget);
+              if (prev != null && prev.fallsThrough())
+                units.insertAfter(Jimple.v().newGotoStmt(firstTargetStmt), prev);
+            }
 		    }
 		}
 
@@ -1406,19 +1401,19 @@ public class CFG {
 			// the protected area.
 			afterEndStmt = (Stmt) units.getLast();
 		    } else {
-			afterEndStmt = (Stmt)units.getSuccOf(instructionToLastStmt.get(endIns));
-			if (newTargets.contains(afterEndStmt)) {
+			afterEndStmt = instructionToLastStmt.get(endIns);
+			IdentityStmt catchStart = 
+			    (IdentityStmt) targetToHandler.get(afterEndStmt); 
+			                    // (Cast to IdentityStmt as an assertion check.)
+			if (catchStart != null) {
 			    // The protected region extends to the beginning of an
 			    // exception handler, so we need to reset afterEndStmt
 			    // to the identity statement which we have inserted
 			    // before the old afterEndStmt.
-			    if (!(afterEndStmt instanceof IdentityStmt))
-				throw new IllegalStateException("exception handler doesn't start with IdentityStmt");
-			    
-			    if (instructionToLastStmt.get(endIns) != units.getPredOf(afterEndStmt)) {
-				throw new IllegalStateException("Assertion failure: pred(afterEndStmt) != endIns");
+			    if (catchStart != units.getPredOf(afterEndStmt)) {
+				throw new IllegalStateException("Assertion failure: catchStart != pred of afterEndStmt");
 			    }
-			    afterEndStmt = newTarget;
+			    afterEndStmt = catchStart;
 			}
 		    }
 
