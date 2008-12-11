@@ -173,6 +173,12 @@ public class GrimpBody extends StmtBody
             oldToNew.put(oldStmt, newStmt);
             if (updateStmtBox.getUnit() != null)
                 updates.add(updateStmtBox.getUnit());
+            if(oldStmt.hasTag("LineNumberTag")) {
+            	newStmt.addTag(oldStmt.getTag("LineNumberTag"));
+            }
+            if(oldStmt.hasTag("SourceLnPosTag")) {
+            	newStmt.addTag(oldStmt.getTag("SourceLnPosTag"));
+            }
         }
 
         /* fixup stmt's which have had moved targets */
