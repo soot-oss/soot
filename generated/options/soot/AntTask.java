@@ -1532,6 +1532,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_wjtp_mhp() {
+            Object ret = new PhaseOptwjtp_mhp();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptwjtp_mhp {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.mhp");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_wjtp_tn() {
             Object ret = new PhaseOptwjtp_tn();
             phaseopts.add(ret);

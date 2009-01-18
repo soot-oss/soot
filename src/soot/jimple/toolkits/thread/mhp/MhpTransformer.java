@@ -5,6 +5,7 @@ import soot.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.thread.mhp.findobject.AllocNodesFinder;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
+import soot.jimple.toolkits.thread.synchronization.LockAllocator;
 import soot.jimple.spark.pag.*;
 import java.util.*;
 /**
@@ -23,11 +24,18 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class MhpTransformer extends SceneTransformer{
+    public MhpTransformer(Singletons.Global g){}
+    public static MhpTransformer v() 
+	{ 
+		return G.v().soot_jimple_toolkits_thread_mhp_MhpTransformer();
+	}	
 	
-	
-	
+    MhpTester mhpTester;
+    
 	protected void internalTransform(String phaseName, Map options)
 	{
+		getMhpTester().printMhpSummary();
+		/*
 		PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
 		PAG pag =null;
 		if (pta instanceof PAG){
@@ -69,6 +77,7 @@ public class MhpTransformer extends SceneTransformer{
 		System.err.println(" SCC duration "+ sccDuration);
 		System.err.println(" Seq duration "+ seqDuration);
 		System.err.println("after compacting mhp duration: "+mhpAnalysisDuration);
+		*/
 	}
 	
 	protected static PegGraph buildPeg( CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set<Object> methodsNeedingInlining, Set<AllocNode> allocNodes, List inlineSites, Map synchObj, Set<AllocNode> multiRunAllocNodes, Map allocNodeToObj, Body body, 
@@ -76,6 +85,14 @@ public class MhpTransformer extends SceneTransformer{
 		
 		PegGraph pG = new PegGraph( callGraph, hierarchy, pag, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, body,  sm, true,  false);
 		return pG;
+	}
+	public MhpTester getMhpTester() {
+		if(mhpTester == null)
+			mhpTester = new SynchObliviousMhpAnalysis();
+		return mhpTester;
+	}
+	public void setMhpTester(MhpTester mhpTester) {
+		this.mhpTester = mhpTester;
 	}
 }
 

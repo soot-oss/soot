@@ -1242,7 +1242,8 @@ public class Options extends OptionsBase {
         +padOpt("wstp", "Whole-shimple transformation pack")
         +padOpt("wsop", "Whole-shimple optimization pack")
         +padOpt("wjtp", "Whole-jimple transformation pack")
-        +padVal("wjtp.tn", "Finds and processes transactional regions (EXPERIMENTAL)")
+        +padVal("wjtp.mhp", "Determines what statements may be run concurrently")
+        +padVal("wjtp.tn", "Finds critical sections, allocates locks")
         +padOpt("wjop", "Whole-jimple optimization pack")
         +padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
         +padVal("wjop.si", "Static inliner: inlines monomorphic calls")
@@ -1762,9 +1763,15 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
+        if( phaseName.equals( "wjtp.mhp" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nMay Happen in Parallel (MHP) Analyses determine what program \nstatements may be run by different threads concurrently. This \nphase does not perform any transformation. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
+    
         if( phaseName.equals( "wjtp.tn" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Transactional Transformation find transactional regions in \nJava programs and prepares them for transactional execution on \nboth optimistic and pessimistic JVMs. "
+                "\nThe Lock Allocator finds critical sections (synchronized \nregions) in Java programs and assigns locks for execution on \nboth optimistic and pessimistic JVMs. It can also be used to \nanalyze the existing locks. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "locking-scheme", "Selects the granularity of the generated lock allocation" )
@@ -2507,6 +2514,10 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "wjtp.mhp" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
                 +"enabled "
@@ -3083,6 +3094,10 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
+        if( phaseName.equals( "wjtp.mhp" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
               +"enabled:false "
@@ -3463,6 +3478,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wstp" ) ) return;
         if( phaseName.equals( "wsop" ) ) return;
         if( phaseName.equals( "wjtp" ) ) return;
+        if( phaseName.equals( "wjtp.mhp" ) ) return;
         if( phaseName.equals( "wjtp.tn" ) ) return;
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
@@ -3605,6 +3621,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
         if( !PackManager.v().hasPhase( "wjtp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp" );
+        if( !PackManager.v().hasPhase( "wjtp.mhp" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp.mhp" );
         if( !PackManager.v().hasPhase( "wjtp.tn" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp.tn" );
         if( !PackManager.v().hasPhase( "wjop" ) )

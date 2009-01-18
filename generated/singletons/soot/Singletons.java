@@ -868,6 +868,12 @@ public class Singletons {
         return instance_soot_jimple_toolkits_thread_synchronization_LockAllocator;
     }
 
+    private soot.jimple.toolkits.thread.mhp.MhpTransformer instance_soot_jimple_toolkits_thread_mhp_MhpTransformer;
+    public soot.jimple.toolkits.thread.mhp.MhpTransformer soot_jimple_toolkits_thread_mhp_MhpTransformer() {
+        if( instance_soot_jimple_toolkits_thread_mhp_MhpTransformer == null ) instance_soot_jimple_toolkits_thread_mhp_MhpTransformer = new soot.jimple.toolkits.thread.mhp.MhpTransformer( g );
+        return instance_soot_jimple_toolkits_thread_mhp_MhpTransformer;
+    }
+
     private soot.JastAddInitialResolver instance_soot_JastAddInitialResolver;
     public soot.JastAddInitialResolver soot_JastAddInitialResolver() {
         if( instance_soot_JastAddInitialResolver == null ) instance_soot_JastAddInitialResolver = new soot.JastAddInitialResolver( g );

@@ -36,6 +36,12 @@ import soot.jimple.toolkits.thread.mhp.stmt.WaitingStmt;
 //
 // -Richard L. Halpert, 2006-11-30
 
+/**
+ * @author Lin Li
+ * This is a synchronization-aware May Happen in Parallel (MHP) analysis.
+ * It works by analyzing a PegGraph (simplified whole-program control flow graph
+ * that includes thread executions and synchronization).
+ */
 class MhpAnalysis
 {
 	

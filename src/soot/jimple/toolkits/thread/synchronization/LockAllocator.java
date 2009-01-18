@@ -8,7 +8,7 @@ import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
-import soot.jimple.toolkits.thread.mhp.UnsynchronizedMhpAnalysis;
+import soot.jimple.toolkits.thread.mhp.SynchObliviousMhpAnalysis;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.infoflow.*;
 import soot.jimple.spark.pag.*;
@@ -116,7 +116,7 @@ public class LockAllocator extends SceneTransformer
 		if(optionDoMHP && Scene.v().getPointsToAnalysis() instanceof PAG)
 		{
 	    	G.v().out.println("[wjtp.tn] *** Build May-Happen-in-Parallel Info *** " + (new Date()));
-			mhp = new UnsynchronizedMhpAnalysis();
+			mhp = new SynchObliviousMhpAnalysis();
 			if(optionPrintMhpSummary)
 			{
 				mhp.printMhpSummary();
@@ -133,7 +133,7 @@ public class LockAllocator extends SceneTransformer
 	    	if(mhp != null)
 	    		tlo = new ThreadLocalObjectsAnalysis(mhp);
 			else
-	    		tlo = new ThreadLocalObjectsAnalysis(new UnsynchronizedMhpAnalysis());
+	    		tlo = new ThreadLocalObjectsAnalysis(new SynchObliviousMhpAnalysis());
 	    	if(!optionOnFlyTLO)
 	    	{
 		    	tlo.precompute();
@@ -281,7 +281,7 @@ public class LockAllocator extends SceneTransformer
     	
 		// *** Detect the Possibility of Deadlock ***
 		G.v().out.println("[wjtp.tn] *** Detect the Possibility of Deadlock *** " + (new Date()));
-		DeadlockDetector dd = new DeadlockDetector(optionPrintDebug, optionAvoidDeadlock, criticalSections);
+		DeadlockDetector dd = new DeadlockDetector(optionPrintDebug, optionAvoidDeadlock, true, criticalSections);
 		if(!optionUseLocksets) // deadlock detection for all single-lock-per-region allocations
 			deadlockGraph = dd.detectComponentBasedDeadlock();
 

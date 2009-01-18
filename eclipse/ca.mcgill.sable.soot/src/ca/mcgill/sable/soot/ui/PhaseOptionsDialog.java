@@ -190,6 +190,8 @@ Composite cgPaddle_Points_To_Set_Flowing_OptionsChild = cgPaddle_Points_To_Set_F
 
 Composite cgPaddle_Output_OptionsChild = cgPaddle_Output_OptionsCreate(getPageContainer());
 
+Composite wjtpwjtp_mhpChild = wjtpwjtp_mhpCreate(getPageContainer());
+
 Composite wjtpwjtp_tnChild = wjtpwjtp_tnCreate(getPageContainer());
 
 Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
@@ -950,6 +952,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		getwjtpenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wjtp", "wjtp.mhp");
+		
+		
+		addToEnableGroup("wjtp", "wjtp.mhp", getwjtpwjtp_mhpenabled_widget(), "enabled");
+		
+		getwjtpwjtp_mhpenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("wjtp", "wjtp.tn");
@@ -3474,6 +3484,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getwjtpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getwjtpwjtp_mhpenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_mhpenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getwjtpwjtp_tnenabled_widget().getButton().getSelection();
 		
 		
@@ -5362,7 +5382,17 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 
 			
-			SootOption wjtp_wjtp_tn_branch = new SootOption("Transactional Transformation", "wjtpwjtp_tn");
+			SootOption wjtp_wjtp_mhp_branch = new SootOption("May Happen in Parallel Analyses", "wjtpwjtp_mhp");
+			subParent.addChild(wjtp_wjtp_mhp_branch);
+
+
+			
+
+			
+			subSectParent = wjtp_wjtp_mhp_branch;
+			
+			
+			SootOption wjtp_wjtp_tn_branch = new SootOption("Lock Allocator", "wjtpwjtp_tn");
 			subParent.addChild(wjtp_wjtp_tn_branch);
 
 
@@ -7779,6 +7809,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getwjtpenabled_widget() {
 		return wjtpenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpwjtp_mhpenabled_widget;
+	
+	private void setwjtpwjtp_mhpenabled_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_mhpenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_mhpenabled_widget() {
+		return wjtpwjtp_mhpenabled_widget;
 	}	
 	
 	private BooleanOptionWidget wjtpwjtp_tnenabled_widget;
@@ -14039,6 +14079,52 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 
 
+	private Composite wjtpwjtp_mhpCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupwjtpwjtp_mhp = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjtpwjtp_mhp.setLayout(layout);
+	
+	 	editGroupwjtpwjtp_mhp.setText("May Happen in Parallel Analyses");
+	 	
+		editGroupwjtpwjtp_mhp.setData("id", "wjtpwjtp_mhp");
+		
+		String descwjtpwjtp_mhp = "Determines what statements may be run concurrently";	
+		if (descwjtpwjtp_mhp.length() > 0) {
+			Label descLabelwjtpwjtp_mhp = new Label(editGroupwjtpwjtp_mhp, SWT.WRAP);
+			descLabelwjtpwjtp_mhp.setText(descwjtpwjtp_mhp);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"wjtp.mhp"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjtpwjtp_mhpenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_mhp, SWT.NONE, new OptionData("Enabled", "p", "wjtp.mhp","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupwjtpwjtp_mhp;
+	}
+
+
+
 	private Composite wjtpwjtp_tnCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -14049,11 +14135,11 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		GridLayout layout = new GridLayout();
 		editGroupwjtpwjtp_tn.setLayout(layout);
 	
-	 	editGroupwjtpwjtp_tn.setText("Transactional Transformation");
+	 	editGroupwjtpwjtp_tn.setText("Lock Allocator");
 	 	
 		editGroupwjtpwjtp_tn.setData("id", "wjtpwjtp_tn");
 		
-		String descwjtpwjtp_tn = "Finds and processes transactional regions (EXPERIMENTAL)";	
+		String descwjtpwjtp_tn = "Finds critical sections, allocates locks";	
 		if (descwjtpwjtp_tn.length() > 0) {
 			Label descLabelwjtpwjtp_tn = new Label(editGroupwjtpwjtp_tn, SWT.WRAP);
 			descLabelwjtpwjtp_tn.setText(descwjtpwjtp_tn);

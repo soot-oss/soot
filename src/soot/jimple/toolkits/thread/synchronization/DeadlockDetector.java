@@ -29,13 +29,15 @@ public class DeadlockDetector {
 
 	boolean optionPrintDebug;
 	boolean optionRepairDeadlock;
+	boolean optionAllowSelfEdges;
 	List<CriticalSection> criticalSections;
 	TransitiveTargets tt;
 	
-	public DeadlockDetector(boolean optionPrintDebug, boolean optionRepairDeadlock, List<CriticalSection> criticalSections)
+	public DeadlockDetector(boolean optionPrintDebug, boolean optionRepairDeadlock, boolean optionAllowSelfEdges, List<CriticalSection> criticalSections)
 	{
 		this.optionPrintDebug = optionPrintDebug;
 		this.optionRepairDeadlock = optionRepairDeadlock;
+		this.optionAllowSelfEdges = optionAllowSelfEdges && !optionRepairDeadlock; // can only do this if not repairing
 		this.criticalSections = criticalSections;
 		this.tt = new TransitiveTargets(Scene.v().getCallGraph(), new Filter(new CriticalSectionVisibleEdgesPred(null)));
 	}
@@ -87,7 +89,7 @@ public class DeadlockDetector {
 					CriticalSection tn2 = deadlockIt2.next();
 
 					// skip if unlocked or in same set as tn1
-					if( tn2.setNumber <= 0 || tn2.setNumber == tn1.setNumber ) // this is wrong... dynamic locks in same group can be diff locks
+					if( tn2.setNumber <= 0 || (tn2.setNumber == tn1.setNumber && !optionAllowSelfEdges) ) // this is wrong... dynamic locks in same group can be diff locks
 						continue;
 
 					// add a node for this set

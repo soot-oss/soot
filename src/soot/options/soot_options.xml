@@ -3053,14 +3053,33 @@ program.</p>
 					<long_desc/>
 				</boolopt>
 				<sub_phase>
-					<name>Transactional Transformation</name>
-					<class>TransactionalTransformation</class>
-					<alias>wjtp.tn</alias>
-					<short_desc>Finds and processes transactional regions (EXPERIMENTAL)</short_desc>
+					<name>May Happen in Parallel Analyses</name>
+					<class>MhpTransformer</class>
+					<alias>wjtp.mhp</alias>
+					<short_desc>Determines what statements may be run concurrently</short_desc>
 <long_desc>
-The Transactional Transformation find transactional regions in
-Java programs and prepares them for transactional execution on
-both optimistic and pessimistic JVMs.
+May Happen in Parallel (MHP) Analyses determine what program statements may
+be run by different threads concurrently.  This phase does not perform any
+transformation.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Lock Allocator</name>
+					<class>LockAllocator</class>
+					<alias>wjtp.tn</alias>
+					<short_desc>Finds critical sections, allocates locks</short_desc>
+<long_desc>
+The Lock Allocator finds critical sections (synchronized regions)
+in Java programs and assigns locks for execution on both
+optimistic and pessimistic JVMs.  It can also be used to analyze the existing
+locks.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>

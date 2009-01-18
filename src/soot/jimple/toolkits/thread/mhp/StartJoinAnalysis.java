@@ -136,7 +136,9 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					Value joinObject = ((InstanceInvokeExpr) (join).getInvokeExpr()).getBase();
 					
 					// If startObject and joinObject MUST be the same, and if join post-dominates start
-					if( lif.areEqualUses( start, (Local) startObject, join, (Local) joinObject ) )
+					List barriers = new ArrayList();
+					barriers.addAll(g.getSuccsOf(join)); // definitions of the start variable are tracked until they pass a join
+					if( lif.areEqualUses( start, (Local) startObject, join, (Local) joinObject, barriers) )
 					{
 						if((pd.getDominators(start)).contains(join)) // does join post-dominate start?
 						{
