@@ -49,11 +49,11 @@ import soot.util.Chain;
      */
 public abstract class BlockGraph implements DirectedGraph<Block> 
 {
-    Body mBody;
-    Chain<Unit> mUnits;
-    List<Block> mBlocks;
-    List<Block> mHeads = new ArrayList<Block>();
-    List<Block> mTails = new ArrayList<Block>();
+    protected Body mBody;
+    protected Chain<Unit> mUnits;
+    protected List<Block> mBlocks;
+    protected List<Block> mHeads = new ArrayList<Block>();
+    protected List<Block> mTails = new ArrayList<Block>();
 
    
     /**
