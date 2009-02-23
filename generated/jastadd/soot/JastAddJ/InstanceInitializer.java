@@ -87,7 +87,9 @@ public class InstanceInitializer extends BodyDecl implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 70
@@ -180,12 +182,12 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return handlesException_TypeDecl_value;
     }
 
-    // Declared in NameCheck.jrag at line 243
-    public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 439
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
-            return this;
+            return isDAbefore(v);
         }
-        return getParent().Define_ASTNode_enclosingBlock(this, caller);
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in ExceptionHandling.jrag at line 157
@@ -205,20 +207,12 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
-    // Declared in UnreachableStatements.jrag at line 35
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+    // Declared in NameCheck.jrag at line 243
+    public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
         if(caller == getBlockNoTransform()) {
-            return true;
+            return this;
         }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 439
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getBlockNoTransform()) {
-            return isDAbefore(v);
-        }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_ASTNode_enclosingBlock(this, caller);
     }
 
     // Declared in TypeHierarchyCheck.jrag at line 140
@@ -227,6 +221,14 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
             return false;
         }
         return getParent().Define_boolean_inStaticContext(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 35
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_reachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

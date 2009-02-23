@@ -22,6 +22,9 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         implementedInterfaces_computed = false;
         implementedInterfaces_value = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         sootClass_computed = false;
         sootClass_value = null;
     }
@@ -43,6 +46,9 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         node.implementedInterfaces_computed = false;
         node.implementedInterfaces_value = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.sootClass_computed = false;
         node.sootClass_value = null;
         node.in$Circle(false);
@@ -318,7 +324,9 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
 
     // Declared in java.ast at line 30
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 64
@@ -729,7 +737,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return instanceOf_TypeDecl_value;
     }
 
-    private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+    private boolean instanceOf_compute(TypeDecl type) { return subtype(type); }
 
     // Declared in TypeAnalysis.jrag at line 429
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
@@ -984,7 +992,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return false;
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 54
+    // Declared in EmitJimpleRefinements.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
         if(sootClass_computed)
             return sootClass_value;
@@ -1020,7 +1028,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private String typeDescriptor_compute() {  return "L" + jvmName().replace('.', '/') + ";";  }
 
-    // Declared in GenericsCodegen.jrag at line 330
+    // Declared in GenericsCodegen.jrag at line 334
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;
@@ -1034,13 +1042,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return unknownMethod_value;
     }
 
-    // Declared in Annotations.jrag at line 378
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+    // Declared in SyntacticClassification.jrag at line 75
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getSuperInterfaceIdListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return isDeprecated() || withinDeprecatedAnnotation();
+            return NameType.TYPE_NAME;
         }
-        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
+        return super.Define_NameType_nameType(caller, child);
     }
 
     // Declared in TypeAnalysis.jrag at line 577
@@ -1061,13 +1069,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinSuppressWarnings(caller, child, s);
     }
 
-    // Declared in SyntacticClassification.jrag at line 75
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    // Declared in Annotations.jrag at line 378
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
         if(caller == getSuperInterfaceIdListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
+            return isDeprecated() || withinDeprecatedAnnotation();
         }
-        return super.Define_NameType_nameType(caller, child);
+        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
 public ASTNode rewriteTo() {

@@ -66,7 +66,7 @@ public class ThisAccess extends Access implements Cloneable {
       error("this may not be accessed in static context: " + enclosingStmt());
   }
 
-    // Declared in Expressions.jrag at line 412
+    // Declared in Expressions.jrag at line 420
 
 
   public soot.Value eval(Body b) {
@@ -107,7 +107,9 @@ public class ThisAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 22
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 24
@@ -144,7 +146,7 @@ public class ThisAccess extends Access implements Cloneable {
     }
 
     // Declared in LookupType.jrag at line 162
-private TypeDecl refined_LookupType_ThisAccess_decl()
+private TypeDecl refined_TypeScopePropagation_ThisAccess_decl()
 { return isQualified() ? qualifier().type() : hostType(); }
 
     // Declared in LookupType.jrag at line 160
@@ -170,7 +172,7 @@ private TypeDecl refined_LookupType_ThisAccess_decl()
     }
 
     private TypeDecl decl_compute() {
-    TypeDecl typeDecl = refined_LookupType_ThisAccess_decl();
+    TypeDecl typeDecl = refined_TypeScopePropagation_ThisAccess_decl();
     if(typeDecl instanceof ParTypeDecl)
       typeDecl = ((ParTypeDecl)typeDecl).genericDecl();
     return typeDecl;

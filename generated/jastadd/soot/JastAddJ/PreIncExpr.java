@@ -64,7 +64,7 @@ public class PreIncExpr extends Unary implements Cloneable {
       error("unary increment only operates on numeric types");
   }
 
-    // Declared in Expressions.jrag at line 747
+    // Declared in Expressions.jrag at line 769
 
 
   public soot.Value eval(Body b) { return emitPrefix(b, 1); }
@@ -95,7 +95,9 @@ public class PreIncExpr extends Unary implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139
@@ -124,20 +126,20 @@ public class PreIncExpr extends Unary implements Cloneable {
 
     private String printPreOp_compute() {  return "++";  }
 
-    // Declared in DefiniteAssignment.jrag at line 54
-    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-        if(caller == getOperandNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isIncOrDec(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 46
     public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
         if(caller == getOperandNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_isDest(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 54
+    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
+        if(caller == getOperandNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isIncOrDec(this, caller);
     }
 
 public ASTNode rewriteTo() {

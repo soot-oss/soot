@@ -69,7 +69,9 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
 
     // Declared in Generics.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 20
@@ -105,8 +107,8 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
     private TypeDecl type_compute() {  return lookupWildcardSuper(getAccess().type());  }
 
     // Declared in Generics.jrag at line 1127
- @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl bound) {
-        TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, bound);
+ @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
+        TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);
         return lookupWildcardSuper_TypeDecl_value;
     }
 

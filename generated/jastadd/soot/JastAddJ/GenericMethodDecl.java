@@ -66,7 +66,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     return methodDecl;
   }
 
-    // Declared in GenericMethods.jrag at line 163
+    // Declared in GenericMethods.jrag at line 165
 
 
   public void toString(StringBuffer s) {
@@ -184,7 +184,9 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
 
     // Declared in GenericMethods.ast at line 41
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 88
@@ -599,7 +601,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
     return p(typeArguments);
   }
 
-    // Declared in GenericMethods.jrag at line 94
+    // Declared in GenericMethods.jrag at line 96
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localLookupType(String name) {
         SimpleSet localLookupType_String_value = localLookupType_compute(name);
         return localLookupType_String_value;
@@ -621,7 +623,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
 
     private GenericMethodDecl original_compute() {  return original != null ? original : this;  }
 
-    // Declared in GenericMethods.jrag at line 93
+    // Declared in GenericMethods.jrag at line 95
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupType(String name) {
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
         return lookupType_String_value;
@@ -636,7 +638,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
         return getParent().Define_GenericMethodDecl_genericMethodDecl(this, caller);
     }
 
-    // Declared in GenericMethods.jrag at line 91
+    // Declared in GenericMethods.jrag at line 93
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -645,7 +647,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 101
+    // Declared in GenericMethods.jrag at line 103
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

@@ -8,7 +8,6 @@ import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;impo
 public class ClassDecl extends ReferenceType implements Cloneable {
     public void flushCache() {
         super.flushCache();
-        noConstructor_computed = false;
         interfacesMethodsSignatureMap_computed = false;
         interfacesMethodsSignatureMap_value = null;
         methodsSignatureMap_computed = false;
@@ -31,12 +30,14 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         implementedInterfaces_computed = false;
         implementedInterfaces_value = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         sootClass_computed = false;
         sootClass_value = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ClassDecl clone() throws CloneNotSupportedException {
         ClassDecl node = (ClassDecl)super.clone();
-        node.noConstructor_computed = false;
         node.interfacesMethodsSignatureMap_computed = false;
         node.interfacesMethodsSignatureMap_value = null;
         node.methodsSignatureMap_computed = false;
@@ -59,6 +60,9 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         node.implementedInterfaces_computed = false;
         node.implementedInterfaces_value = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.sootClass_computed = false;
         node.sootClass_value = null;
         node.in$Circle(false);
@@ -416,7 +420,9 @@ public class ClassDecl extends ReferenceType implements Cloneable {
 
     // Declared in java.ast at line 33
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
@@ -624,7 +630,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
 
     // Declared in TypeAnalysis.jrag at line 84
-private boolean refined_TypeAnalysis_ClassDecl_castingConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_TypeConversion_ClassDecl_castingConversionTo_TypeDecl(TypeDecl type)
 {
     if(type.isArrayDecl()) {
       return isObject();
@@ -653,7 +659,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
     }
     if(T.isClassDecl() && (S.erasure() != S || T.erasure() != T))
         return S.erasure().castingConversionTo(T.erasure());
-    return refined_TypeAnalysis_ClassDecl_castingConversionTo_TypeDecl(type);
+    return refined_TypeConversion_ClassDecl_castingConversionTo_TypeDecl(type);
   }
 
     // Declared in ConstantExpression.jrag at line 319
@@ -704,17 +710,9 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 
     private Collection lookupSuperConstructor_compute() {  return hasSuperclass() ? superclass().constructors() : Collections.EMPTY_LIST;  }
 
-    protected boolean noConstructor_computed = false;
-    protected boolean noConstructor_value;
-    // Declared in LookupConstructor.jrag at line 177
+    // Declared in LookupConstructor.jrag at line 208
  @SuppressWarnings({"unchecked", "cast"})     public boolean noConstructor() {
-        if(noConstructor_computed)
-            return noConstructor_value;
-        int num = state().boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        noConstructor_value = noConstructor_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            noConstructor_computed = true;
+        boolean noConstructor_value = noConstructor_compute();
         return noConstructor_value;
     }
 
@@ -1109,7 +1107,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return instanceOf_TypeDecl_value;
     }
 
-    private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+    private boolean instanceOf_compute(TypeDecl type) { return subtype(type); }
 
     // Declared in TypeAnalysis.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
@@ -1364,9 +1362,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return superEnclosing_value;
     }
 
-    private TypeDecl superEnclosing_compute() {  return superclass().erasure().enclosing();  }
+    private TypeDecl superEnclosing_compute() {
+    return superclass().erasure().enclosing();
+  }
 
-    // Declared in EmitJimpleRefinements.jrag at line 23
+    // Declared in EmitJimpleRefinements.jrag at line 24
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
         if(sootClass_computed)
             return sootClass_value;
@@ -1417,7 +1417,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private String typeDescriptor_compute() {  return "L" + jvmName().replace('.', '/') + ";";  }
 
-    // Declared in GenericsCodegen.jrag at line 331
+    // Declared in GenericsCodegen.jrag at line 335
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;
@@ -1430,16 +1430,24 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return set;
   }
 
-    // Declared in Annotations.jrag at line 377
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+    // Declared in Modifiers.jrag at line 257
+    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return super.Define_boolean_mayBeFinal(caller, child);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 74
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getImplementsListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return isDeprecated() || withinDeprecatedAnnotation();
+            return NameType.TYPE_NAME;
         }
         if(caller == getSuperClassAccessOptNoTransform()) {
-            return isDeprecated() || withinDeprecatedAnnotation();
+            return NameType.TYPE_NAME;
         }
-        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
+        return super.Define_NameType_nameType(caller, child);
     }
 
     // Declared in TypeAnalysis.jrag at line 576
@@ -1466,24 +1474,16 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         return super.Define_boolean_withinSuppressWarnings(caller, child, s);
     }
 
-    // Declared in SyntacticClassification.jrag at line 74
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    // Declared in Annotations.jrag at line 377
+    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
         if(caller == getImplementsListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
+            return isDeprecated() || withinDeprecatedAnnotation();
         }
         if(caller == getSuperClassAccessOptNoTransform()) {
-            return NameType.TYPE_NAME;
+            return isDeprecated() || withinDeprecatedAnnotation();
         }
-        return super.Define_NameType_nameType(caller, child);
-    }
-
-    // Declared in Modifiers.jrag at line 257
-    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return super.Define_boolean_mayBeFinal(caller, child);
+        return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
     }
 
 public ASTNode rewriteTo() {

@@ -127,7 +127,24 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
 
     // Declared in List.ast at line 35
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        getNumChild();
+        return true;
+    }
+
+    // Declared in LookupConstructor.jrag at line 178
+ @SuppressWarnings({"unchecked", "cast"})     public boolean requiresDefaultConstructor() {
+        boolean requiresDefaultConstructor_value = requiresDefaultConstructor_compute();
+        return requiresDefaultConstructor_value;
+    }
+
+    private boolean requiresDefaultConstructor_compute() {
+    if(getParent() instanceof ClassDecl) {
+      ClassDecl c = (ClassDecl)getParent();
+      return c.getBodyDeclList() == this && !(c instanceof AnonymousDecl) && c.noConstructor();
+    }
+    return false;
+  }
 
     // Declared in BooleanExpressions.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
@@ -138,7 +155,35 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     private boolean definesLabel_compute() {  return getParent().definesLabel();  }
 
 public ASTNode rewriteTo() {
+    // Declared in LookupConstructor.jrag at line 187
+    if(requiresDefaultConstructor()) {
+        state().duringLookupConstructor++;
+        ASTNode result = rewriteRule0();
+        state().duringLookupConstructor--;
+        return result;
+    }
+
     return super.rewriteTo();
 }
 
+    // Declared in LookupConstructor.jrag at line 187
+    private List rewriteRule0() {
+{
+      ClassDecl c = (ClassDecl)getParent();
+      Modifiers m = new Modifiers();
+      if(c.isPublic()) m.addModifier(new Modifier("public"));
+      else if(c.isProtected()) m.addModifier(new Modifier("protected"));
+      else if(c.isPrivate()) m.addModifier(new Modifier("private"));
+      c.addBodyDecl(
+          new ConstructorDecl(
+            m,
+            c.name(),
+            new List(),
+            new List(),
+            new Opt(),
+            new Block()
+          )
+      );
+      return this;
+    }    }
 }

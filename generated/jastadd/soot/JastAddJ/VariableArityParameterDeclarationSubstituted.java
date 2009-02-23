@@ -72,7 +72,9 @@ public class VariableArityParameterDeclarationSubstituted extends VariableArityP
 
     // Declared in Generics.ast at line 28
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 84

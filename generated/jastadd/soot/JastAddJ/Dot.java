@@ -103,7 +103,9 @@ public class Dot extends AbstractDot implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 13

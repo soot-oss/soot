@@ -77,7 +77,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 238
+    // Declared in EmitJimpleRefinements.jrag at line 239
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
@@ -121,7 +121,9 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in java.ast at line 25
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 18
@@ -207,7 +209,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
         return (List<Expr>)getChildNoTransform(0);
     }
 
-    // Declared in GenericsCodegen.jrag at line 252
+    // Declared in GenericsCodegen.jrag at line 255
 
 
     public soot.Value eval(Body b) {
@@ -225,9 +227,9 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
         if(hostType().needsSuperEnclosing()) {
           soot.Type type = ((ClassDecl)hostType()).superclass().enclosingType().getSootType();
           if(hostType().needsEnclosing())
-            list.add(asImmediate(b, Jimple.v().newParameterRef(type, 1)));
+            list.add(asImmediate(b, b.newParameterRef(type, 1, this)));
           else
-            list.add(asImmediate(b, Jimple.v().newParameterRef(type, 0)));
+            list.add(asImmediate(b, b.newParameterRef(type, 0, this)));
         }
         else {
           list.add(emitThis(b, superConstructorQualifier(c.hostType().enclosingType())));
@@ -243,14 +245,15 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
     if(decl().isPrivate() && decl().hostType() != hostType()) {
       list.add(asImmediate(b, soot.jimple.NullConstant.v()));
       b.add(
-        Jimple.v().newInvokeStmt(
-          Jimple.v().newSpecialInvokeExpr(base, decl().erasedConstructor().createAccessor().sootRef(), list)
+        b.newInvokeStmt(
+          b.newSpecialInvokeExpr(base, decl().erasedConstructor().createAccessor().sootRef(), list, this),
+          this
         )
       );
       return base;
     }
     else {
-      return Jimple.v().newSpecialInvokeExpr(base, c.sootRef(), list);
+      return b.newSpecialInvokeExpr(base, c.sootRef(), list, this);
     }
   }
 
@@ -324,15 +327,6 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
         return enclosingInstance_value;
     }
 
-    // Declared in LookupVariable.jrag at line 132
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupVariable(name);
-        }
-        return super.Define_SimpleSet_lookupVariable(caller, child, name);
-    }
-
     // Declared in LookupType.jrag at line 89
     public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
         if(caller == getArgListNoTransform()) {
@@ -340,6 +334,15 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
             return unqualifiedScope().hasPackage(packageName);
         }
         return super.Define_boolean_hasPackage(caller, child, packageName);
+    }
+
+    // Declared in LookupVariable.jrag at line 132
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().lookupVariable(name);
+        }
+        return super.Define_SimpleSet_lookupVariable(caller, child, name);
     }
 
     // Declared in TypeHierarchyCheck.jrag at line 131

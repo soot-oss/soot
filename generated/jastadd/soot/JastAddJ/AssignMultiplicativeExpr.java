@@ -50,7 +50,9 @@ public abstract class AssignMultiplicativeExpr extends AssignExpr implements Clo
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 99

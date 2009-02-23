@@ -122,7 +122,9 @@ public class AnnotationMethodDecl extends MethodDecl implements Cloneable {
 
     // Declared in Annotations.ast at line 38
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 88

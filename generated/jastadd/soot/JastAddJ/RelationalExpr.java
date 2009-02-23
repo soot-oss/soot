@@ -34,15 +34,15 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
   
   public soot.Value eval(Body b) { return emitBooleanCondition(b); }
 
-    // Declared in BooleanExpressions.jrag at line 221
+    // Declared in BooleanExpressions.jrag at line 225
 
   
   public void emitEvalBranch(Body b) {
     b.setLine(this);
     if(isTrue())
-      b.add(Jimple.v().newGotoStmt(true_label()));
+      b.add(b.newGotoStmt(true_label(), this));
     else if(isFalse())
-      b.add(Jimple.v().newGotoStmt(false_label()));
+      b.add(b.newGotoStmt(false_label(), this));
     else {
       soot.Value left;
       soot.Value right;
@@ -61,44 +61,44 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
           Local l;
           if(type.isDouble() || type.isFloat()) {
             if(this instanceof GEExpr || this instanceof GTExpr) {
-              l = asLocal(b, soot.jimple.Jimple.v().newCmplExpr(asImmediate(b, left), asImmediate(b, right)));
+              l = asLocal(b, b.newCmplExpr(asImmediate(b, left), asImmediate(b, right), this));
             }
             else {
-              l = asLocal(b, soot.jimple.Jimple.v().newCmpgExpr(asImmediate(b, left), asImmediate(b, right)));
+              l = asLocal(b, b.newCmpgExpr(asImmediate(b, left), asImmediate(b, right), this));
             }
           }
           else {
-            l = asLocal(b, soot.jimple.Jimple.v().newCmpExpr(asImmediate(b, left), asImmediate(b, right)));
+            l = asLocal(b, b.newCmpExpr(asImmediate(b, left), asImmediate(b, right), this));
           }
-          b.add(Jimple.v().newIfStmt(comparisonInv(b, l, BooleanType.emitConstant(false)), false_label()));
-          b.add(Jimple.v().newGotoStmt(true_label()));
+          b.add(b.newIfStmt(comparisonInv(b, l, BooleanType.emitConstant(false)), false_label(), this));
+          b.add(b.newGotoStmt(true_label(), this));
         }
         else {
-          b.add(Jimple.v().newIfStmt(comparison(b, left, right), true_label()));
-          b.add(Jimple.v().newGotoStmt(false_label()));
-          //b.add(Jimple.v().newIfStmt(comparisonInv(b, left, right), false_label()));
-          //b.add(Jimple.v().newGotoStmt(true_label()));
+          b.add(b.newIfStmt(comparison(b, left, right), true_label(), this));
+          b.add(b.newGotoStmt(false_label(), this));
+          //b.add(b.newIfStmt(comparisonInv(b, left, right), false_label(), this));
+          //b.add(b.newGotoStmt(true_label(), this));
         }
       }
       else {
         left = getLeftOperand().eval(b);
         right = getRightOperand().eval(b);
-        b.add(Jimple.v().newIfStmt(comparison(b, left, right), true_label()));
-        b.add(Jimple.v().newGotoStmt(false_label()));
-        //b.add(Jimple.v().newIfStmt(comparisonInv(b, left, right), false_label()));
-        //b.add(Jimple.v().newGotoStmt(true_label()));
+        b.add(b.newIfStmt(comparison(b, left, right), true_label(), this));
+        b.add(b.newGotoStmt(false_label(), this));
+        //b.add(b.newIfStmt(comparisonInv(b, left, right), false_label(), this));
+        //b.add(b.newGotoStmt(true_label(), this));
       }
     }
   }
 
-    // Declared in BooleanExpressions.jrag at line 275
+    // Declared in BooleanExpressions.jrag at line 279
 
 
   public soot.Value comparison(Body b, soot.Value left, soot.Value right) {
     throw new Error("comparison not supported for " + getClass().getName());
   }
 
-    // Declared in BooleanExpressions.jrag at line 297
+    // Declared in BooleanExpressions.jrag at line 301
 
 
   public soot.Value comparisonInv(Body b, soot.Value left, soot.Value right) {
@@ -132,7 +132,9 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153

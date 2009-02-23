@@ -69,22 +69,22 @@ public class AbstractDot extends Access implements Cloneable {
     setRight(access);
   }
 
-    // Declared in BooleanExpressions.jrag at line 177
+    // Declared in BooleanExpressions.jrag at line 181
 
   public void emitEvalBranch(Body b) { lastAccess().emitEvalBranch(b); }
 
-    // Declared in Expressions.jrag at line 185
+    // Declared in Expressions.jrag at line 190
 
 
   public soot.Value eval(Body b) {
     return lastAccess().eval(b);
   }
 
-    // Declared in Expressions.jrag at line 251
+    // Declared in Expressions.jrag at line 256
 
 
-  public soot.Value emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
-    return lastAccess().emitStore(b, lvalue, rvalue);
+  public soot.Value emitStore(Body b, soot.Value lvalue, soot.Value rvalue, ASTNode location) {
+    return lastAccess().emitStore(b, lvalue, rvalue, location);
   }
 
     // Declared in java.ast at line 3
@@ -114,7 +114,9 @@ public class AbstractDot extends Access implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 13
@@ -457,22 +459,6 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
         return isDUbefore_Variable_value;
     }
 
-    // Declared in LookupMethod.jrag at line 64
-    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-        if(caller == getRightNoTransform()) {
-            return getLeft().type().memberMethods(name);
-        }
-        return getParent().Define_Collection_lookupMethod(this, caller, name);
-    }
-
-    // Declared in LookupVariable.jrag at line 137
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getRightNoTransform()) {
-            return getLeft().qualifiedLookupVariable(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 21
     public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
         if(caller == getLeftNoTransform()) {
@@ -481,12 +467,28 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
         return getParent().Define_boolean_isDest(this, caller);
     }
 
+    // Declared in DefiniteAssignment.jrag at line 31
+    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+        if(caller == getLeftNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isSource(this, caller);
+    }
+
     // Declared in DefiniteAssignment.jrag at line 356
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getRightNoTransform()) {
             return getLeft().isDAafter(v);
         }
         return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 838
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getRightNoTransform()) {
+            return getLeft().isDUafter(v);
+        }
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
 
     // Declared in LookupConstructor.jrag at line 17
@@ -505,14 +507,6 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
         return getParent().Define_Collection_lookupSuperConstructor(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 31
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        if(caller == getLeftNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-
     // Declared in LookupMethod.jrag at line 20
     public Expr Define_Expr_nestedScope(ASTNode caller, ASTNode child) {
         if(caller == getLeftNoTransform()) {
@@ -524,6 +518,14 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
         return getParent().Define_Expr_nestedScope(this, caller);
     }
 
+    // Declared in LookupMethod.jrag at line 64
+    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
+        if(caller == getRightNoTransform()) {
+            return getLeft().type().memberMethods(name);
+        }
+        return getParent().Define_Collection_lookupMethod(this, caller, name);
+    }
+
     // Declared in LookupType.jrag at line 82
     public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
         if(caller == getRightNoTransform()) {
@@ -532,12 +534,20 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
-    // Declared in TypeHierarchyCheck.jrag at line 13
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+    // Declared in LookupType.jrag at line 341
+    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getRightNoTransform()) {
-            return getLeft().type().typeName();
+            return getLeft().qualifiedLookupType(name);
         }
-        return getParent().Define_String_methodHost(this, caller);
+        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
+
+    // Declared in LookupVariable.jrag at line 137
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getRightNoTransform()) {
+            return getLeft().qualifiedLookupVariable(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
     // Declared in SyntacticClassification.jrag at line 59
@@ -556,20 +566,12 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
         return getParent().Define_TypeDecl_enclosingInstance(this, caller);
     }
 
-    // Declared in LookupType.jrag at line 341
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+    // Declared in TypeHierarchyCheck.jrag at line 13
+    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
         if(caller == getRightNoTransform()) {
-            return getLeft().qualifiedLookupType(name);
+            return getLeft().type().typeName();
         }
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 838
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getRightNoTransform()) {
-            return getLeft().isDUafter(v);
-        }
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
+        return getParent().Define_String_methodHost(this, caller);
     }
 
 public ASTNode rewriteTo() {

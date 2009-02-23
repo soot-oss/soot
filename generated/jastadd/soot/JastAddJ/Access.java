@@ -52,7 +52,7 @@ public abstract class Access extends Expr implements Cloneable {
     return enclosing;
   }
 
-    // Declared in Expressions.jrag at line 287
+    // Declared in Expressions.jrag at line 293
 
   public soot.Value emitLoadLocalInNestedClass(Body b, Variable v) {
     if(inExplicitConstructorInvocation() && enclosingBodyDecl() instanceof ConstructorDecl) {
@@ -60,15 +60,16 @@ public abstract class Access extends Expr implements Cloneable {
       return ((ParameterDeclaration)c.parameterDeclaration(v.name()).iterator().next()).local;
     }
     else {
-      return Jimple.v().newInstanceFieldRef(
+      return b.newInstanceFieldRef(
         b.emitThis(hostType()),
-        Scene.v().makeFieldRef(hostType().getSootClassDecl(), "val$" + v.name(), v.type().getSootType(), false)
+        Scene.v().makeFieldRef(hostType().getSootClassDecl(), "val$" + v.name(), v.type().getSootType(), false),
+        this
         //hostType().getSootClassDecl().getField("val$" + v.name(), v.type().getSootType()).makeRef()
       );
     }
   }
 
-    // Declared in Expressions.jrag at line 422
+    // Declared in Expressions.jrag at line 430
 
 
   // load this where hostType is the target this instance 
@@ -82,7 +83,7 @@ public abstract class Access extends Expr implements Cloneable {
       Local base;
       if(inExplicitConstructorInvocation()) {
         base = asLocal(b,
-          Jimple.v().newParameterRef(enclosing.enclosingType().getSootType(), 0)
+          b.newParameterRef(enclosing.enclosingType().getSootType(), 0, this)
         );
         enclosing = enclosing.enclosing();
       }
@@ -92,12 +93,14 @@ public abstract class Access extends Expr implements Cloneable {
       while(enclosing != targetDecl) {
         Local next = b.newTemp(enclosing.enclosingType().getSootType());
         b.add(
-          Jimple.v().newAssignStmt(
+          b.newAssignStmt(
             next,
-            Jimple.v().newInstanceFieldRef(
+            b.newInstanceFieldRef(
               base,
-              enclosing.getSootField("this$0", enclosing.enclosingType()).makeRef()
-            )
+              enclosing.getSootField("this$0", enclosing.enclosingType()).makeRef(),
+              this
+            ),
+            this
           )
         );
         base = next;
@@ -107,7 +110,7 @@ public abstract class Access extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 640
+    // Declared in Expressions.jrag at line 658
 
 
   public void addArraySize(Body b, ArrayList list) {
@@ -131,7 +134,9 @@ public abstract class Access extends Expr implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in LookupMethod.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public Expr unqualifiedScope() {
@@ -267,7 +272,7 @@ public abstract class Access extends Expr implements Cloneable {
         return withinDeprecatedAnnotation_value;
     }
 
-    // Declared in Expressions.jrag at line 286
+    // Declared in Expressions.jrag at line 292
  @SuppressWarnings({"unchecked", "cast"})     public boolean inExplicitConstructorInvocation() {
         boolean inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
         return inExplicitConstructorInvocation_value;

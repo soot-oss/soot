@@ -33,7 +33,7 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericsCodegen.jrag at line 316
+    // Declared in GenericsCodegen.jrag at line 320
 
 
   public void transformation() { }
@@ -85,7 +85,9 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
 
     // Declared in Generics.ast at line 35
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 88
@@ -311,7 +313,7 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
         return (Opt<Block>)getChildNoTransform(4);
     }
 
-    // Declared in GenericsCodegen.jrag at line 322
+    // Declared in GenericsCodegen.jrag at line 326
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;

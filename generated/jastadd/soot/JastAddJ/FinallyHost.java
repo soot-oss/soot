@@ -12,12 +12,12 @@ public interface FinallyHost {
 
     public boolean isDAafterFinally(Variable v);
 
-    // Declared in Statements.jrag at line 318
+    // Declared in Statements.jrag at line 320
 
 
   public void emitFinallyCode(Body b);
 
 
-    // Declared in Statements.jrag at line 316
+    // Declared in Statements.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally_block();
 }

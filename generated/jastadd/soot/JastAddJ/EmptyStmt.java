@@ -70,7 +70,9 @@ public class EmptyStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in DefiniteAssignment.jrag at line 418
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {

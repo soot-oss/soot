@@ -125,7 +125,9 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
 
     // Declared in StaticImports.ast at line 24
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 7

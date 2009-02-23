@@ -45,7 +45,7 @@ public class PlusExpr extends Unary implements Cloneable {
       error("unary plus only operates on numeric types");
   }
 
-    // Declared in Expressions.jrag at line 676
+    // Declared in Expressions.jrag at line 695
 
   public soot.Value eval(Body b) { return getOperand().eval(b); }
 
@@ -75,7 +75,9 @@ public class PlusExpr extends Unary implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139

@@ -23,25 +23,26 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
     }
     // Declared in AutoBoxingCodegen.jrag at line 20
 
-  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type) {
+  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
     if(type.isUnknown()) throw new Error("Trying to cast to Unknown");
     if(type == this)
       return v;
     if((isLong() || this instanceof FloatingPointType) && type.isIntegralType()) {
-      v = soot.jimple.Jimple.v().newCastExpr(
-        asImmediate(b, v), typeInt().getSootType());
-      return typeInt().emitCastTo(b, v, type);
+      v = b.newCastExpr(
+        asImmediate(b, v), typeInt().getSootType(), location);
+      return typeInt().emitCastTo(b, v, type, location);
     }
     else if(type instanceof NumericType) {
-      return soot.jimple.Jimple.v().newCastExpr(
+      return b.newCastExpr(
         asImmediate(b, v),
-        type.getSootType()
+        type.getSootType(),
+        location
       );
     }
     else if(!type.isNumericType())
-      return emitCastTo(b, v, boxed());
+      return emitCastTo(b, v, boxed(), location);
     else
-      return boxed().emitBoxingOperation(b, emitCastTo(b, v, type.unboxed()));
+      return boxed().emitBoxingOperation(b, emitCastTo(b, v, type.unboxed(), location), location);
   }
 
     // Declared in java.ast at line 3
@@ -86,7 +87,9 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
 
     // Declared in java.ast at line 30
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 42
@@ -232,7 +235,7 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
     }
 
     // Declared in TypeAnalysis.jrag at line 155
-private TypeDecl refined_TypeAnalysis_NumericType_binaryNumericPromotion_TypeDecl(TypeDecl type)
+private TypeDecl refined_NumericPromotion_NumericType_binaryNumericPromotion_TypeDecl(TypeDecl type)
 {
     if(!type.isNumericType())
       return unknownType();
@@ -256,7 +259,7 @@ private TypeDecl refined_TypeAnalysis_NumericType_binaryNumericPromotion_TypeDec
     private TypeDecl unaryNumericPromotion_compute() {  return this;  }
 
     protected java.util.Map binaryNumericPromotion_TypeDecl_values;
-    // Declared in AutoBoxing.jrag at line 174
+    // Declared in AutoBoxing.jrag at line 175
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotion(TypeDecl type) {
         Object _parameters = type;
 if(binaryNumericPromotion_TypeDecl_values == null) binaryNumericPromotion_TypeDecl_values = new java.util.HashMap(4);
@@ -273,7 +276,7 @@ if(binaryNumericPromotion_TypeDecl_values == null) binaryNumericPromotion_TypeDe
     private TypeDecl binaryNumericPromotion_compute(TypeDecl type) {
     if(type.isReferenceType())
       type = type.unboxed();
-    return refined_TypeAnalysis_NumericType_binaryNumericPromotion_TypeDecl(type);
+    return refined_NumericPromotion_NumericType_binaryNumericPromotion_TypeDecl(type);
   }
 
     // Declared in TypeAnalysis.jrag at line 174

@@ -25,17 +25,17 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
         node.is$Final(false);
     return node;
     }
-    // Declared in AutoBoxingCodegen.jrag at line 73
+    // Declared in AutoBoxingCodegen.jrag at line 74
 
 
   // Code generation for Unboxing Conversion
-  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type) {
+  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
     if(this == type)
       return v;
     else if(type instanceof PrimitiveType)
-      return type.boxed().emitUnboxingOperation(b, emitCastTo(b, v, type.boxed()));
+      return type.boxed().emitUnboxingOperation(b, emitCastTo(b, v, type.boxed(), location), location);
     else 
-      return super.emitCastTo(b, v, type);
+      return super.emitCastTo(b, v, type, location);
   }
 
     // Declared in java.ast at line 3
@@ -77,7 +77,9 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
 
     // Declared in java.ast at line 27
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 38
@@ -289,7 +291,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
     return unknownType();
   }
 
-    // Declared in AutoBoxing.jrag at line 169
+    // Declared in AutoBoxing.jrag at line 170
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
         TypeDecl unaryNumericPromotion_value = unaryNumericPromotion_compute();
         return unaryNumericPromotion_value;
@@ -297,7 +299,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private TypeDecl unaryNumericPromotion_compute() {  return isNumericType() && !isUnknown() ? unboxed().unaryNumericPromotion() : this;  }
 
-    // Declared in AutoBoxing.jrag at line 173
+    // Declared in AutoBoxing.jrag at line 174
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotion(TypeDecl type) {
         TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
         return binaryNumericPromotion_TypeDecl_value;
@@ -305,7 +307,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private TypeDecl binaryNumericPromotion_compute(TypeDecl type) {  return unboxed().binaryNumericPromotion(type);  }
 
-    // Declared in AutoBoxing.jrag at line 195
+    // Declared in AutoBoxing.jrag at line 196
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNumericType() {
         boolean isNumericType_value = isNumericType_compute();
         return isNumericType_value;
@@ -313,7 +315,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean isNumericType_compute() {  return !unboxed().isUnknown() && unboxed().isNumericType();  }
 
-    // Declared in AutoBoxing.jrag at line 198
+    // Declared in AutoBoxing.jrag at line 199
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIntegralType() {
         boolean isIntegralType_value = isIntegralType_compute();
         return isIntegralType_value;
@@ -321,7 +323,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean isIntegralType_compute() {  return !unboxed().isUnknown() && unboxed().isIntegralType();  }
 
-    // Declared in AutoBoxing.jrag at line 201
+    // Declared in AutoBoxing.jrag at line 202
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitive() {
         boolean isPrimitive_value = isPrimitive_compute();
         return isPrimitive_value;
@@ -329,7 +331,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     private boolean isPrimitive_compute() {  return !unboxed().isUnknown() && unboxed().isPrimitive();  }
 
-    // Declared in AutoBoxing.jrag at line 214
+    // Declared in AutoBoxing.jrag at line 215
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBoolean() {
         boolean isBoolean_value = isBoolean_compute();
         return isBoolean_value;

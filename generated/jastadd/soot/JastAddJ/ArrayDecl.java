@@ -17,12 +17,17 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
         castingConversionTo_TypeDecl_values = null;
         instanceOf_TypeDecl_values = null;
         involvesTypeParameters_visited = 0;
+        involvesTypeParameters_computed = false;
+        involvesTypeParameters_initialized = false;
         erasure_computed = false;
         erasure_value = null;
         usesTypeVariable_visited = 0;
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         jvmName_computed = false;
         jvmName_value = null;
         getSootClassDecl_computed = false;
@@ -43,12 +48,17 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
         node.castingConversionTo_TypeDecl_values = null;
         node.instanceOf_TypeDecl_values = null;
         node.involvesTypeParameters_visited = 0;
+        node.involvesTypeParameters_computed = false;
+        node.involvesTypeParameters_initialized = false;
         node.erasure_computed = false;
         node.erasure_value = null;
         node.usesTypeVariable_visited = 0;
         node.usesTypeVariable_computed = false;
         node.usesTypeVariable_initialized = false;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.jvmName_computed = false;
         node.jvmName_value = null;
         node.getSootClassDecl_computed = false;
@@ -142,7 +152,9 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
 
     // Declared in java.ast at line 33
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
@@ -350,7 +362,7 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
     }
 
     // Declared in TypeAnalysis.jrag at line 120
-private boolean refined_TypeAnalysis_ArrayDecl_castingConversionTo_TypeDecl(TypeDecl type)
+private boolean refined_TypeConversion_ArrayDecl_castingConversionTo_TypeDecl(TypeDecl type)
 {
     if(type.isArrayDecl()) {
       TypeDecl SC = componentType();
@@ -485,7 +497,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
       return false;
     }
     else
-      return refined_TypeAnalysis_ArrayDecl_castingConversionTo_TypeDecl(type);
+      return refined_TypeConversion_ArrayDecl_castingConversionTo_TypeDecl(type);
   }
 
     // Declared in TypeAnalysis.jrag at line 214
@@ -510,7 +522,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return instanceOf_TypeDecl_value;
     }
 
-    private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+    private boolean instanceOf_compute(TypeDecl type) { return subtype(type); }
 
     // Declared in TypeAnalysis.jrag at line 469
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfArrayDecl(ArrayDecl type) {

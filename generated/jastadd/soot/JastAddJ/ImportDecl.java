@@ -47,7 +47,9 @@ public abstract class ImportDecl extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 7
@@ -151,20 +153,20 @@ if(importedMethods_String_values == null) importedMethods_String_values = new ja
         return packageName_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 32
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        if(caller == getAccessNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 23
     public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
         if(caller == getAccessNoTransform()) {
             return false;
         }
         return getParent().Define_boolean_isDest(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 32
+    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+        if(caller == getAccessNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isSource(this, caller);
     }
 
 public ASTNode rewriteTo() {

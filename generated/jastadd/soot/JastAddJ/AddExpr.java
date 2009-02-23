@@ -51,13 +51,13 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
       error("The type void of the right hand side is not numeric");
   }
 
-    // Declared in Expressions.jrag at line 783
+    // Declared in Expressions.jrag at line 805
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
-    return asLocal(b, Jimple.v().newAddExpr(asImmediate(b, left), asImmediate(b, right)));
+    return asLocal(b, b.newAddExpr(asImmediate(b, left), asImmediate(b, right), this));
   }
 
-    // Declared in Expressions.jrag at line 817
+    // Declared in Expressions.jrag at line 839
 
 
   public soot.Value eval(Body b) {
@@ -67,40 +67,44 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
       Local v;
       if(firstStringAddPart()) {
         // new StringBuffer
-        v = b.newTemp(Jimple.v().newNewExpr(
-          lookupType("java.lang", "StringBuffer").sootRef()));
+        v = b.newTemp(b.newNewExpr(
+          lookupType("java.lang", "StringBuffer").sootRef(), this));
         b.setLine(this);
-        b.add(Jimple.v().newInvokeStmt(
-          Jimple.v().newSpecialInvokeExpr(v, 
-          Scene.v().getMethod("<java.lang.StringBuffer: void <init>()>").makeRef()
-        )));
+        b.add(b.newInvokeStmt(
+          b.newSpecialInvokeExpr(v, 
+          Scene.v().getMethod("<java.lang.StringBuffer: void <init>()>").makeRef(),
+          this
+        ), this));
         b.setLine(this);
-        b.add(Jimple.v().newInvokeStmt(
-          Jimple.v().newVirtualInvokeExpr(v,
+        b.add(b.newInvokeStmt(
+          b.newVirtualInvokeExpr(v,
             lookupType("java.lang", "StringBuffer").methodWithArgs("append", new TypeDecl[] { getLeftOperand().type().stringPromotion() }).sootRef(),
-            asImmediate(b, getLeftOperand().eval(b))
-          )));
+            asImmediate(b, getLeftOperand().eval(b)),
+            this
+          ), this));
       }
       else
         v = (Local)getLeftOperand().eval(b);
       // append
       b.setLine(this);
-      b.add(Jimple.v().newInvokeStmt(
-        Jimple.v().newVirtualInvokeExpr(v,
+      b.add(b.newInvokeStmt(
+        b.newVirtualInvokeExpr(v,
           lookupType("java.lang", "StringBuffer").methodWithArgs("append", new TypeDecl[] { getRightOperand().type().stringPromotion() }).sootRef(),
-          asImmediate(b, getRightOperand().eval(b))
-        )));
+          asImmediate(b, getRightOperand().eval(b)),
+          this
+        ), this));
       if(lastStringAddPart()) {
         return b.newTemp(
-          Jimple.v().newVirtualInvokeExpr(v,
-            Scene.v().getMethod("<java.lang.StringBuffer: java.lang.String toString()>").makeRef()
+          b.newVirtualInvokeExpr(v,
+            Scene.v().getMethod("<java.lang.StringBuffer: java.lang.String toString()>").makeRef(),
+            this
         ));
       }
       else
         return v;
     }
     else 
-    return soot.jimple.Jimple.v().newAddExpr(
+    return b.newAddExpr(
       b.newTemp(
         getLeftOperand().type().emitCastTo(b,  // Binary numeric promotion
           getLeftOperand(),
@@ -112,7 +116,8 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
           getRightOperand(),
           type()
         )
-      )
+      ),
+      this
     );
   }
 
@@ -143,7 +148,9 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153

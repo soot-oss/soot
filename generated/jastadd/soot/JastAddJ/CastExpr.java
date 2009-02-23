@@ -63,7 +63,7 @@ public class CastExpr extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 689
+    // Declared in Expressions.jrag at line 709
 
   // See BooleanExpressions.jrag for LogNotExpr
 
@@ -72,8 +72,8 @@ public class CastExpr extends Expr implements Cloneable {
       return emitConstant(constant());
     soot.Value operand = getExpr().eval(b);
     if (operand == NullConstant.v())
-        return getExpr().type().emitCastTo(b, operand, type());
-    return getExpr().type().emitCastTo(b, asLocal(b, operand), type());
+        return getExpr().type().emitCastTo(b, operand, type(), this);
+    return getExpr().type().emitCastTo(b, asLocal(b, operand), type(), this);
   }
 
     // Declared in java.ast at line 3
@@ -103,7 +103,9 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 147

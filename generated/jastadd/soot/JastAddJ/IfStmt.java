@@ -105,7 +105,7 @@ public class IfStmt extends Stmt implements Cloneable {
       getThen().jimplify2(b);
       if(getThen().canCompleteNormally() && hasElse()) {
         b.setLine(this);
-        b.add(Jimple.v().newGotoStmt(endBranch));
+        b.add(b.newGotoStmt(endBranch, this));
       }
       b.addLabel(elseBranch);
       if(hasElse())
@@ -144,7 +144,9 @@ public class IfStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 20
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 210
@@ -311,44 +313,6 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt then_branch_label_compute() {  return newLabel();  }
 
-    // Declared in BooleanExpressions.jrag at line 38
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionNoTransform()) {
-            return else_branch_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 39
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionNoTransform()) {
-            return then_branch_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 148
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getElseOptNoTransform()) {
-            return reachable();
-        }
-        if(caller == getThenNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 142
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getElseOptNoTransform()) {
-            return reachable();
-        }
-        if(caller == getThenNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 529
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getElseOptNoTransform()) {
@@ -375,6 +339,44 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 142
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getElseOptNoTransform()) {
+            return reachable();
+        }
+        if(caller == getThenNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 148
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getElseOptNoTransform()) {
+            return reachable();
+        }
+        if(caller == getThenNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 38
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionNoTransform()) {
+            return else_branch_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 39
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionNoTransform()) {
+            return then_branch_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
 public ASTNode rewriteTo() {

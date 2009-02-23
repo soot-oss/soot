@@ -9,12 +9,18 @@ public class PrimitiveType extends TypeDecl implements Cloneable {
         narrowingConversionTo_TypeDecl_values = null;
         instanceOf_TypeDecl_values = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
     }
      @SuppressWarnings({"unchecked", "cast"})  public PrimitiveType clone() throws CloneNotSupportedException {
         PrimitiveType node = (PrimitiveType)super.clone();
         node.narrowingConversionTo_TypeDecl_values = null;
         node.instanceOf_TypeDecl_values = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -94,7 +100,9 @@ public class PrimitiveType extends TypeDecl implements Cloneable {
 
     // Declared in java.ast at line 30
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 42
@@ -293,7 +301,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return instanceOf_TypeDecl_value;
     }
 
-    private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+    private boolean instanceOf_compute(TypeDecl type) { return subtype(type); }
 
     // Declared in TypeAnalysis.jrag at line 476
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfPrimitiveType(PrimitiveType type) {

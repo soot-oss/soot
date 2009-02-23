@@ -92,7 +92,9 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
 
     // Declared in java.ast at line 33
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 67
@@ -436,7 +438,7 @@ public ASTNode rewriteTo() {
             setModifiers(new Modifiers(new List().add(new Modifier("final"))));
       
       ConstructorDecl decl = constructorDecl();
-      Modifiers modifiers = decl.getModifiers().fullCopy();
+      Modifiers modifiers = (Modifiers)decl.getModifiers().fullCopy();
       String name = "Anonymous" + nextAnonymousIndex();
 
       List parameterList = new List();

@@ -66,15 +66,16 @@ public class InstanceOfExpr extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 875
+    // Declared in Expressions.jrag at line 902
 
 
   // See BooleanExpressions.jrag for the evaluation of conditionals
 
   public soot.Value eval(Body b) {
-    return Jimple.v().newInstanceOfExpr(
+    return b.newInstanceOfExpr(
       asImmediate(b, getExpr().eval(b)),
-      getTypeAccess().type().getSootType()
+      getTypeAccess().type().getSootType(),
+      this
     );
   }
 
@@ -105,7 +106,9 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 188

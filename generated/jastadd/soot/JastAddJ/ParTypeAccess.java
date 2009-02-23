@@ -117,7 +117,9 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     // Declared in Generics.ast at line 19
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 13

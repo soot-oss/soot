@@ -41,7 +41,7 @@ public abstract class Binary extends Expr implements Cloneable {
     getRightOperand().toString(s);
   }
 
-    // Declared in Expressions.jrag at line 750
+    // Declared in Expressions.jrag at line 772
 
 
   public soot.Value eval(Body b) {
@@ -57,7 +57,7 @@ public abstract class Binary extends Expr implements Cloneable {
     ));
   }
 
-    // Declared in Expressions.jrag at line 763
+    // Declared in Expressions.jrag at line 785
 
 
   public soot.Value emitShiftExpr(Body b) {
@@ -73,7 +73,7 @@ public abstract class Binary extends Expr implements Cloneable {
     ));
   }
 
-    // Declared in Expressions.jrag at line 780
+    // Declared in Expressions.jrag at line 802
 
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
@@ -107,7 +107,9 @@ public abstract class Binary extends Expr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153
@@ -238,7 +240,7 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 
     private Expr right_compute() {  return getRightOperand();  }
 
-    // Declared in AutoBoxing.jrag at line 204
+    // Declared in AutoBoxing.jrag at line 205
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotedType() {
         TypeDecl binaryNumericPromotedType_value = binaryNumericPromotedType_compute();
         return binaryNumericPromotedType_value;

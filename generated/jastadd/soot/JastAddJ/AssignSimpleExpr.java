@@ -57,7 +57,7 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
         getDest().type()
       )
     );
-    return getDest().emitStore(b, lvalue, asImmediate(b, rvalue));
+    return getDest().emitStore(b, lvalue, asImmediate(b, rvalue), this);
   }
 
     // Declared in java.ast at line 3
@@ -87,7 +87,9 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 99
@@ -143,6 +145,14 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
 
     private TypeDecl sourceType_compute() {  return getSource().type();  }
 
+    // Declared in DefiniteAssignment.jrag at line 17
+    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+        if(caller == getDestNoTransform()) {
+            return true;
+        }
+        return super.Define_boolean_isDest(caller, child);
+    }
+
     // Declared in DefiniteAssignment.jrag at line 27
     public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
         if(caller == getDestNoTransform()) {
@@ -157,14 +167,6 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
             return getDest().type();
         }
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 17
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-        if(caller == getDestNoTransform()) {
-            return true;
-        }
-        return super.Define_boolean_isDest(caller, child);
     }
 
 public ASTNode rewriteTo() {

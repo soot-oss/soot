@@ -328,11 +328,11 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
 
 
   private Access createAccess() {
-    Access fieldAccess = new VarAccess(name());
+    Access fieldAccess = new BoundFieldAccess(this);
     return isStatic() ? fieldAccess : new VarAccess("that").qualifiesAccess(fieldAccess);
   }
 
-    // Declared in EmitJimple.jrag at line 322
+    // Declared in EmitJimple.jrag at line 324
 
   
 
@@ -356,11 +356,13 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
           f.addTag(new soot.tagkit.IntegerConstantValueTag(constant().intValue()));
       }
       sootField = f;
+    } else {
+	sootField = hostType().getSootClassDecl().getFieldByName(name);
     }
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 345
+    // Declared in EmitJimple.jrag at line 349
 
   public SootField sootField;
 
@@ -420,7 +422,9 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
 
     // Declared in java.ast at line 29
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 77
@@ -906,7 +910,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean sootRef_computed = false;
     protected SootFieldRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 346
+    // Declared in EmitJimple.jrag at line 350
  @SuppressWarnings({"unchecked", "cast"})     public SootFieldRef sootRef() {
         if(sootRef_computed)
             return sootRef_value;
@@ -920,7 +924,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private SootFieldRef sootRef_compute() {  return Scene.v().makeFieldRef(hostType().getSootClassDecl(), name(), type().getSootType(), isStatic());  }
 
-    // Declared in GenericsCodegen.jrag at line 29
+    // Declared in GenericsCodegen.jrag at line 31
  @SuppressWarnings({"unchecked", "cast"})     public FieldDeclaration erasedField() {
         FieldDeclaration erasedField_value = erasedField_compute();
         return erasedField_value;
@@ -934,20 +938,20 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return handlesException_TypeDecl_value;
     }
 
-    // Declared in Modifiers.jrag at line 262
-    public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
+    // Declared in DefiniteAssignment.jrag at line 39
+    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+        if(caller == getInitOptNoTransform()) {
             return true;
         }
-        return getParent().Define_boolean_mayBePrivate(this, caller);
+        return getParent().Define_boolean_isSource(this, caller);
     }
 
-    // Declared in GenericMethodsInference.jrag at line 35
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-        if(caller == getInitOptNoTransform()) {
-            return type();
-        }
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    // Declared in DefiniteAssignment.jrag at line 322
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getInitOptNoTransform()){
+    return isDAbefore(v);
+  }
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in ExceptionHandling.jrag at line 143
@@ -967,60 +971,12 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 322
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getInitOptNoTransform()){
-    return isDAbefore(v);
-  }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
-    // Declared in Modifiers.jrag at line 264
-    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBeFinal(this, caller);
-    }
-
-    // Declared in Annotations.jrag at line 80
-    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
-        if(caller == getModifiersNoTransform()) {
-            return name.equals("FIELD");
-        }
-        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
-    }
-
-    // Declared in InnerClasses.jrag at line 64
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-        if(caller == getInitOptNoTransform()) {
-            return type().componentType();
-        }
-        return getParent().Define_TypeDecl_expectedType(this, caller);
-    }
-
     // Declared in Modifiers.jrag at line 260
     public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_mayBePublic(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 39
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        if(caller == getInitOptNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-
-    // Declared in Modifiers.jrag at line 266
-    public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_mayBeVolatile(this, caller);
     }
 
     // Declared in Modifiers.jrag at line 261
@@ -1031,6 +987,30 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_mayBeProtected(this, caller);
     }
 
+    // Declared in Modifiers.jrag at line 262
+    public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBePrivate(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 263
+    public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBeStatic(this, caller);
+    }
+
+    // Declared in Modifiers.jrag at line 264
+    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_mayBeFinal(this, caller);
+    }
+
     // Declared in Modifiers.jrag at line 265
     public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
@@ -1039,12 +1019,12 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_mayBeTransient(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 260
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-        if(caller == getInitOptNoTransform()) {
-            return type();
+    // Declared in Modifiers.jrag at line 266
+    public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return true;
         }
-        return getParent().Define_TypeDecl_declType(this, caller);
+        return getParent().Define_boolean_mayBeVolatile(this, caller);
     }
 
     // Declared in SyntacticClassification.jrag at line 78
@@ -1055,6 +1035,14 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_NameType_nameType(this, caller);
     }
 
+    // Declared in TypeAnalysis.jrag at line 260
+    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
+        if(caller == getInitOptNoTransform()) {
+            return type();
+        }
+        return getParent().Define_TypeDecl_declType(this, caller);
+    }
+
     // Declared in TypeHierarchyCheck.jrag at line 141
     public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
         if(caller == getInitOptNoTransform()) {
@@ -1063,12 +1051,28 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_inStaticContext(this, caller);
     }
 
-    // Declared in Modifiers.jrag at line 263
-    public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
+    // Declared in Annotations.jrag at line 80
+    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
         if(caller == getModifiersNoTransform()) {
-            return true;
+            return name.equals("FIELD");
         }
-        return getParent().Define_boolean_mayBeStatic(this, caller);
+        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
+
+    // Declared in GenericMethodsInference.jrag at line 35
+    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+        if(caller == getInitOptNoTransform()) {
+            return type();
+        }
+        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    }
+
+    // Declared in InnerClasses.jrag at line 64
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+        if(caller == getInitOptNoTransform()) {
+            return type().componentType();
+        }
+        return getParent().Define_TypeDecl_expectedType(this, caller);
     }
 
 public ASTNode rewriteTo() {

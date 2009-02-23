@@ -7,23 +7,45 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
     public void flushCache() {
         super.flushCache();
         involvesTypeParameters_visited = 0;
+        involvesTypeParameters_computed = false;
+        involvesTypeParameters_initialized = false;
         usesTypeVariable_visited = 0;
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         containedIn_TypeDecl_visited = new java.util.HashMap(4);
+        containedIn_TypeDecl_values = null;
+        containedIn_TypeDecl_computed = new java.util.HashSet(4);
+        containedIn_TypeDecl_initialized = new java.util.HashSet(4);
         sameStructure_TypeDecl_visited = new java.util.HashMap(4);
+        sameStructure_TypeDecl_values = null;
+        sameStructure_TypeDecl_computed = new java.util.HashSet(4);
+        sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
         instanceOf_TypeDecl_values = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public WildcardExtendsType clone() throws CloneNotSupportedException {
         WildcardExtendsType node = (WildcardExtendsType)super.clone();
         node.involvesTypeParameters_visited = 0;
+        node.involvesTypeParameters_computed = false;
+        node.involvesTypeParameters_initialized = false;
         node.usesTypeVariable_visited = 0;
         node.usesTypeVariable_computed = false;
         node.usesTypeVariable_initialized = false;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.containedIn_TypeDecl_visited = new java.util.HashMap(4);
+        node.containedIn_TypeDecl_values = null;
+        node.containedIn_TypeDecl_computed = new java.util.HashSet(4);
+        node.containedIn_TypeDecl_initialized = new java.util.HashSet(4);
         node.sameStructure_TypeDecl_visited = new java.util.HashMap(4);
+        node.sameStructure_TypeDecl_values = null;
+        node.sameStructure_TypeDecl_computed = new java.util.HashSet(4);
+        node.sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
         node.instanceOf_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
@@ -98,7 +120,9 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
 
     // Declared in Generics.ast at line 29
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 38

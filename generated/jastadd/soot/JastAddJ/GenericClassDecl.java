@@ -16,6 +16,9 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         instanceOf_TypeDecl_values = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public GenericClassDecl clone() throws CloneNotSupportedException {
@@ -30,6 +33,9 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         node.usesTypeVariable_computed = false;
         node.usesTypeVariable_initialized = false;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.instanceOf_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
@@ -189,7 +195,9 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
 
     // Declared in Generics.ast at line 39
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 2
@@ -813,13 +821,13 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return typeThrowable_value;
     }
 
-    // Declared in GenericsParTypeDecl.jrag at line 47
-    public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
-        if(caller == getParTypeDeclListNoTransform()) {
+    // Declared in Generics.jrag at line 448
+    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return this;
+            return true;
         }
-        return getParent().Define_TypeDecl_genericDecl(this, caller);
+        return super.Define_boolean_isNestedType(caller, child);
     }
 
     // Declared in Generics.jrag at line 449
@@ -829,15 +837,6 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
             return this;
         }
         return super.Define_TypeDecl_enclosingType(caller, child);
-    }
-
-    // Declared in Generics.jrag at line 448
-    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return super.Define_boolean_isNestedType(caller, child);
     }
 
     // Declared in Generics.jrag at line 498
@@ -901,6 +900,15 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return !c.isEmpty() ? c : lookupType(name);
   }
         return super.Define_SimpleSet_lookupType(caller, child, name);
+    }
+
+    // Declared in GenericsParTypeDecl.jrag at line 47
+    public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
+        if(caller == getParTypeDeclListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return this;
+        }
+        return getParent().Define_TypeDecl_genericDecl(this, caller);
     }
 
 public ASTNode rewriteTo() {

@@ -345,7 +345,7 @@ public class MethodAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 226
+    // Declared in EmitJimpleRefinements.jrag at line 227
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
@@ -389,7 +389,9 @@ public class MethodAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 25
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 17
@@ -508,7 +510,7 @@ public class MethodAccess extends Access implements Cloneable {
     }
   }
 
-    // Declared in GenericsCodegen.jrag at line 296
+    // Declared in GenericsCodegen.jrag at line 300
 
 
     protected TypeDecl refined_GenericsCodegen_MethodAccess_methodQualifierType() {
@@ -551,7 +553,7 @@ public class MethodAccess extends Access implements Cloneable {
     refined_Transformations_MethodAccess_transformation();
   }
 
-    // Declared in GenericsCodegen.jrag at line 125
+    // Declared in GenericsCodegen.jrag at line 127
 
 
 
@@ -569,7 +571,7 @@ public class MethodAccess extends Access implements Cloneable {
     return list;
   }
 
-    // Declared in GenericsCodegen.jrag at line 139
+    // Declared in GenericsCodegen.jrag at line 141
 
 
     public soot.Value eval(Body b) {
@@ -581,14 +583,14 @@ public class MethodAccess extends Access implements Cloneable {
       if(!hostType().instanceOf(prevExpr().type())) {
         MethodDecl m = decl.createSuperAccessor(superAccessorTarget());
         if(methodQualifierType().isInterfaceDecl())
-          result = Jimple.v().newInterfaceInvokeExpr(left, m.sootRef(), list);
+          result = b.newInterfaceInvokeExpr(left, m.sootRef(), list, this);
         else
-          result = Jimple.v().newVirtualInvokeExpr(left, m.sootRef(), list);
+          result = b.newVirtualInvokeExpr(left, m.sootRef(), list, this);
       }
       else
-        result = Jimple.v().newSpecialInvokeExpr(left, sootRef(), list);
+        result = b.newSpecialInvokeExpr(left, sootRef(), list, this);
       if(decl.type() != decl().type())
-        result = decl.type().emitCastTo(b, result, decl().type());
+        result = decl.type().emitCastTo(b, result, decl().type(), this);
       return type().isVoid() ? result : asLocal(b, result);
     }
     else {
@@ -597,23 +599,23 @@ public class MethodAccess extends Access implements Cloneable {
         Local left = asLocal(b, createLoadQualifier(b));
         ArrayList list = buildArgList(b);
         if(methodQualifierType().isInterfaceDecl())
-          result = Jimple.v().newInterfaceInvokeExpr(left, sootRef(), list);
+          result = b.newInterfaceInvokeExpr(left, sootRef(), list, this);
         else
-          result = Jimple.v().newVirtualInvokeExpr(left, sootRef(), list);
+          result = b.newVirtualInvokeExpr(left, sootRef(), list, this);
       }
       else {
         if(isQualified() && !qualifier().isTypeAccess())
           b.newTemp(qualifier().eval(b));
         ArrayList list = buildArgList(b);
-        result = Jimple.v().newStaticInvokeExpr(sootRef(), list);
+        result = b.newStaticInvokeExpr(sootRef(), list, this);
       }
       if(decl.type() != decl().type())
-        result = decl.type().emitCastTo(b, result, decl().type());
+        result = decl.type().emitCastTo(b, result, decl().type(), this);
       return type().isVoid() ? result : asLocal(b, result);
     }
   }
 
-    // Declared in GenericsCodegen.jrag at line 180
+    // Declared in GenericsCodegen.jrag at line 182
 
 
     private SootMethodRef sootRef() {
@@ -631,7 +633,7 @@ public class MethodAccess extends Access implements Cloneable {
     return ref;
   }
 
-    // Declared in GenericsCodegen.jrag at line 195
+    // Declared in GenericsCodegen.jrag at line 197
 
 
     private soot.Value createLoadQualifier(Body b) {
@@ -1125,22 +1127,13 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
         return typeObject_value;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 41
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+    // Declared in DefiniteAssignment.jrag at line 413
+    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return typeObject();
+      int i = caller.getIndexOfChild(child);
+            return computeDAbefore(i, v);
         }
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
-    }
-
-    // Declared in LookupVariable.jrag at line 130
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupVariable(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+        return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
     // Declared in LookupMethod.jrag at line 28
@@ -1161,13 +1154,22 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
-    // Declared in TypeHierarchyCheck.jrag at line 17
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-        if(true) {
-      int childIndex = this.getIndexOfChild(caller);
-            return unqualifiedScope().methodHost();
+    // Declared in LookupType.jrag at line 165
+    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().lookupType(name);
         }
-        return getParent().Define_String_methodHost(this, caller);
+        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
+
+    // Declared in LookupVariable.jrag at line 130
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().lookupVariable(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
     // Declared in SyntacticClassification.jrag at line 120
@@ -1179,22 +1181,22 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
         return getParent().Define_NameType_nameType(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 413
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getArgListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return computeDAbefore(i, v);
+    // Declared in TypeHierarchyCheck.jrag at line 17
+    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return unqualifiedScope().methodHost();
         }
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
+        return getParent().Define_String_methodHost(this, caller);
     }
 
-    // Declared in LookupType.jrag at line 165
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+    // Declared in GenericMethodsInference.jrag at line 41
+    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
         if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupType(name);
+            return typeObject();
         }
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
 public ASTNode rewriteTo() {

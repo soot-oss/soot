@@ -154,10 +154,11 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         setID(p1);
         setChild(p2, 1);
         setChild(p3, 2);
+        setChild(null, 3);
         setChild(new Opt(), 4);
     }
 
-    // Declared in Enums.ast at line 22
+    // Declared in Enums.ast at line 23
 
 
     // Declared in Enums.ast line 3
@@ -166,19 +167,22 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         setID(p1);
         setChild(p2, 1);
         setChild(p3, 2);
+        setChild(null, 3);
         setChild(new Opt(), 4);
     }
 
-    // Declared in Enums.ast at line 30
+    // Declared in Enums.ast at line 32
 
 
   protected int numChildren() {
     return 3;
   }
 
-    // Declared in Enums.ast at line 33
+    // Declared in Enums.ast at line 35
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Enums.ast at line 2
     // Declared in Enums.ast line 3

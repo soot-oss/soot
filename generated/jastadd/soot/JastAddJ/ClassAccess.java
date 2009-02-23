@@ -67,7 +67,7 @@ public class ClassAccess extends Access implements Cloneable {
     
   }
 
-    // Declared in Expressions.jrag at line 883
+    // Declared in Expressions.jrag at line 911
 
 
 
@@ -76,7 +76,7 @@ public class ClassAccess extends Access implements Cloneable {
       TypeDecl typeDecl = lookupType("java.lang", prevExpr().type().primitiveClassName());
       SimpleSet c = typeDecl.memberFields("TYPE");
       FieldDeclaration f = (FieldDeclaration)c.iterator().next();
-      return Jimple.v().newStaticFieldRef(f.sootRef());
+      return b.newStaticFieldRef(f.sootRef(), this);
     }
     else {
       FieldDeclaration f = hostType().topLevelType().createStaticClassField(prevExpr().type().referenceClassFieldName());
@@ -86,31 +86,34 @@ public class ClassAccess extends Access implements Cloneable {
       soot.jimple.Stmt next_label = b.newLabel();
       soot.jimple.Stmt end_label = b.newLabel();
       Local result = b.newTemp(type().getSootType());
-      Local ref = asLocal(b, Jimple.v().newStaticFieldRef(f.sootRef()));
+      Local ref = asLocal(b, b.newStaticFieldRef(f.sootRef(), this));
       b.setLine(this);
       b.add(
-        Jimple.v().newIfStmt(
-          Jimple.v().newNeExpr(ref, soot.jimple.NullConstant.v()),
-          next_label
+        b.newIfStmt(
+          b.newNeExpr(ref, soot.jimple.NullConstant.v(), this),
+          next_label,
+          this
         )
       );
       // emit string literal
         
       ArrayList list = new ArrayList();
       list.add(new StringLiteral(prevExpr().type().jvmName()).eval(b));
-      Local l = asLocal(b, Jimple.v().newStaticInvokeExpr(m.sootRef(), list));
+      Local l = asLocal(b, b.newStaticInvokeExpr(m.sootRef(), list, this));
       b.setLine(this);
-      b.add(Jimple.v().newAssignStmt(
-        Jimple.v().newStaticFieldRef(f.sootRef()),
-        l
+      b.add(b.newAssignStmt(
+        b.newStaticFieldRef(f.sootRef(), this),
+        l,
+        this
       ));
       b.setLine(this);
-      b.add(Jimple.v().newAssignStmt(result, l));
-      b.add(Jimple.v().newGotoStmt(end_label));
+      b.add(b.newAssignStmt(result, l, this));
+      b.add(b.newGotoStmt(end_label, this));
       b.addLabel(next_label);
-      b.add(Jimple.v().newAssignStmt(
+      b.add(b.newAssignStmt(
         result,
-        Jimple.v().newStaticFieldRef(f.sootRef())
+        b.newStaticFieldRef(f.sootRef(), this),
+        this
       ));
       b.addLabel(end_label);
       return result;
@@ -135,7 +138,9 @@ public class ClassAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in TypeAnalysis.jrag at line 401
 private TypeDecl refined_TypeAnalysis_ClassAccess_type()

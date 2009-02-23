@@ -32,7 +32,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         }
         return res;
     }
-    // Declared in GenericMethods.jrag at line 153
+    // Declared in GenericMethods.jrag at line 155
 
   public void toString(StringBuffer s) {
     s.append("<");
@@ -76,7 +76,9 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
 
     // Declared in GenericMethods.ast at line 23
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 34
@@ -261,7 +263,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         return (List<Access>)getChildNoTransform(3);
     }
 
-    // Declared in GenericMethods.jrag at line 119
+    // Declared in GenericMethods.jrag at line 121
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -270,7 +272,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 120
+    // Declared in GenericMethods.jrag at line 122
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

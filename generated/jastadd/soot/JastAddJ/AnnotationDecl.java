@@ -9,12 +9,18 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
         getSuperInterfaceIdList_computed = false;
         getSuperInterfaceIdList_value = null;
         containsElementOf_TypeDecl_visited = new java.util.HashMap(4);
+        containsElementOf_TypeDecl_values = null;
+        containsElementOf_TypeDecl_computed = new java.util.HashSet(4);
+        containsElementOf_TypeDecl_initialized = new java.util.HashSet(4);
     }
      @SuppressWarnings({"unchecked", "cast"})  public AnnotationDecl clone() throws CloneNotSupportedException {
         AnnotationDecl node = (AnnotationDecl)super.clone();
         node.getSuperInterfaceIdList_computed = false;
         node.getSuperInterfaceIdList_value = null;
         node.containsElementOf_TypeDecl_visited = new java.util.HashMap(4);
+        node.containsElementOf_TypeDecl_values = null;
+        node.containsElementOf_TypeDecl_computed = new java.util.HashSet(4);
+        node.containsElementOf_TypeDecl_initialized = new java.util.HashSet(4);
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -111,7 +117,9 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
 
     // Declared in Annotations.ast at line 30
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 64

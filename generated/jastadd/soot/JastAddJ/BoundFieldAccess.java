@@ -87,7 +87,9 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
 
     // Declared in BoundNames.ast at line 24
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 16

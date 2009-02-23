@@ -50,7 +50,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 617
+    // Declared in Expressions.jrag at line 633
 
 
   public soot.Value eval(Body b) {
@@ -62,15 +62,17 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
       getTypeAccess().addArraySize(b, list);
       if(numArrays() == 1) {
         soot.Value size = (soot.Value)list.get(0);
-        return Jimple.v().newNewArrayExpr(
+        return b.newNewArrayExpr(
           type().componentType().getSootType(),
-          asImmediate(b, size)
+          asImmediate(b, size),
+          this
         );
       }
       else {
-        return Jimple.v().newNewMultiArrayExpr(
+        return b.newNewMultiArrayExpr(
           (soot.ArrayType)type().getSootType(),
-          list
+          list,
+          this
         );
       }
     }
@@ -104,7 +106,9 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in java.ast at line 19
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 136
@@ -237,30 +241,6 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
     return i;
   }
 
-    // Declared in InnerClasses.jrag at line 63
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-        if(caller == getArrayInitOptNoTransform()) {
-            return type().componentType();
-        }
-        return getParent().Define_TypeDecl_expectedType(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 262
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-        if(caller == getArrayInitOptNoTransform()) {
-            return type();
-        }
-        return getParent().Define_TypeDecl_declType(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 87
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeAccessNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 435
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getArrayInitOptNoTransform()) {
@@ -275,6 +255,30 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
             return isDUafterCreation(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 87
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeAccessNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 262
+    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
+        if(caller == getArrayInitOptNoTransform()) {
+            return type();
+        }
+        return getParent().Define_TypeDecl_declType(this, caller);
+    }
+
+    // Declared in InnerClasses.jrag at line 63
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+        if(caller == getArrayInitOptNoTransform()) {
+            return type().componentType();
+        }
+        return getParent().Define_TypeDecl_expectedType(this, caller);
     }
 
 public ASTNode rewriteTo() {

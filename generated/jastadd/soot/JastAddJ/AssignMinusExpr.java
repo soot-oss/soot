@@ -40,10 +40,10 @@ public class AssignMinusExpr extends AssignAdditiveExpr implements Cloneable {
     super.typeCheck();
   }
 
-    // Declared in Expressions.jrag at line 163
+    // Declared in Expressions.jrag at line 168
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
-    return Jimple.v().newSubExpr(asImmediate(b, fst), asImmediate(b, snd));
+    return b.newSubExpr(asImmediate(b, fst), asImmediate(b, snd), this);
   }
 
     // Declared in java.ast at line 3
@@ -73,7 +73,9 @@ public class AssignMinusExpr extends AssignAdditiveExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 99

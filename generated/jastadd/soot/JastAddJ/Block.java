@@ -115,7 +115,9 @@ public class Block extends Stmt implements Cloneable, VariableScope {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 200
@@ -365,30 +367,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return reachable_value;
     }
 
-    // Declared in LookupVariable.jrag at line 68
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getStmtListNoTransform()) { 
-   int index = caller.getIndexOfChild(child);
-{
-    VariableDeclaration v = localVariableDeclaration(name);
-    // declare before use and shadowing
-    if(v != null && declaredBeforeUse(v, index))
-      return v;
-    return lookupVariable(name);
-  }
-}
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 146
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return i == 0 ? reachable() : getStmt(i-1).reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 52
     public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
         if(caller == getStmtListNoTransform()) {
@@ -398,33 +376,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isIncOrDec(this, caller);
     }
 
-    // Declared in UnreachableStatements.jrag at line 38
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return childIndex == 0 ? reachable() : getStmt(childIndex-1).canCompleteNormally();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 116
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
-    // Declared in NameCheck.jrag at line 291
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        if(caller == getStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return this;
-        }
-        return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 445
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtListNoTransform()) {
@@ -432,6 +383,15 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return index == 0 ? isDAbefore(v) : getStmt(index - 1).isDAafter(v);
         }
         return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 875
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getStmtListNoTransform()) {
+      int index = caller.getIndexOfChild(child);
+            return index == 0 ? isDUbefore(v) : getStmt(index - 1).isDUafter(v);
+        }
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
 
     // Declared in LookupType.jrag at line 292
@@ -456,13 +416,55 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 875
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+    // Declared in LookupVariable.jrag at line 68
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getStmtListNoTransform()) { 
+   int index = caller.getIndexOfChild(child);
+{
+    VariableDeclaration v = localVariableDeclaration(name);
+    // declare before use and shadowing
+    if(v != null && declaredBeforeUse(v, index))
+      return v;
+    return lookupVariable(name);
+  }
+}
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in NameCheck.jrag at line 291
+    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
         if(caller == getStmtListNoTransform()) {
-      int index = caller.getIndexOfChild(child);
-            return index == 0 ? isDUbefore(v) : getStmt(index - 1).isDUafter(v);
+      int childIndex = caller.getIndexOfChild(child);
+            return this;
         }
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
+        return getParent().Define_VariableScope_outerScope(this, caller);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 116
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.EXPRESSION_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 38
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return childIndex == 0 ? reachable() : getStmt(childIndex-1).canCompleteNormally();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 146
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return i == 0 ? reachable() : getStmt(i-1).reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

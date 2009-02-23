@@ -90,23 +90,25 @@ public class ConditionalExpr extends Expr implements Cloneable {
       getCondition().emitEvalBranch(b);
       if(getCondition().canBeTrue()) {
         b.addLabel(then_branch_label());
-        b.add(Jimple.v().newAssignStmt(result,
+        b.add(b.newAssignStmt(result,
           getTrueExpr().type().emitCastTo(b,
             getTrueExpr(),
             type()
-          )
+          ),
+          this
         ));
         if(getCondition().canBeFalse()) {
-          b.add(Jimple.v().newGotoStmt(endBranch));
+          b.add(b.newGotoStmt(endBranch, this));
         }
       }
       if(getCondition().canBeFalse()) {
         b.addLabel(else_branch_label());
-        b.add(Jimple.v().newAssignStmt(result,
+        b.add(b.newAssignStmt(result,
           getFalseExpr().type().emitCastTo(b,
             getFalseExpr(),
             type()
-          )
+          ),
+          this
         ));
       }
       b.addLabel(endBranch);
@@ -114,7 +116,7 @@ public class ConditionalExpr extends Expr implements Cloneable {
     }
   }
 
-    // Declared in BooleanExpressions.jrag at line 205
+    // Declared in BooleanExpressions.jrag at line 209
 
 
   public void emitEvalBranch(Body b) {
@@ -124,12 +126,12 @@ public class ConditionalExpr extends Expr implements Cloneable {
     b.addLabel(then_branch_label());
     if(getCondition().canBeTrue()) {
       getTrueExpr().emitEvalBranch(b);
-      b.add(Jimple.v().newGotoStmt(true_label()));
+      b.add(b.newGotoStmt(true_label(), this));
     }  
     b.addLabel(else_branch_label());
     if(getCondition().canBeFalse()) {
       getFalseExpr().emitEvalBranch(b);
-      b.add(Jimple.v().newGotoStmt(true_label()));
+      b.add(b.newGotoStmt(true_label(), this));
     }
   }
 
@@ -161,7 +163,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
 
     // Declared in java.ast at line 19
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 191
@@ -259,7 +263,7 @@ private TypeDecl refined_TypeAnalysis_ConditionalExpr_type()
       return unknownType();
   }
 
-    // Declared in AutoBoxing.jrag at line 180
+    // Declared in AutoBoxing.jrag at line 181
 private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 {
     TypeDecl trueType = getTrueExpr().type();
@@ -434,7 +438,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     protected boolean else_branch_label_computed = false;
     protected soot.jimple.Stmt else_branch_label_value;
-    // Declared in BooleanExpressions.jrag at line 153
+    // Declared in BooleanExpressions.jrag at line 155
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt else_branch_label() {
         if(else_branch_label_computed)
             return else_branch_label_value;
@@ -450,7 +454,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     protected boolean then_branch_label_computed = false;
     protected soot.jimple.Stmt then_branch_label_value;
-    // Declared in BooleanExpressions.jrag at line 154
+    // Declared in BooleanExpressions.jrag at line 156
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt then_branch_label() {
         if(then_branch_label_computed)
             return then_branch_label_value;
@@ -463,34 +467,6 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
     }
 
     private soot.jimple.Stmt then_branch_label_compute() {  return newLabel();  }
-
-    // Declared in BooleanExpressions.jrag at line 64
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getFalseExprNoTransform()) {
-            return false_label();
-        }
-        if(caller == getTrueExprNoTransform()) {
-            return false_label();
-        }
-        if(caller == getConditionNoTransform()) {
-            return else_branch_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 65
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        if(caller == getFalseExprNoTransform()) {
-            return true_label();
-        }
-        if(caller == getTrueExprNoTransform()) {
-            return true_label();
-        }
-        if(caller == getConditionNoTransform()) {
-            return then_branch_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
 
     // Declared in DefiniteAssignment.jrag at line 390
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
@@ -518,6 +494,34 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 64
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getFalseExprNoTransform()) {
+            return false_label();
+        }
+        if(caller == getTrueExprNoTransform()) {
+            return false_label();
+        }
+        if(caller == getConditionNoTransform()) {
+            return else_branch_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 65
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        if(caller == getFalseExprNoTransform()) {
+            return true_label();
+        }
+        if(caller == getTrueExprNoTransform()) {
+            return true_label();
+        }
+        if(caller == getConditionNoTransform()) {
+            return then_branch_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
 public ASTNode rewriteTo() {

@@ -32,10 +32,10 @@ public class AssignAndExpr extends AssignBitwiseExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 175
+    // Declared in Expressions.jrag at line 180
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
-    return Jimple.v().newAndExpr(asImmediate(b, fst), asImmediate(b, snd));
+    return b.newAndExpr(asImmediate(b, fst), asImmediate(b, snd), this);
   }
 
     // Declared in java.ast at line 3
@@ -65,7 +65,9 @@ public class AssignAndExpr extends AssignBitwiseExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 99

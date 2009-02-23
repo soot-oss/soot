@@ -76,17 +76,18 @@ public abstract class AssignExpr extends Expr implements Cloneable {
       type = dest;
     Value lvalue = getDest().eval(b);
     Value v = lvalue instanceof Local ? lvalue : (Value)lvalue.clone();
-    Value value = b.newTemp(dest.emitCastTo(b, v, type));
+    Value value = b.newTemp(dest.emitCastTo(b, v, type, this));
     Value rvalue = source.emitCastTo(b, getSource(), type);
     Value result = asImmediate(b, type.emitCastTo(b,
       createAssignOp(b, value, rvalue),
-      dest
+      dest,
+      getDest()
     ));
-    getDest().emitStore(b, lvalue, result);
+    getDest().emitStore(b, lvalue, result, this);
     return result;
   }
 
-    // Declared in Expressions.jrag at line 125
+    // Declared in Expressions.jrag at line 129
 
 
   // shift assign expression
@@ -97,17 +98,18 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     Value lvalue = getDest().eval(b);
     Value v = lvalue instanceof Local ? lvalue : (Value)lvalue.clone();
-    Value value = b.newTemp(dest.emitCastTo(b, v, type));
+    Value value = b.newTemp(dest.emitCastTo(b, v, type, getDest()));
     Value rvalue = source.emitCastTo(b, getSource(), typeInt());
     Value result = asImmediate(b, type.emitCastTo(b,
       createAssignOp(b, value, rvalue),
-      dest
+      dest,
+      getDest()
     ));
-    getDest().emitStore(b, lvalue, result);
+    getDest().emitStore(b, lvalue, result, this);
     return result;
   }
 
-    // Declared in Expressions.jrag at line 148
+    // Declared in Expressions.jrag at line 153
 
 
 
@@ -143,7 +145,9 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 99
@@ -263,17 +267,6 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     private TypeDecl sourceType_compute() {  return getSource().type().isPrimitive() ? getSource().type() : unknownType();  }
 
-    // Declared in DefiniteAssignment.jrag at line 29
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        if(caller == getSourceNoTransform()) {
-            return true;
-        }
-        if(caller == getDestNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 19
     public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
         if(caller == getSourceNoTransform()) {
@@ -285,12 +278,15 @@ public abstract class AssignExpr extends Expr implements Cloneable {
         return getParent().Define_boolean_isDest(this, caller);
     }
 
-    // Declared in SyntacticClassification.jrag at line 99
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getDestNoTransform()) {
-            return NameType.EXPRESSION_NAME;
+    // Declared in DefiniteAssignment.jrag at line 29
+    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+        if(caller == getSourceNoTransform()) {
+            return true;
         }
-        return getParent().Define_NameType_nameType(this, caller);
+        if(caller == getDestNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isSource(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 396
@@ -313,6 +309,14 @@ public abstract class AssignExpr extends Expr implements Cloneable {
             return getDest().isDUafter(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 99
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getDestNoTransform()) {
+            return NameType.EXPRESSION_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
     }
 
 public ASTNode rewriteTo() {

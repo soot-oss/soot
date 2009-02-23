@@ -322,7 +322,9 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Enums.ast at line 33
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in Enums.ast at line 2
     // Declared in Enums.ast line 1
@@ -663,20 +665,20 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         return super.Define_boolean_mayBeAbstract(caller, child);
     }
 
-    // Declared in Enums.jrag at line 254
-    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return false;
-        }
-        return super.Define_boolean_mayBeFinal(caller, child);
-    }
-
     // Declared in Enums.jrag at line 40
     public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return isNestedType();
         }
         return super.Define_boolean_mayBeStatic(caller, child);
+    }
+
+    // Declared in Enums.jrag at line 254
+    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return false;
+        }
+        return super.Define_boolean_mayBeFinal(caller, child);
     }
 
 public ASTNode rewriteTo() {

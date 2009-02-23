@@ -79,7 +79,9 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Annotations.ast at line 2
     // Declared in Annotations.ast line 13

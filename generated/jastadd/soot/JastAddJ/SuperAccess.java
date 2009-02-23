@@ -66,7 +66,7 @@ public class SuperAccess extends Access implements Cloneable {
       error("super may not be accessed in a static context");
   }
 
-    // Declared in Expressions.jrag at line 416
+    // Declared in Expressions.jrag at line 424
 
   
   public soot.Value eval(Body b) {
@@ -107,7 +107,9 @@ public class SuperAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 22
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 25
@@ -144,7 +146,7 @@ public class SuperAccess extends Access implements Cloneable {
     }
 
     // Declared in LookupType.jrag at line 163
-private TypeDecl refined_LookupType_SuperAccess_decl()
+private TypeDecl refined_TypeScopePropagation_SuperAccess_decl()
 { return isQualified() ? qualifier().type() : hostType(); }
 
     // Declared in LookupType.jrag at line 161
@@ -170,7 +172,7 @@ private TypeDecl refined_LookupType_SuperAccess_decl()
     }
 
     private TypeDecl decl_compute() {
-    TypeDecl typeDecl = refined_LookupType_SuperAccess_decl();
+    TypeDecl typeDecl = refined_TypeScopePropagation_SuperAccess_decl();
     if(typeDecl instanceof ParTypeDecl)
       typeDecl = ((ParTypeDecl)typeDecl).genericDecl();
     return typeDecl;

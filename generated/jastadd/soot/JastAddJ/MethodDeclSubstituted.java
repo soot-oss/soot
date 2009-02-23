@@ -37,7 +37,7 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericsCodegen.jrag at line 317
+    // Declared in GenericsCodegen.jrag at line 321
 
   public void transformation() { }
 
@@ -90,7 +90,9 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
 
     // Declared in Generics.ast at line 37
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 88
@@ -346,7 +348,7 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
 
     private MethodDecl sourceMethodDecl_compute() {  return getOriginal().sourceMethodDecl();  }
 
-    // Declared in GenericsCodegen.jrag at line 33
+    // Declared in GenericsCodegen.jrag at line 35
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl erasedMethod() {
         MethodDecl erasedMethod_value = erasedMethod_compute();
         return erasedMethod_value;

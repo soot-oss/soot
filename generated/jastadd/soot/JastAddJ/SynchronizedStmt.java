@@ -92,34 +92,34 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
       error("*** The type of the expression must be a reference");
   }
 
-    // Declared in Statements.jrag at line 331
+    // Declared in Statements.jrag at line 333
 
 
   public void emitFinallyCode(Body b) {
     b.setLine(this);
-    b.add(Jimple.v().newExitMonitorStmt(monitor(b)));
+    b.add(b.newExitMonitorStmt(monitor(b), this));
   }
 
-    // Declared in Statements.jrag at line 482
+    // Declared in Statements.jrag at line 484
 
 
   public void jimplify2(Body b) {
     b.setLine(this);
-    b.add(Jimple.v().newEnterMonitorStmt(monitor(b)));
+    b.add(b.newEnterMonitorStmt(monitor(b), this));
     b.addLabel(label_begin());
     exceptionRanges().add(label_begin());
     getBlock().jimplify2(b);
     if(getBlock().canCompleteNormally()) {
       emitFinallyCode(b);
-      b.add(Jimple.v().newGotoStmt(label_end()));
+      b.add(b.newGotoStmt(label_end(), this));
     }
     b.addLabel(label_exception_handler());
 
     // emitExceptionHandler
     Local l = b.newTemp(typeThrowable().getSootType());
-    b.add(Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef()));
+    b.add(b.newIdentityStmt(l, b.newCaughtExceptionRef(this), this));
     emitFinallyCode(b);
-    soot.jimple.Stmt throwStmt = Jimple.v().newThrowStmt(l);
+    soot.jimple.Stmt throwStmt = b.newThrowStmt(l, this);
     throwStmt.addTag(new soot.tagkit.ThrowCreatedByCompilerTag());
     b.add(throwStmt);
     b.addLabel(label_end());
@@ -164,7 +164,9 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 220
@@ -267,7 +269,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     private boolean canCompleteNormally_compute() {  return getBlock().canCompleteNormally();  }
 
     protected java.util.Map monitor_Body_values;
-    // Declared in Statements.jrag at line 327
+    // Declared in Statements.jrag at line 329
  @SuppressWarnings({"unchecked", "cast"})     public soot.Local monitor(Body b) {
         Object _parameters = b;
 if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
@@ -285,7 +287,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
     return b.newTemp(getExpr().eval(b));
   }
 
-    // Declared in Statements.jrag at line 352
+    // Declared in Statements.jrag at line 354
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsFinallyTrap() {
         boolean needsFinallyTrap_value = needsFinallyTrap_compute();
         return needsFinallyTrap_value;
@@ -295,7 +297,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean exceptionRanges_computed = false;
     protected ArrayList exceptionRanges_value;
-    // Declared in Statements.jrag at line 449
+    // Declared in Statements.jrag at line 451
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
         if(exceptionRanges_computed)
             return exceptionRanges_value;
@@ -311,7 +313,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_begin_computed = false;
     protected soot.jimple.Stmt label_begin_value;
-    // Declared in Statements.jrag at line 476
+    // Declared in Statements.jrag at line 478
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_begin() {
         if(label_begin_computed)
             return label_begin_value;
@@ -327,7 +329,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_end_computed = false;
     protected soot.jimple.Stmt label_end_value;
-    // Declared in Statements.jrag at line 477
+    // Declared in Statements.jrag at line 479
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_end() {
         if(label_end_computed)
             return label_end_value;
@@ -343,7 +345,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_finally_computed = false;
     protected soot.jimple.Stmt label_finally_value;
-    // Declared in Statements.jrag at line 478
+    // Declared in Statements.jrag at line 480
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally() {
         if(label_finally_computed)
             return label_finally_value;
@@ -359,7 +361,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_finally_block_computed = false;
     protected soot.jimple.Stmt label_finally_block_value;
-    // Declared in Statements.jrag at line 479
+    // Declared in Statements.jrag at line 481
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally_block() {
         if(label_finally_block_computed)
             return label_finally_block_value;
@@ -375,7 +377,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     protected boolean label_exception_handler_computed = false;
     protected soot.jimple.Stmt label_exception_handler_value;
-    // Declared in Statements.jrag at line 480
+    // Declared in Statements.jrag at line 482
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_exception_handler() {
         if(label_exception_handler_computed)
             return label_exception_handler_value;
@@ -389,48 +391,16 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     private soot.jimple.Stmt label_exception_handler_compute() {  return newLabel();  }
 
-    // Declared in Statements.jrag at line 353
+    // Declared in Statements.jrag at line 355
  @SuppressWarnings({"unchecked", "cast"})     public boolean enclosedByExceptionHandler() {
         boolean enclosedByExceptionHandler_value = getParent().Define_boolean_enclosedByExceptionHandler(this, null);
         return enclosedByExceptionHandler_value;
     }
 
-    // Declared in Statements.jrag at line 462
+    // Declared in Statements.jrag at line 464
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
         TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         return typeThrowable_value;
-    }
-
-    // Declared in Statements.jrag at line 445
-    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return exceptionRanges();
-        }
-        return getParent().Define_ArrayList_exceptionRanges(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 155
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 111
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in Statements.jrag at line 351
-    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 658
@@ -453,6 +423,38 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 111
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 155
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in Statements.jrag at line 353
+    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
+
+    // Declared in Statements.jrag at line 447
+    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return exceptionRanges();
+        }
+        return getParent().Define_ArrayList_exceptionRanges(this, caller);
     }
 
 public ASTNode rewriteTo() {

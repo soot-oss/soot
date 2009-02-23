@@ -32,16 +32,16 @@ public class GTExpr extends RelationalExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in BooleanExpressions.jrag at line 287
+    // Declared in BooleanExpressions.jrag at line 291
 
   public soot.Value comparison(Body b, soot.Value left, soot.Value right) {
-    return Jimple.v().newGtExpr(asImmediate(b, left), asImmediate(b, right));
+    return b.newGtExpr(asImmediate(b, left), asImmediate(b, right), this);
   }
 
-    // Declared in BooleanExpressions.jrag at line 309
+    // Declared in BooleanExpressions.jrag at line 313
 
   public soot.Value comparisonInv(Body b, soot.Value left, soot.Value right) {
-    return Jimple.v().newLeExpr(asImmediate(b, left), asImmediate(b, right));
+    return b.newLeExpr(asImmediate(b, left), asImmediate(b, right), this);
   }
 
     // Declared in java.ast at line 3
@@ -71,7 +71,9 @@ public class GTExpr extends RelationalExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153

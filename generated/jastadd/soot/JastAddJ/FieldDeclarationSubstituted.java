@@ -79,7 +79,9 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
 
     // Declared in Generics.ast at line 31
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 77
@@ -211,7 +213,7 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
 
     private Variable sourceVariableDecl_compute() {  return getOriginal().sourceVariableDecl();  }
 
-    // Declared in GenericsCodegen.jrag at line 30
+    // Declared in GenericsCodegen.jrag at line 32
  @SuppressWarnings({"unchecked", "cast"})     public FieldDeclaration erasedField() {
         FieldDeclaration erasedField_value = erasedField_compute();
         return erasedField_value;

@@ -100,7 +100,7 @@ public class ContinueStmt extends Stmt implements Cloneable {
     if(inSynchronizedBlock())
       endExceptionRange(b, list);
     b.setLine(this);
-    b.add(Jimple.v().newGotoStmt(targetStmt().continue_label()));
+    b.add(b.newGotoStmt(targetStmt().continue_label(), this));
     beginExceptionRange(b, list);
   }
 
@@ -138,7 +138,9 @@ public class ContinueStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 22
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 216
@@ -355,7 +357,7 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
         return insideLoop_value;
     }
 
-    // Declared in Statements.jrag at line 441
+    // Declared in Statements.jrag at line 443
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
         ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
         return exceptionRanges_value;

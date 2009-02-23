@@ -44,7 +44,7 @@ public class AndLogicalExpr extends LogicalExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in BooleanExpressions.jrag at line 180
+    // Declared in BooleanExpressions.jrag at line 184
 
   
   public void emitEvalBranch(Body b) {
@@ -54,7 +54,7 @@ public class AndLogicalExpr extends LogicalExpr implements Cloneable {
     if(getLeftOperand().canBeTrue()) {
       getRightOperand().emitEvalBranch(b);
       if(getRightOperand().canBeTrue())
-        b.add(Jimple.v().newGotoStmt(true_label()));
+        b.add(b.newGotoStmt(true_label(), this));
     }
   }
 
@@ -85,7 +85,9 @@ public class AndLogicalExpr extends LogicalExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153
@@ -239,7 +241,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean next_test_label_computed = false;
     protected soot.jimple.Stmt next_test_label_value;
-    // Declared in BooleanExpressions.jrag at line 190
+    // Declared in BooleanExpressions.jrag at line 194
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt next_test_label() {
         if(next_test_label_computed)
             return next_test_label_value;
@@ -252,28 +254,6 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     }
 
     private soot.jimple.Stmt next_test_label_compute() {  return newLabel();  }
-
-    // Declared in BooleanExpressions.jrag at line 74
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getRightOperandNoTransform()) {
-            return false_label();
-        }
-        if(caller == getLeftOperandNoTransform()) {
-            return false_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 75
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        if(caller == getRightOperandNoTransform()) {
-            return true_label();
-        }
-        if(caller == getLeftOperandNoTransform()) {
-            return next_test_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
 
     // Declared in DefiniteAssignment.jrag at line 371
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
@@ -295,6 +275,28 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return isDUbefore(v);
         }
         return super.Define_boolean_isDUbefore(caller, child, v);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 74
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getRightOperandNoTransform()) {
+            return false_label();
+        }
+        if(caller == getLeftOperandNoTransform()) {
+            return false_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 75
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        if(caller == getRightOperandNoTransform()) {
+            return true_label();
+        }
+        if(caller == getLeftOperandNoTransform()) {
+            return next_test_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
 public ASTNode rewriteTo() {

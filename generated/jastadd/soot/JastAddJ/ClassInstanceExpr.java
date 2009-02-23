@@ -297,7 +297,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in Expressions.jrag at line 538
+    // Declared in Expressions.jrag at line 550
 
 
   private soot.Value emitLocalEnclosing(Body b, TypeDecl localClass) {
@@ -307,18 +307,20 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     throw new Error("Not implemented");
   }
 
-    // Declared in Expressions.jrag at line 545
+    // Declared in Expressions.jrag at line 557
 
 
   private soot.Value emitInnerMemberEnclosing(Body b, TypeDecl innerClass) {
     if(hasPrevExpr()) {
       Local base = asLocal(b, prevExpr().eval(b));
       b.setLine(this);
-      b.add(Jimple.v().newInvokeStmt(
-        Jimple.v().newVirtualInvokeExpr(
+      b.add(b.newInvokeStmt(
+        b.newVirtualInvokeExpr(
           base, 
-          Scene.v().getMethod("<java.lang.Object: java.lang.Class getClass()>").makeRef()
-        )
+          Scene.v().getMethod("<java.lang.Object: java.lang.Class getClass()>").makeRef(),
+          this
+        ),
+        this
       ));
       return base;
     }
@@ -330,11 +332,11 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 565
+    // Declared in Expressions.jrag at line 579
 
 
   public soot.Value eval(Body b) {
-    Local local = asLocal(b, Jimple.v().newNewExpr(type().sootRef()));
+    Local local = asLocal(b, b.newNewExpr(type().sootRef(), this));
     ArrayList list = new ArrayList();
 
      // 15.9.2 first part
@@ -368,8 +370,9 @@ public class ClassInstanceExpr extends Access implements Cloneable {
       list.add(asImmediate(b, soot.jimple.NullConstant.v()));
       b.setLine(this);
       b.add(
-        Jimple.v().newInvokeStmt(
-          Jimple.v().newSpecialInvokeExpr(local, decl().createAccessor().sootRef(), list)
+        b.newInvokeStmt(
+          b.newSpecialInvokeExpr(local, decl().createAccessor().sootRef(), list, this),
+          this
         )
       );
       return local;
@@ -377,15 +380,16 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     else {
       b.setLine(this);
       b.add(
-        Jimple.v().newInvokeStmt(
-          Jimple.v().newSpecialInvokeExpr(local, decl().sootRef(), list)
+        b.newInvokeStmt(
+          b.newSpecialInvokeExpr(local, decl().sootRef(), list, this),
+          this
         )
       );
       return local;
     }
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 230
+    // Declared in EmitJimpleRefinements.jrag at line 231
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
@@ -422,7 +426,9 @@ public class ClassInstanceExpr extends Access implements Cloneable {
 
     // Declared in java.ast at line 21
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 34
@@ -859,15 +865,6 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_TypeDecl_superType(this, caller);
     }
 
-    // Declared in LookupVariable.jrag at line 135
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupVariable(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
     // Declared in MethodSignature.jrag at line 68
     public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclOptNoTransform()){
@@ -880,54 +877,6 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
     }
 
-    // Declared in TypeAnalysis.jrag at line 573
-    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()) {
-            return hostType();
-        }
-        return getParent().Define_TypeDecl_hostType(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 531
-    public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isMemberType(this, caller);
-    }
-
-    // Declared in LookupType.jrag at line 92
-    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().hasPackage(packageName);
-        }
-        return getParent().Define_boolean_hasPackage(this, caller, packageName);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 217
-    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
-        if(caller == getTypeDeclOptNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isAnonymous(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 127
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.EXPRESSION_NAME;
-        }
-        if(caller == getTypeDeclOptNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        if(caller == getAccessNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 431
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getTypeDeclOptNoTransform()) {
@@ -938,6 +887,24 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
             return computeDAbefore(i, v);
         }
         return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 860
+    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+        if(caller == getArgListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+            return computeDUbefore(i, v);
+        }
+        return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in LookupType.jrag at line 92
+    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().hasPackage(packageName);
+        }
+        return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
     // Declared in LookupType.jrag at line 316
@@ -966,6 +933,54 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
 
+    // Declared in LookupVariable.jrag at line 135
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().lookupVariable(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in SyntacticClassification.jrag at line 127
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.EXPRESSION_NAME;
+        }
+        if(caller == getTypeDeclOptNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        if(caller == getAccessNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 217
+    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isAnonymous(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 531
+    public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isMemberType(this, caller);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 573
+    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeDeclOptNoTransform()) {
+            return hostType();
+        }
+        return getParent().Define_TypeDecl_hostType(this, caller);
+    }
+
     // Declared in TypeHierarchyCheck.jrag at line 147
     public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclOptNoTransform()) {
@@ -973,15 +988,6 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
     qualifier().staticContextQualifier() : inStaticContext();
         }
         return getParent().Define_boolean_inStaticContext(this, caller);
-    }
-
-    // Declared in DefiniteAssignment.jrag at line 860
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        if(caller == getArgListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-            return computeDUbefore(i, v);
-        }
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
 
 public ASTNode rewriteTo() {

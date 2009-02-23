@@ -45,14 +45,15 @@ public class BitNotExpr extends Unary implements Cloneable {
       error("unary ~ only operates on integral types");
   }
 
-    // Declared in Expressions.jrag at line 677
+    // Declared in Expressions.jrag at line 696
 
   public soot.Value eval(Body b) {
     soot.Value v = IntType.emitConstant(-1);
     soot.Local result = asLocal(b,
-      soot.jimple.Jimple.v().newXorExpr(
-        asImmediate(b, typeInt().emitCastTo(b, v, type())),
-        asImmediate(b, getOperand().eval(b))
+      b.newXorExpr(
+        asImmediate(b, typeInt().emitCastTo(b, v, type(), this)),
+        asImmediate(b, getOperand().eval(b)),
+        this
       )
     );
     return result;
@@ -84,7 +85,9 @@ public class BitNotExpr extends Unary implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139

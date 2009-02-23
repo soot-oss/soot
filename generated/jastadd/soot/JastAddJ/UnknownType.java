@@ -9,11 +9,17 @@ public class UnknownType extends ClassDecl implements Cloneable {
         super.flushCache();
         instanceOf_TypeDecl_values = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
     }
      @SuppressWarnings({"unchecked", "cast"})  public UnknownType clone() throws CloneNotSupportedException {
         UnknownType node = (UnknownType)super.clone();
         node.instanceOf_TypeDecl_values = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -82,7 +88,9 @@ public class UnknownType extends ClassDecl implements Cloneable {
 
     // Declared in java.ast at line 33
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
@@ -359,7 +367,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return instanceOf_TypeDecl_value;
     }
 
-    private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+    private boolean instanceOf_compute(TypeDecl type) { return subtype(type); }
 
     // Declared in TypeAnalysis.jrag at line 417
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
@@ -401,7 +409,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isSupertypeOfNullType_compute(NullType type) {  return true;  }
 
-    // Declared in AutoBoxing.jrag at line 170
+    // Declared in AutoBoxing.jrag at line 171
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
         TypeDecl unaryNumericPromotion_value = unaryNumericPromotion_compute();
         return unaryNumericPromotion_value;
@@ -409,7 +417,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private TypeDecl unaryNumericPromotion_compute() {  return this;  }
 
-    // Declared in AutoBoxing.jrag at line 193
+    // Declared in AutoBoxing.jrag at line 194
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotion(TypeDecl type) {
         TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
         return binaryNumericPromotion_TypeDecl_value;

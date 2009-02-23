@@ -55,7 +55,9 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in BranchTarget.jrag at line 58
 

@@ -51,7 +51,7 @@ public class AssignPlusExpr extends AssignAdditiveExpr implements Cloneable {
             " a value of type " + sourceType().typeName());
   }
 
-    // Declared in Expressions.jrag at line 83
+    // Declared in Expressions.jrag at line 84
 
 
   // string addition assign expression
@@ -65,30 +65,33 @@ public class AssignPlusExpr extends AssignAdditiveExpr implements Cloneable {
       Value v = asImmediate(b, lvalue);
 
       // new StringBuffer(left)
-      Local local = b.newTemp(Jimple.v().newNewExpr(
-        lookupType("java.lang", "StringBuffer").sootRef()));
+      Local local = b.newTemp(b.newNewExpr(
+        lookupType("java.lang", "StringBuffer").sootRef(), this));
       b.setLine(this);
-      b.add(Jimple.v().newInvokeStmt(
-        Jimple.v().newSpecialInvokeExpr(local, 
+      b.add(b.newInvokeStmt(
+        b.newSpecialInvokeExpr(local, 
           Scene.v().getMethod("<java.lang.StringBuffer: void <init>(java.lang.String)>").makeRef(),
-          v
-        )));
+          v,
+          this
+        ), this));
 
       // append right
       Local rightResult = b.newTemp(
-        Jimple.v().newVirtualInvokeExpr(local,
+        b.newVirtualInvokeExpr(local,
           lookupType("java.lang", "StringBuffer").methodWithArgs("append", new TypeDecl[] { source.stringPromotion() }).sootRef(),
-          asImmediate(b, getSource().eval(b))
+          asImmediate(b, getSource().eval(b)),
+          this
         ));
 
       // toString
       Local result = b.newTemp(
-        Jimple.v().newVirtualInvokeExpr(rightResult,
-          Scene.v().getMethod("<java.lang.StringBuffer: java.lang.String toString()>").makeRef()
+        b.newVirtualInvokeExpr(rightResult,
+          Scene.v().getMethod("<java.lang.StringBuffer: java.lang.String toString()>").makeRef(),
+          this
         ));
   
       Value v2 = lvalue instanceof Local ? lvalue : (Value)lvalue.clone();
-      getDest().emitStore(b, v2, result);
+      getDest().emitStore(b, v2, result, this);
       return result;
     }
     else {
@@ -96,10 +99,10 @@ public class AssignPlusExpr extends AssignAdditiveExpr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 160
+    // Declared in Expressions.jrag at line 165
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
-    return Jimple.v().newAddExpr(asImmediate(b, fst), asImmediate(b, snd));
+    return b.newAddExpr(asImmediate(b, fst), asImmediate(b, snd), this);
   }
 
     // Declared in java.ast at line 3
@@ -129,7 +132,9 @@ public class AssignPlusExpr extends AssignAdditiveExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 99

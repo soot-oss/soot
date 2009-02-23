@@ -11,6 +11,9 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
         isDAafter_Variable_values = null;
         isDUafter_Variable_values = null;
         isDUbeforeCondition_Variable_visited = new java.util.HashMap(4);
+        isDUbeforeCondition_Variable_values = null;
+        isDUbeforeCondition_Variable_computed = new java.util.HashSet(4);
+        isDUbeforeCondition_Variable_initialized = new java.util.HashSet(4);
         localLookup_String_values = null;
         localVariableDeclaration_String_values = null;
         canCompleteNormally_computed = false;
@@ -31,6 +34,9 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
         node.isDAafter_Variable_values = null;
         node.isDUafter_Variable_values = null;
         node.isDUbeforeCondition_Variable_visited = new java.util.HashMap(4);
+        node.isDUbeforeCondition_Variable_values = null;
+        node.isDUbeforeCondition_Variable_computed = new java.util.HashSet(4);
+        node.isDUbeforeCondition_Variable_initialized = new java.util.HashSet(4);
         node.localLookup_String_values = null;
         node.localVariableDeclaration_String_values = null;
         node.canCompleteNormally_computed = false;
@@ -159,7 +165,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
       for (int i=0; i < getNumUpdateStmt(); i++)
         getUpdateStmt(i).jimplify2(b);
       b.setLine(this);
-      b.add(Jimple.v().newGotoStmt(cond_label()));
+      b.add(b.newGotoStmt(cond_label(), this));
     }
     if(canCompleteNormally()) {
       b.addLabel(end_label());
@@ -198,7 +204,9 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
 
     // Declared in java.ast at line 23
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 213
@@ -744,77 +752,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return lookupVariable_String_value;
     }
 
-    // Declared in NameCheck.jrag at line 365
-    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_insideLoop(this, caller);
-    }
-
-    // Declared in LookupVariable.jrag at line 90
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getStmtNoTransform()) {
-            return localLookup(name);
-        }
-        if(caller == getUpdateStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return localLookup(name);
-        }
-        if(caller == getConditionOptNoTransform()) {
-            return localLookup(name);
-        }
-        if(caller == getInitStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return localLookup(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 44
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionOptNoTransform()) {
-            return end_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 45
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionOptNoTransform()) {
-            return begin_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 149
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 103
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable() && (!hasCondition() || (!getCondition().isConstant() || !getCondition().isFalse()));
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in NameCheck.jrag at line 294
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return this;
-        }
-        if(caller == getInitStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return this;
-        }
-        return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 637
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getUpdateStmtListNoTransform()) { 
@@ -880,6 +817,77 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return childIndex == 0 ? isDUbefore(v) : getInitStmt(childIndex-1).isDUafter(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in LookupVariable.jrag at line 90
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getStmtNoTransform()) {
+            return localLookup(name);
+        }
+        if(caller == getUpdateStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return localLookup(name);
+        }
+        if(caller == getConditionOptNoTransform()) {
+            return localLookup(name);
+        }
+        if(caller == getInitStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return localLookup(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in NameCheck.jrag at line 294
+    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return this;
+        }
+        if(caller == getInitStmtListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return this;
+        }
+        return getParent().Define_VariableScope_outerScope(this, caller);
+    }
+
+    // Declared in NameCheck.jrag at line 365
+    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_insideLoop(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 103
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable() && (!hasCondition() || (!getCondition().isConstant() || !getCondition().isFalse()));
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 149
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 44
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionOptNoTransform()) {
+            return end_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 45
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionOptNoTransform()) {
+            return begin_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
 public ASTNode rewriteTo() {

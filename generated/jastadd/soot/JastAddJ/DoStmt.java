@@ -11,6 +11,9 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
         isDAafter_Variable_values = null;
         isDUafter_Variable_values = null;
         isDUbeforeCondition_Variable_visited = new java.util.HashMap(4);
+        isDUbeforeCondition_Variable_values = null;
+        isDUbeforeCondition_Variable_computed = new java.util.HashSet(4);
+        isDUbeforeCondition_Variable_initialized = new java.util.HashSet(4);
         canCompleteNormally_computed = false;
         begin_label_computed = false;
         begin_label_value = null;
@@ -26,6 +29,9 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
         node.isDAafter_Variable_values = null;
         node.isDUafter_Variable_values = null;
         node.isDUbeforeCondition_Variable_visited = new java.util.HashMap(4);
+        node.isDUbeforeCondition_Variable_values = null;
+        node.isDUbeforeCondition_Variable_computed = new java.util.HashSet(4);
+        node.isDUbeforeCondition_Variable_initialized = new java.util.HashSet(4);
         node.canCompleteNormally_computed = false;
         node.begin_label_computed = false;
         node.begin_label_value = null;
@@ -116,7 +122,9 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 212
@@ -409,46 +417,6 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 
     private soot.jimple.Stmt continue_label_compute() {  return cond_label();  }
 
-    // Declared in NameCheck.jrag at line 367
-    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_insideLoop(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 42
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionNoTransform()) {
-            return end_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 43
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        if(caller == getConditionNoTransform()) {
-            return begin_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 150
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 100
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 601
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getConditionNoTransform()){
@@ -476,6 +444,46 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
             return isDUbefore(v) && getCondition().isDUafterTrue(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in NameCheck.jrag at line 367
+    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_insideLoop(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 100
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 150
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 42
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionNoTransform()) {
+            return end_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 43
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        if(caller == getConditionNoTransform()) {
+            return begin_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
 public ASTNode rewriteTo() {

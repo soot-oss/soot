@@ -32,14 +32,14 @@ public class URShiftExpr extends ShiftExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 778
+    // Declared in Expressions.jrag at line 800
 
   public soot.Value eval(Body b) { return emitShiftExpr(b); }
 
-    // Declared in Expressions.jrag at line 804
+    // Declared in Expressions.jrag at line 826
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
-    return asLocal(b, Jimple.v().newUshrExpr(asImmediate(b, left), asImmediate(b, right)));
+    return asLocal(b, b.newUshrExpr(asImmediate(b, left), asImmediate(b, right), this));
   }
 
     // Declared in java.ast at line 3
@@ -69,7 +69,9 @@ public class URShiftExpr extends ShiftExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153

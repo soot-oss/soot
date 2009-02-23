@@ -45,7 +45,9 @@ public abstract class StaticImportDecl extends ImportDecl implements Cloneable {
 
     // Declared in StaticImports.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 7

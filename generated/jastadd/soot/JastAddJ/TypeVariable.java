@@ -10,6 +10,8 @@ public class TypeVariable extends ReferenceType implements Cloneable {
         toInterface_computed = false;
         toInterface_value = null;
         involvesTypeParameters_visited = 0;
+        involvesTypeParameters_computed = false;
+        involvesTypeParameters_initialized = false;
         memberFields_String_values = null;
         castingConversionTo_TypeDecl_values = null;
         erasure_computed = false;
@@ -25,7 +27,13 @@ public class TypeVariable extends ReferenceType implements Cloneable {
         typeName_computed = false;
         typeName_value = null;
         sameStructure_TypeDecl_visited = new java.util.HashMap(4);
+        sameStructure_TypeDecl_values = null;
+        sameStructure_TypeDecl_computed = new java.util.HashSet(4);
+        sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         getSubstitutedTypeBound_int_TypeDecl_values = null;
         instanceOf_TypeDecl_values = null;
     }
@@ -34,6 +42,8 @@ public class TypeVariable extends ReferenceType implements Cloneable {
         node.toInterface_computed = false;
         node.toInterface_value = null;
         node.involvesTypeParameters_visited = 0;
+        node.involvesTypeParameters_computed = false;
+        node.involvesTypeParameters_initialized = false;
         node.memberFields_String_values = null;
         node.castingConversionTo_TypeDecl_values = null;
         node.erasure_computed = false;
@@ -49,7 +59,13 @@ public class TypeVariable extends ReferenceType implements Cloneable {
         node.typeName_computed = false;
         node.typeName_value = null;
         node.sameStructure_TypeDecl_visited = new java.util.HashMap(4);
+        node.sameStructure_TypeDecl_values = null;
+        node.sameStructure_TypeDecl_computed = new java.util.HashSet(4);
+        node.sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.getSubstitutedTypeBound_int_TypeDecl_values = null;
         node.instanceOf_TypeDecl_values = null;
         node.in$Circle(false);
@@ -248,7 +264,9 @@ public class TypeVariable extends ReferenceType implements Cloneable {
 
     // Declared in Generics.ast at line 30
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 15

@@ -148,34 +148,36 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     soot.jimple.Stmt end_label = newLabel();
     b.addLabel(false_label());
     Local result = b.newTemp(soot.BooleanType.v());
-    b.add(Jimple.v().newAssignStmt(result, BooleanType.emitConstant(false)));
-    b.add(Jimple.v().newGotoStmt(end_label));
+    b.add(b.newAssignStmt(result, BooleanType.emitConstant(false), this));
+    b.add(b.newGotoStmt(end_label, this));
     b.addLabel(true_label());
-    b.add(Jimple.v().newAssignStmt(result, BooleanType.emitConstant(true)));
+    b.add(b.newAssignStmt(result, BooleanType.emitConstant(true), this));
     b.addLabel(end_label);
     return result;
   }
 
-    // Declared in BooleanExpressions.jrag at line 156
+    // Declared in BooleanExpressions.jrag at line 158
 
   
   public void refined_BooleanExpressions_Expr_emitEvalBranch(Body b) {
     b.setLine(this);
     if(isTrue())
-      b.add(Jimple.v().newGotoStmt(true_label()));
+      b.add(b.newGotoStmt(true_label(), this));
     else if(isFalse())
-      b.add(Jimple.v().newGotoStmt(false_label()));
+      b.add(b.newGotoStmt(false_label(), this));
     else {
       b.add(
-        Jimple.v().newIfStmt(
-          Jimple.v().newEqExpr(
+        b.newIfStmt(
+          b.newEqExpr(
             asImmediate(b, eval(b)),
-            BooleanType.emitConstant(false)
+            BooleanType.emitConstant(false),
+            this
           ),
-          false_label()
+          false_label(),
+          this
         )
       );
-      b.add(Jimple.v().newGotoStmt(true_label()));
+      b.add(b.newGotoStmt(true_label(), this));
     }
   }
 
@@ -185,20 +187,21 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Operation eval not supported for " + getClass().getName());
   }
 
-    // Declared in Expressions.jrag at line 254
+    // Declared in Expressions.jrag at line 259
 
-  public soot.Value emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
+  public soot.Value emitStore(Body b, soot.Value lvalue, soot.Value rvalue, ASTNode location) {
     b.setLine(this);
     b.add(
-      Jimple.v().newAssignStmt(
+      b.newAssignStmt(
         lvalue,
-        asLocal(b, rvalue, lvalue.getType())
+        asLocal(b, rvalue, lvalue.getType()),
+        location
       )
     );
     return rvalue;
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 201
+    // Declared in EmitJimpleRefinements.jrag at line 202
 
   
   public void collectTypesToHierarchy(Collection<Type> set) {
@@ -208,7 +211,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     addDependencyIfNeeded(set, type());
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 208
+    // Declared in EmitJimpleRefinements.jrag at line 209
 
 
   protected void addDependencyIfNeeded(Collection<Type> set, TypeDecl type) {
@@ -235,9 +238,11 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
-    // Declared in AutoBoxingCodegen.jrag at line 99
+    // Declared in AutoBoxingCodegen.jrag at line 100
 
 
   // Generate unboxing code for conditions
@@ -249,15 +254,17 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     if(type().isReferenceType()) {
       b.setLine(this);
       b.add(
-        Jimple.v().newIfStmt(
-          Jimple.v().newEqExpr(
-            asImmediate(b, type().emitUnboxingOperation(b, eval(b))),
-            BooleanType.emitConstant(false)
+        b.newIfStmt(
+          b.newEqExpr(
+            asImmediate(b, type().emitUnboxingOperation(b, eval(b), this)),
+            BooleanType.emitConstant(false),
+            this
           ),
-          false_label()
+          false_label(),
+          this
         )
       );
-      b.add(Jimple.v().newGotoStmt(true_label()));
+      b.add(b.newGotoStmt(true_label(), this));
 
     }
     else

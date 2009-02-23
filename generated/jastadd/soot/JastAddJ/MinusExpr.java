@@ -45,10 +45,10 @@ public class MinusExpr extends Unary implements Cloneable {
       error("unary minus only operates on numeric types");
   }
 
-    // Declared in Expressions.jrag at line 673
+    // Declared in Expressions.jrag at line 692
 
   public soot.Value eval(Body b) { 
-    return Jimple.v().newNegExpr(asImmediate(b, getOperand().eval(b)));
+    return b.newNegExpr(asImmediate(b, getOperand().eval(b)), this);
   }
 
     // Declared in java.ast at line 3
@@ -77,7 +77,9 @@ public class MinusExpr extends Unary implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139

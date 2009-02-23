@@ -76,7 +76,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     return genericMethodDecl().original().getTypeParameter(index);
   }
 
-    // Declared in GenericsCodegen.jrag at line 318
+    // Declared in GenericsCodegen.jrag at line 322
 
   public void transformation() { }
 
@@ -130,7 +130,9 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
 
     // Declared in GenericMethods.ast at line 38
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 88
@@ -448,7 +450,7 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
 
     private boolean moreSpecificThan_compute(MethodDecl m) {  return genericMethodDecl().moreSpecificThan(m instanceof ParMethodDecl ? ((ParMethodDecl)m).genericMethodDecl() : m );  }
 
-    // Declared in GenericsCodegen.jrag at line 34
+    // Declared in GenericsCodegen.jrag at line 36
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl erasedMethod() {
         MethodDecl erasedMethod_value = erasedMethod_compute();
         return erasedMethod_value;

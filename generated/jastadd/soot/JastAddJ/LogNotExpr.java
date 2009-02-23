@@ -49,7 +49,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
   public soot.Value eval(Body b) { return emitBooleanCondition(b); }
 
-    // Declared in BooleanExpressions.jrag at line 178
+    // Declared in BooleanExpressions.jrag at line 182
 
   public void emitEvalBranch(Body b)  { getOperand().emitEvalBranch(b); }
 
@@ -79,7 +79,9 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139
@@ -210,22 +212,6 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private boolean canBeFalse_compute() {  return getOperand().canBeTrue();  }
 
-    // Declared in BooleanExpressions.jrag at line 57
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        if(caller == getOperandNoTransform()) {
-            return true_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-
-    // Declared in BooleanExpressions.jrag at line 58
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        if(caller == getOperandNoTransform()) {
-            return false_label();
-        }
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 383
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getOperandNoTransform()) {
@@ -240,6 +226,22 @@ public class LogNotExpr extends Unary implements Cloneable {
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 57
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+        if(caller == getOperandNoTransform()) {
+            return true_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
+
+    // Declared in BooleanExpressions.jrag at line 58
+    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+        if(caller == getOperandNoTransform()) {
+            return false_label();
+        }
+        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
 
 public ASTNode rewriteTo() {

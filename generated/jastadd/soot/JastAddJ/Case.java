@@ -50,7 +50,9 @@ public abstract class Case extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in NameCheck.jrag at line 426
  @SuppressWarnings({"unchecked", "cast"})     public abstract boolean constValue(Case c);

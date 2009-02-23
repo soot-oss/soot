@@ -55,7 +55,9 @@ public abstract class Stmt extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     protected java.util.Map isDAafter_Variable_values;
     // Declared in DefiniteAssignment.jrag at line 327

@@ -151,7 +151,7 @@ public class ConstructorAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 234
+    // Declared in EmitJimpleRefinements.jrag at line 235
 
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
@@ -195,7 +195,9 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 25
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 18
@@ -317,7 +319,7 @@ public class ConstructorAccess extends Access implements Cloneable {
     refined_Transformations_ConstructorAccess_transformation();
   }
 
-    // Declared in GenericsCodegen.jrag at line 214
+    // Declared in GenericsCodegen.jrag at line 216
 
 
     public soot.Value eval(Body b) {
@@ -331,12 +333,12 @@ public class ConstructorAccess extends Access implements Cloneable {
     // this$0
     if(c.needsEnclosing())
       list.add(asImmediate(b,
-        Jimple.v().newParameterRef(hostType().enclosingType().getSootType(), index++)
+        b.newParameterRef(hostType().enclosingType().getSootType(), index++, this)
       ));
     if(c.needsSuperEnclosing()) {
       TypeDecl superClass = ((ClassDecl)hostType()).superclass();
       list.add(asImmediate(b,
-        Jimple.v().newParameterRef(superClass.enclosingType().getSootType(), index++)
+        b.newParameterRef(superClass.enclosingType().getSootType(), index++, this)
       ));
     }
     // args
@@ -347,14 +349,15 @@ public class ConstructorAccess extends Access implements Cloneable {
     if(decl().isPrivate() && decl().hostType() != hostType()) {
       list.add(asImmediate(b, soot.jimple.NullConstant.v()));
       b.add(
-        Jimple.v().newInvokeStmt(
-          Jimple.v().newSpecialInvokeExpr(base, decl().erasedConstructor().createAccessor().sootRef(), list)
+        b.newInvokeStmt(
+          b.newSpecialInvokeExpr(base, decl().erasedConstructor().createAccessor().sootRef(), list, this),
+          this
         )
       );
       return base;
     }
     else {
-      return Jimple.v().newSpecialInvokeExpr(base, c.sootRef(), list);
+      return b.newSpecialInvokeExpr(base, c.sootRef(), list, this);
     }
   }
 
@@ -504,15 +507,6 @@ public class ConstructorAccess extends Access implements Cloneable {
         return unknownConstructor_value;
     }
 
-    // Declared in LookupVariable.jrag at line 131
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupVariable(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-
     // Declared in LookupMethod.jrag at line 29
     public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
         if(caller == getArgListNoTransform()) {
@@ -531,13 +525,22 @@ public class ConstructorAccess extends Access implements Cloneable {
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
-    // Declared in TypeHierarchyCheck.jrag at line 18
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-        if(true) {
-      int childIndex = this.getIndexOfChild(caller);
-            return unqualifiedScope().methodHost();
+    // Declared in LookupType.jrag at line 166
+    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().lookupType(name);
         }
-        return getParent().Define_String_methodHost(this, caller);
+        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
+
+    // Declared in LookupVariable.jrag at line 131
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getArgListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return unqualifiedScope().lookupVariable(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
     // Declared in SyntacticClassification.jrag at line 121
@@ -549,13 +552,13 @@ public class ConstructorAccess extends Access implements Cloneable {
         return getParent().Define_NameType_nameType(this, caller);
     }
 
-    // Declared in LookupType.jrag at line 166
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupType(name);
+    // Declared in TypeHierarchyCheck.jrag at line 18
+    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return unqualifiedScope().methodHost();
         }
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+        return getParent().Define_String_methodHost(this, caller);
     }
 
     // Declared in TypeHierarchyCheck.jrag at line 130

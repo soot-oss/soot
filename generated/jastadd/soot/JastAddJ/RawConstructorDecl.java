@@ -82,7 +82,9 @@ public class RawConstructorDecl extends ParConstructorDecl implements Cloneable 
 
     // Declared in GenericMethods.ast at line 38
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 72

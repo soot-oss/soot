@@ -51,10 +51,10 @@ public class ExprStmt extends Stmt implements Cloneable {
 
 
   public void jimplify2(Body b) {
+    b.setLine(this);
     soot.Value value = getExpr().eval(b);
     if(value instanceof soot.jimple.InvokeExpr) {
-      b.setLine(this);
-      b.add(Jimple.v().newInvokeStmt((soot.jimple.InvokeExpr)value));
+      b.add(b.newInvokeStmt((soot.jimple.InvokeExpr)value, this));
     }
   }
 
@@ -84,7 +84,9 @@ public class ExprStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 203

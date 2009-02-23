@@ -74,14 +74,15 @@ public class ArrayInit extends Expr implements Cloneable {
     }
   }
 
-    // Declared in Expressions.jrag at line 650
+    // Declared in Expressions.jrag at line 668
 
 
   public soot.Value eval(Body b) {
     soot.Value size = IntType.emitConstant(getNumInit());
-    Local array = asLocal(b, Jimple.v().newNewArrayExpr(
+    Local array = asLocal(b, b.newNewArrayExpr(
       type().componentType().getSootType(),
-      asImmediate(b, size)
+      asImmediate(b, size),
+      this
     ));
     for(int i = 0; i < getNumInit(); i++) {
       Value rvalue = 
@@ -90,9 +91,9 @@ public class ArrayInit extends Expr implements Cloneable {
           expectedType()
         );
       Value index = IntType.emitConstant(i);
-      Value lvalue = Jimple.v().newArrayRef(array, index);
+      Value lvalue = b.newArrayRef(array, index, getInit(i));
       b.setLine(this);
-      b.add(Jimple.v().newAssignStmt(lvalue, asImmediate(b, rvalue)));
+      b.add(b.newAssignStmt(lvalue, asImmediate(b, rvalue), getInit(i)));
     }
     return array;
   }
@@ -124,7 +125,9 @@ public class ArrayInit extends Expr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 86
@@ -303,15 +306,6 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
         return expectedType_value;
     }
 
-    // Declared in InnerClasses.jrag at line 67
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-        if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return expectedType().componentType();
-        }
-        return getParent().Define_TypeDecl_expectedType(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 42
     public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
         if(caller == getInitListNoTransform()) {
@@ -319,24 +313,6 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
             return true;
         }
         return getParent().Define_boolean_isSource(this, caller);
-    }
-
-    // Declared in GenericMethodsInference.jrag at line 37
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-        if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return declType().componentType();
-        }
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
-    }
-
-    // Declared in TypeAnalysis.jrag at line 263
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-        if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return declType().componentType();
-        }
-        return getParent().Define_TypeDecl_declType(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 501
@@ -355,6 +331,33 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
             return computeDUbefore(childIndex, v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in TypeAnalysis.jrag at line 263
+    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
+        if(caller == getInitListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return declType().componentType();
+        }
+        return getParent().Define_TypeDecl_declType(this, caller);
+    }
+
+    // Declared in GenericMethodsInference.jrag at line 37
+    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+        if(caller == getInitListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return declType().componentType();
+        }
+        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    }
+
+    // Declared in InnerClasses.jrag at line 67
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+        if(caller == getInitListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return expectedType().componentType();
+        }
+        return getParent().Define_TypeDecl_expectedType(this, caller);
     }
 
 public ASTNode rewriteTo() {

@@ -78,11 +78,11 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
     soot.jimple.Stmt switch_label = newLabel();
 
     b.setLine(this);
-    b.add(Jimple.v().newGotoStmt(cond_label));
+    b.add(b.newGotoStmt(cond_label, this));
     getBlock().jimplify2(b);
     if(canCompleteNormally()) {
       b.setLine(this);
-      b.add(Jimple.v().newGotoStmt(end_label()));
+      b.add(b.newGotoStmt(end_label(), this));
     }
     b.addLabel(cond_label);
     soot.Value expr = asImmediate(b, getExpr().eval(b));
@@ -113,7 +113,7 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
           targets.add(defaultStmt);
       }
       b.setLine(this);
-      b.add(Jimple.v().newTableSwitchStmt(expr, (int)low, (int)high, targets, defaultStmt));
+      b.add(b.newTableSwitchStmt(expr, (int)low, (int)high, targets, defaultStmt, this));
     }
     else {
       ArrayList targets = new ArrayList();
@@ -125,7 +125,7 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
       }
 
       b.setLine(this);
-      b.add(Jimple.v().newLookupSwitchStmt(expr, values, targets, defaultStmt));
+      b.add(b.newLookupSwitchStmt(expr, values, targets, defaultStmt, this));
     }
     b.addLabel(end_label());
   }
@@ -176,7 +176,9 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 205
@@ -474,42 +476,6 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return typeLong_value;
     }
 
-    // Declared in NameCheck.jrag at line 413
-    public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
-        if(caller == getBlockNoTransform()){
-    Block b = getBlock();
-    for(int i = 0; i < b.getNumStmt(); i++)
-      if(b.getStmt(i) instanceof Case && ((Case)b.getStmt(i)).constValue(c))
-        return (Case)b.getStmt(i);
-    return null;
-  }
-        return getParent().Define_Case_bind(this, caller, c);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 156
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 82
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in TypeCheck.jrag at line 359
-    public TypeDecl Define_TypeDecl_switchType(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return getExpr().type();
-        }
-        return getParent().Define_TypeDecl_switchType(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 569
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
@@ -524,14 +490,6 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in NameCheck.jrag at line 372
-    public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_insideSwitch(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 1027
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
@@ -541,6 +499,50 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in NameCheck.jrag at line 372
+    public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_insideSwitch(this, caller);
+    }
+
+    // Declared in NameCheck.jrag at line 413
+    public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
+        if(caller == getBlockNoTransform()){
+    Block b = getBlock();
+    for(int i = 0; i < b.getNumStmt(); i++)
+      if(b.getStmt(i) instanceof Case && ((Case)b.getStmt(i)).constValue(c))
+        return (Case)b.getStmt(i);
+    return null;
+  }
+        return getParent().Define_Case_bind(this, caller, c);
+    }
+
+    // Declared in TypeCheck.jrag at line 359
+    public TypeDecl Define_TypeDecl_switchType(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return getExpr().type();
+        }
+        return getParent().Define_TypeDecl_switchType(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 82
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 156
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

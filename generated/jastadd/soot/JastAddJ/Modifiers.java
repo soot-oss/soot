@@ -229,7 +229,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     // add flags to enums
   public static final int ACC_ENUM = 0x4000;
 
-    // Declared in GenericsCodegen.jrag at line 321
+    // Declared in GenericsCodegen.jrag at line 325
 
 
 
@@ -267,7 +267,9 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 193

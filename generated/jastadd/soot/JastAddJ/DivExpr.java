@@ -38,10 +38,10 @@ public class DivExpr extends MultiplicativeExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 792
+    // Declared in Expressions.jrag at line 814
 
   public soot.Value emitOperation(Body b, soot.Value left, soot.Value right) {
-    return asLocal(b, Jimple.v().newDivExpr(asImmediate(b, left), asImmediate(b, right)));
+    return asLocal(b, b.newDivExpr(asImmediate(b, left), asImmediate(b, right), this));
   }
 
     // Declared in java.ast at line 3
@@ -71,7 +71,9 @@ public class DivExpr extends MultiplicativeExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153

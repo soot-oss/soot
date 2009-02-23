@@ -88,7 +88,9 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
 
     // Declared in GenericMethods.ast at line 38
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 88

@@ -67,7 +67,9 @@ public class ParseName extends Access implements Cloneable {
 
     // Declared in java.ast at line 22
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 30

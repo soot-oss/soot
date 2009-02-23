@@ -43,7 +43,9 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Modifiers.jrag at line 220
  @SuppressWarnings({"unchecked", "cast"})     public abstract boolean isStatic();

@@ -118,7 +118,9 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
 
     // Declared in java.ast at line 24
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 202
@@ -342,14 +344,6 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
         return getParent().Define_LabeledStmt_lookupLabel(this, caller, name);
     }
 
-    // Declared in UnreachableStatements.jrag at line 47
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 511
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtNoTransform()) {
@@ -364,6 +358,14 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 47
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
     }
 
 public ASTNode rewriteTo() {

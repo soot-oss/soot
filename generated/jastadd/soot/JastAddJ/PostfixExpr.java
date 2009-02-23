@@ -74,7 +74,9 @@ public abstract class PostfixExpr extends Unary implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139
@@ -95,20 +97,20 @@ public abstract class PostfixExpr extends Unary implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 53
-    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-        if(caller == getOperandNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isIncOrDec(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 45
     public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
         if(caller == getOperandNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_isDest(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 53
+    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
+        if(caller == getOperandNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isIncOrDec(this, caller);
     }
 
     // Declared in SyntacticClassification.jrag at line 98

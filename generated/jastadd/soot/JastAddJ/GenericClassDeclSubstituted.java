@@ -10,6 +10,9 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
         sourceTypeDecl_value = null;
         instanceOf_TypeDecl_values = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         localMethodsSignatureMap_computed = false;
         localMethodsSignatureMap_value = null;
         localFields_String_values = null;
@@ -23,6 +26,9 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
         node.sourceTypeDecl_value = null;
         node.instanceOf_TypeDecl_values = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.localMethodsSignatureMap_computed = false;
         node.localMethodsSignatureMap_value = null;
         node.localFields_String_values = null;
@@ -105,7 +111,9 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
 
     // Declared in Generics.ast at line 41
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 2

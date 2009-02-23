@@ -61,7 +61,9 @@ public class Wildcard extends AbstractWildcard implements Cloneable {
 
     // Declared in Generics.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Generics.jrag at line 1124
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {

@@ -7,11 +7,17 @@ public class RawClassDecl extends ParClassDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         instanceOf_TypeDecl_values = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public RawClassDecl clone() throws CloneNotSupportedException {
         RawClassDecl node = (RawClassDecl)super.clone();
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.instanceOf_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
@@ -96,7 +102,9 @@ public class RawClassDecl extends ParClassDecl implements Cloneable {
 
     // Declared in Generics.ast at line 36
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63

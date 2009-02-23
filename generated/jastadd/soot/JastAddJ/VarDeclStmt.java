@@ -86,7 +86,9 @@ public class VarDeclStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 20
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 79
@@ -202,6 +204,14 @@ public class VarDeclStmt extends Stmt implements Cloneable {
 
     private boolean canCompleteNormally_compute() {  return reachable();  }
 
+    // Declared in SyntacticClassification.jrag at line 84
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeAccessNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
     // Declared in TypeAnalysis.jrag at line 258
     public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
         if(caller == getVariableDeclListNoTransform()) {
@@ -209,14 +219,6 @@ public class VarDeclStmt extends Stmt implements Cloneable {
             return null;
         }
         return getParent().Define_TypeDecl_declType(this, caller);
-    }
-
-    // Declared in SyntacticClassification.jrag at line 84
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeAccessNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
     }
 
 public ASTNode rewriteTo() {

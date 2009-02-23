@@ -100,86 +100,100 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
       getVariableDeclaration().local = parameter;
       b.addLabel(cond_label());
       b.add(
-        Jimple.v().newIfStmt(
-          Jimple.v().newGeExpr(
+        b.newIfStmt(
+          b.newGeExpr(
             asImmediate(b, index),
-            asImmediate(b, Jimple.v().newLengthExpr(asImmediate(b, array)))
+            asImmediate(b, b.newLengthExpr(asImmediate(b, array), this)),
+            this
           ),
-          end_label()
+          end_label(),
+          this
         )
       );
       b.add(
-        Jimple.v().newAssignStmt(
+        b.newAssignStmt(
           parameter,
           asRValue(b,
             getExpr().type().elementType().emitCastTo(b,
               asLocal(b,
-                Jimple.v().newArrayRef(
+                b.newArrayRef(
                   array,
-                  index
+                  index,
+                  this
                 )
               ),
-              getVariableDeclaration().type()
+              getVariableDeclaration().type(),
+              this
             )
-          )
+          ),
+          this
         )
       );
       getStmt().jimplify2(b);
       b.addLabel(update_label());
       b.add(
-        Jimple.v().newAssignStmt(
+        b.newAssignStmt(
           index,
-          Jimple.v().newAddExpr(
+          b.newAddExpr(
             index,
-            soot.jimple.IntConstant.v(1)
-          )
+            soot.jimple.IntConstant.v(1),
+            this
+          ),
+          this
         )
       );
-      b.add(Jimple.v().newGotoStmt(cond_label()));
+      b.add(b.newGotoStmt(cond_label(), this));
       b.addLabel(end_label());
     }
     else {
       soot.Local iterator = asLocal(b,
-        Jimple.v().newInterfaceInvokeExpr(
+        b.newInterfaceInvokeExpr(
           asLocal(b, getExpr().eval(b)),
           iteratorMethod().sootRef(),
-          new ArrayList()
+          new ArrayList(),
+          this
         )
       );
       soot.Local parameter = b.newLocal(getVariableDeclaration().name(), getVariableDeclaration().type().getSootType());
       getVariableDeclaration().local = parameter;
       b.addLabel(cond_label());
       b.add(
-        Jimple.v().newIfStmt(
-          Jimple.v().newEqExpr(
+        b.newIfStmt(
+          b.newEqExpr(
             asImmediate(b, 
-              Jimple.v().newInterfaceInvokeExpr(
+              b.newInterfaceInvokeExpr(
                 iterator,
                 hasNextMethod().sootRef(),
-                new ArrayList()
+                new ArrayList(),
+                this
               )
             ),
-            BooleanType.emitConstant(false)
+            BooleanType.emitConstant(false),
+            this
           ),
-          end_label()
+          end_label(),
+          this
         )
       );
       b.add(
-        Jimple.v().newAssignStmt(
+        b.newAssignStmt(
           parameter,
           nextMethod().type().emitCastTo(b,
-            Jimple.v().newInterfaceInvokeExpr(
+            b.newInterfaceInvokeExpr(
               iterator,
               nextMethod().sootRef(),
-              new ArrayList()
+              new ArrayList(),
+              this
             ),
-            getVariableDeclaration().type()
-          )
+            getVariableDeclaration().type(),
+            this
+          ),
+          this
         )
       );
       getStmt().jimplify2(b);
       b.addLabel(update_label());
-      b.add(Jimple.v().newGotoStmt(cond_label()));
+      b.add(b.newGotoStmt(cond_label(), this));
       b.addLabel(end_label());
 
 
@@ -204,7 +218,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
     }
   }
 
-    // Declared in EnhancedForCodegen.jrag at line 136
+    // Declared in EnhancedForCodegen.jrag at line 150
 
 
   private MethodDecl iteratorMethod() {
@@ -218,7 +232,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
     throw new Error("Could not find java.lang.Iterable.iterator()");
   }
 
-    // Declared in EnhancedForCodegen.jrag at line 146
+    // Declared in EnhancedForCodegen.jrag at line 160
 
   private MethodDecl hasNextMethod() {
     TypeDecl typeDecl = lookupType("java.util", "Iterator");
@@ -231,7 +245,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
     throw new Error("Could not find java.util.Collection.hasNext()");
   }
 
-    // Declared in EnhancedForCodegen.jrag at line 156
+    // Declared in EnhancedForCodegen.jrag at line 170
 
   private MethodDecl nextMethod() {
     TypeDecl typeDecl = lookupType("java.util", "Iterator");
@@ -272,7 +286,9 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 
     // Declared in EnhancedFor.ast at line 19
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in EnhancedFor.ast at line 2
     // Declared in EnhancedFor.ast line 1
@@ -538,41 +554,6 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return lookupVariable_String_value;
     }
 
-    // Declared in EnhancedFor.jrag at line 71
-    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-        if(caller == getVariableDeclarationNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isConstructorParameter(this, caller);
-    }
-
-    // Declared in EnhancedFor.jrag at line 112
-    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_insideLoop(this, caller);
-    }
-
-    // Declared in EnhancedFor.jrag at line 70
-    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
-        if(caller == getVariableDeclarationNoTransform()) {
-            return false;
-        }
-        return getParent().Define_boolean_isMethodParameter(this, caller);
-    }
-
-    // Declared in EnhancedForCodegen.jrag at line 18
-    public int Define_int_localNum(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return getVariableDeclaration().localNum() + getVariableDeclaration().type().size();
-        }
-        if(caller == getVariableDeclarationNoTransform()) {
-            return localNum() + (getExpr().type().isArrayDecl() ? 2 : 1);
-        }
-        return getParent().Define_int_localNum(this, caller);
-    }
-
     // Declared in EnhancedFor.jrag at line 41
     public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
         if(caller == getStmtNoTransform()) {
@@ -585,6 +566,44 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return localLookupVariable(name);
         }
         return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+
+    // Declared in EnhancedFor.jrag at line 43
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getVariableDeclarationNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
+    }
+
+    // Declared in EnhancedFor.jrag at line 48
+    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return this;
+        }
+        if(caller == getExprNoTransform()) {
+            return this;
+        }
+        if(caller == getVariableDeclarationNoTransform()) {
+            return this;
+        }
+        return getParent().Define_VariableScope_outerScope(this, caller);
+    }
+
+    // Declared in EnhancedFor.jrag at line 70
+    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+        if(caller == getVariableDeclarationNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isMethodParameter(this, caller);
+    }
+
+    // Declared in EnhancedFor.jrag at line 71
+    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+        if(caller == getVariableDeclarationNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isConstructorParameter(this, caller);
     }
 
     // Declared in EnhancedFor.jrag at line 72
@@ -614,28 +633,6 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in EnhancedFor.jrag at line 48
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        if(caller == getStmtNoTransform()) {
-            return this;
-        }
-        if(caller == getExprNoTransform()) {
-            return this;
-        }
-        if(caller == getVariableDeclarationNoTransform()) {
-            return this;
-        }
-        return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-
-    // Declared in EnhancedFor.jrag at line 43
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getVariableDeclarationNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in EnhancedFor.jrag at line 110
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtNoTransform()) {
@@ -645,6 +642,25 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return v != getVariableDeclaration() && isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in EnhancedFor.jrag at line 112
+    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_insideLoop(this, caller);
+    }
+
+    // Declared in EnhancedForCodegen.jrag at line 18
+    public int Define_int_localNum(ASTNode caller, ASTNode child) {
+        if(caller == getStmtNoTransform()) {
+            return getVariableDeclaration().localNum() + getVariableDeclaration().type().size();
+        }
+        if(caller == getVariableDeclarationNoTransform()) {
+            return localNum() + (getExpr().type().isArrayDecl() ? 2 : 1);
+        }
+        return getParent().Define_int_localNum(this, caller);
     }
 
 public ASTNode rewriteTo() {

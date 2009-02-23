@@ -283,7 +283,7 @@ public class VarAccess extends Access implements Cloneable {
     super.transformation();
   }
 
-    // Declared in Expressions.jrag at line 189
+    // Declared in Expressions.jrag at line 194
 
 
   public soot.Value refined_Expressions_VarAccess_eval(Body b) {
@@ -305,28 +305,28 @@ public class VarAccess extends Access implements Cloneable {
     else if(v instanceof FieldDeclaration) {
       FieldDeclaration f = (FieldDeclaration)v;
       if(f.hostType().isArrayDecl() && f.name().equals("length")) {
-        return Jimple.v().newLengthExpr(asImmediate(b, createLoadQualifier(b)));
+        return b.newLengthExpr(asImmediate(b, createLoadQualifier(b)), this);
       }
       if(f.isStatic()) {
         if(isQualified() && !qualifier().isTypeAccess())
           b.newTemp(qualifier().eval(b));
         if(requiresAccessor()) {
           ArrayList list = new ArrayList();
-          return Jimple.v().newStaticInvokeExpr(f.createAccessor(fieldQualifierType()).sootRef(), list);
+          return b.newStaticInvokeExpr(f.createAccessor(fieldQualifierType()).sootRef(), list, this);
         }
         else
-          return Jimple.v().newStaticFieldRef(sootRef());
+          return b.newStaticFieldRef(sootRef(), this);
       }
       else {
         if(requiresAccessor()) {
           soot.Local base = base(b);
           ArrayList list = new ArrayList();
           list.add(base);
-          return Jimple.v().newStaticInvokeExpr(f.createAccessor(fieldQualifierType()).sootRef(), list);
+          return b.newStaticInvokeExpr(f.createAccessor(fieldQualifierType()).sootRef(), list, this);
         }
         else {
           soot.Local base = createLoadQualifier(b);
-          return Jimple.v().newInstanceFieldRef(base, sootRef());
+          return b.newInstanceFieldRef(base, sootRef(), this);
         }
       }
     }
@@ -334,9 +334,9 @@ public class VarAccess extends Access implements Cloneable {
       return super.eval(b);
   }
 
-    // Declared in Expressions.jrag at line 264
+    // Declared in Expressions.jrag at line 270
 
-  public soot.Value refined_Expressions_VarAccess_emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
+  public soot.Value refined_Expressions_VarAccess_emitStore(Body b, soot.Value lvalue, soot.Value rvalue, ASTNode location) {
     Variable v = decl();
     if(v instanceof FieldDeclaration) {
       FieldDeclaration f = (FieldDeclaration)v;
@@ -344,21 +344,21 @@ public class VarAccess extends Access implements Cloneable {
         if(f.isStatic()) {
           ArrayList list = new ArrayList();
           list.add(rvalue);
-          return asLocal(b, Jimple.v().newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType()).sootRef(), list));
+          return asLocal(b, b.newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType()).sootRef(), list, location));
         }
         else {
           soot.Local base = base(b);
           ArrayList list = new ArrayList();
           list.add(base);
           list.add(asLocal(b, rvalue, lvalue.getType()));
-          return asLocal(b, Jimple.v().newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType()).sootRef(), list));
+          return asLocal(b, b.newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType()).sootRef(), list, location));
         }
       }
     }
-    return super.emitStore(b, lvalue, rvalue);
+    return super.emitStore(b, lvalue, rvalue, location);
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 219
+    // Declared in EmitJimpleRefinements.jrag at line 220
 
 
   public void collectTypesToSignatures(Collection<Type> set) {
@@ -403,7 +403,9 @@ public class VarAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 22
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 16
@@ -439,7 +441,7 @@ public class VarAccess extends Access implements Cloneable {
         return tokenString_ID != null ? tokenString_ID : "";
     }
 
-    // Declared in GenericsCodegen.jrag at line 308
+    // Declared in GenericsCodegen.jrag at line 312
 
 
     protected TypeDecl refined_GenericsCodegen_VarAccess_fieldQualifierType() {
@@ -447,7 +449,7 @@ public class VarAccess extends Access implements Cloneable {
     return typeDecl == null ? null : typeDecl.erasure();
   }
 
-    // Declared in GenericsCodegen.jrag at line 36
+    // Declared in GenericsCodegen.jrag at line 38
 
 
     public soot.Value eval(Body b) {
@@ -456,39 +458,39 @@ public class VarAccess extends Access implements Cloneable {
     if(v instanceof FieldDeclaration) {
       FieldDeclaration f = ((FieldDeclaration)v).erasedField();
       if(f.hostType().isArrayDecl() && f.name().equals("length")) {
-        return Jimple.v().newLengthExpr(asImmediate(b, createLoadQualifier(b)));
+        return b.newLengthExpr(asImmediate(b, createLoadQualifier(b)), this);
       }
       if(f.isStatic()) {
         if(isQualified() && !qualifier().isTypeAccess())
           b.newTemp(qualifier().eval(b));
         if(requiresAccessor()) {
           ArrayList list = new ArrayList();
-          result =  Jimple.v().newStaticInvokeExpr(f.createAccessor(fieldQualifierType().erasure()).sootRef(), list);
+          result =  b.newStaticInvokeExpr(f.createAccessor(fieldQualifierType().erasure()).sootRef(), list, this);
         }
         else
-          result = Jimple.v().newStaticFieldRef(sootRef());
+          result = b.newStaticFieldRef(sootRef(), this);
       }
       else {
         if(requiresAccessor()) {
           soot.Local base = base(b);
           ArrayList list = new ArrayList();
           list.add(base);
-          result = Jimple.v().newStaticInvokeExpr(f.createAccessor(fieldQualifierType().erasure()).sootRef(), list);
+          result = b.newStaticInvokeExpr(f.createAccessor(fieldQualifierType().erasure()).sootRef(), list, this);
         }
         else {
           soot.Local base = createLoadQualifier(b);
-          result = Jimple.v().newInstanceFieldRef(base, sootRef());
+          result = b.newInstanceFieldRef(base, sootRef(), this);
         }
       }
       if(f.type() != v.type())
-        result = f.type().emitCastTo(b, result, v.type());
+        result = f.type().emitCastTo(b, result, v.type(), this);
       return result;
     }
     else
       return refined_Expressions_VarAccess_eval(b);
   }
 
-    // Declared in GenericsCodegen.jrag at line 73
+    // Declared in GenericsCodegen.jrag at line 75
 
     private SootFieldRef sootRef() {
     FieldDeclaration decl = ((FieldDeclaration)decl()).erasedField();
@@ -501,10 +503,10 @@ public class VarAccess extends Access implements Cloneable {
     return ref;
   }
 
-    // Declared in GenericsCodegen.jrag at line 84
+    // Declared in GenericsCodegen.jrag at line 86
 
 
-    public soot.Value emitStore(Body b, soot.Value lvalue, soot.Value rvalue) {
+    public soot.Value emitStore(Body b, soot.Value lvalue, soot.Value rvalue, ASTNode location) {
     Variable v = decl();
     if(v instanceof FieldDeclaration) {
       FieldDeclaration f = ((FieldDeclaration)v).erasedField();
@@ -512,21 +514,21 @@ public class VarAccess extends Access implements Cloneable {
         if(f.isStatic()) {
           ArrayList list = new ArrayList();
           list.add(rvalue);
-          return asLocal(b, Jimple.v().newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType().erasure()).sootRef(), list));
+          return asLocal(b, b.newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType().erasure()).sootRef(), list, this));
         }
         else {
           soot.Local base = base(b);
           ArrayList list = new ArrayList();
           list.add(base);
           list.add(asLocal(b, rvalue, lvalue.getType()));
-          return asLocal(b, Jimple.v().newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType().erasure()).sootRef(), list));
+          return asLocal(b, b.newStaticInvokeExpr(f.createAccessorWrite(fieldQualifierType().erasure()).sootRef(), list, this));
         }
       }
     }
-    return refined_Expressions_VarAccess_emitStore(b, lvalue, rvalue);
+    return refined_Expressions_VarAccess_emitStore(b, lvalue, rvalue, location);
   }
 
-    // Declared in GenericsCodegen.jrag at line 106
+    // Declared in GenericsCodegen.jrag at line 108
 
 
     public soot.Local createLoadQualifier(Body b) {
@@ -847,7 +849,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
   }
 
     protected java.util.Map base_Body_values;
-    // Declared in Expressions.jrag at line 249
+    // Declared in Expressions.jrag at line 254
  @SuppressWarnings({"unchecked", "cast"})     public soot.Local base(Body b) {
         Object _parameters = b;
 if(base_Body_values == null) base_Body_values = new java.util.HashMap(4);

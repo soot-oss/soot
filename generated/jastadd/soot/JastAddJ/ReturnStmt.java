@@ -104,7 +104,8 @@ public class ReturnStmt extends Stmt implements Cloneable {
       Local local = asLocal(b,
         getResult().type().emitCastTo(b,
           getResult().eval(b),
-          type
+          type,
+          getResult()
         ),
         type.getSootType()
       );
@@ -118,7 +119,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
       b.setLine(this);
       if(inSynchronizedBlock())
         endExceptionRange(b, list);
-      b.add(Jimple.v().newReturnStmt(local));
+      b.add(b.newReturnStmt(local, this));
       beginExceptionRange(b, list);
     }
     else {
@@ -132,7 +133,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
       b.setLine(this);
       if(inSynchronizedBlock())
         endExceptionRange(b, list);
-      b.add(Jimple.v().newReturnVoidStmt());
+      b.add(b.newReturnVoidStmt(this));
       beginExceptionRange(b, list);
     }
   }
@@ -164,7 +165,9 @@ public class ReturnStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 217
@@ -348,18 +351,10 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return returnType_value;
     }
 
-    // Declared in Statements.jrag at line 440
+    // Declared in Statements.jrag at line 442
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
         ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
         return exceptionRanges_value;
-    }
-
-    // Declared in GenericMethodsInference.jrag at line 38
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-        if(caller == getResultOptNoTransform()) {
-            return returnType();
-        }
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 653
@@ -376,6 +371,14 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in GenericMethodsInference.jrag at line 38
+    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+        if(caller == getResultOptNoTransform()) {
+            return returnType();
+        }
+        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
 public ASTNode rewriteTo() {

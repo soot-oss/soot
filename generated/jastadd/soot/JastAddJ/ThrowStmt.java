@@ -105,13 +105,14 @@ public class ThrowStmt extends Stmt implements Cloneable {
       error("*** The thrown expression must extend Throwable");
   }
 
-    // Declared in Statements.jrag at line 310
+    // Declared in Statements.jrag at line 311
 
 
   public void jimplify2(Body b) {
     b.setLine(this);
-    b.add(Jimple.v().newThrowStmt(
-      asImmediate(b, getExpr().eval(b))
+    b.add(b.newThrowStmt(
+      asImmediate(b, getExpr().eval(b)),
+      this
     ));
   }
 
@@ -141,7 +142,9 @@ public class ThrowStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 218

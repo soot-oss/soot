@@ -32,7 +32,9 @@ public abstract class AbstractWildcard extends Access implements Cloneable {
 
     // Declared in Generics.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
 public ASTNode rewriteTo() {
     return super.rewriteTo();

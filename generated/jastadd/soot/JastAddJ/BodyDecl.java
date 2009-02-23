@@ -47,7 +47,7 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
   public void jimplify1phase2() {
   }
 
-    // Declared in EmitJimple.jrag at line 665
+    // Declared in EmitJimple.jrag at line 968
 
 
   public void jimplify2() {
@@ -71,7 +71,9 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     protected java.util.Map isDAafter_Variable_values;
     // Declared in DefiniteAssignment.jrag at line 245
@@ -274,15 +276,6 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return hostType_value;
     }
 
-    // Declared in Statements.jrag at line 446
-    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
-        if(true) {
-      int childIndex = this.getIndexOfChild(caller);
-            return null;
-        }
-        return getParent().Define_ArrayList_exceptionRanges(this, caller);
-    }
-
     // Declared in PrettyPrint.jadd at line 352
     public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
         if(true) {
@@ -299,6 +292,15 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
             return this;
         }
         return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
+    }
+
+    // Declared in Statements.jrag at line 448
+    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
+        if(true) {
+      int childIndex = this.getIndexOfChild(caller);
+            return null;
+        }
+        return getParent().Define_ArrayList_exceptionRanges(this, caller);
     }
 
 public ASTNode rewriteTo() {

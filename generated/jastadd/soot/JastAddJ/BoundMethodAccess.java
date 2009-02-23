@@ -88,7 +88,9 @@ public class BoundMethodAccess extends MethodAccess implements Cloneable {
 
     // Declared in BoundNames.ast at line 25
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 17

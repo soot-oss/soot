@@ -107,7 +107,9 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in java.ast at line 28
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 82
@@ -253,20 +255,20 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
 
     private String name_compute() {  return getID();  }
 
-    // Declared in InnerClasses.jrag at line 66
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-        if(caller == getInitOptNoTransform()) {
-            return null;
-        }
-        return getParent().Define_TypeDecl_expectedType(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 41
     public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
         if(caller == getInitOptNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_isSource(this, caller);
+    }
+
+    // Declared in InnerClasses.jrag at line 66
+    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+        if(caller == getInitOptNoTransform()) {
+            return null;
+        }
+        return getParent().Define_TypeDecl_expectedType(this, caller);
     }
 
 public ASTNode rewriteTo() {

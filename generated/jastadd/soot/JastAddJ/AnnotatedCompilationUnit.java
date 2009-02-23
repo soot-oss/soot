@@ -114,7 +114,9 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
 
     // Declared in Annotations.ast at line 30
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 4
@@ -281,20 +283,20 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
         return (Modifiers)getChildNoTransform(2);
     }
 
-    // Declared in Annotations.jrag at line 548
-    public String Define_String_hostPackage(ASTNode caller, ASTNode child) {
-        if(caller == getModifiersNoTransform()) {
-            return packageName();
-        }
-        return super.Define_String_hostPackage(caller, child);
-    }
-
     // Declared in Annotations.jrag at line 71
     public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
         if(caller == getModifiersNoTransform()) {
             return name.equals("PACKAGE");
         }
         return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
+
+    // Declared in Annotations.jrag at line 548
+    public String Define_String_hostPackage(ASTNode caller, ASTNode child) {
+        if(caller == getModifiersNoTransform()) {
+            return packageName();
+        }
+        return super.Define_String_hostPackage(caller, child);
     }
 
 public ASTNode rewriteTo() {

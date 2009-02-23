@@ -115,16 +115,16 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     s.append(" " + name());
   }
 
-    // Declared in EmitJimple.jrag at line 387
+    // Declared in EmitJimple.jrag at line 392
 
 
   public void jimplify2(Body b) {
     b.setLine(this);
     local = b.newLocal(name(), type().getSootType());
-    b.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type().getSootType(), localNum())));
+    b.add(b.newIdentityStmt(local, b.newParameterRef(type().getSootType(), localNum(), this),this));
   }
 
-    // Declared in EmitJimple.jrag at line 392
+    // Declared in EmitJimple.jrag at line 397
 
   public Local local;
 
@@ -166,7 +166,9 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in java.ast at line 26
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 84
@@ -456,14 +458,6 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
         return localNum_value;
     }
 
-    // Declared in Enums.jrag at line 79
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getTypeAccessNoTransform()) {
-            return NameType.TYPE_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-
     // Declared in Modifiers.jrag at line 286
     public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
@@ -478,6 +472,14 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
             return name.equals("PARAMETER");
         }
         return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
+
+    // Declared in Enums.jrag at line 79
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getTypeAccessNoTransform()) {
+            return NameType.TYPE_NAME;
+        }
+        return getParent().Define_NameType_nameType(this, caller);
     }
 
 public ASTNode rewriteTo() {

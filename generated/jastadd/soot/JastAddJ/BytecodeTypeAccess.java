@@ -69,7 +69,9 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in BoundNames.ast at line 24
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 20

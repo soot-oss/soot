@@ -9,6 +9,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
     public void flushCache() {
         super.flushCache();
         involvesTypeParameters_visited = 0;
+        involvesTypeParameters_computed = false;
+        involvesTypeParameters_initialized = false;
         erasure_computed = false;
         erasure_value = null;
         getSuperClassAccessOpt_computed = false;
@@ -18,7 +20,13 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         getBodyDeclList_computed = false;
         getBodyDeclList_value = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         sameStructure_TypeDecl_visited = new java.util.HashMap(4);
+        sameStructure_TypeDecl_values = null;
+        sameStructure_TypeDecl_computed = new java.util.HashSet(4);
+        sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
         instanceOf_TypeDecl_values = null;
         sameSignature_ArrayList_visited = new java.util.HashMap(4);
         sameSignature_ArrayList_values = null;
@@ -47,6 +55,8 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
      @SuppressWarnings({"unchecked", "cast"})  public ParClassDecl clone() throws CloneNotSupportedException {
         ParClassDecl node = (ParClassDecl)super.clone();
         node.involvesTypeParameters_visited = 0;
+        node.involvesTypeParameters_computed = false;
+        node.involvesTypeParameters_initialized = false;
         node.erasure_computed = false;
         node.erasure_value = null;
         node.getSuperClassAccessOpt_computed = false;
@@ -56,7 +66,13 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
         node.getBodyDeclList_computed = false;
         node.getBodyDeclList_value = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.sameStructure_TypeDecl_visited = new java.util.HashMap(4);
+        node.sameStructure_TypeDecl_values = null;
+        node.sameStructure_TypeDecl_computed = new java.util.HashSet(4);
+        node.sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
         node.instanceOf_TypeDecl_values = null;
         node.sameSignature_ArrayList_visited = new java.util.HashMap(4);
         node.sameSignature_ArrayList_values = null;
@@ -195,7 +211,9 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
 
     // Declared in Generics.ast at line 36
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 63
@@ -504,18 +522,33 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
 
 
   public Access createQualifiedAccess() {
-    List typeArgumentList = (List)getArgumentList().fullCopy();
+    List typeArgumentList = new List();
+    for(int i = 0; i < getNumArgument(); i++) {
+      Access a = (Access)getArgument(i);
+      if(a instanceof TypeAccess)
+        typeArgumentList.add(a.type().createQualifiedAccess());
+      else
+        typeArgumentList.add(a.fullCopy());
+    }
     if(!isTopLevelType()) {
-      return enclosingType().createQualifiedAccess().qualifiesAccess(
-        new ParTypeAccess(new TypeAccess("", getID()), typeArgumentList)
-      );
+      if(isRawType())
+        return enclosingType().createQualifiedAccess().qualifiesAccess(
+          new TypeAccess("", getID())
+        );
+      else
+        return enclosingType().createQualifiedAccess().qualifiesAccess(
+          new ParTypeAccess(new TypeAccess("", getID()), typeArgumentList)
+        );
     }
     else {
-      return new ParTypeAccess(new TypeAccess(packageName(), getID()), typeArgumentList);
+      if(isRawType())
+        return new TypeAccess(packageName(), getID());
+      else
+        return new ParTypeAccess(new TypeAccess(packageName(), getID()), typeArgumentList);
     }
   }
 
-    // Declared in GenericsCodegen.jrag at line 402
+    // Declared in GenericsCodegen.jrag at line 406
 
 
   public void transformation() {
@@ -1327,6 +1360,15 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
         return genericDecl_value;
     }
 
+    // Declared in Generics.jrag at line 443
+    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+        if(caller == getArgumentListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return NameType.TYPE_NAME;
+        }
+        return super.Define_NameType_nameType(caller, child);
+    }
+
     // Declared in GenericsParTypeDecl.jrag at line 49
     public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
         if(caller == getBodyDeclListNoTransform()) { 
@@ -1340,15 +1382,6 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
   }
 }
         return getParent().Define_TypeDecl_genericDecl(this, caller);
-    }
-
-    // Declared in Generics.jrag at line 443
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getArgumentListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return NameType.TYPE_NAME;
-        }
-        return super.Define_NameType_nameType(caller, child);
     }
 
 public ASTNode rewriteTo() {

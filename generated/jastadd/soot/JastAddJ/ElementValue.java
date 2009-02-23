@@ -40,7 +40,9 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Annotations.jrag at line 57
  @SuppressWarnings({"unchecked", "cast"})     public boolean validTarget(Annotation a) {

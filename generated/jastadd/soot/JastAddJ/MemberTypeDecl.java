@@ -33,7 +33,9 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in LookupType.jrag at line 396
  @SuppressWarnings({"unchecked", "cast"})     public abstract TypeDecl typeDecl();

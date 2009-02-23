@@ -17,6 +17,9 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         escapedBranches_value = null;
         isDAafter_Variable_values = null;
         isDUbefore_Variable_visited = new java.util.HashMap(4);
+        isDUbefore_Variable_values = null;
+        isDUbefore_Variable_computed = new java.util.HashSet(4);
+        isDUbefore_Variable_initialized = new java.util.HashSet(4);
         isDUafter_Variable_values = null;
         reachableThrow_CatchClause_values = null;
         canCompleteNormally_computed = false;
@@ -54,6 +57,9 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         node.escapedBranches_value = null;
         node.isDAafter_Variable_values = null;
         node.isDUbefore_Variable_visited = new java.util.HashMap(4);
+        node.isDUbefore_Variable_values = null;
+        node.isDUbefore_Variable_computed = new java.util.HashSet(4);
+        node.isDUbefore_Variable_initialized = new java.util.HashSet(4);
         node.isDUafter_Variable_values = null;
         node.reachableThrow_CatchClause_values = null;
         node.canCompleteNormally_computed = false;
@@ -165,7 +171,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     }
   }
 
-    // Declared in Statements.jrag at line 319
+    // Declared in Statements.jrag at line 321
 
   public void emitFinallyCode(Body b) {
     if(hasFinally()) {
@@ -175,7 +181,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     }
   }
 
-    // Declared in Statements.jrag at line 355
+    // Declared in Statements.jrag at line 357
 
 
   public void jimplify2(Body b) {
@@ -193,7 +199,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
       emitFinallyCode(b);
       b.setLine(this);
       if((!hasFinally() || getFinally().canCompleteNormally()) && (getNumCatchClause() != 0 || hasFinally()/*needsFinallyTrap()*/))
-        b.add(Jimple.v().newGotoStmt(label_end = label_end()));
+        b.add(b.newGotoStmt(label_end = label_end(), this));
     }
     if(getNumCatchClause() != 0) {
       if(label_block_end == null)
@@ -208,7 +214,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
           endExceptionRange(b, ranges);
           emitFinallyCode(b);
           if(!hasFinally() || getFinally().canCompleteNormally())
-            b.add(Jimple.v().newGotoStmt(label_end = label_end()));
+            b.add(b.newGotoStmt(label_end = label_end(), this));
           beginExceptionRange(b, ranges);
         }
         b.setLine(getCatchClause(i));
@@ -220,7 +226,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
       emitExceptionHandler(b);
       b.setLine(getFinally());
       //if(getFinally().canCompleteNormally())
-      //  b.add(Jimple.v().newGotoStmt(label_end()));
+      //  b.add(b.newGotoStmt(label_end(), this));
     }
     if(label_end != null)
       b.addLabel(label_end);
@@ -263,16 +269,16 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     }
   }
 
-    // Declared in Statements.jrag at line 464
+    // Declared in Statements.jrag at line 466
 
  
   public void emitExceptionHandler(Body b) {
     Local l = b.newTemp(typeThrowable().getSootType());
     b.setLine(this);
-    b.add(Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef()));
+    b.add(b.newIdentityStmt(l, b.newCaughtExceptionRef(this), this));
     emitFinallyCode(b);
     //if(hasFinally() && getFinally().canCompleteNormally()) {
-      soot.jimple.Stmt throwStmt = Jimple.v().newThrowStmt(l);
+      soot.jimple.Stmt throwStmt = b.newThrowStmt(l, this);
       throwStmt.addTag(new soot.tagkit.ThrowCreatedByCompilerTag());
       b.add(throwStmt);
     //}
@@ -308,7 +314,9 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
 
     // Declared in java.ast at line 21
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 222
@@ -715,7 +723,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean label_begin_computed = false;
     protected soot.jimple.Stmt label_begin_value;
-    // Declared in Statements.jrag at line 336
+    // Declared in Statements.jrag at line 338
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_begin() {
         if(label_begin_computed)
             return label_begin_value;
@@ -731,7 +739,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean label_block_end_computed = false;
     protected soot.jimple.Stmt label_block_end_value;
-    // Declared in Statements.jrag at line 337
+    // Declared in Statements.jrag at line 339
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_block_end() {
         if(label_block_end_computed)
             return label_block_end_value;
@@ -747,7 +755,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean label_end_computed = false;
     protected soot.jimple.Stmt label_end_value;
-    // Declared in Statements.jrag at line 338
+    // Declared in Statements.jrag at line 340
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_end() {
         if(label_end_computed)
             return label_end_value;
@@ -763,7 +771,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean label_finally_computed = false;
     protected soot.jimple.Stmt label_finally_value;
-    // Declared in Statements.jrag at line 339
+    // Declared in Statements.jrag at line 341
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally() {
         if(label_finally_computed)
             return label_finally_value;
@@ -779,7 +787,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean label_finally_block_computed = false;
     protected soot.jimple.Stmt label_finally_block_value;
-    // Declared in Statements.jrag at line 340
+    // Declared in Statements.jrag at line 342
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally_block() {
         if(label_finally_block_computed)
             return label_finally_block_value;
@@ -795,7 +803,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean label_exception_handler_computed = false;
     protected soot.jimple.Stmt label_exception_handler_value;
-    // Declared in Statements.jrag at line 341
+    // Declared in Statements.jrag at line 343
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_exception_handler() {
         if(label_exception_handler_computed)
             return label_exception_handler_value;
@@ -811,7 +819,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean label_catch_end_computed = false;
     protected soot.jimple.Stmt label_catch_end_value;
-    // Declared in Statements.jrag at line 342
+    // Declared in Statements.jrag at line 344
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_catch_end() {
         if(label_catch_end_computed)
             return label_catch_end_value;
@@ -825,7 +833,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     private soot.jimple.Stmt label_catch_end_compute() {  return newLabel();  }
 
-    // Declared in Statements.jrag at line 344
+    // Declared in Statements.jrag at line 346
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsFinallyTrap() {
         boolean needsFinallyTrap_value = needsFinallyTrap_compute();
         return needsFinallyTrap_value;
@@ -835,7 +843,7 @@ if(reachableThrow_CatchClause_values == null) reachableThrow_CatchClause_values 
 
     protected boolean exceptionRanges_computed = false;
     protected ArrayList exceptionRanges_value;
-    // Declared in Statements.jrag at line 448
+    // Declared in Statements.jrag at line 450
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
         if(exceptionRanges_computed)
             return exceptionRanges_value;
@@ -892,83 +900,16 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return typeRuntimeException_value;
     }
 
-    // Declared in Statements.jrag at line 345
+    // Declared in Statements.jrag at line 347
  @SuppressWarnings({"unchecked", "cast"})     public boolean enclosedByExceptionHandler() {
         boolean enclosedByExceptionHandler_value = getParent().Define_boolean_enclosedByExceptionHandler(this, null);
         return enclosedByExceptionHandler_value;
     }
 
-    // Declared in Statements.jrag at line 461
+    // Declared in Statements.jrag at line 463
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
         TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         return typeThrowable_value;
-    }
-
-    // Declared in Statements.jrag at line 444
-    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
-        if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return exceptionRanges();
-        }
-        if(caller == getBlockNoTransform()) {
-            return exceptionRanges();
-        }
-        return getParent().Define_ArrayList_exceptionRanges(this, caller);
-    }
-
-    // Declared in ExceptionHandling.jrag at line 179
-    public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
-        if(caller == getBlockNoTransform()){
-    for(int i = 0; i < getNumCatchClause(); i++)
-      if(getCatchClause(i).handles(exceptionType))
-        return true;
-    if(hasFinally() && !getFinally().canCompleteNormally())
-      return true;
-    return handlesException(exceptionType);
-  }
-        if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
-    if(hasFinally() && !getFinally().canCompleteNormally())
-      return true;
-    return handlesException(exceptionType);
-  }
-}
-        return getParent().Define_boolean_handlesException(this, caller, exceptionType);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 154
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        if(caller == getFinallyOptNoTransform()) {
-            return reachable();
-        }
-        if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-            return reachable();
-        }
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 121
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        if(caller == getFinallyOptNoTransform()) {
-            return reachable();
-        }
-        if(caller == getBlockNoTransform()) {
-            return reachable();
-        }
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-
-    // Declared in Statements.jrag at line 350
-    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-        if(caller == getBlockNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 666
@@ -984,25 +925,6 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
             return isDAbefore(v);
         }
         return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-
-    // Declared in UnreachableStatements.jrag at line 125
-    public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child) {
-        if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
-    TypeDecl type = getCatchClause(childIndex).getParameter().type();
-    for(int i = 0; i < childIndex; i++)
-      if(getCatchClause(i).handles(type))
-        return false;
-    if(reachableThrow(getCatchClause(childIndex)))
-      return true;
-    if(type.mayCatch(typeError()) || type.mayCatch(typeRuntimeException()))
-      return true;
-    return false;
-  }
-}
-        return getParent().Define_boolean_reachableCatchClause(this, caller);
     }
 
     // Declared in DefiniteAssignment.jrag at line 1216
@@ -1029,6 +951,92 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
             return isDUbefore(v);
         }
         return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
+
+    // Declared in ExceptionHandling.jrag at line 179
+    public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
+        if(caller == getBlockNoTransform()){
+    for(int i = 0; i < getNumCatchClause(); i++)
+      if(getCatchClause(i).handles(exceptionType))
+        return true;
+    if(hasFinally() && !getFinally().canCompleteNormally())
+      return true;
+    return handlesException(exceptionType);
+  }
+        if(caller == getCatchClauseListNoTransform()) { 
+   int childIndex = caller.getIndexOfChild(child);
+{
+    if(hasFinally() && !getFinally().canCompleteNormally())
+      return true;
+    return handlesException(exceptionType);
+  }
+}
+        return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 121
+    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+        if(caller == getFinallyOptNoTransform()) {
+            return reachable();
+        }
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reachable(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 125
+    public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child) {
+        if(caller == getCatchClauseListNoTransform()) { 
+   int childIndex = caller.getIndexOfChild(child);
+{
+    TypeDecl type = getCatchClause(childIndex).getParameter().type();
+    for(int i = 0; i < childIndex; i++)
+      if(getCatchClause(i).handles(type))
+        return false;
+    if(reachableThrow(getCatchClause(childIndex)))
+      return true;
+    if(type.mayCatch(typeError()) || type.mayCatch(typeRuntimeException()))
+      return true;
+    return false;
+  }
+}
+        return getParent().Define_boolean_reachableCatchClause(this, caller);
+    }
+
+    // Declared in UnreachableStatements.jrag at line 154
+    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+        if(caller == getFinallyOptNoTransform()) {
+            return reachable();
+        }
+        if(caller == getCatchClauseListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return reachable();
+        }
+        if(caller == getBlockNoTransform()) {
+            return reachable();
+        }
+        return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
+
+    // Declared in Statements.jrag at line 352
+    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
+        if(caller == getBlockNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
+
+    // Declared in Statements.jrag at line 446
+    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
+        if(caller == getCatchClauseListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+            return exceptionRanges();
+        }
+        if(caller == getBlockNoTransform()) {
+            return exceptionRanges();
+        }
+        return getParent().Define_ArrayList_exceptionRanges(this, caller);
     }
 
 public ASTNode rewriteTo() {

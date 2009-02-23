@@ -32,16 +32,16 @@ public class NEExpr extends EqualityExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in BooleanExpressions.jrag at line 293
+    // Declared in BooleanExpressions.jrag at line 297
 
   public soot.Value comparison(Body b, soot.Value left, soot.Value right) {
-    return Jimple.v().newNeExpr(asImmediate(b, left), asImmediate(b, right));
+    return b.newNeExpr(asImmediate(b, left), asImmediate(b, right), this);
   }
 
-    // Declared in BooleanExpressions.jrag at line 315
+    // Declared in BooleanExpressions.jrag at line 319
 
   public soot.Value comparisonInv(Body b, soot.Value left, soot.Value right) {
-    return Jimple.v().newEqExpr(asImmediate(b, left), asImmediate(b, right));
+    return b.newEqExpr(asImmediate(b, left), asImmediate(b, right), this);
   }
 
     // Declared in java.ast at line 3
@@ -71,7 +71,9 @@ public class NEExpr extends EqualityExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 153

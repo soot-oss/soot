@@ -32,7 +32,7 @@ public class PostDecExpr extends PostfixExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 731
+    // Declared in Expressions.jrag at line 752
 
   public soot.Value eval(Body b) { return emitPostfix(b, -1); }
 
@@ -62,7 +62,9 @@ public class PostDecExpr extends PostfixExpr implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139

@@ -61,7 +61,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
     s.append("[]");
   }
 
-    // Declared in Expressions.jrag at line 642
+    // Declared in Expressions.jrag at line 660
 
   public void addArraySize(Body b, ArrayList list) {
     getAccess().addArraySize(b, list);
@@ -93,7 +93,9 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 22

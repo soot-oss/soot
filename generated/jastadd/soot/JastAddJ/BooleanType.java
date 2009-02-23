@@ -60,11 +60,11 @@ public class BooleanType extends PrimitiveType implements Cloneable {
     // Declared in AutoBoxingCodegen.jrag at line 12
 
   // Code generation for Boxing Conversion
-  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type) {
+  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
     if(type == this)
       return v;
     else if(type.unboxed() == this || type.isObject())
-      return boxed().emitBoxingOperation(b, v);
+      return boxed().emitBoxingOperation(b, v, location);
     else
       return v;
   }
@@ -111,7 +111,9 @@ public class BooleanType extends PrimitiveType implements Cloneable {
 
     // Declared in java.ast at line 30
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 42

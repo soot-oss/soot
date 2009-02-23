@@ -63,6 +63,7 @@ public class FileNamesPart extends PathPart {
           fullName = name; // is this ok
           CompilationUnit u = getCompilationUnit();
           if(u != null) {
+            program.addCompilationUnit(u);
             String packageName = u.getPackageDecl();
             if(packageName != null && !packages.contains(packageName)) {
               packages.add(packageName);
@@ -73,7 +74,6 @@ public class FileNamesPart extends PathPart {
                   packages.add(n);
               }
             }
-            program.addCompilationUnit(u);
           }
         }
       } catch (IOException e) {

@@ -46,7 +46,7 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
     getClassDecl().toString(s);
   }
 
-    // Declared in Statements.jrag at line 516
+    // Declared in Statements.jrag at line 518
 
 
   public void jimplify2(Body b) {
@@ -78,7 +78,9 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 227

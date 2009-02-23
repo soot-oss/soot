@@ -36,14 +36,14 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
         }
         return res;
     }
-    // Declared in GenericsCodegen.jrag at line 21
+    // Declared in GenericsCodegen.jrag at line 23
 
 
   public ConstructorDecl createAccessor() {
     return erasedConstructor().createAccessor();
   }
 
-    // Declared in GenericsCodegen.jrag at line 25
+    // Declared in GenericsCodegen.jrag at line 27
 
   
   protected TypeDecl createAnonymousJavaTypeDecl() {
@@ -99,7 +99,9 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
 
     // Declared in Generics.ast at line 37
 
-  public boolean mayHaveRewrite() { return true; }
+    public boolean mayHaveRewrite() {
+        return true;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 72
@@ -355,7 +357,7 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
 
     private ConstructorDecl sourceConstructorDecl_compute() {  return getOriginal().sourceConstructorDecl();  }
 
-    // Declared in GenericsCodegen.jrag at line 314
+    // Declared in GenericsCodegen.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl erasedConstructor() {
         ConstructorDecl erasedConstructor_value = erasedConstructor_compute();
         return erasedConstructor_value;

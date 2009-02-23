@@ -32,15 +32,15 @@ public class AssignLShiftExpr extends AssignShiftExpr implements Cloneable {
         }
         return res;
     }
-    // Declared in Expressions.jrag at line 142
+    // Declared in Expressions.jrag at line 147
 
 
   public soot.Value eval(Body b) { return emitShiftExpr(b); }
 
-    // Declared in Expressions.jrag at line 166
+    // Declared in Expressions.jrag at line 171
 
   public soot.Value createAssignOp(Body b, soot.Value fst, soot.Value snd) {
-    return Jimple.v().newShlExpr(asImmediate(b, fst), asImmediate(b, snd));
+    return b.newShlExpr(asImmediate(b, fst), asImmediate(b, snd), this);
   }
 
     // Declared in java.ast at line 3
@@ -70,7 +70,9 @@ public class AssignLShiftExpr extends AssignShiftExpr implements Cloneable {
 
     // Declared in java.ast at line 18
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 99

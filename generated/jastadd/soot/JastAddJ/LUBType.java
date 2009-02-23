@@ -10,6 +10,9 @@ public class LUBType extends ReferenceType implements Cloneable {
         lub_computed = false;
         lub_value = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         getSootClassDecl_computed = false;
         getSootClassDecl_value = null;
     }
@@ -18,6 +21,9 @@ public class LUBType extends ReferenceType implements Cloneable {
         node.lub_computed = false;
         node.lub_value = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.getSootClassDecl_computed = false;
         node.getSootClassDecl_value = null;
         node.in$Circle(false);
@@ -314,7 +320,9 @@ public class LUBType extends ReferenceType implements Cloneable {
 
     // Declared in Generics.ast at line 30
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Generics.ast at line 2
     // Declared in Generics.ast line 38
@@ -617,7 +625,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return type == lookupGLBType(bounds);
   }
 
-    // Declared in GenericsCodegen.jrag at line 413
+    // Declared in GenericsCodegen.jrag at line 422
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed)
             return getSootClassDecl_value;

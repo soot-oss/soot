@@ -203,7 +203,9 @@ public class Annotation extends Modifier implements Cloneable {
 
     // Declared in Annotations.ast at line 27
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in Annotations.ast at line 2
     // Declared in Annotations.ast line 6

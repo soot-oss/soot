@@ -32,7 +32,9 @@ public abstract class PrimaryExpr extends Expr implements Cloneable {
 
     // Declared in java.ast at line 12
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
 public ASTNode rewriteTo() {
     return super.rewriteTo();

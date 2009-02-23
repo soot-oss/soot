@@ -52,7 +52,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     }
   }
 
-    // Declared in GenericMethods.jrag at line 126
+    // Declared in GenericMethods.jrag at line 128
 
 
   public void toString(StringBuffer s) {
@@ -105,7 +105,9 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
 
     // Declared in GenericMethods.ast at line 28
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 17
@@ -274,7 +276,7 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
     return typeArguments;
   }
 
-    // Declared in GenericMethods.jrag at line 89
+    // Declared in GenericMethods.jrag at line 91
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -283,7 +285,7 @@ if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = ne
         return super.Define_NameType_nameType(caller, child);
     }
 
-    // Declared in GenericMethods.jrag at line 90
+    // Declared in GenericMethods.jrag at line 92
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

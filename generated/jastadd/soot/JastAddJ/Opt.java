@@ -49,7 +49,9 @@ public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     // Declared in Opt.ast at line 13
 
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in BooleanExpressions.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {

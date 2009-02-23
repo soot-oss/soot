@@ -57,15 +57,16 @@ public class ArrayAccess extends Access implements Cloneable {
       error("array index must be int after unary numeric promotion which " + getExpr().type().typeName() + " is not");
   }
 
-    // Declared in Expressions.jrag at line 403
+    // Declared in Expressions.jrag at line 410
 
 
   public soot.Value eval(Body b) {
     soot.Value arrayRef = b.newTemp(prevExpr().eval(b));
     soot.Value arrayIndex = b.newTemp(getExpr().eval(b));
-    return Jimple.v().newArrayRef(
+    return b.newArrayRef(
       asLocal(b, arrayRef),
-      asImmediate(b, arrayIndex)
+      asImmediate(b, arrayIndex),
+      this
     );
   }
 
@@ -95,7 +96,9 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 28
@@ -176,20 +179,20 @@ public class ArrayAccess extends Access implements Cloneable {
         return unknownType_value;
     }
 
+    // Declared in DefiniteAssignment.jrag at line 34
+    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+        if(caller == getExprNoTransform()) {
+            return false;
+        }
+        return getParent().Define_boolean_isDest(this, caller);
+    }
+
     // Declared in DefiniteAssignment.jrag at line 35
     public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
         if(caller == getExprNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_isSource(this, caller);
-    }
-
-    // Declared in LookupVariable.jrag at line 133
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getExprNoTransform()) {
-            return unqualifiedScope().lookupVariable(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
     // Declared in LookupMethod.jrag at line 30
@@ -208,12 +211,20 @@ public class ArrayAccess extends Access implements Cloneable {
         return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 34
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+    // Declared in LookupType.jrag at line 167
+    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getExprNoTransform()) {
-            return false;
+            return unqualifiedScope().lookupType(name);
         }
-        return getParent().Define_boolean_isDest(this, caller);
+        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
+
+    // Declared in LookupVariable.jrag at line 133
+    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+        if(caller == getExprNoTransform()) {
+            return unqualifiedScope().lookupVariable(name);
+        }
+        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
 
     // Declared in SyntacticClassification.jrag at line 122
@@ -222,14 +233,6 @@ public class ArrayAccess extends Access implements Cloneable {
             return NameType.EXPRESSION_NAME;
         }
         return getParent().Define_NameType_nameType(this, caller);
-    }
-
-    // Declared in LookupType.jrag at line 167
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-        if(caller == getExprNoTransform()) {
-            return unqualifiedScope().lookupType(name);
-        }
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
 
 public ASTNode rewriteTo() {

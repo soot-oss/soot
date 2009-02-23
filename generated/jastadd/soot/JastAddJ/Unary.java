@@ -29,44 +29,46 @@ public abstract class Unary extends Expr implements Cloneable {
     s.append(printPostOp());
   }
 
-    // Declared in Expressions.jrag at line 670
+    // Declared in Expressions.jrag at line 689
 
 
   public soot.Value eval(Body b) {
     return super.eval(b);
   }
 
-    // Declared in Expressions.jrag at line 716
+    // Declared in Expressions.jrag at line 736
 
 
   public soot.Value emitPostfix(Body b, int constant) {
     soot.Value lvalue = getOperand().eval(b);
     Value v = lvalue instanceof Local ? lvalue : (Value)lvalue.clone();
     TypeDecl type = getOperand().type().binaryNumericPromotion(typeInt());
-    Value value = b.newTemp(getOperand().type().emitCastTo(b, v, type));
-    Value rvalue = typeInt().emitCastTo(b, IntType.emitConstant(constant), type);
+    Value value = b.newTemp(getOperand().type().emitCastTo(b, v, type, getOperand()));
+    Value rvalue = typeInt().emitCastTo(b, IntType.emitConstant(constant), type, this);
     Value sum = asRValue(b, type.emitCastTo(b,
-      Jimple.v().newAddExpr(asImmediate(b, value), asImmediate(b, rvalue)),
-      getOperand().type()
+      b.newAddExpr(asImmediate(b, value), asImmediate(b, rvalue), this),
+      getOperand().type(),
+      this
     ));
-    getOperand().emitStore(b, lvalue, sum);
+    getOperand().emitStore(b, lvalue, sum, this);
     return value;
   }
 
-    // Declared in Expressions.jrag at line 733
+    // Declared in Expressions.jrag at line 754
 
 
   public soot.Value emitPrefix(Body b, int constant) {
     soot.Value lvalue = getOperand().eval(b);
     Value v = lvalue instanceof Local ? lvalue : (Value)lvalue.clone();
     TypeDecl type = getOperand().type().binaryNumericPromotion(typeInt());
-    Value value = getOperand().type().emitCastTo(b, v, type);
-    Value rvalue = typeInt().emitCastTo(b, IntType.emitConstant(constant), type);
+    Value value = getOperand().type().emitCastTo(b, v, type, getOperand());
+    Value rvalue = typeInt().emitCastTo(b, IntType.emitConstant(constant), type, this);
     Value result = asLocal(b, type.emitCastTo(b,
-      Jimple.v().newAddExpr(asImmediate(b, value), asImmediate(b, rvalue)),
-      getOperand().type()
+      b.newAddExpr(asImmediate(b, value), asImmediate(b, rvalue), this),
+      getOperand().type(),
+      this
     ));
-    getOperand().emitStore(b, lvalue, result);
+    getOperand().emitStore(b, lvalue, result, this);
     return result;
   }
 
@@ -96,7 +98,9 @@ public abstract class Unary extends Expr implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139

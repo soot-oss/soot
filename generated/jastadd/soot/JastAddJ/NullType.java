@@ -8,11 +8,17 @@ public class NullType extends TypeDecl implements Cloneable {
         super.flushCache();
         instanceOf_TypeDecl_values = null;
         subtype_TypeDecl_visited = new java.util.HashMap(4);
+        subtype_TypeDecl_values = null;
+        subtype_TypeDecl_computed = new java.util.HashSet(4);
+        subtype_TypeDecl_initialized = new java.util.HashSet(4);
     }
      @SuppressWarnings({"unchecked", "cast"})  public NullType clone() throws CloneNotSupportedException {
         NullType node = (NullType)super.clone();
         node.instanceOf_TypeDecl_values = null;
         node.subtype_TypeDecl_visited = new java.util.HashMap(4);
+        node.subtype_TypeDecl_values = null;
+        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
+        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -42,9 +48,9 @@ public class NullType extends TypeDecl implements Cloneable {
 		s.append("null");
 	}
 
-    // Declared in EmitJimple.jrag at line 439
+    // Declared in EmitJimple.jrag at line 446
 
-  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type) {
+  public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
     return v;
   }
 
@@ -87,7 +93,9 @@ public class NullType extends TypeDecl implements Cloneable {
 
     // Declared in java.ast at line 27
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 38
@@ -214,7 +222,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return instanceOf_TypeDecl_value;
     }
 
-    private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
+    private boolean instanceOf_compute(TypeDecl type) { return subtype(type); }
 
     // Declared in TypeAnalysis.jrag at line 484
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {

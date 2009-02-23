@@ -99,7 +99,7 @@ public class BreakStmt extends Stmt implements Cloneable {
     if(inSynchronizedBlock())
       endExceptionRange(b, list);
     b.setLine(this);
-    b.add(Jimple.v().newGotoStmt(targetStmt().break_label()));
+    b.add(b.newGotoStmt(targetStmt().break_label(), this));
     beginExceptionRange(b, list);
   }
 
@@ -137,7 +137,9 @@ public class BreakStmt extends Stmt implements Cloneable {
 
     // Declared in java.ast at line 22
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 215
@@ -360,7 +362,7 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
         return insideSwitch_value;
     }
 
-    // Declared in Statements.jrag at line 442
+    // Declared in Statements.jrag at line 444
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
         ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
         return exceptionRanges_value;

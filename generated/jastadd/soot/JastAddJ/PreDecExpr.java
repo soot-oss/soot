@@ -64,7 +64,7 @@ public class PreDecExpr extends Unary implements Cloneable {
       error("unary decrement only operates on numeric types");
   }
 
-    // Declared in Expressions.jrag at line 748
+    // Declared in Expressions.jrag at line 770
 
   public soot.Value eval(Body b) { return emitPrefix(b, -1); }
 
@@ -94,7 +94,9 @@ public class PreDecExpr extends Unary implements Cloneable {
 
     // Declared in java.ast at line 17
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 139
@@ -123,20 +125,20 @@ public class PreDecExpr extends Unary implements Cloneable {
 
     private String printPreOp_compute() {  return "--";  }
 
-    // Declared in DefiniteAssignment.jrag at line 55
-    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-        if(caller == getOperandNoTransform()) {
-            return true;
-        }
-        return getParent().Define_boolean_isIncOrDec(this, caller);
-    }
-
     // Declared in DefiniteAssignment.jrag at line 47
     public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
         if(caller == getOperandNoTransform()) {
             return true;
         }
         return getParent().Define_boolean_isDest(this, caller);
+    }
+
+    // Declared in DefiniteAssignment.jrag at line 55
+    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
+        if(caller == getOperandNoTransform()) {
+            return true;
+        }
+        return getParent().Define_boolean_isIncOrDec(this, caller);
     }
 
 public ASTNode rewriteTo() {

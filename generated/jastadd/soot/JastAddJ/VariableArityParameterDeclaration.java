@@ -129,7 +129,9 @@ specified in section \ufffd15.12.2.5. See the following subsections for details.
 
     // Declared in VariableArityParameters.ast at line 26
 
-  public boolean mayHaveRewrite() { return false; }
+    public boolean mayHaveRewrite() {
+        return false;
+    }
 
     // Declared in java.ast at line 2
     // Declared in java.ast line 84
