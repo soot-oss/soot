@@ -44,9 +44,7 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
     {
         super(opType);      
         localBox = new BafLocalBox(local);
-        defBoxes = new ArrayList();
-        defBoxes.add(localBox);
-        defBoxes = Collections.unmodifiableList(defBoxes);
+        defBoxes = Collections.singletonList(localBox);
     }
 
     public int getInCount()

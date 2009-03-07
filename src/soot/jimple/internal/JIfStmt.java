@@ -63,9 +63,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         this.conditionBox = conditionBox;
         this.targetBox = targetBox;
 
-        targetBoxes = new ArrayList();
-        targetBoxes.add(this.targetBox);
-        targetBoxes = Collections.unmodifiableList(targetBoxes);
+        targetBoxes = Collections.singletonList(targetBox);
     }
     
     public Object clone()

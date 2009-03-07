@@ -44,9 +44,7 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
     {
         super(opType);
         localBox = new BafLocalBox(local);
-        useBoxes = new ArrayList();
-        useBoxes.add(localBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);
+        useBoxes = Collections.singletonList(localBox);
     }
 
     public int getInCount()

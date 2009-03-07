@@ -50,9 +50,7 @@ public class JIdentityStmt extends AbstractDefinitionStmt
     {
         this.leftBox = localBox; this.rightBox = identityValueBox;
 
-        defBoxes = new ArrayList();
-        defBoxes.add(leftBox);
-        defBoxes = Collections.unmodifiableList(defBoxes);
+        defBoxes = Collections.singletonList(leftBox);
     }
 
     public Object clone()
