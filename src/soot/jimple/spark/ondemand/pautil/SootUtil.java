@@ -247,13 +247,6 @@ public class SootUtil {
     return loadsOnField;
   }
 
-  private static final RefType OBJECT_TYPE = Scene.v().getRefType("java.lang.Object");
-  {
-    if (OBJECT_TYPE == null) {
-      throw new RuntimeException();
-    }
-  }
-
   public static PointsToSetInternal constructIntersection(final PointsToSetInternal set1, final PointsToSetInternal set2, PAG pag) {
     HybridPointsToSet hybridSet1 = null, hybridSet2 = null;
     hybridSet1 = convertToHybrid(set1);
@@ -267,7 +260,7 @@ public class SootUtil {
   @SuppressWarnings("unused")
   private static void checkSetsEqual(final HybridPointsToSet intersection, final PointsToSetInternal set1,
       final PointsToSetInternal set2, PAG pag) {
-    final PointsToSetInternal ret = new HybridPointsToSet(OBJECT_TYPE, pag);
+    final PointsToSetInternal ret = new HybridPointsToSet(Scene.v().getObjectType(), pag);
     set1.forall(new P2SetVisitor() {
 
       @Override
