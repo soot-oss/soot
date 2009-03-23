@@ -20,6 +20,8 @@
 package soot;
 import java.io.File;
 
+import polyglot.ast.Node;
+
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.InitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
@@ -62,8 +64,13 @@ public class JavaClassSource extends ClassSource
          */
 		if(Options.v().ast_metrics()){
 			//System.out.println("CALLING COMPUTEASTMETRICS!!!!!!!");
-			ComputeASTMetrics metrics = new ComputeASTMetrics(InitialResolver.v().getAst());
-			metrics.apply();
+			Node ast = InitialResolver.v().getAst();
+			if(ast==null) {
+				G.v().out.println("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");
+			} else {
+				ComputeASTMetrics metrics = new ComputeASTMetrics(ast);
+				metrics.apply();
+			}
 		}
         
         return references;
