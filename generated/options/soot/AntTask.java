@@ -1230,6 +1230,12 @@ public class AntTask extends MatchingTask {
             addArg("cs-demand:"+(arg?"true":"false"));
           }
       
+          public void setlazy_pts(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("lazy-pts:"+(arg?"true":"false"));
+          }
+      
           public void setpropagator(String arg) {
             addArg("-p");
             addArg("cg.spark");

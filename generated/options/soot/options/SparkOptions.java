@@ -393,6 +393,24 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "cs-demand" );
     }
     
+    /** Create lazy points-to sets --
+    
+     * Create lazy points-to sets that create context information only 
+     * when needed..
+    
+     * When this option is disabled, context information is computed 
+     * for every query to the reachingObjects method. When it is 
+     * enabled, a call to reachingObjects returns a lazy wrapper object 
+     * that contains a context-insensitive points-to set. This set is 
+     * then automatically refined with context information when 
+     * necessary, i.e. when we try to determine the intersection with 
+     * another points-to set and this intersection seems to be 
+     * non-empty.							 					
+     */
+    public boolean lazy_pts() {
+        return soot.PhaseOptions.getBoolean( options, "lazy-pts" );
+    }
+    
     /** Maximal traversal --
     
      * Make the analysis traverse at most this number of nodes per 

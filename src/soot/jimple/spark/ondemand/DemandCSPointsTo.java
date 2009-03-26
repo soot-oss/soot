@@ -195,6 +195,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
 	protected static final int DEFAULT_MAX_TRAVERSAL = 75000;
 
+	protected static final boolean DEFAULT_LAZY = true;
+
 	/**
 	 * if <code>true</code>, refine the pre-computed call graph
 	 */
@@ -208,14 +210,14 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 * @return
 	 */
 	public static DemandCSPointsTo makeDefault() {
-		return makeWithBudget(DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES);
+		return makeWithBudget(DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES, DEFAULT_LAZY);
 	}
 
 	public static DemandCSPointsTo makeWithBudget(int maxTraversal,
-			int maxPasses) {
+			int maxPasses, boolean lazy) {
 		PAG pag = (PAG) Scene.v().getPointsToAnalysis();
 		ContextSensitiveInfo csInfo = new ContextSensitiveInfo(pag);
-		return new DemandCSPointsTo(csInfo, pag, maxTraversal, maxPasses);
+		return new DemandCSPointsTo(csInfo, pag, maxTraversal, maxPasses, lazy);
 	}
 
 	protected final AllocAndContextCache allocAndContextCache = new AllocAndContextCache();
@@ -242,9 +244,9 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
 	protected HeuristicType heuristicType;
 	
-	protected final FieldToEdgesMap fieldToLoads;
+	protected FieldToEdgesMap fieldToLoads;
 
-	protected final FieldToEdgesMap fieldToStores;
+	protected FieldToEdgesMap fieldToStores;
 
 	protected final int maxNodesPerPass;
 
@@ -270,24 +272,24 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 
 	protected Map<VarContextAndUp, Map<AllocAndContext, CallingContextSet>> upContextCache = new HashMap<VarContextAndUp, Map<AllocAndContext, CallingContextSet>>();
 
-	protected final ValidMatches vMatches;
+	protected ValidMatches vMatches;
 	
 	protected Map<Local,PointsToSet> reachingObjectsCache, reachingObjectsCacheNoCGRefinement;
 
     protected boolean useCache;
 
+	private final boolean lazy;
+
 	public DemandCSPointsTo(ContextSensitiveInfo csInfo, PAG pag) {
-		this(csInfo, pag, DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES);
+		this(csInfo, pag, DEFAULT_MAX_TRAVERSAL, DEFAULT_MAX_PASSES, DEFAULT_LAZY);
 	}
 
 	public DemandCSPointsTo(ContextSensitiveInfo csInfo, PAG pag,
-			int maxTraversal, int maxPasses) {
+			int maxTraversal, int maxPasses, boolean lazy) {
 		this.csInfo = csInfo;
 		this.pag = pag;
-		this.fieldToStores = SootUtil.storesOnField(pag);
-		this.fieldToLoads = SootUtil.loadsOnField(pag);
-		this.vMatches = new ValidMatches(pag, fieldToStores);
 		this.maxPasses = maxPasses;
+		this.lazy = lazy;
 		this.maxNodesPerPass = maxTraversal / maxPasses;
 		this.heuristicType = HeuristicType.INCR;
 		this.reachingObjectsCache = new HashMap<Local, PointsToSet>();
@@ -295,11 +297,30 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         this.useCache = true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public PointsToSet reachingObjects(Local l) {	
-	    PointsToSet result;
+	private void init() {
+		this.fieldToStores = SootUtil.storesOnField(pag);
+        this.fieldToLoads = SootUtil.loadsOnField(pag);
+        this.vMatches = new ValidMatches(pag, fieldToStores);
+	}
+
+	public PointsToSet reachingObjects(Local l) {
+		if(lazy)
+			/*
+			 * create a lazy points-to set; this will not actually compute context information until we ask whether this points-to set
+			 * has a non-empty intersection with another points-to set and this intersection appears to be non-empty; when this is the case
+			 * then the points-to set will call doReachingObjects(..) to refine itself
+			 */			
+			return new LazyContextSensitivePointsToSet(l,new WrappedPointsToSet((PointsToSetInternal) pag.reachingObjects(l)),this);
+		else
+			return doReachingObjects(l);
+	}
+
+	public PointsToSet doReachingObjects(Local l) {
+		//lazy initialization
+		if(fieldToStores==null) {
+	        init();
+		}
+		PointsToSet result;
         Map<Local, PointsToSet> cache;
 	    if(refineCallGraph) {  //we use different caches for different settings  
             cache = reachingObjectsCache;

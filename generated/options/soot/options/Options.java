@@ -1604,6 +1604,7 @@ public class Options extends OptionsBase {
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
                 +padOpt( "cs-demand (false)", "After running Spark, refine points-to sets on demand with context information" )
+                +padOpt( "lazy-pts (true)", "Create lazy points-to sets that create context information only when needed." )
                 +padOpt( "traversal (75000)", "Make the analysis traverse at most this number of nodes per query." )
                 +padOpt( "passes (10)", "Perform at most this number of refinement iterations." );
     
@@ -2461,6 +2462,7 @@ public class Options extends OptionsBase {
                 +"add-tags "
                 +"set-mass "
                 +"cs-demand "
+                +"lazy-pts "
                 +"traversal "
                 +"passes ";
     
@@ -3042,6 +3044,7 @@ public class Options extends OptionsBase {
               +"add-tags:false "
               +"set-mass:false "
               +"cs-demand:false "
+              +"lazy-pts:true "
               +"traversal:75000 "
               +"passes:10 ";
     
