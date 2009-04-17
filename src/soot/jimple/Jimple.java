@@ -428,11 +428,15 @@ public class Jimple
         Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
      */
 
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value... args)
+    {
+        return new JStaticInvokeExpr(method, Arrays.asList(args));
+    }
+    
     public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, List args)
     {
         return new JStaticInvokeExpr(method, args);
     }
-
 
     /**
         Constructs a NewSpecialInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
@@ -505,16 +509,6 @@ public class Jimple
     }
 
     
-    /**
-        Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
-     */
-     
-    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg)
-    {
-        return new JStaticInvokeExpr(method, Arrays.asList(new Value[] {arg}));
-    }
-
-
     /**
         Constructs a NewSpecialInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
      */
