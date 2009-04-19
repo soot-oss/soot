@@ -61,8 +61,13 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
         } else {
             if (newTypeOnQuery != null) {
                 String topLevelTypeStr = Util.topLevelTypeString(newTypeOnQuery);
-                RefType refType = Scene.v().getRefType(topLevelTypeStr);
-                boolean added = typesToCheck.add(refType);
+                boolean added;
+                if(Scene.v().containsType(topLevelTypeStr)) {
+                    RefType refType = Scene.v().getRefType(topLevelTypeStr);
+                    added = typesToCheck.add(refType);
+                } else {
+                	added = false;
+                }
                 newTypeOnQuery = null;
                 return added;
             } else {
