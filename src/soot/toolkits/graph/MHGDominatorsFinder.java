@@ -71,7 +71,7 @@ public class MHGDominatorsFinder implements DominatorsFinder
     
         //build full set
         fullSet = new BitSet(graph.size());
-        fullSet.flip(0, graph.size()-1);//set all to true
+        fullSet.flip(0, graph.size());//set all to true
         
         //set up domain for intersection: head nodes are only dominated by themselves,
         //other nodes are dominated by everything else
