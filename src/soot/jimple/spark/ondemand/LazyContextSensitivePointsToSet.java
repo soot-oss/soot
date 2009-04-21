@@ -85,4 +85,8 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
 		return delegate.pointsToSetHashCode();
 	}
 	
+	public EqualsSupportingPointsToSet getDelegate() {
+		return delegate;
+	}
+	
 }
