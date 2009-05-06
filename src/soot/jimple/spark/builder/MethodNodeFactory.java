@@ -209,9 +209,17 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     final public void caseNewArrayExpr( NewArrayExpr nae ) {
         setResult( pag.makeAllocNode( nae, nae.getType(), method ) );
     }
+    private boolean isStringBuffer(Type t) {
+        if(!(t instanceof RefType)) return false;
+        RefType rt = (RefType) t;
+        String s = rt.toString();
+        if(s.equals("java.lang.StringBuffer")) return true;
+        if(s.equals("java.lang.StringBuilder")) return true;
+        return false;
+    }
     final public void caseNewExpr( NewExpr ne ) {
         if( pag.getOpts().merge_stringbuffer() 
-        && ne.getType().equals( RefType.v("java.lang.StringBuffer" ) ) ) {
+        && isStringBuffer(ne.getType())) {
             setResult( pag.makeAllocNode( ne.getType(), ne.getType(), null ) );
         } else {
             setResult( pag.makeAllocNode( ne, ne.getType(), method ) );
