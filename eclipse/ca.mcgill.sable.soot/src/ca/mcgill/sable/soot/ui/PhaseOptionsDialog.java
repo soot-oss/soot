@@ -810,6 +810,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkcs_demand_widget(), "cs-demand");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparklazy_pts_widget(), "lazy-pts");
+
+		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparktraversal_widget(), "traversal");
 
 		
@@ -3087,6 +3090,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkcs_demand_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparklazy_pts_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparklazy_pts_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getcgcg_sparktraversal_widget().getText().getText();
@@ -7383,6 +7396,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_sparkcs_demand_widget() {
 		return cgcg_sparkcs_demand_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparklazy_pts_widget;
+	
+	private void setcgcg_sparklazy_pts_widget(BooleanOptionWidget widget) {
+		cgcg_sparklazy_pts_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparklazy_pts_widget() {
+		return cgcg_sparklazy_pts_widget;
 	}	
 	
 	
@@ -12858,6 +12881,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		defKey = "p"+" "+"cg.spark"+" "+"lazy-pts";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_sparklazy_pts_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Create lazy points-to sets", "p", "cg.spark","lazy-pts", "\nWhen this option is disabled, context information is computed \nfor every query to the reachingObjects method. When it is \nenabled, a call to reachingObjects returns a lazy wrapper object \nthat contains a context-insensitive points-to set. This set is \nthen automatically refined with context information when \nnecessary, i.e. when we try to determine the intersection with \nanother points-to set and this intersection seems to be \nnon-empty.							 					", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"cg.spark"+" "+"traversal";
 		defKey = defKey.trim();
 		
@@ -13491,7 +13530,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlemerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.paddle","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
+		setcgcg_paddlemerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.paddle","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. Allocation sites creating a \njava.lang.StringBuilder object are also grouped together as a \nsingle allocation site. ", defaultBool)));
 		
 		
 		

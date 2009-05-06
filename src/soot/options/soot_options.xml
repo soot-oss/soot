@@ -2621,7 +2621,8 @@ used as the elements of the points-to sets.
 							<long_desc>
 When this option is set to true, all allocation sites creating
 <tt>java.lang.StringBuffer</tt> objects are grouped together as a single
-allocation site.
+allocation site. Allocation sites creating a <tt>java.lang.StringBuilder</tt>
+object are also grouped together as a single allocation site.
         </long_desc>
 						</boolopt>
 						<boolopt>

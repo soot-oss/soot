@@ -181,7 +181,9 @@ public class PaddleOptions
     
      * When this option is set to true, all allocation sites creating 
      * java.lang.StringBuffer objects are grouped together as a single 
-     * allocation site. 
+     * allocation site. Allocation sites creating a 
+     * java.lang.StringBuilder object are also grouped together as a 
+     * single allocation site. 
      */
     public boolean merge_stringbuffer() {
         return soot.PhaseOptions.getBoolean( options, "merge-stringbuffer" );
