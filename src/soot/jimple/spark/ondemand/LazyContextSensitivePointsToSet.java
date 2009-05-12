@@ -26,6 +26,10 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
 	private final Local local;
 	private boolean isContextSensitive;
 
+	public boolean isContextSensitive() {
+		return isContextSensitive;
+	}
+
 	public LazyContextSensitivePointsToSet(Local l, EqualsSupportingPointsToSet contextInsensitiveSet, DemandCSPointsTo demandCSPointsTo) {
 		this.local = l;
 		this.delegate = contextInsensitiveSet;
