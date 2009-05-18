@@ -114,6 +114,20 @@ public class EntryPoints
         }
         return ret;
     }
+    
+    /** Returns a list of all constructors. */
+    public List<SootMethod> allInits() {
+        List<SootMethod> ret = new ArrayList<SootMethod>();
+        for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            for(SootMethod m: cl.getMethods()) {
+            	if(m.getName().equals("<init>")) {
+            		ret.add(m);
+            	}
+            }
+        }
+        return ret;
+    }
 
     /** Returns a list of all concrete methods of all application classes. */
     public List<SootMethod> methodsOfApplicationClasses() {

@@ -261,6 +261,28 @@ public final class OnFlyCallGraphBuilder
                         }
                     } 
                 }
+                if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>" ) ) {
+                    if( options.safe_newinstance() ) {
+                        for (SootMethod tgt : EntryPoints.v().allInits()) {
+                            addEdge( source, s, tgt, Kind.NEWINSTANCE );
+                        }
+                    } else {
+                        for (SootClass cls : Scene.v().dynamicClasses()) {
+                        	for(SootMethod m: cls.getMethods()) {
+                        		if(m.getName().equals("<init>")) {
+                                    addEdge( source, s, m, Kind.NEWINSTANCE );
+                        		}
+                        	}
+                        }
+                        
+                        if( options.verbose() ) {
+                            G.v().out.println( "Warning: Method "+source+
+                                " is reachable, and calls Constructor.newInstance;"+
+                                " graph will be incomplete!"+
+                                " Use safe-newinstance option for a conservative result." );
+                        }
+                    } 
+                }
                 if( ie instanceof StaticInvokeExpr ) {
                     SootClass cl = ie.getMethodRef().declaringClass();
                     for (SootMethod clinit : EntryPoints.v().clinitsOf(cl)) {
