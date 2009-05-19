@@ -246,16 +246,10 @@ public final class OnFlyCallGraphBuilder
                         for (SootMethod tgt : EntryPoints.v().inits()) {
                             addEdge( source, s, tgt, Kind.NEWINSTANCE );
                         }
-                        for (SootMethod tgt : EntryPoints.v().clinits()) {
-                            addEdge( source, s, tgt, Kind.NEWINSTANCE );
-                        }
                     } else {
                         for (SootClass cls : Scene.v().dynamicClasses()) {
                             if( cls.declaresMethod(sigInit) ) {
                                 addEdge( source, s, cls.getMethod(sigInit), Kind.NEWINSTANCE );
-                            }
-                            if( cls.declaresMethod(sigClinit) ) {
-                                addEdge( source, s, cls.getMethod(sigClinit), Kind.NEWINSTANCE );
                             }
                         }
                         
@@ -272,9 +266,6 @@ public final class OnFlyCallGraphBuilder
                         for (SootMethod tgt : EntryPoints.v().allInits()) {
                             addEdge( source, s, tgt, Kind.NEWINSTANCE );
                         }
-                        for (SootMethod tgt : EntryPoints.v().clinits()) {
-                            addEdge( source, s, tgt, Kind.NEWINSTANCE );
-                        }
                     } else {
                         for (SootClass cls : Scene.v().dynamicClasses()) {
                         	for(SootMethod m: cls.getMethods()) {
@@ -282,9 +273,6 @@ public final class OnFlyCallGraphBuilder
                                     addEdge( source, s, m, Kind.NEWINSTANCE );
                         		}
                         	}
-                            if( cls.declaresMethod(sigClinit) ) {
-                                addEdge( source, s, cls.getMethod(sigClinit), Kind.NEWINSTANCE );
-                            }
                         }
                         
                         if( options.verbose() ) {
@@ -419,8 +407,6 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void finalize()" );
     private final NumberedString sigInit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <init>()" );
-    private final NumberedString sigClinit = Scene.v().getSubSigNumberer().
-    	findOrAdd( "void <clinit>()" );
     private final NumberedString sigStart = Scene.v().getSubSigNumberer().
         findOrAdd( "void start()" );
     private final NumberedString sigRun = Scene.v().getSubSigNumberer().
