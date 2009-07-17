@@ -130,7 +130,13 @@ public class ArraySparseSet extends AbstractFlowSet
         while (i < this.numElements) {
             if (elements[i].equals(obj))
             {
-                elements[i] = elements[--numElements];
+            	numElements--;
+            	//copy last element to deleted position
+                elements[i] = elements[numElements];
+                //delete reference in last cell so that
+                //we only retain a single reference to the
+                //"old last" element, for memory safety
+                elements[numElements] = null;
                 return;
             } else
                 i++;
