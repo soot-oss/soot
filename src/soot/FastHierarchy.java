@@ -465,16 +465,16 @@ public class FastHierarchy
             throw new RuntimeException(
                 "A concrete type cannot be an interface: "+concreteType );
         }
-        if( concreteType.isAbstract() ) {
-            throw new RuntimeException(
-                "A concrete type cannot be abstract: "+concreteType );
-        }
 
         String methodSig = m.getSubSignature();
         while( true ) {
             if( concreteType.declaresMethod( methodSig ) ) {
                 if( isVisible( concreteType, m ) ) {
-                    return concreteType.getMethod( methodSig );
+                    SootMethod method = concreteType.getMethod( methodSig );
+                    if(method.isAbstract()) {
+                    	throw new RuntimeException("Error: Method call resolves to abstract method!");
+                    }
+					return method;
                 }
             }
             if( !concreteType.hasSuperclass() ) break;
