@@ -1109,6 +1109,7 @@ public class Scene  //extends AbstractHost
         return ret;
     }
     private boolean doneResolving = false;
+	private boolean incrementalBuild;
     public boolean doneResolving() { return doneResolving; }
     public void setDoneResolving() { doneResolving = true; }
     public void setMainClassFromOptions() {
@@ -1128,6 +1129,23 @@ public class Scene  //extends AbstractHost
                     }
                 }
         }
+    }
+    
+    /**
+     * This method returns true when in incremental build mode.
+     * Other classes can query this flag and change the way in which they use the Scene,
+     * depending on the flag's value.
+     */
+    public boolean isIncrementalBuild() {
+    	return incrementalBuild;
+    }
+    
+    public void initiateIncrementalBuild() {
+    	this.incrementalBuild = true;
+    }
+
+    public void incrementalBuildFinished() {
+    	this.incrementalBuild = false;
     }
 }
 
