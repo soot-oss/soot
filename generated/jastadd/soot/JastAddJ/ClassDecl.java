@@ -33,6 +33,8 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         subtype_TypeDecl_values = null;
         subtype_TypeDecl_computed = new java.util.HashSet(4);
         subtype_TypeDecl_initialized = new java.util.HashSet(4);
+        sootClass_computed = false;
+        sootClass_value = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ClassDecl clone() throws CloneNotSupportedException {
         ClassDecl node = (ClassDecl)super.clone();
@@ -61,6 +63,8 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         node.subtype_TypeDecl_values = null;
         node.subtype_TypeDecl_computed = new java.util.HashSet(4);
         node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
+        node.sootClass_computed = false;
+        node.sootClass_value = null;
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -1397,7 +1401,13 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in IncrementalJimple.jrag at line 35
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
-        SootClass sootClass_value = sootClass_compute();
+        if(sootClass_computed)
+            return sootClass_value;
+        int num = state().boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        sootClass_value = sootClass_compute();
+        if(isFinal && num == state().boundariesCrossed)
+            sootClass_computed = true;
         return sootClass_value;
     }
 

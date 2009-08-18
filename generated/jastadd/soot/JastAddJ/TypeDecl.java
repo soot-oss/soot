@@ -93,6 +93,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         getSootClassDecl_value = null;
         getSootType_computed = false;
         getSootType_value = null;
+        sootClass_computed = false;
+        sootClass_value = null;
         needsClinit_computed = false;
         innerClassesAttributeEntries_computed = false;
         innerClassesAttributeEntries_value = null;
@@ -211,6 +213,8 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         node.getSootClassDecl_value = null;
         node.getSootType_computed = false;
         node.getSootType_value = null;
+        node.sootClass_computed = false;
+        node.sootClass_value = null;
         node.needsClinit_computed = false;
         node.innerClassesAttributeEntries_computed = false;
         node.innerClassesAttributeEntries_value = null;
@@ -3961,9 +3965,17 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private soot.RefType sootRef_compute() {  return (soot.RefType)getSootType();  }
 
+    protected boolean sootClass_computed = false;
+    protected SootClass sootClass_value;
     // Declared in GenericsCodegen.jrag at line 413
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
-        SootClass sootClass_value = sootClass_compute();
+        if(sootClass_computed)
+            return sootClass_value;
+        int num = state().boundariesCrossed;
+        boolean isFinal = this.is$Final();
+        sootClass_value = sootClass_compute();
+        if(isFinal && num == state().boundariesCrossed)
+            sootClass_computed = true;
         return sootClass_value;
     }
 
