@@ -38,7 +38,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
     getAnnotation().toString(s);
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 351
+    // Declared in AnnotationsCodegen.jrag at line 352
 
   public void appendAsAttributeTo(Collection list, String name) {
     ArrayList elemVals = new ArrayList();

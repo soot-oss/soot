@@ -129,7 +129,7 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
 
     protected boolean isZero_computed = false;
     protected boolean isZero_value;
-    // Declared in ConstantExpression.jrag at line 136
+    // Declared in ConstantExpression.jrag at line 135
  @SuppressWarnings({"unchecked", "cast"})     public boolean isZero() {
         if(isZero_computed)
             return isZero_value;
@@ -154,7 +154,7 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
     return true;
   }
 
-    // Declared in ConstantExpression.jrag at line 283
+    // Declared in ConstantExpression.jrag at line 282
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

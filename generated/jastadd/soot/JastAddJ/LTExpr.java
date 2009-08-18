@@ -113,7 +113,7 @@ public class LTExpr extends RelationalExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 534
+    // Declared in ConstantExpression.jrag at line 533
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

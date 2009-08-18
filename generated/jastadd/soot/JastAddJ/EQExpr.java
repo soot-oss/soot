@@ -113,7 +113,7 @@ public class EQExpr extends EqualityExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 532
+    // Declared in ConstantExpression.jrag at line 531
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

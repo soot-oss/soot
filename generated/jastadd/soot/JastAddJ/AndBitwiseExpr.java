@@ -107,7 +107,7 @@ public class AndBitwiseExpr extends BitwiseExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 129
+    // Declared in ConstantExpression.jrag at line 128
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

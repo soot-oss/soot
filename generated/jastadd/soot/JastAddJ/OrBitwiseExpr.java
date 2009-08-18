@@ -107,7 +107,7 @@ public class OrBitwiseExpr extends BitwiseExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 131
+    // Declared in ConstantExpression.jrag at line 130
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

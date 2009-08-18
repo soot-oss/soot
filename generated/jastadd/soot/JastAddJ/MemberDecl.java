@@ -49,7 +49,7 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
 
     // Declared in Modifiers.jrag at line 220
  @SuppressWarnings({"unchecked", "cast"})     public abstract boolean isStatic();
-    // Declared in ConstantExpression.jrag at line 479
+    // Declared in ConstantExpression.jrag at line 478
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

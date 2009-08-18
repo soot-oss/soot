@@ -280,7 +280,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     protected boolean constant_computed = false;
     protected Constant constant_value;
-    // Declared in ConstantExpression.jrag at line 133
+    // Declared in ConstantExpression.jrag at line 132
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;
@@ -296,7 +296,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     protected boolean isConstant_computed = false;
     protected boolean isConstant_value;
-    // Declared in ConstantExpression.jrag at line 494
+    // Declared in ConstantExpression.jrag at line 493
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         if(isConstant_computed)
             return isConstant_value;

@@ -113,7 +113,7 @@ public class CharacterLiteral extends Literal implements Cloneable {
         return tokenString_LITERAL != null ? tokenString_LITERAL : "";
     }
 
-    // Declared in ConstantExpression.jrag at line 304
+    // Declared in ConstantExpression.jrag at line 303
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

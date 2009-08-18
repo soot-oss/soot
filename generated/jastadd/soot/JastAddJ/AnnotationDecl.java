@@ -393,7 +393,7 @@ if(containsElementOf_TypeDecl_values == null) containsElementOf_TypeDecl_values 
 
     private boolean isAnnotationDecl_compute() {  return true;  }
 
-    // Declared in AnnotationsCodegen.jrag at line 290
+    // Declared in AnnotationsCodegen.jrag at line 291
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;

@@ -190,7 +190,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 122
+    // Declared in ConstantExpression.jrag at line 121
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

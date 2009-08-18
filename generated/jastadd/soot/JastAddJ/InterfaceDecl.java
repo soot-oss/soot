@@ -25,8 +25,6 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         subtype_TypeDecl_values = null;
         subtype_TypeDecl_computed = new java.util.HashSet(4);
         subtype_TypeDecl_initialized = new java.util.HashSet(4);
-        sootClass_computed = false;
-        sootClass_value = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public InterfaceDecl clone() throws CloneNotSupportedException {
         InterfaceDecl node = (InterfaceDecl)super.clone();
@@ -49,8 +47,6 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         node.subtype_TypeDecl_values = null;
         node.subtype_TypeDecl_computed = new java.util.HashSet(4);
         node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
-        node.sootClass_computed = false;
-        node.sootClass_value = null;
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -994,13 +990,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in EmitJimpleRefinements.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
-        if(sootClass_computed)
-            return sootClass_value;
-        int num = state().boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        sootClass_value = sootClass_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            sootClass_computed = true;
+        SootClass sootClass_value = sootClass_compute();
         return sootClass_value;
     }
 
@@ -1020,7 +1010,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | soot.Modifier.INTERFACE;  }
 
-    // Declared in AnnotationsCodegen.jrag at line 323
+    // Declared in AnnotationsCodegen.jrag at line 324
  @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
         String typeDescriptor_value = typeDescriptor_compute();
         return typeDescriptor_value;

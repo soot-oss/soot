@@ -596,7 +596,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     return set;
   }
 
-    // Declared in ConstantExpression.jrag at line 480
+    // Declared in ConstantExpression.jrag at line 479
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

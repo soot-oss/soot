@@ -53,7 +53,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
     getExpr().toString(s);
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 325
+    // Declared in AnnotationsCodegen.jrag at line 326
 
 
   public void appendAsAttributeTo(Collection list, String name) {

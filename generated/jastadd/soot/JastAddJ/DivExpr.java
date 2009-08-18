@@ -113,7 +113,7 @@ public class DivExpr extends MultiplicativeExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 119
+    // Declared in ConstantExpression.jrag at line 118
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

@@ -148,7 +148,7 @@ public class Annotation extends Modifier implements Cloneable {
     s.append(")");
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 304
+    // Declared in AnnotationsCodegen.jrag at line 305
 
 
   // 4.8.15
@@ -357,7 +357,7 @@ public class Annotation extends Modifier implements Cloneable {
 
     private boolean isMetaAnnotation_compute() {  return hostType().isAnnotationDecl();  }
 
-    // Declared in AnnotationsCodegen.jrag at line 143
+    // Declared in AnnotationsCodegen.jrag at line 144
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeVisible() {
         boolean isRuntimeVisible_value = isRuntimeVisible_compute();
         return isRuntimeVisible_value;
@@ -371,7 +371,7 @@ public class Annotation extends Modifier implements Cloneable {
     return v != null && v.name().equals("RUNTIME");
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 153
+    // Declared in AnnotationsCodegen.jrag at line 154
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeInvisible() {
         boolean isRuntimeInvisible_value = isRuntimeInvisible_compute();
         return isRuntimeInvisible_value;

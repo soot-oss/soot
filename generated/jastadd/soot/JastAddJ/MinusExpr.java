@@ -100,7 +100,7 @@ public class MinusExpr extends Unary implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 115
+    // Declared in ConstantExpression.jrag at line 114
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -108,7 +108,7 @@ public class MinusExpr extends Unary implements Cloneable {
 
     private Constant constant_compute() {  return type().minus(getOperand().constant());  }
 
-    // Declared in ConstantExpression.jrag at line 489
+    // Declared in ConstantExpression.jrag at line 488
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
@@ -139,7 +139,7 @@ public class MinusExpr extends Unary implements Cloneable {
     private TypeDecl type_compute() {  return getOperand().type().unaryNumericPromotion();  }
 
 public ASTNode rewriteTo() {
-    // Declared in ConstantExpression.jrag at line 247
+    // Declared in ConstantExpression.jrag at line 246
     if(getOperand() instanceof IntegerLiteral && ((IntegerLiteral)getOperand()).isDecimal() && getOperand().isPositive()) {
         state().duringConstantExpression++;
         ASTNode result = rewriteRule0();
@@ -147,7 +147,7 @@ public ASTNode rewriteTo() {
         return result;
     }
 
-    // Declared in ConstantExpression.jrag at line 252
+    // Declared in ConstantExpression.jrag at line 251
     if(getOperand() instanceof LongLiteral && ((LongLiteral)getOperand()).isDecimal() && getOperand().isPositive()) {
         state().duringConstantExpression++;
         ASTNode result = rewriteRule1();
@@ -158,11 +158,11 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in ConstantExpression.jrag at line 247
+    // Declared in ConstantExpression.jrag at line 246
     private IntegerLiteral rewriteRule0() {
         return new IntegerLiteral("-" + ((IntegerLiteral)getOperand()).getLITERAL());
     }
-    // Declared in ConstantExpression.jrag at line 252
+    // Declared in ConstantExpression.jrag at line 251
     private LongLiteral rewriteRule1() {
         return new LongLiteral("-" + ((LongLiteral)getOperand()).getLITERAL());
     }

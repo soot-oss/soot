@@ -602,6 +602,32 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     return (CompilationUnit)loadedCompilationUnit.get(fileName);
   }
 
+    // Declared in IncrementalJimple.jrag at line 12
+
+ 
+	public void releaseCompilationUnitForFile(String fileName) {
+	    //clear caches
+		lookupType_String_String_values = new HashMap();
+		hasPackage_String_values = new HashMap();
+
+		loadedCompilationUnit.remove(fileName);
+
+		List<CompilationUnit> newList = new List<CompilationUnit>();
+		for (soot.JastAddJ.CompilationUnit cu : getCompilationUnits()) {
+			boolean dontAdd = false;
+			if(cu.fromSource()) {
+				String pathName = cu.pathName();
+				if (pathName.equals(fileName)) {
+					dontAdd = true;
+				}
+			}
+			if(!dontAdd) {
+				newList.add(cu);
+			}
+		}
+		setCompilationUnitList(newList);		
+	}
+
     // Declared in java.ast at line 3
     // Declared in java.ast line 1
 

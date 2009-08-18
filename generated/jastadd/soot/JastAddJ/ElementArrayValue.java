@@ -43,7 +43,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
     s.append("}");
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 356
+    // Declared in AnnotationsCodegen.jrag at line 357
 
   public void appendAsAttributeTo(Collection list, String name) {
     ArrayList elemVals = new ArrayList();

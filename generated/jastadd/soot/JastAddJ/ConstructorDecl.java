@@ -363,7 +363,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 185
+    // Declared in AnnotationsCodegen.jrag at line 186
 
   public void addRuntimeVisibleParameterAnnotationsAttribute(Collection c) {
     boolean foundVisibleAnnotations = false;
@@ -389,7 +389,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 241
+    // Declared in AnnotationsCodegen.jrag at line 242
 
   public void addRuntimeInvisibleParameterAnnotationsAttribute(Collection c) {
     boolean foundVisibleAnnotations = false;
@@ -415,7 +415,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 280
+    // Declared in AnnotationsCodegen.jrag at line 281
 
   public void addSourceLevelParameterAnnotationsAttribute(Collection c) {
     boolean foundVisibleAnnotations = false;

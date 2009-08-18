@@ -149,7 +149,7 @@ public abstract class Binary extends Expr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 517
+    // Declared in ConstantExpression.jrag at line 516
 private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 {
     TypeDecl leftType = left().type();
@@ -224,7 +224,7 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 
     private boolean isConstant_compute() {  return getLeftOperand().isConstant() && getRightOperand().isConstant();  }
 
-    // Declared in ConstantExpression.jrag at line 515
+    // Declared in ConstantExpression.jrag at line 514
  @SuppressWarnings({"unchecked", "cast"})     public Expr left() {
         Expr left_value = left_compute();
         return left_value;
@@ -232,7 +232,7 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 
     private Expr left_compute() {  return getLeftOperand();  }
 
-    // Declared in ConstantExpression.jrag at line 516
+    // Declared in ConstantExpression.jrag at line 515
  @SuppressWarnings({"unchecked", "cast"})     public Expr right() {
         Expr right_value = right_compute();
         return right_value;

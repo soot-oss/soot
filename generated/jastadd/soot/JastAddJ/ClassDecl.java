@@ -33,8 +33,6 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         subtype_TypeDecl_values = null;
         subtype_TypeDecl_computed = new java.util.HashSet(4);
         subtype_TypeDecl_initialized = new java.util.HashSet(4);
-        sootClass_computed = false;
-        sootClass_value = null;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ClassDecl clone() throws CloneNotSupportedException {
         ClassDecl node = (ClassDecl)super.clone();
@@ -63,8 +61,6 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         node.subtype_TypeDecl_values = null;
         node.subtype_TypeDecl_computed = new java.util.HashSet(4);
         node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
-        node.sootClass_computed = false;
-        node.sootClass_value = null;
         node.in$Circle(false);
         node.is$Final(false);
     return node;
@@ -662,7 +658,40 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
     return refined_TypeConversion_ClassDecl_castingConversionTo_TypeDecl(type);
   }
 
-    // Declared in ConstantExpression.jrag at line 319
+    // Declared in EmitJimpleRefinements.jrag at line 24
+private SootClass refined_EmitJimpleRefinements_ClassDecl_sootClass()
+{
+    boolean needAddclass = false;
+    SootClass sc = null;
+    if(Scene.v().containsClass(jvmName())) {
+      SootClass cl = Scene.v().getSootClass(jvmName());
+      //fix for test case 653: if there's a class java.lang.Object etc. on the command line
+      //prefer that class over the Coffi class that may already have been loaded from bytecode
+      try {
+        MethodSource source = cl.getMethodByName("<clinit>").getSource();
+        if(source instanceof CoffiMethodSource) {
+          Scene.v().removeClass(cl);
+          needAddclass = true;
+        }
+      } catch(RuntimeException e) {
+        //method not found
+      }    	
+      sc = cl;       
+    }
+    else {
+      needAddclass = true;
+    }
+    if(needAddclass) {
+      if(options().verbose())
+        System.out.println("Creating from source " + jvmName());        
+      sc = new SootClass(jvmName());
+      sc.setResolvingLevel(SootClass.DANGLING);
+      Scene.v().addClass(sc);
+    } 
+    return sc;
+  }
+
+    // Declared in ConstantExpression.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
@@ -670,7 +699,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 
     private Constant cast_compute(Constant c) {  return Constant.create(c.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 381
+    // Declared in ConstantExpression.jrag at line 380
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
@@ -678,7 +707,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 
     private Constant add_compute(Constant c1, Constant c2) {  return Constant.create(c1.stringValue() + c2.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 446
+    // Declared in ConstantExpression.jrag at line 445
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
@@ -686,7 +715,7 @@ private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl
 
     private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.stringValue() : c2.stringValue());  }
 
-    // Declared in ConstantExpression.jrag at line 550
+    // Declared in ConstantExpression.jrag at line 549
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
@@ -1366,50 +1395,31 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return superclass().erasure().enclosing();
   }
 
-    // Declared in EmitJimpleRefinements.jrag at line 24
+    // Declared in IncrementalJimple.jrag at line 35
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
-        if(sootClass_computed)
-            return sootClass_value;
-        int num = state().boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        sootClass_value = sootClass_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            sootClass_computed = true;
+        SootClass sootClass_value = sootClass_compute();
         return sootClass_value;
     }
 
     private SootClass sootClass_compute() {
-    boolean needAddclass = false;
-    SootClass sc = null;
-    if(Scene.v().containsClass(jvmName())) {
-      SootClass cl = Scene.v().getSootClass(jvmName());
-      //fix for test case 653: if there's a class java.lang.Object etc. on the command line
-      //prefer that class over the Coffi class that may already have been loaded from bytecode
-      try {
-        MethodSource source = cl.getMethodByName("<clinit>").getSource();
-        if(source instanceof CoffiMethodSource) {
-          Scene.v().removeClass(cl);
-          needAddclass = true;
-        }
-      } catch(RuntimeException e) {
-        //method not found
-      }    	
-      sc = cl;       
-    }
-    else {
-      needAddclass = true;
-    }
-    if(needAddclass) {
-      if(options().verbose())
-        System.out.println("Creating from source " + jvmName());        
-      sc = new SootClass(jvmName());
-      sc.setResolvingLevel(SootClass.DANGLING);
-      Scene.v().addClass(sc);
-    } 
-    return sc;
-  }
+		if(!Scene.v().isIncrementalBuild()) {
+			return refined_EmitJimpleRefinements_ClassDecl_sootClass();
+		}
+			
+	    if(Scene.v().containsClass(jvmName())) {
+			Scene.v().removeClass(Scene.v().getSootClass(jvmName()));
+		}
+	
+	    SootClass sc = null;
+	    if(options().verbose())
+	    	System.out.println("Creating from source " + jvmName());        
+	    sc = new SootClass(jvmName());
+	    sc.setResolvingLevel(SootClass.DANGLING);
+		Scene.v().addClass(sc);
+	    return sc;
+	}
 
-    // Declared in AnnotationsCodegen.jrag at line 322
+    // Declared in AnnotationsCodegen.jrag at line 323
  @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
         String typeDescriptor_value = typeDescriptor_compute();
         return typeDescriptor_value;

@@ -113,7 +113,7 @@ public class GTExpr extends RelationalExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 536
+    // Declared in ConstantExpression.jrag at line 535
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

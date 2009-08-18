@@ -98,7 +98,7 @@ public class PlusExpr extends Unary implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 114
+    // Declared in ConstantExpression.jrag at line 113
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -106,7 +106,7 @@ public class PlusExpr extends Unary implements Cloneable {
 
     private Constant constant_compute() {  return type().plus(getOperand().constant());  }
 
-    // Declared in ConstantExpression.jrag at line 488
+    // Declared in ConstantExpression.jrag at line 487
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

@@ -113,7 +113,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 112
+    // Declared in ConstantExpression.jrag at line 111
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -121,7 +121,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     private Constant constant_compute() {  return getExpr().constant();  }
 
-    // Declared in ConstantExpression.jrag at line 495
+    // Declared in ConstantExpression.jrag at line 494
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

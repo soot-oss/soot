@@ -127,7 +127,7 @@ public class AndLogicalExpr extends LogicalExpr implements Cloneable {
         return (Expr)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 538
+    // Declared in ConstantExpression.jrag at line 537
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;

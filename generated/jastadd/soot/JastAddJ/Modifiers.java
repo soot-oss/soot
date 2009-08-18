@@ -196,7 +196,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 209
+    // Declared in AnnotationsCodegen.jrag at line 210
 
 
   public Collection runtimeVisibleAnnotations() {
@@ -207,7 +207,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     return annotations;
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 265
+    // Declared in AnnotationsCodegen.jrag at line 266
 
 
   public Collection runtimeInvisibleAnnotations() {
@@ -218,7 +218,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     return annotations;
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 289
+    // Declared in AnnotationsCodegen.jrag at line 290
 
 
   // Add ACC_ANNOTATION flag to generated class file
@@ -674,12 +674,6 @@ if(numModifier_String_values == null) numModifier_String_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupType(String packageName, String typeName) {
         TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
         return lookupType_String_String_value;
-    }
-
-    // Declared in AnnotationsCodegen.jrag at line 139
- @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
-        TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
-        return hostType_value;
     }
 
     // Declared in Annotations.jrag at line 424

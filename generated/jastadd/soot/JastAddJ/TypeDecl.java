@@ -93,8 +93,6 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         getSootClassDecl_value = null;
         getSootType_computed = false;
         getSootType_value = null;
-        sootClass_computed = false;
-        sootClass_value = null;
         needsClinit_computed = false;
         innerClassesAttributeEntries_computed = false;
         innerClassesAttributeEntries_value = null;
@@ -213,8 +211,6 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         node.getSootClassDecl_value = null;
         node.getSootType_computed = false;
         node.getSootType_value = null;
-        node.sootClass_computed = false;
-        node.sootClass_value = null;
         node.needsClinit_computed = false;
         node.innerClassesAttributeEntries_computed = false;
         node.innerClassesAttributeEntries_value = null;
@@ -1586,7 +1582,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     return typeDecl;
   }
 
-    // Declared in ConstantExpression.jrag at line 307
+    // Declared in ConstantExpression.jrag at line 306
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
@@ -1597,7 +1593,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 321
+    // Declared in ConstantExpression.jrag at line 320
  @SuppressWarnings({"unchecked", "cast"})     public Constant plus(Constant c) {
         Constant plus_Constant_value = plus_compute(c);
         return plus_Constant_value;
@@ -1608,7 +1604,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 330
+    // Declared in ConstantExpression.jrag at line 329
  @SuppressWarnings({"unchecked", "cast"})     public Constant minus(Constant c) {
         Constant minus_Constant_value = minus_compute(c);
         return minus_Constant_value;
@@ -1619,7 +1615,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 339
+    // Declared in ConstantExpression.jrag at line 338
  @SuppressWarnings({"unchecked", "cast"})     public Constant bitNot(Constant c) {
         Constant bitNot_Constant_value = bitNot_compute(c);
         return bitNot_Constant_value;
@@ -1630,7 +1626,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 346
+    // Declared in ConstantExpression.jrag at line 345
  @SuppressWarnings({"unchecked", "cast"})     public Constant mul(Constant c1, Constant c2) {
         Constant mul_Constant_Constant_value = mul_compute(c1, c2);
         return mul_Constant_Constant_value;
@@ -1641,7 +1637,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 355
+    // Declared in ConstantExpression.jrag at line 354
  @SuppressWarnings({"unchecked", "cast"})     public Constant div(Constant c1, Constant c2) {
         Constant div_Constant_Constant_value = div_compute(c1, c2);
         return div_Constant_Constant_value;
@@ -1652,7 +1648,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 364
+    // Declared in ConstantExpression.jrag at line 363
  @SuppressWarnings({"unchecked", "cast"})     public Constant mod(Constant c1, Constant c2) {
         Constant mod_Constant_Constant_value = mod_compute(c1, c2);
         return mod_Constant_Constant_value;
@@ -1663,7 +1659,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 373
+    // Declared in ConstantExpression.jrag at line 372
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
@@ -1674,7 +1670,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 383
+    // Declared in ConstantExpression.jrag at line 382
  @SuppressWarnings({"unchecked", "cast"})     public Constant sub(Constant c1, Constant c2) {
         Constant sub_Constant_Constant_value = sub_compute(c1, c2);
         return sub_Constant_Constant_value;
@@ -1685,7 +1681,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 392
+    // Declared in ConstantExpression.jrag at line 391
  @SuppressWarnings({"unchecked", "cast"})     public Constant lshift(Constant c1, Constant c2) {
         Constant lshift_Constant_Constant_value = lshift_compute(c1, c2);
         return lshift_Constant_Constant_value;
@@ -1696,7 +1692,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 399
+    // Declared in ConstantExpression.jrag at line 398
  @SuppressWarnings({"unchecked", "cast"})     public Constant rshift(Constant c1, Constant c2) {
         Constant rshift_Constant_Constant_value = rshift_compute(c1, c2);
         return rshift_Constant_Constant_value;
@@ -1707,7 +1703,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 406
+    // Declared in ConstantExpression.jrag at line 405
  @SuppressWarnings({"unchecked", "cast"})     public Constant urshift(Constant c1, Constant c2) {
         Constant urshift_Constant_Constant_value = urshift_compute(c1, c2);
         return urshift_Constant_Constant_value;
@@ -1718,7 +1714,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 413
+    // Declared in ConstantExpression.jrag at line 412
  @SuppressWarnings({"unchecked", "cast"})     public Constant andBitwise(Constant c1, Constant c2) {
         Constant andBitwise_Constant_Constant_value = andBitwise_compute(c1, c2);
         return andBitwise_Constant_Constant_value;
@@ -1729,7 +1725,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 421
+    // Declared in ConstantExpression.jrag at line 420
  @SuppressWarnings({"unchecked", "cast"})     public Constant xorBitwise(Constant c1, Constant c2) {
         Constant xorBitwise_Constant_Constant_value = xorBitwise_compute(c1, c2);
         return xorBitwise_Constant_Constant_value;
@@ -1740,7 +1736,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 429
+    // Declared in ConstantExpression.jrag at line 428
  @SuppressWarnings({"unchecked", "cast"})     public Constant orBitwise(Constant c1, Constant c2) {
         Constant orBitwise_Constant_Constant_value = orBitwise_compute(c1, c2);
         return orBitwise_Constant_Constant_value;
@@ -1751,7 +1747,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 437
+    // Declared in ConstantExpression.jrag at line 436
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
@@ -1762,7 +1758,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 541
+    // Declared in ConstantExpression.jrag at line 540
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
@@ -1773,7 +1769,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     return false;
   }
 
-    // Declared in ConstantExpression.jrag at line 552
+    // Declared in ConstantExpression.jrag at line 551
  @SuppressWarnings({"unchecked", "cast"})     public boolean ltIsTrue(Expr left, Expr right) {
         boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
         return ltIsTrue_Expr_Expr_value;
@@ -1781,7 +1777,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean ltIsTrue_compute(Expr left, Expr right) {  return false;  }
 
-    // Declared in ConstantExpression.jrag at line 558
+    // Declared in ConstantExpression.jrag at line 557
  @SuppressWarnings({"unchecked", "cast"})     public boolean leIsTrue(Expr left, Expr right) {
         boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
         return leIsTrue_Expr_Expr_value;
@@ -3965,17 +3961,9 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private soot.RefType sootRef_compute() {  return (soot.RefType)getSootType();  }
 
-    protected boolean sootClass_computed = false;
-    protected SootClass sootClass_value;
     // Declared in GenericsCodegen.jrag at line 413
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
-        if(sootClass_computed)
-            return sootClass_value;
-        int num = state().boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        sootClass_value = sootClass_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            sootClass_computed = true;
+        SootClass sootClass_value = sootClass_compute();
         return sootClass_value;
     }
 
@@ -4103,7 +4091,7 @@ if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_val
 
     private int variableSize_compute() {  return 1;  }
 
-    // Declared in AnnotationsCodegen.jrag at line 321
+    // Declared in AnnotationsCodegen.jrag at line 322
  @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
         String typeDescriptor_value = typeDescriptor_compute();
         return typeDescriptor_value;

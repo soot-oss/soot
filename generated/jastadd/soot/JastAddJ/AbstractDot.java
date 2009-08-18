@@ -156,7 +156,7 @@ public class AbstractDot extends Access implements Cloneable {
         return (Access)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 110
+    // Declared in ConstantExpression.jrag at line 109
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         Constant constant_value = constant_compute();
         return constant_value;
@@ -164,7 +164,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     private Constant constant_compute() {  return lastAccess().constant();  }
 
-    // Declared in ConstantExpression.jrag at line 496
+    // Declared in ConstantExpression.jrag at line 495
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

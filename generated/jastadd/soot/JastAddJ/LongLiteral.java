@@ -122,7 +122,7 @@ public class LongLiteral extends Literal implements Cloneable {
         return tokenString_LITERAL != null ? tokenString_LITERAL : "";
     }
 
-    // Declared in ConstantExpression.jrag at line 238
+    // Declared in ConstantExpression.jrag at line 237
  @SuppressWarnings({"unchecked", "cast"})     public boolean isHex() {
         boolean isHex_value = isHex_compute();
         return isHex_value;
@@ -130,7 +130,7 @@ public class LongLiteral extends Literal implements Cloneable {
 
     private boolean isHex_compute() {  return getLITERAL().toLowerCase().startsWith("0x");  }
 
-    // Declared in ConstantExpression.jrag at line 239
+    // Declared in ConstantExpression.jrag at line 238
  @SuppressWarnings({"unchecked", "cast"})     public boolean isOctal() {
         boolean isOctal_value = isOctal_compute();
         return isOctal_value;
@@ -138,7 +138,7 @@ public class LongLiteral extends Literal implements Cloneable {
 
     private boolean isOctal_compute() {  return getLITERAL().startsWith("0");  }
 
-    // Declared in ConstantExpression.jrag at line 240
+    // Declared in ConstantExpression.jrag at line 239
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDecimal() {
         boolean isDecimal_value = isDecimal_compute();
         return isDecimal_value;
@@ -146,7 +146,7 @@ public class LongLiteral extends Literal implements Cloneable {
 
     private boolean isDecimal_compute() {  return !isHex() && !isOctal();  }
 
-    // Declared in ConstantExpression.jrag at line 244
+    // Declared in ConstantExpression.jrag at line 243
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPositive() {
         boolean isPositive_value = isPositive_compute();
         return isPositive_value;
@@ -154,7 +154,7 @@ public class LongLiteral extends Literal implements Cloneable {
 
     private boolean isPositive_compute() {  return !getLITERAL().startsWith("-");  }
 
-    // Declared in ConstantExpression.jrag at line 274
+    // Declared in ConstantExpression.jrag at line 273
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;

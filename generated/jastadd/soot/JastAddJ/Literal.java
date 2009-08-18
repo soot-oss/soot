@@ -18,7 +18,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
         node.is$Final(false);
     return node;
     }
-    // Declared in ConstantExpression.jrag at line 161
+    // Declared in ConstantExpression.jrag at line 160
 
   
   static long parseLong(String s) {
@@ -214,7 +214,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
 
     protected boolean constant_computed = false;
     protected Constant constant_value;
-    // Declared in ConstantExpression.jrag at line 104
+    // Declared in ConstantExpression.jrag at line 103
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed)
             return constant_value;
@@ -231,7 +231,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
       " not supported for type " + getClass().getName()); 
   }
 
-    // Declared in ConstantExpression.jrag at line 484
+    // Declared in ConstantExpression.jrag at line 483
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

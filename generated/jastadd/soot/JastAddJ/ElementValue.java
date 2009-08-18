@@ -14,7 +14,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
         node.is$Final(false);
     return node;
     }
-    // Declared in AnnotationsCodegen.jrag at line 317
+    // Declared in AnnotationsCodegen.jrag at line 318
 
 
   // 4.8.15.1
@@ -104,7 +104,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
         return unknownType_value;
     }
 
-    // Declared in AnnotationsCodegen.jrag at line 363
+    // Declared in AnnotationsCodegen.jrag at line 364
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;

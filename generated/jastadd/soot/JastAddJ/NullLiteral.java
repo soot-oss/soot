@@ -102,7 +102,7 @@ public class NullLiteral extends Literal implements Cloneable {
         return tokenString_LITERAL != null ? tokenString_LITERAL : "";
     }
 
-    // Declared in ConstantExpression.jrag at line 485
+    // Declared in ConstantExpression.jrag at line 484
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

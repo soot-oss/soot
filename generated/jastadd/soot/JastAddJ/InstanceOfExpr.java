@@ -148,7 +148,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
         return (Access)getChildNoTransform(1);
     }
 
-    // Declared in ConstantExpression.jrag at line 493
+    // Declared in ConstantExpression.jrag at line 492
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;

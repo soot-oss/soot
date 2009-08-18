@@ -191,7 +191,7 @@ public class ArrayInit extends Expr implements Cloneable {
         return (List<Expr>)getChildNoTransform(0);
     }
 
-    // Declared in ConstantExpression.jrag at line 470
+    // Declared in ConstantExpression.jrag at line 469
  @SuppressWarnings({"unchecked", "cast"})     public boolean representableIn(TypeDecl t) {
         boolean representableIn_TypeDecl_value = representableIn_compute(t);
         return representableIn_TypeDecl_value;

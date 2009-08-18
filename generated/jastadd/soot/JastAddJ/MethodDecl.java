@@ -394,7 +394,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 162
+    // Declared in AnnotationsCodegen.jrag at line 163
 
 
   // 4.8.17
@@ -422,7 +422,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 218
+    // Declared in AnnotationsCodegen.jrag at line 219
 
 
   // 4.8.18
@@ -450,7 +450,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     }
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 273
+    // Declared in AnnotationsCodegen.jrag at line 274
 
 
   public void addSourceLevelParameterAnnotationsAttribute(Collection c) {

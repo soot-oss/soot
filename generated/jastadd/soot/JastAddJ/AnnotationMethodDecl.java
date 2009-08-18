@@ -58,7 +58,7 @@ public class AnnotationMethodDecl extends MethodDecl implements Cloneable {
     s.append(";\n");
   }
 
-    // Declared in AnnotationsCodegen.jrag at line 292
+    // Declared in AnnotationsCodegen.jrag at line 293
 
 
   public void addAttributes() {
