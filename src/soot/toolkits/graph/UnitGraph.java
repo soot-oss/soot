@@ -49,8 +49,8 @@ import soot.options.Options;
 
 public abstract class UnitGraph implements DirectedGraph<Unit>
 {
-    List<Unit> heads;
-    List<Unit> tails;
+    protected List<Unit> heads;
+    protected List<Unit> tails;
 
     protected Map<Unit,List<Unit>> unitToSuccs;
     protected Map<Unit,List<Unit>> unitToPreds;        
