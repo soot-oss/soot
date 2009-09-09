@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="soot/jimple/toolkits/ctl/CTLEvaluator.java|soot/jimple/toolkits/ctl/CopyOfCTLAnalysis.java|soot/jimple/toolkits/ctl/formula/AF.java|soot/jimple/toolkits/ctl/formula/AG.java|soot/jimple/toolkits/ctl/formula/AU.java|soot/jimple/toolkits/ctl/formula/AX.java|soot/jimple/toolkits/ctl/formula/EF.java|soot/jimple/toolkits/ctl/formula/And.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="generated/jj"/>
+	<classpathentry excluding="soot/AntTask.java" kind="src" path="generated/options"/>
+	<classpathentry kind="src" path="generated/sablecc"/>
+	<classpathentry kind="src" path="generated/singletons"/>
+	<classpathentry kind="src" path="generated/jastadd"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="lib" path="lib/sootclasses-trunk.jar" sourcepath="/abc-ja-exts/generated"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/libs"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>
