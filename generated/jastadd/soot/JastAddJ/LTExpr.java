@@ -7,11 +7,14 @@ public class LTExpr extends RelationalExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public LTExpr clone() throws CloneNotSupportedException {
         LTExpr node = (LTExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public LTExpr copy() {
       try {
@@ -115,6 +118,7 @@ public class LTExpr extends RelationalExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 533
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -123,6 +127,7 @@ public class LTExpr extends RelationalExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 413
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

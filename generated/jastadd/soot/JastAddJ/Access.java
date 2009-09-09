@@ -13,6 +13,9 @@ public abstract class Access extends Expr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Access clone() throws CloneNotSupportedException {
         Access node = (Access)super.clone();
         node.prevExpr_computed = false;
@@ -22,7 +25,7 @@ public abstract class Access extends Expr implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in ResolveAmbiguousNames.jrag at line 143
 
@@ -140,6 +143,7 @@ public abstract class Access extends Expr implements Cloneable {
 
     // Declared in LookupMethod.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public Expr unqualifiedScope() {
+        ASTNode$State state = state();
         Expr unqualifiedScope_value = unqualifiedScope_compute();
         return unqualifiedScope_value;
     }
@@ -148,6 +152,7 @@ public abstract class Access extends Expr implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 58
  @SuppressWarnings({"unchecked", "cast"})     public boolean isQualified() {
+        ASTNode$State state = state();
         boolean isQualified_value = isQualified_compute();
         return isQualified_value;
     }
@@ -156,6 +161,7 @@ public abstract class Access extends Expr implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 61
  @SuppressWarnings({"unchecked", "cast"})     public Expr qualifier() {
+        ASTNode$State state = state();
         Expr qualifier_value = qualifier_compute();
         return qualifier_value;
     }
@@ -164,6 +170,7 @@ public abstract class Access extends Expr implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 66
  @SuppressWarnings({"unchecked", "cast"})     public Access lastAccess() {
+        ASTNode$State state = state();
         Access lastAccess_value = lastAccess_compute();
         return lastAccess_value;
     }
@@ -174,9 +181,11 @@ public abstract class Access extends Expr implements Cloneable {
     protected Expr prevExpr_value;
     // Declared in ResolveAmbiguousNames.jrag at line 78
  @SuppressWarnings({"unchecked", "cast"})     public Expr prevExpr() {
-        if(prevExpr_computed)
+        if(prevExpr_computed) {
             return prevExpr_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         prevExpr_value = prevExpr_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -198,9 +207,11 @@ public abstract class Access extends Expr implements Cloneable {
     protected boolean hasPrevExpr_value;
     // Declared in ResolveAmbiguousNames.jrag at line 89
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasPrevExpr() {
-        if(hasPrevExpr_computed)
+        if(hasPrevExpr_computed) {
             return hasPrevExpr_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         hasPrevExpr_value = hasPrevExpr_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -220,6 +231,7 @@ public abstract class Access extends Expr implements Cloneable {
 
     // Declared in SyntacticClassification.jrag at line 56
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -230,9 +242,11 @@ public abstract class Access extends Expr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 278
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -244,36 +258,42 @@ public abstract class Access extends Expr implements Cloneable {
 
     // Declared in LookupMethod.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public Expr nestedScope() {
+        ASTNode$State state = state();
         Expr nestedScope_value = getParent().Define_Expr_nestedScope(this, null);
         return nestedScope_value;
     }
 
     // Declared in LookupType.jrag at line 133
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
+        ASTNode$State state = state();
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;
     }
 
     // Declared in LookupVariable.jrag at line 228
  @SuppressWarnings({"unchecked", "cast"})     public Variable unknownField() {
+        ASTNode$State state = state();
         Variable unknownField_value = getParent().Define_Variable_unknownField(this, null);
         return unknownField_value;
     }
 
     // Declared in Annotations.jrag at line 268
  @SuppressWarnings({"unchecked", "cast"})     public boolean withinSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
         return withinSuppressWarnings_String_value;
     }
 
     // Declared in Annotations.jrag at line 372
  @SuppressWarnings({"unchecked", "cast"})     public boolean withinDeprecatedAnnotation() {
+        ASTNode$State state = state();
         boolean withinDeprecatedAnnotation_value = getParent().Define_boolean_withinDeprecatedAnnotation(this, null);
         return withinDeprecatedAnnotation_value;
     }
 
     // Declared in Expressions.jrag at line 292
  @SuppressWarnings({"unchecked", "cast"})     public boolean inExplicitConstructorInvocation() {
+        ASTNode$State state = state();
         boolean inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
         return inExplicitConstructorInvocation_value;
     }

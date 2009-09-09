@@ -10,13 +10,16 @@ public class AssertStmt extends Stmt implements Cloneable {
         isDAafter_Variable_values = null;
         isDUafter_Variable_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssertStmt clone() throws CloneNotSupportedException {
         AssertStmt node = (AssertStmt)super.clone();
         node.isDAafter_Variable_values = null;
         node.isDUafter_Variable_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AssertStmt copy() {
       try {
@@ -196,9 +199,11 @@ public class AssertStmt extends Stmt implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -212,9 +217,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)

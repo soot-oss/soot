@@ -8,11 +8,14 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public MemberDecl clone() throws CloneNotSupportedException {
         MemberDecl node = (MemberDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in Modifiers.jrag at line 190
 
@@ -51,6 +54,7 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public abstract boolean isStatic();
     // Declared in ConstantExpression.jrag at line 478
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -59,6 +63,7 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
 
     // Declared in Modifiers.jrag at line 212
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
+        ASTNode$State state = state();
         boolean isSynthetic_value = isSynthetic_compute();
         return isSynthetic_value;
     }

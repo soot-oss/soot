@@ -42,6 +42,9 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
         wildcards_computed = false;
         wildcards_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Program clone() throws CloneNotSupportedException {
         Program node = (Program)super.clone();
         node.typeObject_computed = false;
@@ -82,7 +85,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
         node.wildcards_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Program copy() {
       try {
@@ -685,11 +688,19 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
 
 
     public void refined__Program_addCompilationUnit(CompilationUnit node) {
-        List<CompilationUnit> list = getCompilationUnitList();
+        List<CompilationUnit> list = (parent == null || state == null) ? getCompilationUnitListNoTransform() : getCompilationUnitList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addCompilationUnitNoTransform(CompilationUnit node) {
+        List<CompilationUnit> list = getCompilationUnitListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setCompilationUnit(CompilationUnit node, int i) {
@@ -697,26 +708,28 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<CompilationUnit> getCompilationUnits() {
         return getCompilationUnitList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<CompilationUnit> getCompilationUnitsNoTransform() {
         return getCompilationUnitListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<CompilationUnit> refined__Program_getCompilationUnitList() {
-        return (List<CompilationUnit>)getChild(0);
+        List<CompilationUnit> list = (List<CompilationUnit>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<CompilationUnit> getCompilationUnitListNoTransform() {
@@ -824,9 +837,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeObject_value;
     // Declared in LookupType.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
-        if(typeObject_computed)
+        if(typeObject_computed) {
             return typeObject_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeObject_value = typeObject_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -840,9 +855,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeCloneable_value;
     // Declared in LookupType.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeCloneable() {
-        if(typeCloneable_computed)
+        if(typeCloneable_computed) {
             return typeCloneable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeCloneable_value = typeCloneable_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -856,9 +873,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeSerializable_value;
     // Declared in LookupType.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeSerializable() {
-        if(typeSerializable_computed)
+        if(typeSerializable_computed) {
             return typeSerializable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeSerializable_value = typeSerializable_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -872,9 +891,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeBoolean_value;
     // Declared in LookupType.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeBoolean() {
-        if(typeBoolean_computed)
+        if(typeBoolean_computed) {
             return typeBoolean_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeBoolean_value = typeBoolean_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -888,9 +909,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeByte_value;
     // Declared in LookupType.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeByte() {
-        if(typeByte_computed)
+        if(typeByte_computed) {
             return typeByte_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeByte_value = typeByte_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -904,9 +927,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeShort_value;
     // Declared in LookupType.jrag at line 24
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeShort() {
-        if(typeShort_computed)
+        if(typeShort_computed) {
             return typeShort_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeShort_value = typeShort_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -920,9 +945,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeChar_value;
     // Declared in LookupType.jrag at line 25
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeChar() {
-        if(typeChar_computed)
+        if(typeChar_computed) {
             return typeChar_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeChar_value = typeChar_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -936,9 +963,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeInt_value;
     // Declared in LookupType.jrag at line 26
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeInt() {
-        if(typeInt_computed)
+        if(typeInt_computed) {
             return typeInt_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeInt_value = typeInt_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -952,9 +981,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeLong_value;
     // Declared in LookupType.jrag at line 27
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeLong() {
-        if(typeLong_computed)
+        if(typeLong_computed) {
             return typeLong_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeLong_value = typeLong_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -968,9 +999,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeFloat_value;
     // Declared in LookupType.jrag at line 28
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeFloat() {
-        if(typeFloat_computed)
+        if(typeFloat_computed) {
             return typeFloat_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeFloat_value = typeFloat_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -984,9 +1017,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeDouble_value;
     // Declared in LookupType.jrag at line 29
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeDouble() {
-        if(typeDouble_computed)
+        if(typeDouble_computed) {
             return typeDouble_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeDouble_value = typeDouble_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1000,9 +1035,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeString_value;
     // Declared in LookupType.jrag at line 30
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeString() {
-        if(typeString_computed)
+        if(typeString_computed) {
             return typeString_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeString_value = typeString_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1016,9 +1053,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeVoid_value;
     // Declared in LookupType.jrag at line 41
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeVoid() {
-        if(typeVoid_computed)
+        if(typeVoid_computed) {
             return typeVoid_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeVoid_value = typeVoid_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1032,9 +1071,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl typeNull_value;
     // Declared in LookupType.jrag at line 43
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNull() {
-        if(typeNull_computed)
+        if(typeNull_computed) {
             return typeNull_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeNull_value = typeNull_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1048,9 +1089,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl unknownType_value;
     // Declared in LookupType.jrag at line 46
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
-        if(unknownType_computed)
+        if(unknownType_computed) {
             return unknownType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         unknownType_value = unknownType_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1065,9 +1108,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasPackage(String packageName) {
         Object _parameters = packageName;
 if(hasPackage_String_values == null) hasPackage_String_values = new java.util.HashMap(4);
-        if(hasPackage_String_values.containsKey(_parameters))
+        if(hasPackage_String_values.containsKey(_parameters)) {
             return ((Boolean)hasPackage_String_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean hasPackage_String_value = hasPackage_compute(packageName);
         if(isFinal && num == state().boundariesCrossed)
@@ -1086,9 +1131,11 @@ if(hasPackage_String_values == null) hasPackage_String_values = new java.util.Ha
         _parameters.add(packageName);
         _parameters.add(typeName);
 if(lookupType_String_String_values == null) lookupType_String_String_values = new java.util.HashMap(4);
-        if(lookupType_String_String_values.containsKey(_parameters))
+        if(lookupType_String_String_values.containsKey(_parameters)) {
             return (TypeDecl)lookupType_String_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupType_String_String_value = lookupType_compute(packageName, typeName);
         if(isFinal && num == state().boundariesCrossed)
@@ -1126,9 +1173,11 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
     protected ConstructorDecl unknownConstructor_value;
     // Declared in TypeAnalysis.jrag at line 245
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl unknownConstructor() {
-        if(unknownConstructor_computed)
+        if(unknownConstructor_computed) {
             return unknownConstructor_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         unknownConstructor_value = unknownConstructor_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1144,9 +1193,11 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
     protected WildcardsCompilationUnit wildcards_value;
     // Declared in Generics.jrag at line 1113
  @SuppressWarnings({"unchecked", "cast"})     public WildcardsCompilationUnit wildcards() {
-        if(wildcards_computed)
+        if(wildcards_computed) {
             return wildcards_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         wildcards_value = wildcards_compute();
         wildcards_value.setParent(this);

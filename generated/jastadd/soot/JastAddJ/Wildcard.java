@@ -9,13 +9,16 @@ public class Wildcard extends AbstractWildcard implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Wildcard clone() throws CloneNotSupportedException {
         Wildcard node = (Wildcard)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Wildcard copy() {
       try {
@@ -67,9 +70,11 @@ public class Wildcard extends AbstractWildcard implements Cloneable {
 
     // Declared in Generics.jrag at line 1124
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -81,6 +86,7 @@ public class Wildcard extends AbstractWildcard implements Cloneable {
 
     // Declared in Generics.jrag at line 1129
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeWildcard() {
+        ASTNode$State state = state();
         TypeDecl typeWildcard_value = getParent().Define_TypeDecl_typeWildcard(this, null);
         return typeWildcard_value;
     }

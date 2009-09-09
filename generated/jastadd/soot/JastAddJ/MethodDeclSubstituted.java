@@ -10,13 +10,16 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
         sourceMethodDecl_computed = false;
         sourceMethodDecl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public MethodDeclSubstituted clone() throws CloneNotSupportedException {
         MethodDeclSubstituted node = (MethodDeclSubstituted)super.clone();
         node.sourceMethodDecl_computed = false;
         node.sourceMethodDecl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public MethodDeclSubstituted copy() {
       try {
@@ -178,11 +181,19 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
 
 
     public void addParameter(ParameterDeclaration node) {
-        List<ParameterDeclaration> list = getParameterList();
+        List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addParameterNoTransform(ParameterDeclaration node) {
+        List<ParameterDeclaration> list = getParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -190,26 +201,28 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
-        return (List<ParameterDeclaration>)getChild(2);
+        List<ParameterDeclaration> list = (List<ParameterDeclaration>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -240,11 +253,19 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
 
 
     public void addException(Access node) {
-        List<Access> list = getExceptionList();
+        List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addExceptionNoTransform(Access node) {
+        List<Access> list = getExceptionListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setException(Access node, int i) {
@@ -252,26 +273,28 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
-        return (List<Access>)getChild(3);
+        List<Access> list = (List<Access>)getChild(3);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -336,9 +359,11 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
 
     // Declared in Generics.jrag at line 1267
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
-        if(sourceMethodDecl_computed)
+        if(sourceMethodDecl_computed) {
             return sourceMethodDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceMethodDecl_value = sourceMethodDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -350,6 +375,7 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
 
     // Declared in GenericsCodegen.jrag at line 35
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl erasedMethod() {
+        ASTNode$State state = state();
         MethodDecl erasedMethod_value = erasedMethod_compute();
         return erasedMethod_value;
     }

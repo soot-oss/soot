@@ -7,11 +7,14 @@ public class AssignModExpr extends AssignMultiplicativeExpr implements Cloneable
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignModExpr clone() throws CloneNotSupportedException {
         AssignModExpr node = (AssignModExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AssignModExpr copy() {
       try {
@@ -109,6 +112,7 @@ public class AssignModExpr extends AssignMultiplicativeExpr implements Cloneable
 
     // Declared in PrettyPrint.jadd at line 250
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

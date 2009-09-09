@@ -24,6 +24,9 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
         label_exception_handler_computed = false;
         label_exception_handler_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public SynchronizedStmt clone() throws CloneNotSupportedException {
         SynchronizedStmt node = (SynchronizedStmt)super.clone();
         node.isDAafter_Variable_values = null;
@@ -44,7 +47,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
         node.label_exception_handler_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public SynchronizedStmt copy() {
       try {
@@ -210,9 +213,11 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -224,6 +229,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 919
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFinally(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFinally_Variable_value = isDUafterFinally_compute(v);
         return isDUafterFinally_Variable_value;
     }
@@ -232,6 +238,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 922
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFinally(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFinally_Variable_value = isDAafterFinally_compute(v);
         return isDAafterFinally_Variable_value;
     }
@@ -242,9 +249,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -256,9 +265,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in UnreachableStatements.jrag at line 110
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed)
+        if(canCompleteNormally_computed) {
             return canCompleteNormally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -273,9 +284,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public soot.Local monitor(Body b) {
         Object _parameters = b;
 if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
-        if(monitor_Body_values.containsKey(_parameters))
+        if(monitor_Body_values.containsKey(_parameters)) {
             return (soot.Local)monitor_Body_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         soot.Local monitor_Body_value = monitor_compute(b);
         if(isFinal && num == state().boundariesCrossed)
@@ -289,6 +302,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     // Declared in Statements.jrag at line 354
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsFinallyTrap() {
+        ASTNode$State state = state();
         boolean needsFinallyTrap_value = needsFinallyTrap_compute();
         return needsFinallyTrap_value;
     }
@@ -299,9 +313,11 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
     protected ArrayList exceptionRanges_value;
     // Declared in Statements.jrag at line 451
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
-        if(exceptionRanges_computed)
+        if(exceptionRanges_computed) {
             return exceptionRanges_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         exceptionRanges_value = exceptionRanges_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -315,9 +331,11 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
     protected soot.jimple.Stmt label_begin_value;
     // Declared in Statements.jrag at line 478
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_begin() {
-        if(label_begin_computed)
+        if(label_begin_computed) {
             return label_begin_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_begin_value = label_begin_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -331,9 +349,11 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
     protected soot.jimple.Stmt label_end_value;
     // Declared in Statements.jrag at line 479
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_end() {
-        if(label_end_computed)
+        if(label_end_computed) {
             return label_end_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_end_value = label_end_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -347,9 +367,11 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
     protected soot.jimple.Stmt label_finally_value;
     // Declared in Statements.jrag at line 480
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally() {
-        if(label_finally_computed)
+        if(label_finally_computed) {
             return label_finally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_finally_value = label_finally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -363,9 +385,11 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
     protected soot.jimple.Stmt label_finally_block_value;
     // Declared in Statements.jrag at line 481
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_finally_block() {
-        if(label_finally_block_computed)
+        if(label_finally_block_computed) {
             return label_finally_block_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_finally_block_value = label_finally_block_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -379,9 +403,11 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
     protected soot.jimple.Stmt label_exception_handler_value;
     // Declared in Statements.jrag at line 482
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label_exception_handler() {
-        if(label_exception_handler_computed)
+        if(label_exception_handler_computed) {
             return label_exception_handler_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_exception_handler_value = label_exception_handler_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -393,12 +419,14 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
 
     // Declared in Statements.jrag at line 355
  @SuppressWarnings({"unchecked", "cast"})     public boolean enclosedByExceptionHandler() {
+        ASTNode$State state = state();
         boolean enclosedByExceptionHandler_value = getParent().Define_boolean_enclosedByExceptionHandler(this, null);
         return enclosedByExceptionHandler_value;
     }
 
     // Declared in Statements.jrag at line 464
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
+        ASTNode$State state = state();
         TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         return typeThrowable_value;
     }

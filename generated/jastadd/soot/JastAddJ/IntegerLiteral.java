@@ -11,6 +11,9 @@ public class IntegerLiteral extends Literal implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public IntegerLiteral clone() throws CloneNotSupportedException {
         IntegerLiteral node = (IntegerLiteral)super.clone();
         node.constant_computed = false;
@@ -19,7 +22,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public IntegerLiteral copy() {
       try {
@@ -125,6 +128,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 233
  @SuppressWarnings({"unchecked", "cast"})     public boolean isHex() {
+        ASTNode$State state = state();
         boolean isHex_value = isHex_compute();
         return isHex_value;
     }
@@ -133,6 +137,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 234
  @SuppressWarnings({"unchecked", "cast"})     public boolean isOctal() {
+        ASTNode$State state = state();
         boolean isOctal_value = isOctal_compute();
         return isOctal_value;
     }
@@ -141,6 +146,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 235
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDecimal() {
+        ASTNode$State state = state();
         boolean isDecimal_value = isDecimal_compute();
         return isDecimal_value;
     }
@@ -149,6 +155,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 242
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPositive() {
+        ASTNode$State state = state();
         boolean isPositive_value = isPositive_compute();
         return isPositive_value;
     }
@@ -157,9 +164,11 @@ public class IntegerLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 255
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
-        if(constant_computed)
+        if(constant_computed) {
             return constant_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -190,9 +199,11 @@ public class IntegerLiteral extends Literal implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 300
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

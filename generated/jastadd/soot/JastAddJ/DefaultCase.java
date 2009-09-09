@@ -7,11 +7,14 @@ public class DefaultCase extends Case implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public DefaultCase clone() throws CloneNotSupportedException {
         DefaultCase node = (DefaultCase)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public DefaultCase copy() {
       try {
@@ -72,6 +75,7 @@ public class DefaultCase extends Case implements Cloneable {
 
     // Declared in NameCheck.jrag at line 434
  @SuppressWarnings({"unchecked", "cast"})     public boolean constValue(Case c) {
+        ASTNode$State state = state();
         boolean constValue_Case_value = constValue_compute(c);
         return constValue_Case_value;
     }

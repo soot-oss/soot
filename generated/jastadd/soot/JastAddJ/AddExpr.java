@@ -9,13 +9,16 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AddExpr clone() throws CloneNotSupportedException {
         AddExpr node = (AddExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AddExpr copy() {
       try {
@@ -192,6 +195,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 121
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -200,6 +204,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 403
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }
@@ -208,9 +213,11 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 327
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -233,6 +240,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     // Declared in InnerClasses.jrag at line 86
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStringAdd() {
+        ASTNode$State state = state();
         boolean isStringAdd_value = isStringAdd_compute();
         return isStringAdd_value;
     }
@@ -241,6 +249,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     // Declared in InnerClasses.jrag at line 88
  @SuppressWarnings({"unchecked", "cast"})     public boolean firstStringAddPart() {
+        ASTNode$State state = state();
         boolean firstStringAddPart_value = firstStringAddPart_compute();
         return firstStringAddPart_value;
     }
@@ -249,6 +258,7 @@ public class AddExpr extends AdditiveExpr implements Cloneable {
 
     // Declared in InnerClasses.jrag at line 89
  @SuppressWarnings({"unchecked", "cast"})     public boolean lastStringAddPart() {
+        ASTNode$State state = state();
         boolean lastStringAddPart_value = lastStringAddPart_compute();
         return lastStringAddPart_value;
     }

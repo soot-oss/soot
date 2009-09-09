@@ -11,6 +11,9 @@ public class BooleanLiteral extends Literal implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BooleanLiteral clone() throws CloneNotSupportedException {
         BooleanLiteral node = (BooleanLiteral)super.clone();
         node.constant_computed = false;
@@ -19,7 +22,7 @@ public class BooleanLiteral extends Literal implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public BooleanLiteral copy() {
       try {
@@ -115,9 +118,11 @@ public class BooleanLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 302
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
-        if(constant_computed)
+        if(constant_computed) {
             return constant_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -131,9 +136,11 @@ public class BooleanLiteral extends Literal implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 304
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

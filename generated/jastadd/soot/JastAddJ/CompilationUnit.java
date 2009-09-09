@@ -12,6 +12,9 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         packageName_value = null;
         lookupType_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public CompilationUnit clone() throws CloneNotSupportedException {
         CompilationUnit node = (CompilationUnit)super.clone();
         node.packageName_computed = false;
@@ -19,7 +22,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         node.lookupType_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public CompilationUnit copy() {
       try {
@@ -262,11 +265,19 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
 
 
     public void addImportDecl(ImportDecl node) {
-        List<ImportDecl> list = getImportDeclList();
+        List<ImportDecl> list = (parent == null || state == null) ? getImportDeclListNoTransform() : getImportDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addImportDeclNoTransform(ImportDecl node) {
+        List<ImportDecl> list = getImportDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setImportDecl(ImportDecl node, int i) {
@@ -274,26 +285,28 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ImportDecl> getImportDecls() {
         return getImportDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ImportDecl> getImportDeclsNoTransform() {
         return getImportDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclList() {
-        return (List<ImportDecl>)getChild(0);
+        List<ImportDecl> list = (List<ImportDecl>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclListNoTransform() {
@@ -324,11 +337,19 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
 
 
     public void addTypeDecl(TypeDecl node) {
-        List<TypeDecl> list = getTypeDeclList();
+        List<TypeDecl> list = (parent == null || state == null) ? getTypeDeclListNoTransform() : getTypeDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addTypeDeclNoTransform(TypeDecl node) {
+        List<TypeDecl> list = getTypeDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setTypeDecl(TypeDecl node, int i) {
@@ -336,26 +357,28 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<TypeDecl> getTypeDecls() {
         return getTypeDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<TypeDecl> getTypeDeclsNoTransform() {
         return getTypeDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclList() {
-        return (List<TypeDecl>)getChild(1);
+        List<TypeDecl> list = (List<TypeDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclListNoTransform() {
@@ -438,6 +461,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in ClassPath.jrag at line 27
  @SuppressWarnings({"unchecked", "cast"})     public String relativeName() {
+        ASTNode$State state = state();
         String relativeName_value = relativeName_compute();
         return relativeName_value;
     }
@@ -446,6 +470,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in ClassPath.jrag at line 28
  @SuppressWarnings({"unchecked", "cast"})     public String pathName() {
+        ASTNode$State state = state();
         String pathName_value = pathName_compute();
         return pathName_value;
     }
@@ -454,6 +479,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in ClassPath.jrag at line 29
  @SuppressWarnings({"unchecked", "cast"})     public boolean fromSource() {
+        ASTNode$State state = state();
         boolean fromSource_value = fromSource_compute();
         return fromSource_value;
     }
@@ -462,6 +488,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in LookupType.jrag at line 211
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localLookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet localLookupType_String_value = localLookupType_compute(name);
         return localLookupType_String_value;
     }
@@ -475,6 +502,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in LookupType.jrag at line 218
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedTypes(String name) {
+        ASTNode$State state = state();
         SimpleSet importedTypes_String_value = importedTypes_compute(name);
         return importedTypes_String_value;
     }
@@ -490,6 +518,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in LookupType.jrag at line 226
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedTypesOnDemand(String name) {
+        ASTNode$State state = state();
         SimpleSet importedTypesOnDemand_String_value = importedTypesOnDemand_compute(name);
         return importedTypesOnDemand_String_value;
     }
@@ -505,6 +534,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in PrettyPrint.jadd at line 800
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -515,9 +545,11 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
     protected String packageName_value;
     // Declared in QualifiedNames.jrag at line 92
  @SuppressWarnings({"unchecked", "cast"})     public String packageName() {
-        if(packageName_computed)
+        if(packageName_computed) {
             return packageName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         packageName_value = packageName_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -529,6 +561,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in StaticImports.jrag at line 112
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedFields(String name) {
+        ASTNode$State state = state();
         SimpleSet importedFields_String_value = importedFields_compute(name);
         return importedFields_String_value;
     }
@@ -544,6 +577,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in StaticImports.jrag at line 120
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedFieldsOnDemand(String name) {
+        ASTNode$State state = state();
         SimpleSet importedFieldsOnDemand_String_value = importedFieldsOnDemand_compute(name);
         return importedFieldsOnDemand_String_value;
     }
@@ -559,6 +593,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in StaticImports.jrag at line 141
  @SuppressWarnings({"unchecked", "cast"})     public Collection importedMethods(String name) {
+        ASTNode$State state = state();
         Collection importedMethods_String_value = importedMethods_compute(name);
         return importedMethods_String_value;
     }
@@ -573,6 +608,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in StaticImports.jrag at line 148
  @SuppressWarnings({"unchecked", "cast"})     public Collection importedMethodsOnDemand(String name) {
+        ASTNode$State state = state();
         Collection importedMethodsOnDemand_String_value = importedMethodsOnDemand_compute(name);
         return importedMethodsOnDemand_String_value;
     }
@@ -587,6 +623,7 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
 
     // Declared in LookupType.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupType(String packageName, String typeName) {
+        ASTNode$State state = state();
         TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
         return lookupType_String_String_value;
     }
@@ -596,9 +633,11 @@ private SimpleSet refined_TypeScopePropagation_CompilationUnit_Child_lookupType_
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupType(String name) {
         Object _parameters = name;
 if(lookupType_String_values == null) lookupType_String_values = new java.util.HashMap(4);
-        if(lookupType_String_values.containsKey(_parameters))
+        if(lookupType_String_values.containsKey(_parameters)) {
             return (SimpleSet)lookupType_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -608,12 +647,14 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
 
     // Declared in StaticImports.jrag at line 111
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         return lookupVariable_String_value;
     }
 
     // Declared in StaticImports.jrag at line 140
  @SuppressWarnings({"unchecked", "cast"})     public Collection lookupMethod(String name) {
+        ASTNode$State state = state();
         Collection lookupMethod_String_value = getParent().Define_Collection_lookupMethod(this, null, name);
         return lookupMethod_String_value;
     }

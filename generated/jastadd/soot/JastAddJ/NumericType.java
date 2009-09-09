@@ -12,6 +12,9 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
         unaryNumericPromotion_value = null;
         binaryNumericPromotion_TypeDecl_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public NumericType clone() throws CloneNotSupportedException {
         NumericType node = (NumericType)super.clone();
         node.unaryNumericPromotion_computed = false;
@@ -19,7 +22,7 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
         node.binaryNumericPromotion_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in AutoBoxingCodegen.jrag at line 20
 
@@ -196,11 +199,19 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -208,26 +219,28 @@ public abstract class NumericType extends PrimitiveType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(2);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -246,9 +259,11 @@ private TypeDecl refined_NumericPromotion_NumericType_binaryNumericPromotion_Typ
     protected TypeDecl unaryNumericPromotion_value;
     // Declared in TypeAnalysis.jrag at line 148
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
-        if(unaryNumericPromotion_computed)
+        if(unaryNumericPromotion_computed) {
             return unaryNumericPromotion_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         unaryNumericPromotion_value = unaryNumericPromotion_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -263,9 +278,11 @@ private TypeDecl refined_NumericPromotion_NumericType_binaryNumericPromotion_Typ
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotion(TypeDecl type) {
         Object _parameters = type;
 if(binaryNumericPromotion_TypeDecl_values == null) binaryNumericPromotion_TypeDecl_values = new java.util.HashMap(4);
-        if(binaryNumericPromotion_TypeDecl_values.containsKey(_parameters))
+        if(binaryNumericPromotion_TypeDecl_values.containsKey(_parameters)) {
             return (TypeDecl)binaryNumericPromotion_TypeDecl_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -281,6 +298,7 @@ if(binaryNumericPromotion_TypeDecl_values == null) binaryNumericPromotion_TypeDe
 
     // Declared in TypeAnalysis.jrag at line 174
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNumericType() {
+        ASTNode$State state = state();
         boolean isNumericType_value = isNumericType_compute();
         return isNumericType_value;
     }

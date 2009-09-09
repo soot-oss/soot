@@ -14,6 +14,9 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
         jvmName_computed = false;
         jvmName_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ReferenceType clone() throws CloneNotSupportedException {
         ReferenceType node = (ReferenceType)super.clone();
         node.narrowingConversionTo_TypeDecl_values = null;
@@ -23,7 +26,7 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
         node.jvmName_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in AutoBoxingCodegen.jrag at line 74
 
@@ -146,11 +149,19 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -158,26 +169,28 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(1);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -186,6 +199,7 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 33
  @SuppressWarnings({"unchecked", "cast"})     public boolean wideningConversionTo(TypeDecl type) {
+        ASTNode$State state = state();
         boolean wideningConversionTo_TypeDecl_value = wideningConversionTo_compute(type);
         return wideningConversionTo_TypeDecl_value;
     }
@@ -196,9 +210,11 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean narrowingConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
-        if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters))
+        if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)narrowingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean narrowingConversionTo_TypeDecl_value = narrowingConversionTo_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -226,6 +242,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in TypeAnalysis.jrag at line 166
  @SuppressWarnings({"unchecked", "cast"})     public boolean isReferenceType() {
+        ASTNode$State state = state();
         boolean isReferenceType_value = isReferenceType_compute();
         return isReferenceType_value;
     }
@@ -234,6 +251,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in TypeAnalysis.jrag at line 483
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
         return isSupertypeOfNullType_NullType_value;
     }
@@ -242,6 +260,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in Annotations.jrag at line 123
  @SuppressWarnings({"unchecked", "cast"})     public boolean isValidAnnotationMethodReturnType() {
+        ASTNode$State state = state();
         boolean isValidAnnotationMethodReturnType_value = isValidAnnotationMethodReturnType_compute();
         return isValidAnnotationMethodReturnType_value;
     }
@@ -258,6 +277,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 48
  @SuppressWarnings({"unchecked", "cast"})     public boolean unboxingConversionTo(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         boolean unboxingConversionTo_TypeDecl_value = unboxingConversionTo_compute(typeDecl);
         return unboxingConversionTo_TypeDecl_value;
     }
@@ -266,9 +286,11 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 52
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unboxed() {
-        if(unboxed_computed)
+        if(unboxed_computed) {
             return unboxed_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         unboxed_value = unboxed_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -293,6 +315,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 170
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
+        ASTNode$State state = state();
         TypeDecl unaryNumericPromotion_value = unaryNumericPromotion_compute();
         return unaryNumericPromotion_value;
     }
@@ -301,6 +324,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 174
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotion(TypeDecl type) {
+        ASTNode$State state = state();
         TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
         return binaryNumericPromotion_TypeDecl_value;
     }
@@ -309,6 +333,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 196
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNumericType() {
+        ASTNode$State state = state();
         boolean isNumericType_value = isNumericType_compute();
         return isNumericType_value;
     }
@@ -317,6 +342,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 199
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIntegralType() {
+        ASTNode$State state = state();
         boolean isIntegralType_value = isIntegralType_compute();
         return isIntegralType_value;
     }
@@ -325,6 +351,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 202
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitive() {
+        ASTNode$State state = state();
         boolean isPrimitive_value = isPrimitive_compute();
         return isPrimitive_value;
     }
@@ -333,6 +360,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 215
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBoolean() {
+        ASTNode$State state = state();
         boolean isBoolean_value = isBoolean_compute();
         return isBoolean_value;
     }
@@ -341,6 +369,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in GenericsSubtype.jrag at line 480
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeNullType(NullType type) {
+        ASTNode$State state = state();
         boolean supertypeNullType_NullType_value = supertypeNullType_compute(type);
         return supertypeNullType_NullType_value;
     }
@@ -349,6 +378,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in InnerClasses.jrag at line 80
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl stringPromotion() {
+        ASTNode$State state = state();
         TypeDecl stringPromotion_value = stringPromotion_compute();
         return stringPromotion_value;
     }
@@ -357,9 +387,11 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in Java2Rewrites.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public String jvmName() {
-        if(jvmName_computed)
+        if(jvmName_computed) {
             return jvmName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         jvmName_value = jvmName_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -378,6 +410,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in Java2Rewrites.jrag at line 60
  @SuppressWarnings({"unchecked", "cast"})     public String referenceClassFieldName() {
+        ASTNode$State state = state();
         String referenceClassFieldName_value = referenceClassFieldName_compute();
         return referenceClassFieldName_value;
     }
@@ -386,48 +419,56 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 66
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeBoolean() {
+        ASTNode$State state = state();
         TypeDecl typeBoolean_value = getParent().Define_TypeDecl_typeBoolean(this, null);
         return typeBoolean_value;
     }
 
     // Declared in AutoBoxing.jrag at line 67
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeByte() {
+        ASTNode$State state = state();
         TypeDecl typeByte_value = getParent().Define_TypeDecl_typeByte(this, null);
         return typeByte_value;
     }
 
     // Declared in AutoBoxing.jrag at line 68
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeChar() {
+        ASTNode$State state = state();
         TypeDecl typeChar_value = getParent().Define_TypeDecl_typeChar(this, null);
         return typeChar_value;
     }
 
     // Declared in AutoBoxing.jrag at line 69
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeShort() {
+        ASTNode$State state = state();
         TypeDecl typeShort_value = getParent().Define_TypeDecl_typeShort(this, null);
         return typeShort_value;
     }
 
     // Declared in AutoBoxing.jrag at line 70
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeInt() {
+        ASTNode$State state = state();
         TypeDecl typeInt_value = getParent().Define_TypeDecl_typeInt(this, null);
         return typeInt_value;
     }
 
     // Declared in AutoBoxing.jrag at line 71
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeLong() {
+        ASTNode$State state = state();
         TypeDecl typeLong_value = getParent().Define_TypeDecl_typeLong(this, null);
         return typeLong_value;
     }
 
     // Declared in AutoBoxing.jrag at line 72
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeFloat() {
+        ASTNode$State state = state();
         TypeDecl typeFloat_value = getParent().Define_TypeDecl_typeFloat(this, null);
         return typeFloat_value;
     }
 
     // Declared in AutoBoxing.jrag at line 73
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeDouble() {
+        ASTNode$State state = state();
         TypeDecl typeDouble_value = getParent().Define_TypeDecl_typeDouble(this, null);
         return typeDouble_value;
     }

@@ -9,7 +9,7 @@ public class ASTNode$State extends java.lang.Object {
 
     // Declared in ASTNode at line 3
 
-  public int CIRCLE_INDEX;
+  public int CIRCLE_INDEX = 1;
 
     // Declared in ASTNode at line 4
 
@@ -21,37 +21,44 @@ public class ASTNode$State extends java.lang.Object {
 
     // Declared in ASTNode at line 6
 
+  static public class CircularValue {
+    Object value;
+    int visited = -1;
+  }
+
+    // Declared in ASTNode at line 10
+
   public static final int REWRITE_CHANGE = 1;
 
-    // Declared in ASTNode at line 7
+    // Declared in ASTNode at line 11
 
   public static final int REWRITE_NOCHANGE = 2;
 
-    // Declared in ASTNode at line 8
+    // Declared in ASTNode at line 12
 
   public static final int REWRITE_INTERRUPT = 3;
 
-    // Declared in ASTNode at line 9
+    // Declared in ASTNode at line 13
 
   public int boundariesCrossed = 0;
 
-    // Declared in ASTNode at line 11
+    // Declared in ASTNode at line 15
 
 
    private int[] stack;
 
-    // Declared in ASTNode at line 12
+    // Declared in ASTNode at line 16
 
    private int pos;
 
-    // Declared in ASTNode at line 13
+    // Declared in ASTNode at line 17
 
    public ASTNode$State() {
      stack = new int[64];
      pos = 0;
    }
 
-    // Declared in ASTNode at line 17
+    // Declared in ASTNode at line 21
 
    private void ensureSize(int size) {
      if(size < stack.length)
@@ -61,26 +68,26 @@ public class ASTNode$State extends java.lang.Object {
      stack = newStack;
    }
 
-    // Declared in ASTNode at line 24
+    // Declared in ASTNode at line 28
 
    public void push(int i) {
      ensureSize(pos+1);
      stack[pos++] = i;
    }
 
-    // Declared in ASTNode at line 28
+    // Declared in ASTNode at line 32
 
    public int pop() {
      return stack[--pos];
    }
 
-    // Declared in ASTNode at line 31
+    // Declared in ASTNode at line 35
 
    public int peek() {
      return stack[pos-1];
    }
 
-    // Declared in ASTNode at line 34
+    // Declared in ASTNode at line 38
 
   static class IdentityHashSet extends java.util.AbstractSet implements java.util.Set {
     public IdentityHashSet(int initialCapacity) {
@@ -153,7 +160,7 @@ public class ASTNode$State extends java.lang.Object {
 
     public void reset() {
         IN_CIRCLE = false;
-        CIRCLE_INDEX = 0;
+        CIRCLE_INDEX = 1;
         CHANGE = false;
         boundariesCrossed = 0;
         if(duringLookupConstructor != 0) {

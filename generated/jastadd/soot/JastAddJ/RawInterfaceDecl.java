@@ -6,22 +6,19 @@ import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;impo
 public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
-        subtype_TypeDecl_visited = new java.util.HashMap(4);
         subtype_TypeDecl_values = null;
-        subtype_TypeDecl_computed = new java.util.HashSet(4);
-        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         instanceOf_TypeDecl_values = null;
+    }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
     }
      @SuppressWarnings({"unchecked", "cast"})  public RawInterfaceDecl clone() throws CloneNotSupportedException {
         RawInterfaceDecl node = (RawInterfaceDecl)super.clone();
-        node.subtype_TypeDecl_visited = new java.util.HashMap(4);
         node.subtype_TypeDecl_values = null;
-        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
-        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.instanceOf_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public RawInterfaceDecl copy() {
       try {
@@ -168,11 +165,19 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
 
     public void addArgument(Access node) {
-        List<Access> list = getArgumentList();
+        List<Access> list = (parent == null || state == null) ? getArgumentListNoTransform() : getArgumentList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addArgumentNoTransform(Access node) {
+        List<Access> list = getArgumentListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setArgument(Access node, int i) {
@@ -180,26 +185,28 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<Access> getArguments() {
         return getArgumentList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<Access> getArgumentsNoTransform() {
         return getArgumentListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getArgumentList() {
-        return (List<Access>)getChild(1);
+        List<Access> list = (List<Access>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getArgumentListNoTransform() {
@@ -230,11 +237,19 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
 
     public void addSuperInterfaceId(Access node) {
-        List<Access> list = getSuperInterfaceIdList();
+        List<Access> list = (parent == null || state == null) ? getSuperInterfaceIdListNoTransform() : getSuperInterfaceIdList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addSuperInterfaceIdNoTransform(Access node) {
+        List<Access> list = getSuperInterfaceIdListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setSuperInterfaceId(Access node, int i) {
@@ -242,26 +257,26 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<Access> getSuperInterfaceIds() {
         return getSuperInterfaceIdList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<Access> getSuperInterfaceIdsNoTransform() {
         return getSuperInterfaceIdListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
     public List<Access> getSuperInterfaceIdListNoTransform() {
         return (List<Access>)getChildNoTransform(2);
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 39
 
 
     protected int getSuperInterfaceIdListChildPosition() {
@@ -292,11 +307,19 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -304,26 +327,26 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
     public List<BodyDecl> getBodyDeclListNoTransform() {
         return (List<BodyDecl>)getChildNoTransform(3);
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 39
 
 
     protected int getBodyDeclListChildPosition() {
@@ -332,6 +355,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
     // Declared in Generics.jrag at line 234
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRawType() {
+        ASTNode$State state = state();
         boolean isRawType_value = isRawType_compute();
         return isRawType_value;
     }
@@ -340,6 +364,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
     // Declared in Generics.jrag at line 561
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
+        ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);
         return sameSignature_Access_value;
     }
@@ -348,6 +373,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
     // Declared in GenericsParTypeDecl.jrag at line 43
  @SuppressWarnings({"unchecked", "cast"})     public String nameWithArgs() {
+        ASTNode$State state = state();
         String nameWithArgs_value = nameWithArgs_compute();
         return nameWithArgs_value;
     }
@@ -356,75 +382,80 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
     // Declared in GenericsSubtype.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGenericInterfaceDecl(GenericInterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeGenericInterfaceDecl_GenericInterfaceDecl_value = supertypeGenericInterfaceDecl_compute(type);
         return supertypeGenericInterfaceDecl_GenericInterfaceDecl_value;
     }
 
     private boolean supertypeGenericInterfaceDecl_compute(GenericInterfaceDecl type) {  return type.subtype(genericDecl().original());  }
 
-    protected java.util.Map subtype_TypeDecl_visited;
-    protected java.util.Set subtype_TypeDecl_computed = new java.util.HashSet(4);
-    protected java.util.Set subtype_TypeDecl_initialized = new java.util.HashSet(4);
-    protected java.util.Map subtype_TypeDecl_values = new java.util.HashMap(4);
+    // Declared in GenericsSubtype.jrag at line 29
  @SuppressWarnings({"unchecked", "cast"})     public boolean subtype(TypeDecl type) {
         Object _parameters = type;
-if(subtype_TypeDecl_visited == null) subtype_TypeDecl_visited = new java.util.HashMap(4);
 if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
-        if(subtype_TypeDecl_computed.contains(_parameters))
-            return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-        if (!subtype_TypeDecl_initialized.contains(_parameters)) {
-            subtype_TypeDecl_initialized.add(_parameters);
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
+        ASTNode$State.CircularValue _value;
+        if(subtype_TypeDecl_values.containsKey(_parameters)) {
+            Object _o = subtype_TypeDecl_values.get(_parameters);
+            if(!(_o instanceof ASTNode$State.CircularValue)) {
+                return ((Boolean)_o).booleanValue();
+            }
+            else
+                _value = (ASTNode$State.CircularValue)_o;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        else {
+            _value = new ASTNode$State.CircularValue();
+            subtype_TypeDecl_values.put(_parameters, _value);
+            _value.value = Boolean.valueOf(true);
+        }
+        ASTNode$State state = state();
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-                state().CHANGE = false;
+                _value.visited = new Integer(state.CIRCLE_INDEX);
+                state.CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
-                if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    state().CHANGE = true;
-                subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                    state.CHANGE = true;
+                    _value.value = Boolean.valueOf(new_subtype_TypeDecl_value);
+                }
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
-            subtype_TypeDecl_computed.add(_parameters);
+                subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
             }
             else {
-            state().RESET_CYCLE = true;
+                subtype_TypeDecl_values.remove(_parameters);
+            state.RESET_CYCLE = true;
             subtype_compute(type);
-            state().RESET_CYCLE = false;
-            subtype_TypeDecl_computed.remove(_parameters);
-            subtype_TypeDecl_initialized.remove(_parameters);
+            state.RESET_CYCLE = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-            if (state().RESET_CYCLE) {
-                subtype_TypeDecl_computed.remove(_parameters);
-                subtype_TypeDecl_initialized.remove(_parameters);
-                return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-            }
+        if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+            _value.visited = new Integer(state.CIRCLE_INDEX);
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
-            if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                state().CHANGE = true;
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
+            if (state.RESET_CYCLE) {
+                subtype_TypeDecl_values.remove(_parameters);
+            }
+            else if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                state.CHANGE = true;
+                _value.value = new_subtype_TypeDecl_value;
+            }
             return new_subtype_TypeDecl_value;
         }
-        return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
+        return ((Boolean)_value.value).booleanValue();
     }
 
     private boolean subtype_compute(TypeDecl type) {  return type.supertypeRawInterfaceDecl(this);  }
 
     // Declared in GenericsSubtype.jrag at line 117
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeClassDecl(ClassDecl type) {
+        ASTNode$State state = state();
         boolean supertypeClassDecl_ClassDecl_value = supertypeClassDecl_compute(type);
         return supertypeClassDecl_ClassDecl_value;
     }
@@ -433,6 +464,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 119
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeInterfaceDecl(InterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeInterfaceDecl_InterfaceDecl_value = supertypeInterfaceDecl_compute(type);
         return supertypeInterfaceDecl_InterfaceDecl_value;
     }
@@ -441,6 +473,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 121
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeParInterfaceDecl(ParInterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeParInterfaceDecl_ParInterfaceDecl_value = supertypeParInterfaceDecl_compute(type);
         return supertypeParInterfaceDecl_ParInterfaceDecl_value;
     }
@@ -451,9 +484,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
  @SuppressWarnings({"unchecked", "cast"})     public boolean instanceOf(TypeDecl type) {
         Object _parameters = type;
 if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
-        if(instanceOf_TypeDecl_values.containsKey(_parameters))
+        if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
         if(isFinal && num == state().boundariesCrossed)

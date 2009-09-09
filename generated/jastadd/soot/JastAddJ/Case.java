@@ -13,6 +13,9 @@ public abstract class Case extends Stmt implements Cloneable {
         label_value = null;
         bind_Case_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Case clone() throws CloneNotSupportedException {
         Case node = (Case)super.clone();
         node.isDAbefore_Variable_values = null;
@@ -23,7 +26,7 @@ public abstract class Case extends Stmt implements Cloneable {
         node.bind_Case_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in Statements.jrag at line 109
 
@@ -61,9 +64,11 @@ public abstract class Case extends Stmt implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAbefore(Variable v) {
         Object _parameters = v;
 if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.util.HashMap(4);
-        if(isDAbefore_Variable_values.containsKey(_parameters))
+        if(isDAbefore_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAbefore_Variable_value = isDAbefore_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -78,9 +83,11 @@ if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -92,6 +99,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 1029
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
+        ASTNode$State state = state();
         boolean isDUbefore_Variable_value = isDUbefore_compute(v);
         return isDUbefore_Variable_value;
     }
@@ -103,9 +111,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -117,6 +127,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in UnreachableStatements.jrag at line 83
  @SuppressWarnings({"unchecked", "cast"})     public boolean reachable() {
+        ASTNode$State state = state();
         boolean reachable_value = reachable_compute();
         return reachable_value;
     }
@@ -127,9 +138,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected soot.jimple.Stmt label_value;
     // Declared in Statements.jrag at line 107
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label() {
-        if(label_computed)
+        if(label_computed) {
             return label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_value = label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -144,9 +157,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public Case bind(Case c) {
         Object _parameters = c;
 if(bind_Case_values == null) bind_Case_values = new java.util.HashMap(4);
-        if(bind_Case_values.containsKey(_parameters))
+        if(bind_Case_values.containsKey(_parameters)) {
             return (Case)bind_Case_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         Case bind_Case_value = getParent().Define_Case_bind(this, null, c);
         if(isFinal && num == state().boundariesCrossed)
@@ -156,6 +171,7 @@ if(bind_Case_values == null) bind_Case_values = new java.util.HashMap(4);
 
     // Declared in TypeCheck.jrag at line 358
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl switchType() {
+        ASTNode$State state = state();
         TypeDecl switchType_value = getParent().Define_TypeDecl_switchType(this, null);
         return switchType_value;
     }

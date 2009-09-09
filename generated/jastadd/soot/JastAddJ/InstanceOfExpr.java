@@ -10,13 +10,16 @@ public class InstanceOfExpr extends Expr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public InstanceOfExpr clone() throws CloneNotSupportedException {
         InstanceOfExpr node = (InstanceOfExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public InstanceOfExpr copy() {
       try {
@@ -150,6 +153,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 492
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -158,6 +162,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 347
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         return isDAafterFalse_Variable_value;
     }
@@ -166,6 +171,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 348
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         return isDAafterTrue_Variable_value;
     }
@@ -174,6 +180,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 411
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -182,6 +189,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 852
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -192,9 +200,11 @@ public class InstanceOfExpr extends Expr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 361
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

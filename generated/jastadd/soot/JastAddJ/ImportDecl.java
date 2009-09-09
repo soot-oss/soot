@@ -12,6 +12,9 @@ public abstract class ImportDecl extends ASTNode<ASTNode> implements Cloneable {
         importedFields_String_values = null;
         importedMethods_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ImportDecl clone() throws CloneNotSupportedException {
         ImportDecl node = (ImportDecl)super.clone();
         node.importedTypes_String_values = null;
@@ -19,7 +22,7 @@ public abstract class ImportDecl extends ASTNode<ASTNode> implements Cloneable {
         node.importedMethods_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in java.ast at line 3
     // Declared in java.ast line 7
@@ -75,9 +78,11 @@ public abstract class ImportDecl extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedTypes(String name) {
         Object _parameters = name;
 if(importedTypes_String_values == null) importedTypes_String_values = new java.util.HashMap(4);
-        if(importedTypes_String_values.containsKey(_parameters))
+        if(importedTypes_String_values.containsKey(_parameters)) {
             return (SimpleSet)importedTypes_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet importedTypes_String_value = importedTypes_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -89,6 +94,7 @@ if(importedTypes_String_values == null) importedTypes_String_values = new java.u
 
     // Declared in LookupType.jrag at line 263
  @SuppressWarnings({"unchecked", "cast"})     public boolean isOnDemand() {
+        ASTNode$State state = state();
         boolean isOnDemand_value = isOnDemand_compute();
         return isOnDemand_value;
     }
@@ -97,6 +103,7 @@ if(importedTypes_String_values == null) importedTypes_String_values = new java.u
 
     // Declared in QualifiedNames.jrag at line 51
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
+        ASTNode$State state = state();
         String typeName_value = typeName_compute();
         return typeName_value;
     }
@@ -118,9 +125,11 @@ if(importedTypes_String_values == null) importedTypes_String_values = new java.u
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedFields(String name) {
         Object _parameters = name;
 if(importedFields_String_values == null) importedFields_String_values = new java.util.HashMap(4);
-        if(importedFields_String_values.containsKey(_parameters))
+        if(importedFields_String_values.containsKey(_parameters)) {
             return (SimpleSet)importedFields_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet importedFields_String_value = importedFields_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -135,9 +144,11 @@ if(importedFields_String_values == null) importedFields_String_values = new java
  @SuppressWarnings({"unchecked", "cast"})     public Collection importedMethods(String name) {
         Object _parameters = name;
 if(importedMethods_String_values == null) importedMethods_String_values = new java.util.HashMap(4);
-        if(importedMethods_String_values.containsKey(_parameters))
+        if(importedMethods_String_values.containsKey(_parameters)) {
             return (Collection)importedMethods_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         Collection importedMethods_String_value = importedMethods_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -149,6 +160,7 @@ if(importedMethods_String_values == null) importedMethods_String_values = new ja
 
     // Declared in LookupType.jrag at line 261
  @SuppressWarnings({"unchecked", "cast"})     public String packageName() {
+        ASTNode$State state = state();
         String packageName_value = getParent().Define_String_packageName(this, null);
         return packageName_value;
     }

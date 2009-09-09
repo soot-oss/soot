@@ -10,13 +10,16 @@ public abstract class BitwiseExpr extends Binary implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BitwiseExpr clone() throws CloneNotSupportedException {
         BitwiseExpr node = (BitwiseExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 192
 
@@ -106,9 +109,11 @@ public abstract class BitwiseExpr extends Binary implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 350
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

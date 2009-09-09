@@ -17,6 +17,9 @@ public class ThrowStmt extends Stmt implements Cloneable {
         typeNull_computed = false;
         typeNull_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ThrowStmt clone() throws CloneNotSupportedException {
         ThrowStmt node = (ThrowStmt)super.clone();
         node.isDAafter_Variable_values = null;
@@ -31,7 +34,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
         node.typeNull_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ThrowStmt copy() {
       try {
@@ -169,9 +172,11 @@ public class ThrowStmt extends Stmt implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -185,9 +190,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -199,9 +206,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in UnreachableStatements.jrag at line 108
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed)
+        if(canCompleteNormally_computed) {
             return canCompleteNormally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -215,9 +224,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected TypeDecl typeNullPointerException_value;
     // Declared in ExceptionHandling.jrag at line 20
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNullPointerException() {
-        if(typeNullPointerException_computed)
+        if(typeNullPointerException_computed) {
             return typeNullPointerException_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeNullPointerException_value = getParent().Define_TypeDecl_typeNullPointerException(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -230,9 +241,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean handlesException(TypeDecl exceptionType) {
         Object _parameters = exceptionType;
 if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = new java.util.HashMap(4);
-        if(handlesException_TypeDecl_values.containsKey(_parameters))
+        if(handlesException_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)handlesException_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
         if(isFinal && num == state().boundariesCrossed)
@@ -244,9 +257,11 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
     protected TypeDecl typeThrowable_value;
     // Declared in LookupType.jrag at line 67
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
-        if(typeThrowable_computed)
+        if(typeThrowable_computed) {
             return typeThrowable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -258,9 +273,11 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
     protected TypeDecl typeNull_value;
     // Declared in LookupType.jrag at line 70
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNull() {
-        if(typeNull_computed)
+        if(typeNull_computed) {
             return typeNull_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeNull_value = getParent().Define_TypeDecl_typeNull(this, null);
         if(isFinal && num == state().boundariesCrossed)

@@ -28,6 +28,9 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         offsetFirstEnclosingVariable_computed = false;
         handlesException_TypeDecl_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ConstructorDecl clone() throws CloneNotSupportedException {
         ConstructorDecl node = (ConstructorDecl)super.clone();
         node.accessibleFrom_TypeDecl_values = null;
@@ -53,7 +56,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         node.handlesException_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ConstructorDecl copy() {
       try {
@@ -203,13 +206,13 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return c;
   }
 
-    // Declared in InnerClasses.jrag at line 444
+    // Declared in InnerClasses.jrag at line 445
 
 
   // add val$name as parameters to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 445
+    // Declared in InnerClasses.jrag at line 446
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -221,7 +224,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     }
   }
 
-    // Declared in InnerClasses.jrag at line 479
+    // Declared in InnerClasses.jrag at line 480
 
 
   public ConstructorDecl createAccessor() {
@@ -268,7 +271,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return c;
   }
 
-    // Declared in InnerClasses.jrag at line 523
+    // Declared in InnerClasses.jrag at line 524
 
 
   protected List createAccessorParameters() {
@@ -279,7 +282,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return parameters;
   }
 
-    // Declared in InnerClasses.jrag at line 531
+    // Declared in InnerClasses.jrag at line 532
 
 
   protected TypeDecl createAnonymousJavaTypeDecl() {
@@ -553,11 +556,19 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 
 
     public void addParameter(ParameterDeclaration node) {
-        List<ParameterDeclaration> list = getParameterList();
+        List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addParameterNoTransform(ParameterDeclaration node) {
+        List<ParameterDeclaration> list = getParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -565,26 +576,28 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
-        return (List<ParameterDeclaration>)getChild(1);
+        List<ParameterDeclaration> list = (List<ParameterDeclaration>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -615,11 +628,19 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 
 
     public void addException(Access node) {
-        List<Access> list = getExceptionList();
+        List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addExceptionNoTransform(Access node) {
+        List<Access> list = getExceptionListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setException(Access node, int i) {
@@ -627,26 +648,28 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
-        return (List<Access>)getChild(2);
+        List<Access> list = (List<Access>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -806,9 +829,11 @@ private boolean refined_ConstructorDecl_ConstructorDecl_moreSpecificThan_Constru
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFrom(TypeDecl type) {
         Object _parameters = type;
 if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
-        if(accessibleFrom_TypeDecl_values.containsKey(_parameters))
+        if(accessibleFrom_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -835,9 +860,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -851,9 +878,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -868,9 +897,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean throwsException(TypeDecl exceptionType) {
         Object _parameters = exceptionType;
 if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = new java.util.HashMap(4);
-        if(throwsException_TypeDecl_values.containsKey(_parameters))
+        if(throwsException_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)throwsException_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean throwsException_TypeDecl_value = throwsException_compute(exceptionType);
         if(isFinal && num == state().boundariesCrossed)
@@ -889,9 +920,11 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
     protected String name_value;
     // Declared in LookupConstructor.jrag at line 130
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
-        if(name_computed)
+        if(name_computed) {
             return name_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         name_value = name_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -905,9 +938,11 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
     protected String signature_value;
     // Declared in LookupConstructor.jrag at line 132
  @SuppressWarnings({"unchecked", "cast"})     public String signature() {
-        if(signature_computed)
+        if(signature_computed) {
             return signature_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         signature_value = signature_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -932,9 +967,11 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(ConstructorDecl c) {
         Object _parameters = c;
 if(sameSignature_ConstructorDecl_values == null) sameSignature_ConstructorDecl_values = new java.util.HashMap(4);
-        if(sameSignature_ConstructorDecl_values.containsKey(_parameters))
+        if(sameSignature_ConstructorDecl_values.containsKey(_parameters)) {
             return ((Boolean)sameSignature_ConstructorDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean sameSignature_ConstructorDecl_value = sameSignature_compute(c);
         if(isFinal && num == state().boundariesCrossed)
@@ -958,9 +995,11 @@ if(sameSignature_ConstructorDecl_values == null) sameSignature_ConstructorDecl_v
  @SuppressWarnings({"unchecked", "cast"})     public boolean moreSpecificThan(ConstructorDecl m) {
         Object _parameters = m;
 if(moreSpecificThan_ConstructorDecl_values == null) moreSpecificThan_ConstructorDecl_values = new java.util.HashMap(4);
-        if(moreSpecificThan_ConstructorDecl_values.containsKey(_parameters))
+        if(moreSpecificThan_ConstructorDecl_values.containsKey(_parameters)) {
             return ((Boolean)moreSpecificThan_ConstructorDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean moreSpecificThan_ConstructorDecl_value = moreSpecificThan_compute(m);
         if(isFinal && num == state().boundariesCrossed)
@@ -986,9 +1025,11 @@ if(moreSpecificThan_ConstructorDecl_values == null) moreSpecificThan_Constructor
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet parameterDeclaration(String name) {
         Object _parameters = name;
 if(parameterDeclaration_String_values == null) parameterDeclaration_String_values = new java.util.HashMap(4);
-        if(parameterDeclaration_String_values.containsKey(_parameters))
+        if(parameterDeclaration_String_values.containsKey(_parameters)) {
             return (SimpleSet)parameterDeclaration_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet parameterDeclaration_String_value = parameterDeclaration_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -1005,6 +1046,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 215
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
+        ASTNode$State state = state();
         boolean isSynthetic_value = isSynthetic_compute();
         return isSynthetic_value;
     }
@@ -1013,6 +1055,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 233
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPublic() {
+        ASTNode$State state = state();
         boolean isPublic_value = isPublic_compute();
         return isPublic_value;
     }
@@ -1021,6 +1064,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 234
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrivate() {
+        ASTNode$State state = state();
         boolean isPrivate_value = isPrivate_compute();
         return isPrivate_value;
     }
@@ -1029,6 +1073,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 235
  @SuppressWarnings({"unchecked", "cast"})     public boolean isProtected() {
+        ASTNode$State state = state();
         boolean isProtected_value = isProtected_compute();
         return isProtected_value;
     }
@@ -1040,9 +1085,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
  @SuppressWarnings({"unchecked", "cast"})     public boolean circularThisInvocation(ConstructorDecl decl) {
         Object _parameters = decl;
 if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation_ConstructorDecl_values = new java.util.HashMap(4);
-        if(circularThisInvocation_ConstructorDecl_values.containsKey(_parameters))
+        if(circularThisInvocation_ConstructorDecl_values.containsKey(_parameters)) {
             return ((Boolean)circularThisInvocation_ConstructorDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean circularThisInvocation_ConstructorDecl_value = circularThisInvocation_compute(decl);
         if(isFinal && num == state().boundariesCrossed)
@@ -1065,6 +1112,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in TypeAnalysis.jrag at line 268
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -1073,6 +1121,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in TypeAnalysis.jrag at line 274
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
+        ASTNode$State state = state();
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
     }
@@ -1081,6 +1130,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in Annotations.jrag at line 286
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAnnotationSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
         return hasAnnotationSuppressWarnings_String_value;
     }
@@ -1089,6 +1139,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in Annotations.jrag at line 324
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDeprecated() {
+        ASTNode$State state = state();
         boolean isDeprecated_value = isDeprecated_compute();
         return isDeprecated_value;
     }
@@ -1099,9 +1150,11 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     protected ConstructorDecl sourceConstructorDecl_value;
     // Declared in Generics.jrag at line 1269
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
-        if(sourceConstructorDecl_computed)
+        if(sourceConstructorDecl_computed) {
             return sourceConstructorDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceConstructorDecl_value = sourceConstructorDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1113,6 +1166,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in MethodSignature.jrag at line 175
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableBySubtyping(List argList) {
+        ASTNode$State state = state();
         boolean applicableBySubtyping_List_value = applicableBySubtyping_compute(argList);
         return applicableBySubtyping_List_value;
     }
@@ -1130,6 +1184,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in MethodSignature.jrag at line 195
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableByMethodInvocationConversion(List argList) {
+        ASTNode$State state = state();
         boolean applicableByMethodInvocationConversion_List_value = applicableByMethodInvocationConversion_compute(argList);
         return applicableByMethodInvocationConversion_List_value;
     }
@@ -1147,6 +1202,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in MethodSignature.jrag at line 216
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableVariableArity(List argList) {
+        ASTNode$State state = state();
         boolean applicableVariableArity_List_value = applicableVariableArity_compute(argList);
         return applicableVariableArity_List_value;
     }
@@ -1167,6 +1223,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in MethodSignature.jrag at line 303
  @SuppressWarnings({"unchecked", "cast"})     public boolean potentiallyApplicable(List argList) {
+        ASTNode$State state = state();
         boolean potentiallyApplicable_List_value = potentiallyApplicable_compute(argList);
         return potentiallyApplicable_List_value;
     }
@@ -1181,6 +1238,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in MethodSignature.jrag at line 310
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
+        ASTNode$State state = state();
         int arity_value = arity_compute();
         return arity_value;
     }
@@ -1189,6 +1247,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in VariableArityParameters.jrag at line 34
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariableArity() {
+        ASTNode$State state = state();
         boolean isVariableArity_value = isVariableArity_compute();
         return isVariableArity_value;
     }
@@ -1197,6 +1256,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in VariableArityParameters.jrag at line 63
  @SuppressWarnings({"unchecked", "cast"})     public ParameterDeclaration lastParameter() {
+        ASTNode$State state = state();
         ParameterDeclaration lastParameter_value = lastParameter_compute();
         return lastParameter_value;
     }
@@ -1205,6 +1265,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in InnerClasses.jrag at line 421
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsEnclosing() {
+        ASTNode$State state = state();
         boolean needsEnclosing_value = needsEnclosing_compute();
         return needsEnclosing_value;
     }
@@ -1213,6 +1274,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in InnerClasses.jrag at line 422
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsSuperEnclosing() {
+        ASTNode$State state = state();
         boolean needsSuperEnclosing_value = needsSuperEnclosing_compute();
         return needsSuperEnclosing_value;
     }
@@ -1221,6 +1283,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in InnerClasses.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosing() {
+        ASTNode$State state = state();
         TypeDecl enclosing_value = enclosing_compute();
         return enclosing_value;
     }
@@ -1229,6 +1292,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in InnerClasses.jrag at line 425
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superEnclosing() {
+        ASTNode$State state = state();
         TypeDecl superEnclosing_value = superEnclosing_compute();
         return superEnclosing_value;
     }
@@ -1237,6 +1301,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in EmitJimple.jrag at line 121
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;
     }
@@ -1253,9 +1318,11 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     protected SootMethod sootMethod_value;
     // Declared in EmitJimple.jrag at line 290
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
-        if(sootMethod_computed)
+        if(sootMethod_computed) {
             return sootMethod_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootMethod_value = sootMethod_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1283,9 +1350,11 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     protected SootMethodRef sootRef_value;
     // Declared in EmitJimple.jrag at line 305
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
-        if(sootRef_computed)
+        if(sootRef_computed) {
             return sootRef_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootRef_value = sootRef_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1315,9 +1384,11 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     protected int localNumOfFirstParameter_value;
     // Declared in LocalNum.jrag at line 32
  @SuppressWarnings({"unchecked", "cast"})     public int localNumOfFirstParameter() {
-        if(localNumOfFirstParameter_computed)
+        if(localNumOfFirstParameter_computed) {
             return localNumOfFirstParameter_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         localNumOfFirstParameter_value = localNumOfFirstParameter_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1338,9 +1409,11 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     protected int offsetFirstEnclosingVariable_value;
     // Declared in LocalNum.jrag at line 41
  @SuppressWarnings({"unchecked", "cast"})     public int offsetFirstEnclosingVariable() {
-        if(offsetFirstEnclosingVariable_computed)
+        if(offsetFirstEnclosingVariable_computed) {
             return offsetFirstEnclosingVariable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         offsetFirstEnclosingVariable_value = offsetFirstEnclosingVariable_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1354,6 +1427,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     // Declared in GenericsCodegen.jrag at line 317
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl erasedConstructor() {
+        ASTNode$State state = state();
         ConstructorDecl erasedConstructor_value = erasedConstructor_compute();
         return erasedConstructor_value;
     }
@@ -1365,9 +1439,11 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
  @SuppressWarnings({"unchecked", "cast"})     public boolean handlesException(TypeDecl exceptionType) {
         Object _parameters = exceptionType;
 if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = new java.util.HashMap(4);
-        if(handlesException_TypeDecl_values.containsKey(_parameters))
+        if(handlesException_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)handlesException_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
         if(isFinal && num == state().boundariesCrossed)
@@ -1377,6 +1453,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
 
     // Declared in TypeAnalysis.jrag at line 267
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
+        ASTNode$State state = state();
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;
     }

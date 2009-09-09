@@ -10,13 +10,16 @@ public abstract class AbstractWildcardType extends TypeDecl implements Cloneable
         getSootClassDecl_computed = false;
         getSootClassDecl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AbstractWildcardType clone() throws CloneNotSupportedException {
         AbstractWildcardType node = (AbstractWildcardType)super.clone();
         node.getSootClassDecl_computed = false;
         node.getSootClassDecl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in Generics.ast at line 3
     // Declared in Generics.ast line 22
@@ -126,11 +129,19 @@ public abstract class AbstractWildcardType extends TypeDecl implements Cloneable
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -138,26 +149,28 @@ public abstract class AbstractWildcardType extends TypeDecl implements Cloneable
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(1);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -166,6 +179,7 @@ public abstract class AbstractWildcardType extends TypeDecl implements Cloneable
 
     // Declared in GenericsSubtype.jrag at line 103
  @SuppressWarnings({"unchecked", "cast"})     public boolean isWildcard() {
+        ASTNode$State state = state();
         boolean isWildcard_value = isWildcard_compute();
         return isWildcard_value;
     }
@@ -174,9 +188,11 @@ public abstract class AbstractWildcardType extends TypeDecl implements Cloneable
 
     // Declared in GenericsCodegen.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
-        if(getSootClassDecl_computed)
+        if(getSootClassDecl_computed) {
             return getSootClassDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootClassDecl_value = getSootClassDecl_compute();
         if(isFinal && num == state().boundariesCrossed)

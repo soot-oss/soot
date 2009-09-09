@@ -13,6 +13,9 @@ public class AbstractDot extends Access implements Cloneable {
         type_value = null;
         isDUbefore_Variable_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AbstractDot clone() throws CloneNotSupportedException {
         AbstractDot node = (AbstractDot)super.clone();
         node.isDAafter_Variable_values = null;
@@ -22,7 +25,7 @@ public class AbstractDot extends Access implements Cloneable {
         node.isDUbefore_Variable_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AbstractDot copy() {
       try {
@@ -158,6 +161,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 109
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -166,6 +170,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 495
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -174,6 +179,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 59
  @SuppressWarnings({"unchecked", "cast"})     public Variable varDecl() {
+        ASTNode$State state = state();
         Variable varDecl_value = varDecl_compute();
         return varDecl_value;
     }
@@ -182,6 +188,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 337
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         return isDAafterTrue_Variable_value;
     }
@@ -190,6 +197,7 @@ public class AbstractDot extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 338
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         return isDAafterFalse_Variable_value;
     }
@@ -201,9 +209,11 @@ public class AbstractDot extends Access implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -215,6 +225,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 794
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
         return isDUafterTrue_Variable_value;
     }
@@ -223,6 +234,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 795
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
         return isDUafterFalse_Variable_value;
     }
@@ -234,9 +246,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -248,6 +262,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in QualifiedNames.jrag at line 63
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
+        ASTNode$State state = state();
         String typeName_value = typeName_compute();
         return typeName_value;
     }
@@ -256,6 +271,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTypeAccess() {
+        ASTNode$State state = state();
         boolean isTypeAccess_value = isTypeAccess_compute();
         return isTypeAccess_value;
     }
@@ -264,6 +280,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMethodAccess() {
+        ASTNode$State state = state();
         boolean isMethodAccess_value = isMethodAccess_compute();
         return isMethodAccess_value;
     }
@@ -272,6 +289,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFieldAccess() {
+        ASTNode$State state = state();
         boolean isFieldAccess_value = isFieldAccess_compute();
         return isFieldAccess_value;
     }
@@ -280,6 +298,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 26
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSuperAccess() {
+        ASTNode$State state = state();
         boolean isSuperAccess_value = isSuperAccess_compute();
         return isSuperAccess_value;
     }
@@ -288,6 +307,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 32
  @SuppressWarnings({"unchecked", "cast"})     public boolean isThisAccess() {
+        ASTNode$State state = state();
         boolean isThisAccess_value = isThisAccess_compute();
         return isThisAccess_value;
     }
@@ -296,6 +316,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPackageAccess() {
+        ASTNode$State state = state();
         boolean isPackageAccess_value = isPackageAccess_compute();
         return isPackageAccess_value;
     }
@@ -304,6 +325,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 42
  @SuppressWarnings({"unchecked", "cast"})     public boolean isArrayAccess() {
+        ASTNode$State state = state();
         boolean isArrayAccess_value = isArrayAccess_compute();
         return isArrayAccess_value;
     }
@@ -312,6 +334,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 46
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassAccess() {
+        ASTNode$State state = state();
         boolean isClassAccess_value = isClassAccess_compute();
         return isClassAccess_value;
     }
@@ -320,6 +343,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 50
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSuperConstructorAccess() {
+        ASTNode$State state = state();
         boolean isSuperConstructorAccess_value = isSuperConstructorAccess_compute();
         return isSuperConstructorAccess_value;
     }
@@ -328,6 +352,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 59
  @SuppressWarnings({"unchecked", "cast"})     public boolean isQualified() {
+        ASTNode$State state = state();
         boolean isQualified_value = isQualified_compute();
         return isQualified_value;
     }
@@ -336,6 +361,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 63
  @SuppressWarnings({"unchecked", "cast"})     public Expr leftSide() {
+        ASTNode$State state = state();
         Expr leftSide_value = leftSide_compute();
         return leftSide_value;
     }
@@ -344,6 +370,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 64
  @SuppressWarnings({"unchecked", "cast"})     public Access rightSide() {
+        ASTNode$State state = state();
         Access rightSide_value = rightSide_compute();
         return rightSide_value;
     }
@@ -352,6 +379,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 67
  @SuppressWarnings({"unchecked", "cast"})     public Access lastAccess() {
+        ASTNode$State state = state();
         Access lastAccess_value = lastAccess_compute();
         return lastAccess_value;
     }
@@ -360,6 +388,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 75
  @SuppressWarnings({"unchecked", "cast"})     public Access nextAccess() {
+        ASTNode$State state = state();
         Access nextAccess_value = nextAccess_compute();
         return nextAccess_value;
     }
@@ -368,6 +397,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 77
  @SuppressWarnings({"unchecked", "cast"})     public Expr prevExpr() {
+        ASTNode$State state = state();
         Expr prevExpr_value = prevExpr_compute();
         return prevExpr_value;
     }
@@ -376,6 +406,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in ResolveAmbiguousNames.jrag at line 88
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasPrevExpr() {
+        ASTNode$State state = state();
         boolean hasPrevExpr_value = hasPrevExpr_compute();
         return hasPrevExpr_value;
     }
@@ -384,6 +415,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in SyntacticClassification.jrag at line 60
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -392,9 +424,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in TypeAnalysis.jrag at line 249
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -406,6 +440,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in TypeCheck.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariable() {
+        ASTNode$State state = state();
         boolean isVariable_value = isVariable_compute();
         return isVariable_value;
     }
@@ -414,6 +449,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in TypeHierarchyCheck.jrag at line 153
  @SuppressWarnings({"unchecked", "cast"})     public boolean staticContextQualifier() {
+        ASTNode$State state = state();
         boolean staticContextQualifier_value = staticContextQualifier_compute();
         return staticContextQualifier_value;
     }
@@ -422,6 +458,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in BooleanExpressions.jrag at line 24
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }
@@ -430,6 +467,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in BooleanExpressions.jrag at line 84
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeTrue() {
+        ASTNode$State state = state();
         boolean canBeTrue_value = canBeTrue_compute();
         return canBeTrue_value;
     }
@@ -438,6 +476,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in BooleanExpressions.jrag at line 94
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeFalse() {
+        ASTNode$State state = state();
         boolean canBeFalse_value = canBeFalse_compute();
         return canBeFalse_value;
     }
@@ -449,9 +488,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         Object _parameters = v;
 if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
-        if(isDUbefore_Variable_values.containsKey(_parameters))
+        if(isDUbefore_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
         if(isFinal && num == state().boundariesCrossed)

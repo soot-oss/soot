@@ -10,13 +10,16 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ElementValuePair clone() throws CloneNotSupportedException {
         ElementValuePair node = (ElementValuePair)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ElementValuePair copy() {
       try {
@@ -149,9 +152,11 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
     protected TypeDecl type_value;
     // Declared in Annotations.jrag at line 448
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -170,12 +175,14 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in Annotations.jrag at line 456
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
+        ASTNode$State state = state();
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;
     }
 
     // Declared in Annotations.jrag at line 458
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosingAnnotationDecl() {
+        ASTNode$State state = state();
         TypeDecl enclosingAnnotationDecl_value = getParent().Define_TypeDecl_enclosingAnnotationDecl(this, null);
         return enclosingAnnotationDecl_value;
     }

@@ -8,11 +8,14 @@ public abstract class EqualityExpr extends RelationalExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public EqualityExpr clone() throws CloneNotSupportedException {
         EqualityExpr node = (EqualityExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 220
 

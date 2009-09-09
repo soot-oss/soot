@@ -7,21 +7,18 @@ public class NullType extends TypeDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
         instanceOf_TypeDecl_values = null;
-        subtype_TypeDecl_visited = new java.util.HashMap(4);
         subtype_TypeDecl_values = null;
-        subtype_TypeDecl_computed = new java.util.HashSet(4);
-        subtype_TypeDecl_initialized = new java.util.HashSet(4);
+    }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
     }
      @SuppressWarnings({"unchecked", "cast"})  public NullType clone() throws CloneNotSupportedException {
         NullType node = (NullType)super.clone();
         node.instanceOf_TypeDecl_values = null;
-        node.subtype_TypeDecl_visited = new java.util.HashMap(4);
         node.subtype_TypeDecl_values = null;
-        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
-        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public NullType copy() {
       try {
@@ -162,11 +159,19 @@ public class NullType extends TypeDecl implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -174,26 +179,28 @@ public class NullType extends TypeDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(1);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -202,6 +209,7 @@ public class NullType extends TypeDecl implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 206
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNull() {
+        ASTNode$State state = state();
         boolean isNull_value = isNull_compute();
         return isNull_value;
     }
@@ -212,9 +220,11 @@ public class NullType extends TypeDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean instanceOf(TypeDecl type) {
         Object _parameters = type;
 if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
-        if(instanceOf_TypeDecl_values.containsKey(_parameters))
+        if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -226,75 +236,80 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 484
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
         return isSupertypeOfNullType_NullType_value;
     }
 
     private boolean isSupertypeOfNullType_compute(NullType type) {  return true;  }
 
-    protected java.util.Map subtype_TypeDecl_visited;
-    protected java.util.Set subtype_TypeDecl_computed = new java.util.HashSet(4);
-    protected java.util.Set subtype_TypeDecl_initialized = new java.util.HashSet(4);
-    protected java.util.Map subtype_TypeDecl_values = new java.util.HashMap(4);
+    // Declared in GenericsSubtype.jrag at line 411
  @SuppressWarnings({"unchecked", "cast"})     public boolean subtype(TypeDecl type) {
         Object _parameters = type;
-if(subtype_TypeDecl_visited == null) subtype_TypeDecl_visited = new java.util.HashMap(4);
 if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
-        if(subtype_TypeDecl_computed.contains(_parameters))
-            return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-        if (!subtype_TypeDecl_initialized.contains(_parameters)) {
-            subtype_TypeDecl_initialized.add(_parameters);
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
+        ASTNode$State.CircularValue _value;
+        if(subtype_TypeDecl_values.containsKey(_parameters)) {
+            Object _o = subtype_TypeDecl_values.get(_parameters);
+            if(!(_o instanceof ASTNode$State.CircularValue)) {
+                return ((Boolean)_o).booleanValue();
+            }
+            else
+                _value = (ASTNode$State.CircularValue)_o;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        else {
+            _value = new ASTNode$State.CircularValue();
+            subtype_TypeDecl_values.put(_parameters, _value);
+            _value.value = Boolean.valueOf(true);
+        }
+        ASTNode$State state = state();
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-                state().CHANGE = false;
+                _value.visited = new Integer(state.CIRCLE_INDEX);
+                state.CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
-                if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    state().CHANGE = true;
-                subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                    state.CHANGE = true;
+                    _value.value = Boolean.valueOf(new_subtype_TypeDecl_value);
+                }
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
-            subtype_TypeDecl_computed.add(_parameters);
+                subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
             }
             else {
-            state().RESET_CYCLE = true;
+                subtype_TypeDecl_values.remove(_parameters);
+            state.RESET_CYCLE = true;
             subtype_compute(type);
-            state().RESET_CYCLE = false;
-            subtype_TypeDecl_computed.remove(_parameters);
-            subtype_TypeDecl_initialized.remove(_parameters);
+            state.RESET_CYCLE = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-            if (state().RESET_CYCLE) {
-                subtype_TypeDecl_computed.remove(_parameters);
-                subtype_TypeDecl_initialized.remove(_parameters);
-                return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-            }
+        if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+            _value.visited = new Integer(state.CIRCLE_INDEX);
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
-            if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                state().CHANGE = true;
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
+            if (state.RESET_CYCLE) {
+                subtype_TypeDecl_values.remove(_parameters);
+            }
+            else if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                state.CHANGE = true;
+                _value.value = new_subtype_TypeDecl_value;
+            }
             return new_subtype_TypeDecl_value;
         }
-        return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
+        return ((Boolean)_value.value).booleanValue();
     }
 
     private boolean subtype_compute(TypeDecl type) {  return type.supertypeNullType(this);  }
 
     // Declared in GenericsSubtype.jrag at line 481
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeNullType(NullType type) {
+        ASTNode$State state = state();
         boolean supertypeNullType_NullType_value = supertypeNullType_compute(type);
         return supertypeNullType_NullType_value;
     }
@@ -303,6 +318,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 81
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl stringPromotion() {
+        ASTNode$State state = state();
         TypeDecl stringPromotion_value = stringPromotion_compute();
         return stringPromotion_value;
     }

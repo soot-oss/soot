@@ -7,11 +7,14 @@ public class StaticImportOnDemandDecl extends StaticImportDecl implements Clonea
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public StaticImportOnDemandDecl clone() throws CloneNotSupportedException {
         StaticImportOnDemandDecl node = (StaticImportOnDemandDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public StaticImportOnDemandDecl copy() {
       try {
@@ -91,6 +94,7 @@ public class StaticImportOnDemandDecl extends StaticImportDecl implements Clonea
 
     // Declared in StaticImports.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -99,6 +103,7 @@ public class StaticImportOnDemandDecl extends StaticImportDecl implements Clonea
 
     // Declared in StaticImports.jrag at line 58
  @SuppressWarnings({"unchecked", "cast"})     public boolean isOnDemand() {
+        ASTNode$State state = state();
         boolean isOnDemand_value = isOnDemand_compute();
         return isOnDemand_value;
     }

@@ -9,12 +9,15 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
         super.flushCache();
         typeArguments_MethodDecl_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ParMethodAccess clone() throws CloneNotSupportedException {
         ParMethodAccess node = (ParMethodAccess)super.clone();
         node.typeArguments_MethodDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ParMethodAccess copy() {
       try {
@@ -155,11 +158,19 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
 
 
     public void addArg(Expr node) {
-        List<Expr> list = getArgList();
+        List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addArgNoTransform(Expr node) {
+        List<Expr> list = getArgListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setArg(Expr node, int i) {
@@ -167,26 +178,28 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
-        return (List<Expr>)getChild(0);
+        List<Expr> list = (List<Expr>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -217,11 +230,19 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
 
 
     public void addTypeArgument(Access node) {
-        List<Access> list = getTypeArgumentList();
+        List<Access> list = (parent == null || state == null) ? getTypeArgumentListNoTransform() : getTypeArgumentList();
         list.addChild(node);
     }
 
     // Declared in GenericMethods.ast at line 19
+
+
+    public void addTypeArgumentNoTransform(Access node) {
+        List<Access> list = getTypeArgumentListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in GenericMethods.ast at line 24
 
 
     public void setTypeArgument(Access node, int i) {
@@ -229,26 +250,28 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in GenericMethods.ast at line 23
+    // Declared in GenericMethods.ast at line 28
 
     public List<Access> getTypeArguments() {
         return getTypeArgumentList();
     }
 
-    // Declared in GenericMethods.ast at line 26
+    // Declared in GenericMethods.ast at line 31
 
     public List<Access> getTypeArgumentsNoTransform() {
         return getTypeArgumentListNoTransform();
     }
 
-    // Declared in GenericMethods.ast at line 30
+    // Declared in GenericMethods.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentList() {
-        return (List<Access>)getChild(1);
+        List<Access> list = (List<Access>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in GenericMethods.ast at line 34
+    // Declared in GenericMethods.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentListNoTransform() {
@@ -259,9 +282,11 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList typeArguments(MethodDecl m) {
         Object _parameters = m;
 if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = new java.util.HashMap(4);
-        if(typeArguments_MethodDecl_values.containsKey(_parameters))
+        if(typeArguments_MethodDecl_values.containsKey(_parameters)) {
             return (ArrayList)typeArguments_MethodDecl_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         ArrayList typeArguments_MethodDecl_value = typeArguments_compute(m);
         if(isFinal && num == state().boundariesCrossed)

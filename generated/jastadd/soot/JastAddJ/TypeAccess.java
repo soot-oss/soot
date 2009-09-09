@@ -13,6 +13,9 @@ public class TypeAccess extends Access implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public TypeAccess clone() throws CloneNotSupportedException {
         TypeAccess node = (TypeAccess)super.clone();
         node.decls_computed = false;
@@ -23,7 +26,7 @@ public class TypeAccess extends Access implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public TypeAccess copy() {
       try {
@@ -289,9 +292,11 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
     protected SimpleSet decls_value;
     // Declared in LookupType.jrag at line 135
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed)
+        if(decls_computed) {
             return decls_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -314,9 +319,11 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
     protected TypeDecl decl_value;
     // Declared in Generics.jrag at line 257
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -333,6 +340,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in LookupVariable.jrag at line 152
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupVariable_String_value = qualifiedLookupVariable_compute(name);
         return qualifiedLookupVariable_String_value;
     }
@@ -350,6 +358,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in PrettyPrint.jadd at line 803
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -358,6 +367,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in QualifiedNames.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -366,6 +376,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in QualifiedNames.jrag at line 26
  @SuppressWarnings({"unchecked", "cast"})     public String packageName() {
+        ASTNode$State state = state();
         String packageName_value = packageName_compute();
         return packageName_value;
     }
@@ -374,6 +385,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in QualifiedNames.jrag at line 49
  @SuppressWarnings({"unchecked", "cast"})     public String nameWithPackage() {
+        ASTNode$State state = state();
         String nameWithPackage_value = nameWithPackage_compute();
         return nameWithPackage_value;
     }
@@ -382,6 +394,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in QualifiedNames.jrag at line 64
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
+        ASTNode$State state = state();
         String typeName_value = typeName_compute();
         return typeName_value;
     }
@@ -390,6 +403,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in ResolveAmbiguousNames.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTypeAccess() {
+        ASTNode$State state = state();
         boolean isTypeAccess_value = isTypeAccess_compute();
         return isTypeAccess_value;
     }
@@ -398,6 +412,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in SyntacticClassification.jrag at line 106
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -406,9 +421,11 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in TypeAnalysis.jrag at line 279
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -420,6 +437,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in TypeHierarchyCheck.jrag at line 154
  @SuppressWarnings({"unchecked", "cast"})     public boolean staticContextQualifier() {
+        ASTNode$State state = state();
         boolean staticContextQualifier_value = staticContextQualifier_compute();
         return staticContextQualifier_value;
     }
@@ -428,6 +446,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     // Declared in Generics.jrag at line 907
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
+        ASTNode$State state = state();
         boolean usesTypeVariable_value = usesTypeVariable_compute();
         return usesTypeVariable_value;
     }

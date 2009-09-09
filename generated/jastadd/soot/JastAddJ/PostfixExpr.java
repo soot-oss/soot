@@ -8,11 +8,14 @@ public abstract class PostfixExpr extends Unary implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public PostfixExpr clone() throws CloneNotSupportedException {
         PostfixExpr node = (PostfixExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in DefiniteAssignment.jrag at line 63
 

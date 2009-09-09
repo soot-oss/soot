@@ -10,13 +10,16 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public RelationalExpr clone() throws CloneNotSupportedException {
         RelationalExpr node = (RelationalExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 204
 
@@ -178,9 +181,11 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 344
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -192,6 +197,7 @@ public abstract class RelationalExpr extends Binary implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 29
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }

@@ -9,11 +9,14 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public EnumInstanceExpr clone() throws CloneNotSupportedException {
         EnumInstanceExpr node = (EnumInstanceExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public EnumInstanceExpr copy() {
       try {
@@ -111,11 +114,19 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
 
 
     public void addArg(Expr node) {
-        List<Expr> list = getArgList();
+        List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addArgNoTransform(Expr node) {
+        List<Expr> list = getArgListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setArg(Expr node, int i) {
@@ -123,26 +134,28 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
-        return (List<Expr>)getChild(1);
+        List<Expr> list = (List<Expr>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {

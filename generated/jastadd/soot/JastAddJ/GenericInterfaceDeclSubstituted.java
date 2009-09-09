@@ -9,10 +9,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         sourceTypeDecl_computed = false;
         sourceTypeDecl_value = null;
         instanceOf_TypeDecl_values = null;
-        subtype_TypeDecl_visited = new java.util.HashMap(4);
         subtype_TypeDecl_values = null;
-        subtype_TypeDecl_computed = new java.util.HashSet(4);
-        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         localMethodsSignatureMap_computed = false;
         localMethodsSignatureMap_value = null;
         localFields_String_values = null;
@@ -20,15 +17,15 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         constructors_computed = false;
         constructors_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public GenericInterfaceDeclSubstituted clone() throws CloneNotSupportedException {
         GenericInterfaceDeclSubstituted node = (GenericInterfaceDeclSubstituted)super.clone();
         node.sourceTypeDecl_computed = false;
         node.sourceTypeDecl_value = null;
         node.instanceOf_TypeDecl_values = null;
-        node.subtype_TypeDecl_visited = new java.util.HashMap(4);
         node.subtype_TypeDecl_values = null;
-        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
-        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.localMethodsSignatureMap_computed = false;
         node.localMethodsSignatureMap_value = null;
         node.localFields_String_values = null;
@@ -37,7 +34,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         node.constructors_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public GenericInterfaceDeclSubstituted copy() {
       try {
@@ -177,11 +174,19 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
 
     public void addSuperInterfaceId(Access node) {
-        List<Access> list = getSuperInterfaceIdList();
+        List<Access> list = (parent == null || state == null) ? getSuperInterfaceIdListNoTransform() : getSuperInterfaceIdList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addSuperInterfaceIdNoTransform(Access node) {
+        List<Access> list = getSuperInterfaceIdListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setSuperInterfaceId(Access node, int i) {
@@ -189,26 +194,28 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<Access> getSuperInterfaceIds() {
         return getSuperInterfaceIdList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<Access> getSuperInterfaceIdsNoTransform() {
         return getSuperInterfaceIdListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getSuperInterfaceIdList() {
-        return (List<Access>)getChild(1);
+        List<Access> list = (List<Access>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getSuperInterfaceIdListNoTransform() {
@@ -239,11 +246,19 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -251,26 +266,28 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(2);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -301,11 +318,19 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
 
     public void addTypeParameter(TypeVariable node) {
-        List<TypeVariable> list = getTypeParameterList();
+        List<TypeVariable> list = (parent == null || state == null) ? getTypeParameterListNoTransform() : getTypeParameterList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addTypeParameterNoTransform(TypeVariable node) {
+        List<TypeVariable> list = getTypeParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setTypeParameter(TypeVariable node, int i) {
@@ -313,26 +338,28 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<TypeVariable> getTypeParameters() {
         return getTypeParameterList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<TypeVariable> getTypeParametersNoTransform() {
         return getTypeParameterListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterList() {
-        return (List<TypeVariable>)getChild(3);
+        List<TypeVariable> list = (List<TypeVariable>)getChild(3);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterListNoTransform() {
@@ -379,11 +406,19 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
 
     public void addParTypeDecl(ParInterfaceDecl node) {
-        List<ParInterfaceDecl> list = getParTypeDeclList();
+        List<ParInterfaceDecl> list = (parent == null || state == null) ? getParTypeDeclListNoTransform() : getParTypeDeclList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addParTypeDeclNoTransform(ParInterfaceDecl node) {
+        List<ParInterfaceDecl> list = getParTypeDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setParTypeDecl(ParInterfaceDecl node, int i) {
@@ -391,26 +426,26 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<ParInterfaceDecl> getParTypeDecls() {
         return getParTypeDeclList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<ParInterfaceDecl> getParTypeDeclsNoTransform() {
         return getParTypeDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
     public List<ParInterfaceDecl> getParTypeDeclListNoTransform() {
         return (List<ParInterfaceDecl>)getChildNoTransform(4);
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 39
 
 
     protected int getParTypeDeclListChildPosition() {
@@ -419,6 +454,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
     // Declared in Generics.jrag at line 1065
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
+        ASTNode$State state = state();
         TypeDecl original_value = original_compute();
         return original_value;
     }
@@ -427,9 +463,11 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
 
     // Declared in Generics.jrag at line 1263
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
-        if(sourceTypeDecl_computed)
+        if(sourceTypeDecl_computed) {
             return sourceTypeDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceTypeDecl_value = sourceTypeDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -443,9 +481,11 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
  @SuppressWarnings({"unchecked", "cast"})     public boolean instanceOf(TypeDecl type) {
         Object _parameters = type;
 if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
-        if(instanceOf_TypeDecl_values.containsKey(_parameters))
+        if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -455,69 +495,73 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    protected java.util.Map subtype_TypeDecl_visited;
-    protected java.util.Set subtype_TypeDecl_computed = new java.util.HashSet(4);
-    protected java.util.Set subtype_TypeDecl_initialized = new java.util.HashSet(4);
-    protected java.util.Map subtype_TypeDecl_values = new java.util.HashMap(4);
+    // Declared in GenericsSubtype.jrag at line 521
  @SuppressWarnings({"unchecked", "cast"})     public boolean subtype(TypeDecl type) {
         Object _parameters = type;
-if(subtype_TypeDecl_visited == null) subtype_TypeDecl_visited = new java.util.HashMap(4);
 if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
-        if(subtype_TypeDecl_computed.contains(_parameters))
-            return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-        if (!subtype_TypeDecl_initialized.contains(_parameters)) {
-            subtype_TypeDecl_initialized.add(_parameters);
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
+        ASTNode$State.CircularValue _value;
+        if(subtype_TypeDecl_values.containsKey(_parameters)) {
+            Object _o = subtype_TypeDecl_values.get(_parameters);
+            if(!(_o instanceof ASTNode$State.CircularValue)) {
+                return ((Boolean)_o).booleanValue();
+            }
+            else
+                _value = (ASTNode$State.CircularValue)_o;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        else {
+            _value = new ASTNode$State.CircularValue();
+            subtype_TypeDecl_values.put(_parameters, _value);
+            _value.value = Boolean.valueOf(true);
+        }
+        ASTNode$State state = state();
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-                state().CHANGE = false;
+                _value.visited = new Integer(state.CIRCLE_INDEX);
+                state.CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
-                if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    state().CHANGE = true;
-                subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                    state.CHANGE = true;
+                    _value.value = Boolean.valueOf(new_subtype_TypeDecl_value);
+                }
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
-            subtype_TypeDecl_computed.add(_parameters);
+                subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
             }
             else {
-            state().RESET_CYCLE = true;
+                subtype_TypeDecl_values.remove(_parameters);
+            state.RESET_CYCLE = true;
             subtype_compute(type);
-            state().RESET_CYCLE = false;
-            subtype_TypeDecl_computed.remove(_parameters);
-            subtype_TypeDecl_initialized.remove(_parameters);
+            state.RESET_CYCLE = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-            if (state().RESET_CYCLE) {
-                subtype_TypeDecl_computed.remove(_parameters);
-                subtype_TypeDecl_initialized.remove(_parameters);
-                return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-            }
+        if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+            _value.visited = new Integer(state.CIRCLE_INDEX);
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
-            if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                state().CHANGE = true;
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
+            if (state.RESET_CYCLE) {
+                subtype_TypeDecl_values.remove(_parameters);
+            }
+            else if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                state.CHANGE = true;
+                _value.value = new_subtype_TypeDecl_value;
+            }
             return new_subtype_TypeDecl_value;
         }
-        return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
+        return ((Boolean)_value.value).booleanValue();
     }
 
     private boolean subtype_compute(TypeDecl type) {  return type.supertypeGenericInterfaceDeclSubstituted(this);  }
 
     // Declared in GenericsSubtype.jrag at line 525
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGenericInterfaceDeclSubstituted(GenericInterfaceDeclSubstituted type) {
+        ASTNode$State state = state();
         boolean supertypeGenericInterfaceDeclSubstituted_GenericInterfaceDeclSubstituted_value = supertypeGenericInterfaceDeclSubstituted_compute(type);
         return supertypeGenericInterfaceDeclSubstituted_GenericInterfaceDeclSubstituted_value;
     }
@@ -526,6 +570,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 527
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGenericInterfaceDecl(GenericInterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeGenericInterfaceDecl_GenericInterfaceDecl_value = supertypeGenericInterfaceDecl_compute(type);
         return supertypeGenericInterfaceDecl_GenericInterfaceDecl_value;
     }
@@ -534,9 +579,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in Generics.jrag at line 925
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localMethodsSignatureMap() {
-        if(localMethodsSignatureMap_computed)
+        if(localMethodsSignatureMap_computed) {
             return localMethodsSignatureMap_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         localMethodsSignatureMap_value = localMethodsSignatureMap_compute();
         if(true)
@@ -563,9 +610,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localFields(String name) {
         Object _parameters = name;
 if(localFields_String_values == null) localFields_String_values = new java.util.HashMap(4);
-        if(localFields_String_values.containsKey(_parameters))
+        if(localFields_String_values.containsKey(_parameters)) {
             return (SimpleSet)localFields_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet localFields_String_value = localFields_compute(name);
         if(true)
@@ -592,9 +641,11 @@ if(localFields_String_values == null) localFields_String_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localTypeDecls(String name) {
         Object _parameters = name;
 if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
-        if(localTypeDecls_String_values.containsKey(_parameters))
+        if(localTypeDecls_String_values.containsKey(_parameters)) {
             return (SimpleSet)localTypeDecls_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet localTypeDecls_String_value = localTypeDecls_compute(name);
         if(true)
@@ -634,9 +685,11 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
 
     // Declared in Generics.jrag at line 985
  @SuppressWarnings({"unchecked", "cast"})     public Collection constructors() {
-        if(constructors_computed)
+        if(constructors_computed) {
             return constructors_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constructors_value = constructors_compute();
         if(isFinal && num == state().boundariesCrossed)

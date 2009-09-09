@@ -19,6 +19,9 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
         targetBreaks_computed = false;
         targetBreaks_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BranchTargetStmt clone() throws CloneNotSupportedException {
         BranchTargetStmt node = (BranchTargetStmt)super.clone();
         node.reachableBreak_computed = false;
@@ -35,7 +38,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
         node.targetBreaks_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in java.ast at line 3
     // Declared in java.ast line 199
@@ -89,9 +92,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     protected boolean reachableBreak_value;
     // Declared in UnreachableStatements.jrag at line 49
  @SuppressWarnings({"unchecked", "cast"})     public boolean reachableBreak() {
-        if(reachableBreak_computed)
+        if(reachableBreak_computed) {
             return reachableBreak_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         reachableBreak_value = reachableBreak_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -112,9 +117,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     protected boolean reachableContinue_value;
     // Declared in UnreachableStatements.jrag at line 91
  @SuppressWarnings({"unchecked", "cast"})     public boolean reachableContinue() {
-        if(reachableContinue_computed)
+        if(reachableContinue_computed) {
             return reachableContinue_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         reachableContinue_value = reachableContinue_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -135,9 +142,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     protected Collection targetBranches_value;
     // Declared in BranchTarget.jrag at line 83
  @SuppressWarnings({"unchecked", "cast"})     public Collection targetBranches() {
-        if(targetBranches_computed)
+        if(targetBranches_computed) {
             return targetBranches_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         targetBranches_value = targetBranches_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -161,9 +170,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     protected Collection escapedBranches_value;
     // Declared in BranchTarget.jrag at line 95
  @SuppressWarnings({"unchecked", "cast"})     public Collection escapedBranches() {
-        if(escapedBranches_computed)
+        if(escapedBranches_computed) {
             return escapedBranches_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         escapedBranches_value = escapedBranches_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -189,9 +200,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     protected Collection branches_value;
     // Declared in BranchTarget.jrag at line 109
  @SuppressWarnings({"unchecked", "cast"})     public Collection branches() {
-        if(branches_computed)
+        if(branches_computed) {
             return branches_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         branches_value = branches_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -209,9 +222,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     protected Collection targetContinues_value;
     // Declared in BranchTarget.jrag at line 216
  @SuppressWarnings({"unchecked", "cast"})     public Collection targetContinues() {
-        if(targetContinues_computed)
+        if(targetContinues_computed) {
             return targetContinues_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         targetContinues_value = targetContinues_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -240,9 +255,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     protected Collection targetBreaks_value;
     // Declared in BranchTarget.jrag at line 233
  @SuppressWarnings({"unchecked", "cast"})     public Collection targetBreaks() {
-        if(targetBreaks_computed)
+        if(targetBreaks_computed) {
             return targetBreaks_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         targetBreaks_value = targetBreaks_compute();
         if(isFinal && num == state().boundariesCrossed)

@@ -9,13 +9,16 @@ public class PlusExpr extends Unary implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public PlusExpr clone() throws CloneNotSupportedException {
         PlusExpr node = (PlusExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public PlusExpr copy() {
       try {
@@ -100,6 +103,7 @@ public class PlusExpr extends Unary implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 113
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -108,6 +112,7 @@ public class PlusExpr extends Unary implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 487
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -116,6 +121,7 @@ public class PlusExpr extends Unary implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 379
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
+        ASTNode$State state = state();
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;
     }
@@ -124,9 +130,11 @@ public class PlusExpr extends Unary implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 315
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

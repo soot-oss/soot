@@ -11,6 +11,9 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         type_value = null;
         numArrays_computed = false;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayCreationExpr clone() throws CloneNotSupportedException {
         ArrayCreationExpr node = (ArrayCreationExpr)super.clone();
         node.type_computed = false;
@@ -18,7 +21,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         node.numArrays_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayCreationExpr copy() {
       try {
@@ -171,6 +174,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 433
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterCreation(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterCreation_Variable_value = isDAafterCreation_compute(v);
         return isDAafterCreation_Variable_value;
     }
@@ -179,6 +183,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 434
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -187,6 +192,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 864
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterCreation(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterCreation_Variable_value = isDUafterCreation_compute(v);
         return isDUafterCreation_Variable_value;
     }
@@ -195,6 +201,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 865
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -205,9 +212,11 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 312
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -221,9 +230,11 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
     protected int numArrays_value;
     // Declared in InnerClasses.jrag at line 69
  @SuppressWarnings({"unchecked", "cast"})     public int numArrays() {
-        if(numArrays_computed)
+        if(numArrays_computed) {
             return numArrays_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         numArrays_value = numArrays_compute();
         if(isFinal && num == state().boundariesCrossed)

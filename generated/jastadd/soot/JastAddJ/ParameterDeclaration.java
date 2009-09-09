@@ -13,6 +13,9 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
         sourceVariableDecl_value = null;
         localNum_computed = false;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ParameterDeclaration clone() throws CloneNotSupportedException {
         ParameterDeclaration node = (ParameterDeclaration)super.clone();
         node.type_computed = false;
@@ -22,7 +25,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
         node.localNum_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ParameterDeclaration copy() {
       try {
@@ -244,6 +247,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in DataStructures.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
+        ASTNode$State state = state();
         int size_value = size_compute();
         return size_value;
     }
@@ -252,6 +256,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in DataStructures.jrag at line 100
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEmpty() {
+        ASTNode$State state = state();
         boolean isEmpty_value = isEmpty_compute();
         return isEmpty_value;
     }
@@ -260,6 +265,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in DataStructures.jrag at line 104
  @SuppressWarnings({"unchecked", "cast"})     public boolean contains(Object o) {
+        ASTNode$State state = state();
         boolean contains_Object_value = contains_compute(o);
         return contains_Object_value;
     }
@@ -268,6 +274,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in Modifiers.jrag at line 218
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
+        ASTNode$State state = state();
         boolean isSynthetic_value = isSynthetic_compute();
         return isSynthetic_value;
     }
@@ -276,6 +283,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in PrettyPrint.jadd at line 812
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -286,9 +294,11 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 253
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -300,6 +310,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 69
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassVariable() {
+        ASTNode$State state = state();
         boolean isClassVariable_value = isClassVariable_compute();
         return isClassVariable_value;
     }
@@ -308,6 +319,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 70
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInstanceVariable() {
+        ASTNode$State state = state();
         boolean isInstanceVariable_value = isInstanceVariable_compute();
         return isInstanceVariable_value;
     }
@@ -316,6 +328,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 74
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLocalVariable() {
+        ASTNode$State state = state();
         boolean isLocalVariable_value = isLocalVariable_compute();
         return isLocalVariable_value;
     }
@@ -324,6 +337,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 92
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
+        ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
         return isFinal_value;
     }
@@ -332,6 +346,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 93
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBlank() {
+        ASTNode$State state = state();
         boolean isBlank_value = isBlank_compute();
         return isBlank_value;
     }
@@ -340,6 +355,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 94
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
+        ASTNode$State state = state();
         boolean isStatic_value = isStatic_compute();
         return isStatic_value;
     }
@@ -348,6 +364,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 96
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -356,6 +373,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 98
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasInit() {
+        ASTNode$State state = state();
         boolean hasInit_value = hasInit_compute();
         return hasInit_value;
     }
@@ -364,6 +382,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public Expr getInit() {
+        ASTNode$State state = state();
         Expr getInit_value = getInit_compute();
         return getInit_value;
     }
@@ -372,6 +391,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableDeclaration.jrag at line 100
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -382,9 +402,11 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     protected Variable sourceVariableDecl_value;
     // Declared in Generics.jrag at line 1277
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
-        if(sourceVariableDecl_computed)
+        if(sourceVariableDecl_computed) {
             return sourceVariableDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceVariableDecl_value = sourceVariableDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -396,6 +418,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in VariableArityParameters.jrag at line 35
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariableArity() {
+        ASTNode$State state = state();
         boolean isVariableArity_value = isVariableArity_compute();
         return isVariableArity_value;
     }
@@ -404,42 +427,49 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
 
     // Declared in LookupVariable.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         return lookupVariable_String_value;
     }
 
     // Declared in NameCheck.jrag at line 288
  @SuppressWarnings({"unchecked", "cast"})     public VariableScope outerScope() {
+        ASTNode$State state = state();
         VariableScope outerScope_value = getParent().Define_VariableScope_outerScope(this, null);
         return outerScope_value;
     }
 
     // Declared in NameCheck.jrag at line 349
  @SuppressWarnings({"unchecked", "cast"})     public BodyDecl enclosingBodyDecl() {
+        ASTNode$State state = state();
         BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
         return enclosingBodyDecl_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 586
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }
 
     // Declared in VariableDeclaration.jrag at line 71
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMethodParameter() {
+        ASTNode$State state = state();
         boolean isMethodParameter_value = getParent().Define_boolean_isMethodParameter(this, null);
         return isMethodParameter_value;
     }
 
     // Declared in VariableDeclaration.jrag at line 72
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstructorParameter() {
+        ASTNode$State state = state();
         boolean isConstructorParameter_value = getParent().Define_boolean_isConstructorParameter(this, null);
         return isConstructorParameter_value;
     }
 
     // Declared in VariableDeclaration.jrag at line 73
  @SuppressWarnings({"unchecked", "cast"})     public boolean isExceptionHandlerParameter() {
+        ASTNode$State state = state();
         boolean isExceptionHandlerParameter_value = getParent().Define_boolean_isExceptionHandlerParameter(this, null);
         return isExceptionHandlerParameter_value;
     }
@@ -448,9 +478,11 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     protected int localNum_value;
     // Declared in LocalNum.jrag at line 13
  @SuppressWarnings({"unchecked", "cast"})     public int localNum() {
-        if(localNum_computed)
+        if(localNum_computed) {
             return localNum_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         localNum_value = getParent().Define_int_localNum(this, null);
         if(isFinal && num == state().boundariesCrossed)

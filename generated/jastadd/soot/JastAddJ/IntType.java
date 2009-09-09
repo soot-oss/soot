@@ -13,6 +13,9 @@ public class IntType extends IntegralType implements Cloneable {
         getSootType_computed = false;
         getSootType_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public IntType clone() throws CloneNotSupportedException {
         IntType node = (IntType)super.clone();
         node.boxed_computed = false;
@@ -23,7 +26,7 @@ public class IntType extends IntegralType implements Cloneable {
         node.getSootType_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public IntType copy() {
       try {
@@ -208,11 +211,19 @@ public class IntType extends IntegralType implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -220,26 +231,28 @@ public class IntType extends IntegralType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(2);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -248,6 +261,7 @@ public class IntType extends IntegralType implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 192
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInt() {
+        ASTNode$State state = state();
         boolean isInt_value = isInt_compute();
         return isInt_value;
     }
@@ -256,9 +270,11 @@ public class IntType extends IntegralType implements Cloneable {
 
     // Declared in AutoBoxing.jrag at line 40
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl boxed() {
-        if(boxed_computed)
+        if(boxed_computed) {
             return boxed_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boxed_value = boxed_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -270,9 +286,11 @@ public class IntType extends IntegralType implements Cloneable {
 
     // Declared in Java2Rewrites.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public String jvmName() {
-        if(jvmName_computed)
+        if(jvmName_computed) {
             return jvmName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         jvmName_value = jvmName_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -284,6 +302,7 @@ public class IntType extends IntegralType implements Cloneable {
 
     // Declared in Java2Rewrites.jrag at line 50
  @SuppressWarnings({"unchecked", "cast"})     public String primitiveClassName() {
+        ASTNode$State state = state();
         String primitiveClassName_value = primitiveClassName_compute();
         return primitiveClassName_value;
     }
@@ -292,9 +311,11 @@ public class IntType extends IntegralType implements Cloneable {
 
     // Declared in EmitJimple.jrag at line 49
  @SuppressWarnings({"unchecked", "cast"})     public Type getSootType() {
-        if(getSootType_computed)
+        if(getSootType_computed) {
             return getSootType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootType_value = getSootType_compute();
         if(isFinal && num == state().boundariesCrossed)

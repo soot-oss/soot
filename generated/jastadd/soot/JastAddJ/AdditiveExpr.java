@@ -9,13 +9,16 @@ public abstract class AdditiveExpr extends ArithmeticExpr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AdditiveExpr clone() throws CloneNotSupportedException {
         AdditiveExpr node = (AdditiveExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 164
 
@@ -101,9 +104,11 @@ public abstract class AdditiveExpr extends ArithmeticExpr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 325
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

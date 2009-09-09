@@ -12,6 +12,9 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public FloatingPointLiteral clone() throws CloneNotSupportedException {
         FloatingPointLiteral node = (FloatingPointLiteral)super.clone();
         node.isZero_computed = false;
@@ -21,7 +24,7 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public FloatingPointLiteral copy() {
       try {
@@ -131,9 +134,11 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
     protected boolean isZero_value;
     // Declared in ConstantExpression.jrag at line 135
  @SuppressWarnings({"unchecked", "cast"})     public boolean isZero() {
-        if(isZero_computed)
+        if(isZero_computed) {
             return isZero_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isZero_value = isZero_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -156,9 +161,11 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 282
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
-        if(constant_computed)
+        if(constant_computed) {
             return constant_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -181,9 +188,11 @@ public class FloatingPointLiteral extends Literal implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 302
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

@@ -10,13 +10,16 @@ public class CastExpr extends Expr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public CastExpr clone() throws CloneNotSupportedException {
         CastExpr node = (CastExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public CastExpr copy() {
       try {
@@ -147,6 +150,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 110
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -155,6 +159,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 485
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -164,6 +169,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 403
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -172,6 +178,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 847
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -180,6 +187,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 29
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSuperAccess() {
+        ASTNode$State state = state();
         boolean isSuperAccess_value = isSuperAccess_compute();
         return isSuperAccess_value;
     }
@@ -188,6 +196,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 35
  @SuppressWarnings({"unchecked", "cast"})     public boolean isThisAccess() {
+        ASTNode$State state = state();
         boolean isThisAccess_value = isThisAccess_compute();
         return isThisAccess_value;
     }
@@ -198,9 +207,11 @@ public class CastExpr extends Expr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 320
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -212,6 +223,7 @@ public class CastExpr extends Expr implements Cloneable {
 
     // Declared in TypeHierarchyCheck.jrag at line 152
  @SuppressWarnings({"unchecked", "cast"})     public boolean staticContextQualifier() {
+        ASTNode$State state = state();
         boolean staticContextQualifier_value = staticContextQualifier_compute();
         return staticContextQualifier_value;
     }

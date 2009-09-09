@@ -15,6 +15,9 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
         typeThrowable_value = null;
         lookupVariable_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BodyDecl clone() throws CloneNotSupportedException {
         BodyDecl node = (BodyDecl)super.clone();
         node.isDAafter_Variable_values = null;
@@ -26,7 +29,7 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
         node.lookupVariable_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in BranchTarget.jrag at line 211
 
@@ -80,9 +83,11 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -97,9 +102,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -111,6 +118,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in LookupType.jrag at line 391
  @SuppressWarnings({"unchecked", "cast"})     public boolean declaresType(String name) {
+        ASTNode$State state = state();
         boolean declaresType_String_value = declaresType_compute(name);
         return declaresType_String_value;
     }
@@ -119,6 +127,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in LookupType.jrag at line 393
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type(String name) {
+        ASTNode$State state = state();
         TypeDecl type_String_value = type_compute(name);
         return type_String_value;
     }
@@ -127,6 +136,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in PrettyPrint.jadd at line 759
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        ASTNode$State state = state();
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
     }
@@ -135,6 +145,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in TypeAnalysis.jrag at line 271
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
+        ASTNode$State state = state();
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
     }
@@ -143,6 +154,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in Annotations.jrag at line 283
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAnnotationSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
         return hasAnnotationSuppressWarnings_String_value;
     }
@@ -151,6 +163,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in Annotations.jrag at line 326
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDeprecated() {
+        ASTNode$State state = state();
         boolean isDeprecated_value = isDeprecated_compute();
         return isDeprecated_value;
     }
@@ -159,6 +172,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in Enums.jrag at line 26
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEnumConstant() {
+        ASTNode$State state = state();
         boolean isEnumConstant_value = isEnumConstant_compute();
         return isEnumConstant_value;
     }
@@ -167,6 +181,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in GenericsParTypeDecl.jrag at line 64
  @SuppressWarnings({"unchecked", "cast"})     public boolean visibleTypeParameters() {
+        ASTNode$State state = state();
         boolean visibleTypeParameters_value = visibleTypeParameters_compute();
         return visibleTypeParameters_value;
     }
@@ -175,6 +190,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in EmitJimple.jrag at line 162
  @SuppressWarnings({"unchecked", "cast"})     public boolean generate() {
+        ASTNode$State state = state();
         boolean generate_value = generate_compute();
         return generate_value;
     }
@@ -186,9 +202,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAbefore(Variable v) {
         Object _parameters = v;
 if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.util.HashMap(4);
-        if(isDAbefore_Variable_values.containsKey(_parameters))
+        if(isDAbefore_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAbefore_Variable_value = getParent().Define_boolean_isDAbefore(this, null, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -201,9 +219,11 @@ if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         Object _parameters = v;
 if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
-        if(isDUbefore_Variable_values.containsKey(_parameters))
+        if(isDUbefore_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -215,9 +235,11 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
     protected TypeDecl typeThrowable_value;
     // Declared in ExceptionHandling.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
-        if(typeThrowable_computed)
+        if(typeThrowable_computed) {
             return typeThrowable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -227,18 +249,21 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
 
     // Declared in LookupMethod.jrag at line 25
  @SuppressWarnings({"unchecked", "cast"})     public Collection lookupMethod(String name) {
+        ASTNode$State state = state();
         Collection lookupMethod_String_value = getParent().Define_Collection_lookupMethod(this, null, name);
         return lookupMethod_String_value;
     }
 
     // Declared in LookupType.jrag at line 97
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupType(String packageName, String typeName) {
+        ASTNode$State state = state();
         TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
         return lookupType_String_String_value;
     }
 
     // Declared in LookupType.jrag at line 173
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
         return lookupType_String_value;
     }
@@ -248,9 +273,11 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
         Object _parameters = name;
 if(lookupVariable_String_values == null) lookupVariable_String_values = new java.util.HashMap(4);
-        if(lookupVariable_String_values.containsKey(_parameters))
+        if(lookupVariable_String_values.containsKey(_parameters)) {
             return (SimpleSet)lookupVariable_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -260,18 +287,21 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     // Declared in SyntacticClassification.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public NameType nameType() {
+        ASTNode$State state = state();
         NameType nameType_value = getParent().Define_NameType_nameType(this, null);
         return nameType_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 567
  @SuppressWarnings({"unchecked", "cast"})     public String hostPackage() {
+        ASTNode$State state = state();
         String hostPackage_value = getParent().Define_String_hostPackage(this, null);
         return hostPackage_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 582
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }

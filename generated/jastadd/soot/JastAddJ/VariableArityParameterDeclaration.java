@@ -8,13 +8,16 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public VariableArityParameterDeclaration clone() throws CloneNotSupportedException {
         VariableArityParameterDeclaration node = (VariableArityParameterDeclaration)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public VariableArityParameterDeclaration copy() {
       try {
@@ -195,9 +198,11 @@ specified in section \ufffd15.12.2.5. See the following subsections for details.
 
     // Declared in VariableArityParameters.jrag at line 30
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -209,6 +214,7 @@ specified in section \ufffd15.12.2.5. See the following subsections for details.
 
     // Declared in VariableArityParameters.jrag at line 36
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariableArity() {
+        ASTNode$State state = state();
         boolean isVariableArity_value = isVariableArity_compute();
         return isVariableArity_value;
     }
@@ -217,6 +223,7 @@ specified in section \ufffd15.12.2.5. See the following subsections for details.
 
     // Declared in VariableArityParameters.jrag at line 26
  @SuppressWarnings({"unchecked", "cast"})     public boolean variableArityValid() {
+        ASTNode$State state = state();
         boolean variableArityValid_value = getParent().Define_boolean_variableArityValid(this, null);
         return variableArityValid_value;
     }

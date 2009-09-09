@@ -7,11 +7,14 @@ public class URShiftExpr extends ShiftExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public URShiftExpr clone() throws CloneNotSupportedException {
         URShiftExpr node = (URShiftExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public URShiftExpr copy() {
       try {
@@ -113,6 +116,7 @@ public class URShiftExpr extends ShiftExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 126
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -121,6 +125,7 @@ public class URShiftExpr extends ShiftExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 407
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

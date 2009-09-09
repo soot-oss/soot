@@ -8,11 +8,14 @@ public class FieldDecl extends MemberDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public FieldDecl clone() throws CloneNotSupportedException {
         FieldDecl node = (FieldDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public FieldDecl copy() {
       try {
@@ -128,11 +131,19 @@ public class FieldDecl extends MemberDecl implements Cloneable {
 
 
     public void addVariableDecl(VariableDecl node) {
-        List<VariableDecl> list = getVariableDeclList();
+        List<VariableDecl> list = (parent == null || state == null) ? getVariableDeclListNoTransform() : getVariableDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addVariableDeclNoTransform(VariableDecl node) {
+        List<VariableDecl> list = getVariableDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setVariableDecl(VariableDecl node, int i) {
@@ -140,26 +151,28 @@ public class FieldDecl extends MemberDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<VariableDecl> getVariableDecls() {
         return getVariableDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<VariableDecl> getVariableDeclsNoTransform() {
         return getVariableDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<VariableDecl> getVariableDeclList() {
-        return (List<VariableDecl>)getChild(2);
+        List<VariableDecl> list = (List<VariableDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<VariableDecl> getVariableDeclListNoTransform() {
@@ -168,6 +181,7 @@ public class FieldDecl extends MemberDecl implements Cloneable {
 
     // Declared in Modifiers.jrag at line 241
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
+        ASTNode$State state = state();
         boolean isStatic_value = isStatic_compute();
         return isStatic_value;
     }
@@ -207,7 +221,7 @@ public ASTNode rewriteTo() {
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       List newList = rewriteTypeDecl_getBodyDecl();
-      for(int j = 1; j < newList.getNumChild(); j++)
+      for(int j = 1; j < newList.getNumChildNoTransform(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
         state().duringVariableDeclaration--;
       return newList.getChildNoTransform(0);

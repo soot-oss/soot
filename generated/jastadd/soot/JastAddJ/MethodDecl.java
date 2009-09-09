@@ -28,6 +28,9 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         offsetAfterParameters_computed = false;
         handlesException_TypeDecl_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public MethodDecl clone() throws CloneNotSupportedException {
         MethodDecl node = (MethodDecl)super.clone();
         node.accessibleFrom_TypeDecl_values = null;
@@ -52,7 +55,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         node.handlesException_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public MethodDecl copy() {
       try {
@@ -675,11 +678,19 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 
 
     public void addParameter(ParameterDeclaration node) {
-        List<ParameterDeclaration> list = getParameterList();
+        List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addParameterNoTransform(ParameterDeclaration node) {
+        List<ParameterDeclaration> list = getParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -687,26 +698,28 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
-        return (List<ParameterDeclaration>)getChild(2);
+        List<ParameterDeclaration> list = (List<ParameterDeclaration>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -737,11 +750,19 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 
 
     public void addException(Access node) {
-        List<Access> list = getExceptionList();
+        List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addExceptionNoTransform(Access node) {
+        List<Access> list = getExceptionListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setException(Access node, int i) {
@@ -749,26 +770,28 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
-        return (List<Access>)getChild(3);
+        List<Access> list = (List<Access>)getChild(3);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -874,9 +897,11 @@ private int refined_EmitJimple_MethodDecl_sootTypeModifiers()
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFrom(TypeDecl type) {
         Object _parameters = type;
 if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
-        if(accessibleFrom_TypeDecl_values.containsKey(_parameters))
+        if(accessibleFrom_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -903,6 +928,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in DataStructures.jrag at line 132
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
+        ASTNode$State state = state();
         int size_value = size_compute();
         return size_value;
     }
@@ -911,6 +937,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in DataStructures.jrag at line 133
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEmpty() {
+        ASTNode$State state = state();
         boolean isEmpty_value = isEmpty_compute();
         return isEmpty_value;
     }
@@ -919,6 +946,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in DataStructures.jrag at line 137
  @SuppressWarnings({"unchecked", "cast"})     public boolean contains(Object o) {
+        ASTNode$State state = state();
         boolean contains_Object_value = contains_compute(o);
         return contains_Object_value;
     }
@@ -927,6 +955,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ErrorCheck.jrag at line 31
  @SuppressWarnings({"unchecked", "cast"})     public int lineNumber() {
+        ASTNode$State state = state();
         int lineNumber_value = lineNumber_compute();
         return lineNumber_value;
     }
@@ -938,9 +967,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
  @SuppressWarnings({"unchecked", "cast"})     public boolean throwsException(TypeDecl exceptionType) {
         Object _parameters = exceptionType;
 if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = new java.util.HashMap(4);
-        if(throwsException_TypeDecl_values.containsKey(_parameters))
+        if(throwsException_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)throwsException_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean throwsException_TypeDecl_value = throwsException_compute(exceptionType);
         if(isFinal && num == state().boundariesCrossed)
@@ -957,6 +988,7 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
 
     // Declared in LookupMethod.jrag at line 125
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -967,9 +999,11 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
     protected String signature_value;
     // Declared in MethodSignature.jrag at line 332
  @SuppressWarnings({"unchecked", "cast"})     public String signature() {
-        if(signature_computed)
+        if(signature_computed) {
             return signature_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         signature_value = signature_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -991,6 +1025,7 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
 
     // Declared in LookupMethod.jrag at line 140
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(MethodDecl m) {
+        ASTNode$State state = state();
         boolean sameSignature_MethodDecl_value = sameSignature_compute(m);
         return sameSignature_MethodDecl_value;
     }
@@ -1002,9 +1037,11 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public boolean moreSpecificThan(MethodDecl m) {
         Object _parameters = m;
 if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_values = new java.util.HashMap(4);
-        if(moreSpecificThan_MethodDecl_values.containsKey(_parameters))
+        if(moreSpecificThan_MethodDecl_values.containsKey(_parameters)) {
             return ((Boolean)moreSpecificThan_MethodDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean moreSpecificThan_MethodDecl_value = moreSpecificThan_compute(m);
         if(isFinal && num == state().boundariesCrossed)
@@ -1030,9 +1067,11 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
  @SuppressWarnings({"unchecked", "cast"})     public boolean overrides(MethodDecl m) {
         Object _parameters = m;
 if(overrides_MethodDecl_values == null) overrides_MethodDecl_values = new java.util.HashMap(4);
-        if(overrides_MethodDecl_values.containsKey(_parameters))
+        if(overrides_MethodDecl_values.containsKey(_parameters)) {
             return ((Boolean)overrides_MethodDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean overrides_MethodDecl_value = overrides_compute(m);
         if(isFinal && num == state().boundariesCrossed)
@@ -1048,9 +1087,11 @@ if(overrides_MethodDecl_values == null) overrides_MethodDecl_values = new java.u
  @SuppressWarnings({"unchecked", "cast"})     public boolean hides(MethodDecl m) {
         Object _parameters = m;
 if(hides_MethodDecl_values == null) hides_MethodDecl_values = new java.util.HashMap(4);
-        if(hides_MethodDecl_values.containsKey(_parameters))
+        if(hides_MethodDecl_values.containsKey(_parameters)) {
             return ((Boolean)hides_MethodDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean hides_MethodDecl_value = hides_compute(m);
         if(isFinal && num == state().boundariesCrossed)
@@ -1066,9 +1107,11 @@ if(hides_MethodDecl_values == null) hides_MethodDecl_values = new java.util.Hash
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet parameterDeclaration(String name) {
         Object _parameters = name;
 if(parameterDeclaration_String_values == null) parameterDeclaration_String_values = new java.util.HashMap(4);
-        if(parameterDeclaration_String_values.containsKey(_parameters))
+        if(parameterDeclaration_String_values.containsKey(_parameters)) {
             return (SimpleSet)parameterDeclaration_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet parameterDeclaration_String_value = parameterDeclaration_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -1085,6 +1128,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 213
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
+        ASTNode$State state = state();
         boolean isSynthetic_value = isSynthetic_compute();
         return isSynthetic_value;
     }
@@ -1093,6 +1137,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 222
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPublic() {
+        ASTNode$State state = state();
         boolean isPublic_value = isPublic_compute();
         return isPublic_value;
     }
@@ -1101,6 +1146,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 223
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrivate() {
+        ASTNode$State state = state();
         boolean isPrivate_value = isPrivate_compute();
         return isPrivate_value;
     }
@@ -1109,6 +1155,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 224
  @SuppressWarnings({"unchecked", "cast"})     public boolean isProtected() {
+        ASTNode$State state = state();
         boolean isProtected_value = isProtected_compute();
         return isProtected_value;
     }
@@ -1117,6 +1164,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 225
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAbstract() {
+        ASTNode$State state = state();
         boolean isAbstract_value = isAbstract_compute();
         return isAbstract_value;
     }
@@ -1125,6 +1173,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 226
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
+        ASTNode$State state = state();
         boolean isStatic_value = isStatic_compute();
         return isStatic_value;
     }
@@ -1133,6 +1182,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 228
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
+        ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
         return isFinal_value;
     }
@@ -1141,6 +1191,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 229
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynchronized() {
+        ASTNode$State state = state();
         boolean isSynchronized_value = isSynchronized_compute();
         return isSynchronized_value;
     }
@@ -1149,6 +1200,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNative() {
+        ASTNode$State state = state();
         boolean isNative_value = isNative_compute();
         return isNative_value;
     }
@@ -1157,6 +1209,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Modifiers.jrag at line 231
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStrictfp() {
+        ASTNode$State state = state();
         boolean isStrictfp_value = isStrictfp_compute();
         return isStrictfp_value;
     }
@@ -1165,6 +1218,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in PrettyPrint.jadd at line 813
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -1175,9 +1229,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1189,6 +1245,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in TypeAnalysis.jrag at line 272
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
+        ASTNode$State state = state();
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
     }
@@ -1197,6 +1254,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in GenericMethods.jrag at line 84
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayOverrideReturn(MethodDecl m) {
+        ASTNode$State state = state();
         boolean mayOverrideReturn_MethodDecl_value = mayOverrideReturn_compute(m);
         return mayOverrideReturn_MethodDecl_value;
     }
@@ -1207,6 +1265,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Annotations.jrag at line 139
  @SuppressWarnings({"unchecked", "cast"})     public boolean annotationMethodOverride() {
+        ASTNode$State state = state();
         boolean annotationMethodOverride_value = annotationMethodOverride_compute();
         return annotationMethodOverride_value;
     }
@@ -1215,6 +1274,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Annotations.jrag at line 285
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAnnotationSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
         return hasAnnotationSuppressWarnings_String_value;
     }
@@ -1223,6 +1283,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in Annotations.jrag at line 323
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDeprecated() {
+        ASTNode$State state = state();
         boolean isDeprecated_value = isDeprecated_compute();
         return isDeprecated_value;
     }
@@ -1233,9 +1294,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected boolean usesTypeVariable_value;
     // Declared in Generics.jrag at line 903
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
-        if(usesTypeVariable_computed)
+        if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         usesTypeVariable_value = usesTypeVariable_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1250,9 +1313,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected MethodDecl sourceMethodDecl_value;
     // Declared in Generics.jrag at line 1265
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
-        if(sourceMethodDecl_computed)
+        if(sourceMethodDecl_computed) {
             return sourceMethodDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceMethodDecl_value = sourceMethodDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1264,6 +1329,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in GenericsParTypeDecl.jrag at line 65
  @SuppressWarnings({"unchecked", "cast"})     public boolean visibleTypeParameters() {
+        ASTNode$State state = state();
         boolean visibleTypeParameters_value = visibleTypeParameters_compute();
         return visibleTypeParameters_value;
     }
@@ -1272,6 +1338,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in MethodSignature.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
+        ASTNode$State state = state();
         int arity_value = arity_compute();
         return arity_value;
     }
@@ -1280,6 +1347,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in VariableArityParameters.jrag at line 33
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariableArity() {
+        ASTNode$State state = state();
         boolean isVariableArity_value = isVariableArity_compute();
         return isVariableArity_value;
     }
@@ -1288,6 +1356,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in VariableArityParameters.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public ParameterDeclaration lastParameter() {
+        ASTNode$State state = state();
         ParameterDeclaration lastParameter_value = lastParameter_compute();
         return lastParameter_value;
     }
@@ -1296,6 +1365,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in VariableArityParametersCodegen.jrag at line 80
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;
     }
@@ -1311,9 +1381,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected SootMethod sootMethod_value;
     // Declared in EmitJimple.jrag at line 264
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
-        if(sootMethod_computed)
+        if(sootMethod_computed) {
             return sootMethod_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootMethod_value = sootMethod_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1334,9 +1406,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected SootMethodRef sootRef_value;
     // Declared in EmitJimple.jrag at line 274
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
-        if(sootRef_computed)
+        if(sootRef_computed) {
             return sootRef_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootRef_value = sootRef_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1362,9 +1436,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected int offsetBeforeParameters_value;
     // Declared in LocalNum.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public int offsetBeforeParameters() {
-        if(offsetBeforeParameters_computed)
+        if(offsetBeforeParameters_computed) {
             return offsetBeforeParameters_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         offsetBeforeParameters_value = offsetBeforeParameters_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1378,9 +1454,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected int offsetAfterParameters_value;
     // Declared in LocalNum.jrag at line 19
  @SuppressWarnings({"unchecked", "cast"})     public int offsetAfterParameters() {
-        if(offsetAfterParameters_computed)
+        if(offsetAfterParameters_computed) {
             return offsetAfterParameters_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         offsetAfterParameters_value = offsetAfterParameters_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1397,6 +1475,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     // Declared in GenericsCodegen.jrag at line 34
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl erasedMethod() {
+        ASTNode$State state = state();
         MethodDecl erasedMethod_value = erasedMethod_compute();
         return erasedMethod_value;
     }
@@ -1408,9 +1487,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
  @SuppressWarnings({"unchecked", "cast"})     public boolean handlesException(TypeDecl exceptionType) {
         Object _parameters = exceptionType;
 if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = new java.util.HashMap(4);
-        if(handlesException_TypeDecl_values.containsKey(_parameters))
+        if(handlesException_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)handlesException_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
         if(isFinal && num == state().boundariesCrossed)
@@ -1420,12 +1501,14 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
 
     // Declared in LookupMethod.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl unknownMethod() {
+        ASTNode$State state = state();
         MethodDecl unknownMethod_value = getParent().Define_MethodDecl_unknownMethod(this, null);
         return unknownMethod_value;
     }
 
     // Declared in EmitJimple.jrag at line 272
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
+        ASTNode$State state = state();
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
         return typeObject_value;
     }

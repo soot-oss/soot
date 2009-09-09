@@ -9,13 +9,16 @@ public abstract class MultiplicativeExpr extends ArithmeticExpr implements Clone
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public MultiplicativeExpr clone() throws CloneNotSupportedException {
         MultiplicativeExpr node = (MultiplicativeExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 156
 
@@ -101,9 +104,11 @@ public abstract class MultiplicativeExpr extends ArithmeticExpr implements Clone
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 323
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

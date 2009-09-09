@@ -7,7 +7,7 @@ import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;impo
 public class VarAccess extends Access implements Cloneable {
     public void flushCache() {
         super.flushCache();
-        isConstant_visited = 0;
+        isConstant_visited = -1;
         isConstant_computed = false;
         isConstant_initialized = false;
         isDAafter_Variable_values = null;
@@ -20,9 +20,12 @@ public class VarAccess extends Access implements Cloneable {
         type_value = null;
         base_Body_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public VarAccess clone() throws CloneNotSupportedException {
         VarAccess node = (VarAccess)super.clone();
-        node.isConstant_visited = 0;
+        node.isConstant_visited = -1;
         node.isConstant_computed = false;
         node.isConstant_initialized = false;
         node.isDAafter_Variable_values = null;
@@ -36,7 +39,7 @@ public class VarAccess extends Access implements Cloneable {
         node.base_Body_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public VarAccess copy() {
       try {
@@ -560,61 +563,65 @@ public class VarAccess extends Access implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 108
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
 
     private Constant constant_compute() {  return type().cast(decl().getInit().constant());  }
 
-    protected int isConstant_visited;
+    protected int isConstant_visited = -1;
     protected boolean isConstant_computed = false;
     protected boolean isConstant_initialized = false;
     protected boolean isConstant_value;
+    // Declared in ConstantExpression.jrag at line 500
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
-        if(isConstant_computed)
+        if(isConstant_computed) {
             return isConstant_value;
+        }
+        ASTNode$State state = state();
         if (!isConstant_initialized) {
             isConstant_initialized = true;
             isConstant_value = false;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                isConstant_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                isConstant_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_isConstant_value = isConstant_compute();
                 if (new_isConstant_value!=isConstant_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 isConstant_value = new_isConstant_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             isConstant_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             isConstant_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               isConstant_computed = false;
               isConstant_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return isConstant_value;
         }
-        if(isConstant_visited != state().CIRCLE_INDEX) {
-            isConstant_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(isConstant_visited != state.CIRCLE_INDEX) {
+            isConstant_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 isConstant_computed = false;
                 isConstant_initialized = false;
+                isConstant_visited = -1;
                 return isConstant_value;
             }
             boolean new_isConstant_value = isConstant_compute();
             if (new_isConstant_value!=isConstant_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             isConstant_value = new_isConstant_value; 
             return isConstant_value;
         }
@@ -633,6 +640,7 @@ public class VarAccess extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 60
  @SuppressWarnings({"unchecked", "cast"})     public Variable varDecl() {
+        ASTNode$State state = state();
         Variable varDecl_value = varDecl_compute();
         return varDecl_value;
     }
@@ -644,9 +652,11 @@ public class VarAccess extends Access implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -660,6 +670,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 833
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -672,6 +683,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 1208
  @SuppressWarnings({"unchecked", "cast"})     public boolean unassignedEverywhere(Variable v, TryStmt stmt) {
+        ASTNode$State state = state();
         boolean unassignedEverywhere_Variable_TryStmt_value = unassignedEverywhere_compute(v, stmt);
         return unassignedEverywhere_Variable_TryStmt_value;
     }
@@ -687,9 +699,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     protected SimpleSet decls_value;
     // Declared in LookupVariable.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed)
+        if(decls_computed) {
             return decls_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -717,9 +731,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     protected Variable decl_value;
     // Declared in LookupVariable.jrag at line 245
  @SuppressWarnings({"unchecked", "cast"})     public Variable decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -736,6 +752,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in NameCheck.jrag at line 221
  @SuppressWarnings({"unchecked", "cast"})     public boolean inSameInitializer() {
+        ASTNode$State state = state();
         boolean inSameInitializer_value = inSameInitializer_compute();
         return inSameInitializer_value;
     }
@@ -754,6 +771,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in NameCheck.jrag at line 233
  @SuppressWarnings({"unchecked", "cast"})     public boolean simpleAssignment() {
+        ASTNode$State state = state();
         boolean simpleAssignment_value = simpleAssignment_compute();
         return simpleAssignment_value;
     }
@@ -762,6 +780,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in NameCheck.jrag at line 235
  @SuppressWarnings({"unchecked", "cast"})     public boolean inDeclaringClass() {
+        ASTNode$State state = state();
         boolean inDeclaringClass_value = inDeclaringClass_compute();
         return inDeclaringClass_value;
     }
@@ -770,6 +789,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in PrettyPrint.jadd at line 801
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -778,6 +798,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in QualifiedNames.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -788,9 +809,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     protected boolean isFieldAccess_value;
     // Declared in ResolveAmbiguousNames.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFieldAccess() {
-        if(isFieldAccess_computed)
+        if(isFieldAccess_computed) {
             return isFieldAccess_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isFieldAccess_value = isFieldAccess_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -802,6 +825,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in SyntacticClassification.jrag at line 111
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -810,9 +834,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in TypeAnalysis.jrag at line 283
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -824,6 +850,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in TypeCheck.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariable() {
+        ASTNode$State state = state();
         boolean isVariable_value = isVariable_compute();
         return isVariable_value;
     }
@@ -832,6 +859,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in InnerClasses.jrag at line 361
  @SuppressWarnings({"unchecked", "cast"})     public boolean requiresAccessor() {
+        ASTNode$State state = state();
         boolean requiresAccessor_value = requiresAccessor_compute();
         return requiresAccessor_value;
     }
@@ -853,9 +881,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public soot.Local base(Body b) {
         Object _parameters = b;
 if(base_Body_values == null) base_Body_values = new java.util.HashMap(4);
-        if(base_Body_values.containsKey(_parameters))
+        if(base_Body_values.containsKey(_parameters)) {
             return (soot.Local)base_Body_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         soot.Local base_Body_value = base_compute(b);
         if(isFinal && num == state().boundariesCrossed)
@@ -867,6 +897,7 @@ if(base_Body_values == null) base_Body_values = new java.util.HashMap(4);
 
     // Declared in TypeHierarchyCheck.jrag at line 122
  @SuppressWarnings({"unchecked", "cast"})     public boolean inExplicitConstructorInvocation() {
+        ASTNode$State state = state();
         boolean inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
         return inExplicitConstructorInvocation_value;
     }

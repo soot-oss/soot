@@ -7,11 +7,14 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ElementArrayValue clone() throws CloneNotSupportedException {
         ElementArrayValue node = (ElementArrayValue)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ElementArrayValue copy() {
       try {
@@ -107,11 +110,19 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
 
 
     public void addElementValue(ElementValue node) {
-        List<ElementValue> list = getElementValueList();
+        List<ElementValue> list = (parent == null || state == null) ? getElementValueListNoTransform() : getElementValueList();
         list.addChild(node);
     }
 
     // Declared in Annotations.ast at line 19
+
+
+    public void addElementValueNoTransform(ElementValue node) {
+        List<ElementValue> list = getElementValueListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Annotations.ast at line 24
 
 
     public void setElementValue(ElementValue node, int i) {
@@ -119,26 +130,28 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Annotations.ast at line 23
+    // Declared in Annotations.ast at line 28
 
     public List<ElementValue> getElementValues() {
         return getElementValueList();
     }
 
-    // Declared in Annotations.ast at line 26
+    // Declared in Annotations.ast at line 31
 
     public List<ElementValue> getElementValuesNoTransform() {
         return getElementValueListNoTransform();
     }
 
-    // Declared in Annotations.ast at line 30
+    // Declared in Annotations.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValue> getElementValueList() {
-        return (List<ElementValue>)getChild(0);
+        List<ElementValue> list = (List<ElementValue>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Annotations.ast at line 34
+    // Declared in Annotations.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValue> getElementValueListNoTransform() {
@@ -147,6 +160,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 63
  @SuppressWarnings({"unchecked", "cast"})     public boolean validTarget(Annotation a) {
+        ASTNode$State state = state();
         boolean validTarget_Annotation_value = validTarget_compute(a);
         return validTarget_Annotation_value;
     }
@@ -160,6 +174,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 188
  @SuppressWarnings({"unchecked", "cast"})     public ElementValue definesElementTypeValue(String name) {
+        ASTNode$State state = state();
         ElementValue definesElementTypeValue_String_value = definesElementTypeValue_compute(name);
         return definesElementTypeValue_String_value;
     }
@@ -173,6 +188,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 300
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasValue(String s) {
+        ASTNode$State state = state();
         boolean hasValue_String_value = hasValue_compute(s);
         return hasValue_String_value;
     }
@@ -186,6 +202,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 495
  @SuppressWarnings({"unchecked", "cast"})     public boolean commensurateWithArrayDecl(ArrayDecl type) {
+        ASTNode$State state = state();
         boolean commensurateWithArrayDecl_ArrayDecl_value = commensurateWithArrayDecl_compute(type);
         return commensurateWithArrayDecl_ArrayDecl_value;
     }

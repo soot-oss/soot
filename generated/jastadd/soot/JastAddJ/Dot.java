@@ -7,11 +7,14 @@ public class Dot extends AbstractDot implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Dot clone() throws CloneNotSupportedException {
         Dot node = (Dot)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Dot copy() {
       try {

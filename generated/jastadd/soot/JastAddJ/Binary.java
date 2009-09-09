@@ -7,7 +7,7 @@ import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;impo
 public abstract class Binary extends Expr implements Cloneable {
     public void flushCache() {
         super.flushCache();
-        isConstant_visited = 0;
+        isConstant_visited = -1;
         isConstant_computed = false;
         isConstant_initialized = false;
         isDAafterTrue_Variable_values = null;
@@ -16,9 +16,12 @@ public abstract class Binary extends Expr implements Cloneable {
         isDUafter_Variable_values = null;
         isDUbefore_Variable_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Binary clone() throws CloneNotSupportedException {
         Binary node = (Binary)super.clone();
-        node.isConstant_visited = 0;
+        node.isConstant_visited = -1;
         node.isConstant_computed = false;
         node.isConstant_initialized = false;
         node.isDAafterTrue_Variable_values = null;
@@ -28,7 +31,7 @@ public abstract class Binary extends Expr implements Cloneable {
         node.isDUbefore_Variable_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in PrettyPrint.jadd at line 393
 
@@ -167,55 +170,58 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 
     // Declared in PrettyPrint.jadd at line 399
  @SuppressWarnings({"unchecked", "cast"})     public abstract String printOp();
-    protected int isConstant_visited;
+    protected int isConstant_visited = -1;
     protected boolean isConstant_computed = false;
     protected boolean isConstant_initialized = false;
     protected boolean isConstant_value;
+    // Declared in ConstantExpression.jrag at line 491
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
-        if(isConstant_computed)
+        if(isConstant_computed) {
             return isConstant_value;
+        }
+        ASTNode$State state = state();
         if (!isConstant_initialized) {
             isConstant_initialized = true;
             isConstant_value = false;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                isConstant_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                isConstant_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_isConstant_value = isConstant_compute();
                 if (new_isConstant_value!=isConstant_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 isConstant_value = new_isConstant_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             isConstant_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             isConstant_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               isConstant_computed = false;
               isConstant_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return isConstant_value;
         }
-        if(isConstant_visited != state().CIRCLE_INDEX) {
-            isConstant_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(isConstant_visited != state.CIRCLE_INDEX) {
+            isConstant_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 isConstant_computed = false;
                 isConstant_initialized = false;
+                isConstant_visited = -1;
                 return isConstant_value;
             }
             boolean new_isConstant_value = isConstant_compute();
             if (new_isConstant_value!=isConstant_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             isConstant_value = new_isConstant_value; 
             return isConstant_value;
         }
@@ -226,6 +232,7 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 
     // Declared in ConstantExpression.jrag at line 514
  @SuppressWarnings({"unchecked", "cast"})     public Expr left() {
+        ASTNode$State state = state();
         Expr left_value = left_compute();
         return left_value;
     }
@@ -234,6 +241,7 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 
     // Declared in ConstantExpression.jrag at line 515
  @SuppressWarnings({"unchecked", "cast"})     public Expr right() {
+        ASTNode$State state = state();
         Expr right_value = right_compute();
         return right_value;
     }
@@ -242,6 +250,7 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 
     // Declared in AutoBoxing.jrag at line 205
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotedType() {
+        ASTNode$State state = state();
         TypeDecl binaryNumericPromotedType_value = binaryNumericPromotedType_compute();
         return binaryNumericPromotedType_value;
     }
@@ -260,9 +269,11 @@ private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
         Object _parameters = v;
 if(isDAafterTrue_Variable_values == null) isDAafterTrue_Variable_values = new java.util.HashMap(4);
-        if(isDAafterTrue_Variable_values.containsKey(_parameters))
+        if(isDAafterTrue_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafterTrue_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -277,9 +288,11 @@ if(isDAafterTrue_Variable_values == null) isDAafterTrue_Variable_values = new ja
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
         Object _parameters = v;
 if(isDAafterFalse_Variable_values == null) isDAafterFalse_Variable_values = new java.util.HashMap(4);
-        if(isDAafterFalse_Variable_values.containsKey(_parameters))
+        if(isDAafterFalse_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafterFalse_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -294,9 +307,11 @@ if(isDAafterFalse_Variable_values == null) isDAafterFalse_Variable_values = new 
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -311,9 +326,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -328,9 +345,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         Object _parameters = v;
 if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
-        if(isDUbefore_Variable_values.containsKey(_parameters))
+        if(isDUbefore_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
         if(isFinal && num == state().boundariesCrossed)

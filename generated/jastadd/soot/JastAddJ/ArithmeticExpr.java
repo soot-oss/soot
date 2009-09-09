@@ -8,11 +8,14 @@ public abstract class ArithmeticExpr extends Binary implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ArithmeticExpr clone() throws CloneNotSupportedException {
         ArithmeticExpr node = (ArithmeticExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in java.ast at line 3
     // Declared in java.ast line 155

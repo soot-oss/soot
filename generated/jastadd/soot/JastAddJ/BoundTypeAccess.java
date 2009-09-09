@@ -10,13 +10,16 @@ public class BoundTypeAccess extends TypeAccess implements Cloneable {
         decls_computed = false;
         decls_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BoundTypeAccess clone() throws CloneNotSupportedException {
         BoundTypeAccess node = (BoundTypeAccess)super.clone();
         node.decls_computed = false;
         node.decls_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public BoundTypeAccess copy() {
       try {
@@ -148,9 +151,11 @@ public class BoundTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in BoundNames.jrag at line 93
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed)
+        if(decls_computed) {
             return decls_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -162,6 +167,7 @@ public class BoundTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 817
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }

@@ -6,18 +6,21 @@ import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;impo
 public class DivExpr extends MultiplicativeExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
-        isConstant_visited = 0;
+        isConstant_visited = -1;
         isConstant_computed = false;
         isConstant_initialized = false;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public DivExpr clone() throws CloneNotSupportedException {
         DivExpr node = (DivExpr)super.clone();
-        node.isConstant_visited = 0;
+        node.isConstant_visited = -1;
         node.isConstant_computed = false;
         node.isConstant_initialized = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public DivExpr copy() {
       try {
@@ -115,61 +118,61 @@ public class DivExpr extends MultiplicativeExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 118
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
 
     private Constant constant_compute() {  return type().div(getLeftOperand().constant(), getRightOperand().constant());  }
 
-    protected int isConstant_visited;
-    protected boolean isConstant_computed = false;
-    protected boolean isConstant_initialized = false;
-    protected boolean isConstant_value;
+    // Declared in ConstantExpression.jrag at line 497
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
-        if(isConstant_computed)
+        if(isConstant_computed) {
             return isConstant_value;
+        }
+        ASTNode$State state = state();
         if (!isConstant_initialized) {
             isConstant_initialized = true;
             isConstant_value = false;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                isConstant_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                isConstant_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_isConstant_value = isConstant_compute();
                 if (new_isConstant_value!=isConstant_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 isConstant_value = new_isConstant_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             isConstant_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             isConstant_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               isConstant_computed = false;
               isConstant_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return isConstant_value;
         }
-        if(isConstant_visited != state().CIRCLE_INDEX) {
-            isConstant_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(isConstant_visited != state.CIRCLE_INDEX) {
+            isConstant_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 isConstant_computed = false;
                 isConstant_initialized = false;
+                isConstant_visited = -1;
                 return isConstant_value;
             }
             boolean new_isConstant_value = isConstant_compute();
             if (new_isConstant_value!=isConstant_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             isConstant_value = new_isConstant_value; 
             return isConstant_value;
         }
@@ -180,6 +183,7 @@ public class DivExpr extends MultiplicativeExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 401
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

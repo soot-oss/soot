@@ -7,11 +7,14 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayTypeWithSizeAccess clone() throws CloneNotSupportedException {
         ArrayTypeWithSizeAccess node = (ArrayTypeWithSizeAccess)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayTypeWithSizeAccess copy() {
       try {
@@ -141,6 +144,7 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
 
     // Declared in DefiniteAssignment.jrag at line 361
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -149,6 +153,7 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
 
     // Declared in DefiniteAssignment.jrag at line 842
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }

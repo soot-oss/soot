@@ -8,11 +8,14 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BytecodeTypeAccess clone() throws CloneNotSupportedException {
         BytecodeTypeAccess node = (BytecodeTypeAccess)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public BytecodeTypeAccess copy() {
       try {

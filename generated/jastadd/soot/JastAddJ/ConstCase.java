@@ -7,11 +7,14 @@ public class ConstCase extends Case implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ConstCase clone() throws CloneNotSupportedException {
         ConstCase node = (ConstCase)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ConstCase copy() {
       try {
@@ -145,6 +148,7 @@ private boolean refined_NameCheck_ConstCase_constValue_Case(Case c)
 
     // Declared in Enums.jrag at line 488
  @SuppressWarnings({"unchecked", "cast"})     public boolean constValue(Case c) {
+        ASTNode$State state = state();
         boolean constValue_Case_value = constValue_compute(c);
         return constValue_Case_value;
     }

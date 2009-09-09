@@ -13,6 +13,9 @@ public class ConstructorAccess extends Access implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ConstructorAccess clone() throws CloneNotSupportedException {
         ConstructorAccess node = (ConstructorAccess)super.clone();
         node.decls_computed = false;
@@ -23,7 +26,7 @@ public class ConstructorAccess extends Access implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ConstructorAccess copy() {
       try {
@@ -119,13 +122,13 @@ public class ConstructorAccess extends Access implements Cloneable {
     getArgList().insertChild(new VarAccess("@p1"),1);
   }
 
-    // Declared in InnerClasses.jrag at line 456
+    // Declared in InnerClasses.jrag at line 457
 
 
   // add val$name as arguments to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 457
+    // Declared in InnerClasses.jrag at line 458
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -257,11 +260,19 @@ public class ConstructorAccess extends Access implements Cloneable {
 
 
     public void addArg(Expr node) {
-        List<Expr> list = getArgList();
+        List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addArgNoTransform(Expr node) {
+        List<Expr> list = getArgListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setArg(Expr node, int i) {
@@ -269,26 +280,28 @@ public class ConstructorAccess extends Access implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
-        return (List<Expr>)getChild(0);
+        List<Expr> list = (List<Expr>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -363,6 +376,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 298
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -371,6 +385,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 754
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -379,6 +394,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in LookupConstructor.jrag at line 51
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableAndAccessible(ConstructorDecl decl) {
+        ASTNode$State state = state();
         boolean applicableAndAccessible_ConstructorDecl_value = applicableAndAccessible_compute(decl);
         return applicableAndAccessible_ConstructorDecl_value;
     }
@@ -389,9 +405,11 @@ public class ConstructorAccess extends Access implements Cloneable {
     protected SimpleSet decls_value;
     // Declared in MethodSignature.jrag at line 59
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed)
+        if(decls_computed) {
             return decls_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -407,9 +425,11 @@ public class ConstructorAccess extends Access implements Cloneable {
     protected ConstructorDecl decl_value;
     // Declared in LookupConstructor.jrag at line 65
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -426,6 +446,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in NameCheck.jrag at line 124
  @SuppressWarnings({"unchecked", "cast"})     public boolean validArgs() {
+        ASTNode$State state = state();
         boolean validArgs_value = validArgs_compute();
         return validArgs_value;
     }
@@ -439,6 +460,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in QualifiedNames.jrag at line 19
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -447,6 +469,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in SyntacticClassification.jrag at line 129
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -455,9 +478,11 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 285
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -469,6 +494,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in MethodSignature.jrag at line 311
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
+        ASTNode$State state = state();
         int arity_value = arity_compute();
         return arity_value;
     }
@@ -477,6 +503,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in VariableArityParameters.jrag at line 47
  @SuppressWarnings({"unchecked", "cast"})     public boolean invokesVariableArityAsArray() {
+        ASTNode$State state = state();
         boolean invokesVariableArityAsArray_value = invokesVariableArityAsArray_compute();
         return invokesVariableArityAsArray_value;
     }
@@ -491,18 +518,21 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     // Declared in ExceptionHandling.jrag at line 30
  @SuppressWarnings({"unchecked", "cast"})     public boolean handlesException(TypeDecl exceptionType) {
+        ASTNode$State state = state();
         boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
         return handlesException_TypeDecl_value;
     }
 
     // Declared in LookupConstructor.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public Collection lookupConstructor() {
+        ASTNode$State state = state();
         Collection lookupConstructor_value = getParent().Define_Collection_lookupConstructor(this, null);
         return lookupConstructor_value;
     }
 
     // Declared in LookupConstructor.jrag at line 71
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl unknownConstructor() {
+        ASTNode$State state = state();
         ConstructorDecl unknownConstructor_value = getParent().Define_ConstructorDecl_unknownConstructor(this, null);
         return unknownConstructor_value;
     }

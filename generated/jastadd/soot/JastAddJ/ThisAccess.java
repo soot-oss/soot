@@ -11,6 +11,9 @@ public class ThisAccess extends Access implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ThisAccess clone() throws CloneNotSupportedException {
         ThisAccess node = (ThisAccess)super.clone();
         node.decl_computed = false;
@@ -19,7 +22,7 @@ public class ThisAccess extends Access implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ThisAccess copy() {
       try {
@@ -151,6 +154,7 @@ private TypeDecl refined_TypeScopePropagation_ThisAccess_decl()
 
     // Declared in LookupType.jrag at line 160
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
+        ASTNode$State state = state();
         SimpleSet decls_value = decls_compute();
         return decls_value;
     }
@@ -161,9 +165,11 @@ private TypeDecl refined_TypeScopePropagation_ThisAccess_decl()
     protected TypeDecl decl_value;
     // Declared in Generics.jrag at line 287
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -180,6 +186,7 @@ private TypeDecl refined_TypeScopePropagation_ThisAccess_decl()
 
     // Declared in ResolveAmbiguousNames.jrag at line 33
  @SuppressWarnings({"unchecked", "cast"})     public boolean isThisAccess() {
+        ASTNode$State state = state();
         boolean isThisAccess_value = isThisAccess_compute();
         return isThisAccess_value;
     }
@@ -188,6 +195,7 @@ private TypeDecl refined_TypeScopePropagation_ThisAccess_decl()
 
     // Declared in SyntacticClassification.jrag at line 92
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -196,9 +204,11 @@ private TypeDecl refined_TypeScopePropagation_ThisAccess_decl()
 
     // Declared in TypeAnalysis.jrag at line 287
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -210,6 +220,7 @@ private TypeDecl refined_TypeScopePropagation_ThisAccess_decl()
 
     // Declared in TypeHierarchyCheck.jrag at line 125
  @SuppressWarnings({"unchecked", "cast"})     public boolean inExplicitConstructorInvocation() {
+        ASTNode$State state = state();
         boolean inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
         return inExplicitConstructorInvocation_value;
     }

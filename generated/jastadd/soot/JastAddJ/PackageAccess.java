@@ -7,11 +7,14 @@ public class PackageAccess extends Access implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public PackageAccess clone() throws CloneNotSupportedException {
         PackageAccess node = (PackageAccess)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public PackageAccess copy() {
       try {
@@ -131,6 +134,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in LookupType.jrag at line 84
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasQualifiedPackage(String packageName) {
+        ASTNode$State state = state();
         boolean hasQualifiedPackage_String_value = hasQualifiedPackage_compute(packageName);
         return hasQualifiedPackage_String_value;
     }
@@ -139,6 +143,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in LookupType.jrag at line 354
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupType_String_value = qualifiedLookupType_compute(name);
         return qualifiedLookupType_String_value;
     }
@@ -164,6 +169,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in LookupVariable.jrag at line 151
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupVariable_String_value = qualifiedLookupVariable_compute(name);
         return qualifiedLookupVariable_String_value;
     }
@@ -172,6 +178,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 805
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -180,6 +187,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in QualifiedNames.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -188,6 +196,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in QualifiedNames.jrag at line 28
  @SuppressWarnings({"unchecked", "cast"})     public String packageName() {
+        ASTNode$State state = state();
         String packageName_value = packageName_compute();
         return packageName_value;
     }
@@ -204,6 +213,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 39
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPackageAccess() {
+        ASTNode$State state = state();
         boolean isPackageAccess_value = isPackageAccess_compute();
         return isPackageAccess_value;
     }
@@ -212,6 +222,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in SyntacticClassification.jrag at line 68
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -220,6 +231,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in TypeHierarchyCheck.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public boolean isUnknown() {
+        ASTNode$State state = state();
         boolean isUnknown_value = isUnknown_compute();
         return isUnknown_value;
     }
@@ -228,6 +240,7 @@ public class PackageAccess extends Access implements Cloneable {
 
     // Declared in NameCheck.jrag at line 238
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasPackage(String packageName) {
+        ASTNode$State state = state();
         boolean hasPackage_String_value = getParent().Define_boolean_hasPackage(this, null, packageName);
         return hasPackage_String_value;
     }

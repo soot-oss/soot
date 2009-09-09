@@ -14,6 +14,9 @@ public class ArrayInit extends Expr implements Cloneable {
         declType_computed = false;
         declType_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayInit clone() throws CloneNotSupportedException {
         ArrayInit node = (ArrayInit)super.clone();
         node.computeDABefore_int_Variable_values = null;
@@ -24,7 +27,7 @@ public class ArrayInit extends Expr implements Cloneable {
         node.declType_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayInit copy() {
       try {
@@ -153,11 +156,19 @@ public class ArrayInit extends Expr implements Cloneable {
 
 
     public void addInit(Expr node) {
-        List<Expr> list = getInitList();
+        List<Expr> list = (parent == null || state == null) ? getInitListNoTransform() : getInitList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addInitNoTransform(Expr node) {
+        List<Expr> list = getInitListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setInit(Expr node, int i) {
@@ -165,26 +176,28 @@ public class ArrayInit extends Expr implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Expr> getInits() {
         return getInitList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Expr> getInitsNoTransform() {
         return getInitListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getInitList() {
-        return (List<Expr>)getChild(0);
+        List<Expr> list = (List<Expr>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getInitListNoTransform() {
@@ -193,6 +206,7 @@ public class ArrayInit extends Expr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 469
  @SuppressWarnings({"unchecked", "cast"})     public boolean representableIn(TypeDecl t) {
+        ASTNode$State state = state();
         boolean representableIn_TypeDecl_value = representableIn_compute(t);
         return representableIn_TypeDecl_value;
     }
@@ -206,6 +220,7 @@ public class ArrayInit extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 500
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -216,12 +231,14 @@ public class ArrayInit extends Expr implements Cloneable {
     // Declared in DefiniteAssignment.jrag at line 503
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDABefore(int childIndex, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
-        _parameters.add(new Integer(childIndex));
+        _parameters.add(Integer.valueOf(childIndex));
         _parameters.add(v);
 if(computeDABefore_int_Variable_values == null) computeDABefore_int_Variable_values = new java.util.HashMap(4);
-        if(computeDABefore_int_Variable_values.containsKey(_parameters))
+        if(computeDABefore_int_Variable_values.containsKey(_parameters)) {
             return ((Boolean)computeDABefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDABefore_int_Variable_value = computeDABefore_compute(childIndex, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -239,6 +256,7 @@ if(computeDABefore_int_Variable_values == null) computeDABefore_int_Variable_val
 
     // Declared in DefiniteAssignment.jrag at line 886
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -249,12 +267,14 @@ if(computeDABefore_int_Variable_values == null) computeDABefore_int_Variable_val
     // Declared in DefiniteAssignment.jrag at line 889
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDUbefore(int childIndex, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
-        _parameters.add(new Integer(childIndex));
+        _parameters.add(Integer.valueOf(childIndex));
         _parameters.add(v);
 if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_values = new java.util.HashMap(4);
-        if(computeDUbefore_int_Variable_values.containsKey(_parameters))
+        if(computeDUbefore_int_Variable_values.containsKey(_parameters)) {
             return ((Boolean)computeDUbefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDUbefore_int_Variable_value = computeDUbefore_compute(childIndex, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -274,9 +294,11 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 265
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -290,9 +312,11 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
     protected TypeDecl declType_value;
     // Declared in TypeAnalysis.jrag at line 255
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl declType() {
-        if(declType_computed)
+        if(declType_computed) {
             return declType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         declType_value = getParent().Define_TypeDecl_declType(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -302,6 +326,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
 
     // Declared in InnerClasses.jrag at line 61
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl expectedType() {
+        ASTNode$State state = state();
         TypeDecl expectedType_value = getParent().Define_TypeDecl_expectedType(this, null);
         return expectedType_value;
     }

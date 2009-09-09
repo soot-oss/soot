@@ -5,11 +5,14 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public List<T> clone() throws CloneNotSupportedException {
         List node = (List)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public List<T> copy() {
       try {
@@ -128,12 +131,12 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     // Declared in List.ast at line 35
 
     public boolean mayHaveRewrite() {
-        getNumChild();
         return true;
     }
 
     // Declared in LookupConstructor.jrag at line 178
  @SuppressWarnings({"unchecked", "cast"})     public boolean requiresDefaultConstructor() {
+        ASTNode$State state = state();
         boolean requiresDefaultConstructor_value = requiresDefaultConstructor_compute();
         return requiresDefaultConstructor_value;
     }
@@ -148,6 +151,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }
@@ -155,6 +159,12 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     private boolean definesLabel_compute() {  return getParent().definesLabel();  }
 
 public ASTNode rewriteTo() {
+    if(list$touched) {
+        for(int i = 0 ; i < getNumChildNoTransform(); i++)
+            getChild(i);
+        list$touched = false;
+        return this;
+    }
     // Declared in LookupConstructor.jrag at line 187
     if(requiresDefaultConstructor()) {
         state().duringLookupConstructor++;

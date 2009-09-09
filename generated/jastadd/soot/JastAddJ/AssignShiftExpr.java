@@ -8,11 +8,14 @@ public abstract class AssignShiftExpr extends AssignExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignShiftExpr clone() throws CloneNotSupportedException {
         AssignShiftExpr node = (AssignShiftExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 92
 

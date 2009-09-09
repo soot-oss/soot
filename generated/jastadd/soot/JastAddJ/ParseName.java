@@ -8,11 +8,14 @@ public class ParseName extends Access implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ParseName clone() throws CloneNotSupportedException {
         ParseName node = (ParseName)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ParseName copy() {
       try {
@@ -107,6 +110,7 @@ public class ParseName extends Access implements Cloneable {
 
     // Declared in LookupType.jrag at line 337
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupType_String_value = qualifiedLookupType_compute(name);
         return qualifiedLookupType_String_value;
     }
@@ -115,6 +119,7 @@ public class ParseName extends Access implements Cloneable {
 
     // Declared in LookupVariable.jrag at line 139
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupVariable_String_value = qualifiedLookupVariable_compute(name);
         return qualifiedLookupVariable_String_value;
     }
@@ -123,6 +128,7 @@ public class ParseName extends Access implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 806
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -131,6 +137,7 @@ public class ParseName extends Access implements Cloneable {
 
     // Declared in QualifiedNames.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }

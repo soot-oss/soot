@@ -7,7 +7,7 @@ import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;impo
 public class AnonymousDecl extends ClassDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
-        isCircular_visited = 0;
+        isCircular_visited = -1;
         isCircular_computed = false;
         isCircular_initialized = false;
         getSuperClassAccessOpt_computed = false;
@@ -15,9 +15,12 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         getImplementsList_computed = false;
         getImplementsList_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AnonymousDecl clone() throws CloneNotSupportedException {
         AnonymousDecl node = (AnonymousDecl)super.clone();
-        node.isCircular_visited = 0;
+        node.isCircular_visited = -1;
         node.isCircular_computed = false;
         node.isCircular_initialized = false;
         node.getSuperClassAccessOpt_computed = false;
@@ -26,7 +29,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         node.getImplementsList_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AnonymousDecl copy() {
       try {
@@ -161,11 +164,19 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -173,26 +184,28 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(1);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -263,11 +276,19 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
 
 
     public void addImplements(Access node) {
-        List<Access> list = getImplementsList();
+        List<Access> list = (parent == null || state == null) ? getImplementsListNoTransform() : getImplementsList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addImplementsNoTransform(Access node) {
+        List<Access> list = getImplementsListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setImplements(Access node, int i) {
@@ -275,81 +296,80 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Access> getImplementss() {
         return getImplementsList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Access> getImplementssNoTransform() {
         return getImplementsListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
     public List<Access> getImplementsListNoTransform() {
         return (List<Access>)getChildNoTransform(3);
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 39
 
 
     protected int getImplementsListChildPosition() {
         return 3;
     }
 
-    protected int isCircular_visited;
-    protected boolean isCircular_computed = false;
-    protected boolean isCircular_initialized = false;
-    protected boolean isCircular_value;
+    // Declared in AnonymousClasses.jrag at line 30
  @SuppressWarnings({"unchecked", "cast"})     public boolean isCircular() {
-        if(isCircular_computed)
+        if(isCircular_computed) {
             return isCircular_value;
+        }
+        ASTNode$State state = state();
         if (!isCircular_initialized) {
             isCircular_initialized = true;
             isCircular_value = true;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                isCircular_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                isCircular_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_isCircular_value = isCircular_compute();
                 if (new_isCircular_value!=isCircular_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 isCircular_value = new_isCircular_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             isCircular_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             isCircular_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               isCircular_computed = false;
               isCircular_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return isCircular_value;
         }
-        if(isCircular_visited != state().CIRCLE_INDEX) {
-            isCircular_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(isCircular_visited != state.CIRCLE_INDEX) {
+            isCircular_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 isCircular_computed = false;
                 isCircular_initialized = false;
+                isCircular_visited = -1;
                 return isCircular_value;
             }
             boolean new_isCircular_value = isCircular_compute();
             if (new_isCircular_value!=isCircular_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             isCircular_value = new_isCircular_value; 
             return isCircular_value;
         }
@@ -362,9 +382,11 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     protected Opt getSuperClassAccessOpt_value;
     // Declared in AnonymousClasses.jrag at line 32
  @SuppressWarnings({"unchecked", "cast"})     public Opt getSuperClassAccessOpt() {
-        if(getSuperClassAccessOpt_computed)
+        if(getSuperClassAccessOpt_computed) {
             return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
         setSuperClassAccessOpt(getSuperClassAccessOpt_value);
@@ -384,9 +406,11 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     protected List getImplementsList_value;
     // Declared in AnonymousClasses.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public List getImplementsList() {
-        if(getImplementsList_computed)
+        if(getImplementsList_computed) {
             return (List)ASTNode.getChild(this, getImplementsListChildPosition());
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getImplementsList_value = getImplementsList_compute();
         setImplementsList(getImplementsList_value);
@@ -404,18 +428,21 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
 
     // Declared in AnonymousClasses.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superType() {
+        ASTNode$State state = state();
         TypeDecl superType_value = getParent().Define_TypeDecl_superType(this, null);
         return superType_value;
     }
 
     // Declared in AnonymousClasses.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl constructorDecl() {
+        ASTNode$State state = state();
         ConstructorDecl constructorDecl_value = getParent().Define_ConstructorDecl_constructorDecl(this, null);
         return constructorDecl_value;
     }
 
     // Declared in AnonymousClasses.jrag at line 163
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNullPointerException() {
+        ASTNode$State state = state();
         TypeDecl typeNullPointerException_value = getParent().Define_TypeDecl_typeNullPointerException(this, null);
         return typeNullPointerException_value;
     }

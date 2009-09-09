@@ -314,7 +314,7 @@ public class Attributes extends java.lang.Object {
             typeDecl.getModifiers().addModifier(a);
           }
         }
-        else if(attribute_name.equals("RuntimeInvisibleAnnotation")) {
+        else if(attribute_name.equals("RuntimeInvisibleAnnotations")) {
           int num_annotations = p.u2();
           //System.out.println("RuntimeInvisibleAnnotations: " + num_annotations);
           for(int j = 0; j < num_annotations; j++) {

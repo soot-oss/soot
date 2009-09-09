@@ -9,13 +9,16 @@ public class LogNotExpr extends Unary implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public LogNotExpr clone() throws CloneNotSupportedException {
         LogNotExpr node = (LogNotExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public LogNotExpr copy() {
       try {
@@ -104,6 +107,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 490
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -112,6 +116,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 530
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -120,6 +125,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 381
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         return isDAafterTrue_Variable_value;
     }
@@ -128,6 +134,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 382
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         return isDAafterFalse_Variable_value;
     }
@@ -136,6 +143,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 384
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -144,6 +152,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 815
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
         return isDUafterTrue_Variable_value;
     }
@@ -152,6 +161,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 816
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
         return isDUafterFalse_Variable_value;
     }
@@ -160,6 +170,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 818
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -168,6 +179,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 381
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
+        ASTNode$State state = state();
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;
     }
@@ -176,9 +188,11 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -190,6 +204,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 27
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }
@@ -198,6 +213,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 90
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeTrue() {
+        ASTNode$State state = state();
         boolean canBeTrue_value = canBeTrue_compute();
         return canBeTrue_value;
     }
@@ -206,6 +222,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 100
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeFalse() {
+        ASTNode$State state = state();
         boolean canBeFalse_value = canBeFalse_compute();
         return canBeFalse_value;
     }

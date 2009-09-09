@@ -10,13 +10,16 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ParExpr clone() throws CloneNotSupportedException {
         ParExpr node = (ParExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ParExpr copy() {
       try {
@@ -115,6 +118,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 111
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -123,6 +127,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 494
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -131,6 +136,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 61
  @SuppressWarnings({"unchecked", "cast"})     public Variable varDecl() {
+        ASTNode$State state = state();
         Variable varDecl_value = varDecl_compute();
         return varDecl_value;
     }
@@ -139,6 +145,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 350
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         return isDAafterTrue_Variable_value;
     }
@@ -147,6 +154,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 351
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         return isDAafterFalse_Variable_value;
     }
@@ -155,6 +163,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 401
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -163,6 +172,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 800
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
         return isDUafterTrue_Variable_value;
     }
@@ -171,6 +181,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 801
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
         return isDUafterFalse_Variable_value;
     }
@@ -179,6 +190,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 845
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -187,6 +199,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 28
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSuperAccess() {
+        ASTNode$State state = state();
         boolean isSuperAccess_value = isSuperAccess_compute();
         return isSuperAccess_value;
     }
@@ -195,6 +208,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 34
  @SuppressWarnings({"unchecked", "cast"})     public boolean isThisAccess() {
+        ASTNode$State state = state();
         boolean isThisAccess_value = isThisAccess_compute();
         return isThisAccess_value;
     }
@@ -205,9 +219,11 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 309
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -219,6 +235,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in TypeCheck.jrag at line 19
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariable() {
+        ASTNode$State state = state();
         boolean isVariable_value = isVariable_compute();
         return isVariable_value;
     }
@@ -227,6 +244,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in TypeHierarchyCheck.jrag at line 151
  @SuppressWarnings({"unchecked", "cast"})     public boolean staticContextQualifier() {
+        ASTNode$State state = state();
         boolean staticContextQualifier_value = staticContextQualifier_compute();
         return staticContextQualifier_value;
     }
@@ -235,6 +253,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 25
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }
@@ -243,6 +262,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 83
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeTrue() {
+        ASTNode$State state = state();
         boolean canBeTrue_value = canBeTrue_compute();
         return canBeTrue_value;
     }
@@ -251,6 +271,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 93
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeFalse() {
+        ASTNode$State state = state();
         boolean canBeFalse_value = canBeFalse_compute();
         return canBeFalse_value;
     }

@@ -18,6 +18,9 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ClassInstanceExpr clone() throws CloneNotSupportedException {
         ClassInstanceExpr node = (ClassInstanceExpr)super.clone();
         node.isDAafterInstance_Variable_values = null;
@@ -32,7 +35,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ClassInstanceExpr copy() {
       try {
@@ -264,13 +267,13 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         warning(decl().signature() + " in " + decl().hostType().typeName() + " has been deprecated");
   }
 
-    // Declared in InnerClasses.jrag at line 468
+    // Declared in InnerClasses.jrag at line 469
 
 
   // add val$name as arguments to the constructor
   protected boolean addEnclosingVariables = true;
 
-    // Declared in InnerClasses.jrag at line 469
+    // Declared in InnerClasses.jrag at line 470
 
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -473,11 +476,19 @@ public class ClassInstanceExpr extends Access implements Cloneable {
 
 
     public void addArg(Expr node) {
-        List<Expr> list = getArgList();
+        List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addArgNoTransform(Expr node) {
+        List<Expr> list = getArgListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setArg(Expr node, int i) {
@@ -485,26 +496,28 @@ public class ClassInstanceExpr extends Access implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
-        return (List<Expr>)getChild(1);
+        List<Expr> list = (List<Expr>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -589,9 +602,11 @@ public class ClassInstanceExpr extends Access implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterInstance(Variable v) {
         Object _parameters = v;
 if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values = new java.util.HashMap(4);
-        if(isDAafterInstance_Variable_values.containsKey(_parameters))
+        if(isDAafterInstance_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafterInstance_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterInstance_Variable_value = isDAafterInstance_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -607,6 +622,7 @@ if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values 
 
     // Declared in DefiniteAssignment.jrag at line 427
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -617,12 +633,14 @@ if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values 
     // Declared in DefiniteAssignment.jrag at line 429
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDAbefore(int i, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
-        _parameters.add(new Integer(i));
+        _parameters.add(Integer.valueOf(i));
         _parameters.add(v);
 if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_values = new java.util.HashMap(4);
-        if(computeDAbefore_int_Variable_values.containsKey(_parameters))
+        if(computeDAbefore_int_Variable_values.containsKey(_parameters)) {
             return ((Boolean)computeDAbefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDAbefore_int_Variable_value = computeDAbefore_compute(i, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -634,6 +652,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 
     // Declared in DefiniteAssignment.jrag at line 854
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterInstance(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterInstance_Variable_value = isDUafterInstance_compute(v);
         return isDUafterInstance_Variable_value;
     }
@@ -646,6 +665,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 
     // Declared in DefiniteAssignment.jrag at line 859
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -656,12 +676,14 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     // Declared in DefiniteAssignment.jrag at line 861
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDUbefore(int i, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
-        _parameters.add(new Integer(i));
+        _parameters.add(Integer.valueOf(i));
         _parameters.add(v);
 if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_values = new java.util.HashMap(4);
-        if(computeDUbefore_int_Variable_values.containsKey(_parameters))
+        if(computeDUbefore_int_Variable_values.containsKey(_parameters)) {
             return ((Boolean)computeDUbefore_int_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean computeDUbefore_int_Variable_value = computeDUbefore_compute(i, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -673,6 +695,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
 
     // Declared in LookupConstructor.jrag at line 53
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableAndAccessible(ConstructorDecl decl) {
+        ASTNode$State state = state();
         boolean applicableAndAccessible_ConstructorDecl_value = applicableAndAccessible_compute(decl);
         return applicableAndAccessible_ConstructorDecl_value;
     }
@@ -684,9 +707,11 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
     protected SimpleSet decls_value;
     // Declared in MethodSignature.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed)
+        if(decls_computed) {
             return decls_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -703,9 +728,11 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
     protected ConstructorDecl decl_value;
     // Declared in LookupConstructor.jrag at line 78
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -722,6 +749,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
 
     // Declared in LookupType.jrag at line 345
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupType_String_value = qualifiedLookupType_compute(name);
         return qualifiedLookupType_String_value;
     }
@@ -740,9 +768,11 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localLookupType(String name) {
         Object _parameters = name;
 if(localLookupType_String_values == null) localLookupType_String_values = new java.util.HashMap(4);
-        if(localLookupType_String_values.containsKey(_parameters))
+        if(localLookupType_String_values.containsKey(_parameters)) {
             return (SimpleSet)localLookupType_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet localLookupType_String_value = localLookupType_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -758,6 +788,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     // Declared in NameCheck.jrag at line 130
  @SuppressWarnings({"unchecked", "cast"})     public boolean validArgs() {
+        ASTNode$State state = state();
         boolean validArgs_value = validArgs_compute();
         return validArgs_value;
     }
@@ -771,6 +802,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     // Declared in SyntacticClassification.jrag at line 97
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -779,9 +811,11 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     // Declared in TypeAnalysis.jrag at line 311
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -793,6 +827,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     // Declared in TypeCheck.jrag at line 519
  @SuppressWarnings({"unchecked", "cast"})     public boolean noEnclosingInstance() {
+        ASTNode$State state = state();
         boolean noEnclosingInstance_value = noEnclosingInstance_compute();
         return noEnclosingInstance_value;
     }
@@ -801,6 +836,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     // Declared in MethodSignature.jrag at line 312
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
+        ASTNode$State state = state();
         int arity_value = arity_compute();
         return arity_value;
     }
@@ -809,6 +845,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     // Declared in VariableArityParameters.jrag at line 54
  @SuppressWarnings({"unchecked", "cast"})     public boolean invokesVariableArityAsArray() {
+        ASTNode$State state = state();
         boolean invokesVariableArityAsArray_value = invokesVariableArityAsArray_compute();
         return invokesVariableArityAsArray_value;
     }
@@ -823,36 +860,42 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     // Declared in ExceptionHandling.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public boolean handlesException(TypeDecl exceptionType) {
+        ASTNode$State state = state();
         boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
         return handlesException_TypeDecl_value;
     }
 
     // Declared in LookupConstructor.jrag at line 27
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
+        ASTNode$State state = state();
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
         return typeObject_value;
     }
 
     // Declared in LookupConstructor.jrag at line 84
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl unknownConstructor() {
+        ASTNode$State state = state();
         ConstructorDecl unknownConstructor_value = getParent().Define_ConstructorDecl_unknownConstructor(this, null);
         return unknownConstructor_value;
     }
 
     // Declared in PrettyPrint.jadd at line 350
  @SuppressWarnings({"unchecked", "cast"})     public String typeDeclIndent() {
+        ASTNode$State state = state();
         String typeDeclIndent_value = getParent().Define_String_typeDeclIndent(this, null);
         return typeDeclIndent_value;
     }
 
     // Declared in TypeCheck.jrag at line 504
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosingInstance() {
+        ASTNode$State state = state();
         TypeDecl enclosingInstance_value = getParent().Define_TypeDecl_enclosingInstance(this, null);
         return enclosingInstance_value;
     }
 
     // Declared in TypeHierarchyCheck.jrag at line 126
  @SuppressWarnings({"unchecked", "cast"})     public boolean inExplicitConstructorInvocation() {
+        ASTNode$State state = state();
         boolean inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
         return inExplicitConstructorInvocation_value;
     }

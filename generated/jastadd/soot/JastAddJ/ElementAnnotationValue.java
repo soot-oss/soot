@@ -7,11 +7,14 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ElementAnnotationValue clone() throws CloneNotSupportedException {
         ElementAnnotationValue node = (ElementAnnotationValue)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ElementAnnotationValue copy() {
       try {
@@ -97,6 +100,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 488
  @SuppressWarnings({"unchecked", "cast"})     public boolean commensurateWithTypeDecl(TypeDecl type) {
+        ASTNode$State state = state();
         boolean commensurateWithTypeDecl_TypeDecl_value = commensurateWithTypeDecl_compute(type);
         return commensurateWithTypeDecl_TypeDecl_value;
     }
@@ -107,6 +111,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 508
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -115,6 +120,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 423
  @SuppressWarnings({"unchecked", "cast"})     public Annotation lookupAnnotation(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         Annotation lookupAnnotation_TypeDecl_value = getParent().Define_Annotation_lookupAnnotation(this, null, typeDecl);
         return lookupAnnotation_TypeDecl_value;
     }

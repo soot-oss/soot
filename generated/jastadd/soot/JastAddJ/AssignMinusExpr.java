@@ -7,11 +7,14 @@ public class AssignMinusExpr extends AssignAdditiveExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignMinusExpr clone() throws CloneNotSupportedException {
         AssignMinusExpr node = (AssignMinusExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AssignMinusExpr copy() {
       try {
@@ -117,6 +120,7 @@ public class AssignMinusExpr extends AssignAdditiveExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 252
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

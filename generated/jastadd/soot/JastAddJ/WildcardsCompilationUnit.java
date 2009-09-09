@@ -14,6 +14,9 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
         lookupLUBType_Collection_values = null;
         lookupGLBType_ArrayList_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public WildcardsCompilationUnit clone() throws CloneNotSupportedException {
         WildcardsCompilationUnit node = (WildcardsCompilationUnit)super.clone();
         node.typeWildcard_computed = false;
@@ -24,7 +27,7 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
         node.lookupGLBType_ArrayList_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public WildcardsCompilationUnit copy() {
       try {
@@ -135,11 +138,19 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
 
 
     public void addImportDecl(ImportDecl node) {
-        List<ImportDecl> list = getImportDeclList();
+        List<ImportDecl> list = (parent == null || state == null) ? getImportDeclListNoTransform() : getImportDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addImportDeclNoTransform(ImportDecl node) {
+        List<ImportDecl> list = getImportDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setImportDecl(ImportDecl node, int i) {
@@ -147,26 +158,28 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ImportDecl> getImportDecls() {
         return getImportDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ImportDecl> getImportDeclsNoTransform() {
         return getImportDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclList() {
-        return (List<ImportDecl>)getChild(0);
+        List<ImportDecl> list = (List<ImportDecl>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclListNoTransform() {
@@ -197,11 +210,19 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
 
 
     public void addTypeDecl(TypeDecl node) {
-        List<TypeDecl> list = getTypeDeclList();
+        List<TypeDecl> list = (parent == null || state == null) ? getTypeDeclListNoTransform() : getTypeDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addTypeDeclNoTransform(TypeDecl node) {
+        List<TypeDecl> list = getTypeDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setTypeDecl(TypeDecl node, int i) {
@@ -209,26 +230,28 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<TypeDecl> getTypeDecls() {
         return getTypeDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<TypeDecl> getTypeDeclsNoTransform() {
         return getTypeDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclList() {
-        return (List<TypeDecl>)getChild(1);
+        List<TypeDecl> list = (List<TypeDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclListNoTransform() {
@@ -239,9 +262,11 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
     protected TypeDecl typeWildcard_value;
     // Declared in Generics.jrag at line 1131
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeWildcard() {
-        if(typeWildcard_computed)
+        if(typeWildcard_computed) {
             return typeWildcard_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeWildcard_value = typeWildcard_compute();
         typeWildcard_value.setParent(this);
@@ -266,9 +291,11 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardExtends(TypeDecl bound) {
         Object _parameters = bound;
 if(lookupWildcardExtends_TypeDecl_values == null) lookupWildcardExtends_TypeDecl_values = new java.util.HashMap(4);
-        if(lookupWildcardExtends_TypeDecl_values.containsKey(_parameters))
+        if(lookupWildcardExtends_TypeDecl_values.containsKey(_parameters)) {
             return (TypeDecl)lookupWildcardExtends_TypeDecl_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupWildcardExtends_TypeDecl_value = lookupWildcardExtends_compute(bound);
         if(lookupWildcardExtends_TypeDecl_list == null) {
@@ -299,9 +326,11 @@ if(lookupWildcardExtends_TypeDecl_values == null) lookupWildcardExtends_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl bound) {
         Object _parameters = bound;
 if(lookupWildcardSuper_TypeDecl_values == null) lookupWildcardSuper_TypeDecl_values = new java.util.HashMap(4);
-        if(lookupWildcardSuper_TypeDecl_values.containsKey(_parameters))
+        if(lookupWildcardSuper_TypeDecl_values.containsKey(_parameters)) {
             return (TypeDecl)lookupWildcardSuper_TypeDecl_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupWildcardSuper_TypeDecl_value = lookupWildcardSuper_compute(bound);
         if(lookupWildcardSuper_TypeDecl_list == null) {
@@ -332,9 +361,11 @@ if(lookupWildcardSuper_TypeDecl_values == null) lookupWildcardSuper_TypeDecl_val
  @SuppressWarnings({"unchecked", "cast"})     public LUBType lookupLUBType(Collection bounds) {
         Object _parameters = bounds;
 if(lookupLUBType_Collection_values == null) lookupLUBType_Collection_values = new java.util.HashMap(4);
-        if(lookupLUBType_Collection_values.containsKey(_parameters))
+        if(lookupLUBType_Collection_values.containsKey(_parameters)) {
             return (LUBType)lookupLUBType_Collection_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         LUBType lookupLUBType_Collection_value = lookupLUBType_compute(bounds);
         if(lookupLUBType_Collection_list == null) {
@@ -372,9 +403,11 @@ if(lookupLUBType_Collection_values == null) lookupLUBType_Collection_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public GLBType lookupGLBType(ArrayList bounds) {
         Object _parameters = bounds;
 if(lookupGLBType_ArrayList_values == null) lookupGLBType_ArrayList_values = new java.util.HashMap(4);
-        if(lookupGLBType_ArrayList_values.containsKey(_parameters))
+        if(lookupGLBType_ArrayList_values.containsKey(_parameters)) {
             return (GLBType)lookupGLBType_ArrayList_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         GLBType lookupGLBType_ArrayList_value = lookupGLBType_compute(bounds);
         if(lookupGLBType_ArrayList_list == null) {

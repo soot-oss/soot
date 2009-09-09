@@ -7,11 +7,14 @@ public abstract class IntegralType extends NumericType implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public IntegralType clone() throws CloneNotSupportedException {
         IntegralType node = (IntegralType)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in java.ast at line 3
     // Declared in java.ast line 52
@@ -164,11 +167,19 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -176,26 +187,28 @@ public abstract class IntegralType extends NumericType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(2);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -204,6 +217,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 310
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
+        ASTNode$State state = state();
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
     }
@@ -212,6 +226,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 324
  @SuppressWarnings({"unchecked", "cast"})     public Constant plus(Constant c) {
+        ASTNode$State state = state();
         Constant plus_Constant_value = plus_compute(c);
         return plus_Constant_value;
     }
@@ -220,6 +235,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 333
  @SuppressWarnings({"unchecked", "cast"})     public Constant minus(Constant c) {
+        ASTNode$State state = state();
         Constant minus_Constant_value = minus_compute(c);
         return minus_Constant_value;
     }
@@ -228,6 +244,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 342
  @SuppressWarnings({"unchecked", "cast"})     public Constant bitNot(Constant c) {
+        ASTNode$State state = state();
         Constant bitNot_Constant_value = bitNot_compute(c);
         return bitNot_Constant_value;
     }
@@ -236,6 +253,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 349
  @SuppressWarnings({"unchecked", "cast"})     public Constant mul(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant mul_Constant_Constant_value = mul_compute(c1, c2);
         return mul_Constant_Constant_value;
     }
@@ -244,6 +262,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 358
  @SuppressWarnings({"unchecked", "cast"})     public Constant div(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant div_Constant_Constant_value = div_compute(c1, c2);
         return div_Constant_Constant_value;
     }
@@ -252,6 +271,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 367
  @SuppressWarnings({"unchecked", "cast"})     public Constant mod(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant mod_Constant_Constant_value = mod_compute(c1, c2);
         return mod_Constant_Constant_value;
     }
@@ -260,6 +280,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 376
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
     }
@@ -268,6 +289,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 386
  @SuppressWarnings({"unchecked", "cast"})     public Constant sub(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant sub_Constant_Constant_value = sub_compute(c1, c2);
         return sub_Constant_Constant_value;
     }
@@ -276,6 +298,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 395
  @SuppressWarnings({"unchecked", "cast"})     public Constant lshift(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant lshift_Constant_Constant_value = lshift_compute(c1, c2);
         return lshift_Constant_Constant_value;
     }
@@ -284,6 +307,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 402
  @SuppressWarnings({"unchecked", "cast"})     public Constant rshift(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant rshift_Constant_Constant_value = rshift_compute(c1, c2);
         return rshift_Constant_Constant_value;
     }
@@ -292,6 +316,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 409
  @SuppressWarnings({"unchecked", "cast"})     public Constant urshift(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant urshift_Constant_Constant_value = urshift_compute(c1, c2);
         return urshift_Constant_Constant_value;
     }
@@ -300,6 +325,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 416
  @SuppressWarnings({"unchecked", "cast"})     public Constant andBitwise(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant andBitwise_Constant_Constant_value = andBitwise_compute(c1, c2);
         return andBitwise_Constant_Constant_value;
     }
@@ -308,6 +334,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public Constant xorBitwise(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant xorBitwise_Constant_Constant_value = xorBitwise_compute(c1, c2);
         return xorBitwise_Constant_Constant_value;
     }
@@ -316,6 +343,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 432
  @SuppressWarnings({"unchecked", "cast"})     public Constant orBitwise(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant orBitwise_Constant_Constant_value = orBitwise_compute(c1, c2);
         return orBitwise_Constant_Constant_value;
     }
@@ -324,6 +352,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 440
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
     }
@@ -332,6 +361,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 544
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
     }
@@ -340,6 +370,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 552
  @SuppressWarnings({"unchecked", "cast"})     public boolean ltIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
         return ltIsTrue_Expr_Expr_value;
     }
@@ -348,6 +379,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 558
  @SuppressWarnings({"unchecked", "cast"})     public boolean leIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
         return leIsTrue_Expr_Expr_value;
     }
@@ -356,6 +388,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in NameCheck.jrag at line 423
  @SuppressWarnings({"unchecked", "cast"})     public boolean assignableToInt() {
+        ASTNode$State state = state();
         boolean assignableToInt_value = assignableToInt_compute();
         return assignableToInt_value;
     }
@@ -364,6 +397,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 178
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIntegralType() {
+        ASTNode$State state = state();
         boolean isIntegralType_value = isIntegralType_compute();
         return isIntegralType_value;
     }

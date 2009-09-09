@@ -10,13 +10,16 @@ public class ArrayAccess extends Access implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayAccess clone() throws CloneNotSupportedException {
         ArrayAccess node = (ArrayAccess)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayAccess copy() {
       try {
@@ -121,6 +124,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 359
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -129,6 +133,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 840
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -137,6 +142,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 43
  @SuppressWarnings({"unchecked", "cast"})     public boolean isArrayAccess() {
+        ASTNode$State state = state();
         boolean isArrayAccess_value = isArrayAccess_compute();
         return isArrayAccess_value;
     }
@@ -145,6 +151,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in SyntacticClassification.jrag at line 100
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -153,9 +160,11 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 280
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -167,6 +176,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in TypeCheck.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariable() {
+        ASTNode$State state = state();
         boolean isVariable_value = isVariable_compute();
         return isVariable_value;
     }
@@ -175,6 +185,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 281
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
+        ASTNode$State state = state();
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;
     }

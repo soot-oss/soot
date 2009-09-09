@@ -8,11 +8,14 @@ public abstract class AssignBitwiseExpr extends AssignExpr implements Cloneable 
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignBitwiseExpr clone() throws CloneNotSupportedException {
         AssignBitwiseExpr node = (AssignBitwiseExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 98
 

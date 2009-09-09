@@ -17,6 +17,9 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
         end_label_value = null;
         lookupLabel_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public LabeledStmt clone() throws CloneNotSupportedException {
         LabeledStmt node = (LabeledStmt)super.clone();
         node.targetOf_ContinueStmt_values = null;
@@ -31,7 +34,7 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
         node.lookupLabel_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public LabeledStmt copy() {
       try {
@@ -180,9 +183,11 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean targetOf(ContinueStmt stmt) {
         Object _parameters = stmt;
 if(targetOf_ContinueStmt_values == null) targetOf_ContinueStmt_values = new java.util.HashMap(4);
-        if(targetOf_ContinueStmt_values.containsKey(_parameters))
+        if(targetOf_ContinueStmt_values.containsKey(_parameters)) {
             return ((Boolean)targetOf_ContinueStmt_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean targetOf_ContinueStmt_value = targetOf_compute(stmt);
         if(isFinal && num == state().boundariesCrossed)
@@ -197,9 +202,11 @@ if(targetOf_ContinueStmt_values == null) targetOf_ContinueStmt_values = new java
  @SuppressWarnings({"unchecked", "cast"})     public boolean targetOf(BreakStmt stmt) {
         Object _parameters = stmt;
 if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.HashMap(4);
-        if(targetOf_BreakStmt_values.containsKey(_parameters))
+        if(targetOf_BreakStmt_values.containsKey(_parameters)) {
             return ((Boolean)targetOf_BreakStmt_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean targetOf_BreakStmt_value = targetOf_compute(stmt);
         if(isFinal && num == state().boundariesCrossed)
@@ -213,9 +220,11 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -238,9 +247,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -261,9 +272,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in UnreachableStatements.jrag at line 46
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed)
+        if(canCompleteNormally_computed) {
             return canCompleteNormally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -277,9 +290,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected soot.jimple.Stmt label_value;
     // Declared in Statements.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label() {
-        if(label_computed)
+        if(label_computed) {
             return label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_value = label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -293,9 +308,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected soot.jimple.Stmt end_label_value;
     // Declared in Statements.jrag at line 24
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt end_label() {
-        if(end_label_computed)
+        if(end_label_computed) {
             return end_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         end_label_value = end_label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -307,6 +324,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in Statements.jrag at line 205
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
+        ASTNode$State state = state();
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
     }
@@ -315,6 +333,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in Statements.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
+        ASTNode$State state = state();
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;
     }
@@ -326,9 +345,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public LabeledStmt lookupLabel(String name) {
         Object _parameters = name;
 if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.HashMap(4);
-        if(lookupLabel_String_values.containsKey(_parameters))
+        if(lookupLabel_String_values.containsKey(_parameters)) {
             return (LabeledStmt)lookupLabel_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         LabeledStmt lookupLabel_String_value = getParent().Define_LabeledStmt_lookupLabel(this, null, name);
         if(isFinal && num == state().boundariesCrossed)

@@ -9,13 +9,16 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
         sourceConstructorDecl_computed = false;
         sourceConstructorDecl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ConstructorDeclSubstituted clone() throws CloneNotSupportedException {
         ConstructorDeclSubstituted node = (ConstructorDeclSubstituted)super.clone();
         node.sourceConstructorDecl_computed = false;
         node.sourceConstructorDecl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ConstructorDeclSubstituted copy() {
       try {
@@ -168,11 +171,19 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
 
 
     public void addParameter(ParameterDeclaration node) {
-        List<ParameterDeclaration> list = getParameterList();
+        List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addParameterNoTransform(ParameterDeclaration node) {
+        List<ParameterDeclaration> list = getParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -180,26 +191,28 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
-        return (List<ParameterDeclaration>)getChild(1);
+        List<ParameterDeclaration> list = (List<ParameterDeclaration>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -230,11 +243,19 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
 
 
     public void addException(Access node) {
-        List<Access> list = getExceptionList();
+        List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addExceptionNoTransform(Access node) {
+        List<Access> list = getExceptionListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setException(Access node, int i) {
@@ -242,26 +263,28 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
-        return (List<Access>)getChild(2);
+        List<Access> list = (List<Access>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -345,9 +368,11 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
 
     // Declared in Generics.jrag at line 1271
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
-        if(sourceConstructorDecl_computed)
+        if(sourceConstructorDecl_computed) {
             return sourceConstructorDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceConstructorDecl_value = sourceConstructorDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -359,6 +384,7 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
 
     // Declared in GenericsCodegen.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl erasedConstructor() {
+        ASTNode$State state = state();
         ConstructorDecl erasedConstructor_value = erasedConstructor_compute();
         return erasedConstructor_value;
     }

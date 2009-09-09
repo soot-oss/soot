@@ -19,6 +19,9 @@ public class BreakStmt extends Stmt implements Cloneable {
         inSynchronizedBlock_computed = false;
         lookupLabel_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BreakStmt clone() throws CloneNotSupportedException {
         BreakStmt node = (BreakStmt)super.clone();
         node.targetStmt_computed = false;
@@ -34,7 +37,7 @@ public class BreakStmt extends Stmt implements Cloneable {
         node.lookupLabel_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public BreakStmt copy() {
       try {
@@ -177,6 +180,7 @@ public class BreakStmt extends Stmt implements Cloneable {
 
     // Declared in BranchTarget.jrag at line 66
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasLabel() {
+        ASTNode$State state = state();
         boolean hasLabel_value = hasLabel_compute();
         return hasLabel_value;
     }
@@ -187,9 +191,11 @@ public class BreakStmt extends Stmt implements Cloneable {
     protected Stmt targetStmt_value;
     // Declared in BranchTarget.jrag at line 149
  @SuppressWarnings({"unchecked", "cast"})     public Stmt targetStmt() {
-        if(targetStmt_computed)
+        if(targetStmt_computed) {
             return targetStmt_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         targetStmt_value = targetStmt_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -203,9 +209,11 @@ public class BreakStmt extends Stmt implements Cloneable {
     protected ArrayList finallyList_value;
     // Declared in BranchTarget.jrag at line 176
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList finallyList() {
-        if(finallyList_computed)
+        if(finallyList_computed) {
             return finallyList_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         finallyList_value = finallyList_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -223,9 +231,11 @@ public class BreakStmt extends Stmt implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -240,9 +250,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterReachedFinallyBlocks(Variable v) {
         Object _parameters = v;
 if(isDUafterReachedFinallyBlocks_Variable_values == null) isDUafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
-        if(isDUafterReachedFinallyBlocks_Variable_values.containsKey(_parameters))
+        if(isDUafterReachedFinallyBlocks_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafterReachedFinallyBlocks_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafterReachedFinallyBlocks_Variable_value = isDUafterReachedFinallyBlocks_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -266,9 +278,11 @@ if(isDUafterReachedFinallyBlocks_Variable_values == null) isDUafterReachedFinall
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterReachedFinallyBlocks(Variable v) {
         Object _parameters = v;
 if(isDAafterReachedFinallyBlocks_Variable_values == null) isDAafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
-        if(isDAafterReachedFinallyBlocks_Variable_values.containsKey(_parameters))
+        if(isDAafterReachedFinallyBlocks_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafterReachedFinallyBlocks_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterReachedFinallyBlocks_Variable_value = isDAafterReachedFinallyBlocks_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -293,9 +307,11 @@ if(isDAafterReachedFinallyBlocks_Variable_values == null) isDAafterReachedFinall
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -307,9 +323,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in UnreachableStatements.jrag at line 105
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed)
+        if(canCompleteNormally_computed) {
             return canCompleteNormally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -323,9 +341,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected boolean inSynchronizedBlock_value;
     // Declared in Statements.jrag at line 250
  @SuppressWarnings({"unchecked", "cast"})     public boolean inSynchronizedBlock() {
-        if(inSynchronizedBlock_computed)
+        if(inSynchronizedBlock_computed) {
             return inSynchronizedBlock_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         inSynchronizedBlock_value = inSynchronizedBlock_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -340,9 +360,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public LabeledStmt lookupLabel(String name) {
         Object _parameters = name;
 if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.HashMap(4);
-        if(lookupLabel_String_values.containsKey(_parameters))
+        if(lookupLabel_String_values.containsKey(_parameters)) {
             return (LabeledStmt)lookupLabel_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         LabeledStmt lookupLabel_String_value = getParent().Define_LabeledStmt_lookupLabel(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -352,18 +374,21 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
 
     // Declared in NameCheck.jrag at line 360
  @SuppressWarnings({"unchecked", "cast"})     public boolean insideLoop() {
+        ASTNode$State state = state();
         boolean insideLoop_value = getParent().Define_boolean_insideLoop(this, null);
         return insideLoop_value;
     }
 
     // Declared in NameCheck.jrag at line 369
  @SuppressWarnings({"unchecked", "cast"})     public boolean insideSwitch() {
+        ASTNode$State state = state();
         boolean insideSwitch_value = getParent().Define_boolean_insideSwitch(this, null);
         return insideSwitch_value;
     }
 
     // Declared in Statements.jrag at line 444
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
+        ASTNode$State state = state();
         ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
         return exceptionRanges_value;
     }

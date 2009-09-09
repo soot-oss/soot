@@ -12,14 +12,14 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         getParTypeDeclList_value = null;
         lookupParTypeDecl_ParTypeAccess_values = null;
         lookupParTypeDecl_ArrayList_values = null;
-        usesTypeVariable_visited = 0;
+        usesTypeVariable_visited = -1;
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
-        subtype_TypeDecl_visited = new java.util.HashMap(4);
         subtype_TypeDecl_values = null;
-        subtype_TypeDecl_computed = new java.util.HashSet(4);
-        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         instanceOf_TypeDecl_values = null;
+    }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
     }
      @SuppressWarnings({"unchecked", "cast"})  public GenericClassDecl clone() throws CloneNotSupportedException {
         GenericClassDecl node = (GenericClassDecl)super.clone();
@@ -29,17 +29,14 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         node.getParTypeDeclList_value = null;
         node.lookupParTypeDecl_ParTypeAccess_values = null;
         node.lookupParTypeDecl_ArrayList_values = null;
-        node.usesTypeVariable_visited = 0;
+        node.usesTypeVariable_visited = -1;
         node.usesTypeVariable_computed = false;
         node.usesTypeVariable_initialized = false;
-        node.subtype_TypeDecl_visited = new java.util.HashMap(4);
         node.subtype_TypeDecl_values = null;
-        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
-        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.instanceOf_TypeDecl_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public GenericClassDecl copy() {
       try {
@@ -304,11 +301,19 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
 
 
     public void addImplements(Access node) {
-        List<Access> list = getImplementsList();
+        List<Access> list = (parent == null || state == null) ? getImplementsListNoTransform() : getImplementsList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addImplementsNoTransform(Access node) {
+        List<Access> list = getImplementsListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setImplements(Access node, int i) {
@@ -316,26 +321,28 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<Access> getImplementss() {
         return getImplementsList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<Access> getImplementssNoTransform() {
         return getImplementsListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsList() {
-        return (List<Access>)getChild(2);
+        List<Access> list = (List<Access>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsListNoTransform() {
@@ -366,11 +373,19 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -378,26 +393,28 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(3);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(3);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -428,11 +445,19 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
 
 
     public void addTypeParameter(TypeVariable node) {
-        List<TypeVariable> list = getTypeParameterList();
+        List<TypeVariable> list = (parent == null || state == null) ? getTypeParameterListNoTransform() : getTypeParameterList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addTypeParameterNoTransform(TypeVariable node) {
+        List<TypeVariable> list = getTypeParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setTypeParameter(TypeVariable node, int i) {
@@ -440,26 +465,28 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<TypeVariable> getTypeParameters() {
         return getTypeParameterList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<TypeVariable> getTypeParametersNoTransform() {
         return getTypeParameterListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterList() {
-        return (List<TypeVariable>)getChild(4);
+        List<TypeVariable> list = (List<TypeVariable>)getChild(4);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeVariable> getTypeParameterListNoTransform() {
@@ -490,11 +517,19 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
 
 
     public void addParTypeDecl(ParClassDecl node) {
-        List<ParClassDecl> list = getParTypeDeclList();
+        List<ParClassDecl> list = (parent == null || state == null) ? getParTypeDeclListNoTransform() : getParTypeDeclList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addParTypeDeclNoTransform(ParClassDecl node) {
+        List<ParClassDecl> list = getParTypeDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setParTypeDecl(ParClassDecl node, int i) {
@@ -502,26 +537,26 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<ParClassDecl> getParTypeDecls() {
         return getParTypeDeclList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<ParClassDecl> getParTypeDeclsNoTransform() {
         return getParTypeDeclListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
     public List<ParClassDecl> getParTypeDeclListNoTransform() {
         return (List<ParClassDecl>)getChildNoTransform(5);
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 39
 
 
     protected int getParTypeDeclListChildPosition() {
@@ -565,9 +600,11 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     protected TypeDecl rawType_value;
     // Declared in Generics.jrag at line 152
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl rawType() {
-        if(rawType_computed)
+        if(rawType_computed) {
             return rawType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         rawType_value = rawType_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -581,9 +618,11 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     protected List getParTypeDeclList_value;
     // Declared in Generics.jrag at line 588
  @SuppressWarnings({"unchecked", "cast"})     public List getParTypeDeclList() {
-        if(getParTypeDeclList_computed)
+        if(getParTypeDeclList_computed) {
             return (List)ASTNode.getChild(this, getParTypeDeclListChildPosition());
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getParTypeDeclList_value = getParTypeDeclList_compute();
         setParTypeDeclList(getParTypeDeclList_value);
@@ -599,9 +638,11 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupParTypeDecl(ParTypeAccess p) {
         Object _parameters = p;
 if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAccess_values = new java.util.HashMap(4);
-        if(lookupParTypeDecl_ParTypeAccess_values.containsKey(_parameters))
+        if(lookupParTypeDecl_ParTypeAccess_values.containsKey(_parameters)) {
             return (TypeDecl)lookupParTypeDecl_ParTypeAccess_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupParTypeDecl_ParTypeAccess_value = lookupParTypeDecl_compute(p);
         if(isFinal && num == state().boundariesCrossed)
@@ -632,9 +673,11 @@ if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAcce
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupParTypeDecl(ArrayList list) {
         Object _parameters = list;
 if(lookupParTypeDecl_ArrayList_values == null) lookupParTypeDecl_ArrayList_values = new java.util.HashMap(4);
-        if(lookupParTypeDecl_ArrayList_values.containsKey(_parameters))
+        if(lookupParTypeDecl_ArrayList_values.containsKey(_parameters)) {
             return (TypeDecl)lookupParTypeDecl_ArrayList_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         TypeDecl lookupParTypeDecl_ArrayList_value = lookupParTypeDecl_compute(list);
         if(true)
@@ -657,55 +700,54 @@ if(lookupParTypeDecl_ArrayList_values == null) lookupParTypeDecl_ArrayList_value
     return typeDecl;
   }
 
-    protected int usesTypeVariable_visited;
-    protected boolean usesTypeVariable_computed = false;
-    protected boolean usesTypeVariable_initialized = false;
-    protected boolean usesTypeVariable_value;
+    // Declared in Generics.jrag at line 918
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
-        if(usesTypeVariable_computed)
+        if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
+        }
+        ASTNode$State state = state();
         if (!usesTypeVariable_initialized) {
             usesTypeVariable_initialized = true;
             usesTypeVariable_value = false;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                usesTypeVariable_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                usesTypeVariable_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_usesTypeVariable_value = usesTypeVariable_compute();
                 if (new_usesTypeVariable_value!=usesTypeVariable_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 usesTypeVariable_value = new_usesTypeVariable_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             usesTypeVariable_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             usesTypeVariable_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               usesTypeVariable_computed = false;
               usesTypeVariable_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return usesTypeVariable_value;
         }
-        if(usesTypeVariable_visited != state().CIRCLE_INDEX) {
-            usesTypeVariable_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(usesTypeVariable_visited != state.CIRCLE_INDEX) {
+            usesTypeVariable_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 usesTypeVariable_computed = false;
                 usesTypeVariable_initialized = false;
+                usesTypeVariable_visited = -1;
                 return usesTypeVariable_value;
             }
             boolean new_usesTypeVariable_value = usesTypeVariable_compute();
             if (new_usesTypeVariable_value!=usesTypeVariable_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             usesTypeVariable_value = new_usesTypeVariable_value; 
             return usesTypeVariable_value;
         }
@@ -714,69 +756,73 @@ if(lookupParTypeDecl_ArrayList_values == null) lookupParTypeDecl_ArrayList_value
 
     private boolean usesTypeVariable_compute() {  return true;  }
 
-    protected java.util.Map subtype_TypeDecl_visited;
-    protected java.util.Set subtype_TypeDecl_computed = new java.util.HashSet(4);
-    protected java.util.Set subtype_TypeDecl_initialized = new java.util.HashSet(4);
-    protected java.util.Map subtype_TypeDecl_values = new java.util.HashMap(4);
+    // Declared in GenericsSubtype.jrag at line 13
  @SuppressWarnings({"unchecked", "cast"})     public boolean subtype(TypeDecl type) {
         Object _parameters = type;
-if(subtype_TypeDecl_visited == null) subtype_TypeDecl_visited = new java.util.HashMap(4);
 if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
-        if(subtype_TypeDecl_computed.contains(_parameters))
-            return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-        if (!subtype_TypeDecl_initialized.contains(_parameters)) {
-            subtype_TypeDecl_initialized.add(_parameters);
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
+        ASTNode$State.CircularValue _value;
+        if(subtype_TypeDecl_values.containsKey(_parameters)) {
+            Object _o = subtype_TypeDecl_values.get(_parameters);
+            if(!(_o instanceof ASTNode$State.CircularValue)) {
+                return ((Boolean)_o).booleanValue();
+            }
+            else
+                _value = (ASTNode$State.CircularValue)_o;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        else {
+            _value = new ASTNode$State.CircularValue();
+            subtype_TypeDecl_values.put(_parameters, _value);
+            _value.value = Boolean.valueOf(true);
+        }
+        ASTNode$State state = state();
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-                state().CHANGE = false;
+                _value.visited = new Integer(state.CIRCLE_INDEX);
+                state.CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
-                if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    state().CHANGE = true;
-                subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                    state.CHANGE = true;
+                    _value.value = Boolean.valueOf(new_subtype_TypeDecl_value);
+                }
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
-            subtype_TypeDecl_computed.add(_parameters);
+                subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
             }
             else {
-            state().RESET_CYCLE = true;
+                subtype_TypeDecl_values.remove(_parameters);
+            state.RESET_CYCLE = true;
             subtype_compute(type);
-            state().RESET_CYCLE = false;
-            subtype_TypeDecl_computed.remove(_parameters);
-            subtype_TypeDecl_initialized.remove(_parameters);
+            state.RESET_CYCLE = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-            if (state().RESET_CYCLE) {
-                subtype_TypeDecl_computed.remove(_parameters);
-                subtype_TypeDecl_initialized.remove(_parameters);
-                return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-            }
+        if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+            _value.visited = new Integer(state.CIRCLE_INDEX);
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
-            if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                state().CHANGE = true;
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
+            if (state.RESET_CYCLE) {
+                subtype_TypeDecl_values.remove(_parameters);
+            }
+            else if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                state.CHANGE = true;
+                _value.value = new_subtype_TypeDecl_value;
+            }
             return new_subtype_TypeDecl_value;
         }
-        return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
+        return ((Boolean)_value.value).booleanValue();
     }
 
     private boolean subtype_compute(TypeDecl type) {  return type.supertypeGenericClassDecl(this);  }
 
     // Declared in GenericsSubtype.jrag at line 273
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeParClassDecl(ParClassDecl type) {
+        ASTNode$State state = state();
         boolean supertypeParClassDecl_ParClassDecl_value = supertypeParClassDecl_compute(type);
         return supertypeParClassDecl_ParClassDecl_value;
     }
@@ -785,6 +831,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 275
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeParInterfaceDecl(ParInterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeParInterfaceDecl_ParInterfaceDecl_value = supertypeParInterfaceDecl_compute(type);
         return supertypeParInterfaceDecl_ParInterfaceDecl_value;
     }
@@ -795,9 +842,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
  @SuppressWarnings({"unchecked", "cast"})     public boolean instanceOf(TypeDecl type) {
         Object _parameters = type;
 if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
-        if(instanceOf_TypeDecl_values.containsKey(_parameters))
+        if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -809,6 +858,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 156
  @SuppressWarnings({"unchecked", "cast"})     public boolean isGenericType() {
+        ASTNode$State state = state();
         boolean isGenericType_value = isGenericType_compute();
         return isGenericType_value;
     }
@@ -817,6 +867,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 402
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
+        ASTNode$State state = state();
         TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         return typeThrowable_value;
     }

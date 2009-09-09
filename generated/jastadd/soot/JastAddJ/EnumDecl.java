@@ -11,6 +11,9 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         enumConstants_computed = false;
         enumConstants_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public EnumDecl clone() throws CloneNotSupportedException {
         EnumDecl node = (EnumDecl)super.clone();
         node.isStatic_computed = false;
@@ -20,7 +23,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         node.enumConstants_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public EnumDecl copy() {
       try {
@@ -391,11 +394,19 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
 
     public void addImplements(Access node) {
-        List<Access> list = getImplementsList();
+        List<Access> list = (parent == null || state == null) ? getImplementsListNoTransform() : getImplementsList();
         list.addChild(node);
     }
 
     // Declared in Enums.ast at line 19
+
+
+    public void addImplementsNoTransform(Access node) {
+        List<Access> list = getImplementsListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Enums.ast at line 24
 
 
     public void setImplements(Access node, int i) {
@@ -403,26 +414,28 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 23
+    // Declared in Enums.ast at line 28
 
     public List<Access> getImplementss() {
         return getImplementsList();
     }
 
-    // Declared in Enums.ast at line 26
+    // Declared in Enums.ast at line 31
 
     public List<Access> getImplementssNoTransform() {
         return getImplementsListNoTransform();
     }
 
-    // Declared in Enums.ast at line 30
+    // Declared in Enums.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsList() {
-        return (List<Access>)getChild(1);
+        List<Access> list = (List<Access>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Enums.ast at line 34
+    // Declared in Enums.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getImplementsListNoTransform() {
@@ -453,11 +466,19 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in Enums.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Enums.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -465,26 +486,28 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 23
+    // Declared in Enums.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Enums.ast at line 26
+    // Declared in Enums.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Enums.ast at line 30
+    // Declared in Enums.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(2);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Enums.ast at line 34
+    // Declared in Enums.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -533,6 +556,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Annotations.jrag at line 132
  @SuppressWarnings({"unchecked", "cast"})     public boolean isValidAnnotationMethodReturnType() {
+        ASTNode$State state = state();
         boolean isValidAnnotationMethodReturnType_value = isValidAnnotationMethodReturnType_compute();
         return isValidAnnotationMethodReturnType_value;
     }
@@ -541,6 +565,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Enums.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEnumDecl() {
+        ASTNode$State state = state();
         boolean isEnumDecl_value = isEnumDecl_compute();
         return isEnumDecl_value;
     }
@@ -549,9 +574,11 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Enums.jrag at line 39
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
-        if(isStatic_computed)
+        if(isStatic_computed) {
             return isStatic_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isStatic_value = isStatic_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -565,9 +592,11 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     protected Opt getSuperClassAccessOpt_value;
     // Declared in Enums.jrag at line 60
  @SuppressWarnings({"unchecked", "cast"})     public Opt getSuperClassAccessOpt() {
-        if(getSuperClassAccessOpt_computed)
+        if(getSuperClassAccessOpt_computed) {
             return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
         setSuperClassAccessOpt(getSuperClassAccessOpt_value);
@@ -590,6 +619,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Enums.jrag at line 245
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
+        ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
         return isFinal_value;
     }
@@ -608,9 +638,11 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     protected ArrayList enumConstants_value;
     // Declared in Enums.jrag at line 256
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList enumConstants() {
-        if(enumConstants_computed)
+        if(enumConstants_computed) {
             return enumConstants_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         enumConstants_value = enumConstants_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -628,6 +660,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Enums.jrag at line 393
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAbstract() {
+        ASTNode$State state = state();
         boolean isAbstract_value = isAbstract_compute();
         return isAbstract_value;
     }
@@ -645,6 +678,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in EnumsCodegen.jrag at line 13
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;
     }
@@ -653,6 +687,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     // Declared in Enums.jrag at line 383
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeString() {
+        ASTNode$State state = state();
         TypeDecl typeString_value = getParent().Define_TypeDecl_typeString(this, null);
         return typeString_value;
     }

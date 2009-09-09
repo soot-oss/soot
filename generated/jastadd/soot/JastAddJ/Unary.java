@@ -10,13 +10,16 @@ public abstract class Unary extends Expr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Unary clone() throws CloneNotSupportedException {
         Unary node = (Unary)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in PrettyPrint.jadd at line 365
 
@@ -123,6 +126,7 @@ public abstract class Unary extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 402
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -131,6 +135,7 @@ public abstract class Unary extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 846
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -139,6 +144,7 @@ public abstract class Unary extends Expr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 371
  @SuppressWarnings({"unchecked", "cast"})     public String printPostOp() {
+        ASTNode$State state = state();
         String printPostOp_value = printPostOp_compute();
         return printPostOp_value;
     }
@@ -147,6 +153,7 @@ public abstract class Unary extends Expr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 375
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
+        ASTNode$State state = state();
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;
     }
@@ -157,9 +164,11 @@ public abstract class Unary extends Expr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 314
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

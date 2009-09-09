@@ -9,12 +9,15 @@ public class VarDeclStmt extends Stmt implements Cloneable {
         super.flushCache();
         canCompleteNormally_computed = false;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public VarDeclStmt clone() throws CloneNotSupportedException {
         VarDeclStmt node = (VarDeclStmt)super.clone();
         node.canCompleteNormally_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public VarDeclStmt copy() {
       try {
@@ -152,11 +155,19 @@ public class VarDeclStmt extends Stmt implements Cloneable {
 
 
     public void addVariableDecl(VariableDecl node) {
-        List<VariableDecl> list = getVariableDeclList();
+        List<VariableDecl> list = (parent == null || state == null) ? getVariableDeclListNoTransform() : getVariableDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addVariableDeclNoTransform(VariableDecl node) {
+        List<VariableDecl> list = getVariableDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setVariableDecl(VariableDecl node, int i) {
@@ -164,26 +175,28 @@ public class VarDeclStmt extends Stmt implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<VariableDecl> getVariableDecls() {
         return getVariableDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<VariableDecl> getVariableDeclsNoTransform() {
         return getVariableDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<VariableDecl> getVariableDeclList() {
-        return (List<VariableDecl>)getChild(2);
+        List<VariableDecl> list = (List<VariableDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<VariableDecl> getVariableDeclListNoTransform() {
@@ -192,9 +205,11 @@ public class VarDeclStmt extends Stmt implements Cloneable {
 
     // Declared in UnreachableStatements.jrag at line 42
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed)
+        if(canCompleteNormally_computed) {
             return canCompleteNormally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -237,7 +252,7 @@ public ASTNode rewriteTo() {
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       List newList = rewriteBlock_getStmt();
-      for(int j = 1; j < newList.getNumChild(); j++)
+      for(int j = 1; j < newList.getNumChildNoTransform(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
         state().duringVariableDeclaration--;
       return newList.getChildNoTransform(0);
@@ -249,7 +264,7 @@ public ASTNode rewriteTo() {
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       List newList = rewriteForStmt_getInitStmt();
-      for(int j = 1; j < newList.getNumChild(); j++)
+      for(int j = 1; j < newList.getNumChildNoTransform(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
         state().duringVariableDeclaration--;
       return newList.getChildNoTransform(0);

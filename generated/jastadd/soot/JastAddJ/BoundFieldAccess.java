@@ -11,13 +11,16 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
         decl_computed = false;
         decl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public BoundFieldAccess clone() throws CloneNotSupportedException {
         BoundFieldAccess node = (BoundFieldAccess)super.clone();
         node.decl_computed = false;
         node.decl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public BoundFieldAccess copy() {
       try {
@@ -131,9 +134,11 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
 
     // Declared in BoundNames.jrag at line 72
  @SuppressWarnings({"unchecked", "cast"})     public Variable decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)

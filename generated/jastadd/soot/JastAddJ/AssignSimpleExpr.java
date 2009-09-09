@@ -8,11 +8,14 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignSimpleExpr clone() throws CloneNotSupportedException {
         AssignSimpleExpr node = (AssignSimpleExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AssignSimpleExpr copy() {
       try {
@@ -131,6 +134,7 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 247
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }
@@ -139,6 +143,7 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
 
     // Declared in TypeCheck.jrag at line 121
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceType() {
+        ASTNode$State state = state();
         TypeDecl sourceType_value = sourceType_compute();
         return sourceType_value;
     }

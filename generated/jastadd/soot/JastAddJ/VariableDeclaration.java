@@ -14,6 +14,9 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
         sourceVariableDecl_value = null;
         localNum_computed = false;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public VariableDeclaration clone() throws CloneNotSupportedException {
         VariableDeclaration node = (VariableDeclaration)super.clone();
         node.isDAafter_Variable_values = null;
@@ -25,7 +28,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
         node.localNum_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public VariableDeclaration copy() {
       try {
@@ -333,6 +336,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 
     // Declared in DataStructures.jrag at line 83
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
+        ASTNode$State state = state();
         int size_value = size_compute();
         return size_value;
     }
@@ -341,6 +345,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 
     // Declared in DataStructures.jrag at line 84
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEmpty() {
+        ASTNode$State state = state();
         boolean isEmpty_value = isEmpty_compute();
         return isEmpty_value;
     }
@@ -349,6 +354,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 
     // Declared in DataStructures.jrag at line 88
  @SuppressWarnings({"unchecked", "cast"})     public boolean contains(Object o) {
+        ASTNode$State state = state();
         boolean contains_Object_value = contains_compute(o);
         return contains_Object_value;
     }
@@ -357,6 +363,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 
     // Declared in DefiniteAssignment.jrag at line 91
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBlankFinal() {
+        ASTNode$State state = state();
         boolean isBlankFinal_value = isBlankFinal_compute();
         return isBlankFinal_value;
     }
@@ -365,6 +372,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 
     // Declared in DefiniteAssignment.jrag at line 92
  @SuppressWarnings({"unchecked", "cast"})     public boolean isValue() {
+        ASTNode$State state = state();
         boolean isValue_value = isValue_compute();
         return isValue_value;
     }
@@ -375,9 +383,11 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -395,9 +405,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -413,6 +425,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in LookupVariable.jrag at line 128
  @SuppressWarnings({"unchecked", "cast"})     public boolean declaresVariable(String name) {
+        ASTNode$State state = state();
         boolean declaresVariable_String_value = declaresVariable_compute(name);
         return declaresVariable_String_value;
     }
@@ -421,6 +434,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in Modifiers.jrag at line 217
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
+        ASTNode$State state = state();
         boolean isSynthetic_value = isSynthetic_compute();
         return isSynthetic_value;
     }
@@ -429,6 +443,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in PrettyPrint.jadd at line 811
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -437,6 +452,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in TypeAnalysis.jrag at line 252
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -445,6 +461,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassVariable() {
+        ASTNode$State state = state();
         boolean isClassVariable_value = isClassVariable_compute();
         return isClassVariable_value;
     }
@@ -453,6 +470,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 39
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInstanceVariable() {
+        ASTNode$State state = state();
         boolean isInstanceVariable_value = isInstanceVariable_compute();
         return isInstanceVariable_value;
     }
@@ -461,6 +479,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 40
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMethodParameter() {
+        ASTNode$State state = state();
         boolean isMethodParameter_value = isMethodParameter_compute();
         return isMethodParameter_value;
     }
@@ -469,6 +488,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 41
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstructorParameter() {
+        ASTNode$State state = state();
         boolean isConstructorParameter_value = isConstructorParameter_compute();
         return isConstructorParameter_value;
     }
@@ -477,6 +497,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 42
  @SuppressWarnings({"unchecked", "cast"})     public boolean isExceptionHandlerParameter() {
+        ASTNode$State state = state();
         boolean isExceptionHandlerParameter_value = isExceptionHandlerParameter_compute();
         return isExceptionHandlerParameter_value;
     }
@@ -485,6 +506,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 43
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLocalVariable() {
+        ASTNode$State state = state();
         boolean isLocalVariable_value = isLocalVariable_compute();
         return isLocalVariable_value;
     }
@@ -493,6 +515,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 45
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
+        ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
         return isFinal_value;
     }
@@ -501,6 +524,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 46
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBlank() {
+        ASTNode$State state = state();
         boolean isBlank_value = isBlank_compute();
         return isBlank_value;
     }
@@ -509,6 +533,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 47
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
+        ASTNode$State state = state();
         boolean isStatic_value = isStatic_compute();
         return isStatic_value;
     }
@@ -517,6 +542,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in VariableDeclaration.jrag at line 49
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -527,9 +553,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected Constant constant_value;
     // Declared in VariableDeclaration.jrag at line 51
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
-        if(constant_computed)
+        if(constant_computed) {
             return constant_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -543,9 +571,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected Variable sourceVariableDecl_value;
     // Declared in Generics.jrag at line 1274
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
-        if(sourceVariableDecl_computed)
+        if(sourceVariableDecl_computed) {
             return sourceVariableDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceVariableDecl_value = sourceVariableDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -557,18 +587,21 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in LookupVariable.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         return lookupVariable_String_value;
     }
 
     // Declared in NameCheck.jrag at line 289
  @SuppressWarnings({"unchecked", "cast"})     public VariableScope outerScope() {
+        ASTNode$State state = state();
         VariableScope outerScope_value = getParent().Define_VariableScope_outerScope(this, null);
         return outerScope_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 585
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }
@@ -577,9 +610,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected int localNum_value;
     // Declared in LocalNum.jrag at line 11
  @SuppressWarnings({"unchecked", "cast"})     public int localNum() {
-        if(localNum_computed)
+        if(localNum_computed) {
             return localNum_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         localNum_value = getParent().Define_int_localNum(this, null);
         if(isFinal && num == state().boundariesCrossed)

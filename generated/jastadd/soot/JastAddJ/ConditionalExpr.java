@@ -19,6 +19,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
         then_branch_label_computed = false;
         then_branch_label_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ConditionalExpr clone() throws CloneNotSupportedException {
         ConditionalExpr node = (ConditionalExpr)super.clone();
         node.constant_computed = false;
@@ -33,7 +36,7 @@ public class ConditionalExpr extends Expr implements Cloneable {
         node.then_branch_label_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ConditionalExpr copy() {
       try {
@@ -282,9 +285,11 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
     protected Constant constant_value;
     // Declared in ConstantExpression.jrag at line 132
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
-        if(constant_computed)
+        if(constant_computed) {
             return constant_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -298,9 +303,11 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
     protected boolean isConstant_value;
     // Declared in ConstantExpression.jrag at line 493
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
-        if(isConstant_computed)
+        if(isConstant_computed) {
             return isConstant_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isConstant_value = isConstant_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -314,9 +321,11 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
     protected boolean booleanOperator_value;
     // Declared in DefiniteAssignment.jrag at line 232
  @SuppressWarnings({"unchecked", "cast"})     public boolean booleanOperator() {
-        if(booleanOperator_computed)
+        if(booleanOperator_computed) {
             return booleanOperator_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         booleanOperator_value = booleanOperator_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -328,6 +337,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in DefiniteAssignment.jrag at line 386
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         return isDAafterTrue_Variable_value;
     }
@@ -336,6 +346,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in DefiniteAssignment.jrag at line 387
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         return isDAafterFalse_Variable_value;
     }
@@ -344,6 +355,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in DefiniteAssignment.jrag at line 391
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -352,6 +364,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in DefiniteAssignment.jrag at line 820
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
         return isDUafterTrue_Variable_value;
     }
@@ -360,6 +373,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in DefiniteAssignment.jrag at line 821
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
         return isDUafterFalse_Variable_value;
     }
@@ -368,6 +382,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in DefiniteAssignment.jrag at line 825
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -378,9 +393,11 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
     protected TypeDecl type_value;
     // Declared in Generics.jrag at line 109
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -410,6 +427,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in BooleanExpressions.jrag at line 28
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }
@@ -418,6 +436,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in BooleanExpressions.jrag at line 87
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeTrue() {
+        ASTNode$State state = state();
         boolean canBeTrue_value = canBeTrue_compute();
         return canBeTrue_value;
     }
@@ -428,6 +447,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     // Declared in BooleanExpressions.jrag at line 97
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeFalse() {
+        ASTNode$State state = state();
         boolean canBeFalse_value = canBeFalse_compute();
         return canBeFalse_value;
     }
@@ -440,9 +460,11 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
     protected soot.jimple.Stmt else_branch_label_value;
     // Declared in BooleanExpressions.jrag at line 155
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt else_branch_label() {
-        if(else_branch_label_computed)
+        if(else_branch_label_computed) {
             return else_branch_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         else_branch_label_value = else_branch_label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -456,9 +478,11 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
     protected soot.jimple.Stmt then_branch_label_value;
     // Declared in BooleanExpressions.jrag at line 156
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt then_branch_label() {
-        if(then_branch_label_computed)
+        if(then_branch_label_computed) {
             return then_branch_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         then_branch_label_value = then_branch_label_compute();
         if(isFinal && num == state().boundariesCrossed)

@@ -12,6 +12,9 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
         true_label_computed = false;
         true_label_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Expr clone() throws CloneNotSupportedException {
         Expr node = (Expr)super.clone();
         node.false_label_computed = false;
@@ -20,7 +23,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
         node.true_label_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in LookupType.jrag at line 373
 
@@ -275,6 +278,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public abstract TypeDecl type();
     // Declared in ConstantExpression.jrag at line 98
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -286,6 +290,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 241
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPositive() {
+        ASTNode$State state = state();
         boolean isPositive_value = isPositive_compute();
         return isPositive_value;
     }
@@ -294,6 +299,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 454
  @SuppressWarnings({"unchecked", "cast"})     public boolean representableIn(TypeDecl t) {
+        ASTNode$State state = state();
         boolean representableIn_TypeDecl_value = representableIn_compute(t);
         return representableIn_TypeDecl_value;
     }
@@ -315,6 +321,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 482
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -323,6 +330,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 511
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTrue() {
+        ASTNode$State state = state();
         boolean isTrue_value = isTrue_compute();
         return isTrue_value;
     }
@@ -331,6 +339,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 512
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFalse() {
+        ASTNode$State state = state();
         boolean isFalse_value = isFalse_compute();
         return isFalse_value;
     }
@@ -339,6 +348,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 58
  @SuppressWarnings({"unchecked", "cast"})     public Variable varDecl() {
+        ASTNode$State state = state();
         Variable varDecl_value = varDecl_compute();
         return varDecl_value;
     }
@@ -347,6 +357,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 340
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         return isDAafterFalse_Variable_value;
     }
@@ -355,6 +366,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 342
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         return isDAafterTrue_Variable_value;
     }
@@ -363,6 +375,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 345
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -371,6 +384,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 782
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
         return isDUafterFalse_Variable_value;
     }
@@ -383,6 +397,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 788
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
         return isDUafterTrue_Variable_value;
     }
@@ -395,6 +410,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 798
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -403,6 +419,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in LookupConstructor.jrag at line 32
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet mostSpecificConstructor(Collection constructors) {
+        ASTNode$State state = state();
         SimpleSet mostSpecificConstructor_Collection_value = mostSpecificConstructor_compute(constructors);
         return mostSpecificConstructor_Collection_value;
     }
@@ -427,6 +444,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in LookupConstructor.jrag at line 50
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableAndAccessible(ConstructorDecl decl) {
+        ASTNode$State state = state();
         boolean applicableAndAccessible_ConstructorDecl_value = applicableAndAccessible_compute(decl);
         return applicableAndAccessible_ConstructorDecl_value;
     }
@@ -435,6 +453,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in LookupType.jrag at line 83
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasQualifiedPackage(String packageName) {
+        ASTNode$State state = state();
         boolean hasQualifiedPackage_String_value = hasQualifiedPackage_compute(packageName);
         return hasQualifiedPackage_String_value;
     }
@@ -443,6 +462,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in LookupType.jrag at line 342
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupType_String_value = qualifiedLookupType_compute(name);
         return qualifiedLookupType_String_value;
     }
@@ -451,6 +471,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in LookupVariable.jrag at line 146
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupVariable_String_value = qualifiedLookupVariable_compute(name);
         return qualifiedLookupVariable_String_value;
     }
@@ -463,6 +484,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in QualifiedNames.jrag at line 25
  @SuppressWarnings({"unchecked", "cast"})     public String packageName() {
+        ASTNode$State state = state();
         String packageName_value = packageName_compute();
         return packageName_value;
     }
@@ -471,6 +493,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in QualifiedNames.jrag at line 62
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
+        ASTNode$State state = state();
         String typeName_value = typeName_compute();
         return typeName_value;
     }
@@ -479,6 +502,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 13
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTypeAccess() {
+        ASTNode$State state = state();
         boolean isTypeAccess_value = isTypeAccess_compute();
         return isTypeAccess_value;
     }
@@ -487,6 +511,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMethodAccess() {
+        ASTNode$State state = state();
         boolean isMethodAccess_value = isMethodAccess_compute();
         return isMethodAccess_value;
     }
@@ -495,6 +520,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFieldAccess() {
+        ASTNode$State state = state();
         boolean isFieldAccess_value = isFieldAccess_compute();
         return isFieldAccess_value;
     }
@@ -503,6 +529,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 25
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSuperAccess() {
+        ASTNode$State state = state();
         boolean isSuperAccess_value = isSuperAccess_compute();
         return isSuperAccess_value;
     }
@@ -511,6 +538,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 31
  @SuppressWarnings({"unchecked", "cast"})     public boolean isThisAccess() {
+        ASTNode$State state = state();
         boolean isThisAccess_value = isThisAccess_compute();
         return isThisAccess_value;
     }
@@ -519,6 +547,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 37
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPackageAccess() {
+        ASTNode$State state = state();
         boolean isPackageAccess_value = isPackageAccess_compute();
         return isPackageAccess_value;
     }
@@ -527,6 +556,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 41
  @SuppressWarnings({"unchecked", "cast"})     public boolean isArrayAccess() {
+        ASTNode$State state = state();
         boolean isArrayAccess_value = isArrayAccess_compute();
         return isArrayAccess_value;
     }
@@ -535,6 +565,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 45
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassAccess() {
+        ASTNode$State state = state();
         boolean isClassAccess_value = isClassAccess_compute();
         return isClassAccess_value;
     }
@@ -543,6 +574,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 49
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSuperConstructorAccess() {
+        ASTNode$State state = state();
         boolean isSuperConstructorAccess_value = isSuperConstructorAccess_compute();
         return isSuperConstructorAccess_value;
     }
@@ -551,6 +583,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLeftChildOfDot() {
+        ASTNode$State state = state();
         boolean isLeftChildOfDot_value = isLeftChildOfDot_compute();
         return isLeftChildOfDot_value;
     }
@@ -559,6 +592,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 56
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRightChildOfDot() {
+        ASTNode$State state = state();
         boolean isRightChildOfDot_value = isRightChildOfDot_compute();
         return isRightChildOfDot_value;
     }
@@ -567,6 +601,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 69
  @SuppressWarnings({"unchecked", "cast"})     public AbstractDot parentDot() {
+        ASTNode$State state = state();
         AbstractDot parentDot_value = parentDot_compute();
         return parentDot_value;
     }
@@ -575,6 +610,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 70
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasParentDot() {
+        ASTNode$State state = state();
         boolean hasParentDot_value = hasParentDot_compute();
         return hasParentDot_value;
     }
@@ -583,6 +619,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 72
  @SuppressWarnings({"unchecked", "cast"})     public Access nextAccess() {
+        ASTNode$State state = state();
         Access nextAccess_value = nextAccess_compute();
         return nextAccess_value;
     }
@@ -591,6 +628,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in ResolveAmbiguousNames.jrag at line 73
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasNextAccess() {
+        ASTNode$State state = state();
         boolean hasNextAccess_value = hasNextAccess_compute();
         return hasNextAccess_value;
     }
@@ -599,6 +637,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 504
  @SuppressWarnings({"unchecked", "cast"})     public Stmt enclosingStmt() {
+        ASTNode$State state = state();
         Stmt enclosingStmt_value = enclosingStmt_compute();
         return enclosingStmt_value;
     }
@@ -612,6 +651,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in TypeCheck.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVariable() {
+        ASTNode$State state = state();
         boolean isVariable_value = isVariable_compute();
         return isVariable_value;
     }
@@ -620,6 +660,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in TypeHierarchyCheck.jrag at line 20
  @SuppressWarnings({"unchecked", "cast"})     public boolean isUnknown() {
+        ASTNode$State state = state();
         boolean isUnknown_value = isUnknown_compute();
         return isUnknown_value;
     }
@@ -628,6 +669,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in TypeHierarchyCheck.jrag at line 150
  @SuppressWarnings({"unchecked", "cast"})     public boolean staticContextQualifier() {
+        ASTNode$State state = state();
         boolean staticContextQualifier_value = staticContextQualifier_compute();
         return staticContextQualifier_value;
     }
@@ -638,9 +680,11 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     protected soot.jimple.Stmt false_label_value;
     // Declared in BooleanExpressions.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt false_label() {
-        if(false_label_computed)
+        if(false_label_computed) {
             return false_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         false_label_value = false_label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -654,9 +698,11 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     protected soot.jimple.Stmt true_label_value;
     // Declared in BooleanExpressions.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt true_label() {
-        if(true_label_computed)
+        if(true_label_computed) {
             return true_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         true_label_value = true_label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -668,6 +714,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 82
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeTrue() {
+        ASTNode$State state = state();
         boolean canBeTrue_value = canBeTrue_compute();
         return canBeTrue_value;
     }
@@ -676,6 +723,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 92
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeFalse() {
+        ASTNode$State state = state();
         boolean canBeFalse_value = canBeFalse_compute();
         return canBeFalse_value;
     }
@@ -684,186 +732,217 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDest() {
+        ASTNode$State state = state();
         boolean isDest_value = getParent().Define_boolean_isDest(this, null);
         return isDest_value;
     }
 
     // Declared in DefiniteAssignment.jrag at line 25
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSource() {
+        ASTNode$State state = state();
         boolean isSource_value = getParent().Define_boolean_isSource(this, null);
         return isSource_value;
     }
 
     // Declared in DefiniteAssignment.jrag at line 49
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIncOrDec() {
+        ASTNode$State state = state();
         boolean isIncOrDec_value = getParent().Define_boolean_isIncOrDec(this, null);
         return isIncOrDec_value;
     }
 
     // Declared in DefiniteAssignment.jrag at line 236
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAbefore(Variable v) {
+        ASTNode$State state = state();
         boolean isDAbefore_Variable_value = getParent().Define_boolean_isDAbefore(this, null, v);
         return isDAbefore_Variable_value;
     }
 
     // Declared in DefiniteAssignment.jrag at line 694
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
+        ASTNode$State state = state();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
         return isDUbefore_Variable_value;
     }
 
     // Declared in LookupMethod.jrag at line 23
  @SuppressWarnings({"unchecked", "cast"})     public Collection lookupMethod(String name) {
+        ASTNode$State state = state();
         Collection lookupMethod_String_value = getParent().Define_Collection_lookupMethod(this, null, name);
         return lookupMethod_String_value;
     }
 
     // Declared in LookupType.jrag at line 49
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeBoolean() {
+        ASTNode$State state = state();
         TypeDecl typeBoolean_value = getParent().Define_TypeDecl_typeBoolean(this, null);
         return typeBoolean_value;
     }
 
     // Declared in LookupType.jrag at line 50
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeByte() {
+        ASTNode$State state = state();
         TypeDecl typeByte_value = getParent().Define_TypeDecl_typeByte(this, null);
         return typeByte_value;
     }
 
     // Declared in LookupType.jrag at line 51
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeShort() {
+        ASTNode$State state = state();
         TypeDecl typeShort_value = getParent().Define_TypeDecl_typeShort(this, null);
         return typeShort_value;
     }
 
     // Declared in LookupType.jrag at line 52
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeChar() {
+        ASTNode$State state = state();
         TypeDecl typeChar_value = getParent().Define_TypeDecl_typeChar(this, null);
         return typeChar_value;
     }
 
     // Declared in LookupType.jrag at line 53
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeInt() {
+        ASTNode$State state = state();
         TypeDecl typeInt_value = getParent().Define_TypeDecl_typeInt(this, null);
         return typeInt_value;
     }
 
     // Declared in LookupType.jrag at line 54
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeLong() {
+        ASTNode$State state = state();
         TypeDecl typeLong_value = getParent().Define_TypeDecl_typeLong(this, null);
         return typeLong_value;
     }
 
     // Declared in LookupType.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeFloat() {
+        ASTNode$State state = state();
         TypeDecl typeFloat_value = getParent().Define_TypeDecl_typeFloat(this, null);
         return typeFloat_value;
     }
 
     // Declared in LookupType.jrag at line 56
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeDouble() {
+        ASTNode$State state = state();
         TypeDecl typeDouble_value = getParent().Define_TypeDecl_typeDouble(this, null);
         return typeDouble_value;
     }
 
     // Declared in LookupType.jrag at line 57
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeString() {
+        ASTNode$State state = state();
         TypeDecl typeString_value = getParent().Define_TypeDecl_typeString(this, null);
         return typeString_value;
     }
 
     // Declared in LookupType.jrag at line 58
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeVoid() {
+        ASTNode$State state = state();
         TypeDecl typeVoid_value = getParent().Define_TypeDecl_typeVoid(this, null);
         return typeVoid_value;
     }
 
     // Declared in LookupType.jrag at line 59
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNull() {
+        ASTNode$State state = state();
         TypeDecl typeNull_value = getParent().Define_TypeDecl_typeNull(this, null);
         return typeNull_value;
     }
 
     // Declared in LookupType.jrag at line 72
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
+        ASTNode$State state = state();
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;
     }
 
     // Declared in LookupType.jrag at line 86
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasPackage(String packageName) {
+        ASTNode$State state = state();
         boolean hasPackage_String_value = getParent().Define_boolean_hasPackage(this, null, packageName);
         return hasPackage_String_value;
     }
 
     // Declared in LookupType.jrag at line 95
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupType(String packageName, String typeName) {
+        ASTNode$State state = state();
         TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
         return lookupType_String_String_value;
     }
 
     // Declared in LookupType.jrag at line 176
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
         return lookupType_String_value;
     }
 
     // Declared in LookupVariable.jrag at line 19
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         return lookupVariable_String_value;
     }
 
     // Declared in SyntacticClassification.jrag at line 20
  @SuppressWarnings({"unchecked", "cast"})     public NameType nameType() {
+        ASTNode$State state = state();
         NameType nameType_value = getParent().Define_NameType_nameType(this, null);
         return nameType_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 511
  @SuppressWarnings({"unchecked", "cast"})     public BodyDecl enclosingBodyDecl() {
+        ASTNode$State state = state();
         BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
         return enclosingBodyDecl_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 568
  @SuppressWarnings({"unchecked", "cast"})     public String hostPackage() {
+        ASTNode$State state = state();
         String hostPackage_value = getParent().Define_String_hostPackage(this, null);
         return hostPackage_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 583
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }
 
     // Declared in TypeHierarchyCheck.jrag at line 11
  @SuppressWarnings({"unchecked", "cast"})     public String methodHost() {
+        ASTNode$State state = state();
         String methodHost_value = getParent().Define_String_methodHost(this, null);
         return methodHost_value;
     }
 
     // Declared in TypeHierarchyCheck.jrag at line 134
  @SuppressWarnings({"unchecked", "cast"})     public boolean inStaticContext() {
+        ASTNode$State state = state();
         boolean inStaticContext_value = getParent().Define_boolean_inStaticContext(this, null);
         return inStaticContext_value;
     }
 
     // Declared in GenericMethodsInference.jrag at line 33
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl assignConvertedType() {
+        ASTNode$State state = state();
         TypeDecl assignConvertedType_value = getParent().Define_TypeDecl_assignConvertedType(this, null);
         return assignConvertedType_value;
     }
 
     // Declared in BooleanExpressions.jrag at line 48
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt condition_false_label() {
+        ASTNode$State state = state();
         soot.jimple.Stmt condition_false_label_value = getParent().Define_soot_jimple_Stmt_condition_false_label(this, null);
         return condition_false_label_value;
     }
 
     // Declared in BooleanExpressions.jrag at line 52
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt condition_true_label() {
+        ASTNode$State state = state();
         soot.jimple.Stmt condition_true_label_value = getParent().Define_soot_jimple_Stmt_condition_true_label(this, null);
         return condition_true_label_value;
     }

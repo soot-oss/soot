@@ -2,16 +2,18 @@
 package soot.JastAddJ;
 import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
 
-// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20081122
+// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20090610
 
 public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Cloneable, Iterable<T> {
     public void flushCache() {
+    }
+    public void flushCollectionCache() {
     }
      @SuppressWarnings({"unchecked", "cast"})  public ASTNode<T> clone() throws CloneNotSupportedException {
         ASTNode node = (ASTNode)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ASTNode<T> copy() {
       try {
@@ -628,7 +630,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 12
 
-   private static ASTNode$State state = new ASTNode$State();
+   protected static ASTNode$State state = new ASTNode$State();
 
     // Declared in ASTNode.ast at line 13
 
@@ -727,35 +729,27 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ASTNode.ast at line 69
 
-  protected ASTNode parent;
-
-    // Declared in ASTNode.ast at line 70
-
-  protected ASTNode[] children;
-
-    // Declared in ASTNode.ast at line 71
-
   protected int numChildren;
 
-    // Declared in ASTNode.ast at line 72
+    // Declared in ASTNode.ast at line 70
 
   protected int numChildren() {
     return numChildren;
   }
 
-    // Declared in ASTNode.ast at line 75
+    // Declared in ASTNode.ast at line 73
 
   public int getNumChild() {
     return numChildren();
   }
 
-    // Declared in ASTNode.ast at line 78
+    // Declared in ASTNode.ast at line 76
 
   public final int getNumChildNoTransform() {
     return numChildren();
   }
 
-    // Declared in ASTNode.ast at line 81
+    // Declared in ASTNode.ast at line 79
 
   public void setChild(T node, int i) {
     if(children == null) {
@@ -770,7 +764,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(node != null) { node.setParent(this); node.childIndex = i; }
   }
 
-    // Declared in ASTNode.ast at line 93
+    // Declared in ASTNode.ast at line 91
 
   public void insertChild(T node, int i) {
     if(children == null) {
@@ -788,11 +782,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(node != null) { node.setParent(this); node.childIndex = i; }
   }
 
-    // Declared in ASTNode.ast at line 108
+    // Declared in ASTNode.ast at line 106
 
   public void removeChild(int i) {
     if(children != null) {
-      ASTNode child = children[i];
+      ASTNode child = (ASTNode)children[i];
       if(child != null) {
         child.setParent(null);
         child.childIndex = -1;
@@ -802,20 +796,28 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
   }
 
-    // Declared in ASTNode.ast at line 119
+    // Declared in ASTNode.ast at line 117
 
   public ASTNode getParent() {
-    if(parent != null && parent.is$Final() != is$Final()) {
+    if(parent != null && ((ASTNode)parent).is$Final() != is$Final()) {
       state().boundariesCrossed++;
     }
-    return parent;
+    return (ASTNode)parent;
   }
 
-    // Declared in ASTNode.ast at line 125
+    // Declared in ASTNode.ast at line 123
 
   public void setParent(ASTNode node) {
     parent = node;
   }
+
+    // Declared in ASTNode.ast at line 126
+
+  protected ASTNode parent;
+
+    // Declared in ASTNode.ast at line 127
+
+  protected ASTNode[] children;
 
     // Declared in ASTNode.ast at line 129
 
@@ -988,6 +990,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in DefiniteAssignment.jrag at line 1200
  @SuppressWarnings({"unchecked", "cast"})     public boolean unassignedEverywhere(Variable v, TryStmt stmt) {
+        ASTNode$State state = state();
         boolean unassignedEverywhere_Variable_TryStmt_value = unassignedEverywhere_compute(v, stmt);
         return unassignedEverywhere_Variable_TryStmt_value;
     }
@@ -1002,6 +1005,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in ErrorCheck.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public int lineNumber() {
+        ASTNode$State state = state();
         int lineNumber_value = lineNumber_compute();
         return lineNumber_value;
     }
@@ -1016,6 +1020,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in PrettyPrint.jadd at line 743
  @SuppressWarnings({"unchecked", "cast"})     public String indent() {
+        ASTNode$State state = state();
         String indent_value = indent_compute();
         return indent_value;
     }
@@ -1027,6 +1032,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in PrettyPrint.jadd at line 748
  @SuppressWarnings({"unchecked", "cast"})     public String extractIndent() {
+        ASTNode$State state = state();
         String extractIndent_value = extractIndent_compute();
         return extractIndent_value;
     }
@@ -1042,6 +1048,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in PrettyPrint.jadd at line 757
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        ASTNode$State state = state();
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
     }
@@ -1050,6 +1057,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in PrettyPrint.jadd at line 799
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -1058,6 +1066,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in Generics.jrag at line 897
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
+        ASTNode$State state = state();
         boolean usesTypeVariable_value = usesTypeVariable_compute();
         return usesTypeVariable_value;
     }
@@ -1071,6 +1080,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in InnerClasses.jrag at line 85
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStringAdd() {
+        ASTNode$State state = state();
         boolean isStringAdd_value = isStringAdd_compute();
         return isStringAdd_value;
     }
@@ -1079,6 +1089,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     // Declared in BooleanExpressions.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }

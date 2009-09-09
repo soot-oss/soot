@@ -10,13 +10,16 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
         constant_computed = false;
         constant_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Literal clone() throws CloneNotSupportedException {
         Literal node = (Literal)super.clone();
         node.constant_computed = false;
         node.constant_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in ConstantExpression.jrag at line 160
 
@@ -216,9 +219,11 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
     protected Constant constant_value;
     // Declared in ConstantExpression.jrag at line 103
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
-        if(constant_computed)
+        if(constant_computed) {
             return constant_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constant_value = constant_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -233,6 +238,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 483
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -241,6 +247,7 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 815
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }

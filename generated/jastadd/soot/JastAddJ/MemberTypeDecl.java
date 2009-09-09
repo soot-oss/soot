@@ -9,11 +9,14 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public MemberTypeDecl clone() throws CloneNotSupportedException {
         MemberTypeDecl node = (MemberTypeDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in java.ast at line 3
     // Declared in java.ast line 91
@@ -41,6 +44,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public abstract TypeDecl typeDecl();
     // Declared in LookupType.jrag at line 392
  @SuppressWarnings({"unchecked", "cast"})     public boolean declaresType(String name) {
+        ASTNode$State state = state();
         boolean declaresType_String_value = declaresType_compute(name);
         return declaresType_String_value;
     }
@@ -49,6 +53,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     // Declared in LookupType.jrag at line 394
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type(String name) {
+        ASTNode$State state = state();
         TypeDecl type_String_value = type_compute(name);
         return type_String_value;
     }
@@ -57,6 +62,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     // Declared in Modifiers.jrag at line 246
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
+        ASTNode$State state = state();
         boolean isStatic_value = isStatic_compute();
         return isStatic_value;
     }
@@ -65,6 +71,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 760
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        ASTNode$State state = state();
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
     }
@@ -73,6 +80,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     // Declared in Annotations.jrag at line 284
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAnnotationSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
         return hasAnnotationSuppressWarnings_String_value;
     }
@@ -81,6 +89,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     // Declared in Annotations.jrag at line 322
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDeprecated() {
+        ASTNode$State state = state();
         boolean isDeprecated_value = isDeprecated_compute();
         return isDeprecated_value;
     }
@@ -89,6 +98,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
 
     // Declared in GenericsParTypeDecl.jrag at line 68
  @SuppressWarnings({"unchecked", "cast"})     public boolean visibleTypeParameters() {
+        ASTNode$State state = state();
         boolean visibleTypeParameters_value = visibleTypeParameters_compute();
         return visibleTypeParameters_value;
     }

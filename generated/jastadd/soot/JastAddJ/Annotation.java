@@ -11,13 +11,16 @@ public class Annotation extends Modifier implements Cloneable {
         decl_computed = false;
         decl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Annotation clone() throws CloneNotSupportedException {
         Annotation node = (Annotation)super.clone();
         node.decl_computed = false;
         node.decl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Annotation copy() {
       try {
@@ -272,11 +275,19 @@ public class Annotation extends Modifier implements Cloneable {
 
 
     public void addElementValuePair(ElementValuePair node) {
-        List<ElementValuePair> list = getElementValuePairList();
+        List<ElementValuePair> list = (parent == null || state == null) ? getElementValuePairListNoTransform() : getElementValuePairList();
         list.addChild(node);
     }
 
     // Declared in Annotations.ast at line 19
+
+
+    public void addElementValuePairNoTransform(ElementValuePair node) {
+        List<ElementValuePair> list = getElementValuePairListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Annotations.ast at line 24
 
 
     public void setElementValuePair(ElementValuePair node, int i) {
@@ -284,26 +295,28 @@ public class Annotation extends Modifier implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Annotations.ast at line 23
+    // Declared in Annotations.ast at line 28
 
     public List<ElementValuePair> getElementValuePairs() {
         return getElementValuePairList();
     }
 
-    // Declared in Annotations.ast at line 26
+    // Declared in Annotations.ast at line 31
 
     public List<ElementValuePair> getElementValuePairsNoTransform() {
         return getElementValuePairListNoTransform();
     }
 
-    // Declared in Annotations.ast at line 30
+    // Declared in Annotations.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValuePair> getElementValuePairList() {
-        return (List<ElementValuePair>)getChild(1);
+        List<ElementValuePair> list = (List<ElementValuePair>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Annotations.ast at line 34
+    // Declared in Annotations.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ElementValuePair> getElementValuePairListNoTransform() {
@@ -314,9 +327,11 @@ public class Annotation extends Modifier implements Cloneable {
     protected TypeDecl decl_value;
     // Declared in Annotations.jrag at line 420
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -328,6 +343,7 @@ public class Annotation extends Modifier implements Cloneable {
 
     // Declared in Annotations.jrag at line 432
  @SuppressWarnings({"unchecked", "cast"})     public ElementValue elementValueFor(String name) {
+        ASTNode$State state = state();
         ElementValue elementValueFor_String_value = elementValueFor_compute(name);
         return elementValueFor_String_value;
     }
@@ -343,6 +359,7 @@ public class Annotation extends Modifier implements Cloneable {
 
     // Declared in Annotations.jrag at line 510
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -351,6 +368,7 @@ public class Annotation extends Modifier implements Cloneable {
 
     // Declared in Annotations.jrag at line 539
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMetaAnnotation() {
+        ASTNode$State state = state();
         boolean isMetaAnnotation_value = isMetaAnnotation_compute();
         return isMetaAnnotation_value;
     }
@@ -359,6 +377,7 @@ public class Annotation extends Modifier implements Cloneable {
 
     // Declared in AnnotationsCodegen.jrag at line 144
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeVisible() {
+        ASTNode$State state = state();
         boolean isRuntimeVisible_value = isRuntimeVisible_compute();
         return isRuntimeVisible_value;
     }
@@ -373,6 +392,7 @@ public class Annotation extends Modifier implements Cloneable {
 
     // Declared in AnnotationsCodegen.jrag at line 154
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeInvisible() {
+        ASTNode$State state = state();
         boolean isRuntimeInvisible_value = isRuntimeInvisible_compute();
         return isRuntimeInvisible_value;
     }
@@ -387,30 +407,35 @@ public class Annotation extends Modifier implements Cloneable {
 
     // Declared in Annotations.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupType(String packageName, String typeName) {
+        ASTNode$State state = state();
         TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
         return lookupType_String_String_value;
     }
 
     // Declared in Annotations.jrag at line 69
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayUseAnnotationTarget(String name) {
+        ASTNode$State state = state();
         boolean mayUseAnnotationTarget_String_value = getParent().Define_boolean_mayUseAnnotationTarget(this, null, name);
         return mayUseAnnotationTarget_String_value;
     }
 
     // Declared in Annotations.jrag at line 258
  @SuppressWarnings({"unchecked", "cast"})     public BodyDecl enclosingBodyDecl() {
+        ASTNode$State state = state();
         BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
         return enclosingBodyDecl_value;
     }
 
     // Declared in Annotations.jrag at line 422
  @SuppressWarnings({"unchecked", "cast"})     public Annotation lookupAnnotation(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         Annotation lookupAnnotation_TypeDecl_value = getParent().Define_Annotation_lookupAnnotation(this, null, typeDecl);
         return lookupAnnotation_TypeDecl_value;
     }
 
     // Declared in Annotations.jrag at line 540
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }

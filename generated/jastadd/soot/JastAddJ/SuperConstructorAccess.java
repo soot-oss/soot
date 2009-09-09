@@ -9,13 +9,16 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
         decls_computed = false;
         decls_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public SuperConstructorAccess clone() throws CloneNotSupportedException {
         SuperConstructorAccess node = (SuperConstructorAccess)super.clone();
         node.decls_computed = false;
         node.decls_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public SuperConstructorAccess copy() {
       try {
@@ -171,11 +174,19 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
 
     public void addArg(Expr node) {
-        List<Expr> list = getArgList();
+        List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addArgNoTransform(Expr node) {
+        List<Expr> list = getArgListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setArg(Expr node, int i) {
@@ -183,26 +194,28 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
-        return (List<Expr>)getChild(0);
+        List<Expr> list = (List<Expr>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -259,6 +272,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in DefiniteAssignment.jrag at line 299
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -267,6 +281,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in DefiniteAssignment.jrag at line 755
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -275,9 +290,11 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in MethodSignature.jrag at line 62
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed)
+        if(decls_computed) {
             return decls_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -293,6 +310,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in QualifiedNames.jrag at line 20
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -301,6 +319,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in ResolveAmbiguousNames.jrag at line 51
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSuperConstructorAccess() {
+        ASTNode$State state = state();
         boolean isSuperConstructorAccess_value = isSuperConstructorAccess_compute();
         return isSuperConstructorAccess_value;
     }
@@ -309,6 +328,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in SyntacticClassification.jrag at line 96
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -317,12 +337,14 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     // Declared in LookupConstructor.jrag at line 19
  @SuppressWarnings({"unchecked", "cast"})     public Collection lookupSuperConstructor() {
+        ASTNode$State state = state();
         Collection lookupSuperConstructor_value = getParent().Define_Collection_lookupSuperConstructor(this, null);
         return lookupSuperConstructor_value;
     }
 
     // Declared in TypeCheck.jrag at line 503
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosingInstance() {
+        ASTNode$State state = state();
         TypeDecl enclosingInstance_value = getParent().Define_TypeDecl_enclosingInstance(this, null);
         return enclosingInstance_value;
     }

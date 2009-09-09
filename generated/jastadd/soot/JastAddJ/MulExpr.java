@@ -7,11 +7,14 @@ public class MulExpr extends MultiplicativeExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public MulExpr clone() throws CloneNotSupportedException {
         MulExpr node = (MulExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public MulExpr copy() {
       try {
@@ -109,6 +112,7 @@ public class MulExpr extends MultiplicativeExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 117
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -117,6 +121,7 @@ public class MulExpr extends MultiplicativeExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 400
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

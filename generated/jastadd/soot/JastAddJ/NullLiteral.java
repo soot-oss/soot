@@ -9,13 +9,16 @@ public class NullLiteral extends Literal implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public NullLiteral clone() throws CloneNotSupportedException {
         NullLiteral node = (NullLiteral)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public NullLiteral copy() {
       try {
@@ -104,6 +107,7 @@ public class NullLiteral extends Literal implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 484
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -114,9 +118,11 @@ public class NullLiteral extends Literal implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 307
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

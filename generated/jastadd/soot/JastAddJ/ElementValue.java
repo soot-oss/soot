@@ -8,11 +8,14 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ElementValue clone() throws CloneNotSupportedException {
         ElementValue node = (ElementValue)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in AnnotationsCodegen.jrag at line 318
 
@@ -46,6 +49,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.jrag at line 57
  @SuppressWarnings({"unchecked", "cast"})     public boolean validTarget(Annotation a) {
+        ASTNode$State state = state();
         boolean validTarget_Annotation_value = validTarget_compute(a);
         return validTarget_Annotation_value;
     }
@@ -54,6 +58,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.jrag at line 181
  @SuppressWarnings({"unchecked", "cast"})     public ElementValue definesElementTypeValue(String name) {
+        ASTNode$State state = state();
         ElementValue definesElementTypeValue_String_value = definesElementTypeValue_compute(name);
         return definesElementTypeValue_String_value;
     }
@@ -62,6 +67,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.jrag at line 295
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasValue(String s) {
+        ASTNode$State state = state();
         boolean hasValue_String_value = hasValue_compute(s);
         return hasValue_String_value;
     }
@@ -70,6 +76,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.jrag at line 473
  @SuppressWarnings({"unchecked", "cast"})     public boolean commensurateWithTypeDecl(TypeDecl type) {
+        ASTNode$State state = state();
         boolean commensurateWithTypeDecl_TypeDecl_value = commensurateWithTypeDecl_compute(type);
         return commensurateWithTypeDecl_TypeDecl_value;
     }
@@ -78,6 +85,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.jrag at line 493
  @SuppressWarnings({"unchecked", "cast"})     public boolean commensurateWithArrayDecl(ArrayDecl type) {
+        ASTNode$State state = state();
         boolean commensurateWithArrayDecl_ArrayDecl_value = commensurateWithArrayDecl_compute(type);
         return commensurateWithArrayDecl_ArrayDecl_value;
     }
@@ -86,6 +94,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.jrag at line 506
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -94,18 +103,21 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
     // Declared in Annotations.jrag at line 459
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosingAnnotationDecl() {
+        ASTNode$State state = state();
         TypeDecl enclosingAnnotationDecl_value = getParent().Define_TypeDecl_enclosingAnnotationDecl(this, null);
         return enclosingAnnotationDecl_value;
     }
 
     // Declared in Annotations.jrag at line 511
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
+        ASTNode$State state = state();
         TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         return unknownType_value;
     }
 
     // Declared in AnnotationsCodegen.jrag at line 364
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }

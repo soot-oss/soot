@@ -9,13 +9,16 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
         sourceVariableDecl_computed = false;
         sourceVariableDecl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public FieldDeclarationSubstituted clone() throws CloneNotSupportedException {
         FieldDeclarationSubstituted node = (FieldDeclarationSubstituted)super.clone();
         node.sourceVariableDecl_computed = false;
         node.sourceVariableDecl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public FieldDeclarationSubstituted copy() {
       try {
@@ -201,9 +204,11 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
 
     // Declared in Generics.jrag at line 1276
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
-        if(sourceVariableDecl_computed)
+        if(sourceVariableDecl_computed) {
             return sourceVariableDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceVariableDecl_value = sourceVariableDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -215,6 +220,7 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
 
     // Declared in GenericsCodegen.jrag at line 32
  @SuppressWarnings({"unchecked", "cast"})     public FieldDeclaration erasedField() {
+        ASTNode$State state = state();
         FieldDeclaration erasedField_value = erasedField_compute();
         return erasedField_value;
     }

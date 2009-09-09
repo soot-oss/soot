@@ -13,6 +13,9 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         genericMethodDecl_computed = false;
         genericMethodDecl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ParMethodDecl clone() throws CloneNotSupportedException {
         ParMethodDecl node = (ParMethodDecl)super.clone();
         node.sourceMethodDecl_computed = false;
@@ -22,7 +25,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         node.genericMethodDecl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ParMethodDecl copy() {
       try {
@@ -218,11 +221,19 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
 
 
     public void addParameter(ParameterDeclaration node) {
-        List<ParameterDeclaration> list = getParameterList();
+        List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addParameterNoTransform(ParameterDeclaration node) {
+        List<ParameterDeclaration> list = getParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -230,26 +241,28 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
-        return (List<ParameterDeclaration>)getChild(2);
+        List<ParameterDeclaration> list = (List<ParameterDeclaration>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -280,11 +293,19 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
 
 
     public void addException(Access node) {
-        List<Access> list = getExceptionList();
+        List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addExceptionNoTransform(Access node) {
+        List<Access> list = getExceptionListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setException(Access node, int i) {
@@ -292,26 +313,28 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
-        return (List<Access>)getChild(3);
+        List<Access> list = (List<Access>)getChild(3);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -382,11 +405,19 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
 
 
     public void addTypeArgument(Access node) {
-        List<Access> list = getTypeArgumentList();
+        List<Access> list = (parent == null || state == null) ? getTypeArgumentListNoTransform() : getTypeArgumentList();
         list.addChild(node);
     }
 
     // Declared in GenericMethods.ast at line 19
+
+
+    public void addTypeArgumentNoTransform(Access node) {
+        List<Access> list = getTypeArgumentListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in GenericMethods.ast at line 24
 
 
     public void setTypeArgument(Access node, int i) {
@@ -394,26 +425,28 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         list.setChild(node, i);
     }
 
-    // Declared in GenericMethods.ast at line 23
+    // Declared in GenericMethods.ast at line 28
 
     public List<Access> getTypeArguments() {
         return getTypeArgumentList();
     }
 
-    // Declared in GenericMethods.ast at line 26
+    // Declared in GenericMethods.ast at line 31
 
     public List<Access> getTypeArgumentsNoTransform() {
         return getTypeArgumentListNoTransform();
     }
 
-    // Declared in GenericMethods.ast at line 30
+    // Declared in GenericMethods.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentList() {
-        return (List<Access>)getChild(5);
+        List<Access> list = (List<Access>)getChild(5);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in GenericMethods.ast at line 34
+    // Declared in GenericMethods.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentListNoTransform() {
@@ -422,9 +455,11 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
 
     // Declared in Generics.jrag at line 1266
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
-        if(sourceMethodDecl_computed)
+        if(sourceMethodDecl_computed) {
             return sourceMethodDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceMethodDecl_value = sourceMethodDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -438,9 +473,11 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
  @SuppressWarnings({"unchecked", "cast"})     public boolean moreSpecificThan(MethodDecl m) {
         Object _parameters = m;
 if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_values = new java.util.HashMap(4);
-        if(moreSpecificThan_MethodDecl_values.containsKey(_parameters))
+        if(moreSpecificThan_MethodDecl_values.containsKey(_parameters)) {
             return ((Boolean)moreSpecificThan_MethodDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean moreSpecificThan_MethodDecl_value = moreSpecificThan_compute(m);
         if(isFinal && num == state().boundariesCrossed)
@@ -452,6 +489,7 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
 
     // Declared in GenericsCodegen.jrag at line 36
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl erasedMethod() {
+        ASTNode$State state = state();
         MethodDecl erasedMethod_value = erasedMethod_compute();
         return erasedMethod_value;
     }
@@ -462,9 +500,11 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
     protected GenericMethodDecl genericMethodDecl_value;
     // Declared in GenericMethods.jrag at line 31
  @SuppressWarnings({"unchecked", "cast"})     public GenericMethodDecl genericMethodDecl() {
-        if(genericMethodDecl_computed)
+        if(genericMethodDecl_computed) {
             return genericMethodDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         genericMethodDecl_value = getParent().Define_GenericMethodDecl_genericMethodDecl(this, null);
         if(isFinal && num == state().boundariesCrossed)

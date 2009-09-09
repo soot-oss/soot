@@ -9,11 +9,14 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AnnotatedCompilationUnit clone() throws CloneNotSupportedException {
         AnnotatedCompilationUnit node = (AnnotatedCompilationUnit)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AnnotatedCompilationUnit copy() {
       try {
@@ -164,11 +167,19 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
 
 
     public void addImportDecl(ImportDecl node) {
-        List<ImportDecl> list = getImportDeclList();
+        List<ImportDecl> list = (parent == null || state == null) ? getImportDeclListNoTransform() : getImportDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addImportDeclNoTransform(ImportDecl node) {
+        List<ImportDecl> list = getImportDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setImportDecl(ImportDecl node, int i) {
@@ -176,26 +187,28 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ImportDecl> getImportDecls() {
         return getImportDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ImportDecl> getImportDeclsNoTransform() {
         return getImportDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclList() {
-        return (List<ImportDecl>)getChild(0);
+        List<ImportDecl> list = (List<ImportDecl>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ImportDecl> getImportDeclListNoTransform() {
@@ -226,11 +239,19 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
 
 
     public void addTypeDecl(TypeDecl node) {
-        List<TypeDecl> list = getTypeDeclList();
+        List<TypeDecl> list = (parent == null || state == null) ? getTypeDeclListNoTransform() : getTypeDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addTypeDeclNoTransform(TypeDecl node) {
+        List<TypeDecl> list = getTypeDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setTypeDecl(TypeDecl node, int i) {
@@ -238,26 +259,28 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<TypeDecl> getTypeDecls() {
         return getTypeDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<TypeDecl> getTypeDeclsNoTransform() {
         return getTypeDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclList() {
-        return (List<TypeDecl>)getChild(1);
+        List<TypeDecl> list = (List<TypeDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<TypeDecl> getTypeDeclListNoTransform() {

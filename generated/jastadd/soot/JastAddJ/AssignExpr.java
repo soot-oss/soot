@@ -10,13 +10,16 @@ public abstract class AssignExpr extends Expr implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignExpr clone() throws CloneNotSupportedException {
         AssignExpr node = (AssignExpr)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in DefiniteAssignment.jrag at line 464
 
@@ -189,6 +192,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 394
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -197,6 +201,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 398
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         return isDAafterTrue_Variable_value;
     }
@@ -205,6 +210,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 399
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         return isDAafterFalse_Variable_value;
     }
@@ -213,6 +219,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 827
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -221,6 +228,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 830
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
         return isDUafterTrue_Variable_value;
     }
@@ -229,6 +237,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 831
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
         return isDUafterFalse_Variable_value;
     }
@@ -237,6 +246,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 246
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }
@@ -247,9 +257,11 @@ public abstract class AssignExpr extends Expr implements Cloneable {
     protected TypeDecl type_value;
     // Declared in TypeAnalysis.jrag at line 298
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -261,6 +273,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     // Declared in TypeCheck.jrag at line 109
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceType() {
+        ASTNode$State state = state();
         TypeDecl sourceType_value = sourceType_compute();
         return sourceType_value;
     }

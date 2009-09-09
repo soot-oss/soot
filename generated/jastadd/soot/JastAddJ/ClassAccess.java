@@ -10,13 +10,16 @@ public class ClassAccess extends Access implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ClassAccess clone() throws CloneNotSupportedException {
         ClassAccess node = (ClassAccess)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ClassAccess copy() {
       try {
@@ -148,6 +151,7 @@ private TypeDecl refined_TypeAnalysis_ClassAccess_type()
 
     // Declared in ResolveAmbiguousNames.jrag at line 47
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassAccess() {
+        ASTNode$State state = state();
         boolean isClassAccess_value = isClassAccess_compute();
         return isClassAccess_value;
     }
@@ -156,6 +160,7 @@ private TypeDecl refined_TypeAnalysis_ClassAccess_type()
 
     // Declared in SyntacticClassification.jrag at line 91
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -164,9 +169,11 @@ private TypeDecl refined_TypeAnalysis_ClassAccess_type()
 
     // Declared in Generics.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)

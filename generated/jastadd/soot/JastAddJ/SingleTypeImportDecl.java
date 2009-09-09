@@ -8,12 +8,15 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
         super.flushCache();
         importedTypes_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public SingleTypeImportDecl clone() throws CloneNotSupportedException {
         SingleTypeImportDecl node = (SingleTypeImportDecl)super.clone();
         node.importedTypes_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public SingleTypeImportDecl copy() {
       try {
@@ -106,9 +109,11 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet importedTypes(String name) {
         Object _parameters = name;
 if(importedTypes_String_values == null) importedTypes_String_values = new java.util.HashMap(4);
-        if(importedTypes_String_values.containsKey(_parameters))
+        if(importedTypes_String_values.containsKey(_parameters)) {
             return (SimpleSet)importedTypes_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet importedTypes_String_value = importedTypes_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -125,6 +130,7 @@ if(importedTypes_String_values == null) importedTypes_String_values = new java.u
 
     // Declared in NameCheck.jrag at line 26
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet allImportedTypes(String name) {
+        ASTNode$State state = state();
         SimpleSet allImportedTypes_String_value = getParent().Define_SimpleSet_allImportedTypes(this, null, name);
         return allImportedTypes_String_value;
     }

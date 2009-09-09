@@ -5,11 +5,14 @@ public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Opt<T> clone() throws CloneNotSupportedException {
         Opt node = (Opt)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Opt<T> copy() {
       try {
@@ -55,6 +58,7 @@ public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
 
     // Declared in BooleanExpressions.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
+        ASTNode$State state = state();
         boolean definesLabel_value = definesLabel_compute();
         return definesLabel_value;
     }

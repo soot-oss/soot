@@ -14,6 +14,9 @@ public class CatchClause extends ASTNode<ASTNode> implements Cloneable, Variable
         lookupVariable_String_values = null;
         reachableCatchClause_computed = false;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public CatchClause clone() throws CloneNotSupportedException {
         CatchClause node = (CatchClause)super.clone();
         node.parameterDeclaration_String_values = null;
@@ -25,7 +28,7 @@ public class CatchClause extends ASTNode<ASTNode> implements Cloneable, Variable
         node.reachableCatchClause_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public CatchClause copy() {
       try {
@@ -146,6 +149,7 @@ public class CatchClause extends ASTNode<ASTNode> implements Cloneable, Variable
 
     // Declared in ExceptionHandling.jrag at line 189
  @SuppressWarnings({"unchecked", "cast"})     public boolean handles(TypeDecl exceptionType) {
+        ASTNode$State state = state();
         boolean handles_TypeDecl_value = handles_compute(exceptionType);
         return handles_TypeDecl_value;
     }
@@ -158,9 +162,11 @@ public class CatchClause extends ASTNode<ASTNode> implements Cloneable, Variable
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet parameterDeclaration(String name) {
         Object _parameters = name;
 if(parameterDeclaration_String_values == null) parameterDeclaration_String_values = new java.util.HashMap(4);
-        if(parameterDeclaration_String_values.containsKey(_parameters))
+        if(parameterDeclaration_String_values.containsKey(_parameters)) {
             return (SimpleSet)parameterDeclaration_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet parameterDeclaration_String_value = parameterDeclaration_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -174,9 +180,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected soot.jimple.Stmt label_value;
     // Declared in Statements.jrag at line 453
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt label() {
-        if(label_computed)
+        if(label_computed) {
             return label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         label_value = label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -190,9 +198,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
     protected TypeDecl typeThrowable_value;
     // Declared in LookupType.jrag at line 68
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
-        if(typeThrowable_computed)
+        if(typeThrowable_computed) {
             return typeThrowable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -205,9 +215,11 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
         Object _parameters = name;
 if(lookupVariable_String_values == null) lookupVariable_String_values = new java.util.HashMap(4);
-        if(lookupVariable_String_values.containsKey(_parameters))
+        if(lookupVariable_String_values.containsKey(_parameters)) {
             return (SimpleSet)lookupVariable_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -219,9 +231,11 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
     protected boolean reachableCatchClause_value;
     // Declared in UnreachableStatements.jrag at line 124
  @SuppressWarnings({"unchecked", "cast"})     public boolean reachableCatchClause() {
-        if(reachableCatchClause_computed)
+        if(reachableCatchClause_computed) {
             return reachableCatchClause_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         reachableCatchClause_value = getParent().Define_boolean_reachableCatchClause(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -231,6 +245,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     // Declared in EmitJimple.jrag at line 880
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
         return hostType_value;
     }

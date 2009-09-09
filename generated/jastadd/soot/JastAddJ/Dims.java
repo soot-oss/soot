@@ -7,11 +7,14 @@ public class Dims extends ASTNode<ASTNode> implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Dims clone() throws CloneNotSupportedException {
         Dims node = (Dims)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Dims copy() {
       try {

@@ -7,11 +7,14 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Modifier clone() throws CloneNotSupportedException {
         Modifier node = (Modifier)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Modifier copy() {
       try {
@@ -113,6 +116,7 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 814
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -121,6 +125,7 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in AnnotationsCodegen.jrag at line 143
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeVisible() {
+        ASTNode$State state = state();
         boolean isRuntimeVisible_value = isRuntimeVisible_compute();
         return isRuntimeVisible_value;
     }
@@ -129,6 +134,7 @@ public class Modifier extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in AnnotationsCodegen.jrag at line 153
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRuntimeInvisible() {
+        ASTNode$State state = state();
         boolean isRuntimeInvisible_value = isRuntimeInvisible_compute();
         return isRuntimeInvisible_value;
     }

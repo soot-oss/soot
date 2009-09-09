@@ -15,6 +15,9 @@ public class Block extends Stmt implements Cloneable, VariableScope {
         lookupType_String_values = null;
         lookupVariable_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Block clone() throws CloneNotSupportedException {
         Block node = (Block)super.clone();
         node.checkReturnDA_Variable_values = null;
@@ -27,7 +30,7 @@ public class Block extends Stmt implements Cloneable, VariableScope {
         node.lookupVariable_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Block copy() {
       try {
@@ -143,11 +146,19 @@ public class Block extends Stmt implements Cloneable, VariableScope {
 
 
     public void addStmt(Stmt node) {
-        List<Stmt> list = getStmtList();
+        List<Stmt> list = (parent == null || state == null) ? getStmtListNoTransform() : getStmtList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addStmtNoTransform(Stmt node) {
+        List<Stmt> list = getStmtListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setStmt(Stmt node, int i) {
@@ -155,26 +166,28 @@ public class Block extends Stmt implements Cloneable, VariableScope {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Stmt> getStmts() {
         return getStmtList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Stmt> getStmtsNoTransform() {
         return getStmtListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getStmtList() {
-        return (List<Stmt>)getChild(0);
+        List<Stmt> list = (List<Stmt>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Stmt> getStmtListNoTransform() {
@@ -186,9 +199,11 @@ public class Block extends Stmt implements Cloneable, VariableScope {
  @SuppressWarnings({"unchecked", "cast"})     public boolean checkReturnDA(Variable v) {
         Object _parameters = v;
 if(checkReturnDA_Variable_values == null) checkReturnDA_Variable_values = new java.util.HashMap(4);
-        if(checkReturnDA_Variable_values.containsKey(_parameters))
+        if(checkReturnDA_Variable_values.containsKey(_parameters)) {
             return ((Boolean)checkReturnDA_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean checkReturnDA_Variable_value = checkReturnDA_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -214,9 +229,11 @@ if(checkReturnDA_Variable_values == null) checkReturnDA_Variable_values = new ja
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -228,6 +245,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 448
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUeverywhere(Variable v) {
+        ASTNode$State state = state();
         boolean isDUeverywhere_Variable_value = isDUeverywhere_compute(v);
         return isDUeverywhere_Variable_value;
     }
@@ -239,9 +257,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean checkReturnDU(Variable v) {
         Object _parameters = v;
 if(checkReturnDU_Variable_values == null) checkReturnDU_Variable_values = new java.util.HashMap(4);
-        if(checkReturnDU_Variable_values.containsKey(_parameters))
+        if(checkReturnDU_Variable_values.containsKey(_parameters)) {
             return ((Boolean)checkReturnDU_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean checkReturnDU_Variable_value = checkReturnDU_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -267,9 +287,11 @@ if(checkReturnDU_Variable_values == null) checkReturnDU_Variable_values = new ja
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -284,9 +306,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public VariableDeclaration localVariableDeclaration(String name) {
         Object _parameters = name;
 if(localVariableDeclaration_String_values == null) localVariableDeclaration_String_values = new java.util.HashMap(4);
-        if(localVariableDeclaration_String_values.containsKey(_parameters))
+        if(localVariableDeclaration_String_values.containsKey(_parameters)) {
             return (VariableDeclaration)localVariableDeclaration_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         VariableDeclaration localVariableDeclaration_String_value = localVariableDeclaration_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -303,6 +327,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     // Declared in PrettyPrint.jadd at line 762
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        ASTNode$State state = state();
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
     }
@@ -311,6 +336,7 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     // Declared in PrettyPrint.jadd at line 764
  @SuppressWarnings({"unchecked", "cast"})     public boolean shouldHaveIndent() {
+        ASTNode$State state = state();
         boolean shouldHaveIndent_value = shouldHaveIndent_compute();
         return shouldHaveIndent_value;
     }
@@ -319,9 +345,11 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
 
     // Declared in UnreachableStatements.jrag at line 37
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed)
+        if(canCompleteNormally_computed) {
             return canCompleteNormally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -336,9 +364,11 @@ if(localVariableDeclaration_String_values == null) localVariableDeclaration_Stri
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupType(String name) {
         Object _parameters = name;
 if(lookupType_String_values == null) lookupType_String_values = new java.util.HashMap(4);
-        if(lookupType_String_values.containsKey(_parameters))
+        if(lookupType_String_values.containsKey(_parameters)) {
             return (SimpleSet)lookupType_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -351,9 +381,11 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
         Object _parameters = name;
 if(lookupVariable_String_values == null) lookupVariable_String_values = new java.util.HashMap(4);
-        if(lookupVariable_String_values.containsKey(_parameters))
+        if(lookupVariable_String_values.containsKey(_parameters)) {
             return (SimpleSet)lookupVariable_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -363,6 +395,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     // Declared in UnreachableStatements.jrag at line 28
  @SuppressWarnings({"unchecked", "cast"})     public boolean reachable() {
+        ASTNode$State state = state();
         boolean reachable_value = getParent().Define_boolean_reachable(this, null);
         return reachable_value;
     }

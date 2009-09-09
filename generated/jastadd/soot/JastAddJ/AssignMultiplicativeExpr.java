@@ -8,11 +8,14 @@ public abstract class AssignMultiplicativeExpr extends AssignExpr implements Clo
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignMultiplicativeExpr clone() throws CloneNotSupportedException {
         AssignMultiplicativeExpr node = (AssignMultiplicativeExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in TypeCheck.jrag at line 65
 

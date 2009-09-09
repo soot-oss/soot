@@ -7,11 +7,14 @@ public class VariableArityParameterDeclarationSubstituted extends VariableArityP
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public VariableArityParameterDeclarationSubstituted clone() throws CloneNotSupportedException {
         VariableArityParameterDeclarationSubstituted node = (VariableArityParameterDeclarationSubstituted)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public VariableArityParameterDeclarationSubstituted copy() {
       try {

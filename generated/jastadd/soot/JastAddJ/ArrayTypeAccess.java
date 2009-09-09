@@ -13,6 +13,9 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
         decl_computed = false;
         decl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayTypeAccess clone() throws CloneNotSupportedException {
         ArrayTypeAccess node = (ArrayTypeAccess)super.clone();
         node.getPackage_computed = false;
@@ -23,7 +26,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
         node.decl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ArrayTypeAccess copy() {
       try {
@@ -140,9 +143,11 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
     protected String getPackage_value;
     // Declared in Arrays.jrag at line 56
  @SuppressWarnings({"unchecked", "cast"})     public String getPackage() {
-        if(getPackage_computed)
+        if(getPackage_computed) {
             return getPackage_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getPackage_value = getPackage_compute();
             setPackage(getPackage_value);
@@ -157,9 +162,11 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
     protected String getID_value;
     // Declared in Arrays.jrag at line 57
  @SuppressWarnings({"unchecked", "cast"})     public String getID() {
-        if(getID_computed)
+        if(getID_computed) {
             return getID_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getID_value = getID_compute();
             setID(getID_value);
@@ -172,6 +179,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 360
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         return isDAafter_Variable_value;
     }
@@ -180,6 +188,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in DefiniteAssignment.jrag at line 841
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         return isDUafter_Variable_value;
     }
@@ -188,9 +197,11 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in LookupType.jrag at line 158
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
-        if(decl_computed)
+        if(decl_computed) {
             return decl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decl_value = decl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -202,6 +213,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 804
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -210,6 +222,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in SyntacticClassification.jrag at line 130
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }
@@ -218,6 +231,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in TypeHierarchyCheck.jrag at line 155
  @SuppressWarnings({"unchecked", "cast"})     public boolean staticContextQualifier() {
+        ASTNode$State state = state();
         boolean staticContextQualifier_value = staticContextQualifier_compute();
         return staticContextQualifier_value;
     }

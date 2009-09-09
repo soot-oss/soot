@@ -7,11 +7,14 @@ public class AssignDivExpr extends AssignMultiplicativeExpr implements Cloneable
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignDivExpr clone() throws CloneNotSupportedException {
         AssignDivExpr node = (AssignDivExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AssignDivExpr copy() {
       try {
@@ -109,6 +112,7 @@ public class AssignDivExpr extends AssignMultiplicativeExpr implements Cloneable
 
     // Declared in PrettyPrint.jadd at line 249
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

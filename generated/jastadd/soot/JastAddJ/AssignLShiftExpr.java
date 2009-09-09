@@ -7,11 +7,14 @@ public class AssignLShiftExpr extends AssignShiftExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignLShiftExpr clone() throws CloneNotSupportedException {
         AssignLShiftExpr node = (AssignLShiftExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AssignLShiftExpr copy() {
       try {
@@ -114,6 +117,7 @@ public class AssignLShiftExpr extends AssignShiftExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 253
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }

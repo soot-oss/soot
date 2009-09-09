@@ -9,13 +9,16 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public WildcardSuper clone() throws CloneNotSupportedException {
         WildcardSuper node = (WildcardSuper)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public WildcardSuper copy() {
       try {
@@ -94,9 +97,11 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
 
     // Declared in Generics.jrag at line 1126
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -108,6 +113,7 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
 
     // Declared in Generics.jrag at line 1127
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);
         return lookupWildcardSuper_TypeDecl_value;
     }

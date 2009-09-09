@@ -7,11 +7,14 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public MemberClassDecl clone() throws CloneNotSupportedException {
         MemberClassDecl node = (MemberClassDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public MemberClassDecl copy() {
       try {
@@ -91,6 +94,7 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
 
     // Declared in LookupType.jrag at line 397
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeDecl() {
+        ASTNode$State state = state();
         TypeDecl typeDecl_value = typeDecl_compute();
         return typeDecl_value;
     }

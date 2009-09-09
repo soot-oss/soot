@@ -8,11 +8,14 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public VariableDecl clone() throws CloneNotSupportedException {
         VariableDecl node = (VariableDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public VariableDecl copy() {
       try {
@@ -169,11 +172,19 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
 
 
     public void addDims(Dims node) {
-        List<Dims> list = getDimsList();
+        List<Dims> list = (parent == null || state == null) ? getDimsListNoTransform() : getDimsList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addDimsNoTransform(Dims node) {
+        List<Dims> list = getDimsListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setDims(Dims node, int i) {
@@ -181,26 +192,28 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Dims> getDimss() {
         return getDimsList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Dims> getDimssNoTransform() {
         return getDimsListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Dims> getDimsList() {
-        return (List<Dims>)getChild(0);
+        List<Dims> list = (List<Dims>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Dims> getDimsListNoTransform() {
@@ -249,6 +262,7 @@ public class VariableDecl extends ASTNode<ASTNode> implements Cloneable {
 
     // Declared in VariableDeclaration.jrag at line 102
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }

@@ -21,6 +21,9 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
         isSynthetic_computed = false;
         numModifier_String_values = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public Modifiers clone() throws CloneNotSupportedException {
         Modifiers node = (Modifiers)super.clone();
         node.isPublic_computed = false;
@@ -38,7 +41,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
         node.numModifier_String_values = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public Modifiers copy() {
       try {
@@ -295,11 +298,19 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
 
     public void addModifier(Modifier node) {
-        List<Modifier> list = getModifierList();
+        List<Modifier> list = (parent == null || state == null) ? getModifierListNoTransform() : getModifierList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addModifierNoTransform(Modifier node) {
+        List<Modifier> list = getModifierListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setModifier(Modifier node, int i) {
@@ -307,26 +318,28 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Modifier> getModifiers() {
         return getModifierList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Modifier> getModifiersNoTransform() {
         return getModifierListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Modifier> getModifierList() {
-        return (List<Modifier>)getChild(0);
+        List<Modifier> list = (List<Modifier>)getChild(0);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Modifier> getModifierListNoTransform() {
@@ -335,11 +348,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isPublic_computed = false;
     protected boolean isPublic_value;
-    // Declared in Modifiers.jrag at line 368
+    // Declared in Modifiers.jrag at line 370
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPublic() {
-        if(isPublic_computed)
+        if(isPublic_computed) {
             return isPublic_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isPublic_value = isPublic_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -351,11 +366,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isPrivate_computed = false;
     protected boolean isPrivate_value;
-    // Declared in Modifiers.jrag at line 369
+    // Declared in Modifiers.jrag at line 371
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrivate() {
-        if(isPrivate_computed)
+        if(isPrivate_computed) {
             return isPrivate_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isPrivate_value = isPrivate_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -367,11 +384,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isProtected_computed = false;
     protected boolean isProtected_value;
-    // Declared in Modifiers.jrag at line 370
+    // Declared in Modifiers.jrag at line 372
  @SuppressWarnings({"unchecked", "cast"})     public boolean isProtected() {
-        if(isProtected_computed)
+        if(isProtected_computed) {
             return isProtected_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isProtected_value = isProtected_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -383,11 +402,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isStatic_computed = false;
     protected boolean isStatic_value;
-    // Declared in Modifiers.jrag at line 371
+    // Declared in Modifiers.jrag at line 373
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
-        if(isStatic_computed)
+        if(isStatic_computed) {
             return isStatic_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isStatic_value = isStatic_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -399,11 +420,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isFinal_computed = false;
     protected boolean isFinal_value;
-    // Declared in Modifiers.jrag at line 372
+    // Declared in Modifiers.jrag at line 374
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
-        if(isFinal_computed)
+        if(isFinal_computed) {
             return isFinal_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isFinal_value = isFinal_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -415,11 +438,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isAbstract_computed = false;
     protected boolean isAbstract_value;
-    // Declared in Modifiers.jrag at line 373
+    // Declared in Modifiers.jrag at line 375
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAbstract() {
-        if(isAbstract_computed)
+        if(isAbstract_computed) {
             return isAbstract_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isAbstract_value = isAbstract_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -431,11 +456,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isVolatile_computed = false;
     protected boolean isVolatile_value;
-    // Declared in Modifiers.jrag at line 374
+    // Declared in Modifiers.jrag at line 376
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVolatile() {
-        if(isVolatile_computed)
+        if(isVolatile_computed) {
             return isVolatile_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isVolatile_value = isVolatile_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -447,11 +474,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isTransient_computed = false;
     protected boolean isTransient_value;
-    // Declared in Modifiers.jrag at line 375
+    // Declared in Modifiers.jrag at line 377
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTransient() {
-        if(isTransient_computed)
+        if(isTransient_computed) {
             return isTransient_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isTransient_value = isTransient_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -463,11 +492,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isStrictfp_computed = false;
     protected boolean isStrictfp_value;
-    // Declared in Modifiers.jrag at line 376
+    // Declared in Modifiers.jrag at line 378
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStrictfp() {
-        if(isStrictfp_computed)
+        if(isStrictfp_computed) {
             return isStrictfp_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isStrictfp_value = isStrictfp_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -479,11 +510,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isSynchronized_computed = false;
     protected boolean isSynchronized_value;
-    // Declared in Modifiers.jrag at line 377
+    // Declared in Modifiers.jrag at line 379
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynchronized() {
-        if(isSynchronized_computed)
+        if(isSynchronized_computed) {
             return isSynchronized_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isSynchronized_value = isSynchronized_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -495,11 +528,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isNative_computed = false;
     protected boolean isNative_value;
-    // Declared in Modifiers.jrag at line 378
+    // Declared in Modifiers.jrag at line 380
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNative() {
-        if(isNative_computed)
+        if(isNative_computed) {
             return isNative_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isNative_value = isNative_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -511,11 +546,13 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     protected boolean isSynthetic_computed = false;
     protected boolean isSynthetic_value;
-    // Declared in Modifiers.jrag at line 380
+    // Declared in Modifiers.jrag at line 382
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
-        if(isSynthetic_computed)
+        if(isSynthetic_computed) {
             return isSynthetic_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isSynthetic_value = isSynthetic_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -525,16 +562,18 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
 
     private boolean isSynthetic_compute() {  return numModifier("synthetic") != 0;  }
 
-    // Declared in Modifiers.jrag at line 382
+    // Declared in Modifiers.jrag at line 384
  @SuppressWarnings({"unchecked", "cast"})     public int numProtectionModifiers() {
+        ASTNode$State state = state();
         int numProtectionModifiers_value = numProtectionModifiers_compute();
         return numProtectionModifiers_value;
     }
 
     private int numProtectionModifiers_compute() {  return numModifier("public") + numModifier("protected") + numModifier("private");  }
 
-    // Declared in Modifiers.jrag at line 385
+    // Declared in Modifiers.jrag at line 387
  @SuppressWarnings({"unchecked", "cast"})     public int numCompletenessModifiers() {
+        ASTNode$State state = state();
         int numCompletenessModifiers_value = numCompletenessModifiers_compute();
         return numCompletenessModifiers_value;
     }
@@ -542,17 +581,19 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     private int numCompletenessModifiers_compute() {  return numModifier("abstract") + numModifier("final") + numModifier("volatile");  }
 
     protected java.util.Map numModifier_String_values;
-    // Declared in Modifiers.jrag at line 388
+    // Declared in Modifiers.jrag at line 390
  @SuppressWarnings({"unchecked", "cast"})     public int numModifier(String name) {
         Object _parameters = name;
 if(numModifier_String_values == null) numModifier_String_values = new java.util.HashMap(4);
-        if(numModifier_String_values.containsKey(_parameters))
+        if(numModifier_String_values.containsKey(_parameters)) {
             return ((Integer)numModifier_String_values.get(_parameters)).intValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         int numModifier_String_value = numModifier_compute(name);
         if(isFinal && num == state().boundariesCrossed)
-            numModifier_String_values.put(_parameters, new Integer(numModifier_String_value));
+            numModifier_String_values.put(_parameters, Integer.valueOf(numModifier_String_value));
         return numModifier_String_value;
     }
 
@@ -568,6 +609,7 @@ if(numModifier_String_values == null) numModifier_String_values = new java.util.
 
     // Declared in Annotations.jrag at line 214
  @SuppressWarnings({"unchecked", "cast"})     public Annotation annotation(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         Annotation annotation_TypeDecl_value = annotation_compute(typeDecl);
         return annotation_TypeDecl_value;
     }
@@ -585,6 +627,7 @@ if(numModifier_String_values == null) numModifier_String_values = new java.util.
 
     // Declared in Annotations.jrag at line 289
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAnnotationSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
         return hasAnnotationSuppressWarnings_String_value;
     }
@@ -598,6 +641,7 @@ if(numModifier_String_values == null) numModifier_String_values = new java.util.
 
     // Declared in Annotations.jrag at line 319
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasDeprecatedAnnotation() {
+        ASTNode$State state = state();
         boolean hasDeprecatedAnnotation_value = hasDeprecatedAnnotation_compute();
         return hasDeprecatedAnnotation_value;
     }
@@ -605,73 +649,92 @@ if(numModifier_String_values == null) numModifier_String_values = new java.util.
     private boolean hasDeprecatedAnnotation_compute() {  return annotation(lookupType("java.lang", "Deprecated")) != null;  }
 
     // Declared in Modifiers.jrag at line 356
+ @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
+        TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
+        return hostType_value;
+    }
+
+    // Declared in Modifiers.jrag at line 358
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBePublic() {
+        ASTNode$State state = state();
         boolean mayBePublic_value = getParent().Define_boolean_mayBePublic(this, null);
         return mayBePublic_value;
     }
 
-    // Declared in Modifiers.jrag at line 357
+    // Declared in Modifiers.jrag at line 359
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBePrivate() {
+        ASTNode$State state = state();
         boolean mayBePrivate_value = getParent().Define_boolean_mayBePrivate(this, null);
         return mayBePrivate_value;
     }
 
-    // Declared in Modifiers.jrag at line 358
+    // Declared in Modifiers.jrag at line 360
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeProtected() {
+        ASTNode$State state = state();
         boolean mayBeProtected_value = getParent().Define_boolean_mayBeProtected(this, null);
         return mayBeProtected_value;
     }
 
-    // Declared in Modifiers.jrag at line 359
+    // Declared in Modifiers.jrag at line 361
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeStatic() {
+        ASTNode$State state = state();
         boolean mayBeStatic_value = getParent().Define_boolean_mayBeStatic(this, null);
         return mayBeStatic_value;
     }
 
-    // Declared in Modifiers.jrag at line 360
+    // Declared in Modifiers.jrag at line 362
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeFinal() {
+        ASTNode$State state = state();
         boolean mayBeFinal_value = getParent().Define_boolean_mayBeFinal(this, null);
         return mayBeFinal_value;
     }
 
-    // Declared in Modifiers.jrag at line 361
+    // Declared in Modifiers.jrag at line 363
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeAbstract() {
+        ASTNode$State state = state();
         boolean mayBeAbstract_value = getParent().Define_boolean_mayBeAbstract(this, null);
         return mayBeAbstract_value;
     }
 
-    // Declared in Modifiers.jrag at line 362
+    // Declared in Modifiers.jrag at line 364
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeVolatile() {
+        ASTNode$State state = state();
         boolean mayBeVolatile_value = getParent().Define_boolean_mayBeVolatile(this, null);
         return mayBeVolatile_value;
     }
 
-    // Declared in Modifiers.jrag at line 363
+    // Declared in Modifiers.jrag at line 365
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeTransient() {
+        ASTNode$State state = state();
         boolean mayBeTransient_value = getParent().Define_boolean_mayBeTransient(this, null);
         return mayBeTransient_value;
     }
 
-    // Declared in Modifiers.jrag at line 364
+    // Declared in Modifiers.jrag at line 366
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeStrictfp() {
+        ASTNode$State state = state();
         boolean mayBeStrictfp_value = getParent().Define_boolean_mayBeStrictfp(this, null);
         return mayBeStrictfp_value;
     }
 
-    // Declared in Modifiers.jrag at line 365
+    // Declared in Modifiers.jrag at line 367
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeSynchronized() {
+        ASTNode$State state = state();
         boolean mayBeSynchronized_value = getParent().Define_boolean_mayBeSynchronized(this, null);
         return mayBeSynchronized_value;
     }
 
-    // Declared in Modifiers.jrag at line 366
+    // Declared in Modifiers.jrag at line 368
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayBeNative() {
+        ASTNode$State state = state();
         boolean mayBeNative_value = getParent().Define_boolean_mayBeNative(this, null);
         return mayBeNative_value;
     }
 
     // Declared in Annotations.jrag at line 56
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupType(String packageName, String typeName) {
+        ASTNode$State state = state();
         TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
         return lookupType_String_String_value;
     }

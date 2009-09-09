@@ -52,7 +52,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         isString_computed = false;
         isObject_computed = false;
         instanceOf_TypeDecl_values = null;
-        isCircular_visited = 0;
+        isCircular_visited = -1;
         isCircular_computed = false;
         isCircular_initialized = false;
         boxed_computed = false;
@@ -60,30 +60,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         unboxed_computed = false;
         unboxed_value = null;
         isIterable_computed = false;
-        involvesTypeParameters_visited = 0;
+        involvesTypeParameters_visited = -1;
         involvesTypeParameters_computed = false;
         involvesTypeParameters_initialized = false;
         erasure_computed = false;
         erasure_value = null;
         implementedInterfaces_computed = false;
         implementedInterfaces_value = null;
-        usesTypeVariable_visited = 0;
+        usesTypeVariable_visited = -1;
         usesTypeVariable_computed = false;
         usesTypeVariable_initialized = false;
         sourceTypeDecl_computed = false;
         sourceTypeDecl_value = null;
-        containedIn_TypeDecl_visited = new java.util.HashMap(4);
         containedIn_TypeDecl_values = null;
-        containedIn_TypeDecl_computed = new java.util.HashSet(4);
-        containedIn_TypeDecl_initialized = new java.util.HashSet(4);
-        sameStructure_TypeDecl_visited = new java.util.HashMap(4);
         sameStructure_TypeDecl_values = null;
-        sameStructure_TypeDecl_computed = new java.util.HashSet(4);
-        sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
-        subtype_TypeDecl_visited = new java.util.HashMap(4);
         subtype_TypeDecl_values = null;
-        subtype_TypeDecl_computed = new java.util.HashSet(4);
-        subtype_TypeDecl_initialized = new java.util.HashSet(4);
         enclosingVariables_computed = false;
         enclosingVariables_value = null;
         uniqueIndex_computed = false;
@@ -124,6 +115,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         unknownType_value = null;
         inExplicitConstructorInvocation_computed = false;
         inStaticContext_computed = false;
+    }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
     }
      @SuppressWarnings({"unchecked", "cast"})  public TypeDecl clone() throws CloneNotSupportedException {
         TypeDecl node = (TypeDecl)super.clone();
@@ -172,7 +166,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         node.isString_computed = false;
         node.isObject_computed = false;
         node.instanceOf_TypeDecl_values = null;
-        node.isCircular_visited = 0;
+        node.isCircular_visited = -1;
         node.isCircular_computed = false;
         node.isCircular_initialized = false;
         node.boxed_computed = false;
@@ -180,30 +174,21 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         node.unboxed_computed = false;
         node.unboxed_value = null;
         node.isIterable_computed = false;
-        node.involvesTypeParameters_visited = 0;
+        node.involvesTypeParameters_visited = -1;
         node.involvesTypeParameters_computed = false;
         node.involvesTypeParameters_initialized = false;
         node.erasure_computed = false;
         node.erasure_value = null;
         node.implementedInterfaces_computed = false;
         node.implementedInterfaces_value = null;
-        node.usesTypeVariable_visited = 0;
+        node.usesTypeVariable_visited = -1;
         node.usesTypeVariable_computed = false;
         node.usesTypeVariable_initialized = false;
         node.sourceTypeDecl_computed = false;
         node.sourceTypeDecl_value = null;
-        node.containedIn_TypeDecl_visited = new java.util.HashMap(4);
         node.containedIn_TypeDecl_values = null;
-        node.containedIn_TypeDecl_computed = new java.util.HashSet(4);
-        node.containedIn_TypeDecl_initialized = new java.util.HashSet(4);
-        node.sameStructure_TypeDecl_visited = new java.util.HashMap(4);
         node.sameStructure_TypeDecl_values = null;
-        node.sameStructure_TypeDecl_computed = new java.util.HashSet(4);
-        node.sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
-        node.subtype_TypeDecl_visited = new java.util.HashMap(4);
         node.subtype_TypeDecl_values = null;
-        node.subtype_TypeDecl_computed = new java.util.HashSet(4);
-        node.subtype_TypeDecl_initialized = new java.util.HashSet(4);
         node.enclosingVariables_computed = false;
         node.enclosingVariables_value = null;
         node.uniqueIndex_computed = false;
@@ -246,7 +231,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         node.inStaticContext_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in AnonymousClasses.jrag at line 28
 
@@ -795,6 +780,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       Modifiers m = new Modifiers();
       m.addModifier(new Modifier("public"));
       m.addModifier(new Modifier("synthetic"));
+      m.addModifier(new Modifier("final"));
       addMemberField(new FieldDeclaration(m, v.type().createQualifiedAccess(), "val$" + v.name(), new Opt()));
     }
   }
@@ -1251,11 +1237,19 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -1263,26 +1257,28 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(1);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -1388,9 +1384,11 @@ private SootClass refined_EmitJimple_TypeDecl_sootClass()
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFromPackage(String packageName) {
         Object _parameters = packageName;
 if(accessibleFromPackage_String_values == null) accessibleFromPackage_String_values = new java.util.HashMap(4);
-        if(accessibleFromPackage_String_values.containsKey(_parameters))
+        if(accessibleFromPackage_String_values.containsKey(_parameters)) {
             return ((Boolean)accessibleFromPackage_String_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean accessibleFromPackage_String_value = accessibleFromPackage_compute(packageName);
         if(isFinal && num == state().boundariesCrossed)
@@ -1405,9 +1403,11 @@ if(accessibleFromPackage_String_values == null) accessibleFromPackage_String_val
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFromExtend(TypeDecl type) {
         Object _parameters = type;
 if(accessibleFromExtend_TypeDecl_values == null) accessibleFromExtend_TypeDecl_values = new java.util.HashMap(4);
-        if(accessibleFromExtend_TypeDecl_values.containsKey(_parameters))
+        if(accessibleFromExtend_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)accessibleFromExtend_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean accessibleFromExtend_TypeDecl_value = accessibleFromExtend_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -1446,9 +1446,11 @@ if(accessibleFromExtend_TypeDecl_values == null) accessibleFromExtend_TypeDecl_v
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFrom(TypeDecl type) {
         Object _parameters = type;
 if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
-        if(accessibleFrom_TypeDecl_values.containsKey(_parameters))
+        if(accessibleFrom_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -1493,9 +1495,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     protected int dimension_value;
     // Declared in Arrays.jrag at line 11
  @SuppressWarnings({"unchecked", "cast"})     public int dimension() {
-        if(dimension_computed)
+        if(dimension_computed) {
             return dimension_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         dimension_value = dimension_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1509,9 +1513,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     protected TypeDecl elementType_value;
     // Declared in Arrays.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl elementType() {
-        if(elementType_computed)
+        if(elementType_computed) {
             return elementType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         elementType_value = elementType_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1525,9 +1531,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     protected TypeDecl arrayType_value;
     // Declared in GenericsArrays.jrag at line 11
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl arrayType() {
-        if(arrayType_computed)
+        if(arrayType_computed) {
             return arrayType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         arrayType_value = arrayType_compute();
         arrayType_value.setParent(this);
@@ -1588,6 +1596,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 306
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
+        ASTNode$State state = state();
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
     }
@@ -1599,6 +1608,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 320
  @SuppressWarnings({"unchecked", "cast"})     public Constant plus(Constant c) {
+        ASTNode$State state = state();
         Constant plus_Constant_value = plus_compute(c);
         return plus_Constant_value;
     }
@@ -1610,6 +1620,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 329
  @SuppressWarnings({"unchecked", "cast"})     public Constant minus(Constant c) {
+        ASTNode$State state = state();
         Constant minus_Constant_value = minus_compute(c);
         return minus_Constant_value;
     }
@@ -1621,6 +1632,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 338
  @SuppressWarnings({"unchecked", "cast"})     public Constant bitNot(Constant c) {
+        ASTNode$State state = state();
         Constant bitNot_Constant_value = bitNot_compute(c);
         return bitNot_Constant_value;
     }
@@ -1632,6 +1644,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 345
  @SuppressWarnings({"unchecked", "cast"})     public Constant mul(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant mul_Constant_Constant_value = mul_compute(c1, c2);
         return mul_Constant_Constant_value;
     }
@@ -1643,6 +1656,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 354
  @SuppressWarnings({"unchecked", "cast"})     public Constant div(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant div_Constant_Constant_value = div_compute(c1, c2);
         return div_Constant_Constant_value;
     }
@@ -1654,6 +1668,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 363
  @SuppressWarnings({"unchecked", "cast"})     public Constant mod(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant mod_Constant_Constant_value = mod_compute(c1, c2);
         return mod_Constant_Constant_value;
     }
@@ -1665,6 +1680,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 372
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
     }
@@ -1676,6 +1692,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 382
  @SuppressWarnings({"unchecked", "cast"})     public Constant sub(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant sub_Constant_Constant_value = sub_compute(c1, c2);
         return sub_Constant_Constant_value;
     }
@@ -1687,6 +1704,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 391
  @SuppressWarnings({"unchecked", "cast"})     public Constant lshift(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant lshift_Constant_Constant_value = lshift_compute(c1, c2);
         return lshift_Constant_Constant_value;
     }
@@ -1698,6 +1716,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 398
  @SuppressWarnings({"unchecked", "cast"})     public Constant rshift(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant rshift_Constant_Constant_value = rshift_compute(c1, c2);
         return rshift_Constant_Constant_value;
     }
@@ -1709,6 +1728,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 405
  @SuppressWarnings({"unchecked", "cast"})     public Constant urshift(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant urshift_Constant_Constant_value = urshift_compute(c1, c2);
         return urshift_Constant_Constant_value;
     }
@@ -1720,6 +1740,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 412
  @SuppressWarnings({"unchecked", "cast"})     public Constant andBitwise(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant andBitwise_Constant_Constant_value = andBitwise_compute(c1, c2);
         return andBitwise_Constant_Constant_value;
     }
@@ -1731,6 +1752,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 420
  @SuppressWarnings({"unchecked", "cast"})     public Constant xorBitwise(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant xorBitwise_Constant_Constant_value = xorBitwise_compute(c1, c2);
         return xorBitwise_Constant_Constant_value;
     }
@@ -1742,6 +1764,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 428
  @SuppressWarnings({"unchecked", "cast"})     public Constant orBitwise(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant orBitwise_Constant_Constant_value = orBitwise_compute(c1, c2);
         return orBitwise_Constant_Constant_value;
     }
@@ -1753,6 +1776,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 436
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
     }
@@ -1764,6 +1788,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 540
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
     }
@@ -1775,6 +1800,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 551
  @SuppressWarnings({"unchecked", "cast"})     public boolean ltIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
         return ltIsTrue_Expr_Expr_value;
     }
@@ -1783,6 +1809,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in ConstantExpression.jrag at line 557
  @SuppressWarnings({"unchecked", "cast"})     public boolean leIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
         return leIsTrue_Expr_Expr_value;
     }
@@ -1791,6 +1818,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in DataStructures.jrag at line 116
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
+        ASTNode$State state = state();
         int size_value = size_compute();
         return size_value;
     }
@@ -1799,6 +1827,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in DataStructures.jrag at line 117
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEmpty() {
+        ASTNode$State state = state();
         boolean isEmpty_value = isEmpty_compute();
         return isEmpty_value;
     }
@@ -1807,6 +1836,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     // Declared in DataStructures.jrag at line 121
  @SuppressWarnings({"unchecked", "cast"})     public boolean contains(Object o) {
+        ASTNode$State state = state();
         boolean contains_Object_value = contains_compute(o);
         return contains_Object_value;
     }
@@ -1817,9 +1847,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     protected boolean isException_value;
     // Declared in ExceptionHandling.jrag at line 24
  @SuppressWarnings({"unchecked", "cast"})     public boolean isException() {
-        if(isException_computed)
+        if(isException_computed) {
             return isException_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isException_value = isException_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1833,9 +1865,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     protected boolean isCheckedException_value;
     // Declared in ExceptionHandling.jrag at line 25
  @SuppressWarnings({"unchecked", "cast"})     public boolean isCheckedException() {
-        if(isCheckedException_computed)
+        if(isCheckedException_computed) {
             return isCheckedException_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isCheckedException_value = isCheckedException_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1850,9 +1884,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
     protected boolean isUncheckedException_value;
     // Declared in ExceptionHandling.jrag at line 27
  @SuppressWarnings({"unchecked", "cast"})     public boolean isUncheckedException() {
-        if(isUncheckedException_computed)
+        if(isUncheckedException_computed) {
             return isUncheckedException_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isUncheckedException_value = isUncheckedException_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1867,9 +1903,11 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
  @SuppressWarnings({"unchecked", "cast"})     public boolean mayCatch(TypeDecl thrownType) {
         Object _parameters = thrownType;
 if(mayCatch_TypeDecl_values == null) mayCatch_TypeDecl_values = new java.util.HashMap(4);
-        if(mayCatch_TypeDecl_values.containsKey(_parameters))
+        if(mayCatch_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)mayCatch_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean mayCatch_TypeDecl_value = mayCatch_compute(thrownType);
         if(isFinal && num == state().boundariesCrossed)
@@ -1881,6 +1919,7 @@ if(mayCatch_TypeDecl_values == null) mayCatch_TypeDecl_values = new java.util.Ha
 
     // Declared in LookupConstructor.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public Collection lookupSuperConstructor() {
+        ASTNode$State state = state();
         Collection lookupSuperConstructor_value = lookupSuperConstructor_compute();
         return lookupSuperConstructor_value;
     }
@@ -1891,9 +1930,11 @@ if(mayCatch_TypeDecl_values == null) mayCatch_TypeDecl_values = new java.util.Ha
     protected Collection constructors_value;
     // Declared in LookupConstructor.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public Collection constructors() {
-        if(constructors_computed)
+        if(constructors_computed) {
             return constructors_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         constructors_value = constructors_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1935,9 +1976,11 @@ if(mayCatch_TypeDecl_values == null) mayCatch_TypeDecl_values = new java.util.Ha
  @SuppressWarnings({"unchecked", "cast"})     public Collection unqualifiedLookupMethod(String name) {
         Object _parameters = name;
 if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String_values = new java.util.HashMap(4);
-        if(unqualifiedLookupMethod_String_values.containsKey(_parameters))
+        if(unqualifiedLookupMethod_String_values.containsKey(_parameters)) {
             return (Collection)unqualifiedLookupMethod_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         Collection unqualifiedLookupMethod_String_value = unqualifiedLookupMethod_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -1955,6 +1998,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
 
     // Declared in LookupMethod.jrag at line 193
  @SuppressWarnings({"unchecked", "cast"})     public Collection memberMethods(String name) {
+        ASTNode$State state = state();
         Collection memberMethods_String_value = memberMethods_compute(name);
         return memberMethods_String_value;
     }
@@ -1969,9 +2013,11 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
     protected HashMap methodsNameMap_value;
     // Declared in LookupMethod.jrag at line 199
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsNameMap() {
-        if(methodsNameMap_computed)
+        if(methodsNameMap_computed) {
             return methodsNameMap_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         methodsNameMap_value = methodsNameMap_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -1995,6 +2041,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
 
     // Declared in LookupMethod.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localMethodsSignature(String signature) {
+        ASTNode$State state = state();
         SimpleSet localMethodsSignature_String_value = localMethodsSignature_compute(signature);
         return localMethodsSignature_String_value;
     }
@@ -2009,9 +2056,11 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
     protected HashMap localMethodsSignatureMap_value;
     // Declared in LookupMethod.jrag at line 236
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localMethodsSignatureMap() {
-        if(localMethodsSignatureMap_computed)
+        if(localMethodsSignatureMap_computed) {
             return localMethodsSignatureMap_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         localMethodsSignatureMap_value = localMethodsSignatureMap_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2032,6 +2081,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
 
     // Declared in LookupMethod.jrag at line 298
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet methodsSignature(String signature) {
+        ASTNode$State state = state();
         SimpleSet methodsSignature_String_value = methodsSignature_compute(signature);
         return methodsSignature_String_value;
     }
@@ -2046,9 +2096,11 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
     protected HashMap methodsSignatureMap_value;
     // Declared in LookupMethod.jrag at line 304
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsSignatureMap() {
-        if(methodsSignatureMap_computed)
+        if(methodsSignatureMap_computed) {
             return methodsSignatureMap_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         methodsSignatureMap_value = methodsSignatureMap_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2063,9 +2115,11 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet ancestorMethods(String signature) {
         Object _parameters = signature;
 if(ancestorMethods_String_values == null) ancestorMethods_String_values = new java.util.HashMap(4);
-        if(ancestorMethods_String_values.containsKey(_parameters))
+        if(ancestorMethods_String_values.containsKey(_parameters)) {
             return (SimpleSet)ancestorMethods_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet ancestorMethods_String_value = ancestorMethods_compute(signature);
         if(isFinal && num == state().boundariesCrossed)
@@ -2077,6 +2131,7 @@ if(ancestorMethods_String_values == null) ancestorMethods_String_values = new ja
 
     // Declared in LookupType.jrag at line 390
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasType(String name) {
+        ASTNode$State state = state();
         boolean hasType_String_value = hasType_compute(name);
         return hasType_String_value;
     }
@@ -2088,9 +2143,11 @@ if(ancestorMethods_String_values == null) ancestorMethods_String_values = new ja
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localTypeDecls(String name) {
         Object _parameters = name;
 if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
-        if(localTypeDecls_String_values.containsKey(_parameters))
+        if(localTypeDecls_String_values.containsKey(_parameters)) {
             return (SimpleSet)localTypeDecls_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet localTypeDecls_String_value = localTypeDecls_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -2111,9 +2168,11 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet memberTypes(String name) {
         Object _parameters = name;
 if(memberTypes_String_values == null) memberTypes_String_values = new java.util.HashMap(4);
-        if(memberTypes_String_values.containsKey(_parameters))
+        if(memberTypes_String_values.containsKey(_parameters)) {
             return (SimpleSet)memberTypes_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet memberTypes_String_value = memberTypes_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -2128,9 +2187,11 @@ if(memberTypes_String_values == null) memberTypes_String_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localFields(String name) {
         Object _parameters = name;
 if(localFields_String_values == null) localFields_String_values = new java.util.HashMap(4);
-        if(localFields_String_values.containsKey(_parameters))
+        if(localFields_String_values.containsKey(_parameters)) {
             return (SimpleSet)localFields_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet localFields_String_value = localFields_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -2144,9 +2205,11 @@ if(localFields_String_values == null) localFields_String_values = new java.util.
     protected HashMap localFieldsMap_value;
     // Declared in LookupVariable.jrag at line 258
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localFieldsMap() {
-        if(localFieldsMap_computed)
+        if(localFieldsMap_computed) {
             return localFieldsMap_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         localFieldsMap_value = localFieldsMap_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2172,9 +2235,11 @@ if(localFields_String_values == null) localFields_String_values = new java.util.
     protected HashMap memberFieldsMap_value;
     // Declared in LookupVariable.jrag at line 271
  @SuppressWarnings({"unchecked", "cast"})     public HashMap memberFieldsMap() {
-        if(memberFieldsMap_computed)
+        if(memberFieldsMap_computed) {
             return memberFieldsMap_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         memberFieldsMap_value = memberFieldsMap_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2189,9 +2254,11 @@ if(localFields_String_values == null) localFields_String_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet memberFields(String name) {
         Object _parameters = name;
 if(memberFields_String_values == null) memberFields_String_values = new java.util.HashMap(4);
-        if(memberFields_String_values.containsKey(_parameters))
+        if(memberFields_String_values.containsKey(_parameters)) {
             return (SimpleSet)memberFields_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet memberFields_String_value = memberFields_compute(name);
         if(isFinal && num == state().boundariesCrossed)
@@ -2205,9 +2272,11 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     protected boolean hasAbstract_value;
     // Declared in Modifiers.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAbstract() {
-        if(hasAbstract_computed)
+        if(hasAbstract_computed) {
             return hasAbstract_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         hasAbstract_value = hasAbstract_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2221,9 +2290,11 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     protected Collection unimplementedMethods_value;
     // Declared in Modifiers.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public Collection unimplementedMethods() {
-        if(unimplementedMethods_computed)
+        if(unimplementedMethods_computed) {
             return unimplementedMethods_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         unimplementedMethods_value = unimplementedMethods_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2237,9 +2308,11 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     protected boolean isPublic_value;
     // Declared in Modifiers.jrag at line 198
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPublic() {
-        if(isPublic_computed)
+        if(isPublic_computed) {
             return isPublic_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isPublic_value = isPublic_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2251,6 +2324,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in Modifiers.jrag at line 200
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrivate() {
+        ASTNode$State state = state();
         boolean isPrivate_value = isPrivate_compute();
         return isPrivate_value;
     }
@@ -2259,6 +2333,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in Modifiers.jrag at line 201
  @SuppressWarnings({"unchecked", "cast"})     public boolean isProtected() {
+        ASTNode$State state = state();
         boolean isProtected_value = isProtected_compute();
         return isProtected_value;
     }
@@ -2267,6 +2342,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in Modifiers.jrag at line 202
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAbstract() {
+        ASTNode$State state = state();
         boolean isAbstract_value = isAbstract_compute();
         return isAbstract_value;
     }
@@ -2277,9 +2353,11 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     protected boolean isStatic_value;
     // Declared in Modifiers.jrag at line 204
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
-        if(isStatic_computed)
+        if(isStatic_computed) {
             return isStatic_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isStatic_value = isStatic_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2291,6 +2369,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in Modifiers.jrag at line 207
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
+        ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
         return isFinal_value;
     }
@@ -2299,6 +2378,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in Modifiers.jrag at line 208
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStrictfp() {
+        ASTNode$State state = state();
         boolean isStrictfp_value = isStrictfp_compute();
         return isStrictfp_value;
     }
@@ -2307,6 +2387,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in Modifiers.jrag at line 210
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSynthetic() {
+        ASTNode$State state = state();
         boolean isSynthetic_value = isSynthetic_compute();
         return isSynthetic_value;
     }
@@ -2315,6 +2396,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in NameCheck.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasEnclosingTypeDecl(String name) {
+        ASTNode$State state = state();
         boolean hasEnclosingTypeDecl_String_value = hasEnclosingTypeDecl_compute(name);
         return hasEnclosingTypeDecl_String_value;
     }
@@ -2329,6 +2411,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in NameCheck.jrag at line 422
  @SuppressWarnings({"unchecked", "cast"})     public boolean assignableToInt() {
+        ASTNode$State state = state();
         boolean assignableToInt_value = assignableToInt_compute();
         return assignableToInt_value;
     }
@@ -2337,6 +2420,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in PrettyPrint.jadd at line 758
  @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
+        ASTNode$State state = state();
         boolean addsIndentationLevel_value = addsIndentationLevel_compute();
         return addsIndentationLevel_value;
     }
@@ -2345,6 +2429,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in PrettyPrint.jadd at line 809
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -2353,6 +2438,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in QualifiedNames.jrag at line 68
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -2363,9 +2449,11 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     protected String fullName_value;
     // Declared in QualifiedNames.jrag at line 70
  @SuppressWarnings({"unchecked", "cast"})     public String fullName() {
-        if(fullName_computed)
+        if(fullName_computed) {
             return fullName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         fullName_value = fullName_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2386,9 +2474,11 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
     protected String typeName_value;
     // Declared in QualifiedNames.jrag at line 79
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
-        if(typeName_computed)
+        if(typeName_computed) {
             return typeName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeName_value = typeName_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2407,6 +2497,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public boolean identityConversionTo(TypeDecl type) {
+        ASTNode$State state = state();
         boolean identityConversionTo_TypeDecl_value = identityConversionTo_compute(type);
         return identityConversionTo_TypeDecl_value;
     }
@@ -2415,6 +2506,7 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 17
  @SuppressWarnings({"unchecked", "cast"})     public boolean wideningConversionTo(TypeDecl type) {
+        ASTNode$State state = state();
         boolean wideningConversionTo_TypeDecl_value = wideningConversionTo_compute(type);
         return wideningConversionTo_TypeDecl_value;
     }
@@ -2426,9 +2518,11 @@ if(memberFields_String_values == null) memberFields_String_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public boolean narrowingConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl_values = new java.util.HashMap(4);
-        if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters))
+        if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)narrowingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean narrowingConversionTo_TypeDecl_value = narrowingConversionTo_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -2440,6 +2534,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in TypeAnalysis.jrag at line 55
  @SuppressWarnings({"unchecked", "cast"})     public boolean stringConversion() {
+        ASTNode$State state = state();
         boolean stringConversion_value = stringConversion_compute();
         return stringConversion_value;
     }
@@ -2448,6 +2543,7 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
 
     // Declared in AutoBoxing.jrag at line 77
  @SuppressWarnings({"unchecked", "cast"})     public boolean assignConversionTo(TypeDecl type, Expr expr) {
+        ASTNode$State state = state();
         boolean assignConversionTo_TypeDecl_Expr_value = assignConversionTo_compute(type, expr);
         return assignConversionTo_TypeDecl_Expr_value;
     }
@@ -2478,9 +2574,11 @@ if(narrowingConversionTo_TypeDecl_values == null) narrowingConversionTo_TypeDecl
  @SuppressWarnings({"unchecked", "cast"})     public boolean methodInvocationConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(methodInvocationConversionTo_TypeDecl_values == null) methodInvocationConversionTo_TypeDecl_values = new java.util.HashMap(4);
-        if(methodInvocationConversionTo_TypeDecl_values.containsKey(_parameters))
+        if(methodInvocationConversionTo_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)methodInvocationConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean methodInvocationConversionTo_TypeDecl_value = methodInvocationConversionTo_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -2507,9 +2605,11 @@ if(methodInvocationConversionTo_TypeDecl_values == null) methodInvocationConvers
  @SuppressWarnings({"unchecked", "cast"})     public boolean castingConversionTo(TypeDecl type) {
         Object _parameters = type;
 if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_values = new java.util.HashMap(4);
-        if(castingConversionTo_TypeDecl_values.containsKey(_parameters))
+        if(castingConversionTo_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)castingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean castingConversionTo_TypeDecl_value = castingConversionTo_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -2540,6 +2640,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 146
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unaryNumericPromotion() {
+        ASTNode$State state = state();
         TypeDecl unaryNumericPromotion_value = unaryNumericPromotion_compute();
         return unaryNumericPromotion_value;
     }
@@ -2548,6 +2649,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 154
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl binaryNumericPromotion(TypeDecl type) {
+        ASTNode$State state = state();
         TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
         return binaryNumericPromotion_TypeDecl_value;
     }
@@ -2556,6 +2658,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 165
  @SuppressWarnings({"unchecked", "cast"})     public boolean isReferenceType() {
+        ASTNode$State state = state();
         boolean isReferenceType_value = isReferenceType_compute();
         return isReferenceType_value;
     }
@@ -2564,6 +2667,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 168
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitiveType() {
+        ASTNode$State state = state();
         boolean isPrimitiveType_value = isPrimitiveType_compute();
         return isPrimitiveType_value;
     }
@@ -2572,6 +2676,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 173
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNumericType() {
+        ASTNode$State state = state();
         boolean isNumericType_value = isNumericType_compute();
         return isNumericType_value;
     }
@@ -2580,6 +2685,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 177
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIntegralType() {
+        ASTNode$State state = state();
         boolean isIntegralType_value = isIntegralType_compute();
         return isIntegralType_value;
     }
@@ -2588,6 +2694,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 181
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBoolean() {
+        ASTNode$State state = state();
         boolean isBoolean_value = isBoolean_compute();
         return isBoolean_value;
     }
@@ -2596,6 +2703,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 185
  @SuppressWarnings({"unchecked", "cast"})     public boolean isByte() {
+        ASTNode$State state = state();
         boolean isByte_value = isByte_compute();
         return isByte_value;
     }
@@ -2604,6 +2712,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 187
  @SuppressWarnings({"unchecked", "cast"})     public boolean isChar() {
+        ASTNode$State state = state();
         boolean isChar_value = isChar_compute();
         return isChar_value;
     }
@@ -2612,6 +2721,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 189
  @SuppressWarnings({"unchecked", "cast"})     public boolean isShort() {
+        ASTNode$State state = state();
         boolean isShort_value = isShort_compute();
         return isShort_value;
     }
@@ -2620,6 +2730,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 191
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInt() {
+        ASTNode$State state = state();
         boolean isInt_value = isInt_compute();
         return isInt_value;
     }
@@ -2628,6 +2739,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 195
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFloat() {
+        ASTNode$State state = state();
         boolean isFloat_value = isFloat_compute();
         return isFloat_value;
     }
@@ -2636,6 +2748,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 197
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLong() {
+        ASTNode$State state = state();
         boolean isLong_value = isLong_compute();
         return isLong_value;
     }
@@ -2644,6 +2757,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 199
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDouble() {
+        ASTNode$State state = state();
         boolean isDouble_value = isDouble_compute();
         return isDouble_value;
     }
@@ -2652,6 +2766,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 202
  @SuppressWarnings({"unchecked", "cast"})     public boolean isVoid() {
+        ASTNode$State state = state();
         boolean isVoid_value = isVoid_compute();
         return isVoid_value;
     }
@@ -2660,6 +2775,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 205
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNull() {
+        ASTNode$State state = state();
         boolean isNull_value = isNull_compute();
         return isNull_value;
     }
@@ -2668,6 +2784,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 209
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassDecl() {
+        ASTNode$State state = state();
         boolean isClassDecl_value = isClassDecl_compute();
         return isClassDecl_value;
     }
@@ -2676,6 +2793,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 211
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInterfaceDecl() {
+        ASTNode$State state = state();
         boolean isInterfaceDecl_value = isInterfaceDecl_compute();
         return isInterfaceDecl_value;
     }
@@ -2684,6 +2802,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 213
  @SuppressWarnings({"unchecked", "cast"})     public boolean isArrayDecl() {
+        ASTNode$State state = state();
         boolean isArrayDecl_value = isArrayDecl_compute();
         return isArrayDecl_value;
     }
@@ -2692,6 +2811,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 221
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPrimitive() {
+        ASTNode$State state = state();
         boolean isPrimitive_value = isPrimitive_compute();
         return isPrimitive_value;
     }
@@ -2702,9 +2822,11 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     protected boolean isString_value;
     // Declared in TypeAnalysis.jrag at line 224
  @SuppressWarnings({"unchecked", "cast"})     public boolean isString() {
-        if(isString_computed)
+        if(isString_computed) {
             return isString_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isString_value = isString_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2718,9 +2840,11 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     protected boolean isObject_value;
     // Declared in TypeAnalysis.jrag at line 227
  @SuppressWarnings({"unchecked", "cast"})     public boolean isObject() {
-        if(isObject_computed)
+        if(isObject_computed) {
             return isObject_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isObject_value = isObject_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -2732,6 +2856,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     // Declared in TypeAnalysis.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public boolean isUnknown() {
+        ASTNode$State state = state();
         boolean isUnknown_value = isUnknown_compute();
         return isUnknown_value;
     }
@@ -2743,9 +2868,11 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
  @SuppressWarnings({"unchecked", "cast"})     public boolean instanceOf(TypeDecl type) {
         Object _parameters = type;
 if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.util.HashMap(4);
-        if(instanceOf_TypeDecl_values.containsKey(_parameters))
+        if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
             return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
         if(isFinal && num == state().boundariesCrossed)
@@ -2757,6 +2884,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 423
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfClassDecl(ClassDecl type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfClassDecl_ClassDecl_value = isSupertypeOfClassDecl_compute(type);
         return isSupertypeOfClassDecl_ClassDecl_value;
     }
@@ -2765,6 +2893,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 440
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfInterfaceDecl_InterfaceDecl_value = isSupertypeOfInterfaceDecl_compute(type);
         return isSupertypeOfInterfaceDecl_InterfaceDecl_value;
     }
@@ -2773,6 +2902,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 453
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
         return isSupertypeOfArrayDecl_ArrayDecl_value;
     }
@@ -2781,6 +2911,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 475
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfPrimitiveType(PrimitiveType type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfPrimitiveType_PrimitiveType_value = isSupertypeOfPrimitiveType_compute(type);
         return isSupertypeOfPrimitiveType_PrimitiveType_value;
     }
@@ -2789,6 +2920,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 482
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfNullType(NullType type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
         return isSupertypeOfNullType_NullType_value;
     }
@@ -2797,6 +2929,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 486
  @SuppressWarnings({"unchecked", "cast"})     public boolean isSupertypeOfVoidType(VoidType type) {
+        ASTNode$State state = state();
         boolean isSupertypeOfVoidType_VoidType_value = isSupertypeOfVoidType_compute(type);
         return isSupertypeOfVoidType_VoidType_value;
     }
@@ -2805,6 +2938,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 498
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl topLevelType() {
+        ASTNode$State state = state();
         TypeDecl topLevelType_value = topLevelType_compute();
         return topLevelType_value;
     }
@@ -2817,6 +2951,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 524
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTopLevelType() {
+        ASTNode$State state = state();
         boolean isTopLevelType_value = isTopLevelType_compute();
         return isTopLevelType_value;
     }
@@ -2825,6 +2960,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 535
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInnerClass() {
+        ASTNode$State state = state();
         boolean isInnerClass_value = isInnerClass_compute();
         return isInnerClass_value;
     }
@@ -2833,6 +2969,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 537
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInnerType() {
+        ASTNode$State state = state();
         boolean isInnerType_value = isInnerType_compute();
         return isInnerType_value;
     }
@@ -2841,6 +2978,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 539
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInnerTypeOf(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         boolean isInnerTypeOf_TypeDecl_value = isInnerTypeOf_compute(typeDecl);
         return isInnerTypeOf_TypeDecl_value;
     }
@@ -2849,6 +2987,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 546
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl withinBodyThatSubclasses(TypeDecl type) {
+        ASTNode$State state = state();
         TypeDecl withinBodyThatSubclasses_TypeDecl_value = withinBodyThatSubclasses_compute(type);
         return withinBodyThatSubclasses_TypeDecl_value;
     }
@@ -2863,6 +3002,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 554
  @SuppressWarnings({"unchecked", "cast"})     public boolean encloses(TypeDecl type) {
+        ASTNode$State state = state();
         boolean encloses_TypeDecl_value = encloses_compute(type);
         return encloses_TypeDecl_value;
     }
@@ -2871,6 +3011,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 556
  @SuppressWarnings({"unchecked", "cast"})     public boolean enclosedBy(TypeDecl type) {
+        ASTNode$State state = state();
         boolean enclosedBy_TypeDecl_value = enclosedBy_compute(type);
         return enclosedBy_TypeDecl_value;
     }
@@ -2885,61 +3026,65 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in TypeAnalysis.jrag at line 570
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
+        ASTNode$State state = state();
         TypeDecl hostType_value = hostType_compute();
         return hostType_value;
     }
 
     private TypeDecl hostType_compute() {  return this;  }
 
-    protected int isCircular_visited;
+    protected int isCircular_visited = -1;
     protected boolean isCircular_computed = false;
     protected boolean isCircular_initialized = false;
     protected boolean isCircular_value;
+    // Declared in TypeAnalysis.jrag at line 673
  @SuppressWarnings({"unchecked", "cast"})     public boolean isCircular() {
-        if(isCircular_computed)
+        if(isCircular_computed) {
             return isCircular_value;
+        }
+        ASTNode$State state = state();
         if (!isCircular_initialized) {
             isCircular_initialized = true;
             isCircular_value = true;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                isCircular_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                isCircular_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_isCircular_value = isCircular_compute();
                 if (new_isCircular_value!=isCircular_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 isCircular_value = new_isCircular_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             isCircular_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             isCircular_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               isCircular_computed = false;
               isCircular_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return isCircular_value;
         }
-        if(isCircular_visited != state().CIRCLE_INDEX) {
-            isCircular_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(isCircular_visited != state.CIRCLE_INDEX) {
+            isCircular_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 isCircular_computed = false;
                 isCircular_initialized = false;
+                isCircular_visited = -1;
                 return isCircular_value;
             }
             boolean new_isCircular_value = isCircular_compute();
             if (new_isCircular_value!=isCircular_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             isCircular_value = new_isCircular_value; 
             return isCircular_value;
         }
@@ -2950,6 +3095,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Annotations.jrag at line 121
  @SuppressWarnings({"unchecked", "cast"})     public boolean isValidAnnotationMethodReturnType() {
+        ASTNode$State state = state();
         boolean isValidAnnotationMethodReturnType_value = isValidAnnotationMethodReturnType_compute();
         return isValidAnnotationMethodReturnType_value;
     }
@@ -2958,6 +3104,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Annotations.jrag at line 225
  @SuppressWarnings({"unchecked", "cast"})     public Annotation annotation(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         Annotation annotation_TypeDecl_value = annotation_compute(typeDecl);
         return annotation_TypeDecl_value;
     }
@@ -2966,6 +3113,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Annotations.jrag at line 282
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasAnnotationSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
         return hasAnnotationSuppressWarnings_String_value;
     }
@@ -2974,6 +3122,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Annotations.jrag at line 321
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDeprecated() {
+        ASTNode$State state = state();
         boolean isDeprecated_value = isDeprecated_compute();
         return isDeprecated_value;
     }
@@ -2982,6 +3131,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Annotations.jrag at line 472
  @SuppressWarnings({"unchecked", "cast"})     public boolean commensurateWith(ElementValue value) {
+        ASTNode$State state = state();
         boolean commensurateWith_ElementValue_value = commensurateWith_compute(value);
         return commensurateWith_ElementValue_value;
     }
@@ -2990,6 +3140,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Annotations.jrag at line 541
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAnnotationDecl() {
+        ASTNode$State state = state();
         boolean isAnnotationDecl_value = isAnnotationDecl_compute();
         return isAnnotationDecl_value;
     }
@@ -2998,6 +3149,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in AutoBoxing.jrag at line 31
  @SuppressWarnings({"unchecked", "cast"})     public boolean boxingConversionTo(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         boolean boxingConversionTo_TypeDecl_value = boxingConversionTo_compute(typeDecl);
         return boxingConversionTo_TypeDecl_value;
     }
@@ -3008,9 +3160,11 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     protected TypeDecl boxed_value;
     // Declared in AutoBoxing.jrag at line 35
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl boxed() {
-        if(boxed_computed)
+        if(boxed_computed) {
             return boxed_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boxed_value = boxed_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3022,6 +3176,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in AutoBoxing.jrag at line 47
  @SuppressWarnings({"unchecked", "cast"})     public boolean unboxingConversionTo(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         boolean unboxingConversionTo_TypeDecl_value = unboxingConversionTo_compute(typeDecl);
         return unboxingConversionTo_TypeDecl_value;
     }
@@ -3032,9 +3187,11 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     protected TypeDecl unboxed_value;
     // Declared in AutoBoxing.jrag at line 51
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unboxed() {
-        if(unboxed_computed)
+        if(unboxed_computed) {
             return unboxed_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         unboxed_value = unboxed_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3053,9 +3210,11 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     Declared in EnhancedFor.jrag at line 35
 */
  @SuppressWarnings({"unchecked", "cast"})     public boolean isIterable() {
-        if(isIterable_computed)
+        if(isIterable_computed) {
             return isIterable_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isIterable_value = isIterable_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3067,6 +3226,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Enums.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEnumDecl() {
+        ASTNode$State state = state();
         boolean isEnumDecl_value = isEnumDecl_compute();
         return isEnumDecl_value;
     }
@@ -3075,61 +3235,65 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericMethodsInference.jrag at line 13
  @SuppressWarnings({"unchecked", "cast"})     public boolean isUnboxedPrimitive() {
+        ASTNode$State state = state();
         boolean isUnboxedPrimitive_value = isUnboxedPrimitive_compute();
         return isUnboxedPrimitive_value;
     }
 
     private boolean isUnboxedPrimitive_compute() {  return this instanceof PrimitiveType && isPrimitive();  }
 
-    protected int involvesTypeParameters_visited;
+    protected int involvesTypeParameters_visited = -1;
     protected boolean involvesTypeParameters_computed = false;
     protected boolean involvesTypeParameters_initialized = false;
     protected boolean involvesTypeParameters_value;
+    // Declared in GenericMethodsInference.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public boolean involvesTypeParameters() {
-        if(involvesTypeParameters_computed)
+        if(involvesTypeParameters_computed) {
             return involvesTypeParameters_value;
+        }
+        ASTNode$State state = state();
         if (!involvesTypeParameters_initialized) {
             involvesTypeParameters_initialized = true;
             involvesTypeParameters_value = false;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                involvesTypeParameters_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                involvesTypeParameters_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
                 if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 involvesTypeParameters_value = new_involvesTypeParameters_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             involvesTypeParameters_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             involvesTypeParameters_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               involvesTypeParameters_computed = false;
               involvesTypeParameters_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return involvesTypeParameters_value;
         }
-        if(involvesTypeParameters_visited != state().CIRCLE_INDEX) {
-            involvesTypeParameters_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(involvesTypeParameters_visited != state.CIRCLE_INDEX) {
+            involvesTypeParameters_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 involvesTypeParameters_computed = false;
                 involvesTypeParameters_initialized = false;
+                involvesTypeParameters_visited = -1;
                 return involvesTypeParameters_value;
             }
             boolean new_involvesTypeParameters_value = involvesTypeParameters_compute();
             if (new_involvesTypeParameters_value!=involvesTypeParameters_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             involvesTypeParameters_value = new_involvesTypeParameters_value; 
             return involvesTypeParameters_value;
         }
@@ -3140,6 +3304,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 155
  @SuppressWarnings({"unchecked", "cast"})     public boolean isGenericType() {
+        ASTNode$State state = state();
         boolean isGenericType_value = isGenericType_compute();
         return isGenericType_value;
     }
@@ -3148,6 +3313,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 227
  @SuppressWarnings({"unchecked", "cast"})     public boolean isParameterizedType() {
+        ASTNode$State state = state();
         boolean isParameterizedType_value = isParameterizedType_compute();
         return isParameterizedType_value;
     }
@@ -3156,6 +3322,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 230
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRawType() {
+        ASTNode$State state = state();
         boolean isRawType_value = isRawType_compute();
         return isRawType_value;
     }
@@ -3166,9 +3333,11 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     protected TypeDecl erasure_value;
     // Declared in Generics.jrag at line 310
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl erasure() {
-        if(erasure_computed)
+        if(erasure_computed) {
             return erasure_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         erasure_value = erasure_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3188,9 +3357,11 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     protected HashSet implementedInterfaces_value;
     // Declared in Generics.jrag at line 366
  @SuppressWarnings({"unchecked", "cast"})     public HashSet implementedInterfaces() {
-        if(implementedInterfaces_computed)
+        if(implementedInterfaces_computed) {
             return implementedInterfaces_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         implementedInterfaces_value = implementedInterfaces_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3202,6 +3373,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 538
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
+        ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);
         return sameSignature_Access_value;
     }
@@ -3212,55 +3384,58 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return this == a.type();
   }
 
-    protected int usesTypeVariable_visited;
+    protected int usesTypeVariable_visited = -1;
     protected boolean usesTypeVariable_computed = false;
     protected boolean usesTypeVariable_initialized = false;
     protected boolean usesTypeVariable_value;
+    // Declared in Generics.jrag at line 909
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
-        if(usesTypeVariable_computed)
+        if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
+        }
+        ASTNode$State state = state();
         if (!usesTypeVariable_initialized) {
             usesTypeVariable_initialized = true;
             usesTypeVariable_value = false;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             do {
-                usesTypeVariable_visited = state().CIRCLE_INDEX;
-                state().CHANGE = false;
+                usesTypeVariable_visited = state.CIRCLE_INDEX;
+                state.CHANGE = false;
                 boolean new_usesTypeVariable_value = usesTypeVariable_compute();
                 if (new_usesTypeVariable_value!=usesTypeVariable_value)
-                    state().CHANGE = true;
+                    state.CHANGE = true;
                 usesTypeVariable_value = new_usesTypeVariable_value; 
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
             usesTypeVariable_computed = true;
             }
             else {
-            state().RESET_CYCLE = true;
+            state.RESET_CYCLE = true;
             usesTypeVariable_compute();
-            state().RESET_CYCLE = false;
+            state.RESET_CYCLE = false;
               usesTypeVariable_computed = false;
               usesTypeVariable_initialized = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return usesTypeVariable_value;
         }
-        if(usesTypeVariable_visited != state().CIRCLE_INDEX) {
-            usesTypeVariable_visited = state().CIRCLE_INDEX;
-            if (state().RESET_CYCLE) {
+        if(usesTypeVariable_visited != state.CIRCLE_INDEX) {
+            usesTypeVariable_visited = state.CIRCLE_INDEX;
+            if (state.RESET_CYCLE) {
                 usesTypeVariable_computed = false;
                 usesTypeVariable_initialized = false;
+                usesTypeVariable_visited = -1;
                 return usesTypeVariable_value;
             }
             boolean new_usesTypeVariable_value = usesTypeVariable_compute();
             if (new_usesTypeVariable_value!=usesTypeVariable_value)
-                state().CHANGE = true;
+                state.CHANGE = true;
             usesTypeVariable_value = new_usesTypeVariable_value; 
             return usesTypeVariable_value;
         }
@@ -3271,6 +3446,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 1061
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
+        ASTNode$State state = state();
         TypeDecl original_value = original_compute();
         return original_value;
     }
@@ -3279,6 +3455,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 1153
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl asWildcardExtends() {
+        ASTNode$State state = state();
         TypeDecl asWildcardExtends_value = asWildcardExtends_compute();
         return asWildcardExtends_value;
     }
@@ -3287,6 +3464,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in Generics.jrag at line 1166
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl asWildcardSuper() {
+        ASTNode$State state = state();
         TypeDecl asWildcardSuper_value = asWildcardSuper_compute();
         return asWildcardSuper_value;
     }
@@ -3297,9 +3475,11 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     protected TypeDecl sourceTypeDecl_value;
     // Declared in Generics.jrag at line 1258
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
-        if(sourceTypeDecl_computed)
+        if(sourceTypeDecl_computed) {
             return sourceTypeDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceTypeDecl_value = sourceTypeDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3311,6 +3491,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsParTypeDecl.jrag at line 70
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTypeVariable() {
+        ASTNode$State state = state();
         boolean isTypeVariable_value = isTypeVariable_compute();
         return isTypeVariable_value;
     }
@@ -3319,6 +3500,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGenericClassDecl(GenericClassDecl type) {
+        ASTNode$State state = state();
         boolean supertypeGenericClassDecl_GenericClassDecl_value = supertypeGenericClassDecl_compute(type);
         return supertypeGenericClassDecl_GenericClassDecl_value;
     }
@@ -3327,6 +3509,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 20
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGenericInterfaceDecl(GenericInterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeGenericInterfaceDecl_GenericInterfaceDecl_value = supertypeGenericInterfaceDecl_compute(type);
         return supertypeGenericInterfaceDecl_GenericInterfaceDecl_value;
     }
@@ -3335,6 +3518,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 26
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeRawClassDecl(RawClassDecl type) {
+        ASTNode$State state = state();
         boolean supertypeRawClassDecl_RawClassDecl_value = supertypeRawClassDecl_compute(type);
         return supertypeRawClassDecl_RawClassDecl_value;
     }
@@ -3343,6 +3527,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 30
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeRawInterfaceDecl(RawInterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeRawInterfaceDecl_RawInterfaceDecl_value = supertypeRawInterfaceDecl_compute(type);
         return supertypeRawInterfaceDecl_RawInterfaceDecl_value;
     }
@@ -3351,6 +3536,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 46
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeWildcard(WildcardType type) {
+        ASTNode$State state = state();
         boolean supertypeWildcard_WildcardType_value = supertypeWildcard_compute(type);
         return supertypeWildcard_WildcardType_value;
     }
@@ -3359,6 +3545,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 57
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeWildcardExtends(WildcardExtendsType type) {
+        ASTNode$State state = state();
         boolean supertypeWildcardExtends_WildcardExtendsType_value = supertypeWildcardExtends_compute(type);
         return supertypeWildcardExtends_WildcardExtendsType_value;
     }
@@ -3367,6 +3554,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 66
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeWildcardSuper(WildcardSuperType type) {
+        ASTNode$State state = state();
         boolean supertypeWildcardSuper_WildcardSuperType_value = supertypeWildcardSuper_compute(type);
         return supertypeWildcardSuper_WildcardSuperType_value;
     }
@@ -3375,6 +3563,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 102
  @SuppressWarnings({"unchecked", "cast"})     public boolean isWildcard() {
+        ASTNode$State state = state();
         boolean isWildcard_value = isWildcard_compute();
         return isWildcard_value;
     }
@@ -3383,6 +3572,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 125
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeParClassDecl(ParClassDecl type) {
+        ASTNode$State state = state();
         boolean supertypeParClassDecl_ParClassDecl_value = supertypeParClassDecl_compute(type);
         return supertypeParClassDecl_ParClassDecl_value;
     }
@@ -3391,69 +3581,74 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     // Declared in GenericsSubtype.jrag at line 129
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeParInterfaceDecl(ParInterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeParInterfaceDecl_ParInterfaceDecl_value = supertypeParInterfaceDecl_compute(type);
         return supertypeParInterfaceDecl_ParInterfaceDecl_value;
     }
 
     private boolean supertypeParInterfaceDecl_compute(ParInterfaceDecl type) {  return supertypeInterfaceDecl(type);  }
 
-    protected java.util.Map containedIn_TypeDecl_visited;
-    protected java.util.Set containedIn_TypeDecl_computed = new java.util.HashSet(4);
-    protected java.util.Set containedIn_TypeDecl_initialized = new java.util.HashSet(4);
-    protected java.util.Map containedIn_TypeDecl_values = new java.util.HashMap(4);
+    protected java.util.Map containedIn_TypeDecl_values;
+    // Declared in GenericsSubtype.jrag at line 141
  @SuppressWarnings({"unchecked", "cast"})     public boolean containedIn(TypeDecl type) {
         Object _parameters = type;
-if(containedIn_TypeDecl_visited == null) containedIn_TypeDecl_visited = new java.util.HashMap(4);
 if(containedIn_TypeDecl_values == null) containedIn_TypeDecl_values = new java.util.HashMap(4);
-        if(containedIn_TypeDecl_computed.contains(_parameters))
-            return ((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue();
-        if (!containedIn_TypeDecl_initialized.contains(_parameters)) {
-            containedIn_TypeDecl_initialized.add(_parameters);
-            containedIn_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
+        ASTNode$State.CircularValue _value;
+        if(containedIn_TypeDecl_values.containsKey(_parameters)) {
+            Object _o = containedIn_TypeDecl_values.get(_parameters);
+            if(!(_o instanceof ASTNode$State.CircularValue)) {
+                return ((Boolean)_o).booleanValue();
+            }
+            else
+                _value = (ASTNode$State.CircularValue)_o;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        else {
+            _value = new ASTNode$State.CircularValue();
+            containedIn_TypeDecl_values.put(_parameters, _value);
+            _value.value = Boolean.valueOf(true);
+        }
+        ASTNode$State state = state();
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             boolean new_containedIn_TypeDecl_value;
             do {
-                containedIn_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-                state().CHANGE = false;
+                _value.visited = new Integer(state.CIRCLE_INDEX);
+                state.CHANGE = false;
                 new_containedIn_TypeDecl_value = containedIn_compute(type);
-                if (new_containedIn_TypeDecl_value!=((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue())
-                    state().CHANGE = true;
-                containedIn_TypeDecl_values.put(_parameters, Boolean.valueOf(new_containedIn_TypeDecl_value));
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                if (new_containedIn_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                    state.CHANGE = true;
+                    _value.value = Boolean.valueOf(new_containedIn_TypeDecl_value);
+                }
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
-            containedIn_TypeDecl_computed.add(_parameters);
+                containedIn_TypeDecl_values.put(_parameters, new_containedIn_TypeDecl_value);
             }
             else {
-            state().RESET_CYCLE = true;
+                containedIn_TypeDecl_values.remove(_parameters);
+            state.RESET_CYCLE = true;
             containedIn_compute(type);
-            state().RESET_CYCLE = false;
-            containedIn_TypeDecl_computed.remove(_parameters);
-            containedIn_TypeDecl_initialized.remove(_parameters);
+            state.RESET_CYCLE = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return new_containedIn_TypeDecl_value;
         }
-        if(!new Integer(state().CIRCLE_INDEX).equals(containedIn_TypeDecl_visited.get(_parameters))) {
-            containedIn_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-            if (state().RESET_CYCLE) {
-                containedIn_TypeDecl_computed.remove(_parameters);
-                containedIn_TypeDecl_initialized.remove(_parameters);
-                return ((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue();
-            }
+        if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+            _value.visited = new Integer(state.CIRCLE_INDEX);
             boolean new_containedIn_TypeDecl_value = containedIn_compute(type);
-            if (new_containedIn_TypeDecl_value!=((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue())
-                state().CHANGE = true;
-            containedIn_TypeDecl_values.put(_parameters, Boolean.valueOf(new_containedIn_TypeDecl_value));
+            if (state.RESET_CYCLE) {
+                containedIn_TypeDecl_values.remove(_parameters);
+            }
+            else if (new_containedIn_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                state.CHANGE = true;
+                _value.value = new_containedIn_TypeDecl_value;
+            }
             return new_containedIn_TypeDecl_value;
         }
-        return ((Boolean)containedIn_TypeDecl_values.get(_parameters)).booleanValue();
+        return ((Boolean)_value.value).booleanValue();
     }
 
     private boolean containedIn_compute(TypeDecl type) {
@@ -3469,69 +3664,74 @@ if(containedIn_TypeDecl_values == null) containedIn_TypeDecl_values = new java.u
     //return false;
   }
 
-    protected java.util.Map sameStructure_TypeDecl_visited;
-    protected java.util.Set sameStructure_TypeDecl_computed = new java.util.HashSet(4);
-    protected java.util.Set sameStructure_TypeDecl_initialized = new java.util.HashSet(4);
-    protected java.util.Map sameStructure_TypeDecl_values = new java.util.HashMap(4);
+    protected java.util.Map sameStructure_TypeDecl_values;
+    // Declared in GenericsSubtype.jrag at line 178
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameStructure(TypeDecl t) {
         Object _parameters = t;
-if(sameStructure_TypeDecl_visited == null) sameStructure_TypeDecl_visited = new java.util.HashMap(4);
 if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new java.util.HashMap(4);
-        if(sameStructure_TypeDecl_computed.contains(_parameters))
-            return ((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue();
-        if (!sameStructure_TypeDecl_initialized.contains(_parameters)) {
-            sameStructure_TypeDecl_initialized.add(_parameters);
-            sameStructure_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
+        ASTNode$State.CircularValue _value;
+        if(sameStructure_TypeDecl_values.containsKey(_parameters)) {
+            Object _o = sameStructure_TypeDecl_values.get(_parameters);
+            if(!(_o instanceof ASTNode$State.CircularValue)) {
+                return ((Boolean)_o).booleanValue();
+            }
+            else
+                _value = (ASTNode$State.CircularValue)_o;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        else {
+            _value = new ASTNode$State.CircularValue();
+            sameStructure_TypeDecl_values.put(_parameters, _value);
+            _value.value = Boolean.valueOf(true);
+        }
+        ASTNode$State state = state();
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             boolean new_sameStructure_TypeDecl_value;
             do {
-                sameStructure_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-                state().CHANGE = false;
+                _value.visited = new Integer(state.CIRCLE_INDEX);
+                state.CHANGE = false;
                 new_sameStructure_TypeDecl_value = sameStructure_compute(t);
-                if (new_sameStructure_TypeDecl_value!=((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue())
-                    state().CHANGE = true;
-                sameStructure_TypeDecl_values.put(_parameters, Boolean.valueOf(new_sameStructure_TypeDecl_value));
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                if (new_sameStructure_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                    state.CHANGE = true;
+                    _value.value = Boolean.valueOf(new_sameStructure_TypeDecl_value);
+                }
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
-            sameStructure_TypeDecl_computed.add(_parameters);
+                sameStructure_TypeDecl_values.put(_parameters, new_sameStructure_TypeDecl_value);
             }
             else {
-            state().RESET_CYCLE = true;
+                sameStructure_TypeDecl_values.remove(_parameters);
+            state.RESET_CYCLE = true;
             sameStructure_compute(t);
-            state().RESET_CYCLE = false;
-            sameStructure_TypeDecl_computed.remove(_parameters);
-            sameStructure_TypeDecl_initialized.remove(_parameters);
+            state.RESET_CYCLE = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return new_sameStructure_TypeDecl_value;
         }
-        if(!new Integer(state().CIRCLE_INDEX).equals(sameStructure_TypeDecl_visited.get(_parameters))) {
-            sameStructure_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-            if (state().RESET_CYCLE) {
-                sameStructure_TypeDecl_computed.remove(_parameters);
-                sameStructure_TypeDecl_initialized.remove(_parameters);
-                return ((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue();
-            }
+        if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+            _value.visited = new Integer(state.CIRCLE_INDEX);
             boolean new_sameStructure_TypeDecl_value = sameStructure_compute(t);
-            if (new_sameStructure_TypeDecl_value!=((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue())
-                state().CHANGE = true;
-            sameStructure_TypeDecl_values.put(_parameters, Boolean.valueOf(new_sameStructure_TypeDecl_value));
+            if (state.RESET_CYCLE) {
+                sameStructure_TypeDecl_values.remove(_parameters);
+            }
+            else if (new_sameStructure_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                state.CHANGE = true;
+                _value.value = new_sameStructure_TypeDecl_value;
+            }
             return new_sameStructure_TypeDecl_value;
         }
-        return ((Boolean)sameStructure_TypeDecl_values.get(_parameters)).booleanValue();
+        return ((Boolean)_value.value).booleanValue();
     }
 
     private boolean sameStructure_compute(TypeDecl t) {  return t == this;  }
 
     // Declared in GenericsSubtype.jrag at line 291
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeTypeVariable(TypeVariable type) {
+        ASTNode$State state = state();
         boolean supertypeTypeVariable_TypeVariable_value = supertypeTypeVariable_compute(type);
         return supertypeTypeVariable_TypeVariable_value;
     }
@@ -3547,6 +3747,7 @@ if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new ja
 
     // Declared in GenericsSubtype.jrag at line 347
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeLUBType(LUBType type) {
+        ASTNode$State state = state();
         boolean supertypeLUBType_LUBType_value = supertypeLUBType_compute(type);
         return supertypeLUBType_LUBType_value;
     }
@@ -3560,6 +3761,7 @@ if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new ja
 
     // Declared in GenericsSubtype.jrag at line 366
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGLBType(GLBType type) {
+        ASTNode$State state = state();
         boolean supertypeGLBType_GLBType_value = supertypeGLBType_compute(type);
         return supertypeGLBType_GLBType_value;
     }
@@ -3572,69 +3774,74 @@ if(sameStructure_TypeDecl_values == null) sameStructure_TypeDecl_values = new ja
     return false;
   }
 
-    protected java.util.Map subtype_TypeDecl_visited;
-    protected java.util.Set subtype_TypeDecl_computed = new java.util.HashSet(4);
-    protected java.util.Set subtype_TypeDecl_initialized = new java.util.HashSet(4);
-    protected java.util.Map subtype_TypeDecl_values = new java.util.HashMap(4);
+    protected java.util.Map subtype_TypeDecl_values;
+    // Declared in GenericsSubtype.jrag at line 405
  @SuppressWarnings({"unchecked", "cast"})     public boolean subtype(TypeDecl type) {
         Object _parameters = type;
-if(subtype_TypeDecl_visited == null) subtype_TypeDecl_visited = new java.util.HashMap(4);
 if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.HashMap(4);
-        if(subtype_TypeDecl_computed.contains(_parameters))
-            return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-        if (!subtype_TypeDecl_initialized.contains(_parameters)) {
-            subtype_TypeDecl_initialized.add(_parameters);
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(true));
+        ASTNode$State.CircularValue _value;
+        if(subtype_TypeDecl_values.containsKey(_parameters)) {
+            Object _o = subtype_TypeDecl_values.get(_parameters);
+            if(!(_o instanceof ASTNode$State.CircularValue)) {
+                return ((Boolean)_o).booleanValue();
+            }
+            else
+                _value = (ASTNode$State.CircularValue)_o;
         }
-        if (!state().IN_CIRCLE) {
-            state().IN_CIRCLE = true;
-            int num = state().boundariesCrossed;
+        else {
+            _value = new ASTNode$State.CircularValue();
+            subtype_TypeDecl_values.put(_parameters, _value);
+            _value.value = Boolean.valueOf(true);
+        }
+        ASTNode$State state = state();
+        if (!state.IN_CIRCLE) {
+            state.IN_CIRCLE = true;
+            int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
-            state().CIRCLE_INDEX = 1;
             boolean new_subtype_TypeDecl_value;
             do {
-                subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-                state().CHANGE = false;
+                _value.visited = new Integer(state.CIRCLE_INDEX);
+                state.CHANGE = false;
                 new_subtype_TypeDecl_value = subtype_compute(type);
-                if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                    state().CHANGE = true;
-                subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
-                state().CIRCLE_INDEX++;
-            } while (state().CHANGE);
+                if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                    state.CHANGE = true;
+                    _value.value = Boolean.valueOf(new_subtype_TypeDecl_value);
+                }
+                state.CIRCLE_INDEX++;
+            } while (state.CHANGE);
             if(isFinal && num == state().boundariesCrossed)
 {
-            subtype_TypeDecl_computed.add(_parameters);
+                subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
             }
             else {
-            state().RESET_CYCLE = true;
+                subtype_TypeDecl_values.remove(_parameters);
+            state.RESET_CYCLE = true;
             subtype_compute(type);
-            state().RESET_CYCLE = false;
-            subtype_TypeDecl_computed.remove(_parameters);
-            subtype_TypeDecl_initialized.remove(_parameters);
+            state.RESET_CYCLE = false;
             }
-            state().IN_CIRCLE = false; 
+            state.IN_CIRCLE = false; 
             return new_subtype_TypeDecl_value;
         }
-        if(!new Integer(state().CIRCLE_INDEX).equals(subtype_TypeDecl_visited.get(_parameters))) {
-            subtype_TypeDecl_visited.put(_parameters, new Integer(state().CIRCLE_INDEX));
-            if (state().RESET_CYCLE) {
-                subtype_TypeDecl_computed.remove(_parameters);
-                subtype_TypeDecl_initialized.remove(_parameters);
-                return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
-            }
+        if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+            _value.visited = new Integer(state.CIRCLE_INDEX);
             boolean new_subtype_TypeDecl_value = subtype_compute(type);
-            if (new_subtype_TypeDecl_value!=((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue())
-                state().CHANGE = true;
-            subtype_TypeDecl_values.put(_parameters, Boolean.valueOf(new_subtype_TypeDecl_value));
+            if (state.RESET_CYCLE) {
+                subtype_TypeDecl_values.remove(_parameters);
+            }
+            else if (new_subtype_TypeDecl_value!=((Boolean)_value.value).booleanValue()) {
+                state.CHANGE = true;
+                _value.value = new_subtype_TypeDecl_value;
+            }
             return new_subtype_TypeDecl_value;
         }
-        return ((Boolean)subtype_TypeDecl_values.get(_parameters)).booleanValue();
+        return ((Boolean)_value.value).booleanValue();
     }
 
     private boolean subtype_compute(TypeDecl type) {  return type == this;  }
 
     // Declared in GenericsSubtype.jrag at line 421
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeClassDecl(ClassDecl type) {
+        ASTNode$State state = state();
         boolean supertypeClassDecl_ClassDecl_value = supertypeClassDecl_compute(type);
         return supertypeClassDecl_ClassDecl_value;
     }
@@ -3643,6 +3850,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 437
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeInterfaceDecl(InterfaceDecl type) {
+        ASTNode$State state = state();
         boolean supertypeInterfaceDecl_InterfaceDecl_value = supertypeInterfaceDecl_compute(type);
         return supertypeInterfaceDecl_InterfaceDecl_value;
     }
@@ -3651,6 +3859,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 450
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeArrayDecl(ArrayDecl type) {
+        ASTNode$State state = state();
         boolean supertypeArrayDecl_ArrayDecl_value = supertypeArrayDecl_compute(type);
         return supertypeArrayDecl_ArrayDecl_value;
     }
@@ -3659,6 +3868,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 472
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypePrimitiveType(PrimitiveType type) {
+        ASTNode$State state = state();
         boolean supertypePrimitiveType_PrimitiveType_value = supertypePrimitiveType_compute(type);
         return supertypePrimitiveType_PrimitiveType_value;
     }
@@ -3667,6 +3877,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 479
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeNullType(NullType type) {
+        ASTNode$State state = state();
         boolean supertypeNullType_NullType_value = supertypeNullType_compute(type);
         return supertypeNullType_NullType_value;
     }
@@ -3675,6 +3886,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 483
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeVoidType(VoidType type) {
+        ASTNode$State state = state();
         boolean supertypeVoidType_VoidType_value = supertypeVoidType_compute(type);
         return supertypeVoidType_VoidType_value;
     }
@@ -3683,6 +3895,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 493
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeClassDeclSubstituted(ClassDeclSubstituted type) {
+        ASTNode$State state = state();
         boolean supertypeClassDeclSubstituted_ClassDeclSubstituted_value = supertypeClassDeclSubstituted_compute(type);
         return supertypeClassDeclSubstituted_ClassDeclSubstituted_value;
     }
@@ -3691,6 +3904,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 503
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeInterfaceDeclSubstituted(InterfaceDeclSubstituted type) {
+        ASTNode$State state = state();
         boolean supertypeInterfaceDeclSubstituted_InterfaceDeclSubstituted_value = supertypeInterfaceDeclSubstituted_compute(type);
         return supertypeInterfaceDeclSubstituted_InterfaceDeclSubstituted_value;
     }
@@ -3699,6 +3913,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 513
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGenericClassDeclSubstituted(GenericClassDeclSubstituted type) {
+        ASTNode$State state = state();
         boolean supertypeGenericClassDeclSubstituted_GenericClassDeclSubstituted_value = supertypeGenericClassDeclSubstituted_compute(type);
         return supertypeGenericClassDeclSubstituted_GenericClassDeclSubstituted_value;
     }
@@ -3707,6 +3922,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in GenericsSubtype.jrag at line 523
  @SuppressWarnings({"unchecked", "cast"})     public boolean supertypeGenericInterfaceDeclSubstituted(GenericInterfaceDeclSubstituted type) {
+        ASTNode$State state = state();
         boolean supertypeGenericInterfaceDeclSubstituted_GenericInterfaceDeclSubstituted_value = supertypeGenericInterfaceDeclSubstituted_compute(type);
         return supertypeGenericInterfaceDeclSubstituted_GenericInterfaceDeclSubstituted_value;
     }
@@ -3715,6 +3931,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 79
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl stringPromotion() {
+        ASTNode$State state = state();
         TypeDecl stringPromotion_value = stringPromotion_compute();
         return stringPromotion_value;
     }
@@ -3723,6 +3940,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 91
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl methodWithArgs(String name, TypeDecl[] args) {
+        ASTNode$State state = state();
         MethodDecl methodWithArgs_String_TypeDecl_a_value = methodWithArgs_compute(name, args);
         return methodWithArgs_String_TypeDecl_a_value;
     }
@@ -3743,9 +3961,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected Collection enclosingVariables_value;
     // Declared in InnerClasses.jrag at line 142
  @SuppressWarnings({"unchecked", "cast"})     public Collection enclosingVariables() {
-        if(enclosingVariables_computed)
+        if(enclosingVariables_computed) {
             return enclosingVariables_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         enclosingVariables_value = enclosingVariables_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3768,6 +3988,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 382
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAnonymousInNonStaticContext() {
+        ASTNode$State state = state();
         boolean isAnonymousInNonStaticContext_value = isAnonymousInNonStaticContext_compute();
         return isAnonymousInNonStaticContext_value;
     }
@@ -3780,6 +4001,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 388
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsEnclosing() {
+        ASTNode$State state = state();
         boolean needsEnclosing_value = needsEnclosing_compute();
         return needsEnclosing_value;
     }
@@ -3796,6 +4018,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 398
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsSuperEnclosing() {
+        ASTNode$State state = state();
         boolean needsSuperEnclosing_value = needsSuperEnclosing_compute();
         return needsSuperEnclosing_value;
     }
@@ -3815,6 +4038,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 410
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosing() {
+        ASTNode$State state = state();
         TypeDecl enclosing_value = enclosing_compute();
         return enclosing_value;
     }
@@ -3830,6 +4054,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in InnerClasses.jrag at line 418
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superEnclosing() {
+        ASTNode$State state = state();
         TypeDecl superEnclosing_value = superEnclosing_compute();
         return superEnclosing_value;
     }
@@ -3840,9 +4065,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected int uniqueIndex_value;
     // Declared in Java2Rewrites.jrag at line 12
  @SuppressWarnings({"unchecked", "cast"})     public int uniqueIndex() {
-        if(uniqueIndex_computed)
+        if(uniqueIndex_computed) {
             return uniqueIndex_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         uniqueIndex_value = uniqueIndex_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3856,9 +4083,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected String jvmName_value;
     // Declared in Java2Rewrites.jrag at line 15
  @SuppressWarnings({"unchecked", "cast"})     public String jvmName() {
-        if(jvmName_computed)
+        if(jvmName_computed) {
             return jvmName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         jvmName_value = jvmName_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3872,6 +4101,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in Java2Rewrites.jrag at line 44
  @SuppressWarnings({"unchecked", "cast"})     public String primitiveClassName() {
+        ASTNode$State state = state();
         String primitiveClassName_value = primitiveClassName_compute();
         return primitiveClassName_value;
     }
@@ -3882,6 +4112,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in Java2Rewrites.jrag at line 57
  @SuppressWarnings({"unchecked", "cast"})     public String referenceClassFieldName() {
+        ASTNode$State state = state();
         String referenceClassFieldName_value = referenceClassFieldName_compute();
         return referenceClassFieldName_value;
     }
@@ -3894,9 +4125,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected SootClass getSootClassDecl_value;
     // Declared in EmitJimpleRefinements.jrag at line 63
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
-        if(getSootClassDecl_computed)
+        if(getSootClassDecl_computed) {
             return getSootClassDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootClassDecl_value = getSootClassDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3943,9 +4176,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected Type getSootType_value;
     // Declared in EmitJimpleRefinements.jrag at line 20
  @SuppressWarnings({"unchecked", "cast"})     public Type getSootType() {
-        if(getSootType_computed)
+        if(getSootType_computed) {
             return getSootType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootType_value = getSootType_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3959,6 +4194,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in EmitJimple.jrag at line 57
  @SuppressWarnings({"unchecked", "cast"})     public soot.RefType sootRef() {
+        ASTNode$State state = state();
         soot.RefType sootRef_value = sootRef_compute();
         return sootRef_value;
     }
@@ -3969,9 +4205,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected SootClass sootClass_value;
     // Declared in GenericsCodegen.jrag at line 413
  @SuppressWarnings({"unchecked", "cast"})     public SootClass sootClass() {
-        if(sootClass_computed)
+        if(sootClass_computed) {
             return sootClass_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sootClass_value = sootClass_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -3986,6 +4224,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in EmitJimple.jrag at line 86
  @SuppressWarnings({"unchecked", "cast"})     public String sourceNameWithoutPath() {
+        ASTNode$State state = state();
         String sourceNameWithoutPath_value = sourceNameWithoutPath_compute();
         return sourceNameWithoutPath_value;
     }
@@ -3997,6 +4236,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     // Declared in EmitJimple.jrag at line 91
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;
     }
@@ -4021,9 +4261,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected boolean needsClinit_value;
     // Declared in EmitJimple.jrag at line 882
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsClinit() {
-        if(needsClinit_computed)
+        if(needsClinit_computed) {
             return needsClinit_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         needsClinit_value = needsClinit_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -4051,9 +4293,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     protected Collection innerClassesAttributeEntries_value;
     // Declared in EmitJimple.jrag at line 957
  @SuppressWarnings({"unchecked", "cast"})     public Collection innerClassesAttributeEntries() {
-        if(innerClassesAttributeEntries_computed)
+        if(innerClassesAttributeEntries_computed) {
             return innerClassesAttributeEntries_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         innerClassesAttributeEntries_value = innerClassesAttributeEntries_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -4079,9 +4323,11 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
         _parameters.add(name);
         _parameters.add(type);
 if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_values = new java.util.HashMap(4);
-        if(getSootField_String_TypeDecl_values.containsKey(_parameters))
+        if(getSootField_String_TypeDecl_values.containsKey(_parameters)) {
             return (SootField)getSootField_String_TypeDecl_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SootField getSootField_String_TypeDecl_value = getSootField_compute(name, type);
         if(isFinal && num == state().boundariesCrossed)
@@ -4097,6 +4343,7 @@ if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_val
 
     // Declared in LocalNum.jrag at line 52
  @SuppressWarnings({"unchecked", "cast"})     public int variableSize() {
+        ASTNode$State state = state();
         int variableSize_value = variableSize_compute();
         return variableSize_value;
     }
@@ -4105,6 +4352,7 @@ if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_val
 
     // Declared in AnnotationsCodegen.jrag at line 322
  @SuppressWarnings({"unchecked", "cast"})     public String typeDescriptor() {
+        ASTNode$State state = state();
         String typeDescriptor_value = typeDescriptor_compute();
         return typeDescriptor_value;
     }
@@ -4116,9 +4364,11 @@ if(getSootField_String_TypeDecl_values == null) getSootField_String_TypeDecl_val
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl createEnumMethod(TypeDecl enumDecl) {
         Object _parameters = enumDecl;
 if(createEnumMethod_TypeDecl_values == null) createEnumMethod_TypeDecl_values = new java.util.HashMap(4);
-        if(createEnumMethod_TypeDecl_values.containsKey(_parameters))
+        if(createEnumMethod_TypeDecl_values.containsKey(_parameters)) {
             return (MethodDecl)createEnumMethod_TypeDecl_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         MethodDecl createEnumMethod_TypeDecl_value = createEnumMethod_compute(enumDecl);
         if(isFinal && num == state().boundariesCrossed)
@@ -4174,13 +4424,15 @@ if(createEnumMethod_TypeDecl_values == null) createEnumMethod_TypeDecl_values = 
  @SuppressWarnings({"unchecked", "cast"})     public int createEnumIndex(EnumConstant e) {
         Object _parameters = e;
 if(createEnumIndex_EnumConstant_values == null) createEnumIndex_EnumConstant_values = new java.util.HashMap(4);
-        if(createEnumIndex_EnumConstant_values.containsKey(_parameters))
+        if(createEnumIndex_EnumConstant_values.containsKey(_parameters)) {
             return ((Integer)createEnumIndex_EnumConstant_values.get(_parameters)).intValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         int createEnumIndex_EnumConstant_value = createEnumIndex_compute(e);
         if(isFinal && num == state().boundariesCrossed)
-            createEnumIndex_EnumConstant_values.put(_parameters, new Integer(createEnumIndex_EnumConstant_value));
+            createEnumIndex_EnumConstant_values.put(_parameters, Integer.valueOf(createEnumIndex_EnumConstant_value));
         return createEnumIndex_EnumConstant_value;
     }
 
@@ -4232,9 +4484,11 @@ if(createEnumIndex_EnumConstant_values == null) createEnumIndex_EnumConstant_val
  @SuppressWarnings({"unchecked", "cast"})     public FieldDeclaration createEnumArray(TypeDecl enumDecl) {
         Object _parameters = enumDecl;
 if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = new java.util.HashMap(4);
-        if(createEnumArray_TypeDecl_values.containsKey(_parameters))
+        if(createEnumArray_TypeDecl_values.containsKey(_parameters)) {
             return (FieldDeclaration)createEnumArray_TypeDecl_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         FieldDeclaration createEnumArray_TypeDecl_value = createEnumArray_compute(enumDecl);
         if(isFinal && num == state().boundariesCrossed)
@@ -4257,6 +4511,7 @@ if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = ne
 
     // Declared in GenericsCodegen.jrag at line 333
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet bridgeCandidates(String signature) {
+        ASTNode$State state = state();
         SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
         return bridgeCandidates_String_value;
     }
@@ -4267,9 +4522,11 @@ if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = ne
     protected TypeDecl componentType_value;
     // Declared in Arrays.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl componentType() {
-        if(componentType_computed)
+        if(componentType_computed) {
             return componentType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         componentType_value = getParent().Define_TypeDecl_componentType(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4279,18 +4536,21 @@ if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = ne
 
     // Declared in Arrays.jrag at line 50
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeCloneable() {
+        ASTNode$State state = state();
         TypeDecl typeCloneable_value = getParent().Define_TypeDecl_typeCloneable(this, null);
         return typeCloneable_value;
     }
 
     // Declared in Arrays.jrag at line 51
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeSerializable() {
+        ASTNode$State state = state();
         TypeDecl typeSerializable_value = getParent().Define_TypeDecl_typeSerializable(this, null);
         return typeSerializable_value;
     }
 
     // Declared in ClassPath.jrag at line 31
  @SuppressWarnings({"unchecked", "cast"})     public CompilationUnit compilationUnit() {
+        ASTNode$State state = state();
         CompilationUnit compilationUnit_value = getParent().Define_CompilationUnit_compilationUnit(this, null);
         return compilationUnit_value;
     }
@@ -4300,9 +4560,11 @@ if(createEnumArray_TypeDecl_values == null) createEnumArray_TypeDecl_values = ne
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAbefore(Variable v) {
         Object _parameters = v;
 if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.util.HashMap(4);
-        if(isDAbefore_Variable_values.containsKey(_parameters))
+        if(isDAbefore_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAbefore_Variable_value = getParent().Define_boolean_isDAbefore(this, null, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -4315,9 +4577,11 @@ if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         Object _parameters = v;
 if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
-        if(isDUbefore_Variable_values.containsKey(_parameters))
+        if(isDUbefore_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUbefore_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
         if(isFinal && num == state().boundariesCrossed)
@@ -4329,9 +4593,11 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
     protected TypeDecl typeException_value;
     // Declared in ExceptionHandling.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeException() {
-        if(typeException_computed)
+        if(typeException_computed) {
             return typeException_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeException_value = getParent().Define_TypeDecl_typeException(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4343,9 +4609,11 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
     protected TypeDecl typeRuntimeException_value;
     // Declared in ExceptionHandling.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeRuntimeException() {
-        if(typeRuntimeException_computed)
+        if(typeRuntimeException_computed) {
             return typeRuntimeException_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeRuntimeException_value = getParent().Define_TypeDecl_typeRuntimeException(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4357,9 +4625,11 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
     protected TypeDecl typeError_value;
     // Declared in ExceptionHandling.jrag at line 18
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeError() {
-        if(typeError_computed)
+        if(typeError_computed) {
             return typeError_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeError_value = getParent().Define_TypeDecl_typeError(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4372,9 +4642,11 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public Collection lookupMethod(String name) {
         Object _parameters = name;
 if(lookupMethod_String_values == null) lookupMethod_String_values = new java.util.HashMap(4);
-        if(lookupMethod_String_values.containsKey(_parameters))
+        if(lookupMethod_String_values.containsKey(_parameters)) {
             return (Collection)lookupMethod_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         Collection lookupMethod_String_value = getParent().Define_Collection_lookupMethod(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -4384,6 +4656,7 @@ if(lookupMethod_String_values == null) lookupMethod_String_values = new java.uti
 
     // Declared in LookupType.jrag at line 62
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeInt() {
+        ASTNode$State state = state();
         TypeDecl typeInt_value = getParent().Define_TypeDecl_typeInt(this, null);
         return typeInt_value;
     }
@@ -4392,9 +4665,11 @@ if(lookupMethod_String_values == null) lookupMethod_String_values = new java.uti
     protected TypeDecl typeObject_value;
     // Declared in LookupType.jrag at line 65
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
-        if(typeObject_computed)
+        if(typeObject_computed) {
             return typeObject_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4404,6 +4679,7 @@ if(lookupMethod_String_values == null) lookupMethod_String_values = new java.uti
 
     // Declared in LookupType.jrag at line 98
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupType(String packageName, String typeName) {
+        ASTNode$State state = state();
         TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
         return lookupType_String_String_value;
     }
@@ -4413,9 +4689,11 @@ if(lookupMethod_String_values == null) lookupMethod_String_values = new java.uti
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupType(String name) {
         Object _parameters = name;
 if(lookupType_String_values == null) lookupType_String_values = new java.util.HashMap(4);
-        if(lookupType_String_values.containsKey(_parameters))
+        if(lookupType_String_values.containsKey(_parameters)) {
             return (SimpleSet)lookupType_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -4428,9 +4706,11 @@ if(lookupType_String_values == null) lookupType_String_values = new java.util.Ha
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
         Object _parameters = name;
 if(lookupVariable_String_values == null) lookupVariable_String_values = new java.util.HashMap(4);
-        if(lookupVariable_String_values.containsKey(_parameters))
+        if(lookupVariable_String_values.containsKey(_parameters)) {
             return (SimpleSet)lookupVariable_String_values.get(_parameters);
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         if(isFinal && num == state().boundariesCrossed)
@@ -4440,12 +4720,14 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     // Declared in NameCheck.jrag at line 237
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasPackage(String packageName) {
+        ASTNode$State state = state();
         boolean hasPackage_String_value = getParent().Define_boolean_hasPackage(this, null, packageName);
         return hasPackage_String_value;
     }
 
     // Declared in NameCheck.jrag at line 240
  @SuppressWarnings({"unchecked", "cast"})     public ASTNode enclosingBlock() {
+        ASTNode$State state = state();
         ASTNode enclosingBlock_value = getParent().Define_ASTNode_enclosingBlock(this, null);
         return enclosingBlock_value;
     }
@@ -4454,9 +4736,11 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
     protected String packageName_value;
     // Declared in QualifiedNames.jrag at line 89
  @SuppressWarnings({"unchecked", "cast"})     public String packageName() {
-        if(packageName_computed)
+        if(packageName_computed) {
             return packageName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         packageName_value = getParent().Define_String_packageName(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4468,9 +4752,11 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
     protected boolean isAnonymous_value;
     // Declared in TypeAnalysis.jrag at line 216
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAnonymous() {
-        if(isAnonymous_computed)
+        if(isAnonymous_computed) {
             return isAnonymous_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         isAnonymous_value = getParent().Define_boolean_isAnonymous(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4480,36 +4766,42 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     // Declared in TypeAnalysis.jrag at line 497
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosingType() {
+        ASTNode$State state = state();
         TypeDecl enclosingType_value = getParent().Define_TypeDecl_enclosingType(this, null);
         return enclosingType_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 513
  @SuppressWarnings({"unchecked", "cast"})     public BodyDecl enclosingBodyDecl() {
+        ASTNode$State state = state();
         BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
         return enclosingBodyDecl_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 519
  @SuppressWarnings({"unchecked", "cast"})     public boolean isNestedType() {
+        ASTNode$State state = state();
         boolean isNestedType_value = getParent().Define_boolean_isNestedType(this, null);
         return isNestedType_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 527
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMemberType() {
+        ASTNode$State state = state();
         boolean isMemberType_value = getParent().Define_boolean_isMemberType(this, null);
         return isMemberType_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 541
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLocalClass() {
+        ASTNode$State state = state();
         boolean isLocalClass_value = getParent().Define_boolean_isLocalClass(this, null);
         return isLocalClass_value;
     }
 
     // Declared in TypeAnalysis.jrag at line 566
  @SuppressWarnings({"unchecked", "cast"})     public String hostPackage() {
+        ASTNode$State state = state();
         String hostPackage_value = getParent().Define_String_hostPackage(this, null);
         return hostPackage_value;
     }
@@ -4518,9 +4810,11 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
     protected TypeDecl unknownType_value;
     // Declared in TypeAnalysis.jrag at line 672
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl unknownType() {
-        if(unknownType_computed)
+        if(unknownType_computed) {
             return unknownType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4530,12 +4824,14 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     // Declared in TypeCheck.jrag at line 402
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeVoid() {
+        ASTNode$State state = state();
         TypeDecl typeVoid_value = getParent().Define_TypeDecl_typeVoid(this, null);
         return typeVoid_value;
     }
 
     // Declared in TypeCheck.jrag at line 505
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl enclosingInstance() {
+        ASTNode$State state = state();
         TypeDecl enclosingInstance_value = getParent().Define_TypeDecl_enclosingInstance(this, null);
         return enclosingInstance_value;
     }
@@ -4544,9 +4840,11 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
     protected boolean inExplicitConstructorInvocation_value;
     // Declared in TypeHierarchyCheck.jrag at line 127
  @SuppressWarnings({"unchecked", "cast"})     public boolean inExplicitConstructorInvocation() {
-        if(inExplicitConstructorInvocation_computed)
+        if(inExplicitConstructorInvocation_computed) {
             return inExplicitConstructorInvocation_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4558,9 +4856,11 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
     protected boolean inStaticContext_value;
     // Declared in TypeHierarchyCheck.jrag at line 135
  @SuppressWarnings({"unchecked", "cast"})     public boolean inStaticContext() {
-        if(inStaticContext_computed)
+        if(inStaticContext_computed) {
             return inStaticContext_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         inStaticContext_value = getParent().Define_boolean_inStaticContext(this, null);
         if(isFinal && num == state().boundariesCrossed)
@@ -4570,42 +4870,49 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
 
     // Declared in Annotations.jrag at line 280
  @SuppressWarnings({"unchecked", "cast"})     public boolean withinSuppressWarnings(String s) {
+        ASTNode$State state = state();
         boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
         return withinSuppressWarnings_String_value;
     }
 
     // Declared in Annotations.jrag at line 379
  @SuppressWarnings({"unchecked", "cast"})     public boolean withinDeprecatedAnnotation() {
+        ASTNode$State state = state();
         boolean withinDeprecatedAnnotation_value = getParent().Define_boolean_withinDeprecatedAnnotation(this, null);
         return withinDeprecatedAnnotation_value;
     }
 
     // Declared in Generics.jrag at line 1139
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeWildcard() {
+        ASTNode$State state = state();
         TypeDecl typeWildcard_value = getParent().Define_TypeDecl_typeWildcard(this, null);
         return typeWildcard_value;
     }
 
     // Declared in Generics.jrag at line 1152
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardExtends(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         TypeDecl lookupWildcardExtends_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardExtends(this, null, typeDecl);
         return lookupWildcardExtends_TypeDecl_value;
     }
 
     // Declared in Generics.jrag at line 1165
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
+        ASTNode$State state = state();
         TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);
         return lookupWildcardSuper_TypeDecl_value;
     }
 
     // Declared in Generics.jrag at line 1184
  @SuppressWarnings({"unchecked", "cast"})     public LUBType lookupLUBType(Collection bounds) {
+        ASTNode$State state = state();
         LUBType lookupLUBType_Collection_value = getParent().Define_LUBType_lookupLUBType(this, null, bounds);
         return lookupLUBType_Collection_value;
     }
 
     // Declared in Generics.jrag at line 1222
  @SuppressWarnings({"unchecked", "cast"})     public GLBType lookupGLBType(ArrayList bounds) {
+        ASTNode$State state = state();
         GLBType lookupGLBType_ArrayList_value = getParent().Define_GLBType_lookupGLBType(this, null, bounds);
         return lookupGLBType_ArrayList_value;
     }

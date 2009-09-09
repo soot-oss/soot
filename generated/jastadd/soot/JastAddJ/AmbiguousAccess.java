@@ -7,11 +7,14 @@ public class AmbiguousAccess extends Access implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AmbiguousAccess clone() throws CloneNotSupportedException {
         AmbiguousAccess node = (AmbiguousAccess)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public AmbiguousAccess copy() {
       try {
@@ -121,6 +124,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
     // Declared in LookupType.jrag at line 339
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupType(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupType_String_value = qualifiedLookupType_compute(name);
         return qualifiedLookupType_String_value;
     }
@@ -129,6 +133,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
     // Declared in LookupVariable.jrag at line 141
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet qualifiedLookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet qualifiedLookupVariable_String_value = qualifiedLookupVariable_compute(name);
         return qualifiedLookupVariable_String_value;
     }
@@ -137,6 +142,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 808
  @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
+        ASTNode$State state = state();
         String dumpString_value = dumpString_compute();
         return dumpString_value;
     }
@@ -145,6 +151,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
     // Declared in QualifiedNames.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }
@@ -153,6 +160,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
     // Declared in SyntacticClassification.jrag at line 112
  @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
+        ASTNode$State state = state();
         NameType predNameType_value = predNameType_compute();
         return predNameType_value;
     }

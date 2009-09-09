@@ -7,11 +7,14 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public SingleStaticImportDecl clone() throws CloneNotSupportedException {
         SingleStaticImportDecl node = (SingleStaticImportDecl)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public SingleStaticImportDecl copy() {
       try {
@@ -184,6 +187,7 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
 
     // Declared in StaticImports.jrag at line 54
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -192,6 +196,7 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
 
     // Declared in StaticImports.jrag at line 99
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
+        ASTNode$State state = state();
         String name_value = name_compute();
         return name_value;
     }

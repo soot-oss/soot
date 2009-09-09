@@ -12,6 +12,9 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         getInitOpt_computed = false;
         getInitOpt_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public EnumConstant clone() throws CloneNotSupportedException {
         EnumConstant node = (EnumConstant)super.clone();
         node.getTypeAccess_computed = false;
@@ -20,7 +23,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         node.getInitOpt_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public EnumConstant copy() {
       try {
@@ -249,11 +252,19 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
 
     public void addArg(Expr node) {
-        List<Expr> list = getArgList();
+        List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
         list.addChild(node);
     }
 
     // Declared in Enums.ast at line 19
+
+
+    public void addArgNoTransform(Expr node) {
+        List<Expr> list = getArgListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Enums.ast at line 24
 
 
     public void setArg(Expr node, int i) {
@@ -261,26 +272,28 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 23
+    // Declared in Enums.ast at line 28
 
     public List<Expr> getArgs() {
         return getArgList();
     }
 
-    // Declared in Enums.ast at line 26
+    // Declared in Enums.ast at line 31
 
     public List<Expr> getArgsNoTransform() {
         return getArgListNoTransform();
     }
 
-    // Declared in Enums.ast at line 30
+    // Declared in Enums.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
-        return (List<Expr>)getChild(1);
+        List<Expr> list = (List<Expr>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Enums.ast at line 34
+    // Declared in Enums.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
@@ -311,11 +324,19 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in Enums.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Enums.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -323,26 +344,28 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Enums.ast at line 23
+    // Declared in Enums.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in Enums.ast at line 26
+    // Declared in Enums.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in Enums.ast at line 30
+    // Declared in Enums.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(2);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Enums.ast at line 34
+    // Declared in Enums.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -410,6 +433,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in Enums.jrag at line 27
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEnumConstant() {
+        ASTNode$State state = state();
         boolean isEnumConstant_value = isEnumConstant_compute();
         return isEnumConstant_value;
     }
@@ -418,6 +442,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in Enums.jrag at line 174
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPublic() {
+        ASTNode$State state = state();
         boolean isPublic_value = isPublic_compute();
         return isPublic_value;
     }
@@ -426,6 +451,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in Enums.jrag at line 175
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
+        ASTNode$State state = state();
         boolean isStatic_value = isStatic_compute();
         return isStatic_value;
     }
@@ -434,6 +460,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in Enums.jrag at line 176
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
+        ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
         return isFinal_value;
     }
@@ -444,9 +471,11 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     protected Access getTypeAccess_value;
     // Declared in Enums.jrag at line 178
  @SuppressWarnings({"unchecked", "cast"})     public Access getTypeAccess() {
-        if(getTypeAccess_computed)
+        if(getTypeAccess_computed) {
             return (Access)ASTNode.getChild(this, getTypeAccessChildPosition());
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getTypeAccess_value = getTypeAccess_compute();
             setTypeAccess(getTypeAccess_value);
@@ -463,9 +492,11 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     protected Opt getInitOpt_value;
     // Declared in Enums.jrag at line 182
  @SuppressWarnings({"unchecked", "cast"})     public Opt getInitOpt() {
-        if(getInitOpt_computed)
+        if(getInitOpt_computed) {
             return (Opt)ASTNode.getChild(this, getInitOptChildPosition());
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getInitOpt_value = getInitOpt_compute();
         setInitOpt(getInitOpt_value);
@@ -486,6 +517,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in Enums.jrag at line 480
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
+        ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
         return isConstant_value;
     }
@@ -494,6 +526,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in EnumsCodegen.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
+        ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
         return sootTypeModifiers_value;
     }

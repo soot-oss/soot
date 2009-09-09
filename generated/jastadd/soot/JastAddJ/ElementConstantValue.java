@@ -7,11 +7,14 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ElementConstantValue clone() throws CloneNotSupportedException {
         ElementConstantValue node = (ElementConstantValue)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ElementConstantValue copy() {
       try {
@@ -134,6 +137,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 58
  @SuppressWarnings({"unchecked", "cast"})     public boolean validTarget(Annotation a) {
+        ASTNode$State state = state();
         boolean validTarget_Annotation_value = validTarget_compute(a);
         return validTarget_Annotation_value;
     }
@@ -146,6 +150,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 182
  @SuppressWarnings({"unchecked", "cast"})     public ElementValue definesElementTypeValue(String name) {
+        ASTNode$State state = state();
         ElementValue definesElementTypeValue_String_value = definesElementTypeValue_compute(name);
         return definesElementTypeValue_String_value;
     }
@@ -159,6 +164,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 296
  @SuppressWarnings({"unchecked", "cast"})     public boolean hasValue(String s) {
+        ASTNode$State state = state();
         boolean hasValue_String_value = hasValue_compute(s);
         return hasValue_String_value;
     }
@@ -169,6 +175,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 474
  @SuppressWarnings({"unchecked", "cast"})     public boolean commensurateWithTypeDecl(TypeDecl type) {
+        ASTNode$State state = state();
         boolean commensurateWithTypeDecl_TypeDecl_value = commensurateWithTypeDecl_compute(type);
         return commensurateWithTypeDecl_TypeDecl_value;
     }
@@ -190,6 +197,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 507
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
+        ASTNode$State state = state();
         TypeDecl type_value = type_compute();
         return type_value;
     }
@@ -198,6 +206,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
 
     // Declared in Annotations.jrag at line 177
  @SuppressWarnings({"unchecked", "cast"})     public ElementValue lookupElementTypeValue(String name) {
+        ASTNode$State state = state();
         ElementValue lookupElementTypeValue_String_value = getParent().Define_ElementValue_lookupElementTypeValue(this, null, name);
         return lookupElementTypeValue_String_value;
     }

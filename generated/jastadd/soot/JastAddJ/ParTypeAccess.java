@@ -11,13 +11,16 @@ public class ParTypeAccess extends Access implements Cloneable {
         type_computed = false;
         type_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ParTypeAccess clone() throws CloneNotSupportedException {
         ParTypeAccess node = (ParTypeAccess)super.clone();
         node.type_computed = false;
         node.type_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ParTypeAccess copy() {
       try {
@@ -164,11 +167,19 @@ public class ParTypeAccess extends Access implements Cloneable {
 
 
     public void addTypeArgument(Access node) {
-        List<Access> list = getTypeArgumentList();
+        List<Access> list = (parent == null || state == null) ? getTypeArgumentListNoTransform() : getTypeArgumentList();
         list.addChild(node);
     }
 
     // Declared in Generics.ast at line 19
+
+
+    public void addTypeArgumentNoTransform(Access node) {
+        List<Access> list = getTypeArgumentListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in Generics.ast at line 24
 
 
     public void setTypeArgument(Access node, int i) {
@@ -176,26 +187,28 @@ public class ParTypeAccess extends Access implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in Generics.ast at line 23
+    // Declared in Generics.ast at line 28
 
     public List<Access> getTypeArguments() {
         return getTypeArgumentList();
     }
 
-    // Declared in Generics.ast at line 26
+    // Declared in Generics.ast at line 31
 
     public List<Access> getTypeArgumentsNoTransform() {
         return getTypeArgumentListNoTransform();
     }
 
-    // Declared in Generics.ast at line 30
+    // Declared in Generics.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentList() {
-        return (List<Access>)getChild(1);
+        List<Access> list = (List<Access>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in Generics.ast at line 34
+    // Declared in Generics.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentListNoTransform() {
@@ -204,6 +217,7 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     // Declared in Generics.jrag at line 238
  @SuppressWarnings({"unchecked", "cast"})     public Expr unqualifiedScope() {
+        ASTNode$State state = state();
         Expr unqualifiedScope_value = unqualifiedScope_compute();
         return unqualifiedScope_value;
     }
@@ -212,9 +226,11 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     // Declared in Generics.jrag at line 241
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed)
+        if(type_computed) {
             return type_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         type_value = type_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -238,6 +254,7 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     // Declared in Generics.jrag at line 254
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl genericDecl() {
+        ASTNode$State state = state();
         TypeDecl genericDecl_value = genericDecl_compute();
         return genericDecl_value;
     }
@@ -246,6 +263,7 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     // Declared in Generics.jrag at line 255
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTypeAccess() {
+        ASTNode$State state = state();
         boolean isTypeAccess_value = isTypeAccess_compute();
         return isTypeAccess_value;
     }

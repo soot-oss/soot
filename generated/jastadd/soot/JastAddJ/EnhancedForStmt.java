@@ -18,6 +18,9 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
         end_label_value = null;
         extraLocalIndex_computed = false;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public EnhancedForStmt clone() throws CloneNotSupportedException {
         EnhancedForStmt node = (EnhancedForStmt)super.clone();
         node.targetOf_ContinueStmt_values = null;
@@ -34,7 +37,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
         node.extraLocalIndex_computed = false;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public EnhancedForStmt copy() {
       try {
@@ -349,6 +352,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 
     // Declared in EnhancedFor.jrag at line 50
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localLookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet localLookupVariable_String_value = localLookupVariable_compute(name);
         return localLookupVariable_String_value;
     }
@@ -365,9 +369,11 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
  @SuppressWarnings({"unchecked", "cast"})     public boolean targetOf(ContinueStmt stmt) {
         Object _parameters = stmt;
 if(targetOf_ContinueStmt_values == null) targetOf_ContinueStmt_values = new java.util.HashMap(4);
-        if(targetOf_ContinueStmt_values.containsKey(_parameters))
+        if(targetOf_ContinueStmt_values.containsKey(_parameters)) {
             return ((Boolean)targetOf_ContinueStmt_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean targetOf_ContinueStmt_value = targetOf_compute(stmt);
         if(isFinal && num == state().boundariesCrossed)
@@ -382,9 +388,11 @@ if(targetOf_ContinueStmt_values == null) targetOf_ContinueStmt_values = new java
  @SuppressWarnings({"unchecked", "cast"})     public boolean targetOf(BreakStmt stmt) {
         Object _parameters = stmt;
 if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.HashMap(4);
-        if(targetOf_BreakStmt_values.containsKey(_parameters))
+        if(targetOf_BreakStmt_values.containsKey(_parameters)) {
             return ((Boolean)targetOf_BreakStmt_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean targetOf_BreakStmt_value = targetOf_compute(stmt);
         if(isFinal && num == state().boundariesCrossed)
@@ -396,9 +404,11 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
 
     // Declared in EnhancedFor.jrag at line 78
  @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed)
+        if(canCompleteNormally_computed) {
             return canCompleteNormally_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         canCompleteNormally_value = canCompleteNormally_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -412,9 +422,11 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -439,9 +451,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -462,6 +476,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in EnhancedFor.jrag at line 113
  @SuppressWarnings({"unchecked", "cast"})     public boolean continueLabel() {
+        ASTNode$State state = state();
         boolean continueLabel_value = continueLabel_compute();
         return continueLabel_value;
     }
@@ -472,9 +487,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected soot.jimple.Stmt cond_label_value;
     // Declared in EnhancedForCodegen.jrag at line 12
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt cond_label() {
-        if(cond_label_computed)
+        if(cond_label_computed) {
             return cond_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         cond_label_value = cond_label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -488,9 +505,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected soot.jimple.Stmt update_label_value;
     // Declared in EnhancedForCodegen.jrag at line 13
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt update_label() {
-        if(update_label_computed)
+        if(update_label_computed) {
             return update_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         update_label_value = update_label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -504,9 +523,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected soot.jimple.Stmt end_label_value;
     // Declared in EnhancedForCodegen.jrag at line 14
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt end_label() {
-        if(end_label_computed)
+        if(end_label_computed) {
             return end_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         end_label_value = end_label_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -520,9 +541,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected int extraLocalIndex_value;
     // Declared in EnhancedForCodegen.jrag at line 16
  @SuppressWarnings({"unchecked", "cast"})     public int extraLocalIndex() {
-        if(extraLocalIndex_computed)
+        if(extraLocalIndex_computed) {
             return extraLocalIndex_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         extraLocalIndex_value = extraLocalIndex_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -534,6 +557,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in EnhancedForCodegen.jrag at line 21
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt break_label() {
+        ASTNode$State state = state();
         soot.jimple.Stmt break_label_value = break_label_compute();
         return break_label_value;
     }
@@ -542,6 +566,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in EnhancedForCodegen.jrag at line 22
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt continue_label() {
+        ASTNode$State state = state();
         soot.jimple.Stmt continue_label_value = continue_label_compute();
         return continue_label_value;
     }
@@ -550,6 +575,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in EnhancedFor.jrag at line 38
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet lookupVariable(String name) {
+        ASTNode$State state = state();
         SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
         return lookupVariable_String_value;
     }

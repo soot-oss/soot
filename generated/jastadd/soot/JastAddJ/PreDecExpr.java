@@ -7,11 +7,14 @@ public class PreDecExpr extends Unary implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public PreDecExpr clone() throws CloneNotSupportedException {
         PreDecExpr node = (PreDecExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public PreDecExpr copy() {
       try {
@@ -119,6 +122,7 @@ public class PreDecExpr extends Unary implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 377
  @SuppressWarnings({"unchecked", "cast"})     public String printPreOp() {
+        ASTNode$State state = state();
         String printPreOp_value = printPreOp_compute();
         return printPreOp_value;
     }

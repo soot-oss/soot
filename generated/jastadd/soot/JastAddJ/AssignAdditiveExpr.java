@@ -8,11 +8,14 @@ public abstract class AssignAdditiveExpr extends AssignExpr implements Cloneable
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public AssignAdditiveExpr clone() throws CloneNotSupportedException {
         AssignAdditiveExpr node = (AssignAdditiveExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
     // Declared in java.ast at line 3
     // Declared in java.ast line 108

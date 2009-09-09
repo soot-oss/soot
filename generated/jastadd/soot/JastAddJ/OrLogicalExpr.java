@@ -13,6 +13,9 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
         next_test_label_computed = false;
         next_test_label_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public OrLogicalExpr clone() throws CloneNotSupportedException {
         OrLogicalExpr node = (OrLogicalExpr)super.clone();
         node.isDAafterTrue_Variable_values = null;
@@ -23,7 +26,7 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
         node.next_test_label_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public OrLogicalExpr copy() {
       try {
@@ -129,6 +132,7 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 538
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
+        ASTNode$State state = state();
         Constant constant_value = constant_compute();
         return constant_value;
     }
@@ -139,9 +143,11 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
         Object _parameters = v;
 if(isDAafterTrue_Variable_values == null) isDAafterTrue_Variable_values = new java.util.HashMap(4);
-        if(isDAafterTrue_Variable_values.containsKey(_parameters))
+        if(isDAafterTrue_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafterTrue_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -155,9 +161,11 @@ if(isDAafterTrue_Variable_values == null) isDAafterTrue_Variable_values = new ja
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
         Object _parameters = v;
 if(isDAafterFalse_Variable_values == null) isDAafterFalse_Variable_values = new java.util.HashMap(4);
-        if(isDAafterFalse_Variable_values.containsKey(_parameters))
+        if(isDAafterFalse_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafterFalse_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -171,9 +179,11 @@ if(isDAafterFalse_Variable_values == null) isDAafterFalse_Variable_values = new 
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters))
+        if(isDAafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -185,6 +195,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 809
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
         return isDUafterTrue_Variable_value;
     }
@@ -193,6 +204,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     // Declared in DefiniteAssignment.jrag at line 810
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
+        ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
         return isDUafterFalse_Variable_value;
     }
@@ -203,9 +215,11 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters))
+        if(isDUafter_Variable_values.containsKey(_parameters)) {
             return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
         if(isFinal && num == state().boundariesCrossed)
@@ -217,6 +231,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in PrettyPrint.jadd at line 412
  @SuppressWarnings({"unchecked", "cast"})     public String printOp() {
+        ASTNode$State state = state();
         String printOp_value = printOp_compute();
         return printOp_value;
     }
@@ -225,6 +240,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in BooleanExpressions.jrag at line 85
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeTrue() {
+        ASTNode$State state = state();
         boolean canBeTrue_value = canBeTrue_compute();
         return canBeTrue_value;
     }
@@ -233,6 +249,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     // Declared in BooleanExpressions.jrag at line 95
  @SuppressWarnings({"unchecked", "cast"})     public boolean canBeFalse() {
+        ASTNode$State state = state();
         boolean canBeFalse_value = canBeFalse_compute();
         return canBeFalse_value;
     }
@@ -243,9 +260,11 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     protected soot.jimple.Stmt next_test_label_value;
     // Declared in BooleanExpressions.jrag at line 207
  @SuppressWarnings({"unchecked", "cast"})     public soot.jimple.Stmt next_test_label() {
-        if(next_test_label_computed)
+        if(next_test_label_computed) {
             return next_test_label_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         next_test_label_value = next_test_label_compute();
         if(isFinal && num == state().boundariesCrossed)

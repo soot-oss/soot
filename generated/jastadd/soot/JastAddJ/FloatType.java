@@ -13,6 +13,9 @@ public class FloatType extends FloatingPointType implements Cloneable {
         getSootType_computed = false;
         getSootType_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public FloatType clone() throws CloneNotSupportedException {
         FloatType node = (FloatType)super.clone();
         node.boxed_computed = false;
@@ -23,7 +26,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
         node.getSootType_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public FloatType copy() {
       try {
@@ -201,11 +204,19 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
 
     public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclList();
+        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addBodyDeclNoTransform(BodyDecl node) {
+        List<BodyDecl> list = getBodyDeclListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setBodyDecl(BodyDecl node, int i) {
@@ -213,26 +224,28 @@ public class FloatType extends FloatingPointType implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<BodyDecl> getBodyDecls() {
         return getBodyDeclList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<BodyDecl> getBodyDeclsNoTransform() {
         return getBodyDeclListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        return (List<BodyDecl>)getChild(2);
+        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -241,6 +254,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 315
  @SuppressWarnings({"unchecked", "cast"})     public Constant cast(Constant c) {
+        ASTNode$State state = state();
         Constant cast_Constant_value = cast_compute(c);
         return cast_Constant_value;
     }
@@ -249,6 +263,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 326
  @SuppressWarnings({"unchecked", "cast"})     public Constant plus(Constant c) {
+        ASTNode$State state = state();
         Constant plus_Constant_value = plus_compute(c);
         return plus_Constant_value;
     }
@@ -257,6 +272,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 335
  @SuppressWarnings({"unchecked", "cast"})     public Constant minus(Constant c) {
+        ASTNode$State state = state();
         Constant minus_Constant_value = minus_compute(c);
         return minus_Constant_value;
     }
@@ -265,6 +281,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 351
  @SuppressWarnings({"unchecked", "cast"})     public Constant mul(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant mul_Constant_Constant_value = mul_compute(c1, c2);
         return mul_Constant_Constant_value;
     }
@@ -273,6 +290,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 360
  @SuppressWarnings({"unchecked", "cast"})     public Constant div(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant div_Constant_Constant_value = div_compute(c1, c2);
         return div_Constant_Constant_value;
     }
@@ -281,6 +299,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 369
  @SuppressWarnings({"unchecked", "cast"})     public Constant mod(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant mod_Constant_Constant_value = mod_compute(c1, c2);
         return mod_Constant_Constant_value;
     }
@@ -289,6 +308,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 378
  @SuppressWarnings({"unchecked", "cast"})     public Constant add(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant add_Constant_Constant_value = add_compute(c1, c2);
         return add_Constant_Constant_value;
     }
@@ -297,6 +317,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 388
  @SuppressWarnings({"unchecked", "cast"})     public Constant sub(Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant sub_Constant_Constant_value = sub_compute(c1, c2);
         return sub_Constant_Constant_value;
     }
@@ -305,6 +326,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 442
  @SuppressWarnings({"unchecked", "cast"})     public Constant questionColon(Constant cond, Constant c1, Constant c2) {
+        ASTNode$State state = state();
         Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
         return questionColon_Constant_Constant_Constant_value;
     }
@@ -313,6 +335,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 546
  @SuppressWarnings({"unchecked", "cast"})     public boolean eqIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
         return eqIsTrue_Expr_Expr_value;
     }
@@ -321,6 +344,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 554
  @SuppressWarnings({"unchecked", "cast"})     public boolean ltIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
         return ltIsTrue_Expr_Expr_value;
     }
@@ -329,6 +353,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in ConstantExpression.jrag at line 560
  @SuppressWarnings({"unchecked", "cast"})     public boolean leIsTrue(Expr left, Expr right) {
+        ASTNode$State state = state();
         boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
         return leIsTrue_Expr_Expr_value;
     }
@@ -337,6 +362,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in TypeAnalysis.jrag at line 196
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFloat() {
+        ASTNode$State state = state();
         boolean isFloat_value = isFloat_compute();
         return isFloat_value;
     }
@@ -345,9 +371,11 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in AutoBoxing.jrag at line 42
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl boxed() {
-        if(boxed_computed)
+        if(boxed_computed) {
             return boxed_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         boxed_value = boxed_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -359,9 +387,11 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in Java2Rewrites.jrag at line 40
  @SuppressWarnings({"unchecked", "cast"})     public String jvmName() {
-        if(jvmName_computed)
+        if(jvmName_computed) {
             return jvmName_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         jvmName_value = jvmName_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -373,6 +403,7 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in Java2Rewrites.jrag at line 52
  @SuppressWarnings({"unchecked", "cast"})     public String primitiveClassName() {
+        ASTNode$State state = state();
         String primitiveClassName_value = primitiveClassName_compute();
         return primitiveClassName_value;
     }
@@ -381,9 +412,11 @@ public class FloatType extends FloatingPointType implements Cloneable {
 
     // Declared in EmitJimple.jrag at line 52
  @SuppressWarnings({"unchecked", "cast"})     public Type getSootType() {
-        if(getSootType_computed)
+        if(getSootType_computed) {
             return getSootType_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getSootType_value = getSootType_compute();
         if(isFinal && num == state().boundariesCrossed)

@@ -13,6 +13,9 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
         getID_computed = false;
         getID_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public PrimitiveTypeAccess clone() throws CloneNotSupportedException {
         PrimitiveTypeAccess node = (PrimitiveTypeAccess)super.clone();
         node.decls_computed = false;
@@ -23,7 +26,7 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
         node.getID_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public PrimitiveTypeAccess copy() {
       try {
@@ -138,9 +141,11 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
 
     // Declared in LookupType.jrag at line 146
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed)
+        if(decls_computed) {
             return decls_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         decls_value = decls_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -154,9 +159,11 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
     protected String getPackage_value;
     // Declared in LookupType.jrag at line 147
  @SuppressWarnings({"unchecked", "cast"})     public String getPackage() {
-        if(getPackage_computed)
+        if(getPackage_computed) {
             return getPackage_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getPackage_value = getPackage_compute();
             setPackage(getPackage_value);
@@ -171,9 +178,11 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
     protected String getID_value;
     // Declared in LookupType.jrag at line 148
  @SuppressWarnings({"unchecked", "cast"})     public String getID() {
-        if(getID_computed)
+        if(getID_computed) {
             return getID_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         getID_value = getID_compute();
             setID(getID_value);

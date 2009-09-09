@@ -7,11 +7,14 @@ public class PostDecExpr extends PostfixExpr implements Cloneable {
     public void flushCache() {
         super.flushCache();
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public PostDecExpr clone() throws CloneNotSupportedException {
         PostDecExpr node = (PostDecExpr)super.clone();
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public PostDecExpr copy() {
       try {
@@ -87,6 +90,7 @@ public class PostDecExpr extends PostfixExpr implements Cloneable {
 
     // Declared in PrettyPrint.jadd at line 373
  @SuppressWarnings({"unchecked", "cast"})     public String printPostOp() {
+        ASTNode$State state = state();
         String printPostOp_value = printPostOp_compute();
         return printPostOp_value;
     }

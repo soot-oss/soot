@@ -12,6 +12,9 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         genericConstructorDecl_computed = false;
         genericConstructorDecl_value = null;
     }
+    public void flushCollectionCache() {
+        super.flushCollectionCache();
+    }
      @SuppressWarnings({"unchecked", "cast"})  public ParConstructorDecl clone() throws CloneNotSupportedException {
         ParConstructorDecl node = (ParConstructorDecl)super.clone();
         node.sourceConstructorDecl_computed = false;
@@ -20,7 +23,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         node.genericConstructorDecl_value = null;
         node.in$Circle(false);
         node.is$Final(false);
-    return node;
+        return node;
     }
      @SuppressWarnings({"unchecked", "cast"})  public ParConstructorDecl copy() {
       try {
@@ -160,11 +163,19 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
 
 
     public void addParameter(ParameterDeclaration node) {
-        List<ParameterDeclaration> list = getParameterList();
+        List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addParameterNoTransform(ParameterDeclaration node) {
+        List<ParameterDeclaration> list = getParameterListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setParameter(ParameterDeclaration node, int i) {
@@ -172,26 +183,28 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<ParameterDeclaration> getParameters() {
         return getParameterList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<ParameterDeclaration> getParametersNoTransform() {
         return getParameterListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterList() {
-        return (List<ParameterDeclaration>)getChild(1);
+        List<ParameterDeclaration> list = (List<ParameterDeclaration>)getChild(1);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<ParameterDeclaration> getParameterListNoTransform() {
@@ -222,11 +235,19 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
 
 
     public void addException(Access node) {
-        List<Access> list = getExceptionList();
+        List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
         list.addChild(node);
     }
 
     // Declared in java.ast at line 19
+
+
+    public void addExceptionNoTransform(Access node) {
+        List<Access> list = getExceptionListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in java.ast at line 24
 
 
     public void setException(Access node, int i) {
@@ -234,26 +255,28 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in java.ast at line 23
+    // Declared in java.ast at line 28
 
     public List<Access> getExceptions() {
         return getExceptionList();
     }
 
-    // Declared in java.ast at line 26
+    // Declared in java.ast at line 31
 
     public List<Access> getExceptionsNoTransform() {
         return getExceptionListNoTransform();
     }
 
-    // Declared in java.ast at line 30
+    // Declared in java.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionList() {
-        return (List<Access>)getChild(2);
+        List<Access> list = (List<Access>)getChild(2);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in java.ast at line 34
+    // Declared in java.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getExceptionListNoTransform() {
@@ -343,11 +366,19 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
 
 
     public void addTypeArgument(Access node) {
-        List<Access> list = getTypeArgumentList();
+        List<Access> list = (parent == null || state == null) ? getTypeArgumentListNoTransform() : getTypeArgumentList();
         list.addChild(node);
     }
 
     // Declared in GenericMethods.ast at line 19
+
+
+    public void addTypeArgumentNoTransform(Access node) {
+        List<Access> list = getTypeArgumentListNoTransform();
+        list.addChild(node);
+    }
+
+    // Declared in GenericMethods.ast at line 24
 
 
     public void setTypeArgument(Access node, int i) {
@@ -355,26 +386,28 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         list.setChild(node, i);
     }
 
-    // Declared in GenericMethods.ast at line 23
+    // Declared in GenericMethods.ast at line 28
 
     public List<Access> getTypeArguments() {
         return getTypeArgumentList();
     }
 
-    // Declared in GenericMethods.ast at line 26
+    // Declared in GenericMethods.ast at line 31
 
     public List<Access> getTypeArgumentsNoTransform() {
         return getTypeArgumentListNoTransform();
     }
 
-    // Declared in GenericMethods.ast at line 30
+    // Declared in GenericMethods.ast at line 35
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentList() {
-        return (List<Access>)getChild(5);
+        List<Access> list = (List<Access>)getChild(5);
+        list.getNumChild();
+        return list;
     }
 
-    // Declared in GenericMethods.ast at line 34
+    // Declared in GenericMethods.ast at line 41
 
 
      @SuppressWarnings({"unchecked", "cast"})  public List<Access> getTypeArgumentListNoTransform() {
@@ -383,9 +416,11 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
 
     // Declared in Generics.jrag at line 1270
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
-        if(sourceConstructorDecl_computed)
+        if(sourceConstructorDecl_computed) {
             return sourceConstructorDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         sourceConstructorDecl_value = sourceConstructorDecl_compute();
         if(isFinal && num == state().boundariesCrossed)
@@ -399,9 +434,11 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
     protected GenericConstructorDecl genericConstructorDecl_value;
     // Declared in GenericMethods.jrag at line 34
  @SuppressWarnings({"unchecked", "cast"})     public GenericConstructorDecl genericConstructorDecl() {
-        if(genericConstructorDecl_computed)
+        if(genericConstructorDecl_computed) {
             return genericConstructorDecl_value;
-        int num = state().boundariesCrossed;
+        }
+        ASTNode$State state = state();
+        int num = state.boundariesCrossed;
         boolean isFinal = this.is$Final();
         genericConstructorDecl_value = getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, null);
         if(isFinal && num == state().boundariesCrossed)
