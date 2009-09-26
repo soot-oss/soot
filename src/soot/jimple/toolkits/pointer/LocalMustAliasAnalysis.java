@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.omg.CORBA.UNKNOWN;
+
 import soot.EquivalentValue;
 import soot.Local;
 import soot.MethodOrMethodContext;
@@ -45,8 +47,8 @@ import soot.jimple.ThisRef;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.BinaryIdentitySet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.toolkits.scalar.Pair;
 
 /** LocalMustAliasAnalysis attempts to determine if two local
  * variables (at two potentially different program points) must point
@@ -87,7 +89,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
     protected transient Map<Value,Integer> rhsToNumber;
     
     /** maps from a merge point (set of containers for analysis information) to value numbers */
-    protected transient HashMap<BinaryIdentitySet<Object>,Integer> mergeToNumber;
+    protected transient HashMap<Pair<Object,Object>,Integer> mergeToNumber;
 
     /** the next value number */
     protected int nextNumber = 1;
@@ -124,7 +126,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
         }
 
        	this.rhsToNumber = new HashMap<Value, Integer>();
-        this.mergeToNumber = new HashMap<BinaryIdentitySet<Object>,Integer>();
+        this.mergeToNumber = new HashMap<Pair<Object,Object>,Integer>();
         
         doAnalysis();
         
@@ -210,12 +212,12 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
                  * location. Using a normal HashSet would make it unique to the contents.
                  * (Eric)  
                  */
-                BinaryIdentitySet<Object> unorderedPair =
-                    new BinaryIdentitySet<Object>(i1,i2);
-                Integer number = mergeToNumber.get(unorderedPair);
+                Pair<Object,Object> pair =
+                    new Pair<Object,Object>(i1,i2);
+                Integer number = mergeToNumber.get(pair);
                 if(number==null) {
                     number = nextNumber++;
-                    mergeToNumber.put(unorderedPair, number);
+                    mergeToNumber.put(pair, number);
                 }
                 outMap.put(l, number);
             }
