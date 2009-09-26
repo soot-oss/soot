@@ -87,7 +87,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
     protected transient Map<Value,Integer> rhsToNumber;
     
     /** maps from a merge point (set of containers for analysis information) to value numbers */
-    protected transient HashMap<BinaryIdentitySet<HashMap<Value,Object>>,Integer> mergeToNumber;
+    protected transient HashMap<BinaryIdentitySet<Object>,Integer> mergeToNumber;
 
     /** the next value number */
     protected int nextNumber = 1;
@@ -124,7 +124,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
         }
 
        	this.rhsToNumber = new HashMap<Value, Integer>();
-        this.mergeToNumber = new HashMap<BinaryIdentitySet<HashMap<Value,Object>>,Integer>();
+        this.mergeToNumber = new HashMap<BinaryIdentitySet<Object>,Integer>();
         
         doAnalysis();
         
@@ -210,8 +210,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
                  * location. Using a normal HashSet would make it unique to the contents.
                  * (Eric)  
                  */
-                BinaryIdentitySet<HashMap<Value,Object>> unorderedPair =
-                    new BinaryIdentitySet<HashMap<Value,Object>>(inMap1,inMap2);
+                BinaryIdentitySet<Object> unorderedPair =
+                    new BinaryIdentitySet<Object>(i1,i2);
                 Integer number = mergeToNumber.get(unorderedPair);
                 if(number==null) {
                     number = nextNumber++;
