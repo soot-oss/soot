@@ -140,11 +140,11 @@ public abstract class BackwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
                         while(succIt.hasNext())
                         {
                             A otherBranchFlow = unitToBeforeFlow.get(succIt.next());
-                            merge(afterFlow, otherBranchFlow);
+                            mergeInto(s, afterFlow, otherBranchFlow);
                         }
 
                         if(isTail && succs.size() != 0)
-                            merge(afterFlow, entryInitialFlow());
+                            mergeInto(s, afterFlow, entryInitialFlow());
                     }
                 }
 

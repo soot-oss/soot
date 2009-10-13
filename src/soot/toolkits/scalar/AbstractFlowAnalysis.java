@@ -87,6 +87,16 @@ public abstract class AbstractFlowAnalysis<N,A>
      * Used by the doAnalysis method. */
     protected abstract void merge(A in1, A in2, A out);
 
+    /**
+     * Merges in1 and in2 into out, just before node succNode.
+     * By default, this method just calls merge(A,A,A), ignoring
+     * the node.
+     */
+    protected void merge(N succNode, A in1, A in2, A out) {
+    	merge(in1,in2,out);
+    }
+
+    
     /** Creates a copy of the <code>source</code> flow object in <code>dest</code>. */
     protected abstract void copy(A source, A dest);
 
@@ -100,9 +110,12 @@ public abstract class AbstractFlowAnalysis<N,A>
         return unitToBeforeFlow.get(s);
     }
 
-    protected void merge(A inout, A in) {
+    /**
+     * Merges in into inout, just before node succNode.
+     */
+    protected void mergeInto(N succNode, A inout, A in) {
         A tmp = newInitialFlow();
-        merge(inout, in, tmp);
+        merge(succNode, inout, in, tmp);
         copy(tmp, inout);
     }
 }

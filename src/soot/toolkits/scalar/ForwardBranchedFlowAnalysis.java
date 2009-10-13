@@ -252,13 +252,13 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
                         {
                             A otherBranchFlow = predIt.next();
                             A newBeforeFlow = newInitialFlow();
-                            merge(beforeFlow, otherBranchFlow, newBeforeFlow);
+                            merge(s, beforeFlow, otherBranchFlow, newBeforeFlow);
                             copy(newBeforeFlow, beforeFlow);
                         }
                     }
 
                     if(isHead && preds.size() != 0)
-                        merge(beforeFlow, entryInitialFlow());
+                        mergeInto(s, beforeFlow, entryInitialFlow());
                 }
 
                 // Compute afterFlow and store it.

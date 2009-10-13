@@ -30,6 +30,7 @@ import java.util.Set;
 import org.omg.CORBA.UNKNOWN;
 
 import soot.EquivalentValue;
+import soot.G;
 import soot.Local;
 import soot.MethodOrMethodContext;
 import soot.RefLikeType;
@@ -88,8 +89,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
     /** maps from right-hand side expressions (non-locals) to value numbers */
     protected transient Map<Value,Integer> rhsToNumber;
     
-    /** maps from a merge point (set of containers for analysis information) to value numbers */
-    protected transient HashMap<Pair<Object,Object>,Integer> mergeToNumber;
+    /** maps from a merge point (a unit) and a value to the unique value number of that value at this point */
+    protected transient Map<Unit,Map<Value,Integer>> mergePointToValueToNumber;
 
     /** the next value number */
     protected int nextNumber = 1;
@@ -126,13 +127,13 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
         }
 
        	this.rhsToNumber = new HashMap<Value, Integer>();
-        this.mergeToNumber = new HashMap<Pair<Object,Object>,Integer>();
+        this.mergePointToValueToNumber = new HashMap<Unit,Map<Value,Integer>>();
         
         doAnalysis();
         
         //not needed any more
         this.rhsToNumber = null;
-        this.mergeToNumber = null;
+        this.mergePointToValueToNumber = null;
     }
 
     /**
@@ -186,7 +187,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 		return usedFieldRefs;
 	}
 
-	protected void merge(HashMap<Value,Object> inMap1, HashMap<Value,Object> inMap2, HashMap<Value,Object> outMap)
+	protected void merge(Unit succUnit, HashMap<Value,Object> inMap1, HashMap<Value,Object> inMap2, HashMap<Value,Object> outMap)
     {
         for (Value l : localsAndFieldRefs) {
             Object i1 = inMap1.get(l), i2 = inMap2.get(l);
@@ -212,12 +213,19 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
                  * location. Using a normal HashSet would make it unique to the contents.
                  * (Eric)  
                  */
-                Pair<Object,Object> pair =
-                    new Pair<Object,Object>(i1,i2);
-                Integer number = mergeToNumber.get(pair);
+            	
+            	//retrieve the unique number for l at the merge point succUnit
+            	//if there is no such number yet, generate one
+            	//then assign the number to l in the outMap
+                Map<Value, Integer> valueToNumber = mergePointToValueToNumber.get(succUnit);
+                if(valueToNumber==null) {
+                	valueToNumber = new HashMap<Value, Integer>();
+                	mergePointToValueToNumber.put(succUnit, valueToNumber);
+                }
+                Integer number = valueToNumber.get(l);
                 if(number==null) {
-                    number = nextNumber++;
-                    mergeToNumber.put(pair, number);
+                	number = nextNumber++;
+                	valueToNumber.put(l, number);
                 }
                 outMap.put(l, number);
             }
@@ -363,4 +371,10 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 
         return l1n == l2n;
     }
+
+	@Override
+	protected void merge(HashMap<Value, Object> in1,
+			HashMap<Value, Object> in2, HashMap<Value, Object> out) {
+		throw new UnsupportedOperationException("not implemented; use other merge method instead");
+	}
 }
