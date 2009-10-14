@@ -30,7 +30,6 @@ import java.util.Set;
 import org.omg.CORBA.UNKNOWN;
 
 import soot.EquivalentValue;
-import soot.G;
 import soot.Local;
 import soot.MethodOrMethodContext;
 import soot.RefLikeType;
@@ -42,6 +41,7 @@ import soot.ValueBox;
 import soot.jimple.CastExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
+import soot.jimple.IdentityRef;
 import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
@@ -49,7 +49,6 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
-import soot.toolkits.scalar.Pair;
 
 /** LocalMustAliasAnalysis attempts to determine if two local
  * variables (at two potentially different program points) must point
@@ -61,6 +60,16 @@ import soot.toolkits.scalar.Pair;
  * that soundly treats redefinitions within loops.
  * 
  * See Sable TR 2007-8 for details.
+ * 
+ * P.S. The idea behind this analysis and the way it assigns numbers is very
+ * similar to what is described in the paper:
+ * Lapkowski, C. and Hendren, L. J. 1996. Extended SSA numbering: introducing SSA properties to languages with multi-level pointers.
+ * In Proceedings of the 1996 Conference of the Centre For Advanced Studies on Collaborative Research (Toronto, Ontario, Canada, November 12 - 14, 1996).
+ * M. Bauer, K. Bennet, M. Gentleman, H. Johnson, K. Lyons, and J. Slonim, Eds. IBM Centre for Advanced Studies Conference. IBM Press, 23. 
+ * 
+ * Only major differences: Here we only use primary numbers, no secondary numbers. Further, we use the call graph to determine fields
+ * that are not written to in the transitive closure of this method's execution. A third difference is that we assign fixed values
+ * to {@link IdentityRef}s, because those never change during one execution. 
  * 
  * @author Patrick Lam
  * @author Eric Bodden
