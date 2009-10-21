@@ -86,6 +86,15 @@ public class HashChain<E> extends AbstractCollection<E>
         firstItem = lastItem = null;
     }
 
+    /** Constructs a HashChain filled with the contents of the src Chain. */
+    public HashChain(Chain<E> src) {
+      this();
+
+      for (E e : src) {
+        add(e);
+      }
+    }
+
     public boolean follows(E someObject, E someReferenceObject)
     {
         Iterator it = iterator(someObject);

@@ -1024,9 +1024,9 @@ public class Scene  //extends AbstractHost
         }
 
         // Remove/add all classes from packageInclusionMask as per -i option
-        Set<SootClass> processedClasses = new HashSet<SootClass>();
+        Chain<SootClass> processedClasses = new HashChain<SootClass>();
         while(true) {
-            Set<SootClass> unprocessedClasses = new HashSet<SootClass>(Scene.v().getClasses());
+            Chain<SootClass> unprocessedClasses = new HashChain<SootClass>(Scene.v().getClasses());
             unprocessedClasses.removeAll(processedClasses);
             if( unprocessedClasses.isEmpty() ) break;
             processedClasses.addAll(unprocessedClasses);
