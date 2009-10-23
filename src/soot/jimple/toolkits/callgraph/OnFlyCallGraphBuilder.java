@@ -251,7 +251,7 @@ public final class OnFlyCallGraphBuilder
 								receiverNames.add(target);
 							} else if(kind.equals("Method.invoke")) {
 								if(!Scene.v().containsMethod(target)) {
-									G.v().out.println("Warning: Unknown method for signature: "+target);
+									throw new RuntimeException("Unknown method for signature: "+target);
 								}
 								
 								Set<String> receiverNames;
