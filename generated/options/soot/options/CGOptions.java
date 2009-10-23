@@ -155,5 +155,39 @@ public class CGOptions
         return soot.PhaseOptions.getInt( options, "jdkver" );
     }
     
+    /** Reflection Log --
+    
+     * Uses a reflection log to resolve reflective calls..
+    
+     * Load a reflection log from the given file and use this log to 
+     * resolve reflective call sites. Note that when a log is given, 
+     * the following other options have no effect: safe-forname, 
+     * safe-newinstance. 
+     */
+    public String reflection_log() {
+        return soot.PhaseOptions.getString( options, "reflection-log" );
+    }
+    
+    /** Guarding strategy --
+    
+     * Describes how to guard the program from unsound assumptions..
+    
+     * Using a reflection log is only sound for method executions that 
+     * were logged. Executing the program differently may be unsound. 
+     * Soot can insert guards at program points for which the 
+     * reflection log contains no information. When these points are 
+     * reached (because the program is executed differently) then the 
+     * follwing will happen, depending on the value of this flag. 
+     * "ignore": no guard is inserted, the program executes normally 
+     * but under unsound assumptions. "print": the program prints a 
+     * stack trace when reaching a porgram location that was not traced 
+     * but continues to run. "throw" (default): the program throws an 
+     * Error instead. 
+     * 
+     */
+    public String guards() {
+        return soot.PhaseOptions.getString( options, "guards" );
+    }
+    
 }
         

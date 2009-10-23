@@ -26,7 +26,12 @@
 
 
 package soot;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,6 +47,7 @@ import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.jimple.toolkits.pointer.SideEffectAnalysis;
+import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
@@ -432,24 +438,24 @@ public class Scene  //extends AbstractHost
      * Returns the SootClass with the given className.  
      */
 
-    public SootClass getSootClass(String className) 
-    {   
-        RefType type = (RefType) nameToClass.get(className);
-        SootClass toReturn = null;
-        if( type != null ) toReturn = type.getSootClass();
-        
-        if(toReturn != null) {
-	    return toReturn;
-	} else  if(Scene.v().allowsPhantomRefs()) {            
-	    SootClass c = new SootClass(className);
-	    c.setPhantom(true);
-	    addClass(c);
-	    return c;
+	public SootClass getSootClass(String className) {
+		RefType type = (RefType) nameToClass.get(className);
+		SootClass toReturn = null;
+		if (type != null)
+			toReturn = type.getSootClass();
+
+		if (toReturn != null) {
+			return toReturn;
+		} else if (Scene.v().allowsPhantomRefs()) {
+			SootClass c = new SootClass(className);
+			c.setPhantom(true);
+			addClass(c);
+			return c;
+		} else {
+			throw new RuntimeException(System.getProperty("line.separator")
+					+ "Aborting: can't find classfile " + className);
+		}
 	}
-	else {          
-	    throw new RuntimeException( System.getProperty("line.separator") + "Aborting: can't find classfile " + className );            
-	}
-    }
 
     /**
      * Returns an backed chain of the classes in this manager.
@@ -916,18 +922,53 @@ public class Scene  //extends AbstractHost
      *  loadNecessaryClasses, though it will only waste time.
      */
     public void loadBasicClasses() {
-	Iterator it;
-
-	for(int i=SootClass.BODIES;i>=SootClass.HIERARCHY;i--) {
-	    it = basicclasses[i].iterator();
-	    while(it.hasNext()) {
-		String name=(String) it.next();
-		tryLoadClass(name,i);
-	    }
-	}
+    	addReflectionTraceClasses();
+    	
+		for(int i=SootClass.BODIES;i>=SootClass.HIERARCHY;i--) {
+		    for(String name: basicclasses[i]) {
+		    	tryLoadClass(name,i);
+		    }
+		}
     }
 
-    private List<SootClass> dynamicClasses;
+    private void addReflectionTraceClasses() {
+    	CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+    	String log = options.reflection_log();
+    	
+    	Set<String> classNames = new HashSet<String>();
+    	if(log!=null && log.length()>0) {
+			BufferedReader reader;
+			String line="";
+			try {
+				reader = new BufferedReader(new InputStreamReader(new FileInputStream(log)));
+				while((line=reader.readLine())!=null) {
+					if(line.length()==0) continue;
+					String[] portions = line.split(";");
+					String kind = portions[0];
+					String target = portions[1];
+					String source = portions[2];
+					String classNameDotMethodName = source.substring(0,source.indexOf("("));
+					String sourceClassName = classNameDotMethodName.substring(0,classNameDotMethodName.lastIndexOf("."));
+					classNames.add(sourceClassName);
+					if(kind.equals("Class.forName")) {
+						classNames.add(target);
+					} else if(kind.equals("Class.newInstance")) {
+						classNames.add(target);
+					} else if(kind.equals("Method.invoke") || kind.equals("Constructor.newInstance")) {
+						classNames.add(signatureToClass(target));
+					} else throw new RuntimeException("Unknown entry kind: "+kind);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Line: '"+line+"'", e);
+			}
+    	}
+    	
+    	for (String c : classNames) {
+    		addBasicClass(c, SootClass.BODIES);
+		}
+	}
+
+	private List<SootClass> dynamicClasses;
     public Collection<SootClass> dynamicClasses() {
     	if(dynamicClasses==null) {
     		throw new IllegalStateException("Have to call loadDynamicClasses() first!");

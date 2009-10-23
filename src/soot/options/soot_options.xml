@@ -1498,6 +1498,29 @@ that must have already been executed. Since these static initializers cannot be
 executed again, the corresponding call graph edges are removed from the call graph.
 </long_desc>
                                 </boolopt>
+                                <stropt>
+                                        <name>Reflection Log</name>
+                                        <alias>reflection-log</alias>
+                                        <short_desc>Uses a reflection log to resolve reflective calls.</short_desc>
+                                        <long_desc>Load a reflection log
+from the given file and use this log to resolve reflective call sites. Note that
+when a log is given, the following other options have no effect: safe-forname,
+safe-newinstance.                                         
+</long_desc>
+                                </stropt>
+                                <stropt>
+                                        <name>Guarding strategy</name>
+                                        <alias>guards</alias>
+                                        <default>throw</default>
+                                        <short_desc>Describes how to guard the program from unsound assumptions.</short_desc>
+                                        <long_desc>Using a reflection log is only sound for method executions that were logged.
+Executing the program differently may be unsound. Soot can insert guards at program points for which the reflection log
+contains no information. When these points are reached (because the program is executed differently) then the follwing will happen,
+depending on the value of this flag. "ignore": no guard is inserted, the program executes normally but under unsound assumptions.
+"print": the program prints a stack trace when reaching a porgram location that was not traced but continues to run. "throw" (default):
+the program throws an Error instead.                                                                                                
+</long_desc>
+                                </stropt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>

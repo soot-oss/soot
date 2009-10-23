@@ -2752,6 +2752,24 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getcgjdkver_widget().getAlias(), stringRes);
 		}
 		
+		stringRes = getcgreflection_log_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgreflection_log_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getcgguards_widget().getText().getText();
+		
+		defStringRes = "throw";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgguards_widget().getAlias(), stringRes);
+		}
+		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
 		
 		
@@ -7047,6 +7065,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public StringOptionWidget getcgjdkver_widget() {
 		return cgjdkver_widget;
+	}
+	
+	
+	
+	private StringOptionWidget cgreflection_log_widget;
+	
+	private void setcgreflection_log_widget(StringOptionWidget widget) {
+		cgreflection_log_widget = widget;
+	}
+	
+	public StringOptionWidget getcgreflection_log_widget() {
+		return cgreflection_log_widget;
+	}
+	
+	
+	
+	private StringOptionWidget cgguards_widget;
+	
+	private void setcgguards_widget(StringOptionWidget widget) {
+		cgguards_widget = widget;
+	}
+	
+	public StringOptionWidget getcgguards_widget() {
+		return cgguards_widget;
 	}
 	
 	
@@ -11937,6 +11979,36 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgjdkver_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("JDK version",  "p", "cg","jdkver", "\nThis option sets the JDK version of the standard library being \nanalyzed so that Soot can simulate the native methods in the \nspecific version of the library. The default, 3, refers to Java \n1.3.x.", defaultString)));
+		
+		
+		defKey = "p"+" "+"cg"+" "+"reflection-log";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setcgreflection_log_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Reflection Log",  "p", "cg","reflection-log", "\nLoad a reflection log from the given file and use this log to \nresolve reflective call sites. Note that when a log is given, \nthe following other options have no effect: safe-forname, \nsafe-newinstance. ", defaultString)));
+		
+		
+		defKey = "p"+" "+"cg"+" "+"guards";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "throw";
+			
+		}
+
+		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \n"ignore": no guard is inserted, the program executes normally \nbut under unsound assumptions. "print": the program prints a \nstack trace when reaching a porgram location that was not traced \nbut continues to run. "throw" (default): the program throws an \nError instead. \n", defaultString)));
 		
 
 		

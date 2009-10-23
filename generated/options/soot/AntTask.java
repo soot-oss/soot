@@ -1032,6 +1032,18 @@ public class AntTask extends MatchingTask {
             addArg("jdkver:"+arg);
           }
       
+          public void setreflection_log(String arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("reflection-log:"+arg);
+          }
+      
+          public void setguards(String arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("guards:"+arg);
+          }
+      
         }
     
         public Object createp_cg_cha() {
