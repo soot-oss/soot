@@ -29,8 +29,6 @@ package soot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -206,15 +204,46 @@ public class Scene  //extends AbstractHost
     }
     
 	public String defaultClassPath() {
-		String defaultSootClassPath = System.getProperty("java.class.path")+File.pathSeparator+
-			System.getProperty("java.home")+File.separator+"lib"+File.separator+"rt.jar";
+		StringBuffer sb = new StringBuffer();
+		sb.append(System.getProperty("java.class.path")+File.pathSeparator);
+        if(System.getProperty("os.name").equals("Mac OS X")) {
+	        //in Mac OS X, rt.jar is split into classes.jar and ui.jar
+	        sb.append(File.pathSeparator);
+	        sb.append(System.getProperty("java.home"));
+	        sb.append(File.separator);
+	        sb.append("..");
+	        sb.append(File.separator);
+	        sb.append("Classes");
+	        sb.append(File.separator);
+	        sb.append("classes.jar");
+	
+	        sb.append(File.pathSeparator);
+	        sb.append(System.getProperty("java.home"));
+	        sb.append(File.separator);
+	        sb.append("..");
+	        sb.append(File.separator);
+	        sb.append("Classes");
+	        sb.append(File.separator);
+	        sb.append("ui.jar");
+
+
+        } else {
+            sb.append(File.pathSeparator);
+            sb.append(System.getProperty("java.home"));
+            sb.append(File.separator);
+            sb.append("lib");
+            sb.append(File.separator);
+            sb.append("rt.jar");
+        }
+        
 		if(Options.v().whole_program() || Options.v().output_format()==Options.output_format_dava) {
 			//add jce.jar, which is necessary for whole program mode
 			//(java.security.Signature from rt.jar import javax.crypto.Cipher from jce.jar            	
-			defaultSootClassPath += File.pathSeparator+
-				System.getProperty("java.home")+File.separator+"lib"+File.separator+"jce.jar";
+			sb.append(File.pathSeparator+
+				System.getProperty("java.home")+File.separator+"lib"+File.separator+"jce.jar");
 		}
-		return defaultSootClassPath;
+		
+		return sb.toString();
 	}
 
 
