@@ -31,6 +31,8 @@ public class SourceLocator
     public SourceLocator( Singletons.Global g ) {}
     public static SourceLocator v() { return G.v().soot_SourceLocator(); }
 
+    protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
+    
     /** Given a class name, uses the soot-class-path to return a ClassSource for the given class. */
     public ClassSource getClassSource(String className) 
     {
@@ -50,7 +52,27 @@ public class SourceLocator
             }
         }
         if(ex!=null) throw ex;
+        for(final ClassLoader cl: additionalClassLoaders) {
+            try {
+            	ClassSource ret = new ClassProvider() {
+					
+					public ClassSource find(String className) {
+				        String fileName = className.replace('.', '/') + ".class";
+						return new CoffiClassSource(className, cl.getResourceAsStream(fileName));
+					}
+
+            	}.find(className);
+	            if( ret != null ) return ret;
+            } catch(JarException e) {
+            	ex = e;
+            }
+        }
+        if(ex!=null) throw ex;
         return null;
+    }
+    
+    public void additionalClassLoader(ClassLoader c) {
+    	additionalClassLoaders.add(c);
     }
 
     private void setupClassProviders() {
