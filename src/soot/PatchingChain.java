@@ -37,7 +37,7 @@ import soot.util.Chain;
  * and handles patching to deal with element insertions and removals.
  * This is done by calling Unit.redirectJumpsToThisTo at strategic
  * times. */
-public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E> 
+public class PatchingChain<E extends Unit> extends AbstractCollection<E> implements Chain<E> 
 {
     protected Chain<E> innerChain;
 
@@ -106,9 +106,10 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
         while (it.hasNext())
         {
             E o = it.next();
-            insertBefore(o, previousPoint);
+            insertBeforeNoRedirect(o, previousPoint);
             previousPoint = o;
         }
+        point.redirectJumpsToThisTo(toInsert.get(0));
     }
     
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
@@ -136,7 +137,7 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(E toInsert, E point)
     {
-        ((Unit) point).redirectJumpsToThisTo((Unit) toInsert);
+        point.redirectJumpsToThisTo(toInsert);
         innerChain.insertBefore(toInsert, point);
     }
     
@@ -162,8 +163,8 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
         {
             Unit successor;
             
-            if((successor = (Unit)getSuccOf((E) obj)) == null)
-                successor = (Unit)getPredOf((E) obj); 
+            if((successor = getSuccOf((E) obj)) == null)
+                successor = getPredOf((E) obj); 
 		// Note that redirecting to the last unit in the method 
 		// like this is probably incorrect when dealing with a Trap.
 	        // I.e., let's say that the final unit in the method used to
@@ -176,7 +177,7 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
             
             res = innerChain.remove(obj);
 
-            ((Unit)obj).redirectJumpsToThisTo(successor);
+            ((E)obj).redirectJumpsToThisTo(successor);
         }
 
         return res;        
@@ -243,8 +244,8 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
 
             Unit successor;
             
-              if((successor = (Unit)getSuccOf(lastObject)) == null)
-		  successor = (Unit)getPredOf(lastObject);
+              if((successor = getSuccOf(lastObject)) == null)
+		  successor = getPredOf(lastObject);
 		  // Note that redirecting to the last unit in the method 
 		  // like this is probably incorrect when dealing with a Trap.
 		  // I.e., let's say that the final unit in the method used to
@@ -257,7 +258,7 @@ public class PatchingChain<E> extends AbstractCollection<E> implements Chain<E>
             
             innerIterator.remove();
 
-            ((Unit)lastObject).redirectJumpsToThisTo(successor);
+            lastObject.redirectJumpsToThisTo(successor);
         }
     }
 

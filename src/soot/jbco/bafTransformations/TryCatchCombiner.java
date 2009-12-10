@@ -142,8 +142,8 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       Unit storZero = Baf.v().newStoreInst(IntType.v(), controlLocal);
       
       // this is necessary even though it seems like it shouldn't be
-      units.insertBeforeNoRedirect(pushZero.clone(), first);
-      units.insertBeforeNoRedirect(storZero.clone(), first);
+      units.insertBeforeNoRedirect((Unit)pushZero.clone(), first);
+      units.insertBeforeNoRedirect((Unit)storZero.clone(), first);
       
       BriefUnitGraph graph = new BriefUnitGraph(b);
       List l = graph.getPredsOf(begUnit);
