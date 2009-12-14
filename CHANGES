@@ -3,6 +3,9 @@ Improvements and API changes in version 2.3.1
 1. Deprecated class StronglyConnectedComponents because it is
    inefficient. There is a new class StronglyConnectedComponentsFast
    that implements Tarjan's algorithm and is very efficient.
+   
+2. Changed type parameter of PatchingChain to be a subtype of Unit
+   because this is what the implementation actually requires.
 
 Improvements and API changes in version 2.3.0
 
