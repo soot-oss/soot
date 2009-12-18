@@ -648,17 +648,17 @@ public final class OnFlyCallGraphBuilder
                                 Kind.THREAD );
                     }
                 } else {
-                    SootMethod tgt = ((StaticInvokeExpr) ie).getMethod();
-                    addEdge(m, s, tgt);
-                    if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
-                    ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
-                    ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
-                    ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
-
-                        Local receiver = (Local) ie.getArg(0);
-                        addVirtualCallSite( s, m, receiver, null, sigObjRun,
-                                Kind.PRIVILEGED );
-                    }
+                	SootMethod tgt = ie.getMethod();
+                	addEdge(m, s, tgt);
+                	if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
+                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
+                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
+                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
+                		
+                		Local receiver = (Local) ie.getArg(0);
+                		addVirtualCallSite( s, m, receiver, null, sigObjRun,
+                				Kind.PRIVILEGED );
+                	}                    	
                 }
             }
         }
@@ -677,13 +677,13 @@ public final class OnFlyCallGraphBuilder
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = s.getInvokeExpr();
-                if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
+                if( ie.getMethodRef().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                 	reflectionModel.methodInvoke(source,s);
                 }
-                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                if( ie.getMethodRef().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
                 	reflectionModel.classNewInstance(source,s);
                 }
-                if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>" ) ) {
+                if( ie.getMethodRef().getSignature().equals( "<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>" ) ) {
                 	reflectionModel.contructorNewInstance(source, s);
                 }
                 if( ie.getMethodRef().getSubSignature() == sigForName ) {
