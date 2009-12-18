@@ -27,8 +27,8 @@ import soot.util.*;
  * procedure in the Java Virtual Machine Specification, 2nd ed, section 5.4.3.3.
  */
 
-class AbstractSootMethodRef implements SootMethodRef {
-    public AbstractSootMethodRef( 
+class SootMethodRefImpl implements SootMethodRef {
+    public SootMethodRefImpl( 
             SootClass declaringClass,
             String name,
             List parameterTypes,
@@ -132,7 +132,9 @@ class AbstractSootMethodRef implements SootMethodRef {
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
             else break;
         }
-        if( trace == null )throw new ClassResolutionFailedException();
+        if( trace == null ) {
+        	throw new ClassResolutionFailedException();
+        }
         return null;
     }
     public String toString() {
