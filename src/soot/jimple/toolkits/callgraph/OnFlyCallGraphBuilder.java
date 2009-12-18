@@ -542,8 +542,8 @@ public final class OnFlyCallGraphBuilder
             && !fh.canStoreType( type, clRunnable ) )
                 continue;
 
-            if( site.iie() instanceof SpecialInvokeExpr ) {
-                targetsQueue.add( VirtualCalls.v().resolveSpecial( 
+            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD ) {
+            	targetsQueue.add( VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
                             site.container() ) );
