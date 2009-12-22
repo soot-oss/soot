@@ -1147,7 +1147,7 @@ public class Scene  //extends AbstractHost
             List<Type> parameterTypes,
             Type returnType,
             boolean isStatic ) {
-        return new AbstractSootMethodRef(declaringClass, name, parameterTypes,
+        return new SootMethodRefImpl(declaringClass, name, parameterTypes,
                 returnType, isStatic);
     }
 
