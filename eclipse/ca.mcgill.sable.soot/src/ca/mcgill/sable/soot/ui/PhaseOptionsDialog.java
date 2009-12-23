@@ -12008,7 +12008,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \n"ignore": no guard is inserted, the program executes normally \nbut under unsound assumptions. "print": the program prints a \nstack trace when reaching a porgram location that was not traced \nbut continues to run. "throw" (default): the program throws an \nError instead. \n", defaultString)));
+		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \nignore: no guard is inserted, the program executes normally but \nunder unsound assumptions. print: the program prints a stack \ntrace when reaching a porgram location that was not traced but \ncontinues to run. throw (default): the program throws an Error \ninstead. \n", defaultString)));
 		
 
 		

@@ -178,11 +178,11 @@ public class CGOptions
      * reflection log contains no information. When these points are 
      * reached (because the program is executed differently) then the 
      * follwing will happen, depending on the value of this flag. 
-     * "ignore": no guard is inserted, the program executes normally 
-     * but under unsound assumptions. "print": the program prints a 
-     * stack trace when reaching a porgram location that was not traced 
-     * but continues to run. "throw" (default): the program throws an 
-     * Error instead. 
+     * ignore: no guard is inserted, the program executes normally but 
+     * under unsound assumptions. print: the program prints a stack 
+     * trace when reaching a porgram location that was not traced but 
+     * continues to run. throw (default): the program throws an Error 
+     * instead. 
      * 
      */
     public String guards() {
