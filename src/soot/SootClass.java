@@ -713,8 +713,10 @@ public class SootClass extends AbstractHost implements Numberable
     public SootClass getSuperclass() 
     {
         checkLevel(HIERARCHY);
-        if(superClass == null) 
+        if(superClass == null && !isPhantom()) 
             throw new RuntimeException("no superclass for "+getName());
+        else if (isPhantom())
+        	return null;
         else
             return superClass;
     }

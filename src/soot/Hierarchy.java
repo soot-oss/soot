@@ -119,7 +119,7 @@ public class Hierarchy
                             SootClass i = (SootClass)subIt.next();
                             if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
                             l = interfaceToDirImplementers.get(i);
-                            l.add(c);
+                            if (l != null) l.add(c);
                         }
                     }
                 }

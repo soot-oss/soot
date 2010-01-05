@@ -140,7 +140,15 @@ public class JArrayRef implements ArrayRef, ConvertToBaf
         else if(type.equals(NullType.v()))
             return NullType.v();
         else {
-            ArrayType arrayType = (ArrayType) type;
+        	//use makeArrayType on non-array type references when they propagate to this point.
+        	//kludge, most likely not correct.
+        	//may stop spark from complaining when it gets passed phantoms.
+        	// ideally I'd want to find out just how they manage to get this far.
+        	ArrayType arrayType;
+        	if (type instanceof ArrayType)
+        		arrayType = (ArrayType) type;
+        	else
+        		arrayType = (ArrayType) type.makeArrayType();
 
             if(arrayType.numDimensions == 1)
                 return arrayType.baseType;

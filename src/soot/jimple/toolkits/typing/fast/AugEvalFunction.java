@@ -43,12 +43,18 @@ public class AugEvalFunction implements IEvalFunction
 
 	public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb)
 	{
+		
 		if ( expr instanceof ThisRef )
 			return ((ThisRef)expr).getType();
 		else if ( expr instanceof ParameterRef )
 			return ((ParameterRef)expr).getType();
-		else if ( expr instanceof Local )
-			return tg.get((Local)expr);
+		else if ( expr instanceof Local ) {
+			Local ex = (Local) expr;
+			//changed to prevent null pointer exception in case of phantom classes where a null typing is encountered
+			//syed 
+			if (tg == null) return null; 
+			else return tg.get(ex);
+		}
 		else if ( expr instanceof BinopExpr )
 		{
 			BinopExpr be = (BinopExpr)expr;

@@ -350,6 +350,7 @@ public class TypeResolver
 	{
 		Typing r = null;
 		count[0] = -1;
+		boolean setR = false;
 		for ( Typing tg : sigma )
 		{
 			int n = this.insertCasts(tg, h, true);
@@ -357,9 +358,13 @@ public class TypeResolver
 			{
 				count[0] = n;
 				r = tg;
+				setR = true;
 			}
 		}
-		return r;
+		if (setR)
+			return r;
+		else
+			return null;
 	}
 	
 	private Collection<Typing> applyAssignmentConstraints(Typing tg,
@@ -400,6 +405,7 @@ public class TypeResolver
 				
 				boolean keep = false;
 				Collection<Type> eval = ef.eval(tg, rhs, stmt);
+				
 				for ( Type t_ : eval )
 				{
 					if ( lhs instanceof ArrayRef )
@@ -419,6 +425,7 @@ public class TypeResolver
 					}
 					
 					Collection<Type> lcas = h.lcas(told, t_);
+				
 					for ( Type t : lcas )
 						if ( typesEqual(t, told) )
 							keep = true;
@@ -442,7 +449,7 @@ public class TypeResolver
 							tg_.set(v, t);
 							wl_.addLast(this.depends.get(v));
 						}
-				}
+				}//end for
 				if ( !keep )
 				{
 					sigma.remove();

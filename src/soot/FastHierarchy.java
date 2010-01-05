@@ -283,7 +283,7 @@ public class FastHierarchy
             Set impl = getAllImplementersOfInterface( parent );
             for( Iterator it = impl.iterator(); it.hasNext(); ) {
                 parentInterval = classToInterval.get( it.next() );
-                if( parentInterval.isSubrange( childInterval ) ) {
+                if( parentInterval != null && parentInterval.isSubrange( childInterval ) ) {
                     return true;
                 }
             }

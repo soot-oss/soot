@@ -745,8 +745,9 @@ public class Scene  //extends AbstractHost
    
     public boolean getPhantomRefs()
     {
-        if( !Options.v().allow_phantom_refs() ) return false;
-        return allowsPhantomRefs;
+        //if( !Options.v().allow_phantom_refs() ) return false;
+        //return allowsPhantomRefs;
+    	return Options.v().allow_phantom_refs();
     }
 
     public void setPhantomRefs(boolean value)

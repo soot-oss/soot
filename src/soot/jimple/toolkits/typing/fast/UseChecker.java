@@ -44,8 +44,14 @@ public class UseChecker extends AbstractStmtSwitch
 	
 	public void check(Typing tg, IUseVisitor uv)
 	{
-		this.tg = tg;
-		this.uv = uv;
+		try {
+			this.tg = tg;	
+			this.uv = uv;
+			if (this.tg == null) throw new Exception("null typing passed to useChecker");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 		
 		for ( Iterator<Unit> i = this.jb.getUnits().snapshotIterator();
 			i.hasNext(); )
@@ -148,12 +154,19 @@ public class UseChecker extends AbstractStmtSwitch
 		Value lhs = stmt.getLeftOp();
 		Type tlhs = null;
 		
+		
+		
 		if ( lhs instanceof Local )
 			tlhs = this.tg.get((Local)lhs);
 		else if ( lhs instanceof ArrayRef )
 		{
 			Local base = (Local)((ArrayRef)lhs).getBase();
-			ArrayType at = (ArrayType)this.tg.get(base);
+			ArrayType at;
+			//try to force Type integrity
+			if (this.tg.get(base) instanceof ArrayType)
+				at = (ArrayType)this.tg.get(base);
+			else
+				at = (ArrayType)this.tg.get(base).makeArrayType();
 			tlhs = ((ArrayType)at).getElementType();
 			this.handleArrayRef((ArrayRef)lhs, stmt);
 		}

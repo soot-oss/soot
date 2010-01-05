@@ -63,9 +63,11 @@ public class BytecodeHierarchy implements IHierarchy
 						node, ((SootClass)i.next()).getType()));
 				
 				// The superclass of all interfaces is Object
-				if ( !sc.isInterface() || sc.getInterfaceCount() == 0 )
+				// -- try to discard phantom interfaces.
+				if ( ( !sc.isInterface() || sc.getInterfaceCount() == 0 ) && !sc.isPhantom())
 					leafs.add(new AncestryTreeNode(
 						node, sc.getSuperclass().getType()));
+				
 			}
 		}
 		return r;
@@ -182,6 +184,13 @@ public class BytecodeHierarchy implements IHierarchy
 					if ( least )
 						r.add(t);
 				}
+			
+			//in case of phantom classes that screw up type resolution here,
+			//default to only possible common reftype, java.lang.Object
+			//kludge on a kludge on a kludge...
+			//syed - 05/06/2009
+			if ( r.isEmpty() )
+				r.add(RefType.v("java.lang.Object"));
 			return r;
 		}
 	}
