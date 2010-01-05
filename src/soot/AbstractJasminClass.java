@@ -443,10 +443,6 @@ public abstract class AbstractJasminClass
     if (sootClass.hasTag("SyntheticTag")){
         emit(".synthetic\n");
     }
-    // emit deprecated attributes
-    if (sootClass.hasTag("DeprecatedTag")){
-        emit(".deprecated\n");
-    }
     // emit inner class attributes
     if (sootClass.hasTag("InnerClassAttribute")){
         if (!Options.v().no_output_inner_classes_attribute()){
@@ -475,6 +471,10 @@ public abstract class AbstractJasminClass
         encMeth += "\""+eMethTag.getEnclosingMethod()+"\" ";
         encMeth += "\""+eMethTag.getEnclosingMethodSig()+"\"\n";
         emit(encMeth);
+    }
+    // emit deprecated attributes
+    if (sootClass.hasTag("DeprecatedTag")){
+        emit(".deprecated\n");
     }
     if (sootClass.hasTag("SignatureTag")){
         String sigAttr = ".signature_attr ";
