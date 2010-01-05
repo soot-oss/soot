@@ -295,12 +295,12 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
         return num;
     }
 
-    private int thisRefNumber() {
+    public static int thisRefNumber() {
     	//unique number for ThisRef (must be <1)
 		return 0;
 	}
 
-    private int parameterRefNumber(ParameterRef r) {
+    public static int parameterRefNumber(ParameterRef r) {
     	//unique number for ParameterRef[i] (must be <0)
 		return 0 - r.getIndex();
 	}
