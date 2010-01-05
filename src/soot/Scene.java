@@ -123,7 +123,7 @@ public class Scene  //extends AbstractHost
     public void setMainClass(SootClass m)
     {
         mainClass = m;
-        if(!m.declaresMethod(Scene.v().getSubSigNumberer().findOrAdd( "void main(java.lang.String[])" ))) {
+        if(!m.declaresMethod(getSubSigNumberer().findOrAdd( "void main(java.lang.String[])" ))) {
         	throw new RuntimeException("Main-class has no main method!");
         }
     }
@@ -383,16 +383,16 @@ public class Scene  //extends AbstractHost
             Main.v().resolveTimer.start();
         */
         
-        Scene.v().setPhantomRefs(true);
+        setPhantomRefs(true);
         //SootResolver resolver = new SootResolver();
         if( !getPhantomRefs() 
         && SourceLocator.v().getClassSource(className) == null ) {
-            Scene.v().setPhantomRefs(false);
+            setPhantomRefs(false);
             return null;
         }
         SootResolver resolver = SootResolver.v();
         SootClass toReturn = resolver.resolveClass(className, desiredLevel);
-        Scene.v().setPhantomRefs(false);
+        setPhantomRefs(false);
 
         return toReturn;
         
@@ -419,11 +419,11 @@ public class Scene  //extends AbstractHost
             Main.v().resolveTimer.start();
         */
         
-        Scene.v().setPhantomRefs(true);
+        setPhantomRefs(true);
         //SootResolver resolver = new SootResolver();
         SootResolver resolver = SootResolver.v();
         SootClass toReturn = resolver.resolveClass(className, desiredLevel);
-        Scene.v().setPhantomRefs(false);
+        setPhantomRefs(false);
 
         return toReturn;
         
@@ -475,7 +475,7 @@ public class Scene  //extends AbstractHost
 
 		if (toReturn != null) {
 			return toReturn;
-		} else if (Scene.v().allowsPhantomRefs()) {
+		} else if (allowsPhantomRefs()) {
 			SootClass c = new SootClass(className);
 			c.setPhantom(true);
 			addClass(c);
@@ -1008,7 +1008,7 @@ public class Scene  //extends AbstractHost
 
     private void loadNecessaryClass(String name) {
         SootClass c;
-        c = Scene.v().loadClassAndSupport(name);
+        c = loadClassAndSupport(name);
         c.setApplicationClass();
     }
     /** Load the set of classes that soot needs, including those specified on the
@@ -1031,7 +1031,7 @@ public class Scene  //extends AbstractHost
 
             final String path = (String) pathIt.next();
             for (String cl : SourceLocator.v().getClassesUnder(path)) {
-                Scene.v().loadClassAndSupport(cl).setApplicationClass();
+                loadClassAndSupport(cl).setApplicationClass();
             }
         }
 
@@ -1058,7 +1058,7 @@ public class Scene  //extends AbstractHost
 
         for (String className : dynClasses) {
 
-            dynamicClasses.add( Scene.v().loadClassAndSupport(className) );
+            dynamicClasses.add( loadClassAndSupport(className) );
         }
         
         //remove non-concrete classes that may accidentally have been loaded
@@ -1097,7 +1097,7 @@ public class Scene  //extends AbstractHost
         // Remove/add all classes from packageInclusionMask as per -i option
         Chain<SootClass> processedClasses = new HashChain<SootClass>();
         while(true) {
-            Chain<SootClass> unprocessedClasses = new HashChain<SootClass>(Scene.v().getClasses());
+            Chain<SootClass> unprocessedClasses = new HashChain<SootClass>(getClasses());
             unprocessedClasses.removeAll(processedClasses);
             if( unprocessedClasses.isEmpty() ) break;
             processedClasses.addAll(unprocessedClasses);
@@ -1124,7 +1124,7 @@ public class Scene  //extends AbstractHost
                 }
                 if(s.isApplicationClass()) {
                     // make sure we have the support
-                    Scene.v().loadClassAndSupport(s.getName());
+                    loadClassAndSupport(s.getName());
                 }
             }
         }
