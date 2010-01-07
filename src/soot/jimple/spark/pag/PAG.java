@@ -863,10 +863,10 @@ public class PAG implements PointsToAnalysis {
                 cls = cls.getReplacement();
                 if( cls instanceof ContextVarNode ) cls = findLocalVarNode( ((VarNode)cls).getVariable() );
                 
+                VarNode newObject = makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
                 SootClass tgtClass = e.getTgt().method().getDeclaringClass();
 				RefType tgtType = tgtClass.getType();                
-            	VarNode newObject = makeGlobalVarNode( cls, tgtType );
-                AllocNode site = makeAllocNode( new Pair(cls, tgtClass), tgtClass.getType(), null );
+                AllocNode site = makeAllocNode( new Pair(cls, tgtClass), tgtType, null );
                 addEdge( site, newObject );
 
                 //(2)
