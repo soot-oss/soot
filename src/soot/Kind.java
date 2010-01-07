@@ -46,6 +46,10 @@ public final class Kind implements Numberable
     public static final Kind PRIVILEGED = new Kind( "PRIVILEGED" );
     /** Implicit call to constructor from java.lang.Class.newInstance(). */
     public static final Kind NEWINSTANCE = new Kind( "NEWINSTANCE" );
+    /** Due to call to Method.invoke(..). */
+    public static final Kind REFL_INVOKE = new Kind( "REFL_METHOD_INVOKE" );
+    /** Due to call to Constructor.newInstance(..). */
+    public static final Kind REFL_NEWINSTANCE = new Kind( "REFL_CONSTRUCTOR_NEWINSTANCE" );
 
     private Kind( String name ) {
         this.name = name;
@@ -61,7 +65,8 @@ public final class Kind implements Numberable
 
     public boolean passesParameters() {
         return isExplicit() || this == THREAD || this == FINALIZE ||
-            this == PRIVILEGED || this == NEWINSTANCE || this == INVOKE_FINALIZE;
+            this == PRIVILEGED || this == NEWINSTANCE || this == INVOKE_FINALIZE ||
+            this == REFL_INVOKE || this == REFL_NEWINSTANCE;
     }
 
     /** Returns true if the call is due to an explicit invoke statement. */

@@ -781,6 +781,133 @@ public class PAG implements PointsToAnalysis {
                 }
                 callAssigns.put(s.getInvokeExpr(), new Pair(newObject, initThis));
                 callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
+            } else if( e.kind() == Kind.REFL_INVOKE ) {
+            	// Flow (1) from first parameter of invoke(..) invocation
+                // to this of target, (2) from the contents of the second (array) parameter
+            	// to all parameters of the target, and (3)  from return of target to the
+                // return of invoke(..)
+            	
+            	//(1)
+                InvokeExpr ie = e.srcStmt().getInvokeExpr();
+
+                Value arg0 = ie.getArg(0);
+                //if "null" is passed in, omit the edge
+                if(arg0!=NullConstant.v()) {
+					Node parm0 = srcmpag.nodeFactory().getNode( arg0 );
+	                parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
+	                parm0 = parm0.getReplacement();
+	
+	                Node thiz = tgtmpag.nodeFactory().caseThis();
+	                thiz = tgtmpag.parameterize( thiz, e.tgtCtxt() );
+	                thiz = thiz.getReplacement();
+	
+	                addEdge( parm0, thiz );
+	                callAssigns.put(ie, new Pair(parm0, thiz));
+	                callToMethod.put(ie, srcmpag.getMethod());
+                }
+
+            	//(2)
+                Value arg1 = ie.getArg(1);
+                SootMethod tgt = e.getTgt().method();
+                //if "null" is passed in, or target has no parameters, omit the edge
+                if(arg1!=NullConstant.v() && tgt.getParameterCount()>0) {
+					Node parm1 = srcmpag.nodeFactory().getNode( arg1 );
+	                parm1 = srcmpag.parameterize( parm1, e.srcCtxt() );
+	                parm1 = parm1.getReplacement();
+	                FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm1, ArrayElement.v() );
+	                
+	                for(int i=0;i<tgt.getParameterCount(); i++) {
+	                	//if no reference type, create no edge
+	                	if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
+	                	
+	                    Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
+	                    tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
+	                    tgtParmI = tgtParmI.getReplacement();
+	
+	                    addEdge( parm1contents, tgtParmI );
+	                    callAssigns.put(ie, new Pair(parm1contents, tgtParmI));
+	                }
+                }
+
+                //(3)
+                //only create return edge if we are actually assigning the return value and
+                //the return type of the callee is actually a reference type
+                if( e.srcUnit() instanceof AssignStmt && (tgt.getReturnType() instanceof RefLikeType)) {
+                    AssignStmt as = (AssignStmt) e.srcUnit();
+
+                    Node ret = tgtmpag.nodeFactory().caseRet();
+                    ret = tgtmpag.parameterize( ret, e.tgtCtxt() );
+                    ret = ret.getReplacement();
+
+                    Node lhs = srcmpag.nodeFactory().getNode(as.getLeftOp());
+                    lhs = srcmpag.parameterize( lhs, e.srcCtxt() );
+                    lhs = lhs.getReplacement();
+
+                    addEdge( ret, lhs );
+                    callAssigns.put(ie, new Pair(ret, lhs));
+                }
+            } else if( e.kind() == Kind.REFL_NEWINSTANCE ) {
+            	// (1) create a fresh node for the new object
+            	// (2) create edge from this object to "this" of the constructor
+            	// (3) create edges passing the contents of the arguments array of the call
+            	//     to all possible parameters of the target
+            	// (4) if we are inside an assign statement,
+            	//     assign the fresh object from (1) to the LHS of the assign statement
+            	
+                Stmt s = (Stmt) e.srcUnit();
+                InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
+
+                //(1)
+                Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
+                cls = srcmpag.parameterize( cls, e.srcCtxt() );
+                cls = cls.getReplacement();
+                if( cls instanceof ContextVarNode ) cls = findLocalVarNode( ((VarNode)cls).getVariable() );
+                
+                SootClass tgtClass = e.getTgt().method().getDeclaringClass();
+				RefType tgtType = tgtClass.getType();                
+            	VarNode newObject = makeGlobalVarNode( cls, tgtType );
+                AllocNode site = makeAllocNode( new Pair(cls, tgtClass), tgtClass.getType(), null );
+                addEdge( site, newObject );
+
+                //(2)
+                Node initThis = tgtmpag.nodeFactory().caseThis();
+                initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
+                initThis = initThis.getReplacement();
+                addEdge( newObject, initThis );
+                
+                //(3)
+                Value arg = iie.getArg(0);
+                SootMethod tgt = e.getTgt().method();
+                //if "null" is passed in, or target has no parameters, omit the edge
+                if(arg!=NullConstant.v() && tgt.getParameterCount()>0) {
+					Node parm0 = srcmpag.nodeFactory().getNode( arg );
+	                parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
+	                parm0 = parm0.getReplacement();
+	                FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm0, ArrayElement.v() );
+	                
+	                for(int i=0;i<tgt.getParameterCount(); i++) {
+	                	//if no reference type, create no edge
+	                	if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
+	                	
+	                    Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
+	                    tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
+	                    tgtParmI = tgtParmI.getReplacement();
+	
+	                    addEdge( parm1contents, tgtParmI );
+	                    callAssigns.put(iie, new Pair(parm1contents, tgtParmI));
+	                }
+                }
+                
+                //(4)
+                if (s instanceof AssignStmt) {
+                    AssignStmt as = (AssignStmt)s;
+                    Node asLHS = srcmpag.nodeFactory().getNode(as.getLeftOp());
+                    asLHS = srcmpag.parameterize( asLHS, e.srcCtxt());
+                    asLHS = asLHS.getReplacement();
+                    addEdge( newObject, asLHS);
+                }
+                callAssigns.put(s.getInvokeExpr(), new Pair(newObject, initThis));
+                callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
             } else {
                 throw new RuntimeException( "Unhandled edge "+e );
             }

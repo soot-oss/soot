@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -71,6 +73,7 @@ import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.spark.pag.PAG;
 import soot.options.CGOptions;
 import soot.tagkit.Host;
 import soot.tagkit.SourceLnPosTag;
@@ -361,6 +364,10 @@ public final class OnFlyCallGraphBuilder
 			}
 		}
 
+		/**
+		 * Adds an edge to the constructor of the target class from this call to
+		 * {@link Class#newInstance()}.
+		 */
 		public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
 			Set<String> classNames = classNewInstanceReceivers.get(container);
 			if(classNames==null || classNames.isEmpty()) {
@@ -375,6 +382,14 @@ public final class OnFlyCallGraphBuilder
 			}
 		}
 
+		/** 
+		 * Adds a special edge of kind {@link Kind#REFL_NEWINSTANCE} to all possible target constructors
+		 * of this call to {@link Constructor#newInstance(Object...)}.
+		 * Those kinds of edges are treated specially in terms of how parameters are assigned,
+		 * as parameters to the reflective call are passed into the argument array of
+		 * {@link Constructor#newInstance(Object...)}.
+		 * @see PAG#addCallTarget(Edge) 
+		 */
 		public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
 			Set<String> constructorSignatures = constructorNewInstanceReceivers.get(container);
 			if(constructorSignatures==null || constructorSignatures.isEmpty()) {
@@ -382,11 +397,19 @@ public final class OnFlyCallGraphBuilder
 			} else {
 				for (String constructorSignature : constructorSignatures) {
 					SootMethod constructor = Scene.v().getMethod(constructorSignature);
-					addEdge( container, newInstanceInvokeStmt, constructor, Kind.NEWINSTANCE );
+					addEdge( container, newInstanceInvokeStmt, constructor, Kind.REFL_NEWINSTANCE );
 				}
 			}
 		}
 
+		/** 
+		 * Adds a special edge of kind {@link Kind#REFL_INVOKE} to all possible target methods
+		 * of this call to {@link Method#invoke(Object, Object...)}.
+		 * Those kinds of edges are treated specially in terms of how parameters are assigned,
+		 * as parameters to the reflective call are passed into the argument array of
+		 * {@link Method#invoke(Object, Object...)}.
+		 * @see PAG#addCallTarget(Edge) 
+		 */
 		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
 			Set<String> methodSignatures = methodInvokeReceivers.get(container);
 			if (methodSignatures == null || methodSignatures.isEmpty()) {
@@ -394,7 +417,7 @@ public final class OnFlyCallGraphBuilder
 			} else {
 				for (String methodSignature : methodSignatures) {
 					SootMethod method = Scene.v().getMethod(methodSignature);
-					addEdge( container, invokeStmt, method, Kind.VIRTUAL );
+					addEdge( container, invokeStmt, method, Kind.REFL_INVOKE );
 				}
 			}
 		}
