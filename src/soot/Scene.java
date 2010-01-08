@@ -1092,6 +1092,8 @@ public class Scene  //extends AbstractHost
             excludedPackages.add("org.xml.");
             excludedPackages.add("org.w3c.");
             excludedPackages.add("org.apache.");
+            excludedPackages.add("apple.awt.");
+            excludedPackages.add("com.apple.");
         }
 
         // Remove/add all classes from packageInclusionMask as per -i option
@@ -1113,13 +1115,13 @@ public class Scene  //extends AbstractHost
                 for( Iterator<String> pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
                     final String pkg = (String) pkgIt.next();
                     if (s.isApplicationClass()
-                    && s.getPackageName().startsWith(pkg)) {
+                    && (s.getPackageName()+".").startsWith(pkg)) {
                             s.setLibraryClass();
                     }
                 }
                 for( Iterator<String> pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
                     final String pkg = (String) pkgIt.next();
-                    if (s.getPackageName().startsWith(pkg))
+                    if ((s.getPackageName()+".").startsWith(pkg))
                         s.setApplicationClass();
                 }
                 if(s.isApplicationClass()) {
