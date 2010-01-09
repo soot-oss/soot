@@ -73,7 +73,7 @@ class AbstractSootFieldRef implements SootFieldRef {
         return resolve(null);
     }
     private SootField checkStatic(SootField ret) {
-        if( ret.isStatic() != isStatic()) {
+        if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
             throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
         }
         return ret;
