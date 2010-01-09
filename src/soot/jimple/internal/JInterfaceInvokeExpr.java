@@ -43,8 +43,9 @@ public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
              new ValueBox[args.size()]);
 
         if(!methodRef.declaringClass().isInterface() && !methodRef.declaringClass().isPhantom()) {
-        	throw new RuntimeException("Trying to create interface invoke expression for non-interface type. " +
-        			"Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
+        	throw new RuntimeException("Trying to create interface invoke expression for non-interface type: " +
+        			methodRef.declaringClass() +
+        			" Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
         }
 
         for(int i = 0; i < args.size(); i++)
