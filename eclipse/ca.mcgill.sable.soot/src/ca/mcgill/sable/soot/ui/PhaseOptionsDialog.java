@@ -407,11 +407,15 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trenabled_widget(), "enabled");
 		
+		addToEnableGroup("jb", "jb.tr", getjbjb_trignore_wrong_staticness_widget(), "ignore-wrong-staticness");
+		
 		addToEnableGroup("jb", "jb.tr", getjbjb_truse_older_type_assigner_widget(), "use-older-type-assigner");
 		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trcompare_type_assigners_widget(), "compare-type-assigners");
 		
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
+		
+		getjbjb_trignore_wrong_staticness_widget().getButton().addSelectionListener(this);
 		
 		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
 		
@@ -2281,6 +2285,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_trignore_wrong_staticness_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_trignore_wrong_staticness_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_truse_older_type_assigner_widget().getButton().getSelection();
@@ -6596,6 +6610,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return jbjb_trenabled_widget;
 	}	
 	
+	private BooleanOptionWidget jbjb_trignore_wrong_staticness_widget;
+	
+	private void setjbjb_trignore_wrong_staticness_widget(BooleanOptionWidget widget) {
+		jbjb_trignore_wrong_staticness_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_trignore_wrong_staticness_widget() {
+		return jbjb_trignore_wrong_staticness_widget;
+	}	
+	
 	private BooleanOptionWidget jbjb_truse_older_type_assigner_widget;
 	
 	private void setjbjb_truse_older_type_assigner_widget(BooleanOptionWidget widget) {
@@ -10537,6 +10561,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Enabled", "p", "jb.tr","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb.tr"+" "+"ignore-wrong-staticness";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_trignore_wrong_staticness_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Ignore wrong static-ness", "p", "jb.tr","ignore-wrong-staticness", "\nSome projects have been shown to contain invalid bytecode that \ntries to access a static field or method in a non-static way or \nthe other way around. The VM's bytecode verifier will reject \nsuch bytecode when loaded into the VM. This option, when \nenabled, causes to create Jimple bodies in such cases \nnontheless, ignoring the error. ", defaultBool)));
 		
 		
 		

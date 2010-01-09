@@ -543,6 +543,12 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
+          public void setignore_wrong_staticness(boolean arg) {
+            addArg("-p");
+            addArg("jb.tr");
+            addArg("ignore-wrong-staticness:"+(arg?"true":"false"));
+          }
+      
           public void setuse_older_type_assigner(boolean arg) {
             addArg("-p");
             addArg("jb.tr");

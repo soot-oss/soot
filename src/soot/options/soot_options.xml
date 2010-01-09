@@ -835,6 +835,18 @@ method.
                                                 <default>true</default>
 					</boolopt>
 					<boolopt>
+						<name>Ignore wrong static-ness</name>
+						<alias>ignore-wrong-staticness</alias>
+                        <default>false</default>
+					<short_desc>Ignores errors due to wrong staticness</short_desc>
+					<long_desc>
+Some projects have been shown to contain invalid bytecode that tries to access
+a static field or method in a non-static way or the other way around. The VM's bytecode
+verifier will reject such bytecode when loaded into the VM. This option, when enabled,
+causes to create Jimple bodies in such cases nontheless, ignoring the error.
+</long_desc>
+					</boolopt>
+					<boolopt>
 						<name>Use older type assigner</name>
 						<alias>use-older-type-assigner</alias>
                         <default>false</default>

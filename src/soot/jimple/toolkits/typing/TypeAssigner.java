@@ -41,11 +41,17 @@ import java.util.*;
  * @author Eric Bodden 
  */
 public class TypeAssigner extends BodyTransformer {
+	private boolean ignoreWrongStaticNess;
+
 	public TypeAssigner(Singletons.Global g) {
 	}
 
 	public static TypeAssigner v() {
 		return G.v().soot_jimple_toolkits_typing_TypeAssigner();
+	}
+	
+	public boolean ignoreWrongStaticNess() {
+		return ignoreWrongStaticNess;
 	}
 
 	/** Assign types to local variables. * */
@@ -61,6 +67,8 @@ public class TypeAssigner extends BodyTransformer {
 					+ start);
 
 		JBTROptions opt = new JBTROptions(options);
+		
+		ignoreWrongStaticNess = opt.ignore_wrong_staticness();
 		
 		/*
 		 * Setting this guard to true enables comparison of the original and new

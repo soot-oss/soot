@@ -1348,6 +1348,7 @@ public class Options extends OptionsBase {
                 "\nThe Type Assigner gives local variables types which will \naccommodate the values stored in them over the course of the \nmethod. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
+                +padOpt( "ignore-wrong-staticness (false)", "Ignores errors due to wrong staticness" )
                 +padOpt( "use-older-type-assigner (false)", "Enables the older type assigner" )
                 +padOpt( "compare-type-assigners (false)", "Compares Ben Bellamy's and the older type assigner" );
     
@@ -2308,6 +2309,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.tr" ) )
             return ""
                 +"enabled "
+                +"ignore-wrong-staticness "
                 +"use-older-type-assigner "
                 +"compare-type-assigners ";
     
@@ -2892,6 +2894,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.tr" ) )
             return ""
               +"enabled:true "
+              +"ignore-wrong-staticness:false "
               +"use-older-type-assigner:false "
               +"compare-type-assigners:false ";
     

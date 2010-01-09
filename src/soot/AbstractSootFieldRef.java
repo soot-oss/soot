@@ -20,6 +20,8 @@
 package soot;
 import java.util.*;
 
+import soot.jimple.toolkits.typing.TypeAssigner;
+
 /** Representation of a reference to a field as it appears in a class file.
  * Note that the field directly referred to may not actually exist; the
  * actual target of the reference is determined according to the resolution
@@ -74,7 +76,9 @@ class AbstractSootFieldRef implements SootFieldRef {
     }
     private SootField checkStatic(SootField ret) {
         if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
-            throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
+        	if(!TypeAssigner.v().ignoreWrongStaticNess()) {
+        		throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
+        	}
         }
         return ret;
     }

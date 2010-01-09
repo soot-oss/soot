@@ -42,6 +42,21 @@ public class JBTROptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
+    /** Ignore wrong static-ness --
+    
+     * Ignores errors due to wrong staticness.
+    
+     * Some projects have been shown to contain invalid bytecode that 
+     * tries to access a static field or method in a non-static way or 
+     * the other way around. The VM's bytecode verifier will reject 
+     * such bytecode when loaded into the VM. This option, when 
+     * enabled, causes to create Jimple bodies in such cases 
+     * nontheless, ignoring the error. 
+     */
+    public boolean ignore_wrong_staticness() {
+        return soot.PhaseOptions.getBoolean( options, "ignore-wrong-staticness" );
+    }
+    
     /** Use older type assigner --
     
      * Enables the older type assigner.
