@@ -74,6 +74,7 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.tagkit.Host;
 import soot.tagkit.SourceLnPosTag;
@@ -204,149 +205,21 @@ public final class OnFlyCallGraphBuilder
 			final String message;
 		}
 		
-		protected Map<SootMethod,Set<String>> classForNameReceivers;
-		
-		protected Map<SootMethod,Set<String>> classNewInstanceReceivers;
-
-		protected Map<SootMethod,Set<String>> constructorNewInstanceReceivers;
-
-		protected Map<SootMethod,Set<String>> methodInvokeReceivers;
-		
 		protected Set<Guard> guards;
 		
+		protected ReflectionTraceInfo reflectionInfo;
+
 		private boolean registeredTransformation = false;
 		
 		private TraceBasedReflectionModel() {
-			classForNameReceivers = new HashMap<SootMethod, Set<String>>();
-			classNewInstanceReceivers = new HashMap<SootMethod, Set<String>>();
-			constructorNewInstanceReceivers = new HashMap<SootMethod, Set<String>>();
-			methodInvokeReceivers = new HashMap<SootMethod, Set<String>>();
 			guards = new HashSet<Guard>();
 			
 			String logFile = options.reflection_log();
 			if(logFile==null) {
 				throw new InternalError("Trace based refection model enabled but no trace file given!?");
 			} else {
-				try {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile)));
-					String line;
-					int lines = 0;
-					while((line=reader.readLine())!=null) {
-						if(line.length()==0) continue;
-						String[] portions = line.split(";");
-						String kind = portions[0];
-						String target = portions[1];
-						String source = portions[2];
-
-						Set<SootMethod> possibleSourceMethods = inferSource(source);
-						for (SootMethod sourceMethod : possibleSourceMethods) {
-							if(kind.equals("Class.forName")) {
-								Set<String> receiverNames;
-								if((receiverNames=classForNameReceivers.get(sourceMethod))==null) {
-									classForNameReceivers.put(sourceMethod, receiverNames = new HashSet<String>());
-								}
-								receiverNames.add(target);
-							} else if(kind.equals("Class.newInstance")) {
-								Set<String> receiverNames;
-								if((receiverNames=classNewInstanceReceivers.get(sourceMethod))==null) {
-									classNewInstanceReceivers.put(sourceMethod, receiverNames = new HashSet<String>());
-								}
-								receiverNames.add(target);
-							} else if(kind.equals("Method.invoke")) {
-								if(!Scene.v().containsMethod(target)) {
-									throw new RuntimeException("Unknown method for signature: "+target);
-								}
-								
-								Set<String> receiverNames;
-								if((receiverNames=methodInvokeReceivers.get(sourceMethod))==null) {
-									methodInvokeReceivers.put(sourceMethod, receiverNames = new HashSet<String>());
-								}
-								receiverNames.add(target);								
-							} else if (kind.equals("Constructor.newInstance")) {
-								if(!Scene.v().containsMethod(target)) {
-									throw new RuntimeException("Unknown method for signature: "+target);
-								}
-								
-								Set<String> receiverNames;
-								if((receiverNames=constructorNewInstanceReceivers.get(sourceMethod))==null) {
-									constructorNewInstanceReceivers.put(sourceMethod, receiverNames = new HashSet<String>());
-								}
-								receiverNames.add(target);								
-							} else
-								throw new RuntimeException("Unknown entry kind: "+kind);
-						}
-						lines++;
-					}
-					if(options.verbose()) {
-						G.v().out.println("Successfully read information about "+lines+" reflective call sites from trace file.");
-					}
-				} catch (FileNotFoundException e) {
-					throw new RuntimeException("Trace file not found.",e);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				reflectionInfo = new ReflectionTraceInfo(logFile);
 			}
-		}
-
-		private Set<SootMethod> inferSource(String source) {
-			String classNameDotMethodName = source.substring(0,source.indexOf("("));
-			String className = classNameDotMethodName.substring(0,classNameDotMethodName.lastIndexOf("."));
-			String methodName = classNameDotMethodName.substring(classNameDotMethodName.lastIndexOf(".")+1);
-			if(!Scene.v().containsClass(className)) {
-				Scene.v().addBasicClass(className, SootClass.BODIES);
-				Scene.v().loadBasicClasses();
-				if(!Scene.v().containsClass(className)) {
-					throw new RuntimeException("Trace file refers to unknown class: "+className);
-				}
-			}
-
-			SootClass sootClass = Scene.v().getSootClass(className);
-			Set<SootMethod> methodsWithRightName = new HashSet<SootMethod>();
-			for (SootMethod m: sootClass.getMethods()) {
-				if(m.getName().equals(methodName)) {
-					methodsWithRightName.add(m);
-				}
-			} 
-
-			if(methodsWithRightName.isEmpty()) {
-				throw new RuntimeException("Trace file refers to unknown method with name "+methodName+" in Class "+className);
-			} else if(methodsWithRightName.size()==1) {
-				return Collections.singleton(methodsWithRightName.iterator().next());
-			} else {
-				int lineNumber = Integer.parseInt(source.substring(source.indexOf(":")+1, source.lastIndexOf(")")));
-				
-				//more than one method with that name
-				for (SootMethod sootMethod : methodsWithRightName) {
-					if(coversLineNumber(lineNumber, sootMethod)) {
-						return Collections.singleton(sootMethod);
-					}
-					if(sootMethod.hasActiveBody()) {
-						Body body = sootMethod.getActiveBody();
-						if(coversLineNumber(lineNumber, body)) {
-							return Collections.singleton(sootMethod);
-						}
-						for (Unit u : body.getUnits()) {
-							if(coversLineNumber(lineNumber, u)) {
-								return Collections.singleton(sootMethod);
-							}
-						}
-					}
-				}
-				
-				//if we get here then we found no method with the right line number information;
-				//be conservative and return all method that we found
-				return methodsWithRightName;				
-			}
-		}
-
-		private boolean coversLineNumber(int lineNumber, Host host) {
-			SourceLnPosTag tag = (SourceLnPosTag) host.getTag("SourceLnPosTag");
-			if(tag!=null) {
-				if(tag.startLn()<=lineNumber && tag.endLn()>=lineNumber) {
-					return true;
-				}
-			}
-			return false;
 		}
 
 		/**
@@ -354,7 +227,7 @@ public final class OnFlyCallGraphBuilder
 		 * of Class.forName() calls within source.
 		 */
 		public void classForName(SootMethod container, Stmt forNameInvokeStmt) {
-			Set<String> classNames = classForNameReceivers.get(container);
+			Set<String> classNames = reflectionInfo.classForNameClassNames(container);
 			if(classNames==null || classNames.isEmpty()) {
 				registerGuard(container, forNameInvokeStmt, "Class.forName()");
 			} else {
@@ -369,7 +242,7 @@ public final class OnFlyCallGraphBuilder
 		 * {@link Class#newInstance()}.
 		 */
 		public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
-			Set<String> classNames = classNewInstanceReceivers.get(container);
+			Set<String> classNames = reflectionInfo.classNewInstanceClassNames(container);
 			if(classNames==null || classNames.isEmpty()) {
 				registerGuard(container, newInstanceInvokeStmt, "Class.newInstance()");
 			} else {
@@ -391,7 +264,7 @@ public final class OnFlyCallGraphBuilder
 		 * @see PAG#addCallTarget(Edge) 
 		 */
 		public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
-			Set<String> constructorSignatures = constructorNewInstanceReceivers.get(container);
+			Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
 			if(constructorSignatures==null || constructorSignatures.isEmpty()) {
 				registerGuard(container, newInstanceInvokeStmt, "Construtor.newInstance(..)");
 			} else {
@@ -411,7 +284,7 @@ public final class OnFlyCallGraphBuilder
 		 * @see PAG#addCallTarget(Edge) 
 		 */
 		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
-			Set<String> methodSignatures = methodInvokeReceivers.get(container);
+			Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);
 			if (methodSignatures == null || methodSignatures.isEmpty()) {
 				registerGuard(container, invokeStmt, "Method.invoke(..)");
 			} else {
