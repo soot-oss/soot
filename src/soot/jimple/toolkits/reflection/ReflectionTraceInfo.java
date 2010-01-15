@@ -177,6 +177,7 @@ public class ReflectionTraceInfo {
 	}
 	
 	public Set<String> classForNameClassNames(SootMethod container) {
+		if(!classForNameReceivers.containsKey(container)) return Collections.emptySet();
 		return classForNameReceivers.get(container);
 	}
 
@@ -189,6 +190,7 @@ public class ReflectionTraceInfo {
 	}
 	
 	public Set<String> classNewInstanceClassNames(SootMethod container) {
+		if(!classNewInstanceReceivers.containsKey(container)) return Collections.emptySet();
 		return classNewInstanceReceivers.get(container);
 	}
 	
@@ -201,6 +203,7 @@ public class ReflectionTraceInfo {
 	}
 	
 	public Set<String> constructorNewInstanceSignatures(SootMethod container) {
+		if(!constructorNewInstanceReceivers.containsKey(container)) return Collections.emptySet();
 		return constructorNewInstanceReceivers.get(container);
 	}
 	
@@ -213,6 +216,7 @@ public class ReflectionTraceInfo {
 	}
 	
 	public Set<String> methodInvokeSignatures(SootMethod container) {
+		if(!methodInvokeReceivers.containsKey(container)) return Collections.emptySet();
 		return methodInvokeReceivers.get(container);
 	}
 
