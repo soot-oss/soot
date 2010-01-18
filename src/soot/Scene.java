@@ -973,12 +973,11 @@ public class Scene  //extends AbstractHost
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(log)));
 				while((line=reader.readLine())!=null) {
 					if(line.length()==0) continue;
-					String[] portions = line.split(";");
+					String[] portions = line.split(";",-1);
 					String kind = portions[0];
 					String target = portions[1];
 					String source = portions[2];
-					String classNameDotMethodName = source.substring(0,source.indexOf("("));
-					String sourceClassName = classNameDotMethodName.substring(0,classNameDotMethodName.lastIndexOf("."));
+					String sourceClassName = source.substring(0,source.lastIndexOf("."));
 					classNames.add(sourceClassName);
 					if(kind.equals("Class.forName")) {
 						classNames.add(target);

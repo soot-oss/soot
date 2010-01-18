@@ -63,12 +63,13 @@ public class ReflectionTraceInfo {
 				int lines = 0;
 				while((line=reader.readLine())!=null) {
 					if(line.length()==0) continue;
-					String[] portions = line.split(";");
+					String[] portions = line.split(";",-1);
 					String kind = portions[0];
 					String target = portions[1];
 					String source = portions[2];
+					int lineNumber = portions[3].isEmpty() ? -1 : Integer.parseInt(portions[3]);
 
-					Set<SootMethod> possibleSourceMethods = inferSource(source);
+					Set<SootMethod> possibleSourceMethods = inferSource(source, lineNumber);
 					for (SootMethod sourceMethod : possibleSourceMethods) {
 						if(kind.equals("Class.forName")) {
 							Set<String> receiverNames;
@@ -115,10 +116,9 @@ public class ReflectionTraceInfo {
 		}
 	}
 	
-	private Set<SootMethod> inferSource(String source) {
-		String classNameDotMethodName = source.substring(0,source.indexOf("("));
-		String className = classNameDotMethodName.substring(0,classNameDotMethodName.lastIndexOf("."));
-		String methodName = classNameDotMethodName.substring(classNameDotMethodName.lastIndexOf(".")+1);
+	private Set<SootMethod> inferSource(String source, int lineNumber) {
+		String className = source.substring(0,source.lastIndexOf("."));
+		String methodName = source.substring(source.lastIndexOf(".")+1);
 		if(!Scene.v().containsClass(className)) {
 			Scene.v().addBasicClass(className, SootClass.BODIES);
 			Scene.v().loadBasicClasses();
@@ -140,8 +140,6 @@ public class ReflectionTraceInfo {
 		} else if(methodsWithRightName.size()==1) {
 			return Collections.singleton(methodsWithRightName.iterator().next());
 		} else {
-			int lineNumber = Integer.parseInt(source.substring(source.indexOf(":")+1, source.lastIndexOf(")")));
-			
 			//more than one method with that name
 			for (SootMethod sootMethod : methodsWithRightName) {
 				if(coversLineNumber(lineNumber, sootMethod)) {
