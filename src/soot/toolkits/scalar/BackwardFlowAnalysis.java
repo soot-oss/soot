@@ -63,11 +63,7 @@ public abstract class BackwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
     protected void doAnalysis()
     {
         final Map<N, Integer> numbers = new HashMap<N, Integer>();
-//        Timers.v().orderComputation = new soot.Timer();
-//        Timers.v().orderComputation.start();
-        List<N> orderedUnits = constructOrderer().newList(graph,false);
-//        Timers.v().orderComputation.end();
-        new PseudoTopologicalOrderer().newList(graph,false);
+        List<N> orderedUnits = constructOrderer().newList(graph,true);
         int i = 1;
         for( Iterator<N> uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
             final N u = uIt.next();
