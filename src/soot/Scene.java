@@ -1189,17 +1189,28 @@ public class Scene  //extends AbstractHost
         if( Options.v().main_class() != null
                 && Options.v().main_class().length() > 0 ) {
             setMainClass(getSootClass(Options.v().main_class()));
-        } else {        	
-        	// try to infer a main class if none is given 
+        } else {             	
+        	// try to infer a main class from the command line if none is given 
+        	for (Iterator<SootClass> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
+                    SootClass c = (SootClass) classIter.next();
+                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
+                    {
+                        G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
+                        setMainClass(c);
+                        return;
+                    }
+            }
+        	
+        	// try to infer a main class from the usual classpath if none is given 
         	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
                     SootClass c = (SootClass) classIter.next();
                     if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);
-                        break;
+                        return;
                     }
-                }
+            }
         }
     }
     
