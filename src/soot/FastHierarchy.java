@@ -199,6 +199,9 @@ public class FastHierarchy
         if( parent instanceof NullType ) {
             return false;
         }
+        if( child instanceof NullType ) {
+        	return parent instanceof RefLikeType;
+        }
         if( child instanceof RefType ) {
             if( parent instanceof RefType) {
                 return canStoreClass( ((RefType) child).getSootClass(),
