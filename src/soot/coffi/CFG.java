@@ -643,7 +643,11 @@ public class CFG {
 		    if (orig_start_of_trap <= orig_start_of_subr) {
 			newone.start_inst = headbefore.next;
 		    } else {
-			newone.start_inst = insnmap.get(etentry.start_inst);
+		    	Instruction ins = insnmap.get(etentry.start_inst);
+		    	if(ins!=null)
+		    		newone.start_inst = insnmap.get(etentry.start_inst);
+		    	else 
+		    		newone.start_inst = etentry.start_inst;
 		    }
 		    if (orig_end_of_trap > orig_end_of_subr) {
 			newone.end_inst = null; // Representing the insn after
