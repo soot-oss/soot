@@ -18,8 +18,19 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import soot.Context;
+import soot.PhaseOptions;
+import soot.RefType;
+import soot.SootMethod;
+import soot.Type;
+import soot.options.CGOptions;
 
 /** Represents an allocation site node (Blue) in the pointer assignment graph.
  * @author Ondrej Lhotak
@@ -47,9 +58,12 @@ public class AllocNode extends Node implements Context {
         this.method = m;
         if( t instanceof RefType ) {
             RefType rt = (RefType) t;
-            if( rt.getSootClass().isAbstract() ) {
-                throw new RuntimeException( "Attempt to create allocnode with abstract type "+t );
-            }
+            if( rt.getSootClass().isAbstract()) {
+				boolean usesReflectionLog = new CGOptions(PhaseOptions.v().getPhaseOptions("cg.spark")).reflection_log()!=null;
+				if (!usesReflectionLog) {
+				    throw new RuntimeException( "Attempt to create allocnode with abstract type "+t );
+				}
+			}
         }
 	this.newExpr = newExpr;
         if( newExpr instanceof ContextVarNode ) throw new RuntimeException();
