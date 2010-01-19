@@ -99,14 +99,7 @@ public class SootMethod
 
     /** Constructs a SootMethod with the given name, parameter types and return type. */
     public SootMethod(String name, List parameterTypes, Type returnType) {
-        this.name = name;
-        this.parameterTypes = new ArrayList();
-        this.parameterTypes.addAll(parameterTypes);
-        this.parameterTypes = Collections.unmodifiableList(this.parameterTypes);
-        this.returnType = returnType;
-        Scene.v().getMethodNumberer().add(this);
-        subsignature =
-            Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+        this(name, parameterTypes, returnType, 0, Collections.<SootClass>emptyList());
     }
 
     /** Constructs a SootMethod with the given name, parameter types, return type and modifiers. */
@@ -115,15 +108,7 @@ public class SootMethod
         List parameterTypes,
         Type returnType,
         int modifiers) {
-        this.name = name;
-        this.parameterTypes = new ArrayList();
-        this.parameterTypes.addAll(parameterTypes);
-
-        this.returnType = returnType;
-        this.modifiers = modifiers;
-        Scene.v().getMethodNumberer().add(this);
-        subsignature =
-            Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+        this(name, parameterTypes, returnType, modifiers, Collections.<SootClass>emptyList());
     }
 
     /** Constructs a SootMethod with the given name, parameter types, return type, 
@@ -137,6 +122,7 @@ public class SootMethod
         this.name = name;
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
+        this.parameterTypes = Collections.unmodifiableList(this.parameterTypes);
 
         this.returnType = returnType;
         this.modifiers = modifiers;
