@@ -59,7 +59,7 @@ public class AllocNode extends Node implements Context {
         if( t instanceof RefType ) {
             RefType rt = (RefType) t;
             if( rt.getSootClass().isAbstract()) {
-				boolean usesReflectionLog = new CGOptions(PhaseOptions.v().getPhaseOptions("cg.spark")).reflection_log()!=null;
+				boolean usesReflectionLog = new CGOptions(PhaseOptions.v().getPhaseOptions("cg")).reflection_log()!=null;
 				if (!usesReflectionLog) {
 				    throw new RuntimeException( "Attempt to create allocnode with abstract type "+t );
 				}
