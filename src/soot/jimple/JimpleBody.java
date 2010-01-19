@@ -117,14 +117,6 @@ public class JimpleBody extends StmtBody
     {
         int i = 0;
 
-        if (!getMethod().isStatic())
-         {
-             Local l = Jimple.v().newLocal("this", 
-                                           RefType.v(getMethod().getDeclaringClass()));
-             getLocals().add(l);
-             getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType())));
-         }
-
         Iterator parIt = getMethod().getParameterTypes().iterator();
         while (parIt.hasNext())
         {
@@ -133,6 +125,15 @@ public class JimpleBody extends StmtBody
             getLocals().add(l);
             getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i)));
             i++;
+        }
+        
+        //add this-ref before everything else
+        if (!getMethod().isStatic())
+        {
+        	Local l = Jimple.v().newLocal("this", 
+        			RefType.v(getMethod().getDeclaringClass()));
+        	getLocals().add(l);
+        	getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType())));
         }
     }
 
