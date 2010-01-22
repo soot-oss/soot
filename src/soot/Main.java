@@ -83,8 +83,8 @@ public class Main {
         if( PackManager.v().onlyStandardPacks() ) {
             for (Pack pack : PackManager.v().allPacks()) {
                 Options.v().warnForeignPhase(pack.getPhaseName());
-                for( Iterator trIt = pack.iterator(); trIt.hasNext(); ) {
-                    final Transform tr = (Transform) trIt.next();
+                for( Iterator<Transform> trIt = pack.iterator(); trIt.hasNext(); ) {
+                    final Transform tr = trIt.next();
                     Options.v().warnForeignPhase(tr.getPhaseName());
                 }
             }
@@ -102,8 +102,8 @@ public class Main {
         }
 
         if(!Options.v().phase_help().isEmpty()) {
-            for( Iterator phaseIt = Options.v().phase_help().iterator(); phaseIt.hasNext(); ) {
-                final String phase = (String) phaseIt.next();
+            for( Iterator<String> phaseIt = Options.v().phase_help().iterator(); phaseIt.hasNext(); ) {
+                final String phase = phaseIt.next();
                 G.v().out.println(Options.v().getPhaseHelp(phase));
             }
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
@@ -115,16 +115,6 @@ public class Main {
         }
 
         postCmdLineCheck();
-    }
-
-    private void exitCompilation(int status) {
-        exitCompilation(status, "");
-    }
-
-    private void exitCompilation(int status, String msg) {
-        if(status == CompilationDeathException.COMPILATION_ABORTED) {
-                G.v().out.println("compilation failed: "+msg);
-        }
     }
 
     private void postCmdLineCheck() {
@@ -154,7 +144,7 @@ public class Main {
     /** 
      *  Entry point to the soot's compilation process.
      */
-    public int run(String[] args) {
+    public void run(String[] args) {
         cmdLineArgs = args;
 
         start = new Date();
@@ -191,11 +181,9 @@ public class Main {
              		writerOut.flush();
             		streamOut.close();
             	} catch (IOException e) {
-            		throw new CompilationDeathException("Cannot output file astMetrics");
+            		throw new CompilationDeathException("Cannot output file astMetrics",e);
             	}
-                exitCompilation(CompilationDeathException.COMPILATION_SUCCEEDED);
-                return CompilationDeathException.COMPILATION_SUCCEEDED;
-
+                return;
             }
             
             
@@ -210,8 +198,7 @@ public class Main {
 
         } catch (CompilationDeathException e) {
             Timers.v().totalTimer.end();
-            exitCompilation(e.getStatus(), e.getMessage());
-            return e.getStatus();
+            throw e;
         }
 
         finish = new Date();
@@ -225,7 +212,5 @@ public class Main {
                 + ((runtime % 60000) / 1000)
                 + " sec.");
 
-        exitCompilation(CompilationDeathException.COMPILATION_SUCCEEDED);
-        return CompilationDeathException.COMPILATION_SUCCEEDED;
     }
 }
