@@ -629,7 +629,7 @@ public class PackManager {
                 writerOut =
                     new PrintWriter(new OutputStreamWriter(streamOut));
             } catch (IOException e) {
-                throw new CompilationDeathException("Cannot output file " + fileName);
+                throw new CompilationDeathException("Cannot output file " + fileName,e);
             }
 
            	
@@ -673,7 +673,7 @@ public class PackManager {
         		writerOut.flush();
         		streamOut.close();
         	} catch (IOException e) {
-        		throw new CompilationDeathException("Cannot output file " + fileName);
+                throw new CompilationDeathException("Cannot output file " + fileName,e);
         	}
         }
 
@@ -840,7 +840,6 @@ public class PackManager {
 
         OutputStream streamOut = null;
         PrintWriter writerOut = null;
-        boolean noOutputFile = false;
 
         String fileName = SourceLocator.v().getFileNameFor(c, format);
         if( Options.v().gzip() ) fileName = fileName+".gz";
@@ -863,7 +862,7 @@ public class PackManager {
             writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
             G.v().out.println( "Writing to "+fileName );
         } catch (IOException e) {
-            throw new CompilationDeathException("Cannot output file " + fileName);
+            throw new CompilationDeathException("Cannot output file " + fileName,e);
         }
 
         if (Options.v().xml_attributes()) {
