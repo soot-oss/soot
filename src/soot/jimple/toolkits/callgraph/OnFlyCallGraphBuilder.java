@@ -229,7 +229,7 @@ public final class OnFlyCallGraphBuilder
 		public void classForName(SootMethod container, Stmt forNameInvokeStmt) {
 			Set<String> classNames = reflectionInfo.classForNameClassNames(container);
 			if(classNames==null || classNames.isEmpty()) {
-				registerGuard(container, forNameInvokeStmt, "Class.forName()");
+				registerGuard(container, forNameInvokeStmt, "Class.forName() call site; Soot did not expect this site to be reached");
 			} else {
 				for (String clsName : classNames) {
 		            constantForName( clsName, container, forNameInvokeStmt );
@@ -244,7 +244,7 @@ public final class OnFlyCallGraphBuilder
 		public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
 			Set<String> classNames = reflectionInfo.classNewInstanceClassNames(container);
 			if(classNames==null || classNames.isEmpty()) {
-				registerGuard(container, newInstanceInvokeStmt, "Class.newInstance()");
+				registerGuard(container, newInstanceInvokeStmt, "Class.newInstance() call site; Soot did not expect this site to be reached");
 			} else {
 				for (String clsName : classNames) {
 					SootClass cls = Scene.v().getSootClass(clsName);
@@ -266,7 +266,7 @@ public final class OnFlyCallGraphBuilder
 		public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
 			Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
 			if(constructorSignatures==null || constructorSignatures.isEmpty()) {
-				registerGuard(container, newInstanceInvokeStmt, "Construtor.newInstance(..)");
+				registerGuard(container, newInstanceInvokeStmt, "Constructor.newInstance(..) call site; Soot did not expect this site to be reached");
 			} else {
 				for (String constructorSignature : constructorSignatures) {
 					SootMethod constructor = Scene.v().getMethod(constructorSignature);
@@ -286,7 +286,7 @@ public final class OnFlyCallGraphBuilder
 		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
 			Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);
 			if (methodSignatures == null || methodSignatures.isEmpty()) {
-				registerGuard(container, invokeStmt, "Method.invoke(..)");
+				registerGuard(container, invokeStmt, "Method.invoke(..) call site; Soot did not expect this site to be reached");
 			} else {
 				for (String methodSignature : methodSignatures) {
 					SootMethod method = Scene.v().getMethod(methodSignature);
