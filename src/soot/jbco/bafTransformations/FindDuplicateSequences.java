@@ -279,7 +279,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
         Iterator values = avalues.iterator();
         while (values.hasNext()) {
           ArrayList next = (ArrayList) values.next();
-          Unit jump = (Unit) units.getSuccOf(next.get(next.size() - 1));
+          Unit jump = units.getSuccOf((Unit)next.get(next.size() - 1));
           //protectedUnits.add(jump);
 
           Unit firstt = (Unit) next.get(0);

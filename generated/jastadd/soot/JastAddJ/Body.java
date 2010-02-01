@@ -112,11 +112,11 @@ public class Body extends java.lang.Object {
         list = null;
       }
       stmt.addTag(currentSourceRangeTag());
-      soot.PatchingChain chain = (soot.PatchingChain)chains.peek();
+      soot.PatchingChain<soot.Unit> chain = (soot.PatchingChain<soot.Unit>)chains.peek();
       if(stmt instanceof IdentityStmt && chain.size() != 0) {
         IdentityStmt idstmt = (IdentityStmt) stmt;
         if(!(idstmt.getRightOp() instanceof CaughtExceptionRef)) {
-          Object s = chain.getFirst();
+          soot.Unit s = chain.getFirst();
           while(s instanceof IdentityStmt)
             s = chain.getSuccOf(s);
           if(s != null) {
