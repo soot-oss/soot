@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 public class BytecodeParser extends java.lang.Object implements Flags, BytecodeReader {
     // Declared in BytecodeReader.jrag at line 13
@@ -25,7 +25,7 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
 
     // Declared in BytecodeReader.jrag at line 21
 
-    public CONSTANT_Class_Info outerClassInfo;
+    public String outerClassName;
 
     // Declared in BytecodeReader.jrag at line 22
 
@@ -302,16 +302,16 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
     // Declared in BytecodeReader.jrag at line 235
 
 
-	  public CompilationUnit parse(TypeDecl outerTypeDecl, CONSTANT_Class_Info outerClassInfo, Program classPath, boolean isInner) 
+	  public CompilationUnit parse(TypeDecl outerTypeDecl, String outerClassName, Program classPath, boolean isInner) 
         throws FileNotFoundException, IOException {
           isInnerClass = isInner;
-          return parse(outerTypeDecl, outerClassInfo, classPath);
+          return parse(outerTypeDecl, outerClassName, classPath);
     }
 
     // Declared in BytecodeReader.jrag at line 241
 
 
-    public CompilationUnit parse(TypeDecl outerTypeDecl, CONSTANT_Class_Info outerClassInfo, Program classPath) 
+    public CompilationUnit parse(TypeDecl outerTypeDecl, String outerClassName, Program classPath) 
       throws FileNotFoundException, IOException {
         //InputStream file = ClassLoader.getSystemResourceAsStream(name);
 
@@ -330,7 +330,7 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
         if(BytecodeParser.VERBOSE) 
           println("Parsing byte codes in " + name);
 
-        this.outerClassInfo = outerClassInfo;
+        this.outerClassName = outerClassName;
         parseMagic();
         parseMinor();
         parseMajor();

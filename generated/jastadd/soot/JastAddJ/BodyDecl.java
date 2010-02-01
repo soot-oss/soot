@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 
@@ -44,13 +44,13 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Operation p not supported for " + getClass().getName());
   }
 
-    // Declared in EmitJimple.jrag at line 204
+    // Declared in EmitJimple.jrag at line 207
 
   
   public void jimplify1phase2() {
   }
 
-    // Declared in EmitJimple.jrag at line 968
+    // Declared in EmitJimple.jrag at line 971
 
 
   public void jimplify2() {
@@ -188,7 +188,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean visibleTypeParameters_compute() {  return true;  }
 
-    // Declared in EmitJimple.jrag at line 162
+    // Declared in EmitJimple.jrag at line 161
  @SuppressWarnings({"unchecked", "cast"})     public boolean generate() {
         ASTNode$State state = state();
         boolean generate_value = generate_compute();

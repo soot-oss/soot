@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
  
 
@@ -955,13 +955,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       enclosingType().addNestedType(this);
   }
 
-    // Declared in EmitJimple.jrag at line 144
+    // Declared in EmitJimple.jrag at line 143
 
 
 
   public SootMethod clinit = null;
 
-    // Declared in EmitJimple.jrag at line 146
+    // Declared in EmitJimple.jrag at line 145
 
 
   public void jimplify1phase2() {
@@ -980,7 +980,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 429
+    // Declared in EmitJimple.jrag at line 432
 
 
   public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
@@ -1001,7 +1001,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     );
   }
 
-    // Declared in EmitJimple.jrag at line 898
+    // Declared in EmitJimple.jrag at line 901
 
 
   public void jimplify2clinit() {
@@ -1033,7 +1033,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       b.add(b.newReturnVoidStmt(null));
   }
 
-    // Declared in EmitJimple.jrag at line 927
+    // Declared in EmitJimple.jrag at line 930
 
 
   public void jimplify2() {
@@ -1356,7 +1356,7 @@ private boolean refined_TypeConversion_TypeDecl_castingConversionTo_TypeDecl(Typ
 { return identityConversionTo(type) ||
     wideningConversionTo(type) || narrowingConversionTo(type); }
 
-    // Declared in EmitJimple.jrag at line 31
+    // Declared in EmitJimple.jrag at line 32
 private SootClass refined_EmitJimple_TypeDecl_getSootClassDecl()
 {
     if(compilationUnit().fromSource()) {
@@ -1371,11 +1371,11 @@ private SootClass refined_EmitJimple_TypeDecl_getSootClassDecl()
     }
   }
 
-    // Declared in EmitJimple.jrag at line 45
+    // Declared in EmitJimple.jrag at line 46
 private Type refined_EmitJimple_TypeDecl_getSootType()
 { return getSootClassDecl().getType(); }
 
-    // Declared in EmitJimple.jrag at line 64
+    // Declared in EmitJimple.jrag at line 65
 private SootClass refined_EmitJimple_TypeDecl_sootClass()
 { return null; }
 
@@ -4192,7 +4192,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return RefType.v(erasure().jvmName());
   }
 
-    // Declared in EmitJimple.jrag at line 57
+    // Declared in EmitJimple.jrag at line 58
  @SuppressWarnings({"unchecked", "cast"})     public soot.RefType sootRef() {
         ASTNode$State state = state();
         soot.RefType sootRef_value = sootRef_compute();
@@ -4222,7 +4222,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     erasure().sootClass() : refined_EmitJimple_TypeDecl_sootClass();
   }
 
-    // Declared in EmitJimple.jrag at line 86
+    // Declared in EmitJimple.jrag at line 85
  @SuppressWarnings({"unchecked", "cast"})     public String sourceNameWithoutPath() {
         ASTNode$State state = state();
         String sourceNameWithoutPath_value = sourceNameWithoutPath_compute();
@@ -4234,7 +4234,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return s != null ? s.substring(s.lastIndexOf(java.io.File.separatorChar)+1) : "Unknown";
   }
 
-    // Declared in EmitJimple.jrag at line 91
+    // Declared in EmitJimple.jrag at line 90
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
         ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
@@ -4259,7 +4259,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean needsClinit_computed = false;
     protected boolean needsClinit_value;
-    // Declared in EmitJimple.jrag at line 882
+    // Declared in EmitJimple.jrag at line 885
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsClinit() {
         if(needsClinit_computed) {
             return needsClinit_value;
@@ -4291,7 +4291,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean innerClassesAttributeEntries_computed = false;
     protected Collection innerClassesAttributeEntries_value;
-    // Declared in EmitJimple.jrag at line 957
+    // Declared in EmitJimple.jrag at line 960
  @SuppressWarnings({"unchecked", "cast"})     public Collection innerClassesAttributeEntries() {
         if(innerClassesAttributeEntries_computed) {
             return innerClassesAttributeEntries_value;
@@ -4317,7 +4317,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
   }
 
     protected java.util.Map getSootField_String_TypeDecl_values;
-    // Declared in EmitJimple.jrag at line 991
+    // Declared in EmitJimple.jrag at line 994
  @SuppressWarnings({"unchecked", "cast"})     public SootField getSootField(String name, TypeDecl type) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(name);

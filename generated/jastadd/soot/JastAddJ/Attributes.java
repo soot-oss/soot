@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 public class Attributes extends java.lang.Object {
     // Declared in BytecodeAttributes.jrag at line 14
@@ -327,89 +327,85 @@ public class Attributes extends java.lang.Object {
         }
       }
 
-      protected void innerClasses() {
-        int number_of_classes = this.p.u2();
-        if(BytecodeParser.VERBOSE)
-          p.println("    Number of classes: " + number_of_classes);
-        for (int i = 0; i < number_of_classes; i++) {
-          if(BytecodeParser.VERBOSE)
-            p.print("      " + i + "(" + number_of_classes + ")" +  ":");
-          int inner_class_info_index = this.p.u2();
-          int outer_class_info_index = this.p.u2();
-          int inner_name_index = this.p.u2();
-          int inner_class_access_flags = this.p.u2();
-          String inner_name = "";
-          if(inner_class_info_index > 0 && outer_class_info_index > 0 && inner_name_index >  0) {
-            CONSTANT_Class_Info inner_class_info = this.p.getCONSTANT_Class_Info(inner_class_info_index);
-            CONSTANT_Class_Info outer_class_info = this.p.getCONSTANT_Class_Info(outer_class_info_index);
-            if(inner_class_info == null || outer_class_info == null) {
-              System.out.println("Null");
-            }
-            String inner_class_name = inner_class_info.name();
-            String outer_class_name = outer_class_info.name();
+    protected void innerClasses() {
+    	  int number_of_classes = this.p.u2();
+    	  if(BytecodeParser.VERBOSE)
+    		  p.println("    Number of classes: " + number_of_classes);
+    	  for (int i = 0; i < number_of_classes; i++) {
+    		  if(BytecodeParser.VERBOSE)
+    			  p.print("      " + i + "(" + number_of_classes + ")" +  ":");
+    		  int inner_class_info_index = this.p.u2();
+    		  int outer_class_info_index = this.p.u2();
+    		  int inner_name_index = this.p.u2();
+    		  int inner_class_access_flags = this.p.u2();
+    		  if(inner_class_info_index > 0) {
+    			  CONSTANT_Class_Info inner_class_info = this.p.getCONSTANT_Class_Info(inner_class_info_index);
+    			  String inner_class_name = inner_class_info.name();
+   				  String inner_name = inner_class_name.substring(inner_class_name.lastIndexOf("$")+1);
+    			  String outer_class_name;
+    			  if (outer_class_info_index > 0) {
+    				  CONSTANT_Class_Info outer_class_info = this.p.getCONSTANT_Class_Info(outer_class_info_index);
+    				  if(inner_class_info == null || outer_class_info == null) {
+    					  System.out.println("Null");
+    				  }
+    				  outer_class_name = outer_class_info.name();
 
-            if(BytecodeParser.VERBOSE)
-              this.p.println("      inner: " + inner_class_name + ", outer: " + outer_class_name);
+    				  if(BytecodeParser.VERBOSE)
+    					  this.p.println("      inner: " + inner_class_name + ", outer: " + outer_class_name);
 
-            if (inner_name_index != 0) {
-              inner_name = this.p.getCONSTANT_Utf8_Info(inner_name_index).string();
-            } else {
-              inner_name = inner_class_info.simpleName();
-            }
+    			  } else {
+    			  	  //anonymous inner class; need to infer outer_class_name from inner_class_name
+    				  outer_class_name = inner_class_name.substring(0,inner_class_name.lastIndexOf("$"));
+    			  }
+    			  if (inner_class_info.name().equals(p.classInfo.name())) {
+    				  if(BytecodeParser.VERBOSE)
+    					  p.println("      Class " + inner_class_name + " is inner (" + inner_name + ")");
+    				  typeDecl.setID(inner_name);
+    				  typeDecl.setModifiers(BytecodeParser.modifiers(inner_class_access_flags & 0x041f));
+    				  if (this.p.outerClassName != null && this.p.outerClassName.equals(outer_class_name)) {
+    					  MemberTypeDecl m = null;
+    					  if (typeDecl instanceof ClassDecl) {
+    						  m = new MemberClassDecl((ClassDecl)typeDecl);
+    						  outerTypeDecl.addBodyDecl(m);
+    					  } else if (typeDecl instanceof InterfaceDecl) {
+    						  m = new MemberInterfaceDecl((InterfaceDecl)typeDecl);
+    						  outerTypeDecl.addBodyDecl(m);
+    					  }
+    				  }
+    			  }
+    			  if (outer_class_name.equals(this.p.classInfo.name())) {
+    				  if(BytecodeParser.VERBOSE)
+    					  p.println("      Class " + this.p.classInfo.name()
+    							  + " has inner class: " + inner_class_name);
+    				  if(BytecodeParser.VERBOSE)
+    					  p.println("Begin processing: " + inner_class_name);
+    				  try {
+    					  java.io.InputStream is = classPath.getInputStream(inner_class_name);
+    					  if(is != null) {
+    						  BytecodeParser p = new BytecodeParser(is, this.p.name);
+    						  p.parse(typeDecl, outer_class_name, classPath, (inner_class_access_flags & Flags.ACC_STATIC) == 0);
+    						  is.close();
+    					  }
+    					  else {
+    						  System.out.println("Error: ClassFile " + inner_class_name
+    								  + " not found");
+    					  }
+    				  } catch (FileNotFoundException e) {
+    					  System.out.println("Error: " + inner_class_name
+    							  + " not found");
+    				  } catch (Exception e) {
+    					  e.printStackTrace();
+    					  System.exit(1);
+    				  }
+    				  if(BytecodeParser.VERBOSE)
+    					  p.println("End processing: " + inner_class_name);
+    			  }
+    		  }
 
-            if (inner_class_info.name().equals(p.classInfo.name())) {
-              if(BytecodeParser.VERBOSE)
-                p.println("      Class " + inner_class_name + " is inner (" + inner_name + ")");
-              typeDecl.setID(inner_name);
-              typeDecl.setModifiers(BytecodeParser.modifiers(inner_class_access_flags & 0x041f));
-              if (this.p.outerClassInfo != null && this.p.outerClassInfo.name().equals(outer_class_info.name())) {
-                MemberTypeDecl m = null;
-                if (typeDecl instanceof ClassDecl) {
-                  m = new MemberClassDecl((ClassDecl)typeDecl);
-                  outerTypeDecl.addBodyDecl(m);
-                } else if (typeDecl instanceof InterfaceDecl) {
-                  m = new MemberInterfaceDecl((InterfaceDecl)typeDecl);
-                  outerTypeDecl.addBodyDecl(m);
-                }
-              }
-            }
-            if (outer_class_info.name().equals(this.p.classInfo.name())) {
-              if(BytecodeParser.VERBOSE)
-                p.println("      Class " + this.p.classInfo.name()
-                    + " has inner class: " + inner_class_name);
-              if(BytecodeParser.VERBOSE)
-                p.println("Begin processing: " + inner_class_name);
-              try {
-                java.io.InputStream is = classPath.getInputStream(inner_class_name);
-                if(is != null) {
-                  BytecodeParser p = new BytecodeParser(is, this.p.name);
-                  p.parse(typeDecl, outer_class_info, classPath, (inner_class_access_flags & Flags.ACC_STATIC) == 0);
-                  is.close();
-                }
-                else {
-                  System.out.println("Error: ClassFile " + inner_class_name
-                      + " not found");
-                }
-              } catch (FileNotFoundException e) {
-                System.out.println("Error: " + inner_class_name
-                    + " not found");
-              } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(1);
-              }
-              if(BytecodeParser.VERBOSE)
-                p.println("End processing: " + inner_class_name);
-            }
-          }
-
-        }
-        if(BytecodeParser.VERBOSE)
-          p.println("    end");
+    	  }
+    	  if(BytecodeParser.VERBOSE)
+    		  p.println("    end");
       }
-
-
-
-
     }
 
 

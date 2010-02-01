@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 
@@ -347,7 +347,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     return m;
   }
 
-    // Declared in EmitJimple.jrag at line 207
+    // Declared in EmitJimple.jrag at line 210
 
 
   public void jimplify1phase2() {
@@ -375,7 +375,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 263
+    // Declared in EmitJimple.jrag at line 266
 
 
   public SootMethod sootMethod;
@@ -876,7 +876,7 @@ private boolean refined_MethodDecl_MethodDecl_moreSpecificThan_MethodDecl(Method
     return true;
   }
 
-    // Declared in EmitJimple.jrag at line 108
+    // Declared in EmitJimple.jrag at line 107
 private int refined_EmitJimple_MethodDecl_sootTypeModifiers()
 {
     int result = 0;
@@ -1379,7 +1379,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 264
+    // Declared in EmitJimple.jrag at line 267
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed) {
             return sootMethod_value;
@@ -1404,7 +1404,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 274
+    // Declared in EmitJimple.jrag at line 277
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed) {
             return sootRef_value;
@@ -1506,7 +1506,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return unknownMethod_value;
     }
 
-    // Declared in EmitJimple.jrag at line 272
+    // Declared in EmitJimple.jrag at line 275
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
         ASTNode$State state = state();
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);

@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet, Iterator, Variable {
@@ -335,7 +335,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     return isStatic() ? fieldAccess : new VarAccess("that").qualifiesAccess(fieldAccess);
   }
 
-    // Declared in EmitJimple.jrag at line 324
+    // Declared in EmitJimple.jrag at line 327
 
   
 
@@ -365,7 +365,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 349
+    // Declared in EmitJimple.jrag at line 352
 
   public SootField sootField;
 
@@ -935,7 +935,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean visibleTypeParameters_compute() {  return !isStatic();  }
 
-    // Declared in EmitJimple.jrag at line 128
+    // Declared in EmitJimple.jrag at line 127
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
         ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
@@ -954,7 +954,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean sootRef_computed = false;
     protected SootFieldRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 350
+    // Declared in EmitJimple.jrag at line 353
  @SuppressWarnings({"unchecked", "cast"})     public SootFieldRef sootRef() {
         if(sootRef_computed) {
             return sootRef_value;

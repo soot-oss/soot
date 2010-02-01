@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 // 4.3 Reference Types and Values
@@ -348,7 +348,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in EmitJimple.jrag at line 164
+    // Declared in EmitJimple.jrag at line 163
 
 
   public void jimplify1phase2() {
@@ -356,7 +356,9 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     sc.setResolvingLevel(SootClass.DANGLING);
     sc.setModifiers(sootTypeModifiers());
     sc.setApplicationClass();
-    sc.addTag(new soot.tagkit.SourceFileTag(sourceNameWithoutPath()));
+    SourceFileTag st = new soot.tagkit.SourceFileTag(sourceNameWithoutPath());
+    st.setAbsolutePath(new File(sourceFile()).getAbsolutePath());
+    sc.addTag(st);
     if(hasSuperclass()) {
       sc.setSuperclass(superclass().getSootClassDecl());
     }

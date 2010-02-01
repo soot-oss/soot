@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 public class InterfaceDecl extends ReferenceType implements Cloneable {
@@ -257,7 +257,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in EmitJimple.jrag at line 185
+    // Declared in EmitJimple.jrag at line 186
 
 
   public void jimplify1phase2() {
@@ -265,7 +265,9 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     sc.setResolvingLevel(SootClass.DANGLING);
     sc.setModifiers(sootTypeModifiers());
     sc.setApplicationClass();
-    sc.addTag(new soot.tagkit.SourceFileTag(sourceNameWithoutPath()));
+    SourceFileTag st = new soot.tagkit.SourceFileTag(sourceNameWithoutPath());
+    st.setAbsolutePath(new File(sourceFile()).getAbsolutePath());
+    sc.addTag(st);
     sc.setSuperclass(typeObject().getSootClassDecl());
     for(Iterator iter = superinterfacesIterator(); iter.hasNext(); ) {
       TypeDecl typeDecl = (TypeDecl)iter.next();
@@ -1060,7 +1062,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
     return sc;
   }
 
-    // Declared in EmitJimple.jrag at line 106
+    // Declared in EmitJimple.jrag at line 105
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
         ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();

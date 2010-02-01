@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 public class ArrayDecl extends ClassDecl implements Cloneable {
@@ -826,7 +826,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private String referenceClassFieldName_compute() {  return "array" + jvmName().replace('[', '$').replace('.', '$').replace(';', ' ').trim();  }
 
-    // Declared in EmitJimple.jrag at line 43
+    // Declared in EmitJimple.jrag at line 44
  @SuppressWarnings({"unchecked", "cast"})     public SootClass getSootClassDecl() {
         if(getSootClassDecl_computed) {
             return getSootClassDecl_value;
@@ -842,7 +842,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     private SootClass getSootClassDecl_compute() {  return typeObject().getSootClassDecl();  }
 
-    // Declared in EmitJimple.jrag at line 55
+    // Declared in EmitJimple.jrag at line 56
  @SuppressWarnings({"unchecked", "cast"})     public Type getSootType() {
         if(getSootType_computed) {
             return getSootType_value;

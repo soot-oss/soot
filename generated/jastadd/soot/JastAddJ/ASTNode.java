@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 // Generated with JastAdd II (http://jastadd.cs.lth.se) version R20090610
 
@@ -470,7 +470,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    return node;
   }
 
-    // Declared in EmitJimple.jrag at line 59
+    // Declared in EmitJimple.jrag at line 60
 
 
   public void jimplify1phase1() {
@@ -478,7 +478,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).jimplify1phase1();
   }
 
-    // Declared in EmitJimple.jrag at line 138
+    // Declared in EmitJimple.jrag at line 137
 
   
   public void jimplify1phase2() {
@@ -486,14 +486,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).jimplify1phase2();
   }
 
-    // Declared in EmitJimple.jrag at line 361
+    // Declared in EmitJimple.jrag at line 364
 
   public void jimplify2() {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).jimplify2();
   }
 
-    // Declared in EmitJimple.jrag at line 366
+    // Declared in EmitJimple.jrag at line 369
 
 
   public void jimplify2(Body b) {
@@ -501,7 +501,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).jimplify2(b);
   }
 
-    // Declared in EmitJimple.jrag at line 400
+    // Declared in EmitJimple.jrag at line 403
 
 
 
@@ -510,14 +510,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return b.newTemp(v);
   }
 
-    // Declared in EmitJimple.jrag at line 404
+    // Declared in EmitJimple.jrag at line 407
 
   public soot.Local asLocal(Body b, soot.Value v) {
     if(v instanceof soot.Local) return (soot.Local)v;
     return b.newTemp(v);
   }
 
-    // Declared in EmitJimple.jrag at line 408
+    // Declared in EmitJimple.jrag at line 411
 
   public soot.Local asLocal(Body b, soot.Value v, Type t) {
     if(v instanceof soot.Local) return (soot.Local)v;
@@ -527,7 +527,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return local;
   }
 
-    // Declared in EmitJimple.jrag at line 415
+    // Declared in EmitJimple.jrag at line 418
 
   public soot.Value asRValue(Body b, soot.Value v) {
     if(v instanceof soot.Local) return v;
@@ -537,14 +537,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Need to convert " + v.getClass().getName() + " to RValue");
   }
 
-    // Declared in EmitJimple.jrag at line 874
+    // Declared in EmitJimple.jrag at line 877
 
 
   protected soot.jimple.Stmt newLabel() {
     return soot.jimple.Jimple.v().newNopStmt();
   }
 
-    // Declared in EmitJimple.jrag at line 954
+    // Declared in EmitJimple.jrag at line 957
 
 
   public void addAttributes() {

@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, Iterator, Variable {
@@ -150,7 +150,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     }
   }
 
-    // Declared in EmitJimple.jrag at line 372
+    // Declared in EmitJimple.jrag at line 375
 
 
 
@@ -173,7 +173,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     }
   }
 
-    // Declared in EmitJimple.jrag at line 390
+    // Declared in EmitJimple.jrag at line 393
 
   public Local local;
 

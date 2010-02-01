@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 
 public class ConstructorDecl extends BodyDecl implements Cloneable {
@@ -309,7 +309,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     super.transformation();
   }
 
-    // Declared in EmitJimple.jrag at line 231
+    // Declared in EmitJimple.jrag at line 234
 
   public void jimplify1phase2() {
     String name = "<init>";
@@ -343,7 +343,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 289
+    // Declared in EmitJimple.jrag at line 292
 
 
 
@@ -1299,7 +1299,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private TypeDecl superEnclosing_compute() {  return hostType().superEnclosing();  }
 
-    // Declared in EmitJimple.jrag at line 121
+    // Declared in EmitJimple.jrag at line 120
  @SuppressWarnings({"unchecked", "cast"})     public int sootTypeModifiers() {
         ASTNode$State state = state();
         int sootTypeModifiers_value = sootTypeModifiers_compute();
@@ -1316,7 +1316,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 290
+    // Declared in EmitJimple.jrag at line 293
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed) {
             return sootMethod_value;
@@ -1348,7 +1348,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 305
+    // Declared in EmitJimple.jrag at line 308
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed) {
             return sootRef_value;

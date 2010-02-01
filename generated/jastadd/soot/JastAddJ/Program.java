@@ -1,6 +1,6 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 public class Program extends ASTNode<ASTNode> implements Cloneable {
     public void flushCache() {
@@ -534,7 +534,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     return classDecl;
   }
 
-    // Declared in EmitJimple.jrag at line 18
+    // Declared in EmitJimple.jrag at line 19
 
   public void jimplify1() {
     for(Iterator iter = compilationUnitIterator(); iter.hasNext(); ) {
@@ -549,7 +549,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
 
-    // Declared in EmitJimple.jrag at line 354
+    // Declared in EmitJimple.jrag at line 357
 
    // hostType().getSootClassDecl().getField(name(), type().getSootType()).makeRef();
   

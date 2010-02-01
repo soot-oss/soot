@@ -1,25 +1,25 @@
 
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.coffi.CoffiMethodSource;
+import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
 public class Body extends java.lang.Object {
-    // Declared in EmitJimple.jrag at line 451
+    // Declared in EmitJimple.jrag at line 454
 
     int nextTempIndex = 0;
 
-    // Declared in EmitJimple.jrag at line 452
+    // Declared in EmitJimple.jrag at line 455
 
     soot.jimple.JimpleBody body;
 
-    // Declared in EmitJimple.jrag at line 453
+    // Declared in EmitJimple.jrag at line 456
 
     java.util.Stack chains;
 
-    // Declared in EmitJimple.jrag at line 454
+    // Declared in EmitJimple.jrag at line 457
 
     TypeDecl typeDecl;
 
-    // Declared in EmitJimple.jrag at line 455
+    // Declared in EmitJimple.jrag at line 458
 
     public Body(TypeDecl typeDecl, soot.jimple.JimpleBody body, ASTNode container) {
       this.typeDecl = typeDecl;
@@ -31,14 +31,14 @@ public class Body extends java.lang.Object {
         emitThis(typeDecl);
     }
 
-    // Declared in EmitJimple.jrag at line 464
+    // Declared in EmitJimple.jrag at line 467
 
     public Local getParam(int i)
     {
       return body.getParameterLocal(i);
     }
 
-    // Declared in EmitJimple.jrag at line 468
+    // Declared in EmitJimple.jrag at line 471
 
     public Local newTemp(soot.Type type) {
       Local local = Jimple.v().newLocal("temp$" + nextTempIndex++, type);
@@ -46,7 +46,7 @@ public class Body extends java.lang.Object {
       return local;
     }
 
-    // Declared in EmitJimple.jrag at line 473
+    // Declared in EmitJimple.jrag at line 476
 
     public Local newTemp(soot.Value v) {
       if (v == NullConstant.v())
@@ -63,7 +63,7 @@ public class Body extends java.lang.Object {
       return local;
     }
 
-    // Declared in EmitJimple.jrag at line 487
+    // Declared in EmitJimple.jrag at line 490
 
     public Local newLocal(String name, soot.Type type) {
       Local local = Jimple.v().newLocal(name, type);
@@ -73,12 +73,12 @@ public class Body extends java.lang.Object {
       return local;
     }
 
-    // Declared in EmitJimple.jrag at line 495
+    // Declared in EmitJimple.jrag at line 498
 
 
     private soot.tagkit.Tag lineTag;
 
-    // Declared in EmitJimple.jrag at line 496
+    // Declared in EmitJimple.jrag at line 499
 
     public void setLine(ASTNode node)
     {
@@ -96,14 +96,14 @@ public class Body extends java.lang.Object {
       }
     }
 
-    // Declared in EmitJimple.jrag at line 511
+    // Declared in EmitJimple.jrag at line 514
 
     private soot.tagkit.Tag currentSourceRangeTag()
     {
       return lineTag;
     }
 
-    // Declared in EmitJimple.jrag at line 516
+    // Declared in EmitJimple.jrag at line 519
 
 
     public Body add(soot.jimple.Stmt stmt) {
@@ -112,15 +112,15 @@ public class Body extends java.lang.Object {
         list = null;
       }
       stmt.addTag(currentSourceRangeTag());
-      soot.PatchingChain<soot.Unit> chain = (soot.PatchingChain<soot.Unit>)chains.peek();
+      soot.PatchingChain<Unit> chain = (soot.PatchingChain<Unit>)chains.peek();
       if(stmt instanceof IdentityStmt && chain.size() != 0) {
         IdentityStmt idstmt = (IdentityStmt) stmt;
         if(!(idstmt.getRightOp() instanceof CaughtExceptionRef)) {
           soot.Unit s = chain.getFirst();
           while(s instanceof IdentityStmt)
-            s = chain.getSuccOf(s);
+            s = chain.getSuccOf((soot.jimple.Stmt)s);
           if(s != null) {
-            chain.insertBefore(stmt, s);
+            chain.insertBefore(stmt, (soot.jimple.Stmt)s);
             return this;
           }
         }
@@ -129,33 +129,33 @@ public class Body extends java.lang.Object {
       return this;
     }
 
-    // Declared in EmitJimple.jrag at line 538
+    // Declared in EmitJimple.jrag at line 541
 
     public void pushBlock(soot.PatchingChain c) {
       chains.push(c);
     }
 
-    // Declared in EmitJimple.jrag at line 541
+    // Declared in EmitJimple.jrag at line 544
 
     public void popBlock() {
       chains.pop();
     }
 
-    // Declared in EmitJimple.jrag at line 545
+    // Declared in EmitJimple.jrag at line 548
 
 
     public soot.jimple.Stmt newLabel() {
       return soot.jimple.Jimple.v().newNopStmt();
     }
 
-    // Declared in EmitJimple.jrag at line 548
+    // Declared in EmitJimple.jrag at line 551
 
     public Body addLabel(soot.jimple.Stmt label) {
       add(label);
       return this;
     }
 
-    // Declared in EmitJimple.jrag at line 553
+    // Declared in EmitJimple.jrag at line 556
 
 
     public soot.Local emitThis(TypeDecl typeDecl) {
@@ -169,11 +169,11 @@ public class Body extends java.lang.Object {
       return thisName;
     }
 
-    // Declared in EmitJimple.jrag at line 563
+    // Declared in EmitJimple.jrag at line 566
 
     Local thisName;
 
-    // Declared in EmitJimple.jrag at line 565
+    // Declared in EmitJimple.jrag at line 568
 
 
     public Body addTrap(TypeDecl type, soot.jimple.Stmt firstStmt, soot.jimple.Stmt lastStmt, soot.jimple.Stmt handler) {
@@ -181,7 +181,7 @@ public class Body extends java.lang.Object {
       return this;
     }
 
-    // Declared in EmitJimple.jrag at line 570
+    // Declared in EmitJimple.jrag at line 573
 
 
     public soot.jimple.Stmt previousStmt() {
@@ -189,106 +189,106 @@ public class Body extends java.lang.Object {
       return (soot.jimple.Stmt)o.getLast();
     }
 
-    // Declared in EmitJimple.jrag at line 574
+    // Declared in EmitJimple.jrag at line 577
 
     public void addNextStmt(java.util.ArrayList list) {
       this.list = list;
     }
 
-    // Declared in EmitJimple.jrag at line 577
+    // Declared in EmitJimple.jrag at line 580
 
     java.util.ArrayList list = null;
 
-    // Declared in EmitJimple.jrag at line 578
+    // Declared in EmitJimple.jrag at line 581
 
     public soot.jimple.BinopExpr newXorExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newXorExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 579
+    // Declared in EmitJimple.jrag at line 582
 
     public soot.jimple.BinopExpr newUshrExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newUshrExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 580
+    // Declared in EmitJimple.jrag at line 583
 
     public soot.jimple.BinopExpr newSubExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newSubExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 581
+    // Declared in EmitJimple.jrag at line 584
 
     public soot.jimple.BinopExpr newShrExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newShrExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 582
+    // Declared in EmitJimple.jrag at line 585
 
     public soot.jimple.BinopExpr newShlExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newShlExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 583
+    // Declared in EmitJimple.jrag at line 586
 
     public soot.jimple.BinopExpr newRemExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newRemExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 584
+    // Declared in EmitJimple.jrag at line 587
 
     public soot.jimple.BinopExpr newOrExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newOrExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 585
+    // Declared in EmitJimple.jrag at line 588
 
     public soot.jimple.BinopExpr newNeExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newNeExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 586
+    // Declared in EmitJimple.jrag at line 589
 
     public soot.jimple.BinopExpr newMulExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newMulExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 587
+    // Declared in EmitJimple.jrag at line 590
 
     public soot.jimple.BinopExpr newLeExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newLeExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 588
+    // Declared in EmitJimple.jrag at line 591
 
     public soot.jimple.BinopExpr newGeExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newGeExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 589
+    // Declared in EmitJimple.jrag at line 592
 
     public soot.jimple.BinopExpr newEqExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newEqExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 590
+    // Declared in EmitJimple.jrag at line 593
 
     public soot.jimple.BinopExpr newDivExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newDivExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 591
+    // Declared in EmitJimple.jrag at line 594
 
     public soot.jimple.BinopExpr newCmplExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newCmplExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 592
+    // Declared in EmitJimple.jrag at line 595
 
     public soot.jimple.BinopExpr newCmpgExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newCmpgExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 593
+    // Declared in EmitJimple.jrag at line 596
 
     public soot.jimple.BinopExpr newCmpExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newCmpExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 594
+    // Declared in EmitJimple.jrag at line 597
 
     public soot.jimple.BinopExpr newGtExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newGtExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 595
+    // Declared in EmitJimple.jrag at line 598
 
     public soot.jimple.BinopExpr newLtExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newLtExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 596
+    // Declared in EmitJimple.jrag at line 599
 
     public soot.jimple.BinopExpr newAddExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newAddExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 597
+    // Declared in EmitJimple.jrag at line 600
 
     public soot.jimple.BinopExpr newAndExpr(soot.Value op1, soot.Value op2, ASTNode location) { return updateTags(Jimple.v().newAndExpr(op1, op2), location, op1, op2); }
 
-    // Declared in EmitJimple.jrag at line 599
+    // Declared in EmitJimple.jrag at line 602
 
 
     public soot.jimple.UnopExpr newNegExpr(soot.Value op, ASTNode location) { return updateTags(Jimple.v().newNegExpr(op), location, op); }
 
-    // Declared in EmitJimple.jrag at line 600
+    // Declared in EmitJimple.jrag at line 603
 
     public soot.jimple.UnopExpr newLengthExpr(soot.Value op, ASTNode location) { return updateTags(Jimple.v().newLengthExpr(op), location, op); }
 
-    // Declared in EmitJimple.jrag at line 602
+    // Declared in EmitJimple.jrag at line 605
 
 
     public soot.jimple.CastExpr newCastExpr(Value op1, Type t, ASTNode location) {
@@ -299,7 +299,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 610
+    // Declared in EmitJimple.jrag at line 613
 
 
     public soot.jimple.InstanceOfExpr newInstanceOfExpr(Value op1, Type t, ASTNode location) {
@@ -310,7 +310,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 618
+    // Declared in EmitJimple.jrag at line 621
 
 
     public soot.jimple.NewExpr newNewExpr(RefType type, ASTNode location) {
@@ -319,7 +319,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 624
+    // Declared in EmitJimple.jrag at line 627
 
 
     public soot.jimple.NewArrayExpr newNewArrayExpr(Type type, Value size, ASTNode location) {
@@ -330,7 +330,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 632
+    // Declared in EmitJimple.jrag at line 635
 
 
     public soot.jimple.NewMultiArrayExpr newNewMultiArrayExpr(ArrayType type, java.util.List sizes, ASTNode location) {
@@ -343,7 +343,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 642
+    // Declared in EmitJimple.jrag at line 645
 
 
     public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, java.util.List args, ASTNode location) {
@@ -356,7 +356,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 652
+    // Declared in EmitJimple.jrag at line 655
 
 
     public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, java.util.List args, ASTNode location) {
@@ -369,7 +369,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 662
+    // Declared in EmitJimple.jrag at line 665
 
 
     public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, java.util.List args, ASTNode location) {
@@ -382,7 +382,7 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 672
+    // Declared in EmitJimple.jrag at line 675
 
 
     public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, java.util.List args, ASTNode location) {
@@ -395,56 +395,56 @@ public class Body extends java.lang.Object {
       return expr;
     }
 
-    // Declared in EmitJimple.jrag at line 682
+    // Declared in EmitJimple.jrag at line 685
 
 
     public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, ASTNode location) {
       return newStaticInvokeExpr(method, new ArrayList(), location);
     }
 
-    // Declared in EmitJimple.jrag at line 685
+    // Declared in EmitJimple.jrag at line 688
 
     public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, ASTNode location) {
       return newSpecialInvokeExpr(base, method, new ArrayList(), location);
     }
 
-    // Declared in EmitJimple.jrag at line 688
+    // Declared in EmitJimple.jrag at line 691
 
     public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, ASTNode location) {
       return newVirtualInvokeExpr(base, method, new ArrayList(), location);
     }
 
-    // Declared in EmitJimple.jrag at line 691
+    // Declared in EmitJimple.jrag at line 694
 
     public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, ASTNode location) {
       return newInterfaceInvokeExpr(base, method, new ArrayList(), location);
     }
 
-    // Declared in EmitJimple.jrag at line 694
+    // Declared in EmitJimple.jrag at line 697
 
     public soot.jimple.StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg, ASTNode location) {
       return newStaticInvokeExpr(method, Arrays.asList(new Value[] { arg }), location);
     }
 
-    // Declared in EmitJimple.jrag at line 697
+    // Declared in EmitJimple.jrag at line 700
 
     public soot.jimple.SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg, ASTNode location) {
       return newSpecialInvokeExpr(base, method, Arrays.asList(new Value[] { arg }), location);
     }
 
-    // Declared in EmitJimple.jrag at line 700
+    // Declared in EmitJimple.jrag at line 703
 
     public soot.jimple.VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg, ASTNode location) {
       return newVirtualInvokeExpr(base, method, Arrays.asList(new Value[] { arg }), location);
     }
 
-    // Declared in EmitJimple.jrag at line 703
+    // Declared in EmitJimple.jrag at line 706
 
     public soot.jimple.InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg, ASTNode location) {
       return newInterfaceInvokeExpr(base, method, Arrays.asList(new Value[] { arg }), location);
     }
 
-    // Declared in EmitJimple.jrag at line 707
+    // Declared in EmitJimple.jrag at line 710
 
 
     public soot.jimple.ThrowStmt newThrowStmt(Value op, ASTNode location) {
@@ -454,7 +454,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 714
+    // Declared in EmitJimple.jrag at line 717
 
 
     public soot.jimple.ExitMonitorStmt newExitMonitorStmt(Value op, ASTNode location) {
@@ -464,7 +464,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 721
+    // Declared in EmitJimple.jrag at line 724
 
 
     public soot.jimple.EnterMonitorStmt newEnterMonitorStmt(Value op, ASTNode location) {
@@ -474,7 +474,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 728
+    // Declared in EmitJimple.jrag at line 731
 
 
     public soot.jimple.GotoStmt newGotoStmt(Unit target, ASTNode location) {
@@ -482,14 +482,14 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 733
+    // Declared in EmitJimple.jrag at line 736
 
 
     public soot.jimple.ReturnVoidStmt newReturnVoidStmt(ASTNode location) {
       return Jimple.v().newReturnVoidStmt();
     }
 
-    // Declared in EmitJimple.jrag at line 737
+    // Declared in EmitJimple.jrag at line 740
 
 
     public soot.jimple.ReturnStmt newReturnStmt(Value op, ASTNode location) {
@@ -499,7 +499,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 744
+    // Declared in EmitJimple.jrag at line 747
 
 
     public soot.jimple.IfStmt newIfStmt(Value op, Unit target, ASTNode location) {
@@ -509,7 +509,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 751
+    // Declared in EmitJimple.jrag at line 754
 
     
     public soot.jimple.IdentityStmt newIdentityStmt(Value local, Value identityRef, ASTNode location) {
@@ -521,7 +521,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 760
+    // Declared in EmitJimple.jrag at line 763
 
 
     public soot.jimple.AssignStmt newAssignStmt(Value variable, Value rvalue, ASTNode location) {
@@ -533,7 +533,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 769
+    // Declared in EmitJimple.jrag at line 772
 
 
     public soot.jimple.InvokeStmt newInvokeStmt(Value op, ASTNode location) {
@@ -543,7 +543,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 776
+    // Declared in EmitJimple.jrag at line 779
 
 
     public soot.jimple.TableSwitchStmt newTableSwitchStmt(Value key, int lowIndex, int highIndex, java.util.List targets, Unit defaultTarget, ASTNode location) {
@@ -553,7 +553,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 783
+    // Declared in EmitJimple.jrag at line 786
 
 
     public soot.jimple.LookupSwitchStmt newLookupSwitchStmt(Value key, java.util.List lookupValues, java.util.List targets, Unit defaultTarget, ASTNode location) {
@@ -563,7 +563,7 @@ public class Body extends java.lang.Object {
       return stmt;
     }
 
-    // Declared in EmitJimple.jrag at line 790
+    // Declared in EmitJimple.jrag at line 793
 
 
     public soot.jimple.StaticFieldRef newStaticFieldRef(SootFieldRef f, ASTNode location) {
@@ -572,7 +572,7 @@ public class Body extends java.lang.Object {
       return ref;
     }
 
-    // Declared in EmitJimple.jrag at line 796
+    // Declared in EmitJimple.jrag at line 799
 
     
     public soot.jimple.ThisRef newThisRef(RefType t, ASTNode location) {
@@ -581,7 +581,7 @@ public class Body extends java.lang.Object {
       return ref;
     }
 
-    // Declared in EmitJimple.jrag at line 802
+    // Declared in EmitJimple.jrag at line 805
 
 
     public soot.jimple.ParameterRef newParameterRef(Type paramType, int number, ASTNode location) {
@@ -590,7 +590,7 @@ public class Body extends java.lang.Object {
       return ref;
     }
 
-    // Declared in EmitJimple.jrag at line 808
+    // Declared in EmitJimple.jrag at line 811
 
 
     public soot.jimple.InstanceFieldRef newInstanceFieldRef(Value base, SootFieldRef f, ASTNode location) {
@@ -601,7 +601,7 @@ public class Body extends java.lang.Object {
       return ref;
     }
 
-    // Declared in EmitJimple.jrag at line 816
+    // Declared in EmitJimple.jrag at line 819
 
 
     public soot.jimple.CaughtExceptionRef newCaughtExceptionRef(ASTNode location) {
@@ -610,7 +610,7 @@ public class Body extends java.lang.Object {
       return ref;
     }
 
-    // Declared in EmitJimple.jrag at line 822
+    // Declared in EmitJimple.jrag at line 825
 
 
     public soot.jimple.ArrayRef newArrayRef(Value base, Value index, ASTNode location) {
@@ -623,7 +623,7 @@ public class Body extends java.lang.Object {
       return ref;
     }
 
-    // Declared in EmitJimple.jrag at line 832
+    // Declared in EmitJimple.jrag at line 835
 
 
     private soot.jimple.BinopExpr updateTags(soot.jimple.BinopExpr binary, ASTNode binaryLocation, soot.Value op1, soot.Value op2) {
@@ -635,7 +635,7 @@ public class Body extends java.lang.Object {
       return binary;
     }
 
-    // Declared in EmitJimple.jrag at line 840
+    // Declared in EmitJimple.jrag at line 843
 
     private soot.jimple.UnopExpr updateTags(soot.jimple.UnopExpr unary, ASTNode unaryLocation, soot.Value op) {
       createTag(unary, unaryLocation);
@@ -644,18 +644,18 @@ public class Body extends java.lang.Object {
       return unary;
     }
 
-    // Declared in EmitJimple.jrag at line 847
+    // Declared in EmitJimple.jrag at line 850
 
 
     private java.util.HashMap<soot.Value, soot.tagkit.Tag> tagMap = new java.util.HashMap<soot.Value, soot.tagkit.Tag>();
 
-    // Declared in EmitJimple.jrag at line 848
+    // Declared in EmitJimple.jrag at line 851
 
     private soot.tagkit.Tag getTag(soot.Value value) {
       return tagMap.get(value);
     }
 
-    // Declared in EmitJimple.jrag at line 851
+    // Declared in EmitJimple.jrag at line 854
 
     private void createTag(soot.Value value, ASTNode node) {
       if(node == null || tagMap.containsKey(value))
@@ -674,7 +674,7 @@ public class Body extends java.lang.Object {
       }
     }
 
-    // Declared in EmitJimple.jrag at line 867
+    // Declared in EmitJimple.jrag at line 870
 
     public void copyLocation(soot.Value fromValue, soot.Value toValue) {
       soot.tagkit.Tag tag = tagMap.get(fromValue);
