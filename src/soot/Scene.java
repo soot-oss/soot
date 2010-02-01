@@ -1191,8 +1191,8 @@ public class Scene  //extends AbstractHost
             setMainClass(getSootClass(Options.v().main_class()));
         } else {             	
         	// try to infer a main class from the command line if none is given 
-        	for (Iterator<SootClass> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
-                    SootClass c = (SootClass) classIter.next();
+        	for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
+                    SootClass c = getSootClass(classIter.next());
                     if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
