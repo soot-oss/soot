@@ -635,7 +635,6 @@ public final class OnFlyCallGraphBuilder
 
     private void handleInit(SootMethod source, final SootClass scl) {
         addEdge( source, null, scl, sigFinalize, Kind.FINALIZE );
-        FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
     }
     private void constantForName( String cls, SootMethod src, Stmt srcUnit ) {
         if( cls.length() > 0 && cls.charAt(0) == '[' ) {
