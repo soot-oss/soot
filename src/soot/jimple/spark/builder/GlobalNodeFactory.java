@@ -18,8 +18,22 @@
  */
 
 package soot.jimple.spark.builder;
-import soot.jimple.spark.pag.*;
-import soot.*;
+import java.util.Set;
+
+import soot.AnySubType;
+import soot.ArrayType;
+import soot.PointsToAnalysis;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.ContextVarNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.toolkits.scalar.Pair;
 
 /** Factory for nodes not specific to a given method.
@@ -117,13 +131,24 @@ public class GlobalNodeFactory {
         if( cls instanceof ContextVarNode ) cls = pag.findLocalVarNode( cls.getVariable() );
 	VarNode local = pag.makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
         for (SootClass cl : Scene.v().dynamicClasses()) {
-            AllocNode site = pag.makeAllocNode( new Pair(cls, cl), cl.getType(), null );
+            AllocNode site = pag.makeAllocNode( new Pair<VarNode,SootClass>(cls, cl), cl.getType(), null );
             pag.addEdge( site, local );
         }
         return local;
     }
 
-    public Node caseThrow() {
+	public Node caseNewInstanceWithReflLog(VarNode cls, SootMethod container) {
+		Set<SootClass> classNewInstanceClasses = ReflectionTraceInfo.v().classNewInstanceClasses(container);
+        if( cls instanceof ContextVarNode ) cls = pag.findLocalVarNode( cls.getVariable() );
+    	VarNode local = pag.makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
+        for (SootClass cl : classNewInstanceClasses) {
+            AllocNode site = pag.makeAllocNode( new Pair<VarNode,SootClass>(cls, cl), cl.getType(), null );
+            pag.addEdge( site, local );
+        }
+		return local;
+	}
+
+	public Node caseThrow() {
 	VarNode ret = pag.makeGlobalVarNode( PointsToAnalysis.EXCEPTION_NODE,
 		    RefType.v("java.lang.Throwable") );
         ret.setInterProcTarget();

@@ -141,3 +141,4 @@ soot.jimple.toolkits.thread.synchronization.LockAllocator
 soot.jimple.toolkits.thread.mhp.MhpTransformer
 soot.JastAddInitialResolver
 soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator
+soot.jimple.toolkits.reflection.ReflectionTraceInfo

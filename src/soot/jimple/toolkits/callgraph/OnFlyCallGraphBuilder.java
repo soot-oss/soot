@@ -18,17 +18,11 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +49,6 @@ import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Transform;
 import soot.Type;
-import soot.Unit;
 import soot.Value;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
@@ -76,8 +69,6 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
-import soot.tagkit.Host;
-import soot.tagkit.SourceLnPosTag;
 import soot.util.LargeNumberedMap;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
@@ -218,7 +209,7 @@ public final class OnFlyCallGraphBuilder
 			if(logFile==null) {
 				throw new InternalError("Trace based refection model enabled but no trace file given!?");
 			} else {
-				reflectionInfo = new ReflectionTraceInfo(logFile);
+				reflectionInfo = ReflectionTraceInfo.v();
 			}
 		}
 
@@ -392,8 +383,7 @@ public final class OnFlyCallGraphBuilder
 
     private final ChunkedQueue targetsQueue = new ChunkedQueue();
     private final QueueReader targets = targetsQueue.reader();
-
-
+    
     public OnFlyCallGraphBuilder( ContextManager cm, ReachableMethods rm ) {
         this.cm = cm;
         this.rm = rm;

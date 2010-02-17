@@ -18,27 +18,75 @@
  */
 
 package soot.jimple.spark.pag;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import soot.jimple.*;
-import soot.*;
-import soot.jimple.spark.sets.*;
+import soot.Context;
+import soot.FastHierarchy;
+import soot.G;
+import soot.Kind;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.ClassConstant;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.spark.builder.GlobalNodeFactory;
+import soot.jimple.spark.builder.MethodNodeFactory;
+import soot.jimple.spark.internal.TypeManager;
+import soot.jimple.spark.sets.BitPointsToSet;
+import soot.jimple.spark.sets.DoublePointsToSet;
+import soot.jimple.spark.sets.EmptyPointsToSet;
+import soot.jimple.spark.sets.HashPointsToSet;
+import soot.jimple.spark.sets.HybridPointsToSet;
+import soot.jimple.spark.sets.P2SetFactory;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.spark.sets.SharedHybridSet;
+import soot.jimple.spark.sets.SharedListSet;
+import soot.jimple.spark.sets.SortedArraySet;
 import soot.jimple.spark.solver.OnFlyCallGraph;
-import soot.jimple.spark.internal.*;
-import soot.jimple.spark.builder.*;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
-import soot.util.*;
-import soot.util.queue.*;
+import soot.options.CGOptions;
 import soot.options.SparkOptions;
-import soot.tagkit.*;
+import soot.tagkit.LinkTag;
+import soot.tagkit.StringTag;
+import soot.tagkit.Tag;
 import soot.toolkits.scalar.Pair;
+import soot.util.ArrayNumberer;
+import soot.util.HashMultiMap;
+import soot.util.LargeNumberedMap;
+import soot.util.queue.ChunkedQueue;
+import soot.util.queue.QueueReader;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
+	protected boolean usingReflectionTrace = false;
+	
     public PAG( final SparkOptions opts ) {
+		CGOptions cgOpts = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+		usingReflectionTrace = (cgOpts.reflection_log()!=null);
+    	
         this.opts = opts;
         if( opts.add_tags() ) {
             nodeToTag = new HashMap<Node, Tag>();
@@ -765,7 +813,13 @@ public class PAG implements PointsToAnalysis {
                 Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
                 cls = srcmpag.parameterize( cls, e.srcCtxt() );
                 cls = cls.getReplacement();
-                Node newObject = nodeFactory.caseNewInstance( (VarNode) cls );
+
+                Node newObject;
+                if(!usingReflectionTrace) {
+					newObject = nodeFactory.caseNewInstance( (VarNode) cls );                	
+                } else {
+					newObject = nodeFactory.caseNewInstanceWithReflLog( (VarNode) cls, e.getSrc().method() );                	
+                }
 
                 Node initThis = tgtmpag.nodeFactory().caseThis();
                 initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );

@@ -886,4 +886,10 @@ public class Singletons {
         return instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator;
     }
 
+    private soot.jimple.toolkits.reflection.ReflectionTraceInfo instance_soot_jimple_toolkits_reflection_ReflectionTraceInfo;
+    public soot.jimple.toolkits.reflection.ReflectionTraceInfo soot_jimple_toolkits_reflection_ReflectionTraceInfo() {
+        if( instance_soot_jimple_toolkits_reflection_ReflectionTraceInfo == null ) instance_soot_jimple_toolkits_reflection_ReflectionTraceInfo = new soot.jimple.toolkits.reflection.ReflectionTraceInfo( g );
+        return instance_soot_jimple_toolkits_reflection_ReflectionTraceInfo;
+    }
+
 }
