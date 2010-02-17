@@ -67,7 +67,7 @@ public class ReflectionTraceInfo {
 					String kind = portions[0];
 					String target = portions[1];
 					String source = portions[2];
-					int lineNumber = portions[3].isEmpty() ? -1 : Integer.parseInt(portions[3]);
+					int lineNumber = portions[3].length()==0 ? -1 : Integer.parseInt(portions[3]);
 
 					Set<SootMethod> possibleSourceMethods = inferSource(source, lineNumber);
 					for (SootMethod sourceMethod : possibleSourceMethods) {
