@@ -49,7 +49,9 @@ public final class Kind implements Numberable
     /** Due to call to Method.invoke(..). */
     public static final Kind REFL_INVOKE = new Kind( "REFL_METHOD_INVOKE" );
     /** Due to call to Constructor.newInstance(..). */
-    public static final Kind REFL_NEWINSTANCE = new Kind( "REFL_CONSTRUCTOR_NEWINSTANCE" );
+    public static final Kind REFL_CONSTR_NEWINSTANCE = new Kind( "REFL_CONSTRUCTOR_NEWINSTANCE" );
+    /** Due to call to Class.newInstance(..) when reflection log is enabled. */
+    public static final Kind REFL_CLASS_NEWINSTANCE = new Kind( "REFL_CLASS_NEWINSTANCE" );
 
     private Kind( String name ) {
         this.name = name;
@@ -66,7 +68,7 @@ public final class Kind implements Numberable
     public boolean passesParameters() {
         return isExplicit() || this == THREAD || this == FINALIZE ||
             this == PRIVILEGED || this == NEWINSTANCE || this == INVOKE_FINALIZE ||
-            this == REFL_INVOKE || this == REFL_NEWINSTANCE;
+            this == REFL_INVOKE || this == REFL_CONSTR_NEWINSTANCE || this == REFL_CLASS_NEWINSTANCE;
     }
 
     /** Returns true if the call is due to an explicit invoke statement. */

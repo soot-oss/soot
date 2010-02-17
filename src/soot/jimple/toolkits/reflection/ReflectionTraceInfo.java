@@ -31,20 +31,14 @@ import java.util.Map;
 import java.util.Set;
 
 import soot.Body;
-import soot.G;
-import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
-import soot.Singletons.Global;
-import soot.options.CGOptions;
 import soot.tagkit.Host;
 import soot.tagkit.SourceLnPosTag;
 
 public class ReflectionTraceInfo {
-	
-	public static int inferredByName, inferredByLineNumber, ambiguous;
 	
 	protected Map<SootMethod,Set<String>> classForNameReceivers;
 	
@@ -54,14 +48,12 @@ public class ReflectionTraceInfo {
 
 	protected Map<SootMethod,Set<String>> methodInvokeReceivers;
 
-	public ReflectionTraceInfo(Global g) {
+	public ReflectionTraceInfo(String logFile) {
 		classForNameReceivers = new HashMap<SootMethod, Set<String>>();
 		classNewInstanceReceivers = new HashMap<SootMethod, Set<String>>();
 		constructorNewInstanceReceivers = new HashMap<SootMethod, Set<String>>();
 		methodInvokeReceivers = new HashMap<SootMethod, Set<String>>();
 
-		CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
-		String logFile = options.reflection_log();
 		if(logFile==null) {
 			throw new InternalError("Trace based refection model enabled but no trace file given!?");
 		} else {
@@ -116,10 +108,6 @@ public class ReflectionTraceInfo {
 					}
 					lines++;
 				}
-				
-				System.err.println("XXXXX inferred by name:        "+inferredByName);
-				System.err.println("XXXXX inferred by line number: "+inferredByLineNumber);
-				System.err.println("XXXXX ambiguous:               "+ambiguous);
 			} catch (FileNotFoundException e) {
 				throw new RuntimeException("Trace file not found.",e);
 			} catch (IOException e) {
@@ -150,24 +138,20 @@ public class ReflectionTraceInfo {
 		if(methodsWithRightName.isEmpty()) {
 			throw new RuntimeException("Trace file refers to unknown method with name "+methodName+" in Class "+className);
 		} else if(methodsWithRightName.size()==1) {
-			inferredByName++;
 			return Collections.singleton(methodsWithRightName.iterator().next());
 		} else {
 			//more than one method with that name
 			for (SootMethod sootMethod : methodsWithRightName) {
 				if(coversLineNumber(lineNumber, sootMethod)) {
-					inferredByLineNumber++;
 					return Collections.singleton(sootMethod);
 				}
 				if(sootMethod.hasActiveBody()) {
 					Body body = sootMethod.getActiveBody();
 					if(coversLineNumber(lineNumber, body)) {
-						inferredByLineNumber++;
 						return Collections.singleton(sootMethod);
 					}
 					for (Unit u : body.getUnits()) {
 						if(coversLineNumber(lineNumber, u)) {
-							inferredByLineNumber++;
 							return Collections.singleton(sootMethod);
 						}
 					}
@@ -176,7 +160,6 @@ public class ReflectionTraceInfo {
 			
 			//if we get here then we found no method with the right line number information;
 			//be conservative and return all method that we found
-			ambiguous++;
 			return methodsWithRightName;				
 		}
 	}
@@ -241,9 +224,5 @@ public class ReflectionTraceInfo {
 			result.add(Scene.v().getMethod(signature));
 		}
 		return result;
-	}
-	
-	public static ReflectionTraceInfo v() {
-		return G.v().soot_jimple_toolkits_reflection_ReflectionTraceInfo();
 	}
 }

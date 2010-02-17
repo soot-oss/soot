@@ -18,11 +18,17 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +55,7 @@ import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Transform;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
@@ -69,6 +76,8 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
+import soot.tagkit.Host;
+import soot.tagkit.SourceLnPosTag;
 import soot.util.LargeNumberedMap;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
@@ -209,7 +218,7 @@ public final class OnFlyCallGraphBuilder
 			if(logFile==null) {
 				throw new InternalError("Trace based refection model enabled but no trace file given!?");
 			} else {
-				reflectionInfo = ReflectionTraceInfo.v();
+				reflectionInfo = new ReflectionTraceInfo(logFile);
 			}
 		}
 
@@ -240,14 +249,15 @@ public final class OnFlyCallGraphBuilder
 				for (String clsName : classNames) {
 					SootClass cls = Scene.v().getSootClass(clsName);
 					if( cls.declaresMethod(sigInit) ) {
-						addEdge( container, newInstanceInvokeStmt, cls.getMethod(sigInit), Kind.NEWINSTANCE );
+						SootMethod constructor = cls.getMethod(sigInit);
+						addEdge( container, newInstanceInvokeStmt, constructor, Kind.REFL_CLASS_NEWINSTANCE );
 					}
 				}
 			}
 		}
 
 		/** 
-		 * Adds a special edge of kind {@link Kind#REFL_NEWINSTANCE} to all possible target constructors
+		 * Adds a special edge of kind {@link Kind#REFL_CONSTR_NEWINSTANCE} to all possible target constructors
 		 * of this call to {@link Constructor#newInstance(Object...)}.
 		 * Those kinds of edges are treated specially in terms of how parameters are assigned,
 		 * as parameters to the reflective call are passed into the argument array of
@@ -261,7 +271,7 @@ public final class OnFlyCallGraphBuilder
 			} else {
 				for (String constructorSignature : constructorSignatures) {
 					SootMethod constructor = Scene.v().getMethod(constructorSignature);
-					addEdge( container, newInstanceInvokeStmt, constructor, Kind.REFL_NEWINSTANCE );
+					addEdge( container, newInstanceInvokeStmt, constructor, Kind.REFL_CONSTR_NEWINSTANCE );
 				}
 			}
 		}
@@ -383,7 +393,8 @@ public final class OnFlyCallGraphBuilder
 
     private final ChunkedQueue targetsQueue = new ChunkedQueue();
     private final QueueReader targets = targetsQueue.reader();
-    
+
+
     public OnFlyCallGraphBuilder( ContextManager cm, ReachableMethods rm ) {
         this.cm = cm;
         this.rm = rm;

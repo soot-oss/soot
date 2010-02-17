@@ -18,75 +18,27 @@
  */
 
 package soot.jimple.spark.pag;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import soot.Context;
-import soot.FastHierarchy;
-import soot.G;
-import soot.Kind;
-import soot.Local;
-import soot.PhaseOptions;
-import soot.PointsToAnalysis;
-import soot.PointsToSet;
-import soot.RefLikeType;
-import soot.RefType;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootField;
-import soot.SootMethod;
-import soot.Type;
-import soot.Value;
-import soot.jimple.AssignStmt;
-import soot.jimple.ClassConstant;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.NullConstant;
-import soot.jimple.Stmt;
-import soot.jimple.spark.builder.GlobalNodeFactory;
-import soot.jimple.spark.builder.MethodNodeFactory;
-import soot.jimple.spark.internal.TypeManager;
-import soot.jimple.spark.sets.BitPointsToSet;
-import soot.jimple.spark.sets.DoublePointsToSet;
-import soot.jimple.spark.sets.EmptyPointsToSet;
-import soot.jimple.spark.sets.HashPointsToSet;
-import soot.jimple.spark.sets.HybridPointsToSet;
-import soot.jimple.spark.sets.P2SetFactory;
-import soot.jimple.spark.sets.P2SetVisitor;
-import soot.jimple.spark.sets.PointsToSetInternal;
-import soot.jimple.spark.sets.SharedHybridSet;
-import soot.jimple.spark.sets.SharedListSet;
-import soot.jimple.spark.sets.SortedArraySet;
+import soot.jimple.*;
+import soot.*;
+import soot.jimple.spark.sets.*;
 import soot.jimple.spark.solver.OnFlyCallGraph;
+import soot.jimple.spark.internal.*;
+import soot.jimple.spark.builder.*;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
-import soot.options.CGOptions;
+import soot.util.*;
+import soot.util.queue.*;
 import soot.options.SparkOptions;
-import soot.tagkit.LinkTag;
-import soot.tagkit.StringTag;
-import soot.tagkit.Tag;
+import soot.tagkit.*;
 import soot.toolkits.scalar.Pair;
-import soot.util.ArrayNumberer;
-import soot.util.HashMultiMap;
-import soot.util.LargeNumberedMap;
-import soot.util.queue.ChunkedQueue;
-import soot.util.queue.QueueReader;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
-	protected boolean usingReflectionTrace = false;
-	
     public PAG( final SparkOptions opts ) {
-		CGOptions cgOpts = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
-		usingReflectionTrace = (cgOpts.reflection_log()!=null);
-    	
         this.opts = opts;
         if( opts.add_tags() ) {
             nodeToTag = new HashMap<Node, Tag>();
@@ -813,13 +765,7 @@ public class PAG implements PointsToAnalysis {
                 Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
                 cls = srcmpag.parameterize( cls, e.srcCtxt() );
                 cls = cls.getReplacement();
-
-                Node newObject;
-                if(!usingReflectionTrace) {
-					newObject = nodeFactory.caseNewInstance( (VarNode) cls );                	
-                } else {
-					newObject = nodeFactory.caseNewInstanceWithReflLog( (VarNode) cls, e.getSrc().method() );                	
-                }
+                Node newObject = nodeFactory.caseNewInstance( (VarNode) cls );
 
                 Node initThis = tgtmpag.nodeFactory().caseThis();
                 initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
@@ -900,10 +846,11 @@ public class PAG implements PointsToAnalysis {
                     addEdge( ret, lhs );
                     callAssigns.put(ie, new Pair(ret, lhs));
                 }
-            } else if( e.kind() == Kind.REFL_NEWINSTANCE ) {
+            } else if( e.kind() == Kind.REFL_CLASS_NEWINSTANCE || e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
             	// (1) create a fresh node for the new object
             	// (2) create edge from this object to "this" of the constructor
-            	// (3) create edges passing the contents of the arguments array of the call
+            	// (3) if this is a call to Constructor.newInstance and not Class.newInstance,
+            	//     create edges passing the contents of the arguments array of the call
             	//     to all possible parameters of the target
             	// (4) if we are inside an assign statement,
             	//     assign the fresh object from (1) to the LHS of the assign statement
@@ -930,25 +877,27 @@ public class PAG implements PointsToAnalysis {
                 addEdge( newObject, initThis );
                 
                 //(3)
-                Value arg = iie.getArg(0);
-                SootMethod tgt = e.getTgt().method();
-                //if "null" is passed in, or target has no parameters, omit the edge
-                if(arg!=NullConstant.v() && tgt.getParameterCount()>0) {
-					Node parm0 = srcmpag.nodeFactory().getNode( arg );
-	                parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
-	                parm0 = parm0.getReplacement();
-	                FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm0, ArrayElement.v() );
-	                
-	                for(int i=0;i<tgt.getParameterCount(); i++) {
-	                	//if no reference type, create no edge
-	                	if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
-	                	
-	                    Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
-	                    tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
-	                    tgtParmI = tgtParmI.getReplacement();
-	
-	                    addEdge( parm1contents, tgtParmI );
-	                    callAssigns.put(iie, new Pair(parm1contents, tgtParmI));
+                if(e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
+	                Value arg = iie.getArg(0);
+	                SootMethod tgt = e.getTgt().method();
+	                //if "null" is passed in, or target has no parameters, omit the edge
+	                if(arg!=NullConstant.v() && tgt.getParameterCount()>0) {
+						Node parm0 = srcmpag.nodeFactory().getNode( arg );
+		                parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
+		                parm0 = parm0.getReplacement();
+		                FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm0, ArrayElement.v() );
+		                
+		                for(int i=0;i<tgt.getParameterCount(); i++) {
+		                	//if no reference type, create no edge
+		                	if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
+		                	
+		                    Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
+		                    tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
+		                    tgtParmI = tgtParmI.getReplacement();
+		
+		                    addEdge( parm1contents, tgtParmI );
+		                    callAssigns.put(iie, new Pair(parm1contents, tgtParmI));
+		                }
 	                }
                 }
                 
