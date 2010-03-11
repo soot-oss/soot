@@ -28,6 +28,9 @@ package soot;
 
 import soot.toolkits.astmetrics.ClassData;
 import java.util.*;
+
+import soot.options.CGOptions;
+import soot.options.JBTROptions;
 import soot.options.Options;
 
 import java.io.*;
@@ -153,6 +156,8 @@ public class Main {
             Timers.v().totalTimer.start();
 
             processCmdLine(cmdLineArgs);
+            
+            autoSetOptions();
 
             G.v().out.println("Soot started on " + start);
 
@@ -213,4 +218,18 @@ public class Main {
                 + " sec.");
 
     }
+    
+	private void autoSetOptions() {
+		//when reflection log is enabled, also enable phantom refs	
+	    CGOptions cgOptions = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+	    String log = cgOptions.reflection_log();
+	    if(log!=null && log.length()>0) {
+	    	Options.v().set_allow_phantom_refs(true);
+	    }
+	    
+	    //if phantom refs enabled,  ignore wrong staticness in type assigner
+	    if(Options.v().allow_phantom_refs()) {
+	    	PhaseOptions.v().setPhaseOption("jb.tr", "ignore-wrong-staticness:on");
+	    }
+	}
 }
