@@ -113,6 +113,7 @@ public final class Edge
     }
     public boolean equals( Object other ) {
         Edge o = (Edge) other;
+        if( o == null ) return false;
         if( o.src != src ) return false;
         if( o.srcUnit != srcUnit ) return false;
         if( o.tgt != tgt ) return false;
