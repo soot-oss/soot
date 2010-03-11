@@ -833,7 +833,7 @@ public class PackManager {
         }//end if produceDava
     }
 
-    private void writeClass(SootClass c) {
+    public void writeClass(SootClass c) {
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;
