@@ -19,6 +19,17 @@
 
 package soot;
 import java.util.*;
+
+import soot.javaToJimple.LocalGenerator;
+import soot.jimple.AssignStmt;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.NewExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.StringConstant;
+import soot.jimple.VirtualInvokeExpr;
+import soot.options.Options;
 import soot.util.*;
 
 /** Representation of a reference to a method as it appears in a class file.
@@ -94,12 +105,14 @@ class SootMethodRefImpl implements SootMethodRef {
     public SootMethod resolve() {
         return resolve(null);
     }
+    
     private SootMethod checkStatic(SootMethod ret) {
         if( ret.isStatic() != isStatic()) {
             throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
         }
         return ret;
     }
+    
     private SootMethod resolve(StringBuffer trace) {
         SootClass cl = declaringClass;
         while(true) {
@@ -132,11 +145,40 @@ class SootMethodRefImpl implements SootMethodRef {
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
             else break;
         }
-        if( trace == null ) {
+        
+        //when allowing phantom refs we also allow for references to non-existing methods;
+        //we simply create the methods on the fly; the method body will throw an appropriate
+        //error just in case the code *is* actually reached at runtime
+        if(Options.v().allow_phantom_refs()) {
+        	SootMethod m = new SootMethod(name, parameterTypes, returnType);
+        	JimpleBody body = Jimple.v().newBody(m);
+			m.setActiveBody(body);
+			
+			//exc = new Error
+			RefType runtimeExceptionType = RefType.v("java.lang.Error");
+			NewExpr newExpr = Jimple.v().newNewExpr(runtimeExceptionType);
+			LocalGenerator lg = new LocalGenerator(body);
+			Local exceptionLocal = lg.generateLocal(runtimeExceptionType);
+			AssignStmt assignStmt = Jimple.v().newAssignStmt(exceptionLocal, newExpr);
+			body.getUnits().add(assignStmt);
+			
+			//exc.<init>(message)
+			SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.singletonList(RefType.v("java.lang.String"))).makeRef();
+			SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v("Unresolved compilation error: Method "+getSignature()+" does not exist!"));
+			InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
+			body.getUnits().insertAfter(initStmt, assignStmt);
+			
+			//throw exc
+			body.getUnits().insertAfter(Jimple.v().newThrowStmt(exceptionLocal), initStmt);
+
+			declaringClass.addMethod(m);
+			return m; 
+        } else if( trace == null ) {
         	throw new ClassResolutionFailedException();
         }
         return null;
     }
+    
     public String toString() {
         return getSignature();
     }
