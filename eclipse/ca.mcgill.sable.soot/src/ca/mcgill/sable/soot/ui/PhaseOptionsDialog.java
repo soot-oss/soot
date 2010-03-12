@@ -2777,7 +2777,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		stringRes = getcgguards_widget().getText().getText();
 		
-		defStringRes = "throw";
+		defStringRes = "ignore";
 		
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
@@ -12044,7 +12044,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		else {
 			
-			defaultString = "throw";
+			defaultString = "ignore";
 			
 		}
 
