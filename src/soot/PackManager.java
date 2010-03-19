@@ -418,7 +418,7 @@ public class PackManager {
         if (Options.v().output_format() == Options.output_format_dava) {
 
             Map options = PhaseOptions.v().getPhaseOptions("db");
-            boolean isSourceJavac = PhaseOptions.getBoolean(options, "source_is_javac"); 
+            boolean isSourceJavac = PhaseOptions.getBoolean(options, "source-is-javac"); 
         	if(!isSourceJavac){
         		/*
         		 * It turns out that the exception attributes of a method i.e. those exceptions that
