@@ -110,6 +110,9 @@ Feng Qian (fqian@sable.mcgill.ca)
     - Dot interface, CFGViewer
     - prepared 1.2.2, 1.2.3 release
 
+Hossein Sadat-Mohtasham
+	- Program Dependency Graphs
+
 Ganesh Sittampalam (ganesh@earth.li)
    - contributed to resolver redesign
 

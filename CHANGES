@@ -7,6 +7,13 @@ Improvements and API changes in version 2.3.1
 2. Changed type parameter of PatchingChain to be a subtype of Unit
    because this is what the implementation actually requires.
 
+3. Added Hossein Sadat-Mohtasham's implementation of program dependency
+   graphs.
+   
+4. Added new phase option "reflection-log" to support TamiFlex
+   reflection log files. This option allows Spark to construct sound
+   call graphs and points-to sets even for programs that use reflection.
+
 Improvements and API changes in version 2.3.0
 
 1. Integrated new JastAdd-based frontend with support for Java 5
