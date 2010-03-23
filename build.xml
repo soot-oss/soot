@@ -270,5 +270,14 @@
         </jar>
         
     </target>
+	
+	<target name="fulljar" depends="classesjar">
+        <jar destfile="${release.loc}/soot-${soot.version}.jar">
+            <zipfileset src="${release.loc}/sootclasses-${soot.version}.jar"/>
+            <zipfileset src="${jasmin.jar}"/>
+            <zipfileset src="${polyglot.jar}"/>
+            <zipfileset src="${javacup.jar}"/>
+        </jar>
+    </target>
     
 </project>
