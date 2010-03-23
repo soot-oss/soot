@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 1997-2010 Raja Vallee-Rai and others
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -57,11 +57,11 @@ public class Main {
         G.v().out.println("Soot version " + versionString);
 
         G.v().out.println(
-            "Copyright (C) 1997-2008 Raja Vallee-Rai and others.");
+            "Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
         G.v().out.println("All rights reserved.");
         G.v().out.println("");
         G.v().out.println(
-            "Contributions are copyright (C) 1997-2008 by their respective contributors.");
+            "Contributions are copyright (C) 1997-2010 by their respective contributors.");
         G.v().out.println("See the file 'credits' for a list of contributors.");
         G.v().out.println("See individual source files for details.");
         G.v().out.println("");
