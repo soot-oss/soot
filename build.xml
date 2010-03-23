@@ -219,9 +219,17 @@
     </target>
 
     <target name="classesjar" depends="settings,compile">
-        <jar destfile="${release.loc}/sootclasses-${soot.version}.jar">
+    	<mkdir dir="META-INF"/>
+
+        <manifest file="META-INF/MANIFEST.MF">
+           <attribute name="Main-Class" value="soot.Main"/>
+           <attribute name="Implementation-Version" value="${soot.version}"/> 
+        </manifest>
+
+    	<jar destfile="${release.loc}/sootclasses-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
             <fileset dir="classes"/>
         </jar>
+		<delete dir="META-INF"/>
     </target>
 
     <target name="eclipse-plugin" depends="compile,settings,graph-plugin">
@@ -272,12 +280,20 @@
     </target>
 	
 	<target name="fulljar" depends="classesjar">
-        <jar destfile="${release.loc}/soot-${soot.version}.jar">
+    	<mkdir dir="META-INF"/>
+
+        <manifest file="META-INF/MANIFEST.MF">
+           <attribute name="Main-Class" value="soot.Main"/>
+           <attribute name="Implementation-Version" value="${soot.version}"/> 
+        </manifest>
+
+        <jar destfile="${release.loc}/soot-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
             <zipfileset src="${release.loc}/sootclasses-${soot.version}.jar"/>
             <zipfileset src="${jasmin.jar}"/>
             <zipfileset src="${polyglot.jar}"/>
             <zipfileset src="${javacup.jar}"/>
         </jar>
+		<delete dir="META-INF"/>
     </target>
     
 </project>

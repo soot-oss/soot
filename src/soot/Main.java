@@ -26,14 +26,17 @@
 package soot;
 
 
-import soot.toolkits.astmetrics.ClassData;
-import java.util.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.Iterator;
 
 import soot.options.CGOptions;
-import soot.options.JBTROptions;
 import soot.options.Options;
-
-import java.io.*;
+import soot.toolkits.astmetrics.ClassData;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main {
@@ -45,7 +48,7 @@ public class Main {
     // TODO: the following string should be updated by the source control
     // No it shouldn't. Prcs is horribly broken in this respect, and causes
     // the code to not compile all the time.
-    public final String versionString = "2.3.0";
+    public final String versionString = Main.class.getPackage().getImplementationVersion() == null ? "trunk" : Main.class.getPackage().getImplementationVersion();
 
     private Date start;
     private Date finish;
