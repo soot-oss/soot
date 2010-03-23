@@ -206,7 +206,10 @@ public class Main {
 
         } catch (CompilationDeathException e) {
             Timers.v().totalTimer.end();
-            throw e;
+            if(e.getStatus()!=CompilationDeathException.COMPILATION_SUCCEEDED)
+            	throw e;
+            else 
+            	return;
         }
 
         finish = new Date();
