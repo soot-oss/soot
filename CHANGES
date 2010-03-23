@@ -1,4 +1,4 @@
-Improvements and API changes in version 2.3.1
+Improvements and API changes in version 2.4.0
 
 1. Deprecated class StronglyConnectedComponents because it is
    inefficient. There is a new class StronglyConnectedComponentsFast
@@ -13,6 +13,8 @@ Improvements and API changes in version 2.3.1
 4. Added new phase option "reflection-log" to support TamiFlex
    reflection log files. This option allows Spark to construct sound
    call graphs and points-to sets even for programs that use reflection.
+   More information is available at:
+   http://code.google.com/p/tamiflex/wiki/DaCapoAndSoot
 
 Improvements and API changes in version 2.3.0
 

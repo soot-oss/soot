@@ -23,6 +23,7 @@ Eric Bodden
     - Instance Keys
       - Local must-alias analysis
     - Integration of JastAdd frontend
+    - TamiFlex support for reflection
 
 Phong Co (phong@hasc.com)
     - Jimple scalar optimizations
