@@ -35,6 +35,7 @@ import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
 import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.graph.pdg.IRegion;
 
 
 /**
@@ -111,9 +112,18 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 		//Construct the PDG
 		this.constructPDG();
 		this.m_pdgRegions = HashMutablePDG.computePDGRegions(this.m_startNode);
-		//This is needed to convert the initially Region-typed inner node of the PDG's head
-		//to a PDGRegion-typed one after the whole graph is computed.
-		this.m_startNode.setNode(this.m_pdgRegions.get(0));
+
+		
+		/*This is needed to convert the initially Region-typed inner node of the PDG's head
+			to a PDGRegion-typed one after the whole graph is computed.
+			The root PDGRegion is the one with no parent.
+		*/
+
+		IRegion r = this.m_pdgRegions.get(0);
+		while(r.getParent() != null)
+			r = r.getParent();
+		
+		this.m_startNode.setNode(r);
 		
 	}
 	
