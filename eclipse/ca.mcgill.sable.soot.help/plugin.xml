@@ -2,7 +2,7 @@
 <plugin
    id="ca.mcgill.sable.soot.help"
    name="ca.mcgill.sable.soot.help"
-   version="2.3.0"
+   version="2.4.0"
    provider-name="Sable Research Group, McGill University">
 
 
