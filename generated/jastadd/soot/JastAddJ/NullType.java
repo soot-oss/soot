@@ -45,7 +45,7 @@ public class NullType extends TypeDecl implements Cloneable {
 		s.append("null");
 	}
 
-    // Declared in EmitJimple.jrag at line 449
+    // Declared in EmitJimple.jrag at line 451
 
   public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
     return v;

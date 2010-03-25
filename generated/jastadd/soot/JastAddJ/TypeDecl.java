@@ -980,7 +980,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 432
+    // Declared in EmitJimple.jrag at line 434
 
 
   public soot.Value emitCastTo(Body b, soot.Value v, TypeDecl type, ASTNode location) {
@@ -1001,7 +1001,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     );
   }
 
-    // Declared in EmitJimple.jrag at line 901
+    // Declared in EmitJimple.jrag at line 903
 
 
   public void jimplify2clinit() {
@@ -1033,7 +1033,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       b.add(b.newReturnVoidStmt(null));
   }
 
-    // Declared in EmitJimple.jrag at line 930
+    // Declared in EmitJimple.jrag at line 932
 
 
   public void jimplify2() {
@@ -4259,7 +4259,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean needsClinit_computed = false;
     protected boolean needsClinit_value;
-    // Declared in EmitJimple.jrag at line 885
+    // Declared in EmitJimple.jrag at line 887
  @SuppressWarnings({"unchecked", "cast"})     public boolean needsClinit() {
         if(needsClinit_computed) {
             return needsClinit_value;
@@ -4291,7 +4291,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
 
     protected boolean innerClassesAttributeEntries_computed = false;
     protected Collection innerClassesAttributeEntries_value;
-    // Declared in EmitJimple.jrag at line 960
+    // Declared in EmitJimple.jrag at line 962
  @SuppressWarnings({"unchecked", "cast"})     public Collection innerClassesAttributeEntries() {
         if(innerClassesAttributeEntries_computed) {
             return innerClassesAttributeEntries_value;
@@ -4317,7 +4317,7 @@ if(subtype_TypeDecl_values == null) subtype_TypeDecl_values = new java.util.Hash
   }
 
     protected java.util.Map getSootField_String_TypeDecl_values;
-    // Declared in EmitJimple.jrag at line 994
+    // Declared in EmitJimple.jrag at line 996
  @SuppressWarnings({"unchecked", "cast"})     public SootField getSootField(String name, TypeDecl type) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(name);

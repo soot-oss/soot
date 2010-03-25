@@ -486,14 +486,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).jimplify1phase2();
   }
 
-    // Declared in EmitJimple.jrag at line 364
+    // Declared in EmitJimple.jrag at line 366
 
   public void jimplify2() {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).jimplify2();
   }
 
-    // Declared in EmitJimple.jrag at line 369
+    // Declared in EmitJimple.jrag at line 371
 
 
   public void jimplify2(Body b) {
@@ -501,7 +501,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).jimplify2(b);
   }
 
-    // Declared in EmitJimple.jrag at line 403
+    // Declared in EmitJimple.jrag at line 405
 
 
 
@@ -510,14 +510,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return b.newTemp(v);
   }
 
-    // Declared in EmitJimple.jrag at line 407
+    // Declared in EmitJimple.jrag at line 409
 
   public soot.Local asLocal(Body b, soot.Value v) {
     if(v instanceof soot.Local) return (soot.Local)v;
     return b.newTemp(v);
   }
 
-    // Declared in EmitJimple.jrag at line 411
+    // Declared in EmitJimple.jrag at line 413
 
   public soot.Local asLocal(Body b, soot.Value v, Type t) {
     if(v instanceof soot.Local) return (soot.Local)v;
@@ -527,7 +527,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return local;
   }
 
-    // Declared in EmitJimple.jrag at line 418
+    // Declared in EmitJimple.jrag at line 420
 
   public soot.Value asRValue(Body b, soot.Value v) {
     if(v instanceof soot.Local) return v;
@@ -537,14 +537,14 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     throw new Error("Need to convert " + v.getClass().getName() + " to RValue");
   }
 
-    // Declared in EmitJimple.jrag at line 877
+    // Declared in EmitJimple.jrag at line 879
 
 
   protected soot.jimple.Stmt newLabel() {
     return soot.jimple.Jimple.v().newNopStmt();
   }
 
-    // Declared in EmitJimple.jrag at line 957
+    // Declared in EmitJimple.jrag at line 959
 
 
   public void addAttributes() {

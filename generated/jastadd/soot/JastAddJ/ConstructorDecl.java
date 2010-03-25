@@ -339,11 +339,13 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       hostType().getSootClassDecl().addMethod(m);
       m.addTag(new soot.tagkit.ParamNamesTag(paramnames));
       sootMethod = m;
+    } else {
+    	sootMethod = hostType().getSootClassDecl().getMethod(signature);
     }
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 292
+    // Declared in EmitJimple.jrag at line 294
 
 
 
@@ -1316,7 +1318,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 293
+    // Declared in EmitJimple.jrag at line 295
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed) {
             return sootMethod_value;
@@ -1348,7 +1350,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 308
+    // Declared in EmitJimple.jrag at line 310
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed) {
             return sootRef_value;

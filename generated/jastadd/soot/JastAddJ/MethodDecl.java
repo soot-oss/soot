@@ -375,7 +375,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     addAttributes();
   }
 
-    // Declared in EmitJimple.jrag at line 266
+    // Declared in EmitJimple.jrag at line 268
 
 
   public SootMethod sootMethod;
@@ -1379,7 +1379,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sootMethod_computed = false;
     protected SootMethod sootMethod_value;
-    // Declared in EmitJimple.jrag at line 267
+    // Declared in EmitJimple.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public SootMethod sootMethod() {
         if(sootMethod_computed) {
             return sootMethod_value;
@@ -1404,7 +1404,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sootRef_computed = false;
     protected SootMethodRef sootRef_value;
-    // Declared in EmitJimple.jrag at line 277
+    // Declared in EmitJimple.jrag at line 279
  @SuppressWarnings({"unchecked", "cast"})     public SootMethodRef sootRef() {
         if(sootRef_computed) {
             return sootRef_value;
@@ -1506,7 +1506,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return unknownMethod_value;
     }
 
-    // Declared in EmitJimple.jrag at line 275
+    // Declared in EmitJimple.jrag at line 277
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
         ASTNode$State state = state();
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);

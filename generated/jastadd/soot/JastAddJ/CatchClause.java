@@ -243,7 +243,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return reachableCatchClause_value;
     }
 
-    // Declared in EmitJimple.jrag at line 883
+    // Declared in EmitJimple.jrag at line 885
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);

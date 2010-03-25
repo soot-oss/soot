@@ -50,7 +50,7 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
   public void jimplify1phase2() {
   }
 
-    // Declared in EmitJimple.jrag at line 971
+    // Declared in EmitJimple.jrag at line 973
 
 
   public void jimplify2() {
