@@ -22,8 +22,8 @@ cd $HOME/autobuild/tmp;
 export PATH=/usr/localcc/bin:$PATH 
 #export JAVA_HOME=/usr/local/j2sdk1.4.2_01
 
-polyglotrev=1.3.4;
-rev=2.2.4;
+polyglotrev=1.3.5;
+rev=2.4.0;
 
 # use this if building and using most recent polyglot
 function getNightlyPolyglot(){
@@ -42,6 +42,11 @@ function getJasminAndSoot(){
     # get jasmin, soot in autobuild/tmp dir
     svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin > jasmin_export || return; 
     svn export -q https://svn.sable.mcgill.ca/soot/soot/trunk soot || return; 
+}
+
+function getJastAdd() {
+    svn export -q http://svn.jastadd.org/projects/trunk/JastAddJ
+    svn export -q http://svn.jastadd.org/projects/trunk/JastAddExtensions
 }
 
 # set up date and revision tags
@@ -145,7 +150,7 @@ function buildSootBarebones(){
 # build soot classes
 function buildSootClasses(){
     cd $HOME/autobuild/tmp/soot || return;
-    if !(ant classesjar); then
+    if !(ant fulljar); then
         # if something is broken send mail
         echo "Soot will not build $rev" | /usr/bin/mutt ebodde@sable.mcgill.ca -e 'set from = ebodde@sable.mcgill.ca' -s "Soot Automated Nightly Build" || return;
         echo "Soot will not build $rev" || return;
@@ -201,6 +206,7 @@ function updateNightlyHtml(){
 function makeStable(){
     getReleasedPolyglot || exit;
     getJasminAndSoot || exit;
+    getJastAdd || exit;
     buildPolyglotBarebones || exit;
     buildPolyglotClasses || exit;
     setUpJasmin || exit;
@@ -235,8 +241,8 @@ function makeNightly(){
 }
 
 
-#makeStable
-makeNightly
+makeStable
+#makeNightly
 
 #cd $HOME/autobuild &&
 
