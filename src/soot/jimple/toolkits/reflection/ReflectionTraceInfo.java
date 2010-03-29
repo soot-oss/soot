@@ -40,6 +40,8 @@ import soot.tagkit.SourceLnPosTag;
 
 public class ReflectionTraceInfo {
 	
+	public enum Kind { ClassForName, ClassNewInstance, ConstructorNewInstance, MethodInvoke }
+	
 	protected Map<SootMethod,Set<String>> classForNameReceivers;
 	
 	protected Map<SootMethod,Set<String>> classNewInstanceReceivers;
@@ -224,5 +226,14 @@ public class ReflectionTraceInfo {
 			result.add(Scene.v().getMethod(signature));
 		}
 		return result;
+	}
+	
+	public Set<SootMethod> methodsContainingReflectiveCalls() {
+		Set<SootMethod> res = new HashSet<SootMethod>();
+		res.addAll(classForNameReceivers.keySet());
+		res.addAll(classNewInstanceReceivers.keySet());
+		res.addAll(constructorNewInstanceReceivers.keySet());
+		res.addAll(methodInvokeReceivers.keySet());
+		return res;
 	}
 }
