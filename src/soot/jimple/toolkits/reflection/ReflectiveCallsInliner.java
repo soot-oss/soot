@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import soot.AbstractJasminClass;
 import soot.Body;
 import soot.BooleanType;
 import soot.Local;
@@ -80,16 +81,33 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			Set<SootClass> classForNameClasses = rti.classForNameClasses(m);
 			if(!classForNameClasses.isEmpty()) {
 				m.retrieveActiveBody();
-				inlineRelectiveCalls(m.getActiveBody(),classForNameClasses, ReflectionTraceInfo.Kind.ClassForName);
+				inlineRelectiveCallsToClasses(m.getActiveBody(),classForNameClasses, ReflectionTraceInfo.Kind.ClassForName);
 				m.getActiveBody().validate();
 			}
 			Set<SootClass> classNewInstanceClasses = rti.classNewInstanceClasses(m);
 			if(!classNewInstanceClasses.isEmpty()) {
 				m.retrieveActiveBody();
-				inlineRelectiveCalls(m.getActiveBody(),classNewInstanceClasses, ReflectionTraceInfo.Kind.ClassNewInstance);
+				inlineRelectiveCallsToClasses(m.getActiveBody(),classNewInstanceClasses, ReflectionTraceInfo.Kind.ClassNewInstance);
+				m.getActiveBody().validate();
+			}
+			Set<SootMethod> constructorNewInstanceConstructors = rti.constructorNewInstanceConstructors(m);
+			if(!constructorNewInstanceConstructors.isEmpty()) {
+				m.retrieveActiveBody();
+				inlineRelectiveCallsToMethods(m.getActiveBody(), constructorNewInstanceConstructors, ReflectionTraceInfo.Kind.ConstructorNewInstance);
 				m.getActiveBody().validate();
 			}
 		}
+	}
+
+	private void inlineRelectiveCallsToMethods(Body activeBody, Set<SootMethod> constructorNewInstanceConstructors, Kind constructornewinstance) {
+		for (SootMethod constr : constructorNewInstanceConstructors) {
+			String vmName = jvmSignature(constr);
+			
+		}
+	}
+
+	private String jvmSignature(SootMethod constr) {
+		return AbstractJasminClass.slashify(constr.getDeclaringClass().getName()) + "/" + constr.getName() + AbstractJasminClass.jasminDescriptorOf(constr.makeRef());
 	}
 
 	/*	Replaces "c = Class.forName(arg)" by:
@@ -103,7 +121,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	 *  	goto E;
 	 *  E;
 	 */
-	private void inlineRelectiveCalls(Body b, Set<SootClass> targetClasses, Kind callKind) {
+	private void inlineRelectiveCallsToClasses(Body b, Set<SootClass> targetClasses, Kind callKind) {
 		List<SootClass> classes = new ArrayList<SootClass>(targetClasses);
 		PatchingChain<Unit> units = b.getUnits();
 		Iterator<Unit> iter = units.snapshotIterator();
