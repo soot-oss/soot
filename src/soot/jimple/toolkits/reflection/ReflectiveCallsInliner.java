@@ -77,16 +77,16 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 		String logFilePath = cgOptions.reflection_log();
 		ReflectionTraceInfo rti = new ReflectionTraceInfo(logFilePath);
 		for(SootMethod m: rti.methodsContainingReflectiveCalls()) {
-			Set<SootClass> classForNameClasses = rti.classForNameClasses(m);
-			if(!classForNameClasses.isEmpty()) {
+			Set<String> classForNameClassNames = rti.classForNameClassNames(m);
+			if(!classForNameClassNames.isEmpty()) {
 				m.retrieveActiveBody();
-				inlineRelectiveCallsToClasses(m.getActiveBody(),classForNameClasses, ReflectionTraceInfo.Kind.ClassForName);
+				inlineRelectiveCallsToClasses(m.getActiveBody(),classForNameClassNames, ReflectionTraceInfo.Kind.ClassForName);
 				m.getActiveBody().validate();
 			}
-			Set<SootClass> classNewInstanceClasses = rti.classNewInstanceClasses(m);
-			if(!classNewInstanceClasses.isEmpty()) {
+			Set<String> classNewInstanceClassNames = rti.classNewInstanceClassNames(m);
+			if(!classNewInstanceClassNames.isEmpty()) {
 				m.retrieveActiveBody();
-				inlineRelectiveCallsToClasses(m.getActiveBody(),classNewInstanceClasses, ReflectionTraceInfo.Kind.ClassNewInstance);
+				inlineRelectiveCallsToClasses(m.getActiveBody(),classNewInstanceClassNames, ReflectionTraceInfo.Kind.ClassNewInstance);
 				m.getActiveBody().validate();
 			}
 			Set<SootMethod> constructorNewInstanceConstructors = rti.constructorNewInstanceConstructors(m);
@@ -117,7 +117,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	 *  	goto E;
 	 *  E;
 	 */
-	private void inlineRelectiveCallsToClasses(Body b, Set<SootClass> targetClasses, Kind callKind) {
+	private void inlineRelectiveCallsToClasses(Body b, Set<String> targets, Kind callKind) {
 		PatchingChain<Unit> units = b.getUnits();
 		Iterator<Unit> iter = units.snapshotIterator();
 		LocalGenerator localGen = new LocalGenerator(b);
@@ -148,8 +148,8 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 				if(targetNameLocal==null) continue; //if the invoke expression is no reflective call, continue
 				
 				NopStmt endLabel = Jimple.v().newNopStmt();
-				for(SootClass sc : targetClasses) {
-					VirtualInvokeExpr equalsCall = Jimple.v().newVirtualInvokeExpr(targetNameLocal,EQUALS,StringConstant.v(sc.getName()));
+				for(String target : targets) {
+					VirtualInvokeExpr equalsCall = Jimple.v().newVirtualInvokeExpr(targetNameLocal,EQUALS,StringConstant.v(target));
 					Local resultLocal = localGen.generateLocal(BooleanType.v());
 					AssignStmt equalsAssignStmt = Jimple.v().newAssignStmt(resultLocal, equalsCall);						
 					newUnits.add(equalsAssignStmt);
@@ -163,16 +163,18 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					Value replacement=null;
 					if(callKind==Kind.ClassForName) {
 						freshLocal = localGen.generateLocal(RefType.v("java.lang.Class"));
-						replacement = ClassConstant.v(sc.getName().replace('.','/'));
+						replacement = ClassConstant.v(target.replace('.','/'));
 					} else if(callKind==Kind.ClassNewInstance) {
-						freshLocal = localGen.generateLocal(sc.getType());
-						replacement = Jimple.v().newNewExpr(RefType.v(sc));
+						RefType targetType = RefType.v(target);
+						freshLocal = localGen.generateLocal(targetType);
+						replacement = Jimple.v().newNewExpr(targetType);
 					} else throw new InternalError();
 					AssignStmt replStmt = Jimple.v().newAssignStmt(freshLocal, replacement);
 					newUnits.add(replStmt);
 					
 					if(callKind==Kind.ClassNewInstance) {
-						SpecialInvokeExpr constrCallExpr = Jimple.v().newSpecialInvokeExpr(freshLocal, Scene.v().makeMethodRef(sc, SootMethod.constructorName, Collections.<Type>emptyList(), VoidType.v(), false));
+						SootClass targetClass = Scene.v().getSootClass(target);
+						SpecialInvokeExpr constrCallExpr = Jimple.v().newSpecialInvokeExpr(freshLocal, Scene.v().makeMethodRef(targetClass, SootMethod.constructorName, Collections.<Type>emptyList(), VoidType.v(), false));
 						InvokeStmt constrCallStmt2 = Jimple.v().newInvokeStmt(constrCallExpr);
 						newUnits.add(constrCallStmt2);
 					}
