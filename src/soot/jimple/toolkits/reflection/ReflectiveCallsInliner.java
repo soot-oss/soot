@@ -80,31 +80,23 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			Set<String> classForNameClassNames = rti.classForNameClassNames(m);
 			if(!classForNameClassNames.isEmpty()) {
 				m.retrieveActiveBody();
-				inlineRelectiveCallsToClasses(m.getActiveBody(),classForNameClassNames, ReflectionTraceInfo.Kind.ClassForName);
+				inlineRelectiveCalls(m.getActiveBody(),classForNameClassNames, ReflectionTraceInfo.Kind.ClassForName);
 				m.getActiveBody().validate();
 			}
 			Set<String> classNewInstanceClassNames = rti.classNewInstanceClassNames(m);
 			if(!classNewInstanceClassNames.isEmpty()) {
 				m.retrieveActiveBody();
-				inlineRelectiveCallsToClasses(m.getActiveBody(),classNewInstanceClassNames, ReflectionTraceInfo.Kind.ClassNewInstance);
+				inlineRelectiveCalls(m.getActiveBody(),classNewInstanceClassNames, ReflectionTraceInfo.Kind.ClassNewInstance);
 				m.getActiveBody().validate();
 			}
-			Set<SootMethod> constructorNewInstanceConstructors = rti.constructorNewInstanceConstructors(m);
-			if(!constructorNewInstanceConstructors.isEmpty()) {
+			Set<String> constructorNewInstanceSignatures = rti.constructorNewInstanceSignatures(m);
+			if(!constructorNewInstanceSignatures.isEmpty()) {
 				m.retrieveActiveBody();
-				inlineRelectiveCallsToMethods(m.getActiveBody(), constructorNewInstanceConstructors, ReflectionTraceInfo.Kind.ConstructorNewInstance);
+				inlineRelectiveCalls(m.getActiveBody(), constructorNewInstanceSignatures, ReflectionTraceInfo.Kind.ConstructorNewInstance);
 				m.getActiveBody().validate();
 			}
 		}
 	}
-
-	private void inlineRelectiveCallsToMethods(Body activeBody, Set<SootMethod> constructorNewInstanceConstructors, Kind kind) {
-		for (SootMethod constr : constructorNewInstanceConstructors) {
-			//TODO must compare method or constructor signature to the one used by Soot;
-			//too bad they don't have the same format
-		}
-	}
-
 
 	/*	Replaces "c = Class.forName(arg)" by:
 	 * 
@@ -117,7 +109,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	 *  	goto E;
 	 *  E;
 	 */
-	private void inlineRelectiveCallsToClasses(Body b, Set<String> targets, Kind callKind) {
+	private void inlineRelectiveCalls(Body b, Set<String> targets, Kind callKind) {
 		PatchingChain<Unit> units = b.getUnits();
 		Iterator<Unit> iter = units.snapshotIterator();
 		LocalGenerator localGen = new LocalGenerator(b);
