@@ -59,6 +59,7 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo.Kind;
 import soot.options.CGOptions;
+import soot.rtlib.SootSig;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -70,6 +71,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void internalTransform(String phaseName, Map options) {
+		Scene.v().getSootClass(SootSig.class.getName()).setApplicationClass();
 		EQUALS = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Object"), "equals", Collections.<Type>singletonList(RefType.v("java.lang.Object")), BooleanType.v(), false);
 		ERROR_CONSTRUCTOR = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Error"), SootMethod.constructorName, Collections.<Type>singletonList(RefType.v("java.lang.String")), VoidType.v(), false);
 		CLASS_GET_NAME = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Class"), "getName", Collections.<Type>emptyList(), RefType.v("java.lang.String"), false);

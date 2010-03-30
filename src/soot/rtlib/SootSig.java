@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.reflection;
+package soot.rtlib;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

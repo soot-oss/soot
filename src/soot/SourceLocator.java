@@ -18,11 +18,25 @@
  */
 
 package soot;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import soot.JavaClassProvider.JarException;
-import soot.options.*;
-import java.util.*;
-import java.util.zip.*;
-import java.io.*;
+import soot.options.Options;
 
 /** Provides utility methods to retrieve an input stream for a class name, given
  * a classfile, or jimple or baf output files. */
@@ -68,6 +82,12 @@ public class SourceLocator
             }
         }
         if(ex!=null) throw ex;
+        if(className.startsWith("soot.rtlib.")) {
+        	InputStream stream = getClass().getClassLoader().getResourceAsStream(className);
+        	if(stream!=null) {
+				return new CoffiClassSource(className, stream);
+        	}
+        }
         return null;
     }
     

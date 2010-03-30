@@ -1,3 +1,10 @@
+Improvements and API changes in trunk
+
+1. Modified SourceLocator so that it will automatically load a SootClass
+   from Soot's own JAR file if the class cannot be found on the
+   soot-classpath, but ONLY if the class is in package soot.rtlib.
+   See package documentation for soot.rtlib for more details.
+
 Improvements and API changes in version 2.4.0
 
 1. Deprecated class StronglyConnectedComponents because it is
