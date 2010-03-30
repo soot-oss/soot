@@ -19,6 +19,7 @@
 
 package soot.jimple.toolkits.reflection;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.AbstractJasminClass;
 import soot.Body;
 import soot.BooleanType;
 import soot.Local;
@@ -60,6 +60,7 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.parser.Parse;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo.Kind;
 import soot.options.CGOptions;
 
@@ -67,6 +68,12 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	private SootMethodRef EQUALS;
 	private SootMethodRef ERROR_CONSTRUCTOR;
 	private SootMethodRef CLASS_GET_NAME;
+	
+	public ReflectiveCallsInliner() {
+		SootClass sc = new SootClass("Foo");
+		ByteArrayInputStream bis = new ByteArrayInputStream("".getBytes());		
+		Parse.parse(bis, sc);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -99,16 +106,13 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 		}
 	}
 
-	private void inlineRelectiveCallsToMethods(Body activeBody, Set<SootMethod> constructorNewInstanceConstructors, Kind constructornewinstance) {
+	private void inlineRelectiveCallsToMethods(Body activeBody, Set<SootMethod> constructorNewInstanceConstructors, Kind kind) {
 		for (SootMethod constr : constructorNewInstanceConstructors) {
-			String vmName = jvmSignature(constr);
-			
+			//TODO must compare method or constructor signature to the one used by Soot;
+			//too bad they don't have the same format
 		}
 	}
 
-	private String jvmSignature(SootMethod constr) {
-		return AbstractJasminClass.slashify(constr.getDeclaringClass().getName()) + "/" + constr.getName() + AbstractJasminClass.jasminDescriptorOf(constr.makeRef());
-	}
 
 	/*	Replaces "c = Class.forName(arg)" by:
 	 * 
