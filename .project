@@ -6,19 +6,18 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
+			<name>net.sourceforge.texlipse.builder.TexlipseBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>net.sourceforge.texlipse.builder.TexlipseNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>annot</name>
-			<type>2</type>
-			<location>/Applications/eclipse/Eclipse.app/Contents/MacOS/C::/tmp/annot</location>
-		</link>
-	</linkedResources>
 </projectDescription>
