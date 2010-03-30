@@ -64,17 +64,24 @@ import soot.util.Chain;
 import soot.util.HashChain;
 
 public class ReflectiveCallsInliner extends SceneTransformer {
+	private SootClass SOOT_SIG_CLASS;
 	private SootMethodRef EQUALS;
 	private SootMethodRef ERROR_CONSTRUCTOR;
 	private SootMethodRef CLASS_GET_NAME;
 	
+	boolean initialized = false;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void internalTransform(String phaseName, Map options) {
-		Scene.v().getSootClass(SootSig.class.getName()).setApplicationClass();
-		EQUALS = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Object"), "equals", Collections.<Type>singletonList(RefType.v("java.lang.Object")), BooleanType.v(), false);
-		ERROR_CONSTRUCTOR = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Error"), SootMethod.constructorName, Collections.<Type>singletonList(RefType.v("java.lang.String")), VoidType.v(), false);
-		CLASS_GET_NAME = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Class"), "getName", Collections.<Type>emptyList(), RefType.v("java.lang.String"), false);
+		if(!initialized) {
+			SOOT_SIG_CLASS = Scene.v().getSootClass(SootSig.class.getName());
+			SOOT_SIG_CLASS.setApplicationClass();
+			EQUALS = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Object"), "equals", Collections.<Type>singletonList(RefType.v("java.lang.Object")), BooleanType.v(), false);
+			ERROR_CONSTRUCTOR = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Error"), SootMethod.constructorName, Collections.<Type>singletonList(RefType.v("java.lang.String")), VoidType.v(), false);
+			CLASS_GET_NAME = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Class"), "getName", Collections.<Type>emptyList(), RefType.v("java.lang.String"), false);
+			initialized = true;
+		}
 		CGOptions cgOptions = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
 		String logFilePath = cgOptions.reflection_log();
 		ReflectionTraceInfo rti = new ReflectionTraceInfo(logFilePath);
