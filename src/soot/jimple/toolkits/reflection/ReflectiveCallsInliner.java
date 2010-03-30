@@ -19,11 +19,8 @@
 
 package soot.jimple.toolkits.reflection;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,7 +57,6 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
-import soot.jimple.parser.Parse;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo.Kind;
 import soot.options.CGOptions;
 
@@ -69,12 +65,6 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	private SootMethodRef ERROR_CONSTRUCTOR;
 	private SootMethodRef CLASS_GET_NAME;
 	
-	public ReflectiveCallsInliner() {
-		SootClass sc = new SootClass("Foo");
-		ByteArrayInputStream bis = new ByteArrayInputStream("".getBytes());		
-		Parse.parse(bis, sc);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void internalTransform(String phaseName, Map options) {
@@ -126,7 +116,6 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	 *  E;
 	 */
 	private void inlineRelectiveCallsToClasses(Body b, Set<SootClass> targetClasses, Kind callKind) {
-		List<SootClass> classes = new ArrayList<SootClass>(targetClasses);
 		PatchingChain<Unit> units = b.getUnits();
 		Iterator<Unit> iter = units.snapshotIterator();
 		LocalGenerator localGen = new LocalGenerator(b);
@@ -158,9 +147,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 				if(targetNameLocal==null) continue; //if the invoke expression is no reflective call, continue
 				
 				NopStmt endLabel = Jimple.v().newNopStmt();
-				units.insertAfter(endLabel, insertionPoint);
-				List<Unit> jumpTargets = new ArrayList<Unit>();
-				for(SootClass sc : classes) {
+				for(SootClass sc : targetClasses) {
 					VirtualInvokeExpr equalsCall = Jimple.v().newVirtualInvokeExpr(targetNameLocal,EQUALS,StringConstant.v(sc.getName()));
 					Local resultLocal = localGen.generateLocal(BooleanType.v());
 					AssignStmt equalsAssignStmt = Jimple.v().newAssignStmt(resultLocal, equalsCall);						
@@ -169,33 +156,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					
 					NopStmt jumpTarget = Jimple.v().newNopStmt();
 					
-					IfStmt ifStmt = Jimple.v().newIfStmt(Jimple.v().newEqExpr(IntConstant.v(1), resultLocal), jumpTarget);
+					IfStmt ifStmt = Jimple.v().newIfStmt(Jimple.v().newEqExpr(IntConstant.v(0), resultLocal), jumpTarget);
 					units.insertAfter(ifStmt, insertionPoint);
 					insertionPoint = ifStmt;
-					
-					jumpTargets.add(jumpTarget);
-				}
-				
-				Local exceptionLocal = localGen.generateLocal(RefType.v("java.lang.Error"));
-				NewExpr newExpr = Jimple.v().newNewExpr(RefType.v("java.lang.Error"));
-				AssignStmt newExceptionStmt = Jimple.v().newAssignStmt(exceptionLocal, newExpr);
-				units.insertAfter(newExceptionStmt, insertionPoint);
-				insertionPoint = newExceptionStmt;
-				
-				SpecialInvokeExpr constrCall = Jimple.v().newSpecialInvokeExpr(exceptionLocal, ERROR_CONSTRUCTOR, targetNameLocal);
-				InvokeStmt constrCallStmt = Jimple.v().newInvokeStmt(constrCall);
-				units.insertAfter(constrCallStmt, insertionPoint);
-				insertionPoint = constrCallStmt;
-				
-				ThrowStmt throwStmt = Jimple.v().newThrowStmt(exceptionLocal);
-				units.insertAfter(throwStmt, insertionPoint);
-				insertionPoint = throwStmt;
-				
-				int i = 0;
-				for(SootClass sc : classes) {
-					Unit jumpTarget = jumpTargets.get(i++);
-					units.insertAfter(jumpTarget, insertionPoint);
-					insertionPoint = jumpTarget;
 					
 					Local freshLocal;
 					Value replacement=null;
@@ -228,8 +191,28 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					GotoStmt gotoStmt = Jimple.v().newGotoStmt(endLabel);
 					units.insertAfter(gotoStmt, insertionPoint);
 					insertionPoint = gotoStmt;
+					
+					units.insertAfter(jumpTarget, insertionPoint);
+					insertionPoint = jumpTarget;
 				}
 				
+				Local exceptionLocal = localGen.generateLocal(RefType.v("java.lang.Error"));
+				NewExpr newExpr = Jimple.v().newNewExpr(RefType.v("java.lang.Error"));
+				AssignStmt newExceptionStmt = Jimple.v().newAssignStmt(exceptionLocal, newExpr);
+				units.insertAfter(newExceptionStmt, insertionPoint);
+				insertionPoint = newExceptionStmt;
+				
+				SpecialInvokeExpr constrCall = Jimple.v().newSpecialInvokeExpr(exceptionLocal, ERROR_CONSTRUCTOR, targetNameLocal);
+				InvokeStmt constrCallStmt = Jimple.v().newInvokeStmt(constrCall);
+				units.insertAfter(constrCallStmt, insertionPoint);
+				insertionPoint = constrCallStmt;
+				
+				ThrowStmt throwStmt = Jimple.v().newThrowStmt(exceptionLocal);
+				units.insertAfter(throwStmt, insertionPoint);
+				insertionPoint = throwStmt;
+
+				units.insertAfter(endLabel, insertionPoint);
+
 				units.remove(s);
 			}
 		}
