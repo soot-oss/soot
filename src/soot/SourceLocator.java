@@ -83,7 +83,8 @@ public class SourceLocator
         }
         if(ex!=null) throw ex;
         if(className.startsWith("soot.rtlib.")) {
-        	InputStream stream = getClass().getClassLoader().getResourceAsStream(className);
+	        String fileName = className.replace('.', '/') + ".class";
+        	InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
         	if(stream!=null) {
 				return new CoffiClassSource(className, stream);
         	}
