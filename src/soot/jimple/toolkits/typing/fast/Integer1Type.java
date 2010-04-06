@@ -36,4 +36,9 @@ public class Integer1Type extends PrimType implements IntegerType
 	
 	public String toString() { return "[0..1]"; }
 	public boolean equals(Object t) { return this == t; }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Integer");
+    }
 }

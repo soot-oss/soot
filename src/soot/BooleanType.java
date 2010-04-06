@@ -59,4 +59,9 @@ public class BooleanType extends PrimType implements IntegerType
     {
         ((TypeSwitch) sw).caseBooleanType(this);
     }
+    
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Boolean");
+    }
 }

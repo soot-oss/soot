@@ -59,4 +59,9 @@ public class ByteType extends PrimType implements IntegerType
     {
         ((TypeSwitch) sw).caseByteType(this);
     }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Byte");
+    }
 }

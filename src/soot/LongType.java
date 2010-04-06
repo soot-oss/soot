@@ -58,4 +58,9 @@ public class LongType extends PrimType
     {
         ((TypeSwitch) sw).caseLongType(this);
     }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Long");
+    }
 }

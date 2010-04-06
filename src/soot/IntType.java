@@ -60,4 +60,9 @@ public class IntType extends PrimType implements IntegerType
     {
         ((TypeSwitch) sw).caseIntType(this);
     }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Integer");
+    }
 }

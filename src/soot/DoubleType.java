@@ -59,4 +59,9 @@ public class DoubleType extends PrimType
     {
         ((TypeSwitch) sw).caseDoubleType(this);
     }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Double");
+    }
 }

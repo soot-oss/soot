@@ -58,4 +58,9 @@ public class ShortType extends PrimType implements IntegerType
     {
         ((TypeSwitch) sw).caseShortType(this);
     }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Short");
+    }
 }

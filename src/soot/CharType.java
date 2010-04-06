@@ -58,4 +58,9 @@ public class CharType extends PrimType implements IntegerType
     {
         ((TypeSwitch) sw).caseCharType(this);	
     }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Character");
+    }
 }

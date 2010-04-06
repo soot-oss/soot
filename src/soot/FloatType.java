@@ -61,4 +61,9 @@ public class FloatType extends PrimType
     {
         ((TypeSwitch) sw).caseFloatType(this);
     }
+
+    @Override
+    public RefType boxedType() {
+    	return RefType.v("java.lang.Float");
+    }
 }
