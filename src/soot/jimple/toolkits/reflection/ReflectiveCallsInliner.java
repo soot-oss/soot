@@ -55,26 +55,28 @@ import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
-import soot.jimple.NewExpr;
 import soot.jimple.NopStmt;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
-import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo.Kind;
+import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.options.CGOptions;
 import soot.options.Options;
+import soot.rtlib.DefaultHandler;
+import soot.rtlib.IUnexpectedReflectiveCallHandler;
 import soot.rtlib.SootSig;
+import soot.rtlib.UnexpectedReflectiveCall;
 import soot.util.Chain;
 import soot.util.HashChain;
 
 public class ReflectiveCallsInliner extends SceneTransformer {
 	private ReflectionTraceInfo RTI;
 	private SootMethodRef EQUALS;
-	private SootMethodRef ERROR_CONSTRUCTOR;
 	private SootMethodRef CLASS_GET_NAME;
 	private SootMethodRef SOOTSIG_CONSTR;
 	private SootMethodRef SOOTSIG_METHOD;
@@ -92,7 +94,6 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			SootClass SOOT_SIG_CLASS = Scene.v().getSootClass(SootSig.class.getName());
 			SOOT_SIG_CLASS.setApplicationClass();
 			EQUALS = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Object"), "equals", Collections.<Type>singletonList(RefType.v("java.lang.Object")), BooleanType.v(), false);
-			ERROR_CONSTRUCTOR = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Error"), SootMethod.constructorName, Collections.<Type>singletonList(RefType.v("java.lang.String")), VoidType.v(), false);
 			CLASS_GET_NAME = Scene.v().makeMethodRef(Scene.v().getSootClass("java.lang.Class"), "getName", Collections.<Type>emptyList(), RefType.v("java.lang.String"), false);
 			
 			RefType constrType = RefType.v("java.lang.reflect.Constructor");
@@ -101,37 +102,45 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			RefType methodType = RefType.v("java.lang.reflect.Method");
 			List<Type> paramTypes = Arrays.asList(new Type[] {objectType, methodType});
 			SOOTSIG_METHOD = Scene.v().makeMethodRef(SOOT_SIG_CLASS, "sootSignature", paramTypes, RefType.v("java.lang.String"), true);
+			
+			Scene.v().getSootClass(UnexpectedReflectiveCall.class.getName()).setApplicationClass();
+			Scene.v().getSootClass(IUnexpectedReflectiveCallHandler.class.getName()).setApplicationClass();
+			Scene.v().getSootClass(DefaultHandler.class.getName()).setApplicationClass();
 
 			initialized = true;
 		}
 		for(SootMethod m: RTI.methodsContainingReflectiveCalls()) {
+			m.retrieveActiveBody();
+			Body b = m.getActiveBody();
 			{
 				Set<String> classForNameClassNames = RTI.classForNameClassNames(m);
 				if(!classForNameClassNames.isEmpty()) {
 					inlineRelectiveCalls(m,classForNameClassNames, ReflectionTraceInfo.Kind.ClassForName);
-					if(Options.v().validate()) m.getActiveBody().validate();
+					if(Options.v().validate()) b.validate();
 				}
 			}{
 				Set<String> classNewInstanceClassNames = RTI.classNewInstanceClassNames(m);
 				if(!classNewInstanceClassNames.isEmpty()) {
 					inlineRelectiveCalls(m,classNewInstanceClassNames, ReflectionTraceInfo.Kind.ClassNewInstance);
-					if(Options.v().validate()) m.getActiveBody().validate();
+					if(Options.v().validate()) b.validate();
 				}
 			}{
 				Set<String> constructorNewInstanceSignatures = RTI.constructorNewInstanceSignatures(m);
 				if(!constructorNewInstanceSignatures.isEmpty()) {
 					inlineRelectiveCalls(m, constructorNewInstanceSignatures, ReflectionTraceInfo.Kind.ConstructorNewInstance);
-					if(Options.v().validate()) m.getActiveBody().validate();
+					if(Options.v().validate()) b.validate();
 				}
 			}{
 				Set<String> methodInvokeSignatures = RTI.methodInvokeSignatures(m);
 				if(!methodInvokeSignatures.isEmpty()) {
 					inlineRelectiveCalls(m, methodInvokeSignatures, ReflectionTraceInfo.Kind.MethodInvoke);
-					if(Options.v().validate()) m.getActiveBody().validate();
+					if(Options.v().validate()) b.validate();
 				}
 			}
 			//clean up after us
-			DeadAssignmentEliminator.v().transform(m.getActiveBody());
+			DeadAssignmentEliminator.v().transform(b);
+			CopyPropagator.v().transform(b);
+			NopEliminator.v().transform(b);			
 		}
 	}
 
@@ -323,23 +332,50 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					newUnits.add(jumpTarget);
 				}
 				
-				Local exceptionLocal = localGen.generateLocal(RefType.v("java.lang.Error"));
-				NewExpr newExpr = Jimple.v().newNewExpr(RefType.v("java.lang.Error"));
-				AssignStmt newExceptionStmt = Jimple.v().newAssignStmt(exceptionLocal, newExpr);
-				newUnits.add(newExceptionStmt);
-				
-				SpecialInvokeExpr constrCall = Jimple.v().newSpecialInvokeExpr(exceptionLocal, ERROR_CONSTRUCTOR, targetNameLocal);
-				InvokeStmt constrCallStmt = Jimple.v().newInvokeStmt(constrCall);
-				newUnits.add(constrCallStmt);
-				
-				ThrowStmt throwStmt = Jimple.v().newThrowStmt(exceptionLocal);
-				newUnits.add(throwStmt);
+				//
 
-				newUnits.add(endLabel);
-				
+				Unit end = newUnits.getLast();
 				units.insertAfter(newUnits, s);
-
 				units.remove(s);
+				units.insertAfter(s, end);
+				units.insertAfter(endLabel, s);
+				
+				//insert error-notification code
+				switch(callKind) {
+					case ClassForName:
+					{
+						SootMethodRef notifyMethodRef = Scene.v().makeMethodRef(Scene.v().getSootClass(UnexpectedReflectiveCall.class.getName()), "classForName", Collections.<Type>singletonList(RefType.v("java.lang.String")), VoidType.v(), true);
+						InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(notifyMethodRef,s.getInvokeExpr().getArg(0)));
+						units.insertAfter(invokeStmt, s);
+						break;				
+					}
+					case ClassNewInstance:
+					{
+						SootMethodRef notifyMethodRef = Scene.v().makeMethodRef(Scene.v().getSootClass(UnexpectedReflectiveCall.class.getName()), "classNewInstance", Collections.<Type>singletonList(RefType.v("java.lang.Class")), VoidType.v(), true);
+						InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(notifyMethodRef,((InstanceInvokeExpr)s.getInvokeExpr()).getBase()));
+						units.insertAfter(invokeStmt, s);
+						break;				
+					}
+					case ConstructorNewInstance:
+					{
+						SootMethodRef notifyMethodRef = Scene.v().makeMethodRef(Scene.v().getSootClass(UnexpectedReflectiveCall.class.getName()), "constructorNewInstance", Collections.<Type>singletonList(RefType.v("java.lang.reflect.Constructor")), VoidType.v(), true);
+						InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(notifyMethodRef,((InstanceInvokeExpr)s.getInvokeExpr()).getBase()));
+						units.insertAfter(invokeStmt, s);
+						break;				
+					}
+					case MethodInvoke:
+					{
+						RefType objectType = RefType.v("java.lang.Object");
+						RefType methodType = RefType.v("java.lang.reflect.Method");
+						List<Type> paramTypes = Arrays.asList(new Type[] {objectType, methodType});
+						SootMethodRef notifyMethodRef = Scene.v().makeMethodRef(Scene.v().getSootClass(UnexpectedReflectiveCall.class.getName()), "methodInvoke", paramTypes, VoidType.v(), true);
+						InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(notifyMethodRef,s.getInvokeExpr().getArg(0),((InstanceInvokeExpr)s.getInvokeExpr()).getBase()));
+						units.insertAfter(invokeStmt, s);
+						break;				
+					}
+					default:
+						throw new InternalError("Unknown kind of reflective call "+callKind);
+				}
 			}
 		}
 	}
