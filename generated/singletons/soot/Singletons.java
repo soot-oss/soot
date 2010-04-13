@@ -826,12 +826,6 @@ public class Singletons {
         return instance_soot_javaToJimple_toolkits_CondTransformer;
     }
 
-    private soot.javaToJimple.toolkits.GotoEliminator instance_soot_javaToJimple_toolkits_GotoEliminator;
-    public soot.javaToJimple.toolkits.GotoEliminator soot_javaToJimple_toolkits_GotoEliminator() {
-        if( instance_soot_javaToJimple_toolkits_GotoEliminator == null ) instance_soot_javaToJimple_toolkits_GotoEliminator = new soot.javaToJimple.toolkits.GotoEliminator( g );
-        return instance_soot_javaToJimple_toolkits_GotoEliminator;
-    }
-
     private soot.dava.toolkits.base.AST.transformations.UselessLabelFinder instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder;
     public soot.dava.toolkits.base.AST.transformations.UselessLabelFinder soot_dava_toolkits_base_AST_transformations_UselessLabelFinder() {
         if( instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder == null ) instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder = new soot.dava.toolkits.base.AST.transformations.UselessLabelFinder( g );
