@@ -281,6 +281,7 @@ If whole-program mode is enabled, jce.jar is also appended in the end.
 		</boolopt>
 		<listopt>
 			<name>Process Directories</name>
+			<alias>process-path</alias>
 			<alias>process-dir</alias>
 			<set_arg_label>dir</set_arg_label>
 			<short_desc>Process all classes found in <use_arg_label/></short_desc>
@@ -289,6 +290,7 @@ If whole-program mode is enabled, jce.jar is also appended in the end.
 Add all classes found in <use_arg_label/> to the set of argument classes
 which is analyzed and transformed by Soot.  You can specify the
 option more than once, to add argument classes from multiple directories.
+You can also state JAR files.
 </p>
 <p>
 If subdirectories of <use_arg_label/> contain <tt>.class</tt> or
@@ -5603,6 +5605,7 @@ package option multiple times.</p>
 		<boolopt>
 			<name>Keep Line Number</name>
 			<alias>keep-line-number</alias>
+			<default>true</default>
 			<short_desc>Keep line number tables</short_desc>
 			<long_desc>
 Preserve line number tables for class files throughout the

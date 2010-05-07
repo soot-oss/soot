@@ -186,6 +186,7 @@ public class Options extends OptionsBase {
                 prepend_classpath = true;
   
             else if( false
+            || option.equals( "process-path" )
             || option.equals( "process-dir" )
             ) {
                 if( !hasMoreOptions() ) {
@@ -1129,7 +1130,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
-+padOpt(" -process-dir DIR", "Process all classes found in DIR" )
++padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -ast-metrics", "Compute AST Metrics if performing java to jimple" )
 +padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )
 +padVal(" c class (default)", "Favour class files as Soot source" )

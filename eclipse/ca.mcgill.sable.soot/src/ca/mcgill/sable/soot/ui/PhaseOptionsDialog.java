@@ -4923,7 +4923,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		boolRes = getInput_Attribute_Optionskeep_line_number_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -9802,7 +9802,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 
-		defKey = ""+" "+""+" "+"process-dir";
+		defKey = ""+" "+""+" "+"process-path";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -9814,7 +9814,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-dir", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. If subdirectories of DIR contain .class or .jimple \nfiles, Soot assumes that the subdirectory names correspond to \ncomponents of the classes' package names. If DIR contains \nsubA/subB/MyClass.class, for instance, then Soot assumes MyClass \nis in package subA.subB.", defaultString)));
+		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-path", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. You can also state JAR files. If subdirectories of \nDIR contain .class or .jimple files, Soot assumes that the \nsubdirectory names correspond to components of the classes' \npackage names. If DIR contains subA/subB/MyClass.class, for \ninstance, then Soot assumes MyClass is in package subA.subB.", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"cp";
@@ -18723,7 +18723,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
