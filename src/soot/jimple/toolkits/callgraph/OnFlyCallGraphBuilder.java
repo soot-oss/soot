@@ -440,10 +440,15 @@ public final class OnFlyCallGraphBuilder
                 continue;
 
             if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD ) {
-            	targetsQueue.add( VirtualCalls.v().resolveSpecial( 
+            	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
-                            site.container() ) );
+                            site.container() );
+            	//if the call target resides in a phantom class then "target" will be null;
+            	//simply do not add the target in that case
+            	if(target!=null) {
+            		targetsQueue.add( target );            		
+            	} 
             } else {
                 VirtualCalls.v().resolve( type,
                         receiver.getType(),
