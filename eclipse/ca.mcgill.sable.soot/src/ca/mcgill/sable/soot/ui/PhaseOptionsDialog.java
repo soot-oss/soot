@@ -1973,6 +1973,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsno_jrl_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsno_jrl_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsj2me_widget().getButton().getSelection();
 		
 		
@@ -6272,6 +6282,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsallow_phantom_refs_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsno_jrl_widget;
+	
+	private void setInput_Optionsno_jrl_widget(BooleanOptionWidget widget) {
+		Input_Optionsno_jrl_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsno_jrl_widget() {
+		return Input_Optionsno_jrl_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsj2me_widget;
 	
 	private void setInput_Optionsj2me_widget(BooleanOptionWidget widget) {
@@ -9725,6 +9745,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nAllow Soot to process a class even if it cannot find all \nclasses referenced by that class. This may cause Soot to produce \nincorrect results. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"no-jrl";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsno_jrl_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-jrl", "\nPrevents Soot from loading and analyzing any classes from \nexcluded packages (even in whole-program mode), except for \napplication classes and such classes that are explicitly added \nas basic-classes. ", defaultBool)));
 		
 		
 		

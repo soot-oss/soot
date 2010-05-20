@@ -210,6 +210,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-allow-phantom-refs");
         }
   
+        public void setno_jrl(boolean arg) {
+            if(arg) addArg("-no-jrl");
+        }
+  
         public void setj2me(boolean arg) {
             if(arg) addArg("-j2me");
         }

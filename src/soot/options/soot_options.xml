@@ -390,6 +390,16 @@ incorrect results.
 </long_desc>
 		</boolopt>
 		<boolopt>
+			<name>Allow Phantom References</name>
+			<alias>no-jrl</alias>
+			<short_desc>Do not at all analyze Java runtime library</short_desc>
+			<long_desc>
+Prevents Soot from loading and analyzing any classes from excluded packages
+(even in whole-program mode), except for application classes and such classes
+that are explicitly added as basic-classes.
+</long_desc>
+		</boolopt>
+		<boolopt>
 			<name>Use J2ME mode</name>
 			<alias>j2me</alias>
 			<default>false</default>

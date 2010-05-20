@@ -280,6 +280,11 @@ public class Options extends OptionsBase {
                 allow_phantom_refs = true;
   
             else if( false 
+            || option.equals( "no-jrl" )
+            )
+                no_jrl = true;
+  
+            else if( false 
             || option.equals( "j2me" )
             )
                 j2me = true;
@@ -966,6 +971,10 @@ public class Options extends OptionsBase {
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs( boolean setting ) { allow_phantom_refs = setting; }
   
+    public boolean no_jrl() { return no_jrl; }
+    private boolean no_jrl = false;
+    public void set_no_jrl( boolean setting ) { no_jrl = setting; }
+  
     public boolean j2me() { return j2me; }
     private boolean j2me = false;
     public void set_j2me( boolean setting ) { j2me = setting; }
@@ -1139,6 +1148,7 @@ public class Options extends OptionsBase {
 +padVal(" java", "Favour Java files as Soot source" )
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
++padOpt(" -no-jrl", "Do not at all analyze Java runtime library" )
 +padOpt(" -j2me", "Use J2ME mode; changes assignment of types" )
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
 +padOpt(" -polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd" )

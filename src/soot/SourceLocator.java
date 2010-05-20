@@ -46,10 +46,27 @@ public class SourceLocator
     public static SourceLocator v() { return G.v().soot_SourceLocator(); }
 
     protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
+	protected Set<String> classesToLoad;
     
     /** Given a class name, uses the soot-class-path to return a ClassSource for the given class. */
-    public ClassSource getClassSource(String className) 
+	public ClassSource getClassSource(String className) 
     {
+		if(classesToLoad==null) {
+			classesToLoad = new HashSet<String>();
+			classesToLoad.addAll(Scene.v().getBasicClasses());
+			for(SootClass c: Scene.v().getApplicationClasses()) {
+				classesToLoad.add(c.getName());
+			}
+		}
+    	if(Options.v().no_jrl() && !classesToLoad.contains(className)) {
+    		for(String packagePrefix: Scene.v().getExcludedPackages()) {
+    			if(className.startsWith(packagePrefix)) {
+    				//class excluded from analysis
+    				return null;
+    			}
+    		}
+    	}
+    	
         if( classPath == null ) {
             classPath = explodeClassPath(Scene.v().getSootClassPath());
         }
@@ -72,7 +89,9 @@ public class SourceLocator
 					
 					public ClassSource find(String className) {
 				        String fileName = className.replace('.', '/') + ".class";
-						return new CoffiClassSource(className, cl.getResourceAsStream(fileName));
+						InputStream stream = cl.getResourceAsStream(fileName);
+						if(stream==null) return null;
+						return new CoffiClassSource(className, stream);
 					}
 
             	}.find(className);

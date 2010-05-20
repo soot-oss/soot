@@ -84,7 +84,26 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.NEWINSTANCE );
 
         addSootBasicClasses();
+        
+        determineExcludedPackages();
     }
+	private void determineExcludedPackages() {
+		excludedPackages = new LinkedList<String>();
+        if (Options.v().exclude() != null)
+            excludedPackages.addAll(Options.v().exclude());
+
+        if( !Options.v().include_all() ) {
+            excludedPackages.add("java.");
+            excludedPackages.add("sun.");
+            excludedPackages.add("javax.");
+            excludedPackages.add("com.sun.");
+            excludedPackages.add("com.ibm.");
+            excludedPackages.add("org.xml.");
+            excludedPackages.add("org.w3c.");
+            excludedPackages.add("apple.awt.");
+            excludedPackages.add("com.apple.");
+        }
+	}
     public static Scene  v() { return G.v().soot_Scene (); }
     
     Chain<SootClass> classes = new HashChain<SootClass>();
@@ -960,6 +979,16 @@ public class Scene  //extends AbstractHost
 		    }
 		}
     }
+    
+    public Set<String> getBasicClasses() {
+    	Set<String> all = new HashSet<String>();
+    	for(int i=0;i<basicclasses.length;i++) {
+    		Set<String> classes = basicclasses[i];
+    		if(classes!=null)
+    			all.addAll(classes);
+    	}
+		return all; 
+	}
 
     private void addReflectionTraceClasses() {
     	CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
@@ -1077,23 +1106,6 @@ public class Scene  //extends AbstractHost
      * command line options. 
      */
     private void prepareClasses() {
-
-        LinkedList<String> excludedPackages = new LinkedList<String>();
-        if (Options.v().exclude() != null)
-            excludedPackages.addAll(Options.v().exclude());
-
-        if( !Options.v().include_all() ) {
-            excludedPackages.add("java.");
-            excludedPackages.add("sun.");
-            excludedPackages.add("javax.");
-            excludedPackages.add("com.sun.");
-            excludedPackages.add("com.ibm.");
-            excludedPackages.add("org.xml.");
-            excludedPackages.add("org.w3c.");
-            excludedPackages.add("apple.awt.");
-            excludedPackages.add("com.apple.");
-        }
-
         // Remove/add all classes from packageInclusionMask as per -i option
         Chain<SootClass> processedClasses = new HashChain<SootClass>();
         while(true) {
@@ -1130,7 +1142,11 @@ public class Scene  //extends AbstractHost
         }
     }
 
-    ArrayList<String> pkgList;
+    public LinkedList<String> getExcludedPackages() {
+		return excludedPackages;
+	}
+
+	ArrayList<String> pkgList;
 
     public void setPkgList(ArrayList<String> list){
         pkgList = list;
@@ -1181,6 +1197,7 @@ public class Scene  //extends AbstractHost
     }
     private boolean doneResolving = false;
 	private boolean incrementalBuild;
+	protected LinkedList<String> excludedPackages;
     public boolean doneResolving() { return doneResolving; }
     public void setDoneResolving() { doneResolving = true; }
     public void setMainClassFromOptions() {

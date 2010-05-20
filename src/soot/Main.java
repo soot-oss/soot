@@ -225,7 +225,11 @@ public class Main {
 
     }
     
-	private void autoSetOptions() {
+	public void autoSetOptions() {
+		//when no-jrl is enabled, also enable phantom refs	
+        if(Options.v().no_jrl())
+        	Options.v().set_allow_phantom_refs(true);
+		
 		//when reflection log is enabled, also enable phantom refs	
 	    CGOptions cgOptions = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
 	    String log = cgOptions.reflection_log();
