@@ -54,12 +54,12 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis
         }
     };
     
-    protected List<Local> locals;
+    protected Set<Local> locals;
 
     public LocalMustNotAliasAnalysis(UnitGraph g)
     {
         super(g);
-        locals = new LinkedList<Local>(); locals.addAll(g.getBody().getLocals());
+        locals = new HashSet<Local>(); locals.addAll(g.getBody().getLocals());
 
         for (Local l : (Collection<Local>) g.getBody().getLocals()) {
             if (l.getType() instanceof RefLikeType)
