@@ -131,6 +131,12 @@ public class FastHierarchy
 
         /* Now do a dfs traversal to get the Interval numbers. */
         dfsVisit( 0, Scene.v().getSootClass( "java.lang.Object" ) );
+        /* also have to traverse for all phantom classes because they also
+         * can be roots of the type hierarchy
+         */
+        for(SootClass phantomClass: Scene.v().getPhantomClasses()) {
+            dfsVisit( 0, phantomClass );
+        }
     }
 
     /** Return true if class child is a subclass of class parent, neither of
