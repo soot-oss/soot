@@ -103,7 +103,7 @@ public class Hierarchy
                             SootClass i = (SootClass)subIt.next();
                             if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
                             List<SootClass> l = interfaceToDirSubinterfaces.get(i);
-                            l.add(c);
+                            if (l != null) l.add(c);
                         }
                     }
                     else
