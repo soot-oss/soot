@@ -11,6 +11,12 @@ Improvements and API changes in trunk
 3. Removed "org.apache" package from the default excludes list because
    that, by default, leads to Soot not analyzing anything of tomcat, for
    instance. This change follows the principle of least surprise.
+4. Added option no-jrl that allows soot to analyze a program without loading
+   classes of the Java runtime library (even in whole-program mode): Soot will
+   only load application classes and "basic classes". The rest will
+   automatically be modelled as phantom classes. This is useful for testing
+   whole-program, analyses quickly, on little toy examples, disregarding
+   the runtime library. This option implies -allow-phantom-refs.
 
 Improvements and API changes in version 2.4.0
 
