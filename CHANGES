@@ -4,6 +4,10 @@ Improvements and API changes in trunk
    from Soot's own JAR file if the class cannot be found on the
    soot-classpath, but ONLY if the class is in package soot.rtlib.
    See package documentation for soot.rtlib for more details.
+2. The option -process-dir how has an alias -process-path, which makes
+   sense because Soot can also process JAR files. Also, -keep-line-numbers
+   now defaults to true. This is because so many people ask about how to
+   access line numbers.   
 
 Improvements and API changes in version 2.4.0
 
