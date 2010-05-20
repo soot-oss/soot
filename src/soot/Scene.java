@@ -1090,7 +1090,6 @@ public class Scene  //extends AbstractHost
             excludedPackages.add("com.ibm.");
             excludedPackages.add("org.xml.");
             excludedPackages.add("org.w3c.");
-            excludedPackages.add("org.apache.");
             excludedPackages.add("apple.awt.");
             excludedPackages.add("com.apple.");
         }

@@ -8,6 +8,9 @@ Improvements and API changes in trunk
    sense because Soot can also process JAR files. Also, -keep-line-numbers
    now defaults to true. This is because so many people ask about how to
    access line numbers.   
+3. Removed "org.apache" package from the default excludes list because
+   that, by default, leads to Soot not analyzing anything of tomcat, for
+   instance. This change follows the principle of least surprise.
 
 Improvements and API changes in version 2.4.0
 
