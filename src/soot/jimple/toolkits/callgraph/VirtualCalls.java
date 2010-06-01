@@ -65,7 +65,7 @@ public final class VirtualCalls
         SootClass cls = (t).getSootClass();
         if( cls.declaresMethod( subSig ) ) {
             SootMethod m = cls.getMethod( subSig );
-            if( m.isConcrete() || m.isNative() ) {
+            if( m.isConcrete() || m.isNative() || m.isPhantom() ) {
                 ret = cls.getMethod( subSig );
             }
         } else {
