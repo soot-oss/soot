@@ -131,8 +131,23 @@ public class SootResolver
             while( !worklist[i].isEmpty() ) {
                 SootClass sc = (SootClass) worklist[i].removeFirst();
                 if( resolveEverything() ) {
-                    if( sc.isPhantom() ) bringToSignatures(sc);
-                    else bringToBodies(sc);
+                    boolean onlySignatures = sc.isPhantom() || (
+	            			Options.v().no_jrl() &&
+	            			Scene.v().isExcluded(sc) &&
+	            			!Scene.v().getBasicClasses().contains(sc.getName())
+            			);
+					if( onlySignatures ) {
+						bringToSignatures(sc);
+						sc.setPhantomClass();
+				        if(sc.isPhantom()) {
+				        	for( SootMethod m: sc.getMethods() ) {
+				        		m.setPhantom(true);
+				        	}
+				        	for( SootField f: sc.getFields() ) {
+				        		f.setPhantom(true);
+				        	}
+				        }
+			        } else bringToBodies(sc);
                 } else {
                     switch(i) {
                         case SootClass.BODIES: bringToBodies(sc); break;
@@ -169,7 +184,13 @@ public class SootResolver
 
         String className = sc.getName();
         ClassSource is = SourceLocator.v().getClassSource(className);
-        if( is == null ) {
+        boolean modelAsPhantomRef = is == null;
+//        || (
+//        		Options.v().no_jrl() &&
+//        		Scene.v().isExcluded(sc) &&
+//        		!Scene.v().getBasicClasses().contains(sc.getName())
+//    		);        
+		if( modelAsPhantomRef ) {
             if(!Scene.v().allowsPhantomRefs()) {
             	String suffix="";
             	if(className.equals("java.lang.Object")) {
@@ -208,7 +229,6 @@ public class SootResolver
             final SootClass iface = (SootClass) ifaceIt.next();
             addToResolveWorklist(iface, SootClass.HIERARCHY);
         }
-
     }
 
     /** Signatures - we know the signatures of all methods and fields

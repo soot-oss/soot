@@ -58,14 +58,6 @@ public class SourceLocator
 				classesToLoad.add(c.getName());
 			}
 		}
-    	if(Options.v().no_jrl() && !classesToLoad.contains(className)) {
-    		for(String packagePrefix: Scene.v().getExcludedPackages()) {
-    			if(className.startsWith(packagePrefix)) {
-    				//class excluded from analysis
-    				return null;
-    			}
-    		}
-    	}
     	
         if( classPath == null ) {
             classPath = explodeClassPath(Scene.v().getSootClassPath());

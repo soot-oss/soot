@@ -1142,8 +1142,14 @@ public class Scene  //extends AbstractHost
         }
     }
 
-    public LinkedList<String> getExcludedPackages() {
-		return excludedPackages;
+    public boolean isExcluded(SootClass sc) {
+    	String name = sc.getName();
+    	for(String pkg: excludedPackages){
+			if(name.startsWith(pkg)) {
+    			return true;
+    		}
+    	}
+		return false;
 	}
 
 	ArrayList<String> pkgList;
