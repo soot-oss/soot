@@ -226,8 +226,8 @@ public class Main {
     }
     
 	public void autoSetOptions() {
-		//when no-jrl is enabled, also enable phantom refs	
-        if(Options.v().no_jrl())
+		//when no-bodies-for-excluded is enabled, also enable phantom refs	
+        if(Options.v().no_bodies_for_excluded())
         	Options.v().set_allow_phantom_refs(true);
 		
 		//when reflection log is enabled, also enable phantom refs	

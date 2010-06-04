@@ -391,12 +391,13 @@ incorrect results.
 		</boolopt>
 		<boolopt>
 			<name>Allow Phantom References</name>
-			<alias>no-jrl</alias>
-			<short_desc>Do not at all analyze Java runtime library</short_desc>
+			<alias>no-bodies-for-excluded</alias>
+			<short_desc>Do not load bodies for excluded classes</short_desc>
 			<long_desc>
-Prevents Soot from loading and analyzing any classes from excluded packages
-(even in whole-program mode), except for application classes and such classes
-that are explicitly added as basic-classes.
+Prevents Soot from loading method bodies for all excluded classes (see exclude option), even
+when running in whole-program mode. This is useful for computing a shallow points-to analysis
+that does not, for instance, take into account the JDK. Of course, such analyses may be unsound.
+You get what you are asking for.
 </long_desc>
 		</boolopt>
 		<boolopt>

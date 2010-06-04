@@ -132,7 +132,7 @@ public class SootResolver
                 SootClass sc = (SootClass) worklist[i].removeFirst();
                 if( resolveEverything() ) {
                     boolean onlySignatures = sc.isPhantom() || (
-	            			Options.v().no_jrl() &&
+	            			Options.v().no_bodies_for_excluded() &&
 	            			Scene.v().isExcluded(sc) &&
 	            			!Scene.v().getBasicClasses().contains(sc.getName())
             			);
