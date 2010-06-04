@@ -103,7 +103,8 @@ public class FastHierarchy
         if( c.isInterface() ) {
             throw new RuntimeException( "Attempt to dfs visit interface "+c );
         }
-        classToInterval.put( c, r );
+        if(!classToInterval.containsKey(c))
+        	classToInterval.put( c, r );
         return start;
     }
 
@@ -135,7 +136,8 @@ public class FastHierarchy
          * can be roots of the type hierarchy
          */
         for(SootClass phantomClass: Scene.v().getPhantomClasses()) {
-            dfsVisit( 0, phantomClass );
+        	if(!phantomClass.isInterface())
+        		dfsVisit( 0, phantomClass );
         }
     }
 
