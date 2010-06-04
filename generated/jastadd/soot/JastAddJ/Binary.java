@@ -322,7 +322,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     private boolean isDAafter_compute(Variable v) {  return getRightOperand().isDAafter(v);  }
 
     protected java.util.Map isDUafter_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 849
+    // Declared in DefiniteAssignment.jrag at line 851
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -341,7 +341,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     private boolean isDUafter_compute(Variable v) {  return getRightOperand().isDUafter(v);  }
 
     protected java.util.Map isDUbefore_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 697
+    // Declared in DefiniteAssignment.jrag at line 699
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         Object _parameters = v;
 if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
@@ -365,7 +365,7 @@ if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.uti
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 850
+    // Declared in DefiniteAssignment.jrag at line 852
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getRightOperandNoTransform()) {
             return getLeftOperand().isDUafter(v);

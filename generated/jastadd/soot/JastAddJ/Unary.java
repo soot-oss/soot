@@ -133,7 +133,7 @@ public abstract class Unary extends Expr implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return getOperand().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 846
+    // Declared in DefiniteAssignment.jrag at line 848
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);

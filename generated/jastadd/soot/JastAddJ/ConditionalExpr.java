@@ -362,7 +362,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     private boolean isDAafter_compute(Variable v) {  return booleanOperator() ? isDAafterTrue(v) && isDAafterFalse(v) : getTrueExpr().isDAafter(v) && getFalseExpr().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 820
+    // Declared in DefiniteAssignment.jrag at line 822
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
@@ -371,7 +371,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     private boolean isDUafterTrue_compute(Variable v) {  return getTrueExpr().isDUafterTrue(v) && getFalseExpr().isDUafterTrue(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 821
+    // Declared in DefiniteAssignment.jrag at line 823
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
@@ -380,7 +380,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
 
     private boolean isDUafterFalse_compute(Variable v) {  return getTrueExpr().isDUafterFalse(v) && getFalseExpr().isDUafterFalse(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 825
+    // Declared in DefiniteAssignment.jrag at line 827
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -506,7 +506,7 @@ private TypeDecl refined_AutoBoxing_ConditionalExpr_type()
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 824
+    // Declared in DefiniteAssignment.jrag at line 826
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getFalseExprNoTransform()) {
             return getCondition().isDUafterFalse(v);

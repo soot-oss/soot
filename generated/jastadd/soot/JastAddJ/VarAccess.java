@@ -148,7 +148,7 @@ public class VarAccess extends Access implements Cloneable {
     }
   }
 
-    // Declared in DefiniteAssignment.jrag at line 458
+    // Declared in DefiniteAssignment.jrag at line 460
 
 
   protected boolean checkDUeverywhere(Variable v) {
@@ -668,7 +668,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return (isDest() && decl() == v) || isDAbefore(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 833
+    // Declared in DefiniteAssignment.jrag at line 835
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -681,7 +681,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return isDUbefore(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 1208
+    // Declared in DefiniteAssignment.jrag at line 1210
  @SuppressWarnings({"unchecked", "cast"})     public boolean unassignedEverywhere(Variable v, TryStmt stmt) {
         ASTNode$State state = state();
         boolean unassignedEverywhere_Variable_TryStmt_value = unassignedEverywhere_compute(v, stmt);

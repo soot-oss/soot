@@ -101,7 +101,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   public void definiteAssignment() {
   }
 
-    // Declared in DefiniteAssignment.jrag at line 451
+    // Declared in DefiniteAssignment.jrag at line 453
 
 
   // 16.2.2 9th, 10th bullet
@@ -112,7 +112,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 561
+    // Declared in DefiniteAssignment.jrag at line 563
 
 
   protected boolean isDescendantTo(ASTNode node) {
@@ -988,7 +988,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         return false;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 1200
+    // Declared in DefiniteAssignment.jrag at line 1202
  @SuppressWarnings({"unchecked", "cast"})     public boolean unassignedEverywhere(Variable v, TryStmt stmt) {
         ASTNode$State state = state();
         boolean unassignedEverywhere_Variable_TryStmt_value = unassignedEverywhere_compute(v, stmt);

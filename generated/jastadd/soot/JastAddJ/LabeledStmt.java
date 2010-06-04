@@ -216,7 +216,7 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
 
     private boolean targetOf_compute(BreakStmt stmt) {  return stmt.hasLabel() && stmt.getLabel().equals(getLabel());  }
 
-    // Declared in DefiniteAssignment.jrag at line 512
+    // Declared in DefiniteAssignment.jrag at line 514
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -243,7 +243,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 898
+    // Declared in DefiniteAssignment.jrag at line 900
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -365,7 +365,7 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
         return getParent().Define_LabeledStmt_lookupLabel(this, caller, name);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 511
+    // Declared in DefiniteAssignment.jrag at line 513
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtNoTransform()) {
             return isDAbefore(v);
@@ -373,7 +373,7 @@ if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 897
+    // Declared in DefiniteAssignment.jrag at line 899
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtNoTransform()) {
             return isDUbefore(v);

@@ -379,7 +379,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
 
     private boolean isValue_compute() {  return isFinal() && hasInit() && getInit().isConstant();  }
 
-    // Declared in DefiniteAssignment.jrag at line 493
+    // Declared in DefiniteAssignment.jrag at line 495
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -401,7 +401,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return hasInit() ? getInit().isDAafter(v) : isDAbefore(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 879
+    // Declared in DefiniteAssignment.jrag at line 881
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -630,7 +630,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_isSource(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 498
+    // Declared in DefiniteAssignment.jrag at line 500
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getInitOptNoTransform()) {
             return isDAbefore(v);
@@ -638,7 +638,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 884
+    // Declared in DefiniteAssignment.jrag at line 886
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getInitOptNoTransform()) {
             return isDUbefore(v);

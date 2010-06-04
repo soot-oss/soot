@@ -151,7 +151,7 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
 
     private boolean isDAafter_compute(Variable v) {  return getExpr().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 842
+    // Declared in DefiniteAssignment.jrag at line 844
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -184,7 +184,7 @@ public class ArrayTypeWithSizeAccess extends ArrayTypeAccess implements Cloneabl
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 843
+    // Declared in DefiniteAssignment.jrag at line 845
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getExprNoTransform()) {
             return getAccess().isDUafter(v);

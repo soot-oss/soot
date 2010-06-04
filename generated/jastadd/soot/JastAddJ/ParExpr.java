@@ -170,7 +170,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return getExpr().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 800
+    // Declared in DefiniteAssignment.jrag at line 802
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
@@ -179,7 +179,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     private boolean isDUafterTrue_compute(Variable v) {  return getExpr().isDUafterTrue(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 801
+    // Declared in DefiniteAssignment.jrag at line 803
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
@@ -188,7 +188,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
     private boolean isDUafterFalse_compute(Variable v) {  return getExpr().isDUafterFalse(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 845
+    // Declared in DefiniteAssignment.jrag at line 847
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);

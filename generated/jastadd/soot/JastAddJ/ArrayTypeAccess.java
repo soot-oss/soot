@@ -186,7 +186,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return getAccess().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 841
+    // Declared in DefiniteAssignment.jrag at line 843
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);

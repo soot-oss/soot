@@ -150,7 +150,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return isDAafterTrue(v) && isDAafterFalse(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 815
+    // Declared in DefiniteAssignment.jrag at line 817
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
@@ -159,7 +159,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private boolean isDUafterTrue_compute(Variable v) {  return getOperand().isDUafterFalse(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 816
+    // Declared in DefiniteAssignment.jrag at line 818
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
@@ -168,7 +168,7 @@ public class LogNotExpr extends Unary implements Cloneable {
 
     private boolean isDUafterFalse_compute(Variable v) {  return getOperand().isDUafterTrue(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 818
+    // Declared in DefiniteAssignment.jrag at line 820
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -237,7 +237,7 @@ public class LogNotExpr extends Unary implements Cloneable {
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 817
+    // Declared in DefiniteAssignment.jrag at line 819
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getOperandNoTransform()) {
             return isDUbefore(v);

@@ -661,7 +661,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return hasInit() ? getInit().isDAafter(v) : isDAbefore(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 772
+    // Declared in DefiniteAssignment.jrag at line 774
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);

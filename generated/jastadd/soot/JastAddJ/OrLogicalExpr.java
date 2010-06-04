@@ -193,7 +193,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return isDAafterTrue(v) && isDAafterFalse(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 809
+    // Declared in DefiniteAssignment.jrag at line 811
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
@@ -202,7 +202,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDUafterTrue_compute(Variable v) {  return getLeftOperand().isDUafterTrue(v) && getRightOperand().isDUafterTrue(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 810
+    // Declared in DefiniteAssignment.jrag at line 812
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
@@ -211,7 +211,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDUafterFalse_compute(Variable v) {  return getRightOperand().isDUafterFalse(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 813
+    // Declared in DefiniteAssignment.jrag at line 815
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -285,7 +285,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return super.Define_boolean_isDAbefore(caller, child, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 812
+    // Declared in DefiniteAssignment.jrag at line 814
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getRightOperandNoTransform()) {
             return getLeftOperand().isDUafterFalse(v);

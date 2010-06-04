@@ -204,7 +204,7 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
 
     private boolean targetOf_compute(BreakStmt stmt) {  return !stmt.hasLabel();  }
 
-    // Declared in DefiniteAssignment.jrag at line 577
+    // Declared in DefiniteAssignment.jrag at line 579
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -231,7 +231,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 1036
+    // Declared in DefiniteAssignment.jrag at line 1038
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -261,7 +261,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
   }
 
     protected java.util.Map isDUbeforeCondition_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 1053
+    // Declared in DefiniteAssignment.jrag at line 1055
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbeforeCondition(Variable v) {
         Object _parameters = v;
 if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_values = new java.util.HashMap(4);
@@ -445,7 +445,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
 
     private soot.jimple.Stmt continue_label_compute() {  return cond_label();  }
 
-    // Declared in DefiniteAssignment.jrag at line 588
+    // Declared in DefiniteAssignment.jrag at line 590
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtNoTransform()) {
             return getCondition().isDAafterTrue(v);
@@ -456,7 +456,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 1070
+    // Declared in DefiniteAssignment.jrag at line 1072
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtNoTransform()) {
             return getCondition().isDUafterTrue(v);

@@ -218,7 +218,7 @@ public class ArrayInit extends Expr implements Cloneable {
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 500
+    // Declared in DefiniteAssignment.jrag at line 502
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
@@ -228,7 +228,7 @@ public class ArrayInit extends Expr implements Cloneable {
     private boolean isDAafter_compute(Variable v) {  return getNumInit() == 0 ? isDAbefore(v) : getInit(getNumInit()-1).isDAafter(v);  }
 
     protected java.util.Map computeDABefore_int_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 503
+    // Declared in DefiniteAssignment.jrag at line 505
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDABefore(int childIndex, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(Integer.valueOf(childIndex));
@@ -254,7 +254,7 @@ if(computeDABefore_int_Variable_values == null) computeDABefore_int_Variable_val
     return getInit(childIndex-1).isDAafter(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 886
+    // Declared in DefiniteAssignment.jrag at line 888
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -264,7 +264,7 @@ if(computeDABefore_int_Variable_values == null) computeDABefore_int_Variable_val
     private boolean isDUafter_compute(Variable v) {  return getNumInit() == 0 ? isDUbefore(v) : getInit(getNumInit()-1).isDUafter(v);  }
 
     protected java.util.Map computeDUbefore_int_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 889
+    // Declared in DefiniteAssignment.jrag at line 891
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDUbefore(int childIndex, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(Integer.valueOf(childIndex));
@@ -340,7 +340,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
         return getParent().Define_boolean_isSource(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 501
+    // Declared in DefiniteAssignment.jrag at line 503
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getInitListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -349,7 +349,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 887
+    // Declared in DefiniteAssignment.jrag at line 889
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getInitListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

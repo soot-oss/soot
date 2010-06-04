@@ -104,7 +104,7 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
         return (ClassDecl)getChildNoTransform(0);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 491
+    // Declared in DefiniteAssignment.jrag at line 493
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -122,7 +122,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return isDAbefore(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 877
+    // Declared in DefiniteAssignment.jrag at line 879
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);

@@ -1287,7 +1287,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 711
+    // Declared in DefiniteAssignment.jrag at line 713
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

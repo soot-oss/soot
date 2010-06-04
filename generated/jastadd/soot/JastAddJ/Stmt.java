@@ -82,7 +82,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     private boolean isDAafter_compute(Variable v) {  return isDAbefore(v);  }
 
     protected java.util.Map isDUafter_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 778
+    // Declared in DefiniteAssignment.jrag at line 780
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -176,7 +176,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return isDAbefore_Variable_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 692
+    // Declared in DefiniteAssignment.jrag at line 694
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         ASTNode$State state = state();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);

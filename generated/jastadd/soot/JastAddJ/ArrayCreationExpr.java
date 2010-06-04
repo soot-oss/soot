@@ -172,7 +172,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         return (Opt<ArrayInit>)getChildNoTransform(1);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 433
+    // Declared in DefiniteAssignment.jrag at line 435
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterCreation(Variable v) {
         ASTNode$State state = state();
         boolean isDAafterCreation_Variable_value = isDAafterCreation_compute(v);
@@ -181,7 +181,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     private boolean isDAafterCreation_compute(Variable v) {  return getTypeAccess().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 434
+    // Declared in DefiniteAssignment.jrag at line 436
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
@@ -190,7 +190,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return hasArrayInit() ? getArrayInit().isDAafter(v) : isDAafterCreation(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 864
+    // Declared in DefiniteAssignment.jrag at line 866
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterCreation(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterCreation_Variable_value = isDUafterCreation_compute(v);
@@ -199,7 +199,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
 
     private boolean isDUafterCreation_compute(Variable v) {  return getTypeAccess().isDUafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 865
+    // Declared in DefiniteAssignment.jrag at line 867
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -252,7 +252,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
     return i;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 435
+    // Declared in DefiniteAssignment.jrag at line 437
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getArrayInitOptNoTransform()) {
             return isDAafterCreation(v);
@@ -260,7 +260,7 @@ public class ArrayCreationExpr extends PrimaryExpr implements Cloneable {
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 867
+    // Declared in DefiniteAssignment.jrag at line 869
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getArrayInitOptNoTransform()) {
             return isDUafterCreation(v);

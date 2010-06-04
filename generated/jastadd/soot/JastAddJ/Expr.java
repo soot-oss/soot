@@ -382,7 +382,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return (isDAafterFalse(v) && isDAafterTrue(v)) || isDAbefore(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 782
+    // Declared in DefiniteAssignment.jrag at line 784
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
@@ -395,7 +395,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     return isDUbefore(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 788
+    // Declared in DefiniteAssignment.jrag at line 790
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
@@ -408,7 +408,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     return isDUbefore(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 798
+    // Declared in DefiniteAssignment.jrag at line 800
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -758,7 +758,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
         return isDAbefore_Variable_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 694
+    // Declared in DefiniteAssignment.jrag at line 696
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         ASTNode$State state = state();
         boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);

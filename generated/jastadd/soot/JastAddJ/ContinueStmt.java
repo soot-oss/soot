@@ -228,7 +228,7 @@ public class ContinueStmt extends Stmt implements Cloneable {
     return list;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 649
+    // Declared in DefiniteAssignment.jrag at line 651
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -247,7 +247,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     private boolean isDAafter_compute(Variable v) {  return true;  }
 
     protected java.util.Map isDUafterReachedFinallyBlocks_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 936
+    // Declared in DefiniteAssignment.jrag at line 938
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterReachedFinallyBlocks(Variable v) {
         Object _parameters = v;
 if(isDUafterReachedFinallyBlocks_Variable_values == null) isDUafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
@@ -275,7 +275,7 @@ if(isDUafterReachedFinallyBlocks_Variable_values == null) isDUafterReachedFinall
   }
 
     protected java.util.Map isDAafterReachedFinallyBlocks_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 970
+    // Declared in DefiniteAssignment.jrag at line 972
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterReachedFinallyBlocks(Variable v) {
         Object _parameters = v;
 if(isDAafterReachedFinallyBlocks_Variable_values == null) isDAafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
@@ -304,7 +304,7 @@ if(isDAafterReachedFinallyBlocks_Variable_values == null) isDAafterReachedFinall
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 1175
+    // Declared in DefiniteAssignment.jrag at line 1177
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);

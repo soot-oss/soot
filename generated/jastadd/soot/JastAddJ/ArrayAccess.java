@@ -131,7 +131,7 @@ public class ArrayAccess extends Access implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return getExpr().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 840
+    // Declared in DefiniteAssignment.jrag at line 842
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);

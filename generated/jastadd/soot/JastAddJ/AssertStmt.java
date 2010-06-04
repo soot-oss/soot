@@ -195,7 +195,7 @@ public class AssertStmt extends Stmt implements Cloneable {
         return (Opt<Expr>)getChildNoTransform(1);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 420
+    // Declared in DefiniteAssignment.jrag at line 422
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -213,7 +213,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return getfirst().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 870
+    // Declared in DefiniteAssignment.jrag at line 872
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);

@@ -209,7 +209,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
         return (Block)getChildNoTransform(1);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 656
+    // Declared in DefiniteAssignment.jrag at line 658
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -227,7 +227,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return getBlock().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 919
+    // Declared in DefiniteAssignment.jrag at line 921
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFinally(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterFinally_Variable_value = isDUafterFinally_compute(v);
@@ -236,7 +236,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDUafterFinally_compute(Variable v) {  return true;  }
 
-    // Declared in DefiniteAssignment.jrag at line 922
+    // Declared in DefiniteAssignment.jrag at line 924
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFinally(Variable v) {
         ASTNode$State state = state();
         boolean isDAafterFinally_Variable_value = isDAafterFinally_compute(v);
@@ -245,7 +245,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafterFinally_compute(Variable v) {  return false;  }
 
-    // Declared in DefiniteAssignment.jrag at line 1182
+    // Declared in DefiniteAssignment.jrag at line 1184
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -431,7 +431,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
         return typeThrowable_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 658
+    // Declared in DefiniteAssignment.jrag at line 660
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
             return getExpr().isDAafter(v);
@@ -442,7 +442,7 @@ if(monitor_Body_values == null) monitor_Body_values = new java.util.HashMap(4);
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 1184
+    // Declared in DefiniteAssignment.jrag at line 1186
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
             return getExpr().isDUafter(v);

@@ -168,7 +168,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 651
+    // Declared in DefiniteAssignment.jrag at line 653
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -186,7 +186,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return true;  }
 
-    // Declared in DefiniteAssignment.jrag at line 1177
+    // Declared in DefiniteAssignment.jrag at line 1179
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -285,7 +285,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return typeNull_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 654
+    // Declared in DefiniteAssignment.jrag at line 656
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getExprNoTransform()) {
             return isDAbefore(v);
@@ -293,7 +293,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 1180
+    // Declared in DefiniteAssignment.jrag at line 1182
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getExprNoTransform()) {
             return isDUbefore(v);

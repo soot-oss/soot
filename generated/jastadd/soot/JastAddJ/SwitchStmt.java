@@ -268,7 +268,7 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
 
     private boolean targetOf_compute(BreakStmt stmt) {  return !stmt.hasLabel();  }
 
-    // Declared in DefiniteAssignment.jrag at line 532
+    // Declared in DefiniteAssignment.jrag at line 534
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -302,7 +302,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 550
+    // Declared in DefiniteAssignment.jrag at line 552
  @SuppressWarnings({"unchecked", "cast"})     public boolean assignedAfterLastStmt(Variable v) {
         ASTNode$State state = state();
         boolean assignedAfterLastStmt_Variable_value = assignedAfterLastStmt_compute(v);
@@ -311,7 +311,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean assignedAfterLastStmt_compute(Variable v) {  return getBlock().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 1004
+    // Declared in DefiniteAssignment.jrag at line 1006
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -342,7 +342,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 1019
+    // Declared in DefiniteAssignment.jrag at line 1021
  @SuppressWarnings({"unchecked", "cast"})     public boolean unassignedAfterLastStmt(Variable v) {
         ASTNode$State state = state();
         boolean unassignedAfterLastStmt_Variable_value = unassignedAfterLastStmt_compute(v);
@@ -351,7 +351,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean unassignedAfterLastStmt_compute(Variable v) {  return getBlock().isDUafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 1022
+    // Declared in DefiniteAssignment.jrag at line 1024
  @SuppressWarnings({"unchecked", "cast"})     public boolean switchLabelEndsBlock() {
         ASTNode$State state = state();
         boolean switchLabelEndsBlock_value = switchLabelEndsBlock_compute();
@@ -505,7 +505,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return typeLong_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 569
+    // Declared in DefiniteAssignment.jrag at line 571
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
             return getExpr().isDAafter(v);
@@ -519,7 +519,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 1027
+    // Declared in DefiniteAssignment.jrag at line 1029
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
             return getExpr().isDUafter(v);

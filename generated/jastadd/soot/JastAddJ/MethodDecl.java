@@ -1513,7 +1513,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return typeObject_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 438
+    // Declared in DefiniteAssignment.jrag at line 440
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockOptNoTransform()) {
             return v.isFinal() && (v.isClassVariable() || v.isInstanceVariable()) ? true : isDAbefore(v);
@@ -1521,7 +1521,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 872
+    // Declared in DefiniteAssignment.jrag at line 874
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockOptNoTransform()) {
             return v.isFinal() && (v.isClassVariable() || v.isInstanceVariable()) ? false : true;

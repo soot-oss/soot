@@ -598,7 +598,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
   }
 
     protected java.util.Map isDAafterInstance_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 422
+    // Declared in DefiniteAssignment.jrag at line 424
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterInstance(Variable v) {
         Object _parameters = v;
 if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values = new java.util.HashMap(4);
@@ -620,7 +620,7 @@ if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values 
     return getArg(getNumArg()-1).isDAafter(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 427
+    // Declared in DefiniteAssignment.jrag at line 429
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         ASTNode$State state = state();
         boolean isDAafter_Variable_value = isDAafter_compute(v);
@@ -630,7 +630,7 @@ if(isDAafterInstance_Variable_values == null) isDAafterInstance_Variable_values 
     private boolean isDAafter_compute(Variable v) {  return isDAafterInstance(v);  }
 
     protected java.util.Map computeDAbefore_int_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 429
+    // Declared in DefiniteAssignment.jrag at line 431
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDAbefore(int i, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(Integer.valueOf(i));
@@ -650,7 +650,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 
     private boolean computeDAbefore_compute(int i, Variable v) {  return i == 0 ? isDAbefore(v) : getArg(i-1).isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 854
+    // Declared in DefiniteAssignment.jrag at line 856
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterInstance(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterInstance_Variable_value = isDUafterInstance_compute(v);
@@ -663,7 +663,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return getArg(getNumArg()-1).isDUafter(v);
   }
 
-    // Declared in DefiniteAssignment.jrag at line 859
+    // Declared in DefiniteAssignment.jrag at line 861
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -673,7 +673,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     private boolean isDUafter_compute(Variable v) {  return isDUafterInstance(v);  }
 
     protected java.util.Map computeDUbefore_int_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 861
+    // Declared in DefiniteAssignment.jrag at line 863
  @SuppressWarnings({"unchecked", "cast"})     public boolean computeDUbefore(int i, Variable v) {
         java.util.List _parameters = new java.util.ArrayList(2);
         _parameters.add(Integer.valueOf(i));
@@ -920,7 +920,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 431
+    // Declared in DefiniteAssignment.jrag at line 433
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getTypeDeclOptNoTransform()) {
             return isDAafterInstance(v);
@@ -932,7 +932,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 860
+    // Declared in DefiniteAssignment.jrag at line 862
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getArgListNoTransform()) {
       int i = caller.getIndexOfChild(child);

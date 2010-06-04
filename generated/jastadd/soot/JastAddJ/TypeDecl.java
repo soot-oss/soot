@@ -4573,7 +4573,7 @@ if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.uti
     }
 
     protected java.util.Map isDUbefore_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 706
+    // Declared in DefiniteAssignment.jrag at line 708
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         Object _parameters = v;
 if(isDUbefore_Variable_values == null) isDUbefore_Variable_values = new java.util.HashMap(4);
@@ -4997,7 +4997,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 713
+    // Declared in DefiniteAssignment.jrag at line 715
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBodyDeclListNoTransform()) { 
    int childIndex = caller.getIndexOfChild(child);

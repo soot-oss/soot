@@ -187,7 +187,7 @@ public class InstanceOfExpr extends Expr implements Cloneable {
 
     private boolean isDAafter_compute(Variable v) {  return getExpr().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 852
+    // Declared in DefiniteAssignment.jrag at line 854
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);

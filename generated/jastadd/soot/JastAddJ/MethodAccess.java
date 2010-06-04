@@ -712,6 +712,24 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 
     private boolean isDAafter_compute(Variable v) {  return getNumArg() == 0 ? isDAbefore(v) : getArg(getNumArg()-1).isDAafter(v);  }
 
+    // Declared in DefiniteAssignment.jrag at line 417
+ @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterTrue(Variable v) {
+        ASTNode$State state = state();
+        boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
+        return isDAafterTrue_Variable_value;
+    }
+
+    private boolean isDAafterTrue_compute(Variable v) {  return (getNumArg() == 0 ? isDAbefore(v) : getArg(getNumArg()-1).isDAafter(v)) || isFalse();  }
+
+    // Declared in DefiniteAssignment.jrag at line 418
+ @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterFalse(Variable v) {
+        ASTNode$State state = state();
+        boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
+        return isDAafterFalse_Variable_value;
+    }
+
+    private boolean isDAafterFalse_compute(Variable v) {  return (getNumArg() == 0 ? isDAbefore(v) : getArg(getNumArg()-1).isDAafter(v)) || isTrue();  }
+
     protected boolean exceptionCollection_computed = false;
     protected Collection exceptionCollection_value;
     // Declared in ExceptionHandling.jrag at line 51

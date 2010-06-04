@@ -110,7 +110,7 @@ public class ExprStmt extends Stmt implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 523
+    // Declared in DefiniteAssignment.jrag at line 525
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -128,7 +128,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return getExpr().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 995
+    // Declared in DefiniteAssignment.jrag at line 997
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -162,7 +162,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean canCompleteNormally_compute() {  return reachable();  }
 
-    // Declared in DefiniteAssignment.jrag at line 524
+    // Declared in DefiniteAssignment.jrag at line 526
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getExprNoTransform()) {
             return isDAbefore(v);
@@ -170,7 +170,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 996
+    // Declared in DefiniteAssignment.jrag at line 998
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getExprNoTransform()) {
             return isDUbefore(v);

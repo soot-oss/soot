@@ -60,7 +60,7 @@ public abstract class Case extends Stmt implements Cloneable {
     // Declared in NameCheck.jrag at line 426
  @SuppressWarnings({"unchecked", "cast"})     public abstract boolean constValue(Case c);
     protected java.util.Map isDAbefore_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 571
+    // Declared in DefiniteAssignment.jrag at line 573
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAbefore(Variable v) {
         Object _parameters = v;
 if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.util.HashMap(4);
@@ -79,7 +79,7 @@ if(isDAbefore_Variable_values == null) isDAbefore_Variable_values = new java.uti
     private boolean isDAbefore_compute(Variable v) {  return getParent().getParent() instanceof Block && ((Block)getParent().getParent()).isDAbefore(v)
     && super.isDAbefore(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 575
+    // Declared in DefiniteAssignment.jrag at line 577
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -97,7 +97,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return isDAbefore(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 1029
+    // Declared in DefiniteAssignment.jrag at line 1031
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbefore(Variable v) {
         ASTNode$State state = state();
         boolean isDUbefore_Variable_value = isDUbefore_compute(v);
@@ -107,7 +107,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     private boolean isDUbefore_compute(Variable v) {  return getParent().getParent() instanceof Block && ((Block)getParent().getParent()).isDUbefore(v)
     && super.isDUbefore(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 1033
+    // Declared in DefiniteAssignment.jrag at line 1035
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);

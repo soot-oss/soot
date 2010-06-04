@@ -21,7 +21,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
         node.is$Final(false);
         return node;
     }
-    // Declared in DefiniteAssignment.jrag at line 464
+    // Declared in DefiniteAssignment.jrag at line 466
 
   // 16.2.2 9th bullet
   protected boolean checkDUeverywhere(Variable v) {
@@ -217,7 +217,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     private boolean isDAafterFalse_compute(Variable v) {  return isDAafter(v) || isTrue();  }
 
-    // Declared in DefiniteAssignment.jrag at line 827
+    // Declared in DefiniteAssignment.jrag at line 829
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
@@ -226,7 +226,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     private boolean isDUafter_compute(Variable v) {  return getSource().isDUafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 830
+    // Declared in DefiniteAssignment.jrag at line 832
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterTrue(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
@@ -235,7 +235,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
 
     private boolean isDUafterTrue_compute(Variable v) {  return isDUafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 831
+    // Declared in DefiniteAssignment.jrag at line 833
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterFalse(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
@@ -313,7 +313,7 @@ public abstract class AssignExpr extends Expr implements Cloneable {
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 829
+    // Declared in DefiniteAssignment.jrag at line 831
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getDestNoTransform()) {
             return isDUbefore(v);

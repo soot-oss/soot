@@ -446,7 +446,7 @@ if(targetOf_BreakStmt_values == null) targetOf_BreakStmt_values = new java.util.
 
     private boolean targetOf_compute(BreakStmt stmt) {  return !stmt.hasLabel();  }
 
-    // Declared in DefiniteAssignment.jrag at line 613
+    // Declared in DefiniteAssignment.jrag at line 615
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -473,7 +473,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 626
+    // Declared in DefiniteAssignment.jrag at line 628
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterInitialization(Variable v) {
         ASTNode$State state = state();
         boolean isDAafterInitialization_Variable_value = isDAafterInitialization_compute(v);
@@ -482,7 +482,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafterInitialization_compute(Variable v) {  return getNumInitStmt() == 0 ? isDAbefore(v) : getInitStmt(getNumInitStmt()-1).isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 1100
+    // Declared in DefiniteAssignment.jrag at line 1102
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -514,7 +514,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 1120
+    // Declared in DefiniteAssignment.jrag at line 1122
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterInit(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterInit_Variable_value = isDUafterInit_compute(v);
@@ -524,7 +524,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
     private boolean isDUafterInit_compute(Variable v) {  return getNumInitStmt() == 0 ? isDUbefore(v) : getInitStmt(getNumInitStmt()-1).isDUafter(v);  }
 
     protected java.util.Map isDUbeforeCondition_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 1122
+    // Declared in DefiniteAssignment.jrag at line 1124
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUbeforeCondition(Variable v) {
         Object _parameters = v;
 if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_values = new java.util.HashMap(4);
@@ -594,7 +594,7 @@ if(isDUbeforeCondition_Variable_values == null) isDUbeforeCondition_Variable_val
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 1133
+    // Declared in DefiniteAssignment.jrag at line 1135
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterUpdate(Variable v) {
         ASTNode$State state = state();
         boolean isDUafterUpdate_Variable_value = isDUafterUpdate_compute(v);
@@ -804,7 +804,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return lookupVariable_String_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 637
+    // Declared in DefiniteAssignment.jrag at line 639
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getUpdateStmtListNoTransform()) { 
    int childIndex = caller.getIndexOfChild(child);
@@ -836,7 +836,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 1149
+    // Declared in DefiniteAssignment.jrag at line 1151
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getUpdateStmtListNoTransform()) { 
    int i = caller.getIndexOfChild(child);
@@ -943,7 +943,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
     }
 
 public ASTNode rewriteTo() {
-    // Declared in DefiniteAssignment.jrag at line 1167
+    // Declared in DefiniteAssignment.jrag at line 1169
     if(!hasCondition()) {
         state().duringDefiniteAssignment++;
         ASTNode result = rewriteRule0();
@@ -954,7 +954,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in DefiniteAssignment.jrag at line 1167
+    // Declared in DefiniteAssignment.jrag at line 1169
     private ForStmt rewriteRule0() {
 {
       setCondition(new BooleanLiteral("true"));

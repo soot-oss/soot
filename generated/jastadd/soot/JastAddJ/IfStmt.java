@@ -229,7 +229,7 @@ public class IfStmt extends Stmt implements Cloneable {
         return (Opt<Stmt>)getChildNoTransform(2);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 526
+    // Declared in DefiniteAssignment.jrag at line 528
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -247,7 +247,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return hasElse() ? getThen().isDAafter(v) && getElse().isDAafter(v) : getThen().isDAafter(v) && getCondition().isDAafterFalse(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 998
+    // Declared in DefiniteAssignment.jrag at line 1000
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -327,7 +327,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private soot.jimple.Stmt then_branch_label_compute() {  return newLabel();  }
 
-    // Declared in DefiniteAssignment.jrag at line 529
+    // Declared in DefiniteAssignment.jrag at line 531
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getElseOptNoTransform()) {
             return getCondition().isDAafterFalse(v);
@@ -341,7 +341,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 1001
+    // Declared in DefiniteAssignment.jrag at line 1003
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getElseOptNoTransform()) {
             return getCondition().isDUafterFalse(v);

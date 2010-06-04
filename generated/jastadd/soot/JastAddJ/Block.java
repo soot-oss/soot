@@ -225,7 +225,7 @@ if(checkReturnDA_Variable_values == null) checkReturnDA_Variable_values = new ja
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 442
+    // Declared in DefiniteAssignment.jrag at line 444
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
         Object _parameters = v;
 if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
@@ -243,7 +243,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return getNumStmt() == 0 ? isDAbefore(v) : getStmt(getNumStmt()-1).isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 448
+    // Declared in DefiniteAssignment.jrag at line 450
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUeverywhere(Variable v) {
         ASTNode$State state = state();
         boolean isDUeverywhere_Variable_value = isDUeverywhere_compute(v);
@@ -253,7 +253,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
     private boolean isDUeverywhere_compute(Variable v) {  return isDUbefore(v) && checkDUeverywhere(v);  }
 
     protected java.util.Map checkReturnDU_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 758
+    // Declared in DefiniteAssignment.jrag at line 760
  @SuppressWarnings({"unchecked", "cast"})     public boolean checkReturnDU(Variable v) {
         Object _parameters = v;
 if(checkReturnDU_Variable_values == null) checkReturnDU_Variable_values = new java.util.HashMap(4);
@@ -283,7 +283,7 @@ if(checkReturnDU_Variable_values == null) checkReturnDU_Variable_values = new ja
     return true;
   }
 
-    // Declared in DefiniteAssignment.jrag at line 874
+    // Declared in DefiniteAssignment.jrag at line 876
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -409,7 +409,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isIncOrDec(this, caller);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 445
+    // Declared in DefiniteAssignment.jrag at line 447
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtListNoTransform()) {
       int index = caller.getIndexOfChild(child);
@@ -418,7 +418,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
 
-    // Declared in DefiniteAssignment.jrag at line 875
+    // Declared in DefiniteAssignment.jrag at line 877
     public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getStmtListNoTransform()) {
       int index = caller.getIndexOfChild(child);

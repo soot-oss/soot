@@ -134,7 +134,7 @@ if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.
 
     private boolean isDAafter_compute(Variable v) {  return getBlock().isDAafter(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 751
+    // Declared in DefiniteAssignment.jrag at line 753
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         Object _parameters = v;
 if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
@@ -178,7 +178,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return handlesException_TypeDecl_value;
     }
 
-    // Declared in DefiniteAssignment.jrag at line 440
+    // Declared in DefiniteAssignment.jrag at line 442
     public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
         if(caller == getBlockNoTransform()) {
             return isDAbefore(v);

@@ -279,7 +279,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     private boolean isDAafter_compute(Variable v) {  return isDAbefore(v);  }
 
-    // Declared in DefiniteAssignment.jrag at line 755
+    // Declared in DefiniteAssignment.jrag at line 757
  @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
         ASTNode$State state = state();
         boolean isDUafter_Variable_value = isDUafter_compute(v);
