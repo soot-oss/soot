@@ -382,7 +382,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
 	
 	/** Auto-unboxes an argument array.
-	 * @param argsArrayLocal a locla holding the argument Object[] array
+	 * @param argsArrayLocal a local holding the argument Object[] array
 	 * @param paramIndex the index of the parameter to unbox
 	 * @param paramType the (target) type of the parameter
 	 * @param newUnits the Unit chain to which the unboxing code will be appended
