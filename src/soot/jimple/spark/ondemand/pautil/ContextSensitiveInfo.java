@@ -200,6 +200,9 @@ public class ContextSensitiveInfo {
             Set curEdges = callAssigns.get(ie);
             for (Iterator iterator = curEdges.iterator(); iterator.hasNext();) {
                 Pair callAssign = (Pair) iterator.next();
+                //for reflective calls, the "O1" value can actually be a FieldRefNode
+                //we simply ignore such cases here (appears to be sound)
+                if(!(callAssign.getO1() instanceof VarNode)) continue;
                 VarNode src = (VarNode) callAssign.getO1();
                 VarNode dst = (VarNode) callAssign.getO2();
                 if (skipNode(src)) {
