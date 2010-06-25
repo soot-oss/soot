@@ -1432,7 +1432,41 @@ traps whose catch blocks are empty.
 					</boolopt>
 				</sub_phase>
 			</phase>
-			<radio_phase>
+      <phase>
+        <name>Whole Jimple Pre-processing Pack</name>
+        <alias>wsop</alias>
+        <short_desc>Whole Jimple Pre-processing Pack</short_desc>
+        <long_desc>
+<p>
+This pack allows you to insert pre-processors that are run before
+call-graph construction. Only enabled in whole-program mode.</p>
+<p>
+In an unmodified copy of Soot, this pack is empty.</p>
+        </long_desc>        
+        <boolopt>
+          <name>Enabled</name>
+          <alias>enabled</alias>
+          <default>false</default>
+        </boolopt>
+      </phase>
+      <phase>
+        <name>Whole Shimple Pre-processing Pack</name>
+        <alias>wsop</alias>
+        <short_desc>Whole Shimple Pre-processing Pack</short_desc>
+        <long_desc>
+<p>
+This pack allows you to insert pre-processors that are run before
+call-graph construction. Only enabled in whole-program Shimple mode.</p>
+<p>
+In an unmodified copy of Soot, this pack is empty.</p>
+        </long_desc>        
+        <boolopt>
+          <name>Enabled</name>
+          <alias>enabled</alias>
+          <default>false</default>
+        </boolopt>
+      </phase>      			
+      <radio_phase>
 				<name>Call Graph Constructor</name>
 				<alias>cg</alias>
                                 <class>CGOptions</class>

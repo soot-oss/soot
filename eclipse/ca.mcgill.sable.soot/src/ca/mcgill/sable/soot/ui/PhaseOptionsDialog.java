@@ -76,6 +76,10 @@ Composite jbChild = jbCreate(getPageContainer());
 
 Composite jjChild = jjCreate(getPageContainer());
 
+Composite wsopChild = wsopCreate(getPageContainer());
+
+Composite wsopChild = wsopCreate(getPageContainer());
+
 Composite cgChild = cgCreate(getPageContainer());
 
 Composite wstpChild = wstpCreate(getPageContainer());
@@ -658,6 +662,24 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("jj", "jj.uce", getjjjj_uceenabled_widget(), "enabled");
 		
 		getjjjj_uceenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wsop");
+		
+		
+		addToEnableGroup("wsop", getwsopenabled_widget(), "enabled");
+		
+		
+		getwsopenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wsop");
+		
+		
+		addToEnableGroup("wsop", getwsopenabled_widget(), "enabled");
+		
+		
+		getwsopenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg");
@@ -1973,14 +1995,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getInput_Optionsno_jrl_widget().getButton().getSelection();
+		boolRes = getInput_Optionsno_bodies_for_excluded_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionsno_jrl_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getInput_Optionsno_bodies_for_excluded_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getInput_Optionsj2me_widget().getButton().getSelection();
@@ -2695,6 +2717,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_uceenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwsopenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwsopenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwsopenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwsopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgenabled_widget().getButton().getSelection();
@@ -5335,6 +5377,20 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			subSectParent = jj_jj_uce_branch;
 			
 			
+			//Whole Jimple Pre-processing Pack
+			SootOption wsop_branch = new SootOption("Whole Jimple Pre-processing Pack", "wsop");
+			parent.addChild(wsop_branch);
+			subParent = wsop_branch;
+
+
+			
+			//Whole Shimple Pre-processing Pack
+			SootOption wsop_branch = new SootOption("Whole Shimple Pre-processing Pack", "wsop");
+			parent.addChild(wsop_branch);
+			subParent = wsop_branch;
+
+
+			
 			//Call Graph Constructor
 			SootOption cg_branch = new SootOption("Call Graph Constructor", "cg");
 			parent.addChild(cg_branch);
@@ -6282,14 +6338,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsallow_phantom_refs_widget;
 	}	
 	
-	private BooleanOptionWidget Input_Optionsno_jrl_widget;
+	private BooleanOptionWidget Input_Optionsno_bodies_for_excluded_widget;
 	
-	private void setInput_Optionsno_jrl_widget(BooleanOptionWidget widget) {
-		Input_Optionsno_jrl_widget = widget;
+	private void setInput_Optionsno_bodies_for_excluded_widget(BooleanOptionWidget widget) {
+		Input_Optionsno_bodies_for_excluded_widget = widget;
 	}
 	
-	public BooleanOptionWidget getInput_Optionsno_jrl_widget() {
-		return Input_Optionsno_jrl_widget;
+	public BooleanOptionWidget getInput_Optionsno_bodies_for_excluded_widget() {
+		return Input_Optionsno_bodies_for_excluded_widget;
 	}	
 	
 	private BooleanOptionWidget Input_Optionsj2me_widget;
@@ -7028,6 +7084,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getjjjj_uceenabled_widget() {
 		return jjjj_uceenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wsopenabled_widget;
+	
+	private void setwsopenabled_widget(BooleanOptionWidget widget) {
+		wsopenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwsopenabled_widget() {
+		return wsopenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wsopenabled_widget;
+	
+	private void setwsopenabled_widget(BooleanOptionWidget widget) {
+		wsopenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwsopenabled_widget() {
+		return wsopenabled_widget;
 	}	
 	
 	private BooleanOptionWidget cgenabled_widget;
@@ -9748,7 +9824,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		defKey = ""+" "+""+" "+"no-jrl";
+		defKey = ""+" "+""+" "+"no-bodies-for-excluded";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -9760,7 +9836,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsno_jrl_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-jrl", "\nPrevents Soot from loading and analyzing any classes from \nexcluded packages (even in whole-program mode), except for \napplication classes and such classes that are explicitly added \nas basic-classes. ", defaultBool)));
+		setInput_Optionsno_bodies_for_excluded_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-bodies-for-excluded", "\nPrevents Soot from loading method bodies for all excluded \nclasses (see exclude option), even when running in whole-program \nmode. This is useful for computing a shallow points-to analysis \nthat does not, for instance, take into account the JDK. Of \ncourse, such analyses may be unsound. You get what you are \nasking for. ", defaultBool)));
 		
 		
 		
@@ -11902,6 +11978,98 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupjjjj_uce;
+	}
+
+
+
+	private Composite wsopCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupwsop = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwsop.setLayout(layout);
+	
+	 	editGroupwsop.setText("Whole Jimple Pre-processing Pack");
+	 	
+		editGroupwsop.setData("id", "wsop");
+		
+		String descwsop = "Whole Jimple Pre-processing Pack";	
+		if (descwsop.length() > 0) {
+			Label descLabelwsop = new Label(editGroupwsop, SWT.WRAP);
+			descLabelwsop.setText(descwsop);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"wsop"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwsopenabled_widget(new BooleanOptionWidget(editGroupwsop, SWT.NONE, new OptionData("Enabled", "p", "wsop","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupwsop;
+	}
+
+
+
+	private Composite wsopCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupwsop = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwsop.setLayout(layout);
+	
+	 	editGroupwsop.setText("Whole Shimple Pre-processing Pack");
+	 	
+		editGroupwsop.setData("id", "wsop");
+		
+		String descwsop = "Whole Shimple Pre-processing Pack";	
+		if (descwsop.length() > 0) {
+			Label descLabelwsop = new Label(editGroupwsop, SWT.WRAP);
+			descLabelwsop.setText(descwsop);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"wsop"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwsopenabled_widget(new BooleanOptionWidget(editGroupwsop, SWT.NONE, new OptionData("Enabled", "p", "wsop","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupwsop;
 	}
 
 

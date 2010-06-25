@@ -21,6 +21,7 @@ Improvements and API changes in trunk
    quickly on little toy examples, disregarding the Java runtime. Of
    course, such an analysis may be unsound - you get what you are asking
    for.
+5. Added new packs "wjpp" and "wspp" for adding pre-processors. 
 
 Improvements and API changes in version 2.4.0
 

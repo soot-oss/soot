@@ -120,7 +120,13 @@ public class PackManager {
             p.add(new Transform("jj.uce", UnreachableCodeEliminator.v()));
         
         }
-        
+
+        //Whole-Jimple Pre-processing Pack
+        addPack(p = new ScenePack("wjpp"));
+
+        //Whole-Shimple Pre-processing Pack
+        addPack(p = new ScenePack("wspp"));
+
         // Call graph pack
         addPack(p = new CallGraphPack("cg"));
         {
@@ -401,10 +407,12 @@ public class PackManager {
     private void runWholeProgramPacks() {
         if (Options.v().whole_shimple()) {
             ShimpleTransformer.v().transform();
+            getPack("wspp").apply();
             getPack("cg").apply();
             getPack("wstp").apply();
             getPack("wsop").apply();
         } else {
+            getPack("wjpp").apply();
             getPack("cg").apply();
             getPack("wjtp").apply();
             getPack("wjop").apply();
