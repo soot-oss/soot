@@ -282,7 +282,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 		while(addedNew)
 		{
 			addedNew = false;
-			Iterator<AbstractRuntimeThread> it = runAtOnceCandidates.iterator();
+			ListIterator<AbstractRuntimeThread> it = runAtOnceCandidates.listIterator();
 			while(it.hasNext())
 			{
 				AbstractRuntimeThread someThread = it.next();
@@ -292,7 +292,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 					MHPLists.add(someThread); // add a second copy of it
 					someThread.setStartMethodMayHappenInParallel();
 					someThread.setRunsMany();
-					runAtOnceCandidates.remove(someThread);
+					it.remove();
 					if(optionPrintDebug)
 						G.v().out.println(someThread.toString());
 					addedNew = true;
