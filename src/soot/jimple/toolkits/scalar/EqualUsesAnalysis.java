@@ -14,6 +14,9 @@ import soot.jimple.*;
 // 
 // The locals being used need not be the same
 
+/**
+ * @deprecated This class is buggy. Please use soot.jimple.toolkits.pointer.LocalMustAliasAnalysis instead.
+ */
 public class EqualUsesAnalysis extends ForwardFlowAnalysis
 {
 	// Provided by client

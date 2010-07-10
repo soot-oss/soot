@@ -12,9 +12,6 @@ import soot.jimple.spark.pag.*;
 // This can be used as an alternative to PegGraph and PegChain
 // if only thread start, join, and type information is needed
 
-// This is implemented as a real flow analysis so that, in the future,
-// flow information can be used to match starts with joins
-
 public class StartJoinFinder
 {
 	Set<Stmt> startStatements;

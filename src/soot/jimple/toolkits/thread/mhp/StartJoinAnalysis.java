@@ -1,15 +1,39 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.scalar.EqualUsesAnalysis;
-import soot.jimple.*;
-import soot.jimple.spark.sets.*;
-import soot.jimple.spark.pag.*;
+import soot.Hierarchy;
+import soot.Local;
+import soot.MethodOrMethodContext;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Value;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Filter;
+import soot.jimple.toolkits.callgraph.TransitiveTargets;
+import soot.jimple.toolkits.pointer.LocalMustAliasAnalysis;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.MHGPostDominatorsFinder;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.ArraySparseSet;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 // StartJoinFinder written by Richard L. Halpert, 2006-12-04
 // This can be used as an alternative to PegGraph and PegChain
@@ -49,7 +73,8 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		{
 			// Get supporting info and analyses
 			MHGPostDominatorsFinder pd = new MHGPostDominatorsFinder(new BriefUnitGraph(sm.getActiveBody()));
-			EqualUsesAnalysis lif = new EqualUsesAnalysis(g);
+			//EqualUsesAnalysis lif = new EqualUsesAnalysis(g);
+			LocalMustAliasAnalysis lma = new LocalMustAliasAnalysis(g);
 			TransitiveTargets runMethodTargets = new TransitiveTargets( callGraph, new Filter(new RunMethodsPred()) );
 			
 			// Build a map from start stmt to possible run methods, 
@@ -138,7 +163,8 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					// If startObject and joinObject MUST be the same, and if join post-dominates start
 					List barriers = new ArrayList();
 					barriers.addAll(g.getSuccsOf(join)); // definitions of the start variable are tracked until they pass a join
-					if( lif.areEqualUses( start, (Local) startObject, join, (Local) joinObject, barriers) )
+//					if( lif.areEqualUses( start, (Local) startObject, join, (Local) joinObject, barriers) )
+					if(lma.mustAlias((Local) startObject, start, (Local) joinObject, join))
 					{
 						if((pd.getDominators(start)).contains(join)) // does join post-dominate start?
 						{
