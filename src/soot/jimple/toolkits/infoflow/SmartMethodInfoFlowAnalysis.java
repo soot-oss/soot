@@ -385,10 +385,10 @@ public class SmartMethodInfoFlowAnalysis
 				// if the sink is the return value
 					// add node to list of return value sources
 
-	protected List handleInvokeExpr(InvokeExpr ie)
+	protected List handleInvokeExpr(InvokeExpr ie, Stmt is)
 	{
 		// get the data flow graph
-		HashMutableDirectedGraph dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
+		HashMutableDirectedGraph dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph whose nodes are Refs!!!
 		if(false) // DEBUG!!!
 		{
 			SootMethod method = ie.getMethodRef().resolve();
@@ -793,7 +793,7 @@ public class SmartMethodInfoFlowAnalysis
 			else if(rv instanceof InvokeExpr)
 			{
 				InvokeExpr ie = (InvokeExpr) rv;
-				sources.addAll(handleInvokeExpr(ie));
+				sources.addAll(handleInvokeExpr(ie, as));
 				interestingFlow = !ignoreThisDataType(ie.getType());
 			}
 			
@@ -823,7 +823,7 @@ public class SmartMethodInfoFlowAnalysis
 		}
 		else if(stmt.containsInvokeExpr()) // flows data between receiver object, parameters, globals, and return value
 		{
-			handleInvokeExpr(stmt.getInvokeExpr());
+			handleInvokeExpr(stmt.getInvokeExpr(), stmt);
 		}
 	}
 	

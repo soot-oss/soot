@@ -293,10 +293,10 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 				// if the sink is the return value
 					// add node to list of return value sources
 
-	protected List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
+	protected List handleInvokeExpr(InvokeExpr ie, Stmt is, FlowSet fs)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
+		MutableDirectedGraph dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph whose nodes are Refs!!!
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
 //			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowGraph: ");
@@ -561,7 +561,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 			else if(rv instanceof InvokeExpr)
 			{
 				InvokeExpr ie = (InvokeExpr) rv;
-				sources.addAll(handleInvokeExpr(ie, changedFlow));
+				sources.addAll(handleInvokeExpr(ie, as, changedFlow));
 				interestingFlow = !ignoreThisDataType(ie.getType());
 			}
 			
@@ -589,7 +589,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		}
 		else if(stmt.containsInvokeExpr()) // flows data between receiver object, parameters, globals, and return value
 		{
-			handleInvokeExpr(stmt.getInvokeExpr(), changedFlow);
+			handleInvokeExpr(stmt.getInvokeExpr(), stmt, changedFlow);
 		}
 		
 //		changedFlow.union(out, out); - OBSELETE optimization

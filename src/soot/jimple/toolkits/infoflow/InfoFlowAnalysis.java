@@ -6,6 +6,8 @@ import soot.*;
 import soot.util.dot.*;
 import soot.toolkits.graph.*;
 import soot.jimple.internal.*;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.*;
 
 // InfoFlowAnalysis written by Richard L. Halpert, 2007-02-24
@@ -188,12 +190,41 @@ public class InfoFlowAnalysis
 		return new CachedEquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
 	}
 	
-	protected HashMutableDirectedGraph getInvokeInfoFlowSummary(InvokeExpr ie, SootMethod context)
+	protected HashMutableDirectedGraph getInvokeInfoFlowSummary(InvokeExpr ie, Stmt is, SootMethod context)
 	{
 		// get the data flow graph for each possible target of ie,
 		// then combine them conservatively and return the result.
+		HashMutableDirectedGraph ret = null;
+		
 		SootMethodRef methodRef = ie.getMethodRef();
-		return getMethodInfoFlowSummary(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
+		String subSig = methodRef.resolve().getSubSignature();
+		CallGraph cg = Scene.v().getCallGraph();
+		for(Iterator<Edge> edges = cg.edgesOutOf(is); edges.hasNext();)
+		{
+			Edge e = edges.next();
+			SootMethod target = e.getTgt().method();
+			// Verify that this target is an implementation of the method we intend to call,
+			// and not just a class initializer or other unintended control flow.
+			if(target.getSubSignature().equals(subSig))
+			{
+				HashMutableDirectedGraph ifs = getMethodInfoFlowSummary(target, context.getDeclaringClass().isApplicationClass());
+				if(ret == null)
+					ret = ifs;
+				else
+				{
+					for(Object node : ifs.getNodes())
+					{
+						if(!ret.containsNode(node))
+							ret.addNode(node);
+						for(Object succ : ifs.getSuccsOf(node))
+							ret.addEdge(node, succ);
+					}
+				}
+			}
+			
+		}
+		return ret;
+//		return getMethodInfoFlowSummary(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
 	}
 	
 	protected MutableDirectedGraph getInvokeAbbreviatedInfoFlowGraph(InvokeExpr ie, SootMethod context)
