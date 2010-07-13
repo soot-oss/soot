@@ -83,9 +83,8 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	
 	boolean initialized = false;
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	protected void internalTransform(String phaseName, Map options) {
+	protected void internalTransform(String phaseName, @SuppressWarnings("rawtypes") Map options) {
 		if(!initialized) {
 			CGOptions cgOptions = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
 			String logFilePath = cgOptions.reflection_log();
