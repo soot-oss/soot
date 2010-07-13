@@ -187,9 +187,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					newUnits.add(assignStmt);
 				} else if(callKind==Kind.MethodInvoke && ie.getMethodRef().getSignature().equals("<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>")) {
 					//on method.invoke(obj): targetName = SootSig.sootSignature(obj,method)
-					Local constrLocal = (Local) ((InstanceInvokeExpr)ie).getBase();
-					Local recvLocal = (Local) ie.getArg(0);
-					StaticInvokeExpr getNameExpr = Jimple.v().newStaticInvokeExpr(SOOTSIG_METHOD, recvLocal, constrLocal);
+					Local methodLocal = (Local) ((InstanceInvokeExpr)ie).getBase();
+					Value recv = ie.getArg(0);
+					StaticInvokeExpr getNameExpr = Jimple.v().newStaticInvokeExpr(SOOTSIG_METHOD, recv, methodLocal);
 					targetNameLocal = localGen.generateLocal(RefType.v("java.lang.String"));
 					AssignStmt assignStmt = Jimple.v().newAssignStmt(targetNameLocal, getNameExpr);
 					newUnits.add(assignStmt);
@@ -268,7 +268,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 						 * Tn an = (Tn)pn;
 						 */
 						SootMethod method = Scene.v().getMethod(target);
-						Local recvObjectLocal = (Local) ie.getArg(0);
+						Value recvObject = ie.getArg(0);
 						Local argsArrayLocal = (Local) s.getInvokeExpr().getArg(1);
 						int i=0;
 						paramLocals = new Local[method.getParameterCount()];
@@ -279,7 +279,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 						}
 						RefType targetType = method.getDeclaringClass().getType();
 						freshLocal = localGen.generateLocal(targetType);						
-						replacement = Jimple.v().newCastExpr(recvObjectLocal, method.getDeclaringClass().getType());
+						replacement = Jimple.v().newCastExpr(recvObject, method.getDeclaringClass().getType());
 						
 						break;
 					}
@@ -312,7 +312,11 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					case MethodInvoke:
 						//add: r=recv.<target>(a0,...,an);
 						SootMethod method = Scene.v().getMethod(target);
-						VirtualInvokeExpr invokeExpr = Jimple.v().newVirtualInvokeExpr(freshLocal, method.makeRef(), Arrays.asList(paramLocals));
+						InvokeExpr invokeExpr;
+						if(method.isStatic())
+							invokeExpr = Jimple.v().newStaticInvokeExpr(method.makeRef(), Arrays.asList(paramLocals));
+						else
+							invokeExpr = Jimple.v().newVirtualInvokeExpr(freshLocal, method.makeRef(), Arrays.asList(paramLocals));
 						InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(invokeExpr);
 						newUnits.add(invokeStmt);
 						break;
