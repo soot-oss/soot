@@ -1446,7 +1446,7 @@ In an unmodified copy of Soot, this pack is empty.</p>
         <boolopt>
           <name>Enabled</name>
           <alias>enabled</alias>
-          <default>false</default>
+          <default>true</default>
         </boolopt>
       </phase>
       <phase>
@@ -1463,7 +1463,7 @@ In an unmodified copy of Soot, this pack is empty.</p>
         <boolopt>
           <name>Enabled</name>
           <alias>enabled</alias>
-          <default>false</default>
+          <default>true</default>
         </boolopt>
       </phase>      			
       <radio_phase>

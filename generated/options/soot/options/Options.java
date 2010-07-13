@@ -1516,13 +1516,13 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nmode. In an unmodified copy of Soot, this pack is empty."
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
+                +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "wspp" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nShimple mode. In an unmodified copy of Soot, this pack is empty."
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
+                +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "cg" ) )
             return "Phase "+phaseName+":\n"+
@@ -3036,11 +3036,11 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjpp" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:true ";
     
         if( phaseName.equals( "wspp" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:true ";
     
         if( phaseName.equals( "cg" ) )
             return ""
