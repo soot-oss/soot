@@ -76,9 +76,9 @@ Composite jbChild = jbCreate(getPageContainer());
 
 Composite jjChild = jjCreate(getPageContainer());
 
-Composite wsopChild = wsopCreate(getPageContainer());
+Composite wjppChild = wjppCreate(getPageContainer());
 
-Composite wsopChild = wsopCreate(getPageContainer());
+Composite wsppChild = wsppCreate(getPageContainer());
 
 Composite cgChild = cgCreate(getPageContainer());
 
@@ -664,22 +664,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getjjjj_uceenabled_widget().getButton().addSelectionListener(this);
 		
 		
-		makeNewEnableGroup("wsop");
+		makeNewEnableGroup("wjpp");
 		
 		
-		addToEnableGroup("wsop", getwsopenabled_widget(), "enabled");
+		addToEnableGroup("wjpp", getwjppenabled_widget(), "enabled");
 		
 		
-		getwsopenabled_widget().getButton().addSelectionListener(this);
+		getwjppenabled_widget().getButton().addSelectionListener(this);
 		
 		
-		makeNewEnableGroup("wsop");
+		makeNewEnableGroup("wspp");
 		
 		
-		addToEnableGroup("wsop", getwsopenabled_widget(), "enabled");
+		addToEnableGroup("wspp", getwsppenabled_widget(), "enabled");
 		
 		
-		getwsopenabled_widget().getButton().addSelectionListener(this);
+		getwsppenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg");
@@ -2719,24 +2719,24 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getjjjj_uceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwsopenabled_widget().getButton().getSelection();
+		boolRes = getwjppenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwsopenabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwjppenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwsopenabled_widget().getButton().getSelection();
+		boolRes = getwsppenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwsopenabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwsppenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgenabled_widget().getButton().getSelection();
@@ -5378,16 +5378,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 			
 			//Whole Jimple Pre-processing Pack
-			SootOption wsop_branch = new SootOption("Whole Jimple Pre-processing Pack", "wsop");
-			parent.addChild(wsop_branch);
-			subParent = wsop_branch;
+			SootOption wjpp_branch = new SootOption("Whole Jimple Pre-processing Pack", "wjpp");
+			parent.addChild(wjpp_branch);
+			subParent = wjpp_branch;
 
 
 			
 			//Whole Shimple Pre-processing Pack
-			SootOption wsop_branch = new SootOption("Whole Shimple Pre-processing Pack", "wsop");
-			parent.addChild(wsop_branch);
-			subParent = wsop_branch;
+			SootOption wspp_branch = new SootOption("Whole Shimple Pre-processing Pack", "wspp");
+			parent.addChild(wspp_branch);
+			subParent = wspp_branch;
 
 
 			
@@ -7086,24 +7086,24 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return jjjj_uceenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wsopenabled_widget;
+	private BooleanOptionWidget wjppenabled_widget;
 	
-	private void setwsopenabled_widget(BooleanOptionWidget widget) {
-		wsopenabled_widget = widget;
+	private void setwjppenabled_widget(BooleanOptionWidget widget) {
+		wjppenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwsopenabled_widget() {
-		return wsopenabled_widget;
+	public BooleanOptionWidget getwjppenabled_widget() {
+		return wjppenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wsopenabled_widget;
+	private BooleanOptionWidget wsppenabled_widget;
 	
-	private void setwsopenabled_widget(BooleanOptionWidget widget) {
-		wsopenabled_widget = widget;
+	private void setwsppenabled_widget(BooleanOptionWidget widget) {
+		wsppenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwsopenabled_widget() {
-		return wsopenabled_widget;
+	public BooleanOptionWidget getwsppenabled_widget() {
+		return wsppenabled_widget;
 	}	
 	
 	private BooleanOptionWidget cgenabled_widget;
@@ -11982,31 +11982,31 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 
 
-	private Composite wsopCreate(Composite parent) {
+	private Composite wjppCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupwsop = new Group(parent, SWT.NONE);
+		Group editGroupwjpp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupwsop.setLayout(layout);
+		editGroupwjpp.setLayout(layout);
 	
-	 	editGroupwsop.setText("Whole Jimple Pre-processing Pack");
+	 	editGroupwjpp.setText("Whole Jimple Pre-processing Pack");
 	 	
-		editGroupwsop.setData("id", "wsop");
+		editGroupwjpp.setData("id", "wjpp");
 		
-		String descwsop = "Whole Jimple Pre-processing Pack";	
-		if (descwsop.length() > 0) {
-			Label descLabelwsop = new Label(editGroupwsop, SWT.WRAP);
-			descLabelwsop.setText(descwsop);
+		String descwjpp = "Whole Jimple Pre-processing Pack";	
+		if (descwjpp.length() > 0) {
+			Label descLabelwjpp = new Label(editGroupwjpp, SWT.WRAP);
+			descLabelwjpp.setText(descwjpp);
 		}
 		OptionData [] data;	
 		
 		
 		
 		
-		defKey = "p"+" "+"wsop"+" "+"enabled";
+		defKey = "p"+" "+"wjpp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -12018,41 +12018,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwsopenabled_widget(new BooleanOptionWidget(editGroupwsop, SWT.NONE, new OptionData("Enabled", "p", "wsop","enabled", "\n", defaultBool)));
+		setwjppenabled_widget(new BooleanOptionWidget(editGroupwjpp, SWT.NONE, new OptionData("Enabled", "p", "wjpp","enabled", "\n", defaultBool)));
 		
 		
 
 		
-		return editGroupwsop;
+		return editGroupwjpp;
 	}
 
 
 
-	private Composite wsopCreate(Composite parent) {
+	private Composite wsppCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupwsop = new Group(parent, SWT.NONE);
+		Group editGroupwspp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupwsop.setLayout(layout);
+		editGroupwspp.setLayout(layout);
 	
-	 	editGroupwsop.setText("Whole Shimple Pre-processing Pack");
+	 	editGroupwspp.setText("Whole Shimple Pre-processing Pack");
 	 	
-		editGroupwsop.setData("id", "wsop");
+		editGroupwspp.setData("id", "wspp");
 		
-		String descwsop = "Whole Shimple Pre-processing Pack";	
-		if (descwsop.length() > 0) {
-			Label descLabelwsop = new Label(editGroupwsop, SWT.WRAP);
-			descLabelwsop.setText(descwsop);
+		String descwspp = "Whole Shimple Pre-processing Pack";	
+		if (descwspp.length() > 0) {
+			Label descLabelwspp = new Label(editGroupwspp, SWT.WRAP);
+			descLabelwspp.setText(descwspp);
 		}
 		OptionData [] data;	
 		
 		
 		
 		
-		defKey = "p"+" "+"wsop"+" "+"enabled";
+		defKey = "p"+" "+"wspp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -12064,12 +12064,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwsopenabled_widget(new BooleanOptionWidget(editGroupwsop, SWT.NONE, new OptionData("Enabled", "p", "wsop","enabled", "\n", defaultBool)));
+		setwsppenabled_widget(new BooleanOptionWidget(editGroupwspp, SWT.NONE, new OptionData("Enabled", "p", "wspp","enabled", "\n", defaultBool)));
 		
 		
 
 		
-		return editGroupwsop;
+		return editGroupwspp;
 	}
 
 

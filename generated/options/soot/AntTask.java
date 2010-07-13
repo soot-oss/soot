@@ -987,31 +987,31 @@ public class AntTask extends MatchingTask {
       
         }
     
-        public Object createp_wsop() {
-            Object ret = new PhaseOptwsop();
+        public Object createp_wjpp() {
+            Object ret = new PhaseOptwjpp();
             phaseopts.add(ret);
             return ret;
         }
-        public class PhaseOptwsop {
+        public class PhaseOptwjpp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
-            addArg("wsop");
+            addArg("wjpp");
             addArg("enabled:"+(arg?"true":"false"));
           }
       
         }
     
-        public Object createp_wsop() {
-            Object ret = new PhaseOptwsop();
+        public Object createp_wspp() {
+            Object ret = new PhaseOptwspp();
             phaseopts.add(ret);
             return ret;
         }
-        public class PhaseOptwsop {
+        public class PhaseOptwspp {
       
           public void setenabled(boolean arg) {
             addArg("-p");
-            addArg("wsop");
+            addArg("wspp");
             addArg("enabled:"+(arg?"true":"false"));
           }
       

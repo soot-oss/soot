@@ -1246,8 +1246,8 @@ public class Options extends OptionsBase {
         +padVal("jj.lp", "Local packer: minimizes number of locals")
         +padVal("jj.ne", "Nop eliminator")
         +padVal("jj.uce", "Unreachable code eliminator")
-        +padOpt("wsop", "Whole Jimple Pre-processing Pack")
-        +padOpt("wsop", "Whole Shimple Pre-processing Pack")
+        +padOpt("wjpp", "Whole Jimple Pre-processing Pack")
+        +padOpt("wspp", "Whole Shimple Pre-processing Pack")
         +padOpt("cg", "Call graph constructor")
         +padVal("cg.cha", "Builds call graph using Class Hierarchy Analysis")
         +padVal("cg.spark", "Spark points-to analysis framework")
@@ -1512,13 +1512,13 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
-        if( phaseName.equals( "wsop" ) )
+        if( phaseName.equals( "wjpp" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nmode. In an unmodified copy of Soot, this pack is empty."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
-        if( phaseName.equals( "wsop" ) )
+        if( phaseName.equals( "wspp" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nShimple mode. In an unmodified copy of Soot, this pack is empty."
                 +"\n\nRecognized options (with default values):\n"
@@ -2441,11 +2441,11 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
-        if( phaseName.equals( "wsop" ) )
+        if( phaseName.equals( "wjpp" ) )
             return ""
                 +"enabled ";
     
-        if( phaseName.equals( "wsop" ) )
+        if( phaseName.equals( "wspp" ) )
             return ""
                 +"enabled ";
     
@@ -3034,11 +3034,11 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
-        if( phaseName.equals( "wsop" ) )
+        if( phaseName.equals( "wjpp" ) )
             return ""
               +"enabled:false ";
     
-        if( phaseName.equals( "wsop" ) )
+        if( phaseName.equals( "wspp" ) )
             return ""
               +"enabled:false ";
     
@@ -3523,8 +3523,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jj.lp" ) ) return;
         if( phaseName.equals( "jj.ne" ) ) return;
         if( phaseName.equals( "jj.uce" ) ) return;
-        if( phaseName.equals( "wsop" ) ) return;
-        if( phaseName.equals( "wsop" ) ) return;
+        if( phaseName.equals( "wjpp" ) ) return;
+        if( phaseName.equals( "wspp" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
@@ -3661,10 +3661,10 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jj.ne" );
         if( !PackManager.v().hasPhase( "jj.uce" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jj.uce" );
-        if( !PackManager.v().hasPhase( "wsop" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
-        if( !PackManager.v().hasPhase( "wsop" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
+        if( !PackManager.v().hasPhase( "wjpp" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjpp" );
+        if( !PackManager.v().hasPhase( "wspp" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wspp" );
         if( !PackManager.v().hasPhase( "cg" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg" );
         if( !PackManager.v().hasPhase( "cg.cha" ) )

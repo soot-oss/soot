@@ -1434,7 +1434,7 @@ traps whose catch blocks are empty.
 			</phase>
       <phase>
         <name>Whole Jimple Pre-processing Pack</name>
-        <alias>wsop</alias>
+        <alias>wjpp</alias>
         <short_desc>Whole Jimple Pre-processing Pack</short_desc>
         <long_desc>
 <p>
@@ -1451,7 +1451,7 @@ In an unmodified copy of Soot, this pack is empty.</p>
       </phase>
       <phase>
         <name>Whole Shimple Pre-processing Pack</name>
-        <alias>wsop</alias>
+        <alias>wspp</alias>
         <short_desc>Whole Shimple Pre-processing Pack</short_desc>
         <long_desc>
 <p>

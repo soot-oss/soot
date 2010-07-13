@@ -404,11 +404,11 @@ public final class OnFlyCallGraphBuilder
             G.v().out.println( "[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase." );
         }
         
-        if(options.reflection_log()==null || options.reflection_log().length()==0) {
+//        if(options.reflection_log()==null || options.reflection_log().length()==0) {
         	reflectionModel = new DefaultReflectionModel();
-        } else {
-        	reflectionModel = new TraceBasedReflectionModel();
-        }
+//        } else {
+//        	reflectionModel = new TraceBasedReflectionModel();
+//        }
     }
     public OnFlyCallGraphBuilder( ContextManager cm, ReachableMethods rm, boolean appOnly ) {
         this( cm, rm );
