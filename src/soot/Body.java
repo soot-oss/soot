@@ -658,6 +658,9 @@ public abstract class Body extends AbstractHost implements Serializable
 	if(leftType instanceof RefType && rightType instanceof RefType) {
 	    SootClass leftClass=((RefType) leftType).getSootClass();
 	    SootClass rightClass=((RefType) rightType).getSootClass();
+	    if(leftClass.isPhantom() || rightClass.isPhantom()) {
+	    	return;
+	    }
 	    
 	    if(leftClass.isInterface()) {
 		if(rightClass.isInterface()) {
