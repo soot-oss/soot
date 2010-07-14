@@ -69,6 +69,7 @@ import soot.options.CGOptions;
 import soot.options.Options;
 import soot.rtlib.DefaultHandler;
 import soot.rtlib.IUnexpectedReflectiveCallHandler;
+import soot.rtlib.OpaquePredicate;
 import soot.rtlib.SootSig;
 import soot.rtlib.UnexpectedReflectiveCall;
 import soot.util.Chain;
@@ -80,8 +81,22 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	private SootMethodRef CLASS_GET_NAME;
 	private SootMethodRef SOOTSIG_CONSTR;
 	private SootMethodRef SOOTSIG_METHOD;
+	private SootMethodRef UNINTERPRETED_METHOD;
 	
-	boolean initialized = false;
+	private boolean initialized = false;
+	private final boolean useOpaqueFalsePredicate;
+	
+	/**
+	 * @param useOpaqueFalsePredicate If true then the Soot inserts a predicate that always evaluates to
+	 * false but which Soot itself will not be able to determine as <i>always false</i> (such predicates are
+	 * called opaque). The consequence is that the inlined code will never actually be called.
+	 * 
+	 * Note that if useOpaqueFalsePredicate is false then the generated code may not work in cases
+	 * where the program uses multiple class loaders.
+	 */
+	public ReflectiveCallsInliner(boolean useOpaqueFalsePredicate) {
+		this.useOpaqueFalsePredicate = useOpaqueFalsePredicate;
+	}
 	
 	@Override
 	protected void internalTransform(String phaseName, @SuppressWarnings("rawtypes") Map options) {
@@ -105,6 +120,9 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			Scene.v().getSootClass(UnexpectedReflectiveCall.class.getName()).setApplicationClass();
 			Scene.v().getSootClass(IUnexpectedReflectiveCallHandler.class.getName()).setApplicationClass();
 			Scene.v().getSootClass(DefaultHandler.class.getName()).setApplicationClass();
+			Scene.v().getSootClass(OpaquePredicate.class.getName()).setApplicationClass();
+
+			UNINTERPRETED_METHOD = Scene.v().makeMethodRef(Scene.v().getSootClass("soot.rtlib.OpaquePredicate"), "getFalse", Collections.<Type>emptyList(), BooleanType.v(), true);	
 
 			initialized = true;
 		}
@@ -155,6 +173,16 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 		while(iter.hasNext()) {
 			Chain<Unit> newUnits = new HashChain<Unit>();
 			Stmt s = (Stmt) iter.next();
+			
+			Local predLocal = null;
+			Local seenLocal = null;
+			if(useOpaqueFalsePredicate) {
+				predLocal = localGen.generateLocal(BooleanType.v());
+				StaticInvokeExpr staticInvokeExpr = Jimple.v().newStaticInvokeExpr(UNINTERPRETED_METHOD);
+				newUnits.add(Jimple.v().newAssignStmt(predLocal, staticInvokeExpr));
+				seenLocal = localGen.generateLocal(BooleanType.v());
+				newUnits.add(Jimple.v().newAssignStmt(seenLocal, IntConstant.v(0)));
+			}
 			
 			//if we have an invoke expression, test to see if it is a reflective invoke expression
 			if(s.containsInvokeExpr()) {
@@ -211,6 +239,15 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					
 					IfStmt ifStmt = Jimple.v().newIfStmt(Jimple.v().newEqExpr(IntConstant.v(0), resultLocal), jumpTarget);
 					newUnits.add(ifStmt);
+					
+					
+					if(useOpaqueFalsePredicate)  {
+						//if we get here then we passed the if check; record this in "seenLocal"
+						newUnits.add(Jimple.v().newAssignStmt(seenLocal, IntConstant.v(1)));
+						
+						//if predLocal == 0 goto <original reflective call>
+						newUnits.add(Jimple.v().newIfStmt(Jimple.v().newEqExpr(IntConstant.v(0), predLocal), jumpTarget));
+					}
 					
 					Local freshLocal;
 					Value replacement=null;
@@ -378,6 +415,11 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					}
 					default:
 						throw new InternalError("Unknown kind of reflective call "+callKind);
+				}
+				if(useOpaqueFalsePredicate) {
+					//if seenLocal skip notification code
+					IfStmt ifStmt = Jimple.v().newIfStmt(Jimple.v().newEqExpr(IntConstant.v(1), seenLocal), endLabel);
+					units.insertAfter(ifStmt,s);	
 				}
 			}
 		}
