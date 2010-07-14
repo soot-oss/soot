@@ -414,7 +414,13 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 		    VirtualInvokeExpr unboxInvokeExpr = Jimple.v().newVirtualInvokeExpr(castedLocal,ref);
 			assignStmt = Jimple.v().newAssignStmt(paramLocals[paramIndex], unboxInvokeExpr);
 		} else {
-			assignStmt = Jimple.v().newAssignStmt(paramLocals[paramIndex], arrayRef);
+		    Local boxedLocal = localGen.generateLocal(RefType.v("java.lang.Object"));
+		    AssignStmt arrayLoad = Jimple.v().newAssignStmt(boxedLocal, arrayRef);
+		    newUnits.add(arrayLoad);
+		    Local castedLocal = localGen.generateLocal(paramType);
+		    AssignStmt cast = Jimple.v().newAssignStmt(castedLocal, Jimple.v().newCastExpr(boxedLocal, paramType));
+		    newUnits.add(cast);
+			assignStmt = Jimple.v().newAssignStmt(paramLocals[paramIndex], castedLocal);
 		}
 		newUnits.add(assignStmt);
 	}
