@@ -3,12 +3,23 @@ package soot.rtlib;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SootSig {
 	
+	private static Map<Constructor<?>,String> constrCache = new ConcurrentHashMap<Constructor<?>, String>(); //TODO should be a map with soft keys, actually	
+	private static Map<Method,String> methodCache = new ConcurrentHashMap<Method, String>(); //TODO should be a map with soft keys, actually	
+	
 	public static String sootSignature(Constructor<?> c) {
-		String[] paramTypes = classesToTypeNames(c.getParameterTypes());
-		return sootSignature(c.getDeclaringClass().getName(), "void","<init>", paramTypes);
+		String res = constrCache.get(c);
+		if(res==null) {
+			String[] paramTypes = classesToTypeNames(c.getParameterTypes());
+			res = sootSignature(c.getDeclaringClass().getName(), "void","<init>", paramTypes);
+			constrCache.put(c, res);
+		}
+		return res;
 	}
 	
 	public static String sootSignature(Object receiver, Method m) {
@@ -29,8 +40,13 @@ public class SootSig {
 				error.printStackTrace();
 			}
 			
-			String[] paramTypes = classesToTypeNames(resolved.getParameterTypes());
-			return sootSignature(resolved.getDeclaringClass().getName(),getTypeName(resolved.getReturnType()),resolved.getName(),paramTypes);
+			String res = methodCache.get(resolved);
+			if(res==null) {
+				String[] paramTypes = classesToTypeNames(resolved.getParameterTypes());
+				res = sootSignature(resolved.getDeclaringClass().getName(),getTypeName(resolved.getReturnType()),resolved.getName(),paramTypes);
+				methodCache.put(resolved, res);
+			}
+			return res;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
