@@ -42,7 +42,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit,BitSet>
     protected int lastIndex = 0;
 	
 	//add soot method here just for debug
-	public MultiRunStatementsFinder(UnitGraph g, SootMethod sm, Set<Object> multiCalledMethods, CallGraph cg)
+	public MultiRunStatementsFinder(UnitGraph g, SootMethod sm, Set<SootMethod> multiCalledMethods, CallGraph cg)
 	{
 		super(g);
 		
@@ -57,32 +57,26 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit,BitSet>
 		// testMultiObjSites(sm);
 	}
 	
-	private void findMultiCalledMethodsIntra(Set<Object> multiCalledMethods, CallGraph callGraph){
+	private void findMultiCalledMethodsIntra(Set<SootMethod> multiCalledMethods, CallGraph callGraph){
 		Iterator<Unit> it = multiRunStatements.iterator();
 		while (it.hasNext()){
-			Unit unit = it.next();
-			if (((Stmt)unit).containsInvokeExpr()){
+			Stmt stmt = (Stmt) it.next();
+			if (stmt.containsInvokeExpr()){
 				
-				Value invokeExpr =((Stmt)unit).getInvokeExpr();
+				InvokeExpr invokeExpr =stmt.getInvokeExpr();
 				
 				List<SootMethod> targetList = new ArrayList<SootMethod>();
-				SootMethod method =  ((InvokeExpr)invokeExpr).getMethod();
+				SootMethod method = invokeExpr.getMethod();
 				if (invokeExpr instanceof StaticInvokeExpr){
-					
 					targetList.add(method);
 				}
-				else if (invokeExpr instanceof InstanceInvokeExpr) { 
-					//System.out.println("unit: "+unit);
-					
+				else if (invokeExpr instanceof InstanceInvokeExpr) {
 					if (method.isConcrete() && !method.getDeclaringClass().isLibraryClass()){
-						
 						TargetMethodsFinder tmd = new TargetMethodsFinder();
-						//	targetList = tmd.find(unit, callGraph, false, true);
-						targetList = tmd.find(unit, callGraph, true, true); // list could be empty... that's ok
+						targetList = tmd.find(stmt, callGraph, true, true);
 					}
-					
-					
 				}
+				
 				if (targetList != null){
 					Iterator<SootMethod> iterator = targetList.iterator();
 					while (iterator.hasNext()){

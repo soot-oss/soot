@@ -90,7 +90,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 //		G.v().out.println("    MHP: AllocNodesFinder");
 		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph, (PAG) pta);
 		Set<AllocNode> multiRunAllocNodes = anf.getMultiRunAllocNodes();
-		Set<Object> multiCalledMethods = anf.getMultiCalledMethods();
+		Set<SootMethod> multiCalledMethods = anf.getMultiCalledMethods();
 
 		// Find Thread.start() and Thread.join() statements (in live code)
 //		G.v().out.println("    MHP: StartJoinFinder");
