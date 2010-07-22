@@ -30,6 +30,7 @@ import soot.baf.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.base.*;
 import soot.shimple.toolkits.scalar.*;
+import soot.sootify.TemplatePrinter;
 import soot.grimp.toolkits.base.*;
 import soot.baf.toolkits.base.*;
 import soot.jimple.toolkits.typing.*;

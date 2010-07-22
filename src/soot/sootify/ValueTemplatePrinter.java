@@ -1,7 +1,14 @@
-package soot;
+package soot.sootify;
 
 import java.util.List;
 
+import soot.Local;
+import soot.RefType;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;

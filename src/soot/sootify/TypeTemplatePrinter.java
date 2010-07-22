@@ -1,5 +1,23 @@
-package soot;
+package soot.sootify;
 
+import soot.AnySubType;
+import soot.ArrayType;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.ErroneousType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.NullType;
+import soot.RefType;
+import soot.ShortType;
+import soot.StmtAddressType;
+import soot.Type;
+import soot.TypeSwitch;
+import soot.UnknownType;
+import soot.VoidType;
 import soot.jimple.Jimple;
 
 public class TypeTemplatePrinter extends TypeSwitch {

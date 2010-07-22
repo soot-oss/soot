@@ -1,7 +1,9 @@
-package soot;
+package soot.sootify;
 
 import java.util.List;
 
+import soot.Unit;
+import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.BreakpointStmt;
 import soot.jimple.EnterMonitorStmt;

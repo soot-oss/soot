@@ -17,10 +17,18 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot;
+package soot.sootify;
 
 import java.io.PrintWriter;
 
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Singletons.Global;
 import soot.dava.internal.AST.ASTTryNode.container;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
