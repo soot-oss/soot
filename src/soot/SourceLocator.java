@@ -255,6 +255,9 @@ public class SourceLocator
         if (rep != Options.output_format_dava) {
             if(rep == Options.output_format_class) {
                 b.append(c.getName().replace('.', File.separatorChar));
+            } else if(rep == Options.output_format_template) {
+                b.append(c.getName().replace('.', '_'));
+                b.append("_Maker");
             } else {
                 b.append(c.getName());
             }
@@ -263,7 +266,11 @@ public class SourceLocator
             return b.toString();
         }
 
-        b.append("dava");
+        return getDavaFilenameFor(c, b);
+    }
+    
+	private String getDavaFilenameFor(SootClass c, StringBuffer b) {
+		b.append("dava");
         b.append(File.separatorChar);
         {
             String classPath = b.toString() + "classes";
@@ -304,7 +311,7 @@ public class SourceLocator
         b.append(".java");
 
         return b.toString();
-    }
+	}
 
     /* This is called after sootClassPath has been defined. */
     public Set<String> classesInDynamicPackage(String str) {
@@ -350,6 +357,7 @@ public class SourceLocator
             case Options.output_format_dava:     return ".java";
             case Options.output_format_jasmin:   return ".jasmin";
             case Options.output_format_xml:      return ".xml";
+            case Options.output_format_template: return ".java";
             default:
                 throw new RuntimeException();
         }

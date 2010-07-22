@@ -259,6 +259,8 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "class" )
                 || arg.equals( "d" )
                 || arg.equals( "dava" )
+                || arg.equals( "t" )
+                || arg.equals( "template" )
                 ) {
                 addArg("-output-format");
                 addArg(arg);

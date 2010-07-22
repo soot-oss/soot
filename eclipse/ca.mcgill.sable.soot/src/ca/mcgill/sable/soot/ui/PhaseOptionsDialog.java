@@ -10181,6 +10181,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		false),
 		
+		new OptionData("Jimle Template File",
+		"t",
+		"\nProduce .java files with Jimple templates. ",
+		
+		false),
+		
 		};
 		
 										

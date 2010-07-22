@@ -709,6 +709,7 @@ public class PackManager {
             case Options.output_format_xml :
             case Options.output_format_jimple :
             case Options.output_format_jimp :
+            case Options.output_format_template :
                 break;
             case Options.output_format_shimp:
             case Options.output_format_shimple:
@@ -908,6 +909,12 @@ public class PackManager {
                         new EscapedWriter(new OutputStreamWriter(streamOut)));
                 XMLPrinter.v().printJimpleStyleTo(c, writerOut);
                 break;
+            case Options.output_format_template :
+                writerOut =
+                    new PrintWriter(
+                        new EscapedWriter(new OutputStreamWriter(streamOut)));
+                TemplatePrinter.v().printTo(c, writerOut);
+            	break;
             default :
                 throw new RuntimeException();
         }

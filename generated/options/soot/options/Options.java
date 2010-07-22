@@ -64,6 +64,8 @@ public class Options extends OptionsBase {
     public static final int output_format_class = 12;
     public static final int output_format_d = 13;
     public static final int output_format_dava = 13;
+    public static final int output_format_t = 14;
+    public static final int output_format_template = 14;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
 
@@ -493,6 +495,18 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_dava;
+                }
+    
+                else if( false
+                || value.equals( "t" )
+                || value.equals( "template" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_template ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_template;
                 }
     
                 else {
@@ -1169,6 +1183,7 @@ public class Options extends OptionsBase {
 +padVal(" jasmin", "Produce .jasmin files" )
 +padVal(" c class (default)", "Produce .class Files" )
 +padVal(" d dava", "Produce dava-decompiled .java files" )
++padVal(" t template", "Produce .java files with Jimple templates." )
 +padOpt(" -outjar -output-jar", "Make output dir a Jar file instead of dir" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +padOpt(" -print-tags -print-tags-in-output", "Print tags in output files after stmt" )

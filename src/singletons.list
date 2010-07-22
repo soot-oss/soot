@@ -38,6 +38,7 @@ soot.dava.Dava
 soot.dava.DavaPrinter
 soot.xml.XMLPrinter
 soot.Printer
+soot.TemplatePrinter
 soot.jimple.toolkits.scalar.DeadAssignmentEliminator
 soot.jimple.toolkits.pointer.DependenceTagAggregator
 soot.coffi.Double2ndHalfType
