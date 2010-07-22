@@ -1,3 +1,21 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2010 Hela Oueslati, Eric Bodden
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 package soot.sootify;
 
 import soot.AnySubType;
@@ -18,52 +36,55 @@ import soot.Type;
 import soot.TypeSwitch;
 import soot.UnknownType;
 import soot.VoidType;
-import soot.jimple.Jimple;
 
 public class TypeTemplatePrinter extends TypeSwitch {
 
 	private String varName;
 	private final TemplatePrinter p;
 	
+	public void printAssign(String v, Type t) {
+		String oldName = varName;
+		varName = v;
+		t.apply(this);
+		varName = oldName;
+	}
+	
 	public TypeTemplatePrinter(TemplatePrinter p) {
 		this.p = p;
 	}
 
+	@Deprecated
 	public void setVariableName(String name) {
 		this.varName = name;		
 	}
 	
+	private void emit(String rhs) {
+		p.println("Type "+ varName+" = "+rhs+";");
+	}
+
 	public void caseAnySubType(AnySubType t) {
 		throw new IllegalArgumentException("cannot print this type");
 	}
 
 	public void caseArrayType(ArrayType t) {
-		String oldName = varName;
+		printAssign("baseType", t.getElementType());
+
+		p.println("int numDimensions=" + t.numDimensions+ ";");
 		
-		Type baseType = t.getElementType();
-		setVariableName("baseType");
-		baseType.apply(this);
-		
-		int numDimensions = t.numDimensions;
-		p.println("int numDimensions=" + numDimensions+ ";");
-		
-		p.println("Type "+ oldName +" = ArrayType.v(baseType, numDimensions);");
-		varName = oldName;
+		emit("ArrayType.v(baseType, numDimensions)");
 	}
 
+
 	public void caseBooleanType(BooleanType t) {
-		p.println("Type "+varName+" = BooleanType.v();");	
+		emit("BooleanType.v()");
 	}
 
 	public void caseByteType(ByteType t) {
-		
-		p.println("Type "+varName+" = ByteType.v();");	
-		
+		emit("ByteType.v()");
 	}
 
 	public void caseCharType(CharType t) {
-		p.println("Type "+varName+" = CharType.v();");
-		
+		emit("CharType.v()");
 	}
 
 	public void caseDefault(Type t) {
@@ -71,8 +92,7 @@ public class TypeTemplatePrinter extends TypeSwitch {
 	}
 
 	public void caseDoubleType(DoubleType t) {
-		p.println("Type "+varName+" = DoubleType.v();");
-		
+		emit("DoubleType.v()");
 	}
 
 	public void caseErroneousType(ErroneousType t) {
@@ -80,37 +100,27 @@ public class TypeTemplatePrinter extends TypeSwitch {
 	}
 
 	public void caseFloatType(FloatType t) {
-		
-		p.println("Type "+varName+" = FloatType.v();");
-		
+		emit("FloatType.v()");
 	}
 
 	public void caseIntType(IntType t) {
-	
-		p.println("Type "+varName+" = IntType.v();");
-		
+		emit("IntType.v()");
 	}
 
 	public void caseLongType(LongType t) {
-		p.println("Type "+varName+" = LongType.v();");
-		
+		emit("LongType.v()");
 	}
 
 	public void caseNullType(NullType t) {
-	
-		p.println("Type "+varName+" = NullType.v();");
-		
+		emit("NullType.v()");
 	}
 
 	public void caseRefType(RefType t) {
-		
-		p.println("Type "+varName+" = RefType.v("+t.getClassName()+");;");
-		
+		emit("RefType.v("+t.getClassName()+")");
 	}
 
 	public void caseShortType(ShortType t) {
-		p.println("Type "+varName+" = ShortType.v();");
-		
+		emit("ShortType.v()");
 	}
 
 	public void caseStmtAddressType(StmtAddressType t) {
@@ -122,8 +132,7 @@ public class TypeTemplatePrinter extends TypeSwitch {
 	}
 
 	public void caseVoidType(VoidType t) {
-		p.println("Type "+varName+" = VoidType.v();");
-		
+		emit("VoidType.v()");
 	}
 
 }
