@@ -28,7 +28,6 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.InterfaceInvokeExpr;
-import soot.jimple.Jimple;
 import soot.jimple.JimpleValueSwitch;
 import soot.jimple.LeExpr;
 import soot.jimple.LengthExpr;
