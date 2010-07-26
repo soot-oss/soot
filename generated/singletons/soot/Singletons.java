@@ -268,9 +268,9 @@ public class Singletons {
         return instance_soot_Printer;
     }
 
-    private soot.TemplatePrinter instance_soot_TemplatePrinter;
-    public soot.TemplatePrinter soot_TemplatePrinter() {
-        if( instance_soot_TemplatePrinter == null ) instance_soot_TemplatePrinter = new soot.TemplatePrinter( g );
+    private soot.sootify.TemplatePrinter instance_soot_TemplatePrinter;
+    public soot.sootify.TemplatePrinter soot_TemplatePrinter() {
+        if( instance_soot_TemplatePrinter == null ) instance_soot_TemplatePrinter = new soot.sootify.TemplatePrinter( g );
         return instance_soot_TemplatePrinter;
     }
 
