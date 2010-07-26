@@ -1,8 +1,13 @@
 package soot.sootify;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import soot.PatchingChain;
 import soot.Unit;
+import soot.UnitBox;
 import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.BreakpointStmt;
@@ -13,7 +18,6 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeStmt;
-import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.NopStmt;
 import soot.jimple.RetStmt;
@@ -28,31 +32,83 @@ class StmtTemplatePrinter implements StmtSwitch {
 	private final TemplatePrinter p;
 	
 	private final ValueTemplatePrinter vtp; //text for expression
+	
+	private List<Unit> jumpTargets = new ArrayList<Unit>();
 
-	/**
-	 * @param templatePrinter
-	 */
-	StmtTemplatePrinter(TemplatePrinter templatePrinter) {
+	public StmtTemplatePrinter(TemplatePrinter templatePrinter, PatchingChain<Unit> units) {
 		this.p = templatePrinter;
 		this.vtp = new ValueTemplatePrinter(p);
+		
+		for(Unit u: units) {
+			for(UnitBox ub: u.getUnitBoxes()) {
+				jumpTargets.add(ub.getUnit());
+			}
+		}
+		
+		final List<Unit> unitsList = new ArrayList<Unit>(units);
+		Collections.sort(jumpTargets,new Comparator<Unit>() {
+			public int compare(Unit o1, Unit o2) {
+				return unitsList.indexOf(o1)-unitsList.indexOf(o2);
+			}
+		});
+		
+		for(int i=0;i<jumpTargets.size();i++) {
+			p.println("NopStmt jumpTarget"+i+"= Jimple.v().newNopStmt();");
+		}
+	}
+	
+	private String nameOfJumpTarget(Unit u) {
+		if(!isJumpTarget(u)) {
+			throw new InternalError("not a jumpt target! "+u);
+		}
+		return "jumpTarget"+jumpTargets.indexOf(u);
+	}
+	
+	private boolean isJumpTarget(Unit u) {
+		return jumpTargets.contains(u);
 	}
 
-	public void defaultCase(Object obj) {
-		// ignore this method
-		
+	private String printValueAssignment(Value value, String varName) {
+		return vtp.printValueAssignment(value, varName);
+	}
+	
+	private void printStmt(Unit u, String... ops) {
+		String stmtClassName = u.getClass().getSimpleName();
+		if(stmtClassName.charAt(0)=='J') stmtClassName = stmtClassName.substring(1);
+		if(isJumpTarget(u)) {			
+			String nameOfJumpTarget = nameOfJumpTarget(u);
+			p.println("units.add("+nameOfJumpTarget+");");
+		}
+		p.print("units.add(");
+		printFactoryMethodCall(stmtClassName, ops);
+		p.printlnNoIndent(");");
+	}
+
+	private void printFactoryMethodCall(String stmtClassName, String... ops) {
+		p.printNoIndent("Jimple.v().new");
+		p.printNoIndent(stmtClassName);
+		p.printNoIndent("(");
+		int i=1;
+		for(String op: ops) {
+			p.printNoIndent(op);
+			if(i<ops.length) {
+				p.printNoIndent(",");
+			} 
+			i++;
+		}
+		p.printNoIndent(")");
 	}
 
 	public void caseThrowStmt(ThrowStmt stmt) {
-		Value value = stmt.getOp();
-		vtp.setVariableName("op");
-		value.apply(vtp);
-		p.println("units.add(Jimple.v().newThrowStmt(op));");
+		String varName = printValueAssignment(stmt.getOp(),"op");
+		printStmt(stmt, varName);
 	}
 
+
+	@SuppressWarnings("unchecked")
 	public void caseTableSwitchStmt(TableSwitchStmt stmt) {
-		Value key= stmt.getKey();
-		vtp.setVariableName("key");
-		key.apply(vtp);
+		p.openBlock();
+		String varName = printValueAssignment(stmt.getKey(),"key");
 		
 		int lowIndex= stmt.getLowIndex();
 		p.println("int lowIndex=" + lowIndex + ";");
@@ -61,170 +117,123 @@ class StmtTemplatePrinter implements StmtSwitch {
 		int highIndex= stmt.getHighIndex();
 		p.println("int highIndex=" + highIndex + ";");
 		
-		int i=0;
+		p.println("List<Unit> targets = new LinkedList<Unit>();");
 		for(Stmt s: (List<Stmt>)stmt.getTargets()) {
-			//TODO must print references to statements
-			vtp.setVariableName("target"+i);
-			s.apply(vtp);
-			i++;
-			
-			p.println("targets.add(target"+i+");");
+			String nameOfJumpTarget = nameOfJumpTarget(s);
+			p.println("targets.add("+nameOfJumpTarget+")");
 		}
 		
-		
 		Unit defaultTarget = stmt.getDefaultTarget();
-		p.println("Unit defaultTarget=" + defaultTarget.toString() + ";");
-		
-		
-		
-		p.println("units.add(Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget));");
+		p.println("Unit defaultTarget = " + nameOfJumpTarget(defaultTarget) + ";");
 
+		printStmt(stmt, varName, "lowIndex", "highIndex", "targets", "defaultTarget");
 		
+		p.closeBlock();
 	}
 
 	public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
-		p.println("units.add(Jimple.v().newReturnVoidStmt());");
-		
+		printStmt(stmt);
 	}
 
 	public void caseReturnStmt(ReturnStmt stmt) {
-		Value value = stmt.getOp();
-		vtp.setVariableName("retVal");
-		value.apply(vtp);
-		p.println("units.add(Jimple.v().newReturnStmt(retVal));");		
+		String varName = printValueAssignment(stmt.getOp(), "retVal");
+		printStmt(stmt,varName);
 	}
 
 	public void caseRetStmt(RetStmt stmt) {
-
-		Value stmtAddress= stmt.getStmtAddress();
-		vtp.setVariableName("stmtAddress");
-		stmtAddress.apply(vtp);
-		p.println("units.add(Jimple.v().newRetStmt(stmtAddress));");
-	
-		
+		String varName = printValueAssignment(stmt.getStmtAddress(), "stmtAddress");
+		printStmt(stmt,varName);
 	}
 
 	public void caseNopStmt(NopStmt stmt) {
-		p.println("units.add(Jimple.v().newNopStmt());");
-		
-		
+		printStmt(stmt);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
-		Value key= stmt.getKey();
-		vtp.setVariableName("key");
-		key.apply(vtp);
+		p.openBlock();
+
+		String keyVarName = printValueAssignment(stmt.getKey(), "key");
 		
 		p.println("List<IntConstant> lookupValues = new LinkedList<IntConstant>();");
 		int i=0;
 		for(IntConstant c: (List<IntConstant>)stmt.getLookupValues()) {
-			vtp.setVariableName("lookupValue"+i);
+			vtp.suggestVariableName("lookupValue"+i);
 			c.apply(vtp);
 			i++;
 			
 			p.println("lookupValues.add(lookupValue"+i+");");
 		}
 		
-		p.println("List<Stmt> targets = new LinkedList<Stmt>();");
-		i=0;
+		p.println("List<Unit> targets = new LinkedList<Unit>();");
 		for(Stmt s: (List<Stmt>)stmt.getTargets()) {
-			//TODO must print references to statements
-			vtp.setVariableName("target"+i);
-			s.apply(vtp);
-			i++;
-			
-			p.println("targets.add(target"+i+");");
+			String nameOfJumpTarget = nameOfJumpTarget(s);
+			p.println("targets.add("+nameOfJumpTarget+")");
 		}
 		
 		Unit defaultTarget = stmt.getDefaultTarget();
 		p.println("Unit defaultTarget=" + defaultTarget.toString() + ";");
 				
-		p.println("units.add(Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget));");
-		}
-
-	public void caseInvokeStmt(InvokeStmt stmt) {
-		Value op = stmt.getInvokeExpr(); 
-		vtp.setVariableName("op");
-		op.apply(vtp);
-		p.println("units.add(Jimple.v().newInvokeStmt(op));");
+		printStmt(stmt, keyVarName, "lookupValues", "targets", "defaultTarget");
 		
-		
+		p.closeBlock();
 	}
 
-	public void caseIfStmt(IfStmt stmt) {
-		Value condition = stmt.getCondition();
-		vtp.setVariableName("condition");
-		condition.apply(vtp);
+	public void caseInvokeStmt(InvokeStmt stmt) {
+		String varName = printValueAssignment(stmt.getInvokeExpr(), "ie");
+		printStmt(stmt,varName);
+	}
+
+	public void caseIfStmt(IfStmt stmt) {		
+		String varName = printValueAssignment(stmt.getCondition(), "condition");
 		
 		Unit target = stmt.getTarget();
-		p.println("Unit target=" + target.toString() + ";");
+		p.println("Unit target=" + nameOfJumpTarget(target) + ";");
 		
-		p.println("units.add(Jimple.v().newIfStmt(condition, target));");
-		
-		
+		printStmt(stmt,varName,"target");
 	}
 
 	public void caseIdentityStmt(IdentityStmt stmt) {
+		String varName = printValueAssignment(stmt.getLeftOp(), "lhs");
 		
-
-	Value local = stmt.getLeftOp();
-	vtp.setVariableName("local");
-		local.apply(vtp);
-		
-		Value identityRef = stmt.getRightOp();
-		vtp.setVariableName("identityRef");
-		identityRef.apply(vtp);
+		String varName2 = printValueAssignment(stmt.getRightOp(), "idRef");
 			
-		p.println("units.add(Jimple.v().newIdentityStmt(local, identityRef));");
-		
+		printStmt(stmt,varName,varName2);
 	}
 
 	public void caseGotoStmt(GotoStmt stmt) {
 		Unit target = stmt.getTarget();
-		p.println("Unit target=" + target.toString() + ";");
+		p.println("Unit target=" + nameOfJumpTarget(target) + ";");
 		
-		p.println("units.add(Jimple.v().newGotoStmt(target));");
-		
+		printStmt(stmt,"target");
 	}
 
 	public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
-		Value op = stmt.getOp();
-		vtp.setVariableName("op");
-		op.apply(vtp);
+		String varName = printValueAssignment(stmt.getOp(), "monitor");
 		
-		p.println("units.add(Jimple.v().newExitMonitorStmt(op));");
-		
+		printStmt(stmt,varName);
 	}
 
 	public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+		String varName = printValueAssignment(stmt.getOp(), "monitor");
 		
-		Value op = stmt.getOp();
-		vtp.setVariableName("op");
-		op.apply(vtp);
-		
-		p.println("units.add(Jimple.v().newEnterMonitorStmt(op));");
-		
+		printStmt(stmt,varName);
 	}
 
-	public void caseBreakpointStmt(BreakpointStmt stmt) {
-		
-		p.println("units.add(Jimple.v().newBreakpointStmt());");
-		
+	public void caseBreakpointStmt(BreakpointStmt stmt) {		
+		printStmt(stmt);
 	}
 
 	public void caseAssignStmt(AssignStmt stmt) {
+		String varName = printValueAssignment(stmt.getLeftOp(), "lhs");
+		String varName2 = printValueAssignment(stmt.getRightOp(), "rhs");
 		
-		Value variable = stmt.getLeftOp();
-		vtp.setVariableName("variable");
-		variable.apply(vtp);
-		
-		Value rvalue = stmt.getRightOp();
-		vtp.setVariableName("rvalue");
-		rvalue.apply(vtp);
-		
-		p.println("units.add(Jimple.v().newAssignStmt(variable, rvalue));");
-		
-
-		
+		printStmt(stmt,varName,varName2);
 	}
+
+
+	public void defaultCase(Object obj) {
+		throw new InternalError("should never be called");
+	}
+
 }

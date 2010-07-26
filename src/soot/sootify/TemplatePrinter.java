@@ -28,12 +28,6 @@ import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
-import soot.Singletons.Global;
-import soot.dava.internal.AST.ASTTryNode.container;
-import soot.jimple.Jimple;
-import soot.jimple.JimpleBody;
-import soot.jimple.Stmt;
-import soot.util.Chain;
 
 public class TemplatePrinter {
     
@@ -58,6 +52,7 @@ public class TemplatePrinter {
 		String templateClassName = c.getName().replace('.', '_')+"_Maker";
 		
 		//imports
+		println("import java.util.*;");
 		println("import soot.*;");
 		println("import soot.jimple.*;");
 		println("import soot.util.*;");
@@ -67,6 +62,15 @@ public class TemplatePrinter {
 		print("public class ");
 		print(templateClassName);
 		println(" {");
+		
+		
+		println("private static Local localByName(Body b, String name) {");
+		println("	for(Local l: b.getLocals()) {");
+		println("		if(l.getName().equals(name))");
+		println("			return l;");
+		println("	}");
+		println("	throw new IllegalArgumentException(\"No such local: \"+name);");
+		println("}");
 
 		//open main method
 		indent();
@@ -108,12 +112,15 @@ public class TemplatePrinter {
 			}
 			
 			println("Chain<Unit> units = b.getUnits();");
-			StmtTemplatePrinter sw = new StmtTemplatePrinter(this);
+			StmtTemplatePrinter sw = new StmtTemplatePrinter(this,b.getUnits());
 			for(Unit u: b.getUnits()) {
 				
 				u.apply(sw);
 				
 			}
+			
+			
+			//TODO print traps 
 			
 			closeMethod();
 			
@@ -137,8 +144,16 @@ public class TemplatePrinter {
 		indent();
 	}
 	
+	public void printlnNoIndent(String s) {
+		printNoIndent(s); print("\n");
+	}
+
 	public void println(String s) {
 		print(s); print("\n");
+	}
+
+	public void printNoIndent(String s) {
+		out.print(s);
 	}
 
 	public void print(String s) {
@@ -154,5 +169,15 @@ public class TemplatePrinter {
 
 	public void unindent() {
 		indentationLevel--;
+	}
+	
+	public void openBlock() {
+		println("{");
+		indent();
+	}
+
+	public void closeBlock() {
+		unindent();
+		println("}");
 	}
 }

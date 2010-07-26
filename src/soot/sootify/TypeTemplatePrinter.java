@@ -53,13 +53,16 @@ public class TypeTemplatePrinter extends TypeSwitch {
 		this.p = p;
 	}
 
-	@Deprecated
 	public void setVariableName(String name) {
 		this.varName = name;		
 	}
 	
 	private void emit(String rhs) {
 		p.println("Type "+ varName+" = "+rhs+";");
+	}
+
+	private void emitSpecial(String type, String rhs) {
+		p.println(type+" "+ varName+" = "+rhs+";");
 	}
 
 	public void caseAnySubType(AnySubType t) {
@@ -116,7 +119,7 @@ public class TypeTemplatePrinter extends TypeSwitch {
 	}
 
 	public void caseRefType(RefType t) {
-		emit("RefType.v("+t.getClassName()+")");
+		emitSpecial("RefType","RefType.v(\""+t.getClassName()+"\")");
 	}
 
 	public void caseShortType(ShortType t) {
