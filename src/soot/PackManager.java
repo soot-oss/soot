@@ -913,7 +913,7 @@ public class PackManager {
             case Options.output_format_template :
                 writerOut =
                     new PrintWriter(
-                        new EscapedWriter(new OutputStreamWriter(streamOut)));
+                        new OutputStreamWriter(streamOut));
                 TemplatePrinter.v().printTo(c, writerOut);
             	break;
             default :

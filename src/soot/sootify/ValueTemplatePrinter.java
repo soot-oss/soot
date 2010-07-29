@@ -84,12 +84,29 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 		return getLastAssignedVarName();
 	}
 	
+	private void printConstant(Value v, String... ops) {
+		String stmtClassName = v.getClass().getSimpleName();
+		p.print("Value "+varName+" = ");
+		p.printNoIndent(stmtClassName);
+		p.printNoIndent(".v(");
+		int i=1;
+		for(String op: ops) {
+			p.printNoIndent(op);
+			if(i<ops.length) {
+				p.printNoIndent(",");
+			} 
+			i++;
+		}
+		p.printNoIndent(")");
+		p.printlnNoIndent(";");
+	}
+	
 	private void printExpr(Value v, String... ops) {
 		String stmtClassName = v.getClass().getSimpleName();
 		if(stmtClassName.charAt(0)=='J') stmtClassName = stmtClassName.substring(1);
 		p.print("Value "+varName+" = ");
 		printFactoryMethodCall(stmtClassName, ops);
-		p.println(";");
+		p.printlnNoIndent(";");
 	}
 
 	private void printFactoryMethodCall(String stmtClassName, String... ops) {
@@ -110,10 +127,10 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 	public void suggestVariableName(String name) {
 		String actualName = name;
 		int i=0;
-		while(varnamesAlreadyUsed.contains(actualName)) {
+		do {
 			actualName = name+i;
 			i++;
-		}
+		} while(varnamesAlreadyUsed.contains(actualName));
 		this.varName = actualName;
 		this.varnamesAlreadyUsed.add(actualName);
 	}
@@ -124,31 +141,31 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 
 
 	public void caseDoubleConstant(DoubleConstant v) {
-		printExpr(v, Double.toString(v.value));
+		printConstant(v, Double.toString(v.value));
 	}
 
 	public void caseFloatConstant(FloatConstant v) {
-		printExpr(v, Float.toString(v.value));
+		printConstant(v,Float.toString(v.value));
 	}
 
 	public void caseIntConstant(IntConstant v) {
-		printExpr(v, Integer.toString(v.value));
+		printConstant(v,Integer.toString(v.value));
 	}
 
 	public void caseLongConstant(LongConstant v) {
-		printExpr(v, Long.toString(v.value));
+		printConstant(v,Long.toString(v.value));
 	}
 
 	public void caseNullConstant(NullConstant v) {	
-		printExpr(v);
+		printConstant(v);
 	}
 
 	public void caseStringConstant(StringConstant v) {
-		printExpr(v, "\""+v.value+"\"");
+		printConstant(v, "\""+v.value+"\"");
 	}
 
 	public void caseClassConstant(ClassConstant v) {
-		printExpr(v, "\""+v.value+"\"");
+		printConstant(v, "\""+v.value+"\"");
 	}
 
 	public void caseAddExpr(AddExpr v) {
@@ -157,6 +174,8 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 
 	private void printBinaryExpr(BinopExpr v) {
 		String className = v.getClass().getSimpleName();
+		if(className.charAt(0)=='J') className = className.substring(1);
+
 		String oldName = varName;
 		
 		Value left = v.getOp1();
@@ -282,7 +301,7 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 		p.printNoIndent("\""+m.getName()+"\",");
 		p.printNoIndent("parameterTypes,");	
 		p.printNoIndent("returnType,");
-		p.println(m.isStatic()+");");		
+		p.printlnNoIndent(m.isStatic()+");");		
 				
 		printExpr(v, "base", "methodRef");
 
@@ -457,12 +476,12 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 		ttp.setVariableName("type");
 		f.getType().apply(ttp);
 		p.print("SootFieldRef fieldRef = ");
-		p.print("Scene.v().makeFieldRef(");
+		p.printNoIndent("Scene.v().makeFieldRef(");
 		String className = f.getDeclaringClass().getName();
-		p.print("Scene.v().getSootClass(\""+className+"\",");
-		p.print(f.getName()+",");
-		p.print("type,");	
-		p.print(f.isStatic()+");");		
+		p.printNoIndent("Scene.v().getSootClass(\""+className+"\"),");
+		p.printNoIndent("\""+f.getName()+"\",");
+		p.printNoIndent("type,");	
+		p.printNoIndent(f.isStatic()+");");		
 
 		p.println("Value "+oldName+" = Jimple.v().new"+refTypeName+"(fieldRef);");
 		varName = oldName;
@@ -512,17 +531,8 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 	public void caseLocal(Local l) {
 		String oldName = varName;
 		
-		suggestVariableName(l.getName());
-		String name = varName;
-		p.println("String "+varName+" = "+ l.getName() + ";");
+		p.println("Local "+varName+" = localByName(b,\""+ l.getName() + "\");");
 				
-		Type paramType= l.getType();
-		suggestVariableName("type");
-		String typeName = this.varName;
-		ttp.setVariableName(typeName);
-		paramType.apply(ttp);
-		
-		p.println("Value "+oldName+" = Jimple.v().newLocal("+name+", "+typeName+");");
 		varName = oldName;
 	}
 	

@@ -188,9 +188,12 @@ class StmtTemplatePrinter implements StmtSwitch {
 		String varName = printValueAssignment(stmt.getCondition(), "condition");
 		
 		Unit target = stmt.getTarget();
-		p.println("Unit target=" + nameOfJumpTarget(target) + ";");
+
+		vtp.suggestVariableName("target");
+		String targetName = vtp.getLastAssignedVarName();
+		p.println("Unit "+targetName+"=" + nameOfJumpTarget(target) + ";");
 		
-		printStmt(stmt,varName,"target");
+		printStmt(stmt,varName,targetName);
 	}
 
 	public void caseIdentityStmt(IdentityStmt stmt) {
@@ -203,9 +206,12 @@ class StmtTemplatePrinter implements StmtSwitch {
 
 	public void caseGotoStmt(GotoStmt stmt) {
 		Unit target = stmt.getTarget();
-		p.println("Unit target=" + nameOfJumpTarget(target) + ";");
 		
-		printStmt(stmt,"target");
+		vtp.suggestVariableName("target");
+		String targetName = vtp.getLastAssignedVarName();
+		p.println("Unit "+targetName+"=" + nameOfJumpTarget(target) + ";");
+		
+		printStmt(stmt,targetName);
 	}
 
 	public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
