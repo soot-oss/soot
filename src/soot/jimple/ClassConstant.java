@@ -43,6 +43,7 @@ public class ClassConstant extends Constant
 
     public static ClassConstant v(String value)
     {
+    	if(value.contains(".")) throw new RuntimeException("ClassConstants must use class names separated by '/', not '.'!");
         return new ClassConstant(value);
     }
 

@@ -195,7 +195,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 						//special case: parameter is a String constant; in that case we just replace the entire expression by a class constant
 						StringConstant stringConstant = (StringConstant) classNameValue;
 						ValueBox argBox = s.getInvokeExprBox();
-						argBox.setValue(ClassConstant.v(stringConstant.value));						
+						argBox.setValue(ClassConstant.v(stringConstant.value.replace('.', '/')));						
 						continue; //we are done already in that case
 					} 					
 					targetNameLocal = (Local) classNameValue;
