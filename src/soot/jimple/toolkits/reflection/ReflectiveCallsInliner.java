@@ -42,7 +42,6 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
 import soot.VoidType;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.ArrayRef;
