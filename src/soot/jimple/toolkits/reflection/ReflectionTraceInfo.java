@@ -36,6 +36,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 import soot.tagkit.Host;
+import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
 
 public class ReflectionTraceInfo {
@@ -132,7 +133,7 @@ public class ReflectionTraceInfo {
 		SootClass sootClass = Scene.v().getSootClass(className);
 		Set<SootMethod> methodsWithRightName = new HashSet<SootMethod>();
 		for (SootMethod m: sootClass.getMethods()) {
-			if(m.getName().equals(methodName)) {
+			if(m.isConcrete() && m.getName().equals(methodName)) {
 				methodsWithRightName.add(m);
 			}
 		} 
@@ -147,7 +148,8 @@ public class ReflectionTraceInfo {
 				if(coversLineNumber(lineNumber, sootMethod)) {
 					return Collections.singleton(sootMethod);
 				}
-				if(sootMethod.hasActiveBody()) {
+				if(sootMethod.isConcrete()) {
+					if(!sootMethod.hasActiveBody()) sootMethod.retrieveActiveBody();
 					Body body = sootMethod.getActiveBody();
 					if(coversLineNumber(lineNumber, body)) {
 						return Collections.singleton(sootMethod);
@@ -167,10 +169,20 @@ public class ReflectionTraceInfo {
 	}
 
 	private boolean coversLineNumber(int lineNumber, Host host) {
-		SourceLnPosTag tag = (SourceLnPosTag) host.getTag("SourceLnPosTag");
-		if(tag!=null) {
-			if(tag.startLn()<=lineNumber && tag.endLn()>=lineNumber) {
-				return true;
+		{
+			SourceLnPosTag tag = (SourceLnPosTag) host.getTag("SourceLnPosTag");
+			if(tag!=null) {
+				if(tag.startLn()<=lineNumber && tag.endLn()>=lineNumber) {
+					return true;
+				}
+			}
+		}
+		{
+			LineNumberTag tag = (LineNumberTag) host.getTag("LineNumberTag");
+			if(tag!=null) {
+				if(tag.getLineNumber()==lineNumber) {
+					return true;
+				}
 			}
 		}
 		return false;
