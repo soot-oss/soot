@@ -192,13 +192,13 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 					//on Class.forName(n): targetName = n
 					Value classNameValue = ie.getArg(0);
 					if(classNameValue instanceof StringConstant) {
-						//special case: parameter is a String constant; in that case we just replace the entire expression by a class constant
-						StringConstant stringConstant = (StringConstant) classNameValue;
-						ValueBox argBox = s.getInvokeExprBox();
-						argBox.setValue(ClassConstant.v(stringConstant.value.replace('.', '/')));						
-						continue; //we are done already in that case
-					} 					
-					targetNameLocal = (Local) classNameValue;
+						//special case: parameter is a String constant
+						targetNameLocal = localGen.generateLocal(RefType.v("java.lang.String"));
+						AssignStmt assignStmt = Jimple.v().newAssignStmt(targetNameLocal, classNameValue);
+						newUnits.add(assignStmt);
+					} else { 					
+						targetNameLocal = (Local) classNameValue;
+					}
 				} else if(callKind==Kind.ClassNewInstance && ie.getMethodRef().getSignature().equals("<java.lang.Class: java.lang.Object newInstance()>")) {
 					//on clazz.newInstance(): targetName = clazz.getName()
 					Local classLocal = (Local) ((InstanceInvokeExpr)ie).getBase();
@@ -279,14 +279,16 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 						 * Tn an = (Tn)pn;
 						 */
 						SootMethod constructor = Scene.v().getMethod(target);
-						Local argsArrayLocal = (Local) s.getInvokeExpr().getArg(0);
-						int i=0;
 						paramLocals = new Local[constructor.getParameterCount()];
-						for(Type paramType: ((Collection<Type>)constructor.getParameterTypes())) {
-							paramLocals[i] = localGen.generateLocal(paramType);
-							unboxParameter(argsArrayLocal, i, paramLocals, paramType, newUnits, localGen);
-							i++;
-						}
+						if(constructor.getParameterCount()>0) {
+							Local argsArrayLocal = (Local) s.getInvokeExpr().getArg(0);
+							int i=0;
+							for(Type paramType: ((Collection<Type>)constructor.getParameterTypes())) {
+								paramLocals[i] = localGen.generateLocal(paramType);
+								unboxParameter(argsArrayLocal, i, paramLocals, paramType, newUnits, localGen);
+								i++;
+							}
+						} 
 						RefType targetType = constructor.getDeclaringClass().getType();
 						freshLocal = localGen.generateLocal(targetType);
 						replacement = Jimple.v().newNewExpr(targetType);
@@ -306,16 +308,18 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 						 */
 						SootMethod method = Scene.v().getMethod(target);
 						Value recvObject = ie.getArg(0);
-						Local argsArrayLocal = (Local) s.getInvokeExpr().getArg(1);
-						int i=0;
 						paramLocals = new Local[method.getParameterCount()];
-						for(Type paramType: ((Collection<Type>)method.getParameterTypes())) {
-							paramLocals[i] = localGen.generateLocal(paramType);
-							unboxParameter(argsArrayLocal, i, paramLocals, paramType, newUnits, localGen);							
-							i++;
-						}
+						if(method.getParameterCount()>0) {
+							Local argsArrayLocal = (Local) s.getInvokeExpr().getArg(1);
+							int i=0;
+							for(Type paramType: ((Collection<Type>)method.getParameterTypes())) {
+								paramLocals[i] = localGen.generateLocal(paramType);
+								unboxParameter(argsArrayLocal, i, paramLocals, paramType, newUnits, localGen);							
+								i++;
+							}
+						} 
 						RefType targetType = method.getDeclaringClass().getType();
-						freshLocal = localGen.generateLocal(targetType);						
+						freshLocal = localGen.generateLocal(targetType);
 						replacement = Jimple.v().newCastExpr(recvObject, method.getDeclaringClass().getType());
 						
 						break;
