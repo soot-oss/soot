@@ -651,6 +651,13 @@ public abstract class Body extends AbstractHost implements Serializable
 	
 	if(leftType instanceof ArrayType || rightType instanceof ArrayType) {
 	    if(leftType instanceof ArrayType && rightType instanceof ArrayType) return;
+	    //it is legal to assign arrays to variables of type Serializable, Cloneable or Object
+	    if(rightType instanceof ArrayType) {
+	    	if(leftType.equals(RefType.v("java.io.Serializable")) ||
+	    			leftType.equals(RefType.v("java.lang.Cloneable")) ||
+	    			leftType.equals(RefType.v("java.lang.Object")))
+	    		return;
+	    }
 
 	    throw new RuntimeException("Warning: Bad use of array type"+errorSuffix+" in "+getMethod());
 	}
