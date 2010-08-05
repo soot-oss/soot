@@ -93,7 +93,7 @@ public class SourceLocator
             }
         }
         if(ex!=null) throw ex;
-        if(className.startsWith("soot.rtlib.")) {
+        if(className.startsWith("soot.rtlib.tamiflex.")) {
 	        String fileName = className.replace('.', '/') + ".class";
         	InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
         	if(stream!=null) {

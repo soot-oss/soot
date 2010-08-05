@@ -15,4 +15,4 @@
  * 
  * This will cause Soot to emit the class SootSig along with the analyzed program.
  */
-package soot.rtlib;
+package soot.rtlib.tamiflex;

@@ -74,12 +74,12 @@ import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.options.CGOptions;
 import soot.options.Options;
-import soot.rtlib.DefaultHandler;
-import soot.rtlib.IUnexpectedReflectiveCallHandler;
-import soot.rtlib.OpaquePredicate;
-import soot.rtlib.ReflectiveCalls;
-import soot.rtlib.SootSig;
-import soot.rtlib.UnexpectedReflectiveCall;
+import soot.rtlib.tamiflex.DefaultHandler;
+import soot.rtlib.tamiflex.IUnexpectedReflectiveCallHandler;
+import soot.rtlib.tamiflex.OpaquePredicate;
+import soot.rtlib.tamiflex.ReflectiveCalls;
+import soot.rtlib.tamiflex.SootSig;
+import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -115,11 +115,11 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			Scene.v().getSootClass(OpaquePredicate.class.getName()).setApplicationClass();
 			Scene.v().getSootClass(ReflectiveCalls.class.getName()).setApplicationClass();
 			
-			reflectiveCallsClass = new SootClass("soot.rtlib.ReflectiveCallsWrapper", Modifier.PUBLIC);
+			reflectiveCallsClass = new SootClass("soot.rtlib.tamiflex.tamiflex.ReflectiveCallsWrapper", Modifier.PUBLIC);
 			Scene.v().addClass(reflectiveCallsClass);
 			reflectiveCallsClass.setApplicationClass();
 
-			UNINTERPRETED_METHOD = Scene.v().makeMethodRef(Scene.v().getSootClass("soot.rtlib.OpaquePredicate"), "getFalse", Collections.<Type>emptyList(), BooleanType.v(), true);
+			UNINTERPRETED_METHOD = Scene.v().makeMethodRef(Scene.v().getSootClass("soot.rtlib.tamiflex.tamiflex.OpaquePredicate"), "getFalse", Collections.<Type>emptyList(), BooleanType.v(), true);
 			
 			if(useCaching)
 				addCaching();
@@ -175,7 +175,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 	private void initializeReflectiveCallsTable() {
 		int callSiteId = 0;
 		
-		SootClass reflCallsClass = Scene.v().getSootClass("soot.rtlib.ReflectiveCalls");
+		SootClass reflCallsClass = Scene.v().getSootClass("soot.rtlib.tamiflex.tamiflex.ReflectiveCalls");
 		SootMethod clinit = reflCallsClass.getMethodByName(SootMethod.staticInitializerName);
 		Body body = clinit.retrieveActiveBody();
 		PatchingChain<Unit> units = body.getUnits();
@@ -277,7 +277,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			throw new IllegalStateException("unknown kind: "+kind);
 		}
 		
-		SootClass reflCallsClass = Scene.v().getSootClass("soot.rtlib.ReflectiveCalls");
+		SootClass reflCallsClass = Scene.v().getSootClass("soot.rtlib.tamiflex.tamiflex.ReflectiveCalls");
 		
 		SootMethod m = reflCallsClass.getMethodByName(methodName);
 		JimpleBody body = (JimpleBody) m.retrieveActiveBody();
@@ -332,20 +332,20 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 						ie.getMethodRef().getSignature().equals("<java.lang.Class: java.lang.Class forName(java.lang.String,boolean,java.lang.ClassLoader)>"))) {
 					found = true;
 					Value classNameValue = ie.getArg(0);					
-					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.ReflectiveCalls: void knownClassForName(int,java.lang.String)>").makeRef(),IntConstant.v(callSiteId),classNameValue)));
+					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.tamiflex.tamiflex.ReflectiveCalls: void knownClassForName(int,java.lang.String)>").makeRef(),IntConstant.v(callSiteId),classNameValue)));
 				} else if(callKind==Kind.ClassNewInstance && ie.getMethodRef().getSignature().equals("<java.lang.Class: java.lang.Object newInstance()>")) {
 					found = true;
 					Local classLocal = (Local) ((InstanceInvokeExpr)ie).getBase();
-					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.ReflectiveCalls: void knownClassNewInstance(int,java.lang.Class)>").makeRef(),IntConstant.v(callSiteId),classLocal)));
+					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.tamiflex.tamiflex.ReflectiveCalls: void knownClassNewInstance(int,java.lang.Class)>").makeRef(),IntConstant.v(callSiteId),classLocal)));
 				} else if(callKind==Kind.ConstructorNewInstance && ie.getMethodRef().getSignature().equals("<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>")) {
 					found = true;
 					Local constrLocal = (Local) ((InstanceInvokeExpr)ie).getBase();
-					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.ReflectiveCalls: void knownConstructorNewInstance(int,java.lang.reflect.Constructor)>").makeRef(),IntConstant.v(callSiteId),constrLocal)));
+					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.tamiflex.tamiflex.ReflectiveCalls: void knownConstructorNewInstance(int,java.lang.reflect.Constructor)>").makeRef(),IntConstant.v(callSiteId),constrLocal)));
 				} else if(callKind==Kind.MethodInvoke && ie.getMethodRef().getSignature().equals("<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>")) {
 					found = true;
 					Local methodLocal = (Local) ((InstanceInvokeExpr)ie).getBase();
 					Value recv = ie.getArg(0);
-					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.ReflectiveCalls: void knownMethodInvoke(int,java.lang.Object,java.lang.reflect.Method)>").makeRef(),IntConstant.v(callSiteId),recv,methodLocal)));
+					newUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(Scene.v().getMethod("<soot.rtlib.tamiflex.tamiflex.ReflectiveCalls: void knownMethodInvoke(int,java.lang.Object,java.lang.reflect.Method)>").makeRef(),IntConstant.v(callSiteId),recv,methodLocal)));
 				}
 				
 				if(!found) continue;

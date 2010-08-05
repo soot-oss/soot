@@ -1,4 +1,4 @@
-package soot.rtlib;
+package soot.rtlib.tamiflex;
 
 public class OpaquePredicate {
 	

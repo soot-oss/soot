@@ -1,7 +1,9 @@
-package soot.rtlib;
+package soot.rtlib.tamiflex;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
+import soot.rtlib.IUnexpectedReflectiveCallHandler;
 
 
 public class UnexpectedReflectiveCall {
@@ -9,7 +11,7 @@ public class UnexpectedReflectiveCall {
 	private final static IUnexpectedReflectiveCallHandler handler;
 	
 	static {
-		String listenerClassName = System.getProperty("BOOSTER_LISTENER", "soot.rtlib.DefaultHandler");
+		String listenerClassName = System.getProperty("BOOSTER_LISTENER", "soot.rtlib.tamiflex.DefaultHandler");
 		try {
 			handler = (IUnexpectedReflectiveCallHandler) Class.forName(listenerClassName).newInstance();
 		} catch (Exception e) {

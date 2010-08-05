@@ -1,4 +1,4 @@
-package soot.rtlib;
+package soot.rtlib.tamiflex;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
