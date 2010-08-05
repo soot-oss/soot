@@ -6,7 +6,16 @@ import java.lang.reflect.Method;
 
 public class UnexpectedReflectiveCall {
 	
-	private static IUnexpectedReflectiveCallHandler handler = new DefaultHandler();
+	private final static IUnexpectedReflectiveCallHandler handler;
+	
+	static {
+		String listenerClassName = System.getProperty("BOOSTER_LISTENER", "soot.rtlib.DefaultHandler");
+		try {
+			handler = (IUnexpectedReflectiveCallHandler) Class.forName(listenerClassName).newInstance();
+		} catch (Exception e) {
+			throw new Error("Error instantiating listener for Booster.",e);
+		}
+	}
 	
 	//delegate methods
 	
