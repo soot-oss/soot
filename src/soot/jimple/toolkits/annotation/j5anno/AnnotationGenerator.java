@@ -144,7 +144,7 @@ public class AnnotationGenerator {
 	 * @param elems a (possibly empty) sequence of AnnotationElem objects corresponding to the elements that should be contained in this annotation
 	 */
 	public void annotate(Host h, String annotationName, int visibility, List<AnnotationElem> elems) {
-		annotationName = "L" + annotationName.replace('.','/');
+		annotationName = "L" + annotationName.replace('.','/') + ';';
 		VisibilityAnnotationTag tagToAdd = findOrAdd(h, visibility);
 		AnnotationTag at = new AnnotationTag(annotationName, elems.size());
 		for (AnnotationElem elem : elems) 
