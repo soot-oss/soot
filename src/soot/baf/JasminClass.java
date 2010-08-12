@@ -28,13 +28,60 @@
 
 
 package soot.baf;
-import soot.options.*;
-import soot.tagkit.*;
-import soot.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.AbstractJasminClass;
+import soot.ArrayType;
+import soot.Body;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.Modifier;
+import soot.NullType;
+import soot.RefType;
+import soot.ShortType;
+import soot.SootClass;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.StmtAddressType;
+import soot.Timers;
+import soot.Trap;
+import soot.Type;
+import soot.TypeSwitch;
+import soot.Unit;
+import soot.ValueBox;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.ClassConstant;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.IdentityRef;
+import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.ParameterRef;
+import soot.jimple.StringConstant;
+import soot.jimple.ThisRef;
+import soot.options.Options;
+import soot.tagkit.JasminAttribute;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.Tag;
+import soot.toolkits.graph.Block;
+import soot.toolkits.graph.BlockGraph;
+import soot.toolkits.graph.BriefBlockGraph;
+import soot.toolkits.graph.DirectedGraph;
+import soot.util.ArraySet;
+import soot.util.Chain;
 
 public class JasminClass extends AbstractJasminClass
 {
@@ -298,7 +345,9 @@ public class JasminClass extends AbstractJasminClass
 
     void emitInst(Inst inst)
     {
-        inst.apply(new InstSwitch()
+    	LineNumberTag lnTag = (LineNumberTag) inst.getTag("LineNumberTag");
+    	if(lnTag != null) emit(".line " + lnTag.getLineNumber());
+    	inst.apply(new InstSwitch()
         {
             public void caseReturnVoidInst(ReturnVoidInst i)
             {
