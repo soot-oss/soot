@@ -3,8 +3,6 @@ package soot.rtlib.tamiflex;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import soot.rtlib.IUnexpectedReflectiveCallHandler;
-
 public class DefaultHandler implements IUnexpectedReflectiveCallHandler {
 	public void methodInvoke(Object receiver, Method m) {
 		System.err.println("Unexpected reflective call to method "+m);

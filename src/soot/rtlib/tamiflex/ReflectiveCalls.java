@@ -5,9 +5,6 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import soot.rtlib.SootSig;
-import soot.rtlib.UnexpectedReflectiveCall;
-
 public class ReflectiveCalls {
 	
 	private final static Set<String> classForName = new HashSet<String>();
