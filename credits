@@ -94,6 +94,9 @@ Antoine Mine (Antoine.Mine@ens.fr)
 Nomair Naeem (nomain.naeem@mail.mcgill.ca)
     - Dava decompiler
 
+Matthias Perner (snafu@chaos-darmstadt.de)
+    - invokedynamic support
+
 Chris Pickett (cpicke@sable.mcgill.ca)
     - documentation
     - minor Jasmin fixes
