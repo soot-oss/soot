@@ -354,6 +354,15 @@ public class Grimp
     {
         return new GVirtualInvokeExpr(base, method, args);
     }
+    
+    /**
+        Constructs a DynamicInvokeExpression(SootMethodRef method, List of Expr) grammar chunk.
+     */
+    public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef method, List args)
+    {
+    	return new GDynamicInvokeExpr(method, args);
+    }
+    
 
 
     /**
@@ -890,6 +899,15 @@ public class Grimp
                         returnedExpr.setValue
                             (newVirtualInvokeExpr((Local)(v.getBase()),
                                                   v.getMethodRef(),
+                                                  newArgList));
+                    }
+                    
+                    public void caseDynamicInvokeExpr(DynamicInvokeExpr v){
+                    	ArrayList newArgList = new ArrayList();
+                    	for (int i = 0; i < v.getArgCount(); i++)
+                            newArgList.add(newExpr(v.getArg(i)));
+                        returnedExpr.setValue
+                            (newDynamicInvokeExpr(v.getMethodRef(),
                                                   newArgList));
                     }
 

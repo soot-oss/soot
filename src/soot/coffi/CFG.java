@@ -2271,6 +2271,36 @@ public class CFG {
             break;
          }
 
+         case ByteCode.INVOKEDYNAMIC:
+         {
+             Instruction_Invokedynamic iv = (Instruction_Invokedynamic)ins;
+             int args = cp_info.countParams(constant_pool,iv.arg_i);
+             Type returnType = byteCodeTypeOf(jimpleReturnTypeOfNameAndType(cm,
+                 constant_pool, iv.arg_i));
+
+             // pop off parameters.
+                 for (int j=args-1;j>=0;j--)
+                 {
+                     if(typeStack.top().equals(Long2ndHalfType.v()))
+                     {
+                         typeStack = popSafe(typeStack, Long2ndHalfType.v());
+                         typeStack = popSafe(typeStack, LongType.v());
+
+                     }
+                     else if(typeStack.top().equals(Double2ndHalfType.v()))
+                     {
+                         typeStack = popSafe(typeStack, Double2ndHalfType.v());
+                         typeStack = popSafe(typeStack, DoubleType.v());
+                     }
+                     else
+                         typeStack = popSafe(typeStack, typeStack.top());
+                 }
+
+             if(!returnType.equals(VoidType.v()))
+                 typeStack = smartPush(typeStack, returnType);
+             break;
+          }
+         
          case ByteCode.INVOKEVIRTUAL:
          {
             Instruction_Invokevirtual iv = (Instruction_Invokevirtual)ins;
@@ -2465,6 +2495,18 @@ public class CFG {
         return Util.v().jimpleTypeOfFieldDescriptor(fieldDescriptor);
     }
 
+    private Type jimpleReturnTypeOfNameAndType(Scene cm,
+            cp_info[] constant_pool, int index)
+    {
+        CONSTANT_NameAndType_info nat = (CONSTANT_NameAndType_info)
+            (constant_pool[index]);
+
+        String methodDescriptor = ((CONSTANT_Utf8_info)
+            (constant_pool[nat.descriptor_index])).convert();
+
+        return Util.v().jimpleReturnTypeOfMethodDescriptor(methodDescriptor);
+    }
+    
     private Type jimpleReturnTypeOfMethodRef(Scene cm,
         cp_info[] constant_pool, int index)
     {
@@ -4271,7 +4313,68 @@ public class CFG {
             break;
          }
 
+         case ByteCode.INVOKEDYNAMIC:
+         {
+        	 Instruction_Invokedynamic is = (Instruction_Invokedynamic)ins;
+        	 args = cp_info.countParams(constant_pool,is.arg_i);
 
+        	 SootMethodRef methodRef = null;
+
+        	 CONSTANT_NameAndType_info nameAndTypeInfo = (CONSTANT_NameAndType_info) constant_pool[is.arg_i];
+        	 
+        	 String methodName = ((CONSTANT_Utf8_info) (constant_pool[nameAndTypeInfo.name_index])).convert();
+        	 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[nameAndTypeInfo.descriptor_index])).
+        	 convert();
+
+        	 SootClass bclass = cm.getSootClass("java.dyn.InvokeDynamic");
+        	 
+        	 List parameterTypes;
+        	 Type returnType;
+
+        	 // Generate parameters & returnType & parameterTypes
+        	 {
+        		 Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
+
+        		 parameterTypes = new ArrayList();
+
+        		 for(int k = 0; k < types.length - 1; k++)
+        		 {
+        			 parameterTypes.add(types[k]);
+        		 }
+
+        		 returnType = types[types.length - 1];
+        	 }
+        	 //we always model invokeDynamic method refs as static method references of methods on the type java.dyn.InvokeDynamic
+        	 methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType, true);
+
+        	 // build Vector of parameters
+        	 params = new Value[args];
+        	 for (int j=args-1;j>=0;j--)
+        	 {
+        		 params[j] = Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex());
+
+        		 if(typeSize(typeStack.top()) == 2)
+        		 {
+        			 typeStack = typeStack.pop();
+        			 typeStack = typeStack.pop();
+        		 }
+        		 else
+        			 typeStack = typeStack.pop();
+        	 }
+
+        	 rvalue = Jimple.v().newDynamicInvokeExpr(methodRef, Arrays.asList(params));
+
+        	 if(!returnType.equals(VoidType.v()))
+        	 {
+        		 stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
+        				 postTypeStack.topIndex()),rvalue);
+        	 }
+        	 else
+        		 stmt = Jimple.v().newInvokeStmt(rvalue);
+
+        	 break;
+         }  	 
+ 
          case ByteCode.INVOKEVIRTUAL:
          {
             Instruction_Invokevirtual iv = (Instruction_Invokevirtual)ins;
@@ -4285,7 +4388,7 @@ public class CFG {
             CONSTANT_Class_info c =
                 (CONSTANT_Class_info) constant_pool[methodInfo.class_index];
 
-             String className = ((CONSTANT_Utf8_info) (constant_pool[c.name_index])).convert();
+            String className = ((CONSTANT_Utf8_info) (constant_pool[c.name_index])).convert();
                 className = className.replace('/', '.');
 
             CONSTANT_NameAndType_info i =

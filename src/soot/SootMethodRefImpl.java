@@ -56,6 +56,9 @@ class SootMethodRefImpl implements SootMethodRef {
         if( name == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null name" );
         if( parameterTypes == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null parameterTypes" );
         if( returnType == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null returnType" );        
+    	if(declaringClass.getName().equals("java.dyn.InvokeDynamic") && !isStatic) {
+    		throw new IllegalArgumentException("invokedynamic method references must be static!");
+    	}
     }
 
     private final SootClass declaringClass;
@@ -114,6 +117,9 @@ class SootMethodRefImpl implements SootMethodRef {
     }
     
     private SootMethod resolve(StringBuffer trace) {
+    	if(declaringClass.getName().equals("java.dyn.InvokeDynamic")) {
+    		throw new IllegalStateException("Cannot resolve invokedynamic method references at compile time!");
+    	}
         SootClass cl = declaringClass;
         while(true) {
             if(trace != null) trace.append(

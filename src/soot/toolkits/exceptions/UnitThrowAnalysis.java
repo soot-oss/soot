@@ -245,6 +245,13 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	public void casePrimitiveCastInst(PrimitiveCastInst i) {
 	}
 
+	public void caseDynamicInvokeInst(DynamicInvokeInst i) {
+		result = result.add(mgr.RESOLVE_METHOD_ERRORS);
+	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
+	    result = result.add(mightThrow(i.getMethod()));
+	}
+	
 	public void caseStaticInvokeInst(StaticInvokeInst i) {
 	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	    result = result.add(mightThrow(i.getMethod()));
@@ -595,6 +602,10 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
 	public void caseVirtualInvokeExpr(VirtualInvokeExpr expr) {
 	    caseInstanceInvokeExpr(expr);
+	}
+	//INSERTED for invokedynamic UnitThrowAnalysis.java
+	public void caseDynamicInvokeExpr(DynamicInvokeExpr expr) {
+		//caseInstanceInvokeExpr(expr);
 	}
 
 	public void caseCastExpr(CastExpr expr) {

@@ -213,6 +213,19 @@ public class StackTypeHeightCalculator {
       add_types = new Type[]{i.getToType()};
     }
     
+    public void caseDynamicInvokeInst(DynamicInvokeInst i){
+    	SootMethod m = i.getMethod();
+    	Object args[] = m.getParameterTypes().toArray();
+    	remove_types = new Type[args.length];
+    	for (int ii = 0; ii < args.length; ii++)
+    		remove_types[ii] = (Type)args[ii];
+
+    	if (m.getReturnType() instanceof VoidType)
+    		add_types = null;
+    	else
+    		add_types = new Type[]{m.getReturnType()};
+    }    
+    
     public void caseStaticInvokeInst(StaticInvokeInst i){
       SootMethod m = i.getMethod();
       Object args[] = m.getParameterTypes().toArray();

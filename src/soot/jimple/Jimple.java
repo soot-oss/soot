@@ -53,6 +53,7 @@ public class Jimple
     public final static String NOP = "nop";
     public final static String RET = "ret";
     public final static String SPECIALINVOKE = "specialinvoke";
+    public final static String DYNAMICINVOKE = "dynamicinvoke";
     public final static String STATICINVOKE = "staticinvoke";
     public final static String TABLESWITCH = "tableswitch";
     public final static String VIRTUALINVOKE = "virtualinvoke";
@@ -447,6 +448,12 @@ public class Jimple
         return new JSpecialInvokeExpr(base, method, args);
     }
 
+    /**
+     * Constructs a NewDynamicInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
+     */
+    public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef methodRef, List args){
+    	return new JDynamicInvokeExpr(methodRef, args);
+    }
 
     /**
         Constructs a NewVirtualInvokeExpr(Local base, SootMethodRef method, List of Immediate) grammar chunk.
@@ -880,6 +887,7 @@ public class Jimple
         return new StmtBox((Stmt) unit);
     }
 
+    
     /** Returns an empty JimpleBody associated with method m. */
     public JimpleBody newBody(SootMethod m)
     {

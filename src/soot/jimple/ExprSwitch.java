@@ -55,6 +55,7 @@ public interface ExprSwitch extends soot.util.Switch
     public abstract void caseSpecialInvokeExpr(SpecialInvokeExpr v);
     public abstract void caseStaticInvokeExpr(StaticInvokeExpr v);
     public abstract void caseVirtualInvokeExpr(VirtualInvokeExpr v);
+    public abstract void caseDynamicInvokeExpr(DynamicInvokeExpr v);
     public abstract void caseCastExpr(CastExpr v);
     public abstract void caseInstanceOfExpr(InstanceOfExpr v);
     public abstract void caseNewArrayExpr(NewArrayExpr v);

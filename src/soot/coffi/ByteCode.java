@@ -223,7 +223,7 @@ class ByteCode {
    public static final int INVOKENONVIRTUAL = 183;
    public static final int INVOKESTATIC = 184;
    public static final int INVOKEINTERFACE = 185;
-   /*    public static final int  = 186;*/
+   public static final int INVOKEDYNAMIC = 186;
    public static final int NEW = 187;
    public static final int NEWARRAY = 188;
    public static final int ANEWARRAY = 189;
@@ -974,6 +974,9 @@ class ByteCode {
       case INVOKEINTERFACE:
          i = (Instruction)new Instruction_Invokeinterface();
          break;
+      case INVOKEDYNAMIC:
+          i = (Instruction)new Instruction_Invokedynamic();
+          break;
       case ATHROW:
          i = (Instruction)new Instruction_Athrow();
          break;

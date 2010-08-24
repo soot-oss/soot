@@ -22,7 +22,24 @@ Improvements and API changes in trunk
    course, such an analysis may be unsound - you get what you are asking
    for.
 5. Added new packs "wjpp" and "wspp" for adding pre-processors. 
-
+6. Thanks to Matthias Perner, added support for handling invokedynamic
+   instructions. The instructions are handled as follows:
+   - On the Jimple, Grimp and Baf level, invokedynamic instructions
+     appear as DynamicInvokeExpr with a static SootMethodRef that
+     has class java.dyn.InvokeDynamic as target class. This is in
+     accordance with the internal handling in JDK 7.
+   - SootMethodRefs which have java.dyn.InvokeDynamic as target class
+     may not be resolved: calling resolve() will throw an exception
+   - On the Jasmin level, invokedynamic instruction appear in the
+   	 form "invokedynamic <methodName>(<methodParams>)<methodRetType>".
+   	 In particular, there is no target class given.
+   - Jasmin translates this into an invokedynamic instruction with
+     two arguments:
+     a) a NameAndType attribute referring to
+        <methodName>(<methodParams>)<methodRetType> and
+     b) the constant "0" (two zero bytes, i.e., a short);
+        according to the VM spec this is reserved for future use
+        
 Improvements and API changes in version 2.4.0
 
 1. Deprecated class StronglyConnectedComponents because it is

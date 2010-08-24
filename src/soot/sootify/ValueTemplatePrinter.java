@@ -22,6 +22,7 @@ import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
+import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.EqExpr;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
@@ -322,21 +323,25 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 	public void caseVirtualInvokeExpr(VirtualInvokeExpr v) {
 		printInvokeExpr(v);		
 	}
-
-	private void printBinaryExpr(BinopExpr v, Value lhs, String l, Value rhs, String r) {
-		String className = v.getClass().getSimpleName();
-		if(className.charAt(0)=='J') className = className.substring(1);
-
-		String oldName = varName;
-		
-		String v1 = printValueAssignment(lhs, l);
-		
-		String v2 = printValueAssignment(rhs, r);
-		
-		p.println("Value "+oldName+" = Jimple.v().new"+className+"("+v1+","+v2+");");
-		
-		varName = oldName;		
+	
+	public void caseDynamicInvokeExpr(DynamicInvokeExpr v) {
+		printInvokeExpr(v);		
 	}
+
+//	private void printBinaryExpr(BinopExpr v, Value lhs, String l, Value rhs, String r) {
+//		String className = v.getClass().getSimpleName();
+//		if(className.charAt(0)=='J') className = className.substring(1);
+//
+//		String oldName = varName;
+//		
+//		String v1 = printValueAssignment(lhs, l);
+//		
+//		String v2 = printValueAssignment(rhs, r);
+//		
+//		p.println("Value "+oldName+" = Jimple.v().new"+className+"("+v1+","+v2+");");
+//		
+//		varName = oldName;		
+//	}
 	
 	public void caseCastExpr(CastExpr v) {
 		String oldName = varName;
