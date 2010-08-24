@@ -159,6 +159,14 @@ Runs interactively, with Soot providing detailed information as it iterates thro
 </long_desc>
 		</boolopt>
 		<boolopt>
+			<name>Unfriendly Mode</name>
+			<alias>unfriendly-mode</alias>
+			<short_desc>Allow Soot to run with no command-line options</short_desc>
+			<long_desc>
+With this option, Soot does not stop even if it received no command-line options. Useful when setting Soot options programmatically and then calling soot.Main.main() with an empty list.
+</long_desc>
+		</boolopt>
+		<boolopt>
 			<name>Application Mode</name>
 			<alias>app</alias>
 			<short_desc>Run in application mode</short_desc>

@@ -131,6 +131,11 @@ public class Options extends OptionsBase {
                 interactive_mode = true;
   
             else if( false 
+            || option.equals( "unfriendly-mode" )
+            )
+                unfriendly_mode = true;
+  
+            else if( false 
             || option.equals( "app" )
             )
                 app = true;
@@ -928,6 +933,10 @@ public class Options extends OptionsBase {
     private boolean interactive_mode = false;
     public void set_interactive_mode( boolean setting ) { interactive_mode = setting; }
   
+    public boolean unfriendly_mode() { return unfriendly_mode; }
+    private boolean unfriendly_mode = false;
+    public void set_unfriendly_mode( boolean setting ) { unfriendly_mode = setting; }
+  
     public boolean app() { return app; }
     private boolean app = false;
     public void set_app( boolean setting ) { app = setting; }
@@ -1143,6 +1152,7 @@ public class Options extends OptionsBase {
 +padOpt(" -version", "Display version information and exit" )
 +padOpt(" -v -verbose", "Verbose mode" )
 +padOpt(" -interactive-mode", "Run in interactive mode" )
++padOpt(" -unfriendly-mode", "Allow Soot to run with no command-line options" )
 +padOpt(" -app", "Run in application mode" )
 +padOpt(" -w -whole-program", "Run in whole-program mode" )
 +padOpt(" -ws -whole-shimple", "Run in whole-shimple mode" )

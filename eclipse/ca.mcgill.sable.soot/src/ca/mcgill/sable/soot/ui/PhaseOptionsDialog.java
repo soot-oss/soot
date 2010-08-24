@@ -1886,6 +1886,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getGeneral_Optionsinteractive_mode_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionsunfriendly_mode_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsunfriendly_mode_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionsapp_widget().getButton().getSelection();
 		
 		
@@ -6226,6 +6236,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return General_Optionsinteractive_mode_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionsunfriendly_mode_widget;
+	
+	private void setGeneral_Optionsunfriendly_mode_widget(BooleanOptionWidget widget) {
+		General_Optionsunfriendly_mode_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsunfriendly_mode_widget() {
+		return General_Optionsunfriendly_mode_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionsapp_widget;
 	
 	private void setGeneral_Optionsapp_widget(BooleanOptionWidget widget) {
@@ -9616,6 +9636,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing detailed information as \nit iterates through intra-procedural analyses. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"unfriendly-mode";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsunfriendly_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Unfriendly Mode", "", "","unfriendly-mode", "\nWith this option, Soot does not stop even if it received no \ncommand-line options. Useful when setting Soot options \nprogrammatically and then calling soot.Main.main() with an empty \nlist. ", defaultBool)));
 		
 		
 		

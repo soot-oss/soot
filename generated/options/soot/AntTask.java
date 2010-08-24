@@ -136,6 +136,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-interactive-mode");
         }
   
+        public void setunfriendly_mode(boolean arg) {
+            if(arg) addArg("-unfriendly-mode");
+        }
+  
         public void setapp(boolean arg) {
             if(arg) addArg("-app");
         }

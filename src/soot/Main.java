@@ -115,7 +115,7 @@ public class Main {
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
 
-        if (args.length == 0 || Options.v().version()) {
+        if ((!Options.v().unfriendly_mode() && args.length == 0) || Options.v().version()) {
             printVersion();
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
