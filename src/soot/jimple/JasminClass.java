@@ -28,6 +28,7 @@ package soot.jimple;
 import soot.options.*;
 import soot.*;
 import soot.jimple.internal.*;
+import soot.tagkit.LineNumberTag;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.util.*;
@@ -1236,6 +1237,8 @@ public class JasminClass extends AbstractJasminClass
 
     void emitStmt(Stmt stmt)
     {
+    	LineNumberTag lnTag = (LineNumberTag) stmt.getTag("LineNumberTag");
+    	if(lnTag != null) emit(".line " + lnTag.getLineNumber());
         stmt.apply(new AbstractStmtSwitch()
         {
             public void caseAssignStmt(AssignStmt s)
