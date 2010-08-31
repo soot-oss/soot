@@ -41,13 +41,13 @@ public class ParTypeAccess extends Access implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 303
+    // Declared in Generics.jrag at line 307
 
   public boolean isRaw() {
     return false;
   }
 
-    // Declared in Generics.jrag at line 411
+    // Declared in Generics.jrag at line 415
 
 
   public void typeCheck() {
@@ -215,7 +215,7 @@ public class ParTypeAccess extends Access implements Cloneable {
         return (List<Access>)getChildNoTransform(1);
     }
 
-    // Declared in Generics.jrag at line 238
+    // Declared in Generics.jrag at line 242
  @SuppressWarnings({"unchecked", "cast"})     public Expr unqualifiedScope() {
         ASTNode$State state = state();
         Expr unqualifiedScope_value = unqualifiedScope_compute();
@@ -224,7 +224,7 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     private Expr unqualifiedScope_compute() {  return getParent() instanceof Access ? ((Access)getParent()).unqualifiedScope() : super.unqualifiedScope();  }
 
-    // Declared in Generics.jrag at line 241
+    // Declared in Generics.jrag at line 245
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed) {
             return type_value;
@@ -252,7 +252,7 @@ public class ParTypeAccess extends Access implements Cloneable {
     return typeDecl;
   }
 
-    // Declared in Generics.jrag at line 254
+    // Declared in Generics.jrag at line 258
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl genericDecl() {
         ASTNode$State state = state();
         TypeDecl genericDecl_value = genericDecl_compute();
@@ -261,7 +261,7 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     private TypeDecl genericDecl_compute() {  return getTypeAccess().type();  }
 
-    // Declared in Generics.jrag at line 255
+    // Declared in Generics.jrag at line 259
  @SuppressWarnings({"unchecked", "cast"})     public boolean isTypeAccess() {
         ASTNode$State state = state();
         boolean isTypeAccess_value = isTypeAccess_compute();
@@ -270,7 +270,7 @@ public class ParTypeAccess extends Access implements Cloneable {
 
     private boolean isTypeAccess_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 239
+    // Declared in Generics.jrag at line 243
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getTypeArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

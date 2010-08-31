@@ -189,7 +189,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     );
   }
 
-    // Declared in Generics.jrag at line 1038
+    // Declared in Generics.jrag at line 1046
 
   
 
@@ -993,7 +993,7 @@ if(sameSignature_ConstructorDecl_values == null) sameSignature_ConstructorDecl_v
   }
 
     protected java.util.Map moreSpecificThan_ConstructorDecl_values;
-    // Declared in MethodSignature.jrag at line 153
+    // Declared in MethodSignature.jrag at line 168
  @SuppressWarnings({"unchecked", "cast"})     public boolean moreSpecificThan(ConstructorDecl m) {
         Object _parameters = m;
 if(moreSpecificThan_ConstructorDecl_values == null) moreSpecificThan_ConstructorDecl_values = new java.util.HashMap(4);
@@ -1150,7 +1150,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     protected boolean sourceConstructorDecl_computed = false;
     protected ConstructorDecl sourceConstructorDecl_value;
-    // Declared in Generics.jrag at line 1269
+    // Declared in Generics.jrag at line 1277
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed) {
             return sourceConstructorDecl_value;
@@ -1166,7 +1166,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
 
     private ConstructorDecl sourceConstructorDecl_compute() {  return this;  }
 
-    // Declared in MethodSignature.jrag at line 175
+    // Declared in MethodSignature.jrag at line 190
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableBySubtyping(List argList) {
         ASTNode$State state = state();
         boolean applicableBySubtyping_List_value = applicableBySubtyping_compute(argList);
@@ -1184,7 +1184,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 195
+    // Declared in MethodSignature.jrag at line 210
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableByMethodInvocationConversion(List argList) {
         ASTNode$State state = state();
         boolean applicableByMethodInvocationConversion_List_value = applicableByMethodInvocationConversion_compute(argList);
@@ -1202,7 +1202,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 216
+    // Declared in MethodSignature.jrag at line 231
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableVariableArity(List argList) {
         ASTNode$State state = state();
         boolean applicableVariableArity_List_value = applicableVariableArity_compute(argList);
@@ -1223,7 +1223,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 303
+    // Declared in MethodSignature.jrag at line 318
  @SuppressWarnings({"unchecked", "cast"})     public boolean potentiallyApplicable(List argList) {
         ASTNode$State state = state();
         boolean potentiallyApplicable_List_value = potentiallyApplicable_compute(argList);
@@ -1238,7 +1238,7 @@ if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 310
+    // Declared in MethodSignature.jrag at line 325
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         ASTNode$State state = state();
         int arity_value = arity_compute();
@@ -1611,7 +1611,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_reachable(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 77
+    // Declared in VariableDeclaration.jrag at line 81
     public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -1620,7 +1620,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isMethodParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 78
+    // Declared in VariableDeclaration.jrag at line 82
     public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -1629,7 +1629,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isConstructorParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 79
+    // Declared in VariableDeclaration.jrag at line 83
     public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -1678,7 +1678,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
     }
 
 public ASTNode rewriteTo() {
-    // Declared in LookupConstructor.jrag at line 217
+    // Declared in LookupConstructor.jrag at line 219
     if(!hasConstructorInvocation() && !hostType().isObject()) {
         state().duringLookupConstructor++;
         ASTNode result = rewriteRule0();
@@ -1689,7 +1689,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in LookupConstructor.jrag at line 217
+    // Declared in LookupConstructor.jrag at line 219
     private ConstructorDecl rewriteRule0() {
 {
       setConstructorInvocation(

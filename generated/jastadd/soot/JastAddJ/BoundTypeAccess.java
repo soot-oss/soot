@@ -40,7 +40,7 @@ public class BoundTypeAccess extends TypeAccess implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 300
+    // Declared in Generics.jrag at line 304
 
 
   public boolean isRaw() {

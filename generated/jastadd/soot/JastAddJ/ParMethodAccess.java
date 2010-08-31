@@ -278,7 +278,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
         return (List<Access>)getChildNoTransform(1);
     }
 
-    // Declared in MethodSignature.jrag at line 296
+    // Declared in MethodSignature.jrag at line 311
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList typeArguments(MethodDecl m) {
         Object _parameters = m;
 if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = new java.util.HashMap(4);

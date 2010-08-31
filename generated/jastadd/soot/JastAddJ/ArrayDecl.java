@@ -92,13 +92,13 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
     return new ArrayTypeAccess(componentType().createQualifiedAccess());
   }
 
-    // Declared in Generics.jrag at line 733
+    // Declared in Generics.jrag at line 737
 
   public Access substitute(Parameterization parTypeDecl) {
     return new ArrayTypeAccess(componentType().substitute(parTypeDecl));
   }
 
-    // Declared in Generics.jrag at line 769
+    // Declared in Generics.jrag at line 773
 
   public Access substituteReturnType(Parameterization parTypeDecl) {
     return new ArrayTypeAccess(componentType().substituteReturnType(parTypeDecl));
@@ -644,7 +644,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean involvesTypeParameters_compute() {  return componentType().involvesTypeParameters();  }
 
-    // Declared in Generics.jrag at line 320
+    // Declared in Generics.jrag at line 324
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl erasure() {
         if(erasure_computed) {
             return erasure_value;
@@ -660,7 +660,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private TypeDecl erasure_compute() {  return componentType().erasure().arrayType();  }
 
-    // Declared in Generics.jrag at line 923
+    // Declared in Generics.jrag at line 927
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;

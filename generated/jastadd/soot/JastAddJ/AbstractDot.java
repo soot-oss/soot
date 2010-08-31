@@ -56,7 +56,7 @@ public class AbstractDot extends Access implements Cloneable {
     getRight().toString(s);
   }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 130
+    // Declared in ResolveAmbiguousNames.jrag at line 135
 
 
 
@@ -66,7 +66,7 @@ public class AbstractDot extends Access implements Cloneable {
     return getRightNoTransform();
  }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 133
+    // Declared in ResolveAmbiguousNames.jrag at line 138
 
   public void replaceLast(Access access) {
     setRight(access);

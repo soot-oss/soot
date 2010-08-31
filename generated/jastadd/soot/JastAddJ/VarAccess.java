@@ -211,8 +211,8 @@ public class VarAccess extends Access implements Cloneable {
 
   public VarAccess(String name, int start, int end) {
     this(name);
-    this.start = start;
-    this.end = end;
+    this.start = this.IDstart = start;
+    this.end = this.IDend = end;
   }
 
     // Declared in PrettyPrint.jadd at line 452

@@ -39,7 +39,7 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericsPrettyPrint.jrag at line 178
+    // Declared in GenericsPrettyPrint.jrag at line 168
 
   public void toString(StringBuffer s) {
     s.append("? super ");
@@ -95,7 +95,7 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
         return (Access)getChildNoTransform(0);
     }
 
-    // Declared in Generics.jrag at line 1126
+    // Declared in Generics.jrag at line 1134
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed) {
             return type_value;
@@ -111,7 +111,7 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
 
     private TypeDecl type_compute() {  return lookupWildcardSuper(getAccess().type());  }
 
-    // Declared in Generics.jrag at line 1127
+    // Declared in Generics.jrag at line 1135
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
         ASTNode$State state = state();
         TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);

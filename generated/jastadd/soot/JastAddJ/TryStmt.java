@@ -173,7 +173,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   public void emitFinallyCode(Body b) {
     if(hasFinally()) {
       // Clear cached attributes to force re-evaluation of local variables
-      getFinally().flushCaches();
+//    getFinally().flushCaches();
       getFinally().jimplify2(b);
     }
   }

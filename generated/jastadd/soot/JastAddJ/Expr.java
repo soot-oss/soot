@@ -85,10 +85,12 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
 
   public Dot qualifiesAccess(Access access) {
     Dot dot = new Dot(this, access);
+    dot.setStart(this.getStart());
+    dot.setEnd(access.getEnd());
     return dot;
   }
 
-    // Declared in MethodSignature.jrag at line 76
+    // Declared in MethodSignature.jrag at line 91
 
 
   protected SimpleSet chooseConstructor(Collection constructors, List argList) {
@@ -127,7 +129,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     return maxSpecific;
   }
 
-    // Declared in MethodSignature.jrag at line 113
+    // Declared in MethodSignature.jrag at line 128
 
 
 

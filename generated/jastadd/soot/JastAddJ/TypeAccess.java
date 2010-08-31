@@ -84,8 +84,8 @@ public class TypeAccess extends Access implements Cloneable {
 
   public TypeAccess(String name, int start, int end) {
     this(name);
-    this.start = start;
-    this.end = end;
+    this.start = this.IDstart = start;
+    this.end = this.IDend = end;
   }
 
     // Declared in NodeConstructors.jrag at line 44
@@ -116,7 +116,7 @@ public class TypeAccess extends Access implements Cloneable {
       warning(decl().typeName() + " has been deprecated");
   }
 
-    // Declared in Generics.jrag at line 265
+    // Declared in Generics.jrag at line 269
 
 
   // this method assumes that the bound type is generic
@@ -142,7 +142,7 @@ public class TypeAccess extends Access implements Cloneable {
     return true;
   }
 
-    // Declared in Generics.jrag at line 405
+    // Declared in Generics.jrag at line 409
 
 
   public void typeCheck() {
@@ -317,7 +317,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     protected boolean decl_computed = false;
     protected TypeDecl decl_value;
-    // Declared in Generics.jrag at line 257
+    // Declared in Generics.jrag at line 261
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
         if(decl_computed) {
             return decl_value;
@@ -444,7 +444,7 @@ private TypeDecl refined_TypeScopePropagation_TypeAccess_decl()
 
     private boolean staticContextQualifier_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 907
+    // Declared in Generics.jrag at line 911
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         ASTNode$State state = state();
         boolean usesTypeVariable_value = usesTypeVariable_compute();

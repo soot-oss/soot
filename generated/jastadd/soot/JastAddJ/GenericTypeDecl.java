@@ -27,18 +27,26 @@ public interface GenericTypeDecl {
 
     public String typeName();
 
-    // Declared in Generics.jrag at line 211
+    // Declared in Generics.jrag at line 147
+
+    public int getNumParTypeDecl();
+
+    // Declared in Generics.jrag at line 148
+
+    public ParTypeDecl getParTypeDecl(int index);
+
+    // Declared in Generics.jrag at line 213
 
   public TypeDecl makeGeneric(Signatures.ClassSignature s);
 
 
-    // Declared in Generics.jrag at line 456
+    // Declared in Generics.jrag at line 460
 
 
   public SimpleSet addTypeVariables(SimpleSet c, String name);
 
 
-    // Declared in Generics.jrag at line 657
+    // Declared in Generics.jrag at line 661
 
   public List createArgumentList(ArrayList params);
 
@@ -47,8 +55,8 @@ public interface GenericTypeDecl {
  @SuppressWarnings({"unchecked", "cast"})     public boolean isGenericType();
     // Declared in Generics.jrag at line 144
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl rawType();
-    // Declared in Generics.jrag at line 591
+    // Declared in Generics.jrag at line 595
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupParTypeDecl(ParTypeAccess p);
-    // Declared in Generics.jrag at line 628
+    // Declared in Generics.jrag at line 632
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupParTypeDecl(ArrayList list);
 }

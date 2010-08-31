@@ -403,7 +403,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     protected boolean decls_computed = false;
     protected SimpleSet decls_value;
-    // Declared in MethodSignature.jrag at line 59
+    // Declared in MethodSignature.jrag at line 74
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed) {
             return decls_value;
@@ -492,7 +492,7 @@ public class ConstructorAccess extends Access implements Cloneable {
 
     private TypeDecl type_compute() {  return decl().type();  }
 
-    // Declared in MethodSignature.jrag at line 311
+    // Declared in MethodSignature.jrag at line 326
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         ASTNode$State state = state();
         int arity_value = arity_compute();

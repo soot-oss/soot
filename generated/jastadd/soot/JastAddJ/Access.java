@@ -27,7 +27,7 @@ public abstract class Access extends Expr implements Cloneable {
         node.is$Final(false);
         return node;
     }
-    // Declared in ResolveAmbiguousNames.jrag at line 143
+    // Declared in ResolveAmbiguousNames.jrag at line 148
 
 
   public Access addArrayDims(List list) {

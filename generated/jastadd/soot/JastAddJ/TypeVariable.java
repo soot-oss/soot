@@ -139,7 +139,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     
   }
 
-    // Declared in Generics.jrag at line 736
+    // Declared in Generics.jrag at line 740
 
   public Access substitute(Parameterization parTypeDecl) {
     if(parTypeDecl.isRawType())
@@ -147,7 +147,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     return parTypeDecl.substitute(this).createBoundAccess();
   }
 
-    // Declared in Generics.jrag at line 781
+    // Declared in Generics.jrag at line 785
 
 
   public Access substituteReturnType(Parameterization parTypeDecl) {
@@ -177,7 +177,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     return typeDecl.createBoundAccess();
   }
 
-    // Declared in Generics.jrag at line 815
+    // Declared in Generics.jrag at line 819
 
   public Access substituteParameterType(Parameterization parTypeDecl) {
     if(parTypeDecl.isRawType())
@@ -192,7 +192,7 @@ public class TypeVariable extends ReferenceType implements Cloneable {
     return typeDecl.createBoundAccess();
   }
 
-    // Declared in Generics.jrag at line 1249
+    // Declared in Generics.jrag at line 1257
 
 
   public Access createQualifiedAccess() {
@@ -639,7 +639,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean isNestedType_compute() {  return false;  }
 
-    // Declared in Generics.jrag at line 319
+    // Declared in Generics.jrag at line 323
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl erasure() {
         if(erasure_computed) {
             return erasure_value;
@@ -655,7 +655,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private TypeDecl erasure_compute() {  return getTypeBound(0).type().erasure();  }
 
-    // Declared in Generics.jrag at line 530
+    // Declared in Generics.jrag at line 534
  @SuppressWarnings({"unchecked", "cast"})     public String fullName() {
         if(fullName_computed) {
             return fullName_value;
@@ -677,7 +677,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     return super.fullName();
   }
 
-    // Declared in Generics.jrag at line 543
+    // Declared in Generics.jrag at line 547
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
         ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);
@@ -688,7 +688,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     protected boolean lubType_computed = false;
     protected TypeDecl lubType_value;
-    // Declared in Generics.jrag at line 774
+    // Declared in Generics.jrag at line 778
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lubType() {
         if(lubType_computed) {
             return lubType_value;
@@ -709,7 +709,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
     return lookupLUBType(list);
   }
 
-    // Declared in Generics.jrag at line 920
+    // Declared in Generics.jrag at line 924
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -765,7 +765,7 @@ if(castingConversionTo_TypeDecl_values == null) castingConversionTo_TypeDecl_val
 
     private boolean usesTypeVariable_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 1253
+    // Declared in Generics.jrag at line 1261
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessibleFrom(TypeDecl type) {
         Object _parameters = type;
 if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new java.util.HashMap(4);
@@ -783,7 +783,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean accessibleFrom_compute(TypeDecl type) {  return true;  }
 
-    // Declared in Generics.jrag at line 1255
+    // Declared in Generics.jrag at line 1263
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
         if(typeName_computed) {
             return typeName_value;
@@ -1101,14 +1101,14 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in Generics.jrag at line 772
+    // Declared in Generics.jrag at line 776
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeObject() {
         ASTNode$State state = state();
         TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
         return typeObject_value;
     }
 
-    // Declared in Generics.jrag at line 814
+    // Declared in Generics.jrag at line 818
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeNull() {
         ASTNode$State state = state();
         TypeDecl typeNull_value = getParent().Define_TypeDecl_typeNull(this, null);

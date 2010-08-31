@@ -39,7 +39,7 @@ public class WildcardExtends extends AbstractWildcard implements Cloneable {
         }
         return res;
     }
-    // Declared in GenericsPrettyPrint.jrag at line 174
+    // Declared in GenericsPrettyPrint.jrag at line 164
 
   public void toString(StringBuffer s) {
     s.append("? extends ");
@@ -95,7 +95,7 @@ public class WildcardExtends extends AbstractWildcard implements Cloneable {
         return (Access)getChildNoTransform(0);
     }
 
-    // Declared in Generics.jrag at line 1125
+    // Declared in Generics.jrag at line 1133
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
         if(type_computed) {
             return type_value;
@@ -111,7 +111,7 @@ public class WildcardExtends extends AbstractWildcard implements Cloneable {
 
     private TypeDecl type_compute() {  return lookupWildcardExtends(getAccess().type());  }
 
-    // Declared in Generics.jrag at line 1128
+    // Declared in Generics.jrag at line 1136
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardExtends(TypeDecl typeDecl) {
         ASTNode$State state = state();
         TypeDecl lookupWildcardExtends_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardExtends(this, null, typeDecl);

@@ -55,7 +55,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
         }
         return res;
     }
-    // Declared in Generics.jrag at line 755
+    // Declared in Generics.jrag at line 759
 
 
   public Access substitute(Parameterization parTypeDecl) {
@@ -297,7 +297,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
 
     private boolean involvesTypeParameters_compute() {  return extendsType().involvesTypeParameters();  }
 
-    // Declared in Generics.jrag at line 568
+    // Declared in Generics.jrag at line 572
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
         ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);
@@ -310,7 +310,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
     return super.sameSignature(a);
   }
 
-    // Declared in Generics.jrag at line 921
+    // Declared in Generics.jrag at line 925
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -366,7 +366,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
 
     private boolean usesTypeVariable_compute() {  return getAccess().type().usesTypeVariable();  }
 
-    // Declared in Generics.jrag at line 1121
+    // Declared in Generics.jrag at line 1129
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl extendsType() {
         ASTNode$State state = state();
         TypeDecl extendsType_value = extendsType_compute();

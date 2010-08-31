@@ -102,7 +102,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     super.checkModifiers();
   }
 
-    // Declared in PrettyPrint.jadd at line 85
+    // Declared in PrettyPrint.jadd at line 89
 
   
   public void toString(StringBuffer s) {
@@ -117,11 +117,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
         getSuperInterfaceId(i).toString(s);
       }
     }
-    s.append(" {");
-    for(int i=0; i < getNumBodyDecl(); i++) {
-      getBodyDecl(i).toString(s);
-    }
-    s.append(indent() + "}");
+    ppBodyDecls(s);
   }
 
     // Declared in TypeAnalysis.jrag at line 641
@@ -183,7 +179,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 189
+    // Declared in Generics.jrag at line 191
 
 
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
@@ -209,7 +205,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1091
+    // Declared in Generics.jrag at line 1099
 
   public InterfaceDecl p(Parameterization parTypeDecl) {
     InterfaceDecl c = new InterfaceDeclSubstituted(
@@ -222,25 +218,25 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in Java2Rewrites.jrag at line 100
+    // Declared in Java2Rewrites.jrag at line 94
 
 
   public FieldDeclaration createStaticClassField(String name) {
     return methodHolder().createStaticClassField(name);
   }
 
-    // Declared in Java2Rewrites.jrag at line 103
+    // Declared in Java2Rewrites.jrag at line 97
 
   public MethodDecl createStaticClassMethod() {
     return methodHolder().createStaticClassMethod();
   }
 
-    // Declared in Java2Rewrites.jrag at line 107
+    // Declared in Java2Rewrites.jrag at line 101
 
   // create anonymous class to delegate to
   private TypeDecl methodHolder = null;
 
-    // Declared in Java2Rewrites.jrag at line 108
+    // Declared in Java2Rewrites.jrag at line 102
 
   public TypeDecl methodHolder() {
     if(methodHolder != null)
@@ -536,7 +532,7 @@ private boolean refined_Generics_InterfaceDecl_castingConversionTo_TypeDecl(Type
 
     private Collection lookupSuperConstructor_compute() {  return typeObject().constructors();  }
 
-    // Declared in MethodSignature.jrag at line 372
+    // Declared in MethodSignature.jrag at line 387
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsSignatureMap() {
         if(methodsSignatureMap_computed) {
             return methodsSignatureMap_value;
@@ -569,7 +565,7 @@ private boolean refined_Generics_InterfaceDecl_castingConversionTo_TypeDecl(Type
     return map;
   }
 
-    // Declared in LookupMethod.jrag at line 397
+    // Declared in LookupMethod.jrag at line 403
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet ancestorMethods(String signature) {
         Object _parameters = signature;
 if(ancestorMethods_String_values == null) ancestorMethods_String_values = new java.util.HashMap(4);
@@ -897,7 +893,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return false;
   }
 
-    // Declared in Generics.jrag at line 378
+    // Declared in Generics.jrag at line 382
  @SuppressWarnings({"unchecked", "cast"})     public HashSet implementedInterfaces() {
         if(implementedInterfaces_computed) {
             return implementedInterfaces_value;

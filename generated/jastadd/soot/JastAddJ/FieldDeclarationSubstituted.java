@@ -202,7 +202,7 @@ public class FieldDeclarationSubstituted extends FieldDeclaration implements Clo
         return tokenFieldDeclaration_Original;
     }
 
-    // Declared in Generics.jrag at line 1276
+    // Declared in Generics.jrag at line 1284
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed) {
             return sourceVariableDecl_value;

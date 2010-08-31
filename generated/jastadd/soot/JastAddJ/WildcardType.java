@@ -197,7 +197,7 @@ public class WildcardType extends AbstractWildcardType implements Cloneable {
         return (List<BodyDecl>)getChildNoTransform(1);
     }
 
-    // Declared in Generics.jrag at line 563
+    // Declared in Generics.jrag at line 567
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
         ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);

@@ -72,16 +72,23 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     // Declared in GenericMethods.jrag at line 165
 
 
-  public void toString(StringBuffer s) {
-    s.append(indent());
-    getModifiers().toString(s);
-    
+  private void ppTypeParameters(StringBuffer s) {
     s.append(" <");
     for(int i = 0; i < getNumTypeParameter(); i++) {
       if(i != 0) s.append(", ");
       original().getTypeParameter(i).toString(s);
     }
     s.append("> ");
+  }
+
+    // Declared in GenericMethods.jrag at line 174
+
+
+  public void toString(StringBuffer s) {
+    s.append(indent());
+    getModifiers().toString(s);
+    
+    ppTypeParameters(s);
     
     getTypeAccess().toString(s);
     s.append(" " + getID());
@@ -111,7 +118,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1016
+    // Declared in Generics.jrag at line 1024
 
 
   public BodyDecl p(Parameterization parTypeDecl) {
@@ -130,7 +137,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     return m;
   }
 
-    // Declared in Generics.jrag at line 1032
+    // Declared in Generics.jrag at line 1040
 
   public GenericMethodDecl original;
 
@@ -663,7 +670,7 @@ if(lookupParMethodDecl_ArrayList_values == null) lookupParMethodDecl_ArrayList_v
     return SimpleSet.emptySet;
   }
 
-    // Declared in Generics.jrag at line 1031
+    // Declared in Generics.jrag at line 1039
  @SuppressWarnings({"unchecked", "cast"})     public GenericMethodDecl original() {
         ASTNode$State state = state();
         GenericMethodDecl original_value = original_compute();

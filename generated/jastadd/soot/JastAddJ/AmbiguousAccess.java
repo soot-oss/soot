@@ -46,8 +46,8 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
   public AmbiguousAccess(String name, int start, int end) {
     this(name);
-    this.start = start;
-    this.end = end;
+    this.start = this.IDstart = start;
+    this.end = this.IDend = end;
   }
 
     // Declared in java.ast at line 3
@@ -168,7 +168,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
     private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
 
 public ASTNode rewriteTo() {
-    // Declared in ResolveAmbiguousNames.jrag at line 189
+    // Declared in ResolveAmbiguousNames.jrag at line 194
     if(!duringSyntacticClassification()) {
         state().duringResolveAmbiguousNames++;
         ASTNode result = rewriteRule0();
@@ -179,7 +179,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in ResolveAmbiguousNames.jrag at line 189
+    // Declared in ResolveAmbiguousNames.jrag at line 194
     private Access rewriteRule0() {
 {
       if(!lookupVariable(name()).isEmpty()) {

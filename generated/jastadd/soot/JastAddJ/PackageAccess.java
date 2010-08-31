@@ -49,8 +49,8 @@ public class PackageAccess extends Access implements Cloneable {
 
   public PackageAccess(String name, int start, int end) {
     this(name);
-    this.start = start;
-    this.end = end;
+    this.start = this.Packagestart = start;
+    this.end = this.Packageend = end;
   }
 
     // Declared in PrettyPrint.jadd at line 509

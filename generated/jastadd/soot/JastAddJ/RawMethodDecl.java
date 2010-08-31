@@ -35,7 +35,7 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 716
+    // Declared in Generics.jrag at line 720
 
   public boolean isRawType() {
     return true; 

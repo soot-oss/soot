@@ -264,7 +264,7 @@ public class LUBType extends ReferenceType implements Cloneable {
         throw new Error("Operation not supported for " + t.fullName() + ", " + t.getClass().getName());
     }
 
-    // Declared in Generics.jrag at line 1198
+    // Declared in Generics.jrag at line 1206
 
 
   public HashSet implementedInterfaces(){
@@ -537,7 +537,7 @@ public class LUBType extends ReferenceType implements Cloneable {
     return lookupLUBType(bounds);
   }
 
-    // Declared in Generics.jrag at line 1188
+    // Declared in Generics.jrag at line 1196
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
         ASTNode$State state = state();
         String typeName_value = typeName_compute();

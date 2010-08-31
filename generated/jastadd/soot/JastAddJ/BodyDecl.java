@@ -37,7 +37,7 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
     // terminate search if body declaration is reached
   }
 
-    // Declared in Generics.jrag at line 997
+    // Declared in Generics.jrag at line 1001
 
 
   public BodyDecl p(Parameterization parTypeDecl) {

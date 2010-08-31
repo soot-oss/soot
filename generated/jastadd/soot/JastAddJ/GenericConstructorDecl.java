@@ -39,7 +39,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
         }
         return res;
     }
-    // Declared in GenericMethods.jrag at line 203
+    // Declared in GenericMethods.jrag at line 207
 
   public void toString(StringBuffer s) {
     s.append(indent());
@@ -83,7 +83,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     s.append("}");
   }
 
-    // Declared in Generics.jrag at line 1035
+    // Declared in Generics.jrag at line 1043
 
   public GenericConstructorDecl original;
 
@@ -564,7 +564,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     return SimpleSet.emptySet;
   }
 
-    // Declared in Generics.jrag at line 1034
+    // Declared in Generics.jrag at line 1042
  @SuppressWarnings({"unchecked", "cast"})     public GenericConstructorDecl original() {
         ASTNode$State state = state();
         GenericConstructorDecl original_value = original_compute();

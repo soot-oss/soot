@@ -163,7 +163,7 @@ private TypeDecl refined_TypeScopePropagation_SuperAccess_decl()
 
     protected boolean decl_computed = false;
     protected TypeDecl decl_value;
-    // Declared in Generics.jrag at line 293
+    // Declared in Generics.jrag at line 297
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl decl() {
         if(decl_computed) {
             return decl_value;

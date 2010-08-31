@@ -287,7 +287,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_reachable(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 83
+    // Declared in VariableDeclaration.jrag at line 87
     public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterNoTransform()) {
             return false;
@@ -295,7 +295,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isMethodParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 84
+    // Declared in VariableDeclaration.jrag at line 88
     public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterNoTransform()) {
             return false;
@@ -303,7 +303,7 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return getParent().Define_boolean_isConstructorParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 85
+    // Declared in VariableDeclaration.jrag at line 89
     public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterNoTransform()) {
             return true;

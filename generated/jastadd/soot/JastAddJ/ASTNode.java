@@ -266,7 +266,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     return c;
   }
 
-    // Declared in LookupMethod.jrag at line 342
+    // Declared in LookupMethod.jrag at line 348
 
   protected static void putSimpleSetElement(HashMap map, Object key, Object value) {
     SimpleSet set = (SimpleSet)map.get(key);
@@ -388,7 +388,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   void checkUnreachableStmt() {
   }
 
-    // Declared in VariableDeclaration.jrag at line 141
+    // Declared in VariableDeclaration.jrag at line 146
 
 
   public void clearLocations() {
@@ -430,15 +430,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   public void collectEnclosingVariables(HashSet set, TypeDecl typeDecl) {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).collectEnclosingVariables(set, typeDecl);
-  }
-
-    // Declared in Java2Rewrites.jrag at line 63
-
-  
-  public void flushCaches() {
-    flushCache();
-    for(int i = 0; i < getNumChild(); i++)
-      getChild(i).flushCaches();
   }
 
     // Declared in Transformations.jrag at line 12
@@ -1064,7 +1055,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
 
     private String dumpString_compute() {  return getClass().getName();  }
 
-    // Declared in Generics.jrag at line 897
+    // Declared in Generics.jrag at line 901
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         ASTNode$State state = state();
         boolean usesTypeVariable_value = usesTypeVariable_compute();

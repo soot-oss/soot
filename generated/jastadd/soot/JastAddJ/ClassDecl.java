@@ -116,7 +116,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     super.exceptionHandling();
   }
 
-    // Declared in LookupMethod.jrag at line 248
+    // Declared in LookupMethod.jrag at line 254
 
 
   // iterator over all methods in implemented interfaces
@@ -149,8 +149,8 @@ public class ClassDecl extends ReferenceType implements Cloneable {
 
   }
 
-    // Declared in PrettyPrint.jadd at line 62
-
+    // Declared in PrettyPrint.jadd at line 70
+ 
     
   public void toString(StringBuffer s) {
     s.append(indent());
@@ -168,11 +168,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         getImplements(i).toString(s);
       }
     }
-    s.append(" {");
-    for(int i=0; i < getNumBodyDecl(); i++) {
-      getBodyDecl(i).toString(s);
-    }
-    s.append(indent() + "}");
+    ppBodyDecls(s);
   }
 
     // Declared in TypeAnalysis.jrag at line 593
@@ -305,7 +301,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 163
+    // Declared in Generics.jrag at line 165
 
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     if(s.hasFormalTypeParameters()) {
@@ -333,7 +329,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
   }
 
-    // Declared in Generics.jrag at line 1068
+    // Declared in Generics.jrag at line 1076
 
 
   public ClassDecl p(Parameterization parTypeDecl) {
@@ -776,13 +772,15 @@ private SootClass refined_EmitJimpleRefinements_ClassDecl_sootClass()
     }
 
     private boolean noConstructor_compute() {
+    if(!compilationUnit().fromSource())
+	  return false;
     for(int i = 0; i < getNumBodyDecl(); i++)
       if(getBodyDecl(i) instanceof ConstructorDecl)
         return false;
     return true;
   }
 
-    // Declared in LookupMethod.jrag at line 263
+    // Declared in LookupMethod.jrag at line 269
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet interfacesMethodsSignature(String signature) {
         ASTNode$State state = state();
         SimpleSet interfacesMethodsSignature_String_value = interfacesMethodsSignature_compute(signature);
@@ -797,7 +795,7 @@ private SootClass refined_EmitJimpleRefinements_ClassDecl_sootClass()
 
     protected boolean interfacesMethodsSignatureMap_computed = false;
     protected HashMap interfacesMethodsSignatureMap_value;
-    // Declared in LookupMethod.jrag at line 269
+    // Declared in LookupMethod.jrag at line 275
  @SuppressWarnings({"unchecked", "cast"})     public HashMap interfacesMethodsSignatureMap() {
         if(interfacesMethodsSignatureMap_computed) {
             return interfacesMethodsSignatureMap_value;
@@ -823,7 +821,7 @@ private SootClass refined_EmitJimpleRefinements_ClassDecl_sootClass()
     return map;
   }
 
-    // Declared in MethodSignature.jrag at line 344
+    // Declared in MethodSignature.jrag at line 359
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsSignatureMap() {
         if(methodsSignatureMap_computed) {
             return methodsSignatureMap_value;
@@ -866,7 +864,7 @@ private SootClass refined_EmitJimpleRefinements_ClassDecl_sootClass()
     return map;
   }
 
-    // Declared in LookupMethod.jrag at line 363
+    // Declared in LookupMethod.jrag at line 369
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet ancestorMethods(String signature) {
         Object _parameters = signature;
 if(ancestorMethods_String_values == null) ancestorMethods_String_values = new java.util.HashMap(4);
@@ -1331,7 +1329,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return null;
   }
 
-    // Declared in Generics.jrag at line 367
+    // Declared in Generics.jrag at line 371
  @SuppressWarnings({"unchecked", "cast"})     public HashSet implementedInterfaces() {
         if(implementedInterfaces_computed) {
             return implementedInterfaces_value;

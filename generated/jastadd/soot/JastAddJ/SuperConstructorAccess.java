@@ -288,7 +288,7 @@ public class SuperConstructorAccess extends ConstructorAccess implements Cloneab
 
     private boolean isDUafter_compute(Variable v) {  return isDUbefore(v);  }
 
-    // Declared in MethodSignature.jrag at line 62
+    // Declared in MethodSignature.jrag at line 77
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed) {
             return decls_value;

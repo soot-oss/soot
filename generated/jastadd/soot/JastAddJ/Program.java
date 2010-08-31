@@ -1191,7 +1191,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
 
     protected boolean wildcards_computed = false;
     protected WildcardsCompilationUnit wildcards_value;
-    // Declared in Generics.jrag at line 1113
+    // Declared in Generics.jrag at line 1121
  @SuppressWarnings({"unchecked", "cast"})     public WildcardsCompilationUnit wildcards() {
         if(wildcards_computed) {
             return wildcards_value;
@@ -1866,7 +1866,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_reportUnreachable(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 87
+    // Declared in VariableDeclaration.jrag at line 91
     public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1875,7 +1875,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_isMethodParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 88
+    // Declared in VariableDeclaration.jrag at line 92
     public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1884,7 +1884,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_boolean_isConstructorParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 89
+    // Declared in VariableDeclaration.jrag at line 93
     public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1974,7 +1974,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
 
-    // Declared in Generics.jrag at line 1140
+    // Declared in Generics.jrag at line 1148
     public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1983,7 +1983,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_typeWildcard(this, caller);
     }
 
-    // Declared in Generics.jrag at line 1151
+    // Declared in Generics.jrag at line 1159
     public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -1992,7 +1992,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
     }
 
-    // Declared in Generics.jrag at line 1164
+    // Declared in Generics.jrag at line 1172
     public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -2001,7 +2001,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_TypeDecl_lookupWildcardSuper(this, caller, typeDecl);
     }
 
-    // Declared in Generics.jrag at line 1185
+    // Declared in Generics.jrag at line 1193
     public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);
@@ -2010,7 +2010,7 @@ if(lookupType_String_String_values == null) lookupType_String_String_values = ne
         return getParent().Define_LUBType_lookupLUBType(this, caller, bounds);
     }
 
-    // Declared in Generics.jrag at line 1223
+    // Declared in Generics.jrag at line 1231
     public GLBType Define_GLBType_lookupGLBType(ASTNode caller, ASTNode child, ArrayList bounds) {
         if(true) {
       int childIndex = this.getIndexOfChild(caller);

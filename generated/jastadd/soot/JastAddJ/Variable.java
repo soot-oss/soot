@@ -41,38 +41,47 @@ public interface Variable {
     // 4.5.4
     public boolean isFinal();
 
-    // Declared in VariableDeclaration.jrag at line 24
+    // Declared in VariableDeclaration.jrag at line 23
+
+    public boolean isVolatile();
+
+    // Declared in VariableDeclaration.jrag at line 25
 
 
     public boolean isBlank();
 
-    // Declared in VariableDeclaration.jrag at line 25
+    // Declared in VariableDeclaration.jrag at line 26
 
     public boolean isStatic();
 
-    // Declared in VariableDeclaration.jrag at line 26
+    // Declared in VariableDeclaration.jrag at line 27
 
     public boolean isSynthetic();
 
-    // Declared in VariableDeclaration.jrag at line 28
+    // Declared in VariableDeclaration.jrag at line 29
 
 
     public TypeDecl hostType();
 
-    // Declared in VariableDeclaration.jrag at line 30
+    // Declared in VariableDeclaration.jrag at line 31
 
 
     public Expr getInit();
 
-    // Declared in VariableDeclaration.jrag at line 31
+    // Declared in VariableDeclaration.jrag at line 32
 
     public boolean hasInit();
 
-    // Declared in VariableDeclaration.jrag at line 33
+    // Declared in VariableDeclaration.jrag at line 34
 
 
     public Constant constant();
 
-    // Declared in Generics.jrag at line 1273
+    // Declared in VariableDeclaration.jrag at line 36
+
+
+    public Modifiers getModifiers();
+
+    // Declared in Generics.jrag at line 1281
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl();
 }

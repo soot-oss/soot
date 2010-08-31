@@ -41,7 +41,7 @@ public class GLBType extends ReferenceType implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 1236
+    // Declared in Generics.jrag at line 1244
 
 
   public HashSet implementedInterfaces(){
@@ -283,7 +283,7 @@ public class GLBType extends ReferenceType implements Cloneable {
         return (List<Access>)getChildNoTransform(2);
     }
 
-    // Declared in Generics.jrag at line 1226
+    // Declared in Generics.jrag at line 1234
  @SuppressWarnings({"unchecked", "cast"})     public String typeName() {
         ASTNode$State state = state();
         String typeName_value = typeName_compute();

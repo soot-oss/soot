@@ -100,7 +100,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         }
         return res;
     }
-    // Declared in Generics.jrag at line 524
+    // Declared in Generics.jrag at line 528
 
   public void collectErrors() {
     // Disable error check for ParInterfaceDecl which is an instanciated GenericInterfaceDecl
@@ -408,7 +408,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
         return 3;
     }
 
-    // Declared in Generics.jrag at line 693
+    // Declared in Generics.jrag at line 697
 
   public TypeDecl substitute(TypeVariable typeVariable) {
     for(int i = 0; i < numTypeParameter(); i++)
@@ -417,20 +417,20 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     return super.substitute(typeVariable);
   }
 
-    // Declared in Generics.jrag at line 706
+    // Declared in Generics.jrag at line 710
 
 
   public int numTypeParameter() {
     return ((GenericTypeDecl)original()).getNumTypeParameter(); 
   }
 
-    // Declared in Generics.jrag at line 709
+    // Declared in Generics.jrag at line 713
 
   public TypeVariable typeParameter(int index) {
     return ((GenericTypeDecl)original()).getTypeParameter(index);
   }
 
-    // Declared in Generics.jrag at line 741
+    // Declared in Generics.jrag at line 745
 
   public Access substitute(Parameterization parTypeDecl) {
     // TODO: include nesting as well....
@@ -541,7 +541,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     return false;
   }
 
-    // Declared in Generics.jrag at line 232
+    // Declared in Generics.jrag at line 236
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRawType() {
         ASTNode$State state = state();
         boolean isRawType_value = isRawType_compute();
@@ -550,7 +550,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
 
     private boolean isRawType_compute() {  return isNestedType() && enclosingType().isRawType();  }
 
-    // Declared in Generics.jrag at line 318
+    // Declared in Generics.jrag at line 322
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl erasure() {
         if(erasure_computed) {
             return erasure_value;
@@ -568,7 +568,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
 
     protected boolean getSuperInterfaceIdList_computed = false;
     protected List getSuperInterfaceIdList_value;
-    // Declared in Generics.jrag at line 888
+    // Declared in Generics.jrag at line 892
  @SuppressWarnings({"unchecked", "cast"})     public List getSuperInterfaceIdList() {
         if(getSuperInterfaceIdList_computed) {
             return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
@@ -593,7 +593,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
 
     protected boolean getBodyDeclList_computed = false;
     protected List getBodyDeclList_value;
-    // Declared in Generics.jrag at line 895
+    // Declared in Generics.jrag at line 899
  @SuppressWarnings({"unchecked", "cast"})     public List getBodyDeclList() {
         if(getBodyDeclList_computed) {
             return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
@@ -855,7 +855,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in Generics.jrag at line 228
+    // Declared in Generics.jrag at line 232
  @SuppressWarnings({"unchecked", "cast"})     public boolean isParameterizedType() {
         ASTNode$State state = state();
         boolean isParameterizedType_value = isParameterizedType_compute();
@@ -864,7 +864,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isParameterizedType_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 347
+    // Declared in Generics.jrag at line 351
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameArgument(ParTypeDecl decl) {
         ASTNode$State state = state();
         boolean sameArgument_ParTypeDecl_value = sameArgument_compute(decl);
@@ -890,7 +890,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     return true;
   }
 
-    // Declared in Generics.jrag at line 544
+    // Declared in Generics.jrag at line 548
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
         ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);
@@ -915,7 +915,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
   }
 
     protected java.util.Map sameSignature_ArrayList_values;
-    // Declared in Generics.jrag at line 579
+    // Declared in Generics.jrag at line 583
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(ArrayList list) {
         Object _parameters = list;
 if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new java.util.HashMap(4);
@@ -986,7 +986,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return true;
   }
 
-    // Declared in Generics.jrag at line 910
+    // Declared in Generics.jrag at line 914
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -1049,7 +1049,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return false;
   }
 
-    // Declared in Generics.jrag at line 1066
+    // Declared in Generics.jrag at line 1074
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         ASTNode$State state = state();
         TypeDecl original_value = original_compute();
@@ -1058,7 +1058,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
 
     private TypeDecl original_compute() {  return genericDecl().original();  }
 
-    // Declared in Generics.jrag at line 1259
+    // Declared in Generics.jrag at line 1267
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed) {
             return sourceTypeDecl_value;
@@ -1140,7 +1140,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return s.toString();
   }
 
-    // Declared in MethodSignature.jrag at line 391
+    // Declared in MethodSignature.jrag at line 406
  @SuppressWarnings({"unchecked", "cast"})     public Collection unimplementedMethods() {
         if(unimplementedMethods_computed) {
             return unimplementedMethods_value;
@@ -1169,7 +1169,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return result;
   }
 
-    // Declared in Generics.jrag at line 925
+    // Declared in Generics.jrag at line 929
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localMethodsSignatureMap() {
         if(localMethodsSignatureMap_computed) {
             return localMethodsSignatureMap_value;
@@ -1198,7 +1198,7 @@ if(sameSignature_ArrayList_values == null) sameSignature_ArrayList_values = new 
     return map;
   }
 
-    // Declared in Generics.jrag at line 940
+    // Declared in Generics.jrag at line 944
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localFields(String name) {
         Object _parameters = name;
 if(localFields_String_values == null) localFields_String_values = new java.util.HashMap(4);
@@ -1229,7 +1229,7 @@ if(localFields_String_values == null) localFields_String_values = new java.util.
     return set;
   }
 
-    // Declared in Generics.jrag at line 955
+    // Declared in Generics.jrag at line 959
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localTypeDecls(String name) {
         Object _parameters = name;
 if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
@@ -1275,7 +1275,7 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
     return set;
   }
 
-    // Declared in Generics.jrag at line 985
+    // Declared in Generics.jrag at line 989
  @SuppressWarnings({"unchecked", "cast"})     public Collection constructors() {
         if(constructors_computed) {
             return constructors_value;
@@ -1317,7 +1317,7 @@ if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java
         return genericDecl_value;
     }
 
-    // Declared in Generics.jrag at line 444
+    // Declared in Generics.jrag at line 448
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getArgumentListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

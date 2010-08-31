@@ -88,29 +88,37 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     return new BoundMethodAccess(name(), args, this);
   }
 
-    // Declared in DataStructures.jrag at line 134
+    // Declared in DataStructures.jrag at line 154
 
   public SimpleSet add(Object o) {
     return new SimpleSetImpl().add(this).add(o);
   }
 
-    // Declared in DataStructures.jrag at line 140
+    // Declared in DataStructures.jrag at line 158
+
+  public boolean isSingleton() { return true; }
+
+    // Declared in DataStructures.jrag at line 159
+
+  public boolean isSingleton(Object o) { return contains(o); }
+
+    // Declared in DataStructures.jrag at line 162
 
   private MethodDecl iterElem;
 
-    // Declared in DataStructures.jrag at line 141
+    // Declared in DataStructures.jrag at line 163
 
   public Iterator iterator() { iterElem = this; return this; }
 
-    // Declared in DataStructures.jrag at line 142
+    // Declared in DataStructures.jrag at line 164
 
   public boolean hasNext() { return iterElem != null; }
 
-    // Declared in DataStructures.jrag at line 143
+    // Declared in DataStructures.jrag at line 165
 
   public Object next() { Object o = iterElem; iterElem = null; return o; }
 
-    // Declared in DataStructures.jrag at line 144
+    // Declared in DataStructures.jrag at line 166
 
   public void remove() { throw new UnsupportedOperationException(); }
 
@@ -238,7 +246,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 
   }
 
-    // Declared in Generics.jrag at line 1001
+    // Declared in Generics.jrag at line 1005
 
 
   public BodyDecl p(Parameterization parTypeDecl) {
@@ -249,11 +257,18 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
       getID(),
       getParameterList().substitute(parTypeDecl),
       getExceptionList().substitute(parTypeDecl),
-      new Opt(),
+      substituteBody(parTypeDecl),
       this
     );
     //System.out.println("End substituting " + signature());
     return m;
+  }
+
+    // Declared in Generics.jrag at line 1020
+
+
+  public Opt substituteBody(Parameterization parTypeDecl) {
+    return new Opt();
   }
 
     // Declared in InnerClasses.jrag at line 196
@@ -864,7 +879,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
     }
   }
 
-    // Declared in LookupMethod.jrag at line 142
+    // Declared in LookupMethod.jrag at line 148
 private boolean refined_MethodDecl_MethodDecl_moreSpecificThan_MethodDecl(MethodDecl m)
 {
     if(getNumParameter() == 0)
@@ -926,7 +941,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
       return hostPackage().equals(type.hostPackage());
   }
 
-    // Declared in DataStructures.jrag at line 132
+    // Declared in DataStructures.jrag at line 152
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
         ASTNode$State state = state();
         int size_value = size_compute();
@@ -935,7 +950,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private int size_compute() {  return 1;  }
 
-    // Declared in DataStructures.jrag at line 133
+    // Declared in DataStructures.jrag at line 153
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEmpty() {
         ASTNode$State state = state();
         boolean isEmpty_value = isEmpty_compute();
@@ -944,7 +959,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean isEmpty_compute() {  return false;  }
 
-    // Declared in DataStructures.jrag at line 137
+    // Declared in DataStructures.jrag at line 157
  @SuppressWarnings({"unchecked", "cast"})     public boolean contains(Object o) {
         ASTNode$State state = state();
         boolean contains_Object_value = contains_compute(o);
@@ -986,7 +1001,7 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
     return false;
   }
 
-    // Declared in LookupMethod.jrag at line 125
+    // Declared in LookupMethod.jrag at line 131
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
         ASTNode$State state = state();
         String name_value = name_compute();
@@ -997,7 +1012,7 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
 
     protected boolean signature_computed = false;
     protected String signature_value;
-    // Declared in MethodSignature.jrag at line 332
+    // Declared in MethodSignature.jrag at line 347
  @SuppressWarnings({"unchecked", "cast"})     public String signature() {
         if(signature_computed) {
             return signature_value;
@@ -1023,7 +1038,7 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
 
   }
 
-    // Declared in LookupMethod.jrag at line 140
+    // Declared in LookupMethod.jrag at line 146
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(MethodDecl m) {
         ASTNode$State state = state();
         boolean sameSignature_MethodDecl_value = sameSignature_compute(m);
@@ -1033,7 +1048,7 @@ if(throwsException_TypeDecl_values == null) throwsException_TypeDecl_values = ne
     private boolean sameSignature_compute(MethodDecl m) {  return signature().equals(m.signature());  }
 
     protected java.util.Map moreSpecificThan_MethodDecl_values;
-    // Declared in MethodSignature.jrag at line 140
+    // Declared in MethodSignature.jrag at line 155
  @SuppressWarnings({"unchecked", "cast"})     public boolean moreSpecificThan(MethodDecl m) {
         Object _parameters = m;
 if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_values = new java.util.HashMap(4);
@@ -1063,7 +1078,7 @@ if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_value
   }
 
     protected java.util.Map overrides_MethodDecl_values;
-    // Declared in LookupMethod.jrag at line 183
+    // Declared in LookupMethod.jrag at line 189
  @SuppressWarnings({"unchecked", "cast"})     public boolean overrides(MethodDecl m) {
         Object _parameters = m;
 if(overrides_MethodDecl_values == null) overrides_MethodDecl_values = new java.util.HashMap(4);
@@ -1083,7 +1098,7 @@ if(overrides_MethodDecl_values == null) overrides_MethodDecl_values = new java.u
      hostType().instanceOf(m.hostType()) && m.signature().equals(signature());  }
 
     protected java.util.Map hides_MethodDecl_values;
-    // Declared in LookupMethod.jrag at line 187
+    // Declared in LookupMethod.jrag at line 193
  @SuppressWarnings({"unchecked", "cast"})     public boolean hides(MethodDecl m) {
         Object _parameters = m;
 if(hides_MethodDecl_values == null) hides_MethodDecl_values = new java.util.HashMap(4);
@@ -1292,7 +1307,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean usesTypeVariable_computed = false;
     protected boolean usesTypeVariable_value;
-    // Declared in Generics.jrag at line 903
+    // Declared in Generics.jrag at line 907
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -1311,7 +1326,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     protected boolean sourceMethodDecl_computed = false;
     protected MethodDecl sourceMethodDecl_value;
-    // Declared in Generics.jrag at line 1265
+    // Declared in Generics.jrag at line 1273
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed) {
             return sourceMethodDecl_value;
@@ -1336,7 +1351,7 @@ if(parameterDeclaration_String_values == null) parameterDeclaration_String_value
 
     private boolean visibleTypeParameters_compute() {  return !isStatic();  }
 
-    // Declared in MethodSignature.jrag at line 269
+    // Declared in MethodSignature.jrag at line 284
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         ASTNode$State state = state();
         int arity_value = arity_compute();
@@ -1673,7 +1688,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_reachable(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 80
+    // Declared in VariableDeclaration.jrag at line 84
     public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -1682,7 +1697,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isMethodParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 81
+    // Declared in VariableDeclaration.jrag at line 85
     public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -1691,7 +1706,7 @@ if(handlesException_TypeDecl_values == null) handlesException_TypeDecl_values = 
         return getParent().Define_boolean_isConstructorParameter(this, caller);
     }
 
-    // Declared in VariableDeclaration.jrag at line 82
+    // Declared in VariableDeclaration.jrag at line 86
     public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
         if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);

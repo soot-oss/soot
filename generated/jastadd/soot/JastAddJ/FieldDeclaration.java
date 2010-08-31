@@ -76,29 +76,37 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     return createQualifiedBoundAccess();
   }
 
-    // Declared in DataStructures.jrag at line 69
+    // Declared in DataStructures.jrag at line 81
 
   public SimpleSet add(Object o) {
     return new SimpleSetImpl().add(this).add(o);
   }
 
-    // Declared in DataStructures.jrag at line 75
+    // Declared in DataStructures.jrag at line 85
+
+  public boolean isSingleton() { return true; }
+
+    // Declared in DataStructures.jrag at line 86
+
+  public boolean isSingleton(Object o) { return contains(o); }
+
+    // Declared in DataStructures.jrag at line 89
 
   private FieldDeclaration iterElem;
 
-    // Declared in DataStructures.jrag at line 76
+    // Declared in DataStructures.jrag at line 90
 
   public Iterator iterator() { iterElem = this; return this; }
 
-    // Declared in DataStructures.jrag at line 77
+    // Declared in DataStructures.jrag at line 91
 
   public boolean hasNext() { return iterElem != null; }
 
-    // Declared in DataStructures.jrag at line 78
+    // Declared in DataStructures.jrag at line 92
 
   public Object next() { Object o = iterElem; iterElem = null; return o; }
 
-    // Declared in DataStructures.jrag at line 79
+    // Declared in DataStructures.jrag at line 93
 
   public void remove() { throw new UnsupportedOperationException(); }
 
@@ -230,7 +238,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     }
   }
 
-    // Declared in Generics.jrag at line 1050
+    // Declared in Generics.jrag at line 1058
 
   public BodyDecl p(Parameterization parTypeDecl) {
     FieldDeclaration f = new FieldDeclarationSubstituted(
@@ -612,7 +620,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean isConstant_compute() {  return isFinal() && hasInit() && getInit().isConstant() && (type() instanceof PrimitiveType || type().isString());  }
 
-    // Declared in DataStructures.jrag at line 67
+    // Declared in DataStructures.jrag at line 79
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
         ASTNode$State state = state();
         int size_value = size_compute();
@@ -621,7 +629,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private int size_compute() {  return 1;  }
 
-    // Declared in DataStructures.jrag at line 68
+    // Declared in DataStructures.jrag at line 80
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEmpty() {
         ASTNode$State state = state();
         boolean isEmpty_value = isEmpty_compute();
@@ -630,7 +638,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean isEmpty_compute() {  return false;  }
 
-    // Declared in DataStructures.jrag at line 72
+    // Declared in DataStructures.jrag at line 84
  @SuppressWarnings({"unchecked", "cast"})     public boolean contains(Object o) {
         ASTNode$State state = state();
         boolean contains_Object_value = contains_compute(o);
@@ -782,7 +790,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isVoid_compute() {  return type().isVoid();  }
 
-    // Declared in VariableDeclaration.jrag at line 55
+    // Declared in VariableDeclaration.jrag at line 59
  @SuppressWarnings({"unchecked", "cast"})     public boolean isClassVariable() {
         ASTNode$State state = state();
         boolean isClassVariable_value = isClassVariable_compute();
@@ -791,7 +799,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isClassVariable_compute() {  return isStatic() || hostType().isInterfaceDecl();  }
 
-    // Declared in VariableDeclaration.jrag at line 56
+    // Declared in VariableDeclaration.jrag at line 60
  @SuppressWarnings({"unchecked", "cast"})     public boolean isInstanceVariable() {
         ASTNode$State state = state();
         boolean isInstanceVariable_value = isInstanceVariable_compute();
@@ -800,7 +808,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isInstanceVariable_compute() {  return (hostType().isClassDecl() || hostType().isAnonymous() )&& !isStatic();  }
 
-    // Declared in VariableDeclaration.jrag at line 57
+    // Declared in VariableDeclaration.jrag at line 61
  @SuppressWarnings({"unchecked", "cast"})     public boolean isMethodParameter() {
         ASTNode$State state = state();
         boolean isMethodParameter_value = isMethodParameter_compute();
@@ -809,7 +817,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isMethodParameter_compute() {  return false;  }
 
-    // Declared in VariableDeclaration.jrag at line 58
+    // Declared in VariableDeclaration.jrag at line 62
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstructorParameter() {
         ASTNode$State state = state();
         boolean isConstructorParameter_value = isConstructorParameter_compute();
@@ -818,7 +826,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isConstructorParameter_compute() {  return false;  }
 
-    // Declared in VariableDeclaration.jrag at line 59
+    // Declared in VariableDeclaration.jrag at line 63
  @SuppressWarnings({"unchecked", "cast"})     public boolean isExceptionHandlerParameter() {
         ASTNode$State state = state();
         boolean isExceptionHandlerParameter_value = isExceptionHandlerParameter_compute();
@@ -827,7 +835,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isExceptionHandlerParameter_compute() {  return false;  }
 
-    // Declared in VariableDeclaration.jrag at line 60
+    // Declared in VariableDeclaration.jrag at line 64
  @SuppressWarnings({"unchecked", "cast"})     public boolean isLocalVariable() {
         ASTNode$State state = state();
         boolean isLocalVariable_value = isLocalVariable_compute();
@@ -836,7 +844,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isLocalVariable_compute() {  return false;  }
 
-    // Declared in VariableDeclaration.jrag at line 62
+    // Declared in VariableDeclaration.jrag at line 66
  @SuppressWarnings({"unchecked", "cast"})     public boolean isBlank() {
         ASTNode$State state = state();
         boolean isBlank_value = isBlank_compute();
@@ -845,7 +853,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     private boolean isBlank_compute() {  return !hasInit();  }
 
-    // Declared in VariableDeclaration.jrag at line 64
+    // Declared in VariableDeclaration.jrag at line 68
  @SuppressWarnings({"unchecked", "cast"})     public String name() {
         ASTNode$State state = state();
         String name_value = name_compute();
@@ -856,7 +864,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean constant_computed = false;
     protected Constant constant_value;
-    // Declared in VariableDeclaration.jrag at line 65
+    // Declared in VariableDeclaration.jrag at line 69
  @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
         if(constant_computed) {
             return constant_value;
@@ -892,7 +900,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean usesTypeVariable_computed = false;
     protected boolean usesTypeVariable_value;
-    // Declared in Generics.jrag at line 906
+    // Declared in Generics.jrag at line 910
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -910,7 +918,7 @@ if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.
 
     protected boolean sourceVariableDecl_computed = false;
     protected Variable sourceVariableDecl_value;
-    // Declared in Generics.jrag at line 1275
+    // Declared in Generics.jrag at line 1283
  @SuppressWarnings({"unchecked", "cast"})     public Variable sourceVariableDecl() {
         if(sourceVariableDecl_computed) {
             return sourceVariableDecl_value;

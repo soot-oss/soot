@@ -52,7 +52,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   public void collectErrors() {
   }
 
-    // Declared in Generics.jrag at line 699
+    // Declared in Generics.jrag at line 703
 
   public TypeDecl substitute(TypeVariable typeVariable) {
     for(int i = 0; i < numTypeParameter(); i++)
@@ -61,19 +61,19 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     return hostType().substitute(typeVariable);
   }
 
-    // Declared in Generics.jrag at line 713
+    // Declared in Generics.jrag at line 717
 
   public boolean isRawType() {
     return false; 
   }
 
-    // Declared in Generics.jrag at line 719
+    // Declared in Generics.jrag at line 723
 
   public int numTypeParameter() {
     return genericMethodDecl().original().getNumTypeParameter();
   }
 
-    // Declared in Generics.jrag at line 722
+    // Declared in Generics.jrag at line 726
 
   public TypeVariable typeParameter(int index) {
     return genericMethodDecl().original().getTypeParameter(index);
@@ -453,7 +453,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
         return (List<Access>)getChildNoTransform(5);
     }
 
-    // Declared in Generics.jrag at line 1266
+    // Declared in Generics.jrag at line 1274
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl sourceMethodDecl() {
         if(sourceMethodDecl_computed) {
             return sourceMethodDecl_value;
@@ -469,7 +469,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
 
     private MethodDecl sourceMethodDecl_compute() {  return genericMethodDecl().original().sourceMethodDecl();  }
 
-    // Declared in MethodSignature.jrag at line 137
+    // Declared in MethodSignature.jrag at line 152
  @SuppressWarnings({"unchecked", "cast"})     public boolean moreSpecificThan(MethodDecl m) {
         Object _parameters = m;
 if(moreSpecificThan_MethodDecl_values == null) moreSpecificThan_MethodDecl_values = new java.util.HashMap(4);

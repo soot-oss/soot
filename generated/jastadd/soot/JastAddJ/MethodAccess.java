@@ -87,7 +87,7 @@ public class MethodAccess extends Access implements Cloneable {
     return super.reachedException(catchType);
   }
 
-    // Declared in LookupMethod.jrag at line 113
+    // Declared in LookupMethod.jrag at line 119
 
   private static SimpleSet removeInstanceMethods(SimpleSet c) {
     SimpleSet set = SimpleSet.emptySet;
@@ -99,7 +99,7 @@ public class MethodAccess extends Access implements Cloneable {
     return set;
   }
 
-    // Declared in LookupMethod.jrag at line 152
+    // Declared in LookupMethod.jrag at line 158
 
   
   public boolean applicable(MethodDecl decl) {
@@ -252,7 +252,66 @@ public class MethodAccess extends Access implements Cloneable {
     return c.typeArguments();
   }
 
-    // Declared in MethodSignature.jrag at line 125
+    // Declared in MethodSignature.jrag at line 23
+
+
+  protected SimpleSet potentiallyApplicable(Collection candidates) {
+    SimpleSet potentiallyApplicable = SimpleSet.emptySet;
+    // select potentially applicable methods
+    for(Iterator iter = candidates.iterator(); iter.hasNext(); ) {
+      MethodDecl decl = (MethodDecl)iter.next();
+      if(potentiallyApplicable(decl) && accessible(decl)) {
+        if(decl instanceof GenericMethodDecl) {
+          decl = ((GenericMethodDecl)decl).lookupParMethodDecl(typeArguments(decl));
+        }
+        potentiallyApplicable = potentiallyApplicable.add(decl);
+      }
+    }
+    return potentiallyApplicable;
+  }
+
+    // Declared in MethodSignature.jrag at line 38
+
+
+  protected SimpleSet applicableBySubtyping(SimpleSet potentiallyApplicable) {
+    SimpleSet maxSpecific = SimpleSet.emptySet;
+    for(Iterator iter = potentiallyApplicable.iterator(); iter.hasNext(); ) {
+      MethodDecl decl = (MethodDecl)iter.next();
+      if(applicableBySubtyping(decl))
+        maxSpecific = mostSpecific(maxSpecific, decl);
+    }
+    return maxSpecific;
+  }
+
+    // Declared in MethodSignature.jrag at line 48
+
+
+  protected SimpleSet applicableByMethodInvocationConversion(SimpleSet potentiallyApplicable, SimpleSet maxSpecific) {
+    if(maxSpecific.isEmpty()) {
+      for(Iterator iter = potentiallyApplicable.iterator(); iter.hasNext(); ) {
+        MethodDecl decl = (MethodDecl)iter.next();
+        if(applicableByMethodInvocationConversion(decl))
+          maxSpecific = mostSpecific(maxSpecific, decl);
+      }
+    }
+    return maxSpecific;
+  }
+
+    // Declared in MethodSignature.jrag at line 59
+
+
+  protected SimpleSet applicableVariableArity(SimpleSet potentiallyApplicable, SimpleSet maxSpecific) {
+    if(maxSpecific.isEmpty()) {
+      for(Iterator iter = potentiallyApplicable.iterator(); iter.hasNext(); ) {
+        MethodDecl decl = (MethodDecl)iter.next();
+        if(decl.isVariableArity() && applicableVariableArity(decl))
+          maxSpecific = mostSpecific(maxSpecific, decl);
+      }
+    }
+    return maxSpecific;
+  }
+
+    // Declared in MethodSignature.jrag at line 140
 
 
   private static SimpleSet mostSpecific(SimpleSet maxSpecific, MethodDecl decl) {
@@ -502,7 +561,21 @@ public class MethodAccess extends Access implements Cloneable {
         return (List<Expr>)getChildNoTransform(0);
     }
 
-    // Declared in MethodSignature.jrag at line 316
+    // Declared in MethodSignature.jrag at line 11
+
+    protected SimpleSet maxSpecific(Collection candidates) {
+    SimpleSet potentiallyApplicable = potentiallyApplicable(candidates);
+    // first phase
+    SimpleSet maxSpecific = applicableBySubtyping(potentiallyApplicable);
+    // second phase
+    maxSpecific = applicableByMethodInvocationConversion(potentiallyApplicable,
+        maxSpecific);
+    // third phase
+    maxSpecific = applicableVariableArity(potentiallyApplicable, maxSpecific);
+    return maxSpecific;
+  }
+
+    // Declared in MethodSignature.jrag at line 331
 
 
   // 15.12.3
@@ -808,7 +881,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 
     protected boolean decls_computed = false;
     protected SimpleSet decls_value;
-    // Declared in MethodSignature.jrag at line 11
+    // Declared in LookupMethod.jrag at line 96
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed) {
             return decls_value;
@@ -823,44 +896,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     }
 
     private SimpleSet decls_compute() {
-    SimpleSet potentiallyApplicable = SimpleSet.emptySet;
-    // select potentially applicable methods
-    for(Iterator iter = lookupMethod(name()).iterator(); iter.hasNext(); ) {
-      MethodDecl decl = (MethodDecl)iter.next();
-      if(potentiallyApplicable(decl) && accessible(decl)) {
-        if(decl instanceof GenericMethodDecl) {
-          decl = ((GenericMethodDecl)decl).lookupParMethodDecl(typeArguments(decl));
-        }
-        potentiallyApplicable = potentiallyApplicable.add(decl);
-      }
-    }
-
-    // first phase
-    SimpleSet maxSpecific = SimpleSet.emptySet;
-    for(Iterator iter = potentiallyApplicable.iterator(); iter.hasNext(); ) {
-      MethodDecl decl = (MethodDecl)iter.next();
-      if(applicableBySubtyping(decl))
-        maxSpecific = mostSpecific(maxSpecific, decl);
-    }
-
-    // second phase
-    if(maxSpecific.isEmpty()) {
-      for(Iterator iter = potentiallyApplicable.iterator(); iter.hasNext(); ) {
-        MethodDecl decl = (MethodDecl)iter.next();
-        if(applicableByMethodInvocationConversion(decl))
-          maxSpecific = mostSpecific(maxSpecific, decl);
-      }
-    }
-
-
-    // third phase
-    if(maxSpecific.isEmpty()) {
-      for(Iterator iter = potentiallyApplicable.iterator(); iter.hasNext(); ) {
-        MethodDecl decl = (MethodDecl)iter.next();
-        if(decl.isVariableArity() && applicableVariableArity(decl))
-          maxSpecific = mostSpecific(maxSpecific, decl);
-      }
-    }
+    SimpleSet maxSpecific = maxSpecific(lookupMethod(name()));
     if(isQualified() ? qualifier().staticContextQualifier() : inStaticContext())
       maxSpecific = removeInstanceMethods(maxSpecific);
     return maxSpecific;
@@ -868,7 +904,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
 
     protected boolean decl_computed = false;
     protected MethodDecl decl_value;
-    // Declared in LookupMethod.jrag at line 97
+    // Declared in LookupMethod.jrag at line 103
  @SuppressWarnings({"unchecked", "cast"})     public MethodDecl decl() {
         if(decl_computed) {
             return decl_value;
@@ -899,7 +935,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return unknownMethod();
   }
 
-    // Declared in LookupMethod.jrag at line 164
+    // Declared in LookupMethod.jrag at line 170
  @SuppressWarnings({"unchecked", "cast"})     public boolean accessible(MethodDecl m) {
         ASTNode$State state = state();
         boolean accessible_MethodDecl_value = accessible_compute(m);
@@ -1000,7 +1036,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
       return refined_TypeAnalysis_MethodAccess_type();
   }
 
-    // Declared in MethodSignature.jrag at line 166
+    // Declared in MethodSignature.jrag at line 181
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableBySubtyping(MethodDecl m) {
         ASTNode$State state = state();
         boolean applicableBySubtyping_MethodDecl_value = applicableBySubtyping_compute(m);
@@ -1016,7 +1052,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 186
+    // Declared in MethodSignature.jrag at line 201
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableByMethodInvocationConversion(MethodDecl m) {
         ASTNode$State state = state();
         boolean applicableByMethodInvocationConversion_MethodDecl_value = applicableByMethodInvocationConversion_compute(m);
@@ -1032,7 +1068,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 206
+    // Declared in MethodSignature.jrag at line 221
  @SuppressWarnings({"unchecked", "cast"})     public boolean applicableVariableArity(MethodDecl m) {
         ASTNode$State state = state();
         boolean applicableVariableArity_MethodDecl_value = applicableVariableArity_compute(m);
@@ -1049,7 +1085,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 247
+    // Declared in MethodSignature.jrag at line 262
  @SuppressWarnings({"unchecked", "cast"})     public boolean potentiallyApplicable(MethodDecl m) {
         ASTNode$State state = state();
         boolean potentiallyApplicable_MethodDecl_value = potentiallyApplicable_compute(m);
@@ -1079,7 +1115,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     return true;
   }
 
-    // Declared in MethodSignature.jrag at line 270
+    // Declared in MethodSignature.jrag at line 285
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         ASTNode$State state = state();
         int arity_value = arity_compute();
@@ -1089,7 +1125,7 @@ if(computeDAbefore_int_Variable_values == null) computeDAbefore_int_Variable_val
     private int arity_compute() {  return getNumArg();  }
 
     protected java.util.Map typeArguments_MethodDecl_values;
-    // Declared in MethodSignature.jrag at line 272
+    // Declared in MethodSignature.jrag at line 287
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList typeArguments(MethodDecl m) {
         Object _parameters = m;
 if(typeArguments_MethodDecl_values == null) typeArguments_MethodDecl_values = new java.util.HashMap(4);

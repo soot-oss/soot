@@ -57,7 +57,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
         }
         return res;
     }
-    // Declared in Generics.jrag at line 397
+    // Declared in Generics.jrag at line 401
 
   public void typeCheck() {
     super.typeCheck();
@@ -65,7 +65,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
       error(" generic interface " + typeName() + " may not directly or indirectly inherit java.lang.Throwable");
   }
 
-    // Declared in Generics.jrag at line 1101
+    // Declared in Generics.jrag at line 1109
 
   public InterfaceDecl p(Parameterization parTypeDecl) {
     GenericInterfaceDecl c = new GenericInterfaceDeclSubstituted(
@@ -79,7 +79,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     return c;
   }
 
-    // Declared in GenericsPrettyPrint.jrag at line 121
+    // Declared in GenericsPrettyPrint.jrag at line 115
 
   
 	public void toString(StringBuffer s) {
@@ -118,11 +118,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     }
     */
     
-		s.append(" {");
-		for(int i=0; i < getNumBodyDecl(); i++) {
-			getBodyDecl(i).toString(s);
-		}
-		s.append(indent() + "}");
+		ppBodyDecls(s);
     
     /*
     for(int i = 0; i < getNumParTypeDecl(); i++) {
@@ -511,13 +507,13 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
         return 4;
     }
 
-    // Declared in Generics.jrag at line 211
+    // Declared in Generics.jrag at line 213
 
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     return (TypeDecl)this;
   }
 
-    // Declared in Generics.jrag at line 456
+    // Declared in Generics.jrag at line 460
 
 
   public SimpleSet addTypeVariables(SimpleSet c, String name) {
@@ -530,7 +526,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     return c;
   }
 
-    // Declared in Generics.jrag at line 657
+    // Declared in Generics.jrag at line 661
 
   public List createArgumentList(ArrayList params) {
     GenericTypeDecl original = (GenericTypeDecl)original();
@@ -546,7 +542,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
 
     protected boolean rawType_computed = false;
     protected TypeDecl rawType_value;
-    // Declared in Generics.jrag at line 153
+    // Declared in Generics.jrag at line 155
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl rawType() {
         if(rawType_computed) {
             return rawType_value;
@@ -564,7 +560,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
 
     protected boolean getParTypeDeclList_computed = false;
     protected List getParTypeDeclList_value;
-    // Declared in Generics.jrag at line 589
+    // Declared in Generics.jrag at line 593
  @SuppressWarnings({"unchecked", "cast"})     public List getParTypeDeclList() {
         if(getParTypeDeclList_computed) {
             return (List)ASTNode.getChild(this, getParTypeDeclListChildPosition());
@@ -582,7 +578,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     private List getParTypeDeclList_compute() {  return new List();  }
 
     protected java.util.Map lookupParTypeDecl_ParTypeAccess_values;
-    // Declared in Generics.jrag at line 609
+    // Declared in Generics.jrag at line 613
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupParTypeDecl(ParTypeAccess p) {
         Object _parameters = p;
 if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAccess_values = new java.util.HashMap(4);
@@ -617,7 +613,7 @@ if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAcce
   }
 
     protected java.util.Map lookupParTypeDecl_ArrayList_values;
-    // Declared in Generics.jrag at line 643
+    // Declared in Generics.jrag at line 647
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupParTypeDecl(ArrayList list) {
         Object _parameters = list;
 if(lookupParTypeDecl_ArrayList_values == null) lookupParTypeDecl_ArrayList_values = new java.util.HashMap(4);
@@ -648,7 +644,7 @@ if(lookupParTypeDecl_ArrayList_values == null) lookupParTypeDecl_ArrayList_value
     return typeDecl;
   }
 
-    // Declared in Generics.jrag at line 919
+    // Declared in Generics.jrag at line 923
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -804,7 +800,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
 
-    // Declared in Generics.jrag at line 156
+    // Declared in Generics.jrag at line 158
  @SuppressWarnings({"unchecked", "cast"})     public boolean isGenericType() {
         ASTNode$State state = state();
         boolean isGenericType_value = isGenericType_compute();
@@ -813,14 +809,14 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isGenericType_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 403
+    // Declared in Generics.jrag at line 407
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeThrowable() {
         ASTNode$State state = state();
         TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
         return typeThrowable_value;
     }
 
-    // Declared in Generics.jrag at line 453
+    // Declared in Generics.jrag at line 457
     public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
         if(caller == getTypeParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -829,7 +825,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return super.Define_boolean_isNestedType(caller, child);
     }
 
-    // Declared in Generics.jrag at line 454
+    // Declared in Generics.jrag at line 458
     public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
         if(caller == getTypeParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
@@ -838,7 +834,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
         return super.Define_TypeDecl_enclosingType(caller, child);
     }
 
-    // Declared in Generics.jrag at line 498
+    // Declared in Generics.jrag at line 502
     public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
         if(caller == getBodyDeclListNoTransform()) { 
    int index = caller.getIndexOfChild(child);

@@ -39,15 +39,15 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
         }
         return res;
     }
-    // Declared in Generics.jrag at line 753
+    // Declared in Generics.jrag at line 757
 
   public Access substitute(Parameterization parTypeDecl) { return createBoundAccess(); }
 
-    // Declared in Generics.jrag at line 808
+    // Declared in Generics.jrag at line 812
 
   public Access substituteReturnType(Parameterization parTypeDecl) { return createBoundAccess(); }
 
-    // Declared in Generics.jrag at line 828
+    // Declared in Generics.jrag at line 832
 
   public Access substituteParameterType(Parameterization parTypeDecl) { return createBoundAccess(); }
 
@@ -353,7 +353,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
         return 3;
     }
 
-    // Declared in Generics.jrag at line 234
+    // Declared in Generics.jrag at line 238
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRawType() {
         ASTNode$State state = state();
         boolean isRawType_value = isRawType_compute();
@@ -362,7 +362,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
 
     private boolean isRawType_compute() {  return true;  }
 
-    // Declared in Generics.jrag at line 561
+    // Declared in Generics.jrag at line 565
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
         ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);

@@ -306,29 +306,37 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return new BoundTypeAccess("", name(), this);
   }
 
-    // Declared in DataStructures.jrag at line 118
+    // Declared in DataStructures.jrag at line 136
 
   public SimpleSet add(Object o) {
     return new SimpleSetImpl().add(this).add(o);
   }
 
-    // Declared in DataStructures.jrag at line 124
+    // Declared in DataStructures.jrag at line 140
+
+  public boolean isSingleton() { return true; }
+
+    // Declared in DataStructures.jrag at line 141
+
+  public boolean isSingleton(Object o) { return contains(o); }
+
+    // Declared in DataStructures.jrag at line 144
 
   private TypeDecl iterElem;
 
-    // Declared in DataStructures.jrag at line 125
+    // Declared in DataStructures.jrag at line 145
 
   public Iterator iterator() { iterElem = this; return this; }
 
-    // Declared in DataStructures.jrag at line 126
+    // Declared in DataStructures.jrag at line 146
 
   public boolean hasNext() { return iterElem != null; }
 
-    // Declared in DataStructures.jrag at line 127
+    // Declared in DataStructures.jrag at line 147
 
   public Object next() { Object o = iterElem; iterElem = null; return o; }
 
-    // Declared in DataStructures.jrag at line 128
+    // Declared in DataStructures.jrag at line 148
 
   public void remove() { throw new UnsupportedOperationException(); }
 
@@ -360,7 +368,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return null;
   }
 
-    // Declared in LookupMethod.jrag at line 214
+    // Declared in LookupMethod.jrag at line 220
 
 
 
@@ -381,7 +389,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     //return localMethodsSignatureMap().values().iterator();
   }
 
-    // Declared in LookupMethod.jrag at line 282
+    // Declared in LookupMethod.jrag at line 288
 
 
   // iterate over all member methods in this type
@@ -401,7 +409,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     };
   }
 
-    // Declared in LookupMethod.jrag at line 347
+    // Declared in LookupMethod.jrag at line 353
 
   protected boolean allMethodsAbstract(SimpleSet set) {
     if(set == null) return true;
@@ -498,6 +506,17 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     if(hasEnclosingTypeDecl(name())) {
       error("type may not have the same simple name as an enclosing type declaration");
     }
+  }
+
+    // Declared in PrettyPrint.jadd at line 62
+
+
+  protected void ppBodyDecls(StringBuffer s) {
+    s.append(" {");
+    for(int i=0; i < getNumBodyDecl(); i++) {
+      getBodyDecl(i).toString(s);
+    }
+    s.append(indent() + "}");
   }
 
     // Declared in QualifiedNames.jrag at line 96
@@ -603,7 +622,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
   }
 
-    // Declared in Generics.jrag at line 160
+    // Declared in Generics.jrag at line 162
 
 
   // Brute force replacesment with generic one in AST
@@ -612,7 +631,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return this;
   }
 
-    // Declared in Generics.jrag at line 688
+    // Declared in Generics.jrag at line 692
 
 
   public TypeDecl substitute(TypeVariable typeVariable) {
@@ -621,7 +640,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return enclosingType().substitute(typeVariable);
   }
 
-    // Declared in Generics.jrag at line 726
+    // Declared in Generics.jrag at line 730
 
   
   public Access substitute(Parameterization parTypeDecl) {
@@ -632,14 +651,14 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
 	  return enclosingType().substitute(parTypeDecl).qualifiesAccess(new TypeAccess(name()));
   }
 
-    // Declared in Generics.jrag at line 766
+    // Declared in Generics.jrag at line 770
 
   
   public Access substituteReturnType(Parameterization parTypeDecl) {
     return substitute(parTypeDecl);
   }
 
-    // Declared in Generics.jrag at line 810
+    // Declared in Generics.jrag at line 814
 
 
   public Access substituteParameterType(Parameterization parTypeDecl) {
@@ -789,13 +808,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
 
   int uniqueIndexCounter = 1;
 
-    // Declared in Java2Rewrites.jrag at line 70
+    // Declared in Java2Rewrites.jrag at line 64
 
-
+  
   // lazily build a static field for assertionsDisabled 
   private FieldDeclaration createAssertionsDisabled = null;
 
-    // Declared in Java2Rewrites.jrag at line 71
+    // Declared in Java2Rewrites.jrag at line 65
 
   public FieldDeclaration createAssertionsDisabled() {
     if(createAssertionsDisabled != null)
@@ -826,13 +845,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return createAssertionsDisabled;
   }
 
-    // Declared in Java2Rewrites.jrag at line 124
+    // Declared in Java2Rewrites.jrag at line 118
 
 
   // lazily build a static field for each typename used in a .class expression
   private HashMap createStaticClassField = null;
 
-    // Declared in Java2Rewrites.jrag at line 125
+    // Declared in Java2Rewrites.jrag at line 119
 
   public FieldDeclaration createStaticClassField(String name) {
     if(createStaticClassField == null)
@@ -854,13 +873,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return addMemberField(f);
   }
 
-    // Declared in Java2Rewrites.jrag at line 146
+    // Declared in Java2Rewrites.jrag at line 140
 
 
   // lazily build a static class$ method in this type declaration
   private MethodDecl createStaticClassMethod = null;
 
-    // Declared in Java2Rewrites.jrag at line 147
+    // Declared in Java2Rewrites.jrag at line 141
 
   public MethodDecl createStaticClassMethod() {
     if(createStaticClassMethod != null)
@@ -1285,7 +1304,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         return (List<BodyDecl>)getChildNoTransform(1);
     }
 
-    // Declared in Generics.jrag at line 326
+    // Declared in Generics.jrag at line 330
 
 
   // different parameterizations of the same generic interface may not be implemented
@@ -1816,7 +1835,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean leIsTrue_compute(Expr left, Expr right) {  return false;  }
 
-    // Declared in DataStructures.jrag at line 116
+    // Declared in DataStructures.jrag at line 134
  @SuppressWarnings({"unchecked", "cast"})     public int size() {
         ASTNode$State state = state();
         int size_value = size_compute();
@@ -1825,7 +1844,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private int size_compute() {  return 1;  }
 
-    // Declared in DataStructures.jrag at line 117
+    // Declared in DataStructures.jrag at line 135
  @SuppressWarnings({"unchecked", "cast"})     public boolean isEmpty() {
         ASTNode$State state = state();
         boolean isEmpty_value = isEmpty_compute();
@@ -1834,7 +1853,7 @@ if(accessibleFrom_TypeDecl_values == null) accessibleFrom_TypeDecl_values = new 
 
     private boolean isEmpty_compute() {  return false;  }
 
-    // Declared in DataStructures.jrag at line 121
+    // Declared in DataStructures.jrag at line 139
  @SuppressWarnings({"unchecked", "cast"})     public boolean contains(Object o) {
         ASTNode$State state = state();
         boolean contains_Object_value = contains_compute(o);
@@ -1996,7 +2015,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
     return removeInstanceMethods(lookupMethod(name));
   }
 
-    // Declared in LookupMethod.jrag at line 193
+    // Declared in LookupMethod.jrag at line 199
  @SuppressWarnings({"unchecked", "cast"})     public Collection memberMethods(String name) {
         ASTNode$State state = state();
         Collection memberMethods_String_value = memberMethods_compute(name);
@@ -2011,7 +2030,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
 
     protected boolean methodsNameMap_computed = false;
     protected HashMap methodsNameMap_value;
-    // Declared in LookupMethod.jrag at line 199
+    // Declared in LookupMethod.jrag at line 205
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsNameMap() {
         if(methodsNameMap_computed) {
             return methodsNameMap_value;
@@ -2039,7 +2058,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
     return map;
   }
 
-    // Declared in LookupMethod.jrag at line 230
+    // Declared in LookupMethod.jrag at line 236
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet localMethodsSignature(String signature) {
         ASTNode$State state = state();
         SimpleSet localMethodsSignature_String_value = localMethodsSignature_compute(signature);
@@ -2054,7 +2073,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
 
     protected boolean localMethodsSignatureMap_computed = false;
     protected HashMap localMethodsSignatureMap_value;
-    // Declared in LookupMethod.jrag at line 236
+    // Declared in LookupMethod.jrag at line 242
  @SuppressWarnings({"unchecked", "cast"})     public HashMap localMethodsSignatureMap() {
         if(localMethodsSignatureMap_computed) {
             return localMethodsSignatureMap_value;
@@ -2079,7 +2098,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
     return map;
   }
 
-    // Declared in LookupMethod.jrag at line 298
+    // Declared in LookupMethod.jrag at line 304
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet methodsSignature(String signature) {
         ASTNode$State state = state();
         SimpleSet methodsSignature_String_value = methodsSignature_compute(signature);
@@ -2094,7 +2113,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
 
     protected boolean methodsSignatureMap_computed = false;
     protected HashMap methodsSignatureMap_value;
-    // Declared in LookupMethod.jrag at line 304
+    // Declared in LookupMethod.jrag at line 310
  @SuppressWarnings({"unchecked", "cast"})     public HashMap methodsSignatureMap() {
         if(methodsSignatureMap_computed) {
             return methodsSignatureMap_value;
@@ -2111,7 +2130,7 @@ if(unqualifiedLookupMethod_String_values == null) unqualifiedLookupMethod_String
     private HashMap methodsSignatureMap_compute() {  return localMethodsSignatureMap();  }
 
     protected java.util.Map ancestorMethods_String_values;
-    // Declared in LookupMethod.jrag at line 361
+    // Declared in LookupMethod.jrag at line 367
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet ancestorMethods(String signature) {
         Object _parameters = signature;
 if(ancestorMethods_String_values == null) ancestorMethods_String_values = new java.util.HashMap(4);
@@ -3302,7 +3321,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean involvesTypeParameters_compute() {  return false;  }
 
-    // Declared in Generics.jrag at line 155
+    // Declared in Generics.jrag at line 157
  @SuppressWarnings({"unchecked", "cast"})     public boolean isGenericType() {
         ASTNode$State state = state();
         boolean isGenericType_value = isGenericType_compute();
@@ -3311,7 +3330,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isGenericType_compute() {  return false;  }
 
-    // Declared in Generics.jrag at line 227
+    // Declared in Generics.jrag at line 231
  @SuppressWarnings({"unchecked", "cast"})     public boolean isParameterizedType() {
         ASTNode$State state = state();
         boolean isParameterizedType_value = isParameterizedType_compute();
@@ -3320,7 +3339,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean isParameterizedType_compute() {  return false;  }
 
-    // Declared in Generics.jrag at line 230
+    // Declared in Generics.jrag at line 234
  @SuppressWarnings({"unchecked", "cast"})     public boolean isRawType() {
         ASTNode$State state = state();
         boolean isRawType_value = isRawType_compute();
@@ -3331,7 +3350,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     protected boolean erasure_computed = false;
     protected TypeDecl erasure_value;
-    // Declared in Generics.jrag at line 310
+    // Declared in Generics.jrag at line 314
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl erasure() {
         if(erasure_computed) {
             return erasure_value;
@@ -3355,7 +3374,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     protected boolean implementedInterfaces_computed = false;
     protected HashSet implementedInterfaces_value;
-    // Declared in Generics.jrag at line 366
+    // Declared in Generics.jrag at line 370
  @SuppressWarnings({"unchecked", "cast"})     public HashSet implementedInterfaces() {
         if(implementedInterfaces_computed) {
             return implementedInterfaces_value;
@@ -3371,7 +3390,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private HashSet implementedInterfaces_compute() {  return new HashSet();  }
 
-    // Declared in Generics.jrag at line 538
+    // Declared in Generics.jrag at line 542
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
         ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);
@@ -3388,7 +3407,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
     protected boolean usesTypeVariable_computed = false;
     protected boolean usesTypeVariable_initialized = false;
     protected boolean usesTypeVariable_value;
-    // Declared in Generics.jrag at line 909
+    // Declared in Generics.jrag at line 913
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -3444,7 +3463,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private boolean usesTypeVariable_compute() {  return isNestedType() && enclosingType().usesTypeVariable();  }
 
-    // Declared in Generics.jrag at line 1061
+    // Declared in Generics.jrag at line 1069
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl original() {
         ASTNode$State state = state();
         TypeDecl original_value = original_compute();
@@ -3453,7 +3472,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private TypeDecl original_compute() {  return this;  }
 
-    // Declared in Generics.jrag at line 1153
+    // Declared in Generics.jrag at line 1161
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl asWildcardExtends() {
         ASTNode$State state = state();
         TypeDecl asWildcardExtends_value = asWildcardExtends_compute();
@@ -3462,7 +3481,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     private TypeDecl asWildcardExtends_compute() {  return lookupWildcardExtends(this);  }
 
-    // Declared in Generics.jrag at line 1166
+    // Declared in Generics.jrag at line 1174
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl asWildcardSuper() {
         ASTNode$State state = state();
         TypeDecl asWildcardSuper_value = asWildcardSuper_compute();
@@ -3473,7 +3492,7 @@ if(instanceOf_TypeDecl_values == null) instanceOf_TypeDecl_values = new java.uti
 
     protected boolean sourceTypeDecl_computed = false;
     protected TypeDecl sourceTypeDecl_value;
-    // Declared in Generics.jrag at line 1258
+    // Declared in Generics.jrag at line 1266
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl sourceTypeDecl() {
         if(sourceTypeDecl_computed) {
             return sourceTypeDecl_value;
@@ -4882,35 +4901,35 @@ if(lookupVariable_String_values == null) lookupVariable_String_values = new java
         return withinDeprecatedAnnotation_value;
     }
 
-    // Declared in Generics.jrag at line 1139
+    // Declared in Generics.jrag at line 1147
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeWildcard() {
         ASTNode$State state = state();
         TypeDecl typeWildcard_value = getParent().Define_TypeDecl_typeWildcard(this, null);
         return typeWildcard_value;
     }
 
-    // Declared in Generics.jrag at line 1152
+    // Declared in Generics.jrag at line 1160
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardExtends(TypeDecl typeDecl) {
         ASTNode$State state = state();
         TypeDecl lookupWildcardExtends_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardExtends(this, null, typeDecl);
         return lookupWildcardExtends_TypeDecl_value;
     }
 
-    // Declared in Generics.jrag at line 1165
+    // Declared in Generics.jrag at line 1173
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
         ASTNode$State state = state();
         TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);
         return lookupWildcardSuper_TypeDecl_value;
     }
 
-    // Declared in Generics.jrag at line 1184
+    // Declared in Generics.jrag at line 1192
  @SuppressWarnings({"unchecked", "cast"})     public LUBType lookupLUBType(Collection bounds) {
         ASTNode$State state = state();
         LUBType lookupLUBType_Collection_value = getParent().Define_LUBType_lookupLUBType(this, null, bounds);
         return lookupLUBType_Collection_value;
     }
 
-    // Declared in Generics.jrag at line 1222
+    // Declared in Generics.jrag at line 1230
  @SuppressWarnings({"unchecked", "cast"})     public GLBType lookupGLBType(ArrayList bounds) {
         ASTNode$State state = state();
         GLBType lookupGLBType_ArrayList_value = getParent().Define_GLBType_lookupGLBType(this, null, bounds);

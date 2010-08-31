@@ -414,7 +414,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
         return (List<Access>)getChildNoTransform(5);
     }
 
-    // Declared in Generics.jrag at line 1270
+    // Declared in Generics.jrag at line 1278
  @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl sourceConstructorDecl() {
         if(sourceConstructorDecl_computed) {
             return sourceConstructorDecl_value;

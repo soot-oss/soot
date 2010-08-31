@@ -705,7 +705,7 @@ if(computeDUbefore_int_Variable_values == null) computeDUbefore_int_Variable_val
 
     protected boolean decls_computed = false;
     protected SimpleSet decls_value;
-    // Declared in MethodSignature.jrag at line 55
+    // Declared in MethodSignature.jrag at line 70
  @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
         if(decls_computed) {
             return decls_value;
@@ -834,7 +834,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
 
     private boolean noEnclosingInstance_compute() {  return isQualified() ? qualifier().staticContextQualifier() : inStaticContext();  }
 
-    // Declared in MethodSignature.jrag at line 312
+    // Declared in MethodSignature.jrag at line 327
  @SuppressWarnings({"unchecked", "cast"})     public int arity() {
         ASTNode$State state = state();
         int arity_value = arity_compute();
@@ -908,7 +908,7 @@ if(localLookupType_String_values == null) localLookupType_String_values = new ja
         return getParent().Define_TypeDecl_superType(this, caller);
     }
 
-    // Declared in MethodSignature.jrag at line 68
+    // Declared in MethodSignature.jrag at line 83
     public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
         if(caller == getTypeDeclOptNoTransform()){
     Collection c = getAccess().type().constructors();

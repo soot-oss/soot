@@ -55,7 +55,7 @@ public class WildcardSuperType extends AbstractWildcardType implements Cloneable
         }
         return res;
     }
-    // Declared in Generics.jrag at line 760
+    // Declared in Generics.jrag at line 764
 
   public Access substitute(Parameterization parTypeDecl) {
     if(!usesTypeVariable())
@@ -296,7 +296,7 @@ public class WildcardSuperType extends AbstractWildcardType implements Cloneable
 
     private boolean involvesTypeParameters_compute() {  return superType().involvesTypeParameters();  }
 
-    // Declared in Generics.jrag at line 573
+    // Declared in Generics.jrag at line 577
  @SuppressWarnings({"unchecked", "cast"})     public boolean sameSignature(Access a) {
         ASTNode$State state = state();
         boolean sameSignature_Access_value = sameSignature_compute(a);
@@ -309,7 +309,7 @@ public class WildcardSuperType extends AbstractWildcardType implements Cloneable
     return super.sameSignature(a);
   }
 
-    // Declared in Generics.jrag at line 922
+    // Declared in Generics.jrag at line 926
  @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
         if(usesTypeVariable_computed) {
             return usesTypeVariable_value;
@@ -365,7 +365,7 @@ public class WildcardSuperType extends AbstractWildcardType implements Cloneable
 
     private boolean usesTypeVariable_compute() {  return getAccess().type().usesTypeVariable();  }
 
-    // Declared in Generics.jrag at line 1122
+    // Declared in Generics.jrag at line 1130
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl superType() {
         ASTNode$State state = state();
         TypeDecl superType_value = superType_compute();
