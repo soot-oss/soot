@@ -1255,5 +1255,21 @@ public class Scene  //extends AbstractHost
     public void incrementalBuildFinished() {
     	this.incrementalBuild = false;
     }
+    
+    /*
+     * Forces Soot to resolve the class with the given name to the given level,
+     * even if resolving has actually already finished.
+     */
+    public SootClass forceResolve(String className, int level) {
+    	boolean tmp = doneResolving;
+    	doneResolving = false;
+    	SootClass c;
+    	try {
+			c = SootResolver.v().resolveClass(className, level);
+    	} finally {
+    		doneResolving = tmp;
+    	}    	    	
+    	return c;
+    }
 }
 
