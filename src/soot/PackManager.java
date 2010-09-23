@@ -743,7 +743,13 @@ public class PackManager {
         boolean wholeShimple = Options.v().whole_shimple();
         if( Options.v().via_shimple() ) produceShimple = true;
 
-        Iterator methodIt = c.methodIterator();
+        //here we create a copy of the methods so that transformers are able
+        //to add method bodies during the following iteration;
+        //such adding of methods happens in rare occasions: for instance when
+        //resolving a method reference to a non-existing method, then this
+        //method is created as a phantom method when phantom-refs are enabled
+        LinkedList<SootMethod> methodsCopy = new LinkedList<SootMethod>(c.getMethods());
+        Iterator methodIt = methodsCopy.iterator();
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
             
