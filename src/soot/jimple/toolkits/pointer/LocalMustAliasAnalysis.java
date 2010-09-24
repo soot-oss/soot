@@ -302,7 +302,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 
     public static int parameterRefNumber(ParameterRef r) {
     	//unique number for ParameterRef[i] (must be <0)
-		return 0 - r.getIndex();
+		return -1 - r.getIndex();
 	}
 
 	protected void copy(HashMap<Value,Object> sourceMap, HashMap<Value,Object> destMap)
