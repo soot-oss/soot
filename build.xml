@@ -14,7 +14,7 @@
         <javac
             destdir="classes"
             debug="true"
-	    includeantruntime="false"
+	    includeantruntime="true"
             deprecation="on"
         	source="1.5"
         	target="1.5"
