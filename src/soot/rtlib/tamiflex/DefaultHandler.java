@@ -1,6 +1,7 @@
 package soot.rtlib.tamiflex;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class DefaultHandler implements IUnexpectedReflectiveCallHandler {
@@ -18,5 +19,13 @@ public class DefaultHandler implements IUnexpectedReflectiveCallHandler {
 
 	public void classForName(String typeName) {
 		System.err.println("Unexpected reflective loading of class "+typeName);
+	}
+
+	public void fieldSet(Object receiver, Field f) {
+		System.err.println("Unexpected reflective field set: "+f);
+	}
+
+	public void fieldGet(Object receiver, Field f) {
+		System.err.println("Unexpected reflective field get: "+f);
 	}
 }

@@ -41,7 +41,7 @@ import soot.tagkit.SourceLnPosTag;
 
 public class ReflectionTraceInfo {
 	
-	public enum Kind { ClassForName, ClassNewInstance, ConstructorNewInstance, MethodInvoke }
+	public enum Kind { ClassForName, ClassNewInstance, ConstructorNewInstance, MethodInvoke, FieldSet, FieldGet }
 	
 	protected Map<SootMethod,Set<String>> classForNameReceivers;
 	
@@ -51,11 +51,17 @@ public class ReflectionTraceInfo {
 
 	protected Map<SootMethod,Set<String>> methodInvokeReceivers;
 
+	protected Map<SootMethod,Set<String>> fieldSetReceivers;
+
+	protected Map<SootMethod,Set<String>> fieldGetReceivers;
+
 	public ReflectionTraceInfo(String logFile) {
 		classForNameReceivers = new LinkedHashMap<SootMethod, Set<String>>();
 		classNewInstanceReceivers = new LinkedHashMap<SootMethod, Set<String>>();
 		constructorNewInstanceReceivers = new LinkedHashMap<SootMethod, Set<String>>();
 		methodInvokeReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+		fieldSetReceivers = new LinkedHashMap<SootMethod, Set<String>>();
+		fieldGetReceivers = new LinkedHashMap<SootMethod, Set<String>>();
 
 		if(logFile==null) {
 			throw new InternalError("Trace based refection model enabled but no trace file given!?");
@@ -106,7 +112,27 @@ public class ReflectionTraceInfo {
 								constructorNewInstanceReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
 							}
 							receiverNames.add(target);								
-						} else
+						} else if (kind.equals("Field.set*")) {
+							if(!Scene.v().containsField(target)) {
+								throw new RuntimeException("Unknown method for signature: "+target);
+							}
+							
+							Set<String> receiverNames;
+							if((receiverNames=fieldSetReceivers.get(sourceMethod))==null) {
+								fieldSetReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+							}
+							receiverNames.add(target);								
+						} else if (kind.equals("Field.get*")) {
+							if(!Scene.v().containsField(target)) {
+								throw new RuntimeException("Unknown method for signature: "+target);
+							}
+							
+							Set<String> receiverNames;
+							if((receiverNames=fieldGetReceivers.get(sourceMethod))==null) {
+								fieldGetReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
+							}
+							receiverNames.add(target);								
+						} else 
 							throw new RuntimeException("Unknown entry kind: "+kind);
 					}
 					lines++;
@@ -247,5 +273,15 @@ public class ReflectionTraceInfo {
 		res.addAll(constructorNewInstanceReceivers.keySet());
 		res.addAll(methodInvokeReceivers.keySet());
 		return res;
+	}
+
+	public Set<String> fieldSetSignatures(SootMethod container) {
+		if(!fieldSetReceivers.containsKey(container)) return Collections.emptySet();
+		return fieldSetReceivers.get(container);
+	}
+
+	public Set<String> fieldGetSignatures(SootMethod container) {
+		if(!fieldGetReceivers.containsKey(container)) return Collections.emptySet();
+		return fieldGetReceivers.get(container);
 	}
 }

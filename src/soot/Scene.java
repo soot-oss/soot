@@ -1017,6 +1017,8 @@ public class Scene  //extends AbstractHost
 						classNames.add(target);
 					} else if(kind.equals("Method.invoke") || kind.equals("Constructor.newInstance")) {
 						classNames.add(signatureToClass(target));
+					} else if(kind.equals("Field.set*") || kind.equals("Field.get*")) {
+						classNames.add(signatureToClass(target));
 					} else throw new RuntimeException("Unknown entry kind: "+kind);
 				}
 			} catch (Exception e) {

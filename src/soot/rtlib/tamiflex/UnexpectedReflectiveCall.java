@@ -1,6 +1,7 @@
 package soot.rtlib.tamiflex;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class UnexpectedReflectiveCall {
@@ -32,5 +33,13 @@ public class UnexpectedReflectiveCall {
 
 	public static void methodInvoke(Object receiver, Method m) {
 		handler.methodInvoke(receiver, m);
+	}
+
+	public static void fieldSet(Object receiver, Field f) {
+		handler.fieldSet(receiver, f);
+	}
+
+	public static void fieldGet(Object receiver, Field f) {
+		handler.fieldGet(receiver, f);
 	}
 }

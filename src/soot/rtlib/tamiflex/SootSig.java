@@ -1,6 +1,7 @@
 package soot.rtlib.tamiflex;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -100,6 +101,18 @@ public class SootSig {
 			}
 		}
 		b.append(")>");
+		return b.toString();
+	}
+
+	public static String sootSignature(Field f) {
+		StringBuilder b = new StringBuilder();
+		b.append("<");
+		b.append(getTypeName(f.getDeclaringClass()));
+		b.append(": ");
+		b.append(getTypeName(f.getType()));
+		b.append(" ");
+		b.append(f.getName());
+		b.append(">");
 		return b.toString();
 	}
 
