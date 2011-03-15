@@ -39,6 +39,7 @@ Improvements and API changes in trunk
         <methodName>(<methodParams>)<methodRetType> and
      b) the constant "0" (two zero bytes, i.e., a short);
         according to the VM spec this is reserved for future use
+7. ReflectiveCallsInliner now supports field set/get through reflection.        
         
 Improvements and API changes in version 2.4.0
 
