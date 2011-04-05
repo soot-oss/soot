@@ -86,6 +86,8 @@ public class SootClass extends AbstractHost implements Numberable
         refType.setSootClass(this);
         if(Options.v().debug_resolver()) G.v().out.println("created "+name+" with modifiers "+modifiers);
         setResolvingLevel(BODIES);
+        
+        Scene.v().getClassNumberer().add(this);
     }
 
     /**
