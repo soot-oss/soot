@@ -9,8 +9,6 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         super.flushCache();
         getTypeAccess_computed = false;
         getTypeAccess_value = null;
-        getInitOpt_computed = false;
-        getInitOpt_value = null;
     }
     public void flushCollectionCache() {
         super.flushCollectionCache();
@@ -19,8 +17,6 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         EnumConstant node = (EnumConstant)super.clone();
         node.getTypeAccess_computed = false;
         node.getTypeAccess_value = null;
-        node.getInitOpt_computed = false;
-        node.getInitOpt_value = null;
         node.in$Circle(false);
         node.is$Final(false);
         return node;
@@ -44,27 +40,14 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         }
         return res;
     }
-    // Declared in Enums.jrag at line 200
+    // Declared in Enums.jrag at line 184
 
-
-  /*
-    3) An enum constant may be followed by arguments, which are passed to the
-    constructor of the enum type when the constant is created during class
-    initialization as described later in this section. The constructor to be
-    invoked is chosen using the normal overloading rules (\ufffd15.12.2). If the
-    arguments are omitted, an empty argument list is assumed. 
-  */
-
-  private List createArgumentList() {
-    List argList = new List();
-    argList.add(new StringLiteral(getID()));
-    argList.add(new IntegerLiteral(Integer.toString(((List)getParent()).getIndexOfChild(this))));
-    for(int i = 0; i < getNumArg(); i++)
-      argList.add(getArg(i).fullCopy());
-    return argList;
+  
+  public EnumConstant(Modifiers mods, String name, List<Expr> args, List<BodyDecl> bds) {
+	  this(mods, name, args, new Opt<Expr>(new EnumInstanceExpr(createOptAnonymousDecl(bds))));
   }
 
-    // Declared in Enums.jrag at line 218
+    // Declared in Enums.jrag at line 223
 
 
   /*
@@ -76,21 +59,47 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     TODO: work on error messages
   */
   
-  private Opt createOptAnonymousDecl() {
-    if(getNumBodyDecl() == 0)
-      return new Opt();
-    List list = getBodyDeclList();
-    setBodyDeclList(new List()); // TODO: get rid of this side-effect
-    return new Opt(
+  private static Opt<TypeDecl> createOptAnonymousDecl(List<BodyDecl> bds) {
+    if(bds.getNumChild() == 0)
+      return new Opt<TypeDecl>();
+    return new Opt<TypeDecl>(
       new AnonymousDecl(
         new Modifiers(),
         "Anonymous",
-        list
+        bds
       )
     );
   }
 
-    // Declared in Enums.jrag at line 460
+    // Declared in Enums.jrag at line 236
+
+  
+  // simulate list of body declarations
+  public int getNumBodyDecl() {
+	  int cnt = 0;
+	  ClassInstanceExpr init = (ClassInstanceExpr)getInit();
+	  if(!init.hasTypeDecl())
+		  return 0;
+	  for(BodyDecl bd : init.getTypeDecl().getBodyDecls())
+		  if(!(bd instanceof ConstructorDecl))
+			  ++cnt;
+	  return cnt;
+  }
+
+    // Declared in Enums.jrag at line 247
+
+  
+  public BodyDecl getBodyDecl(int i) {
+	  ClassInstanceExpr init = (ClassInstanceExpr)getInit();
+	  if(init.hasTypeDecl())
+		  for(BodyDecl bd : init.getTypeDecl().getBodyDecls())
+			  if(!(bd instanceof ConstructorDecl))
+				  if(i-- == 0)
+					  return bd;
+	  throw new ArrayIndexOutOfBoundsException(i);
+  }
+
+    // Declared in Enums.jrag at line 485
 
 
   // generic traversal should traverse NTA as well
@@ -99,7 +108,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     return 5;
   }
 
-    // Declared in Enums.jrag at line 463
+    // Declared in Enums.jrag at line 488
 
   public ASTNode getChild(int i) {
     switch(i) {
@@ -109,7 +118,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     }
   }
 
-    // Declared in Enums.jrag at line 563
+    // Declared in Enums.jrag at line 588
 
 
   public void toString(StringBuffer s) {
@@ -143,45 +152,42 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
         super();
 
         setChild(new List(), 1);
-        setChild(new List(), 2);
-        setChild(new Opt(), 4);
+        setChild(new Opt(), 2);
 
     }
 
-    // Declared in Enums.ast at line 13
+    // Declared in Enums.ast at line 12
 
 
     // Declared in Enums.ast line 3
-    public EnumConstant(Modifiers p0, String p1, List<Expr> p2, List<BodyDecl> p3) {
+    public EnumConstant(Modifiers p0, String p1, List<Expr> p2, Opt<Expr> p3) {
         setChild(p0, 0);
         setID(p1);
         setChild(p2, 1);
         setChild(p3, 2);
         setChild(null, 3);
-        setChild(new Opt(), 4);
     }
 
-    // Declared in Enums.ast at line 23
+    // Declared in Enums.ast at line 21
 
 
     // Declared in Enums.ast line 3
-    public EnumConstant(Modifiers p0, beaver.Symbol p1, List<Expr> p2, List<BodyDecl> p3) {
+    public EnumConstant(Modifiers p0, beaver.Symbol p1, List<Expr> p2, Opt<Expr> p3) {
         setChild(p0, 0);
         setID(p1);
         setChild(p2, 1);
         setChild(p3, 2);
         setChild(null, 3);
-        setChild(new Opt(), 4);
     }
 
-    // Declared in Enums.ast at line 32
+    // Declared in Enums.ast at line 29
 
 
   protected int numChildren() {
     return 3;
   }
 
-    // Declared in Enums.ast at line 35
+    // Declared in Enums.ast at line 32
 
     public boolean mayHaveRewrite() {
         return false;
@@ -302,99 +308,8 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in Enums.ast at line 2
     // Declared in Enums.ast line 3
-    public void setBodyDeclList(List<BodyDecl> list) {
-        setChild(list, 2);
-    }
-
-    // Declared in Enums.ast at line 6
-
-
-    public int getNumBodyDecl() {
-        return getBodyDeclList().getNumChild();
-    }
-
-    // Declared in Enums.ast at line 10
-
-
-     @SuppressWarnings({"unchecked", "cast"})  public BodyDecl getBodyDecl(int i) {
-        return (BodyDecl)getBodyDeclList().getChild(i);
-    }
-
-    // Declared in Enums.ast at line 14
-
-
-    public void addBodyDecl(BodyDecl node) {
-        List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
-        list.addChild(node);
-    }
-
-    // Declared in Enums.ast at line 19
-
-
-    public void addBodyDeclNoTransform(BodyDecl node) {
-        List<BodyDecl> list = getBodyDeclListNoTransform();
-        list.addChild(node);
-    }
-
-    // Declared in Enums.ast at line 24
-
-
-    public void setBodyDecl(BodyDecl node, int i) {
-        List<BodyDecl> list = getBodyDeclList();
-        list.setChild(node, i);
-    }
-
-    // Declared in Enums.ast at line 28
-
-    public List<BodyDecl> getBodyDecls() {
-        return getBodyDeclList();
-    }
-
-    // Declared in Enums.ast at line 31
-
-    public List<BodyDecl> getBodyDeclsNoTransform() {
-        return getBodyDeclListNoTransform();
-    }
-
-    // Declared in Enums.ast at line 35
-
-
-     @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclList() {
-        List<BodyDecl> list = (List<BodyDecl>)getChild(2);
-        list.getNumChild();
-        return list;
-    }
-
-    // Declared in Enums.ast at line 41
-
-
-     @SuppressWarnings({"unchecked", "cast"})  public List<BodyDecl> getBodyDeclListNoTransform() {
-        return (List<BodyDecl>)getChildNoTransform(2);
-    }
-
-    // Declared in Enums.ast at line 2
-    // Declared in Enums.ast line 3
-    public void setTypeAccess(Access node) {
-        setChild(node, 3);
-    }
-
-    // Declared in Enums.ast at line 5
-
-    public Access getTypeAccessNoTransform() {
-        return (Access)getChildNoTransform(3);
-    }
-
-    // Declared in Enums.ast at line 9
-
-
-    protected int getTypeAccessChildPosition() {
-        return 3;
-    }
-
-    // Declared in Enums.ast at line 2
-    // Declared in Enums.ast line 3
     public void setInitOpt(Opt<Expr> opt) {
-        setChild(opt, 4);
+        setChild(opt, 2);
     }
 
     // Declared in Enums.ast at line 6
@@ -420,15 +335,34 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     // Declared in Enums.ast at line 17
 
-     @SuppressWarnings({"unchecked", "cast"})  public Opt<Expr> getInitOptNoTransform() {
-        return (Opt<Expr>)getChildNoTransform(4);
+     @SuppressWarnings({"unchecked", "cast"})  public Opt<Expr> getInitOpt() {
+        return (Opt<Expr>)getChild(2);
     }
 
     // Declared in Enums.ast at line 21
 
 
-    protected int getInitOptChildPosition() {
-        return 4;
+     @SuppressWarnings({"unchecked", "cast"})  public Opt<Expr> getInitOptNoTransform() {
+        return (Opt<Expr>)getChildNoTransform(2);
+    }
+
+    // Declared in Enums.ast at line 2
+    // Declared in Enums.ast line 3
+    public void setTypeAccess(Access node) {
+        setChild(node, 3);
+    }
+
+    // Declared in Enums.ast at line 5
+
+    public Access getTypeAccessNoTransform() {
+        return (Access)getChildNoTransform(3);
+    }
+
+    // Declared in Enums.ast at line 9
+
+
+    protected int getTypeAccessChildPosition() {
+        return 3;
     }
 
     // Declared in Enums.jrag at line 27
@@ -440,7 +374,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     private boolean isEnumConstant_compute() {  return true;  }
 
-    // Declared in Enums.jrag at line 174
+    // Declared in Enums.jrag at line 176
  @SuppressWarnings({"unchecked", "cast"})     public boolean isPublic() {
         ASTNode$State state = state();
         boolean isPublic_value = isPublic_compute();
@@ -449,7 +383,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     private boolean isPublic_compute() {  return true;  }
 
-    // Declared in Enums.jrag at line 175
+    // Declared in Enums.jrag at line 177
  @SuppressWarnings({"unchecked", "cast"})     public boolean isStatic() {
         ASTNode$State state = state();
         boolean isStatic_value = isStatic_compute();
@@ -458,7 +392,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     private boolean isStatic_compute() {  return true;  }
 
-    // Declared in Enums.jrag at line 176
+    // Declared in Enums.jrag at line 178
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
         ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
@@ -469,7 +403,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     protected boolean getTypeAccess_computed = false;
     protected Access getTypeAccess_value;
-    // Declared in Enums.jrag at line 178
+    // Declared in Enums.jrag at line 180
  @SuppressWarnings({"unchecked", "cast"})     public Access getTypeAccess() {
         if(getTypeAccess_computed) {
             return (Access)ASTNode.getChild(this, getTypeAccessChildPosition());
@@ -488,34 +422,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
     return hostType().createQualifiedAccess();
   }
 
-    protected boolean getInitOpt_computed = false;
-    protected Opt getInitOpt_value;
-    // Declared in Enums.jrag at line 182
- @SuppressWarnings({"unchecked", "cast"})     public Opt getInitOpt() {
-        if(getInitOpt_computed) {
-            return (Opt)ASTNode.getChild(this, getInitOptChildPosition());
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        getInitOpt_value = getInitOpt_compute();
-        setInitOpt(getInitOpt_value);
-        if(isFinal && num == state().boundariesCrossed)
-            getInitOpt_computed = true;
-        return (Opt)ASTNode.getChild(this, getInitOptChildPosition());
-    }
-
-    private Opt getInitOpt_compute() {
-    return new Opt(
-        new ClassInstanceExpr(
-          hostType().createQualifiedAccess(),
-          createArgumentList(),
-          createOptAnonymousDecl()
-        )
-    );
-  }
-
-    // Declared in Enums.jrag at line 480
+    // Declared in Enums.jrag at line 505
  @SuppressWarnings({"unchecked", "cast"})     public boolean isConstant() {
         ASTNode$State state = state();
         boolean isConstant_value = isConstant_compute();
@@ -533,7 +440,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
 
     private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | Modifiers.ACC_ENUM;  }
 
-    // Declared in Enums.jrag at line 456
+    // Declared in Enums.jrag at line 481
     public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
         if(caller == getTypeAccessNoTransform()) {
             return NameType.TYPE_NAME;

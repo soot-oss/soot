@@ -113,7 +113,7 @@ public class ConstructorAccess extends Access implements Cloneable {
         warning(decl().signature() + " in " + decl().hostType().typeName() + " has been deprecated");
   }
 
-    // Declared in Enums.jrag at line 156
+    // Declared in Enums.jrag at line 158
 
   // applied to both ConstructorAccess and SuperConstructorAccess
   protected void transformEnumConstructors() {

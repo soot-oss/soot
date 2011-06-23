@@ -126,7 +126,7 @@ public class ConstCase extends Case implements Cloneable {
         return (Expr)getChildNoTransform(0);
     }
 
-    // Declared in Enums.jrag at line 482
+    // Declared in Enums.jrag at line 507
 
   
     public void typeCheck() {
@@ -146,7 +146,7 @@ private boolean refined_NameCheck_ConstCase_constValue_Case(Case c)
     return getValue().constant().intValue() == ((ConstCase)c).getValue().constant().intValue();
   }
 
-    // Declared in Enums.jrag at line 488
+    // Declared in Enums.jrag at line 513
  @SuppressWarnings({"unchecked", "cast"})     public boolean constValue(Case c) {
         ASTNode$State state = state();
         boolean constValue_Case_value = constValue_compute(c);
@@ -163,7 +163,7 @@ private boolean refined_NameCheck_ConstCase_constValue_Case(Case c)
       return refined_NameCheck_ConstCase_constValue_Case(c);
   }
 
-    // Declared in Enums.jrag at line 477
+    // Declared in Enums.jrag at line 502
     public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
         if(caller == getValueNoTransform()) {
             return switchType().isEnumDecl() ? switchType().memberFields(name) : lookupVariable(name);

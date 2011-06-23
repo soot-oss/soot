@@ -808,13 +808,14 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
 
   int uniqueIndexCounter = 1;
 
-    // Declared in Java2Rewrites.jrag at line 64
+    // Declared in Java2Rewrites.jrag at line 65
 
   
+
   // lazily build a static field for assertionsDisabled 
   private FieldDeclaration createAssertionsDisabled = null;
 
-    // Declared in Java2Rewrites.jrag at line 65
+    // Declared in Java2Rewrites.jrag at line 66
 
   public FieldDeclaration createAssertionsDisabled() {
     if(createAssertionsDisabled != null)
@@ -845,13 +846,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return createAssertionsDisabled;
   }
 
-    // Declared in Java2Rewrites.jrag at line 118
+    // Declared in Java2Rewrites.jrag at line 119
 
 
   // lazily build a static field for each typename used in a .class expression
   private HashMap createStaticClassField = null;
 
-    // Declared in Java2Rewrites.jrag at line 119
+    // Declared in Java2Rewrites.jrag at line 120
 
   public FieldDeclaration createStaticClassField(String name) {
     if(createStaticClassField == null)
@@ -873,13 +874,13 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return addMemberField(f);
   }
 
-    // Declared in Java2Rewrites.jrag at line 140
+    // Declared in Java2Rewrites.jrag at line 141
 
 
   // lazily build a static class$ method in this type declaration
   private MethodDecl createStaticClassMethod = null;
 
-    // Declared in Java2Rewrites.jrag at line 141
+    // Declared in Java2Rewrites.jrag at line 142
 
   public MethodDecl createStaticClassMethod() {
     if(createStaticClassMethod != null)

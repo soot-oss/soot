@@ -260,11 +260,19 @@ public abstract class AbstractJasminClass
         StringBuffer result = new StringBuffer(".elem ");
         switch (elem.getKind()){
             case 'Z': {
-                        result.append(".bool_kind ");
-                        result.append("\""+elem.getName()+"\" ");
-                        result.append(((AnnotationIntElem)elem).getValue());
-                        result.append("\n");
-                        break;
+                       result.append(".bool_kind ");
+                       result.append("\"" + elem.getName() + "\" ");
+                       if (elem instanceof AnnotationIntElem) {
+                               result.append(((AnnotationIntElem) elem).getValue());
+                       } else {
+                               if (((AnnotationBooleanElem) elem).getValue()) {
+                                       result.append(1);
+                               } else {
+                                       result.append(0);
+                               }
+                       }
+                       result.append("\n");
+                       break;
                       }
             case 'S': {
                         result.append(".short_kind ");

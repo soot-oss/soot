@@ -169,6 +169,8 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     // Declared in Enums.jrag at line 135
 
   protected void transformEnumConstructors() {
+	// reset accessibility of constructor
+	setModifiers(new Modifiers(new List().add(new Modifier("private")).add(new Modifier("synthetic"))));
     // add implicit super constructor access since we are traversing
     // without doing rewrites
     if(!hasConstructorInvocation()) {

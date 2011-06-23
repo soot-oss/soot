@@ -144,7 +144,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     private boolean requiresDefaultConstructor_compute() {
     if(getParent() instanceof ClassDecl) {
       ClassDecl c = (ClassDecl)getParent();
-      return c.getBodyDeclList() == this && !(c instanceof AnonymousDecl) && c.noConstructor();
+      return c.noConstructor() && c.getBodyDeclListNoTransform() == this && !(c instanceof AnonymousDecl);
     }
     return false;
   }

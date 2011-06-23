@@ -71,8 +71,10 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
         list.add(new soot.tagkit.AnnotationFloatElem(getExpr().constant().floatValue(), kind, name));
       else if(type.isString())
         list.add(new soot.tagkit.AnnotationStringElem(getExpr().constant().stringValue(), kind, name));
-      else if(type.isIntegralType() || type().isBoolean())
+      else if(type.isIntegralType())
         list.add(new soot.tagkit.AnnotationIntElem(getExpr().constant().intValue(), kind, name));
+      else if(type().isBoolean())
+       list.add(new soot.tagkit.AnnotationBooleanElem(getExpr().constant().booleanValue(), kind, name));      
       else
         throw new UnsupportedOperationException("Unsupported attribute constant type " + type.typeName());
     }

@@ -74,7 +74,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     return false;
   }
 
-    // Declared in Enums.jrag at line 271
+    // Declared in Enums.jrag at line 296
 
 
   /*
@@ -196,7 +196,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     );
   }
 
-    // Declared in Enums.jrag at line 415
+    // Declared in Enums.jrag at line 440
 
   protected void checkEnum(EnumDecl enumDecl) {
     for(int i = 0; i < getNumBodyDecl(); i++) {
@@ -212,7 +212,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     }
   }
 
-    // Declared in Enums.jrag at line 498
+    // Declared in Enums.jrag at line 523
 
 
   public void toString(StringBuffer s) {
@@ -617,7 +617,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     );
   }
 
-    // Declared in Enums.jrag at line 245
+    // Declared in Enums.jrag at line 270
  @SuppressWarnings({"unchecked", "cast"})     public boolean isFinal() {
         ASTNode$State state = state();
         boolean isFinal_value = isFinal_compute();
@@ -636,7 +636,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     protected boolean enumConstants_computed = false;
     protected ArrayList enumConstants_value;
-    // Declared in Enums.jrag at line 256
+    // Declared in Enums.jrag at line 281
  @SuppressWarnings({"unchecked", "cast"})     public ArrayList enumConstants() {
         if(enumConstants_computed) {
             return enumConstants_value;
@@ -658,7 +658,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     return list;
   }
 
-    // Declared in Enums.jrag at line 393
+    // Declared in Enums.jrag at line 418
  @SuppressWarnings({"unchecked", "cast"})     public boolean isAbstract() {
         ASTNode$State state = state();
         boolean isAbstract_value = isAbstract_compute();
@@ -685,7 +685,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
 
     private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | Modifiers.ACC_ENUM;  }
 
-    // Declared in Enums.jrag at line 383
+    // Declared in Enums.jrag at line 408
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl typeString() {
         ASTNode$State state = state();
         TypeDecl typeString_value = getParent().Define_TypeDecl_typeString(this, null);
@@ -708,7 +708,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
         return super.Define_boolean_mayBeStatic(caller, child);
     }
 
-    // Declared in Enums.jrag at line 254
+    // Declared in Enums.jrag at line 279
     public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
         if(caller == getModifiersNoTransform()) {
             return false;

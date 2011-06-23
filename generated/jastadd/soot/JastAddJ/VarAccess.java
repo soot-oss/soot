@@ -236,7 +236,7 @@ public class VarAccess extends Access implements Cloneable {
     }
   }
 
-    // Declared in Enums.jrag at line 428
+    // Declared in Enums.jrag at line 453
 
   protected void checkEnum(EnumDecl enumDecl) {
     super.checkEnum(enumDecl);

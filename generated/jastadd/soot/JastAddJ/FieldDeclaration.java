@@ -238,6 +238,24 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     }
   }
 
+    // Declared in VariableDeclaration.jrag at line 114
+
+  // when splitting a FieldDecl into multiple FieldDeclarations, provide every FieldDeclaration with a reference
+  // to the original FieldDecl; if only a single FieldDeclaration results, no reference is stored
+  private FieldDecl fieldDecl = null;
+
+    // Declared in VariableDeclaration.jrag at line 115
+
+  public FieldDecl getFieldDecl() {
+	  return fieldDecl;
+  }
+
+    // Declared in VariableDeclaration.jrag at line 118
+
+  public void setFieldDecl(FieldDecl fieldDecl) {
+	  this.fieldDecl = fieldDecl;
+  }
+
     // Declared in Generics.jrag at line 1058
 
   public BodyDecl p(Parameterization parTypeDecl) {

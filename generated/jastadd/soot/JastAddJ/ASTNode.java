@@ -388,7 +388,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   void checkUnreachableStmt() {
   }
 
-    // Declared in VariableDeclaration.jrag at line 146
+    // Declared in VariableDeclaration.jrag at line 157
 
 
   public void clearLocations() {
@@ -409,7 +409,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
   }
 
-    // Declared in Enums.jrag at line 411
+    // Declared in Enums.jrag at line 436
 
   
   /*

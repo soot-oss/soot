@@ -221,7 +221,7 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
         return (Block)getChildNoTransform(1);
     }
 
-    // Declared in Enums.jrag at line 471
+    // Declared in Enums.jrag at line 496
 
 
     public void typeCheck() {

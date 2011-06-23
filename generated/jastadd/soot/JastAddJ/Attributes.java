@@ -288,6 +288,9 @@ public class Attributes extends java.lang.Object {
       TypeDecl typeDecl;
       TypeDecl outerTypeDecl;
       Program classPath;
+      
+      private boolean isInnerClass;
+	
       public TypeAttributes(BytecodeParser p, TypeDecl typeDecl, TypeDecl outerTypeDecl, Program classPath) {
         super(p);
         this.typeDecl = typeDecl;
@@ -296,6 +299,10 @@ public class Attributes extends java.lang.Object {
         attributes();
       }
 
+	  public boolean isInnerClass() {
+		  return isInnerClass;
+  	  }
+  	  
       protected void processAttribute(String attribute_name, int attribute_length) {
         if(attribute_name.equals("InnerClasses")) {
           innerClasses();
@@ -371,6 +378,8 @@ public class Attributes extends java.lang.Object {
     						  m = new MemberInterfaceDecl((InterfaceDecl)typeDecl);
     						  outerTypeDecl.addBodyDecl(m);
     					  }
+    				  } else {
+    					  isInnerClass = true;
     				  }
     			  }
     			  if (outer_class_name.equals(this.p.classInfo.name())) {
@@ -380,16 +389,25 @@ public class Attributes extends java.lang.Object {
     				  if(BytecodeParser.VERBOSE)
     					  p.println("Begin processing: " + inner_class_name);
     				  try {
-    					  java.io.InputStream is = classPath.getInputStream(inner_class_name);
+    					  java.io.InputStream is=null;
+    					  try{
+    						  is = classPath.getInputStream(inner_class_name);
+    					  } catch(Error e) {
+    						  if(e.getMessage().startsWith("Could not find nested type")) {
+    							  //ignore
+    						  } else {
+    							  throw e;
+    						  }
+    					  }
     					  if(is != null) {
     						  BytecodeParser p = new BytecodeParser(is, this.p.name);
     						  p.parse(typeDecl, outer_class_name, classPath, (inner_class_access_flags & Flags.ACC_STATIC) == 0);
     						  is.close();
     					  }
     					  else {
-    						  System.out.println("Error: ClassFile " + inner_class_name
+    						  p.println("Error: ClassFile " + inner_class_name
     								  + " not found");
-    					  }
+      					  }
     				  } catch (FileNotFoundException e) {
     					  System.out.println("Error: " + inner_class_name
     							  + " not found");

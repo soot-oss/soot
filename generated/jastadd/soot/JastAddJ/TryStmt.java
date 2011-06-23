@@ -173,7 +173,9 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   public void emitFinallyCode(Body b) {
     if(hasFinally()) {
       // Clear cached attributes to force re-evaluation of local variables
-//    getFinally().flushCaches();
+      //Eric Bodden: I am disabling this, as the method flushCaches() appears to be
+      //undefined on "Block"
+      //getFinally().flushCaches();
       getFinally().jimplify2(b);
     }
   }

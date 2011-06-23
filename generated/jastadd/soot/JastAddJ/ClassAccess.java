@@ -184,7 +184,7 @@ private TypeDecl refined_TypeAnalysis_ClassAccess_type()
     private TypeDecl type_compute() {
     GenericClassDecl d = (GenericClassDecl)refined_TypeAnalysis_ClassAccess_type();
     TypeDecl type = qualifier().type();
-    if(type.isPrimitive())
+    if(type.isPrimitiveType())
       type = type.boxed();
     ArrayList list = new ArrayList();
     list.add(type);

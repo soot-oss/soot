@@ -218,25 +218,25 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     return c;
   }
 
-    // Declared in Java2Rewrites.jrag at line 94
+    // Declared in Java2Rewrites.jrag at line 95
 
 
   public FieldDeclaration createStaticClassField(String name) {
     return methodHolder().createStaticClassField(name);
   }
 
-    // Declared in Java2Rewrites.jrag at line 97
+    // Declared in Java2Rewrites.jrag at line 98
 
   public MethodDecl createStaticClassMethod() {
     return methodHolder().createStaticClassMethod();
   }
 
-    // Declared in Java2Rewrites.jrag at line 101
+    // Declared in Java2Rewrites.jrag at line 102
 
   // create anonymous class to delegate to
   private TypeDecl methodHolder = null;
 
-    // Declared in Java2Rewrites.jrag at line 102
+    // Declared in Java2Rewrites.jrag at line 103
 
   public TypeDecl methodHolder() {
     if(methodHolder != null)

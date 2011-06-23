@@ -206,7 +206,7 @@ public class FieldDecl extends MemberDecl implements Cloneable {
     }
 
 public ASTNode rewriteTo() {
-    // Declared in VariableDeclaration.jrag at line 114
+    // Declared in VariableDeclaration.jrag at line 124
     if(getNumVariableDecl() == 1) {
         state().duringVariableDeclaration++;
         ASTNode result = rewriteRule0();
@@ -214,7 +214,7 @@ public ASTNode rewriteTo() {
         return result;
     }
 
-    // Declared in VariableDeclaration.jrag at line 125
+    // Declared in VariableDeclaration.jrag at line 135
     if(getParent().getParent() instanceof TypeDecl && 
         ((TypeDecl)getParent().getParent()).getBodyDeclListNoTransform() == getParent() && getNumVariableDecl() > 1) {
         state().duringVariableDeclaration++;
@@ -229,7 +229,7 @@ public ASTNode rewriteTo() {
     return super.rewriteTo();
 }
 
-    // Declared in VariableDeclaration.jrag at line 114
+    // Declared in VariableDeclaration.jrag at line 124
     private FieldDeclaration rewriteRule0() {
 {
       FieldDeclaration decl = getVariableDecl(0).createFieldDeclarationFrom(getModifiers(), getTypeAccess());
@@ -237,7 +237,7 @@ public ASTNode rewriteTo() {
       decl.setEnd(end); // copy location information
       return decl;
     }    }
-    // Declared in VariableDeclaration.jrag at line 125
+    // Declared in VariableDeclaration.jrag at line 135
     private List rewriteTypeDecl_getBodyDecl() {
 {
       List varList = new List();
@@ -253,6 +253,7 @@ public ASTNode rewriteTo() {
           f.getModifiersNoTransform().clearLocations();
           f.getTypeAccessNoTransform().clearLocations();
         }
+        f.setFieldDecl(this);
         varList.add(f);
       }
       return varList;

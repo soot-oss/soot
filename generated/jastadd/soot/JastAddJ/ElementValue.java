@@ -115,7 +115,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
         return unknownType_value;
     }
 
-    // Declared in AnnotationsCodegen.jrag at line 364
+    // Declared in AnnotationsCodegen.jrag at line 366
  @SuppressWarnings({"unchecked", "cast"})     public TypeDecl hostType() {
         ASTNode$State state = state();
         TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
