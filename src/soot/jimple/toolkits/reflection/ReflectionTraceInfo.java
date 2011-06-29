@@ -25,12 +25,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import soot.Body;
+import soot.G;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -70,6 +72,7 @@ public class ReflectionTraceInfo {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(logFile)));
 				String line;
 				int lines = 0;
+				Set<String> ignoredKinds = new HashSet<String>();
 				while((line=reader.readLine())!=null) {
 					if(line.length()==0) continue;
 					String[] portions = line.split(";",-1);
@@ -132,10 +135,18 @@ public class ReflectionTraceInfo {
 								fieldGetReceivers.put(sourceMethod, receiverNames = new LinkedHashSet<String>());
 							}
 							receiverNames.add(target);								
-						} else 
-							throw new RuntimeException("Unknown entry kind: "+kind);
+						} else {
+							ignoredKinds.add(kind);
+						}							
 					}
 					lines++;
+				}
+				if(!ignoredKinds.isEmpty()) {
+					G.v().out.println("Encountered reflective calls entries of the following kinds that\n" +
+							"cannot currently be handled:");
+					for (String kind : ignoredKinds) {
+						G.v().out.println(kind);
+					}
 				}
 			} catch (FileNotFoundException e) {
 				throw new RuntimeException("Trace file not found.",e);
