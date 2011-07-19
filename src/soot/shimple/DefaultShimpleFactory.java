@@ -23,6 +23,7 @@ import soot.*;
 import soot.shimple.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.*;
 
 /**
@@ -133,6 +134,8 @@ public class DefaultShimpleFactory implements ShimpleFactory
     {
         if(ug != null)
             return ug;
+        
+        UnreachableCodeEliminator.v().transform(getBody());
 
         ug = new ExceptionalUnitGraph(getBody());
         return ug;
