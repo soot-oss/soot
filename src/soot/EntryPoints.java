@@ -62,7 +62,8 @@ public class EntryPoints
      * invoked implicitly by the VM. */
     public List<SootMethod> application() {
         List<SootMethod> ret = new ArrayList<SootMethod>();
-        addMethod( ret, Scene.v().getMainClass(), sigMain );
+        if(Scene.v().hasMainClass() || !Scene.v().hasCustomEntryPoints())
+        	addMethod( ret, Scene.v().getMainClass(), sigMain );
         for (SootMethod clinit : clinitsOf(Scene.v().getMainClass() )) {
             ret.add(clinit);
         }

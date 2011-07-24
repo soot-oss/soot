@@ -137,16 +137,18 @@ public class CallGraphGrapher extends SceneTransformer
             methodToContexts = new MethodToContexts(Scene.v().getReachableMethods().listener());
         }
         
-        SootClass sc = Scene.v().getMainClass();
-        SootMethod sm = getFirstMethod(sc);
-        //G.v().out.println("got first method");
-        ArrayList<MethInfo> tgts = getTgtMethods(sm, true);
-        //G.v().out.println("got tgt methods");
-        ArrayList<MethInfo> srcs = getSrcMethods(sm, true);
-        //G.v().out.println("got src methods");
-        CallGraphInfo info = new CallGraphInfo(sm, tgts, srcs);
-        //G.v().out.println("will handle new call graph");
-        InteractionHandler.v().handleCallGraphStart(info, this);
+        if(Scene.v().hasCallGraph()) {
+	        SootClass sc = Scene.v().getMainClass();
+	        SootMethod sm = getFirstMethod(sc);
+	        //G.v().out.println("got first method");
+	        ArrayList<MethInfo> tgts = getTgtMethods(sm, true);
+	        //G.v().out.println("got tgt methods");
+	        ArrayList<MethInfo> srcs = getSrcMethods(sm, true);
+	        //G.v().out.println("got src methods");
+	        CallGraphInfo info = new CallGraphInfo(sm, tgts, srcs);
+	        //G.v().out.println("will handle new call graph");
+	        InteractionHandler.v().handleCallGraphStart(info, this);
+        }
     }
 
     private SootMethod getFirstMethod(SootClass sc){

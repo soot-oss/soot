@@ -170,12 +170,16 @@ public class Scene  //extends AbstractHost
             return s;
     }
     
-    public SootClass getMainClass()
-    {
+    public boolean hasMainClass() {
         if(mainClass == null) {
         	setMainClassFromOptions();
         }
-        if(mainClass == null)
+        return mainClass!=null;
+    }
+    
+    public SootClass getMainClass()
+    {
+        if(!hasMainClass())
             throw new RuntimeException("There is no main class set!");
             
         return mainClass;
@@ -696,6 +700,10 @@ public class Scene  //extends AbstractHost
         activeHierarchy = null;
     }
 
+    public boolean hasCustomEntryPoints() {
+    	return entryPoints!=null;
+    }
+    
     /** Get the set of entry points that are used to build the call graph. */
     public List<SootMethod> getEntryPoints() {
         if( entryPoints == null ) {
