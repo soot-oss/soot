@@ -63,7 +63,7 @@ public class StronglyConnectedComponentsFast<N>
     	
     	indexForNode = new HashMap<N, Integer>();
     	lowlinkForNode = new HashMap<N, Integer>();
-    	
+
     	recurse(heads.get(0));
     	
     	//free memory
@@ -82,11 +82,11 @@ public class StronglyConnectedComponentsFast<N>
 			if(!indexForNode.containsKey(succ)) {
 				recurse(succ);
 				lowlinkForNode.put(v, Math.min(lowlinkForNode.get(v), lowlinkForNode.get(succ)));
-			} else if(s.contains(v)) {
+			} else if(s.contains(succ)) {
 				lowlinkForNode.put(v, Math.min(lowlinkForNode.get(v), indexForNode.get(succ)));
 			}			
 		}
-		if(lowlinkForNode.get(v)==indexForNode.get(v)) {
+		if(lowlinkForNode.get(v).intValue() == indexForNode.get(v).intValue()) {
 			List<N> scc = new ArrayList<N>();
 			N v2;
 			do {
