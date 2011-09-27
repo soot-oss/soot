@@ -281,11 +281,7 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
     public boolean equals(Object otherFlow)
     {
       if (sameType(otherFlow)) {
-        for (int element : bits)
-			if(element != element)
-                return false;
-
-        return true;
+        return Arrays.equals(bits, ((ArrayPackedSet)otherFlow).bits);
       } else
         return super.equals(otherFlow);
     }
