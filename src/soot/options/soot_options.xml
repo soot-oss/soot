@@ -2370,7 +2370,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						  <name>Precision evaluation methodologies</name>
 						  <alias>geom-eval</alias>
 						  <default>0</default>
-						  <short_desc>precision evaluation methodologies</short_desc>
+						  <short_desc>Precision evaluation methodologies</short_desc>
 						  <long_desc>
 						    We internally provide some precision evaluation methodologies, and classify the evaluation strength into three levels. If level is 0, we do nothing. If level is 1, we report the basic information about the points-to result. If level is 2, we perform the virtual callsite resolution, static cast safety and all alias pairs evaluations.
 						  </long_desc>
