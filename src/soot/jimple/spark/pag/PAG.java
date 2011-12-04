@@ -18,21 +18,62 @@
  */
 
 package soot.jimple.spark.pag;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import soot.jimple.*;
-import soot.*;
-import soot.jimple.spark.sets.*;
+import soot.Context;
+import soot.FastHierarchy;
+import soot.G;
+import soot.Kind;
+import soot.Local;
+import soot.PointsToAnalysis;
+import soot.PointsToSet;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.ClassConstant;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.spark.builder.GlobalNodeFactory;
+import soot.jimple.spark.builder.MethodNodeFactory;
+import soot.jimple.spark.internal.TypeManager;
+import soot.jimple.spark.sets.BitPointsToSet;
+import soot.jimple.spark.sets.DoublePointsToSet;
+import soot.jimple.spark.sets.EmptyPointsToSet;
+import soot.jimple.spark.sets.HashPointsToSet;
+import soot.jimple.spark.sets.HybridPointsToSet;
+import soot.jimple.spark.sets.P2SetFactory;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.spark.sets.SharedHybridSet;
+import soot.jimple.spark.sets.SharedListSet;
+import soot.jimple.spark.sets.SortedArraySet;
 import soot.jimple.spark.solver.OnFlyCallGraph;
-import soot.jimple.spark.internal.*;
-import soot.jimple.spark.builder.*;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
-import soot.util.*;
-import soot.util.queue.*;
 import soot.options.SparkOptions;
-import soot.tagkit.*;
+import soot.tagkit.LinkTag;
+import soot.tagkit.StringTag;
+import soot.tagkit.Tag;
 import soot.toolkits.scalar.Pair;
+import soot.util.ArrayNumberer;
+import soot.util.HashMultiMap;
+import soot.util.LargeNumberedMap;
+import soot.util.queue.ChunkedQueue;
+import soot.util.queue.QueueReader;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -118,6 +159,7 @@ public class PAG implements PointsToAnalysis {
             default:
                 throw new RuntimeException();
         }
+        runGeomPTA = opts.geom_pta();
     }
 
 
@@ -706,13 +748,38 @@ public class PAG implements PointsToAnalysis {
     /** Returns SparkOptions for this graph. */
     public SparkOptions getOpts() { return opts; }
 
+    // Must be simple edges
+	public Pair<Node, Node> addInterproceduralAssignment(Node from, Node to, Edge e) 
+	{
+		Set<Edge> sets;
+		Pair<Node, Node> val = new Pair<Node, Node>(from, to);
+		
+		if ( runGeomPTA ) {
+			sets = assign2edges.get(val);
+			if ( sets == null ) {
+				sets = new HashSet<Edge>();
+				assign2edges.put(val, sets);
+			}
+			sets.add(e);
+		}
+		
+		return val;
+	}
+	
+	public Set<Edge> lookupEdgesForAssignment(Pair<Node, Node> val)
+	{
+		return assign2edges.get(val);
+	}
+	
     final public void addCallTarget( Edge e ) {
         if( !e.passesParameters() ) return;
         MethodPAG srcmpag = MethodPAG.v( this, e.src() );
         MethodPAG tgtmpag = MethodPAG.v( this, e.tgt() );
+        Pair<Node, Node> pval;
+        
         if( e.isExplicit() || e.kind() == Kind.THREAD ) {
             addCallTarget( srcmpag, tgtmpag, (Stmt) e.srcUnit(),
-                           e.srcCtxt(), e.tgtCtxt() );
+                           e.srcCtxt(), e.tgtCtxt(), e );
         } else {
             if( e.kind() == Kind.PRIVILEGED ) {
                 // Flow from first parameter of doPrivileged() invocation
@@ -730,7 +797,8 @@ public class PAG implements PointsToAnalysis {
                 thiz = thiz.getReplacement();
 
                 addEdge( parm, thiz );
-                callAssigns.put(ie, new Pair(parm, thiz));
+                pval = addInterproceduralAssignment(parm, thiz, e);
+				callAssigns.put(ie, pval);
                 callToMethod.put(ie, srcmpag.getMethod());
 
                 if( e.srcUnit() instanceof AssignStmt ) {
@@ -745,7 +813,8 @@ public class PAG implements PointsToAnalysis {
                     lhs = lhs.getReplacement();
 
                     addEdge( ret, lhs );
-                    callAssigns.put(ie, new Pair(ret, lhs));
+                    pval = addInterproceduralAssignment(ret, lhs, e);
+					callAssigns.put(ie, pval);
                     callToMethod.put(ie, srcmpag.getMethod());
                 }
             } else if( e.kind() == Kind.FINALIZE ) {
@@ -758,6 +827,7 @@ public class PAG implements PointsToAnalysis {
                 tgtThis = tgtThis.getReplacement();
 
                 addEdge( srcThis, tgtThis );
+                pval = addInterproceduralAssignment(srcThis, tgtThis, e);
             } else if( e.kind() == Kind.NEWINSTANCE ) {
                 Stmt s = (Stmt) e.srcUnit();
                 InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
@@ -779,7 +849,9 @@ public class PAG implements PointsToAnalysis {
                     asLHS = asLHS.getReplacement();
                     addEdge( newObject, asLHS);
                 }
-                callAssigns.put(s.getInvokeExpr(), new Pair(newObject, initThis));
+                
+                pval = addInterproceduralAssignment(newObject, initThis, e);
+				callAssigns.put(s.getInvokeExpr(), pval);
                 callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
             } else if( e.kind() == Kind.REFL_INVOKE ) {
             	// Flow (1) from first parameter of invoke(..) invocation
@@ -802,7 +874,8 @@ public class PAG implements PointsToAnalysis {
 	                thiz = thiz.getReplacement();
 	
 	                addEdge( parm0, thiz );
-	                callAssigns.put(ie, new Pair(parm0, thiz));
+	                pval = addInterproceduralAssignment(parm0, thiz, e);
+	                callAssigns.put(ie, pval);
 	                callToMethod.put(ie, srcmpag.getMethod());
                 }
 
@@ -825,7 +898,8 @@ public class PAG implements PointsToAnalysis {
 	                    tgtParmI = tgtParmI.getReplacement();
 	
 	                    addEdge( parm1contents, tgtParmI );
-	                    callAssigns.put(ie, new Pair(parm1contents, tgtParmI));
+	                    pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
+	                    callAssigns.put(ie, pval);
 	                }
                 }
 
@@ -844,7 +918,8 @@ public class PAG implements PointsToAnalysis {
                     lhs = lhs.getReplacement();
 
                     addEdge( ret, lhs );
-                    callAssigns.put(ie, new Pair(ret, lhs));
+                    pval = addInterproceduralAssignment(ret, lhs, e);
+                    callAssigns.put(ie, pval);
                 }
             } else if( e.kind() == Kind.REFL_CLASS_NEWINSTANCE || e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
             	// (1) create a fresh node for the new object
@@ -875,6 +950,7 @@ public class PAG implements PointsToAnalysis {
                 initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
                 initThis = initThis.getReplacement();
                 addEdge( newObject, initThis );
+                addInterproceduralAssignment(newObject, initThis, e);
                 
                 //(3)
                 if(e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
@@ -896,7 +972,8 @@ public class PAG implements PointsToAnalysis {
 		                    tgtParmI = tgtParmI.getReplacement();
 		
 		                    addEdge( parm1contents, tgtParmI );
-		                    callAssigns.put(iie, new Pair(parm1contents, tgtParmI));
+		                    pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
+		                    callAssigns.put(iie, pval);
 		                }
 	                }
                 }
@@ -909,7 +986,9 @@ public class PAG implements PointsToAnalysis {
                     asLHS = asLHS.getReplacement();
                     addEdge( newObject, asLHS);
                 }
-                callAssigns.put(s.getInvokeExpr(), new Pair(newObject, initThis));
+                
+                pval = addInterproceduralAssignment(newObject, initThis, e);
+                callAssigns.put(s.getInvokeExpr(), pval);
                 callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
             } else {
                 throw new RuntimeException( "Unhandled edge "+e );
@@ -926,7 +1005,8 @@ public class PAG implements PointsToAnalysis {
                                      MethodPAG tgtmpag,
                                      Stmt s,
                                      Context srcContext,
-                                     Context tgtContext ) {
+                                     Context tgtContext,
+                                     Edge e ) {
         MethodNodeFactory srcnf = srcmpag.nodeFactory();
         MethodNodeFactory tgtnf = tgtmpag.nodeFactory();
         InvokeExpr ie = s.getInvokeExpr();
@@ -946,7 +1026,8 @@ public class PAG implements PointsToAnalysis {
             parm = parm.getReplacement();
 
             addEdge( argNode, parm );
-            callAssigns.put(ie, new Pair(argNode, parm));
+            Pair pval = addInterproceduralAssignment(argNode, parm, e);
+			callAssigns.put(ie, pval);
             callToMethod.put(ie, srcmpag.getMethod());
             
         }
@@ -961,7 +1042,8 @@ public class PAG implements PointsToAnalysis {
             thisRef = tgtmpag.parameterize( thisRef, tgtContext );
             thisRef = thisRef.getReplacement();
             addEdge( baseNode, thisRef );
-            callAssigns.put(ie, new Pair(baseNode, thisRef));
+            Pair pval = addInterproceduralAssignment(baseNode, thisRef, e);
+			callAssigns.put(ie, pval);
             callToMethod.put(ie, srcmpag.getMethod());
             if (virtualCall && !virtualCallsToReceivers.containsKey(ie)) {
                 virtualCallsToReceivers.put(ie, baseNode);
@@ -980,11 +1062,28 @@ public class PAG implements PointsToAnalysis {
                 retNode = retNode.getReplacement();
 
                 addEdge( retNode, destNode );
-                callAssigns.put(ie, new Pair(retNode, destNode));
+                Pair pval = addInterproceduralAssignment( retNode, destNode, e );
+				callAssigns.put(ie, pval);
                 callToMethod.put(ie, srcmpag.getMethod());
             }
         }
     }
+    
+    /**
+     * Delete all the assignment edges.
+     */
+    public void cleanPAG()
+    {
+    	simple.clear();
+    	load.clear();
+    	store.clear();
+    	alloc.clear();
+    	simpleInv.clear();
+    	loadInv.clear();
+    	storeInv.clear();
+    	allocInv.clear();
+    }
+    
     /* End of package methods. */
 
     protected SparkOptions opts;
@@ -1026,6 +1125,9 @@ public class PAG implements PointsToAnalysis {
 	}
 	return ((Set<Node>) valueList).add( value );
     }
+	
+    private boolean runGeomPTA = false;
+    protected Map<Pair, Set<Edge>> assign2edges = new HashMap<Pair, Set<Edge>>();
     private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<Object, LocalVarNode>(1000);
     private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<Object, GlobalVarNode>(1000);
     private final Map<Object, AllocNode> valToAllocNode = new HashMap<Object, AllocNode>(1000);

@@ -75,9 +75,9 @@ public class AllocNode extends Node implements Context {
         fields.put( field, adf );
     }
 
-    public Set getFields() {
+    public Set<AllocDotField> getFields() {
         if( fields == null ) return Collections.EMPTY_SET;
-        return new HashSet( fields.values() );
+        return new HashSet<AllocDotField>( fields.values() );
     }
 
     /* End of package methods. */

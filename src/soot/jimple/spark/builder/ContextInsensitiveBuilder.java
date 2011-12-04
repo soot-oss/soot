@@ -25,6 +25,8 @@ import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.*;
 
 import java.util.*;
+
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.internal.*;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.util.queue.*;
@@ -55,7 +57,7 @@ public class ContextInsensitiveBuilder {
     }
     /** Creates an empty pointer assignment graph. */
     public PAG setup( SparkOptions opts ) {
-        pag = new PAG( opts );
+        pag = opts.geom_pta() ? new GeomPointsTo( opts ) : new PAG( opts );
         if( opts.simulate_natives() ) {
             pag.nativeMethodDriver = new NativeMethodDriver(new SparkNativeHelper(pag));
         }

@@ -18,13 +18,27 @@
  */
 
 package soot.jimple.spark.pag;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.spark.builder.*;
-import soot.util.*;
-import soot.util.queue.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.Context;
+import soot.EntryPoints;
+import soot.G;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.VoidType;
+import soot.jimple.Stmt;
+import soot.jimple.spark.builder.MethodNodeFactory;
+import soot.util.NumberedString;
+import soot.util.SingletonList;
+import soot.util.queue.ChunkedQueue;
+import soot.util.queue.QueueReader;
 
 
 /** Part of a pointer assignment graph for a single method.

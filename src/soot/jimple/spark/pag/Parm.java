@@ -18,7 +18,11 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
+import soot.G;
+import soot.PointsToAnalysis;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Type;
 import soot.toolkits.scalar.Pair;
 
 /** Represents a method parameter.
@@ -58,6 +62,12 @@ public class Parm implements SparkField {
       return index;
     }
     
-    private int number = 0;
+	public Type getType() {
+    	if ( index == PointsToAnalysis.RETURN_NODE )
+    		return method.getReturnType();
+    	
+    	return method.getParameterType( index );
+	}
 
+    private int number = 0;
 }

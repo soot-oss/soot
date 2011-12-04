@@ -18,12 +18,12 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.util.*;
 import soot.Type;
-import soot.jimple.spark.sets.PointsToSetInternal;
-import soot.jimple.spark.sets.EmptyPointsToSet;
-import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
 import soot.jimple.spark.internal.TypeManager;
+import soot.jimple.spark.sets.EmptyPointsToSet;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.util.Numberable;
 
 /** Represents every node in the pointer assignment graph.
  * @author Ondrej Lhotak
@@ -101,6 +101,18 @@ public class Node implements ReferenceVariable, Numberable {
     }
     /** Returns the pointer assignment graph that this node is a part of. */
     public PAG getPag() { return pag; }
+
+	/** Delete current points-to set and make a new one */
+	public void discardP2Set()
+	{
+		p2set = null;
+	}
+	
+	/** Use the specified points-to set to replace current one */
+	public void setP2Set( PointsToSetInternal ptsInternal )
+	{
+		p2set = ptsInternal;
+	}
 
     /* End of public methods. */
 

@@ -82,6 +82,16 @@ public final class Kind implements Numberable
         return this == VIRTUAL || this == INTERFACE || this == SPECIAL;
     }
 
+    /** Returns true if the call is due to an explicit virtual invoke
+     * statement. */
+    public boolean isVirtual() {
+    	return this == VIRTUAL;
+    }
+    
+    public boolean isSpecial() {
+    	return this == SPECIAL;
+    }
+    
     /** Returns true if the call is to static initializer. */
     public boolean isClinit() {
         return this == CLINIT;
@@ -92,5 +102,8 @@ public final class Kind implements Numberable
         return this == STATIC;
     }
 
+    public boolean isThread() {
+    	return this == THREAD;
+    }
 }
 

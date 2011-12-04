@@ -491,7 +491,9 @@ public class FastHierarchy
             if( !concreteType.hasSuperclass() ) break;
             concreteType = concreteType.getSuperclass();
         }
-        throw new RuntimeException("could not resolve concrete dispatch!\nType: "+concreteType+"\nMethod: "+m);
+     // When there is no proper dispatch found, we simply return null to let the caller decide what to do 
+        return null;
+//        throw new RuntimeException("could not resolve concrete dispatch!\nType: "+concreteType+"\nMethod: "+m);
     }
 
     /** Returns the target for the given SpecialInvokeExpr. */

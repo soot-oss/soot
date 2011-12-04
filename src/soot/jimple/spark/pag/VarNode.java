@@ -18,8 +18,16 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import soot.AnySubType;
+import soot.Context;
+import soot.G;
+import soot.RefLikeType;
+import soot.Type;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph.
  * @author Ondrej Lhotak
@@ -27,7 +35,7 @@ import java.util.*;
 public abstract class VarNode extends ValNode implements Comparable {
     public Context context() { return null; }
     /** Returns all field ref nodes having this node as their base. */
-    public Collection getAllFieldRefs() { 
+    public Collection<FieldRefNode> getAllFieldRefs() { 
 	if( fields == null ) return Collections.EMPTY_LIST;
 	return fields.values(); 
     }

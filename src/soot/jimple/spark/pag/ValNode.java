@@ -18,7 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
+import soot.Type;
 
 /** Represents a simple of field ref node (Green or Red) in the pointer
  * assignment graph.

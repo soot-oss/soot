@@ -18,7 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
+import soot.RefType;
 
 /** Represents an allocation site node the represents a constant string.
  * @author Ondrej Lhotak

@@ -23,15 +23,17 @@ import java.util.*;
 /** A class that numbers objects, so they can be placed in bitsets.
  *
  * @author Ondrej Lhotak
+ * @author xiao, generalize it.
  */
 
-public class ArrayNumberer implements IterableNumberer {
+public class ArrayNumberer<E> implements IterableNumberer<E> {
     Numberable[] numberToObj = new Numberable[1024];
     int lastNumber = 0;
 
-    public void add( Object oo ) {
+    public void add( E oo ) {
         Numberable o = (Numberable) oo;
         if( o.getNumber() != 0 ) return;
+        
         ++lastNumber;
         if( lastNumber >= numberToObj.length ) {
             Numberable[] newnto = new Numberable[numberToObj.length*2];
@@ -42,7 +44,7 @@ public class ArrayNumberer implements IterableNumberer {
         o.setNumber( lastNumber );
     }
 
-    public long get( Object oo ) {
+    public long get( E oo ) {
         if( oo == null ) return 0;
         Numberable o = (Numberable) oo;
         int ret = o.getNumber();
@@ -50,27 +52,28 @@ public class ArrayNumberer implements IterableNumberer {
         return ret;
     }
 
-    public Object get( long number ) {
+	public E get( long number ) {
         if( number == 0 ) return null;
-        Object ret = numberToObj[(int) number];
+        E ret = (E) numberToObj[(int) number];
         if( ret == null ) throw new RuntimeException( "no object with number "+number );
         return ret;
     }
 
     public int size() { return lastNumber; }
 
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
         return new NumbererIterator();
     }
 
-    final class NumbererIterator implements Iterator {
+    final class NumbererIterator implements Iterator<E> {
         int cur = 1;
         public final boolean hasNext() {
             return cur < numberToObj.length && numberToObj[cur] != null;
         }
-        public final Object next() { 
+
+		public final E next() { 
             if( !hasNext() ) throw new NoSuchElementException();
-            return numberToObj[cur++];
+            return (E) numberToObj[cur++];
         }
         public final void remove() {
             throw new UnsupportedOperationException();

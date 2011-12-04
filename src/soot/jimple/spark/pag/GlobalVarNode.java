@@ -18,7 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
+import soot.SootClass;
+import soot.SootField;
+import soot.Type;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph
  * that is not associated with any particular method invocation.
@@ -31,5 +33,12 @@ public class GlobalVarNode extends VarNode {
     public String toString() {
 	return "GlobalVarNode "+getNumber()+" "+variable;
     }
+	public SootClass getDeclaringClass()
+	{
+		if ( variable instanceof SootField )
+			return ((SootField)variable).getDeclaringClass();
+		
+		return null;
+	}
 }
 

@@ -1659,7 +1659,27 @@ public class Options extends OptionsBase {
                 +padOpt( "cs-demand (false)", "After running Spark, refine points-to sets on demand with context information" )
                 +padOpt( "lazy-pts (true)", "Create lazy points-to sets that create context information only when needed." )
                 +padOpt( "traversal (75000)", "Make the analysis traverse at most this number of nodes per query." )
-                +padOpt( "passes (10)", "Perform at most this number of refinement iterations." );
+                +padOpt( "passes (10)", "Perform at most this number of refinement iterations." )
+                +padOpt( "geom-pta (false)", "This switch enables/disables the geometric analysis." )
+                +padOpt( "geom-encoding (Geom)", "Encoding methodology" )
+                +padVal( "Geom (default)", "Geometric Encoding" )
+                
+                +padVal( "HeapIns", "Heap Insensitive Encoding" )
+                
+                +padVal( "PtIns", "PtIns" )
+                
+                +padOpt( "geom-worklist (PQ)", "Worklist type" )
+                +padVal( "PQ (default)", "Priority Queue" )
+                
+                +padVal( "FIFO", "FIFO Queue" )
+                
+                +padOpt( "geom-dump-verbose ()", "Filename for detailed execution log" )
+                +padOpt( "geom-verify-name ()", "Filename for verification file" )
+                +padOpt( "geom-eval (0)", "precision evaluation methodologies" )
+                +padOpt( "geom-trans (false)", "Transform to context-insensitive result" )
+                +padOpt( "geom-frac-base (40)", "Fractional parameter for precision/performance trade-off" )
+                +padOpt( "geom-blocking (true)", "Enable blocking strategy for recursive calls" )
+                +padOpt( "geom-runs (1)", "Iterations of analysis" );
     
         if( phaseName.equals( "cg.paddle" ) )
             return "Phase "+phaseName+":\n"+
@@ -2528,7 +2548,17 @@ public class Options extends OptionsBase {
                 +"cs-demand "
                 +"lazy-pts "
                 +"traversal "
-                +"passes ";
+                +"passes "
+                +"geom-pta "
+                +"geom-encoding "
+                +"geom-worklist "
+                +"geom-dump-verbose "
+                +"geom-verify-name "
+                +"geom-eval "
+                +"geom-trans "
+                +"geom-frac-base "
+                +"geom-blocking "
+                +"geom-runs ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""
@@ -3120,7 +3150,19 @@ public class Options extends OptionsBase {
               +"cs-demand:false "
               +"lazy-pts:true "
               +"traversal:75000 "
-              +"passes:10 ";
+              +"passes:10 "
+              +"geom-pta:false "
+              +"geom-encoding:Geom "
+              +"geom-encoding:Geom "
+              +"geom-worklist:PQ "
+              +"geom-worklist:PQ "
+              +"geom-dump-verbose: "
+              +"geom-verify-name: "
+              +"geom-eval:0 "
+              +"geom-trans:false "
+              +"geom-frac-base:40 "
+              +"geom-blocking:true "
+              +"geom-runs:1 ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""

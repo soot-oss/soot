@@ -91,6 +91,15 @@ public final class Edge
         return kind.isInstance();
     }
 
+    public boolean isVirtual() {
+    	return kind.isVirtual();
+    }
+    
+    public boolean isSpecial()
+    {
+    	return kind.isSpecial();
+    }
+    
     /** Returns true if the call is to static initializer. */
     public boolean isClinit() {
         return kind.isClinit();
@@ -101,6 +110,10 @@ public final class Edge
         return kind.isStatic();
     }
 
+    public boolean isThreadRunCall() {
+    	return kind.isThread();
+    }
+    
     public boolean passesParameters() {
         return kind.passesParameters();
     }

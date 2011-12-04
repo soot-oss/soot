@@ -18,7 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
+import soot.Context;
 
 /** Represents a simple variable node with context.
  * @author Ondrej Lhotak

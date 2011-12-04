@@ -40,6 +40,17 @@ Improvements and API changes in trunk
      b) the constant "0" (two zero bytes, i.e., a short);
         according to the VM spec this is reserved for future use
 7. ReflectiveCallsInliner now supports field set/get through reflection.        
+8. Integrated a novel context-sensitive points-to analysis that uses
+   a memory-efficient geometric encoding. The analysis was presented
+   in the following paper:
+   Xiao Xiao and Charles Zhang. Geometric Encoding: Forging high
+   performance context sensitive points-to analysis for Java.
+   In ISSTA 2011: International Symposium on Software Testing and
+   Analysis, Toronto, Canada, 2011
+   The code was contributed to Soot by Richard (Xiao) Xiao. Thanks for
+   this! You can find the code in soot.jimple.spark.geom. There are
+   new phase options in cg.spark to enable and configure this
+   analysis.    
         
 Improvements and API changes in version 2.4.0
 

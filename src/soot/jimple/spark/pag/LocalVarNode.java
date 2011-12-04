@@ -18,8 +18,11 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import soot.SootMethod;
+import soot.Type;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph
  * that is specific to a particular method invocation.

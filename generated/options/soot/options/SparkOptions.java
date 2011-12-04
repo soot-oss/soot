@@ -411,6 +411,49 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "lazy-pts" );
     }
     
+    /** Geometric, context-sensitive points-to analysis --
+    
+     * This switch enables/disables the geometric analysis..
+    
+     * 						 This switch enables/disables the geometric analysis. 
+     * 						 
+     */
+    public boolean geom_pta() {
+        return soot.PhaseOptions.getBoolean( options, "geom-pta" );
+    }
+    
+    /** Transform to context-insensitive result --
+    
+     * Transform to context-insensitive result.
+    
+     * 						 If your work only concern the context insensitive 
+     * points-to information, you can use this option to transform the 
+     * context sensitive result to insensitive result. Or, sometimes 
+     * your code wants to directly access to the points-to vector other 
+     * than using the standard querying interface, you can use this 
+     * option to guarantee the correct behavior (because we clear the 
+     * SPARK points-to result when running the geom solver). After the 
+     * transformation, the context sensitive points-to result is 
+     * cleared in order to save memory space for your other jobs. 
+     * 						 
+     */
+    public boolean geom_trans() {
+        return soot.PhaseOptions.getBoolean( options, "geom-trans" );
+    }
+    
+    /** Blocking strategy for recursive calls --
+    
+     * Enable blocking strategy for recursive calls.
+    
+     * 						 When this option is on, we perform the blocking 
+     * strategy to the recursive calls. This strategy significantly 
+     * improves the precision. The details are presented in our paper. 
+     * 						 
+     */
+    public boolean geom_blocking() {
+        return soot.PhaseOptions.getBoolean( options, "geom-blocking" );
+    }
+    
     /** Maximal traversal --
     
      * Make the analysis traverse at most this number of nodes per 
@@ -434,6 +477,72 @@ public class SparkOptions
      */
     public int passes() {
         return soot.PhaseOptions.getInt( options, "passes" );
+    }
+    
+    /** Precision evaluation methodologies --
+    
+     * precision evaluation methodologies.
+    
+     * 						 We internally provide some precision evaluation 
+     * methodologies, and classify the evaluation strength into three 
+     * levels. If level is 0, we do nothing. If level is 1, we report 
+     * the basic information about the points-to result. If level is 2, 
+     * we perform the virtual callsite resolution, static cast safety 
+     * and all alias pairs evaluations. 						 
+     */
+    public int geom_eval() {
+        return soot.PhaseOptions.getInt( options, "geom-eval" );
+    }
+    
+    /** Fractional parameter --
+    
+     * Fractional parameter for precision/performance trade-off.
+    
+     * 						 This option specifies the fractional parameter, which 
+     * is used to manually tune the precision and performance 
+     * trade-off. The smaller the value, the better the performance but 
+     * the worse the precision. 						 
+     */
+    public int geom_frac_base() {
+        return soot.PhaseOptions.getInt( options, "geom-frac-base" );
+    }
+    
+    /** Iterations --
+    
+     * Iterations of analysis.
+    
+     * 						 We can run multiple times of the geometric analysis 
+     * to continuously improve the analysis precision. 						 
+     */
+    public int geom_runs() {
+        return soot.PhaseOptions.getInt( options, "geom-runs" );
+    }
+    
+    /** Verbose dump file --
+    
+     * Filename for detailed execution log.
+    
+     * 						 If you want to persist the detailed execution 
+     * information for future analysis, please provide a file name. 
+     * 						 
+     */
+    public String geom_dump_verbose() {
+        return soot.PhaseOptions.getString( options, "geom-dump-verbose" );
+    }
+    
+    /** Verification file --
+    
+     * Filename for verification file.
+    
+     * 						 If you want to compare the precision of the points-to 
+     * results with other solvers (e.g. Paddle), you can use the 
+     * "verify-file" to specify the list of methods (soot method 
+     * signature format) that are reachable by that solver. Then, in 
+     * the internal evaluations (see the switch geom-eval), we only 
+     * consider the methods that are present to both solvers. 						 
+     */
+    public String geom_verify_name() {
+        return soot.PhaseOptions.getString( options, "geom-verify-name" );
     }
     
     public static final int propagator_iter = 1;
@@ -589,6 +698,57 @@ public class SparkOptions
             return double_set_new_sharedlist;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option double-set-new" );
+    }
+    
+    public static final int geom_encoding_Geom = 1;
+    public static final int geom_encoding_HeapIns = 2;
+    public static final int geom_encoding_PtIns = 3;
+    /** Encoding methodology used --
+    
+     * Encoding methodology.
+    
+     * 						 This switch specifies the encoding methodology used 
+     * in the analysis. 						 All possible options are: Geom, 
+     * HeapIns, PtIns. The efficiency order 						 is (from slow to 
+     * fast) Geom - HeapIns - PtIns, but the precision order is 						 
+     * the reverse. 						 
+     */
+    public int geom_encoding() {
+        String s = soot.PhaseOptions.getString( options, "geom-encoding" );
+        
+        if( s.equalsIgnoreCase( "Geom" ) )
+            return geom_encoding_Geom;
+        
+        if( s.equalsIgnoreCase( "HeapIns" ) )
+            return geom_encoding_HeapIns;
+        
+        if( s.equalsIgnoreCase( "PtIns" ) )
+            return geom_encoding_PtIns;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option geom-encoding" );
+    }
+    
+    public static final int geom_worklist_PQ = 1;
+    public static final int geom_worklist_FIFO = 2;
+    /** Worklist type --
+    
+     * Worklist type.
+    
+     * 						 Specifies the worklist used for selecting the next 
+     * propagation pointer. All possible options are: PQ, FIFO. They 
+     * stand for the priority queue (sorted by the last fire time and 
+     * topology order) and FIFO queue. 						 
+     */
+    public int geom_worklist() {
+        String s = soot.PhaseOptions.getString( options, "geom-worklist" );
+        
+        if( s.equalsIgnoreCase( "PQ" ) )
+            return geom_worklist_PQ;
+        
+        if( s.equalsIgnoreCase( "FIFO" ) )
+            return geom_worklist_FIFO;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option geom-worklist" );
     }
     
 }

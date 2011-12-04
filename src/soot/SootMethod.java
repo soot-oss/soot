@@ -31,6 +31,7 @@ import java.util.*;
 
 import soot.dava.*;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
+import soot.jimple.toolkits.callgraph.VirtualCalls;
 
 /**
     Soot representation of a Java method.  Can be declared to belong to a SootClass. 
@@ -450,7 +451,52 @@ public class SootMethod
     public boolean isSynchronized() {
         return Modifier.isSynchronized(this.getModifiers());
     }
+    
+    /**
+	 * 
+	 * @return yes if this is the main method
+	 */
+	public boolean isMain()
+	{
+		if ( isPublic() && isStatic() ) {
+			NumberedString main_sig = Scene.v().getSubSigNumberer().findOrAdd( "void main(java.lang.String[])" );
+			if ( main_sig.equals( subsignature ) )
+				return true;
+		}
+		
+		return false;
+	}
 
+	/**
+	 * 
+	 * @return yes, if this function is a constructor.
+	 */
+	public boolean isConstructor()
+	{
+		return name.equals(constructorName);
+	}
+	
+	/**
+	 * @return yes, if this is a class initializer or main function.
+	 */
+	public boolean isEntryMethod()
+	{
+		if ( isStatic() &&
+				subsignature.equals( VirtualCalls.v().sigClinit ) )
+			return true;
+		
+		return isMain();
+	}
+	
+	/**
+	 * We rely on the JDK class recognition to decide if a method is JDK method.
+	 */
+	public boolean isJavaLibraryMethod()
+	{
+		SootClass cl = getDeclaringClass();
+		return cl.isJavaLibraryClass();
+	}
+    
     /** Returns the parameters part of the signature in the format in which
      * it appears in bytecode. */
     public String getBytecodeParms() {

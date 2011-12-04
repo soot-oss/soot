@@ -1,0 +1,64 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2011 Richard Xiao
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+package soot.jimple.spark.geom.geomPA;
+
+import java.util.Deque;
+import java.util.LinkedList;
+
+public class FIFO_Worklist implements IWorklist 
+{
+	Deque<IVarAbstraction> Q = null;
+
+	
+	public void initialize( int size )
+	{
+		Q = new LinkedList<IVarAbstraction>();
+	}
+	
+	
+	public boolean has_job() {
+		return Q.size() != 0;
+	}
+
+	
+	public IVarAbstraction next() {
+		IVarAbstraction t = Q.getFirst();
+		Q.removeFirst();
+		t.Qpos = 0;
+		return t;
+	}
+
+	
+	public void push(IVarAbstraction pv) {
+		if (pv.Qpos == 0) {
+			Q.addLast(pv);
+			pv.Qpos = 1;
+		}
+	}
+
+	
+	public int size() {
+		return Q.size();
+	}
+
+	
+	public void clear() {
+		Q = null;
+	}
+}

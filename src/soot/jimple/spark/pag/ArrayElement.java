@@ -18,7 +18,11 @@
  */
 
 package soot.jimple.spark.pag;
-import soot.*;
+import soot.G;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.Type;
 
 /** Represents an array element.
  * @author Ondrej Lhotak
@@ -27,7 +31,8 @@ public class ArrayElement implements SparkField {
     public ArrayElement( Singletons.Global g ) {}
     public static ArrayElement v() { return G.v().soot_jimple_spark_pag_ArrayElement(); }
 
-    public ArrayElement() {
+    @SuppressWarnings("unchecked")
+	public ArrayElement() {
         Scene.v().getFieldNumberer().add(this);
     }
 
@@ -37,5 +42,10 @@ public class ArrayElement implements SparkField {
     public final void setNumber(int number) {
         this.number = number;
     }
+    
+	public Type getType() {
+		return RefType.v("java.lang.Object");
+	}
+    
     private int number = 0;
 }

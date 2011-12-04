@@ -99,6 +99,36 @@ public class CallGraph
         return true;
     }
 
+    /**
+     * Does this method have no incoming edge?
+     * @param method
+     * @return
+     */
+    public boolean isEntryMethod( SootMethod method )
+    {
+    	return !tgtToEdge.containsKey(method);
+    }
+    
+    /**
+     * Find the specific call edge that is going out from the callsite u and the call target is callee.
+     * Without advanced data structure, we can only sequentially search for the match.
+     * Fortunately, the number of outgoing edges for a unit is not too large.
+     * @param u
+     * @param callee
+     * @return
+     */
+    public Edge findEdge( Unit u, SootMethod callee )
+    {
+    	Edge e = srcUnitToEdge.get(u);
+    	while ( e.srcUnit() == u &&
+    			e.kind() != Kind.INVALID ) {
+    		if ( e.tgt() == callee )
+    			return e;
+    		e = e.nextByUnit();
+    	}
+    	return null;
+    }
+    
     /** Returns an iterator over all methods that are the sources of at least
      * one edge. */
     public Iterator<MethodOrMethodContext> sourceMethods() {

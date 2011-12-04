@@ -1294,6 +1294,24 @@ public class AntTask extends MatchingTask {
             addArg("lazy-pts:"+(arg?"true":"false"));
           }
       
+          public void setgeom_pta(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-pta:"+(arg?"true":"false"));
+          }
+      
+          public void setgeom_trans(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-trans:"+(arg?"true":"false"));
+          }
+      
+          public void setgeom_blocking(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-blocking:"+(arg?"true":"false"));
+          }
+      
           public void setpropagator(String arg) {
             addArg("-p");
             addArg("cg.spark");
@@ -1328,6 +1346,48 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.spark");
             addArg("passes:"+arg);
+          }
+      
+          public void setgeom_encoding(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-encoding:"+arg);
+          }
+      
+          public void setgeom_worklist(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-worklist:"+arg);
+          }
+      
+          public void setgeom_dump_verbose(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-dump-verbose:"+arg);
+          }
+      
+          public void setgeom_verify_name(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-verify-name:"+arg);
+          }
+      
+          public void setgeom_eval(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-eval:"+arg);
+          }
+      
+          public void setgeom_frac_base(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-frac-base:"+arg);
+          }
+      
+          public void setgeom_runs(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-runs:"+arg);
           }
       
         }

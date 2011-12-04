@@ -37,6 +37,7 @@ import soot.jimple.FieldRef;
 import soot.jimple.ReachingTypeDumper;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.ContextInsensitiveBuilder;
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.ondemand.DemandCSPointsTo;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
@@ -175,6 +176,19 @@ public class SparkTransformer extends SceneTransformer
             addTags( pag );
         }
 
+        if ( opts.geom_pta() ) {
+        	if ( opts.simplify_offline() || opts.simplify_sccs() ) {
+        		G.v().out.println( "Please turn off the simplify-offline and simplify-sccs to run the geometric points-to analysis" );
+        		G.v().out.println( "Now, we keep the SPARK result for querying." );
+        	}
+        	else {
+        		// We perform the geometric points-to analysis
+        		GeomPointsTo geomPTA = (GeomPointsTo)pag;
+        		geomPTA.parametrize();
+        		geomPTA.solve();
+        	}
+        }
+        
         if(opts.cs_demand()) {
         		//replace by demand-driven refinement-based context-sensitive analysis
         		Date startOnDemand = new Date();

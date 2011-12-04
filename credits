@@ -140,6 +140,9 @@ Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
 Clark Verbrugge (clump@cs.mcgill.ca)
     - coffi hacker
     - original Jimple hacker   
+    
+Richard Xiao (richardxx@cse.ust.hk)
+	- context-sensitive points-to anaysis using geometric encoding (ISSTA '11)
 
 -------------------- Funding Acknowledgements ------------------
                     

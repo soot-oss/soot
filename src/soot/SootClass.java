@@ -968,6 +968,25 @@ public class SootClass extends AbstractHost implements Numberable
         isPhantom = false;
     }
 
+    /**
+     * Sometimes we need to know which class is a JDK class.
+     * There is no simple way to distinguish a user class and a JDK class, here we use the package prefix as the heuristic.
+     * @author xiao
+     */
+    public boolean isJavaLibraryClass()
+    {
+    	if ( name.startsWith("java.") ||
+   			 name.startsWith("sun.")  ||
+   			 name.startsWith("javax.") ||
+   			 name.startsWith("com.sun.") || 
+   			 name.startsWith("org.omg.") ||
+   			 name.startsWith("org.xml.")
+   			 ) 
+    		return true;
+    	
+    	return false;
+    }
+    
     /** Convenience method returning true if this class is a phantom class.
      *
      * @see Scene#getPhantomClasses() */

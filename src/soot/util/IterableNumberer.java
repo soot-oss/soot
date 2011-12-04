@@ -21,8 +21,9 @@ package soot.util;
 import java.util.*;
 
 /** A numberer which also supports an iterator on newly-added objects.
+ * @author xiao, generalize the interface
  */
-public interface IterableNumberer extends Numberer {
+public interface IterableNumberer<E> extends Numberer<E> {
     /** Returns an iterator over all objects added to the numberer. */
     Iterator iterator(); 
 }

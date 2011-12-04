@@ -2268,6 +2268,156 @@ Each iteration traverses at most ( traverse / passes ) nodes.
         					</long_desc>
 						</intopt>
 					</section>
+					<section>
+						<name>Geometric, context-sensitive analysis (ISSTA 2011)</name>
+						<boolopt>
+						  <name>Geometric, context-sensitive points-to analysis</name>
+						  <alias>geom-pta</alias>
+						  <default>false</default>
+						  <short_desc>This switch enables/disables the geometric analysis.</short_desc>
+						  <long_desc>
+						    This switch enables/disables the geometric analysis.
+						  </long_desc>
+						</boolopt>
+						<multiopt>
+						  <name>Encoding methodology used</name>
+						  <alias>geom-encoding</alias>
+						  <default>Geom</default>
+						  <short_desc>Encoding methodology</short_desc>
+						  <long_desc>
+						    This switch specifies the encoding methodology used in the analysis. 
+						    All possible options are: Geom, HeapIns, PtIns. The efficiency order
+						    is (from slow to fast) Geom - HeapIns - PtIns, but the precision order is
+						    the reverse.
+						  </long_desc>        					
+						  <value>
+						    <name>Geometric</name>
+						    <alias>Geom</alias>
+						    <short_desc>Geometric Encoding</short_desc>
+						    <long_desc>
+						      Geometric Encoding.
+						    </long_desc>
+						    <default/>
+						  </value>
+						  <value>
+						    <name>Heap Insensitive</name>
+						    <alias>HeapIns</alias>
+						    <short_desc>Heap Insensitive Encoding</short_desc>
+						    <long_desc>
+						      Heap Insensitive Encoding. Omit the heap context range term in the encoded representation, and in turn, we assume all the contexts for this heap object are used.
+						    </long_desc>
+						  </value>
+						  <value>
+						    <name>PtIns</name>
+						    <alias>PtIns</alias>
+						    <short_desc>PtIns</short_desc>
+						    <long_desc>
+						      Pointer Insensitive Encoding. Similar to HeapIns, but we omit the pointer context range term.
+						    </long_desc>
+						  </value>
+						</multiopt>
+						
+						<multiopt>
+						  <name>Worklist type</name>
+						  <alias>geom-worklist</alias>
+						  <default>PQ</default>
+						  <short_desc>Worklist type</short_desc>
+						  <long_desc>
+						    Specifies the worklist used for selecting the next propagation pointer. All possible options are: PQ, FIFO. They stand for the priority queue (sorted by the last fire time and topology order) and FIFO queue.
+						  </long_desc>        					
+						  <value>
+						    <name>Priority Queue</name>
+						    <alias>PQ</alias>
+						    <short_desc>Priority Queue</short_desc>
+						    <long_desc>
+						      Priority Queue (sorted by the last fire time and topology order)
+						    </long_desc>
+						    <default/>
+						  </value>
+						  <value>
+						    <name>FIFO Queue</name>
+						    <alias>FIFO</alias>
+						    <short_desc>FIFO Queue</short_desc>
+						    <long_desc>
+						      FIFO Queue
+						    </long_desc>
+						  </value>
+						</multiopt>						
+						
+						<stropt>
+						  <name>Verbose dump file</name>
+						  <alias>geom-dump-verbose</alias>
+						  <default></default>
+						  <set_arg_label>name</set_arg_label>
+						  <short_desc>Filename for detailed execution log</short_desc>
+						  <long_desc>
+						    If you want to persist the detailed execution information for future analysis, please provide a file name.
+						  </long_desc>
+						</stropt>
+						
+						<stropt>
+						  <name>Verification file</name>
+						  <alias>geom-verify-name</alias>
+						  <default></default>
+						  <set_arg_label>path</set_arg_label>
+						  <short_desc>Filename for verification file</short_desc>
+						  <long_desc>
+						    If you want to compare the precision of the points-to results with other solvers (e.g. Paddle), you can use the "verify-file" to specify the list of methods (soot method signature format) that are reachable by that solver. Then, in the internal evaluations (see the switch geom-eval), we only consider the methods that are present to both solvers.
+						  </long_desc>
+						</stropt>
+						
+						<intopt>
+						  <name>Precision evaluation methodologies</name>
+						  <alias>geom-eval</alias>
+						  <default>0</default>
+						  <short_desc>precision evaluation methodologies</short_desc>
+						  <long_desc>
+						    We internally provide some precision evaluation methodologies, and classify the evaluation strength into three levels. If level is 0, we do nothing. If level is 1, we report the basic information about the points-to result. If level is 2, we perform the virtual callsite resolution, static cast safety and all alias pairs evaluations.
+						  </long_desc>
+						</intopt>
+						
+						<boolopt>
+						  <name>Transform to context-insensitive result</name>
+						  <alias>geom-trans</alias>
+						  <default>false</default>
+						  <short_desc>Transform to context-insensitive result</short_desc>
+						  <long_desc>
+						    If your work only concern the context insensitive points-to information, you can use this option to transform the context sensitive result to insensitive result. Or, sometimes your code wants to directly access to the points-to vector other than using the standard querying interface, you can use this option to guarantee the correct behavior (because we clear the SPARK points-to result when running the geom solver). After the transformation, the context sensitive points-to result is cleared in order to save memory space for your other jobs.
+						  </long_desc>
+						</boolopt>		
+						
+						<intopt>
+						  <name>Fractional parameter</name>
+						  <alias>geom-frac-base</alias>
+						  <default>40</default>
+						  <short_desc>Fractional parameter for precision/performance trade-off</short_desc>
+						  <long_desc>
+						    This option specifies the fractional parameter, which is used to manually tune the precision and performance trade-off. The smaller the value, the better the performance but the worse the precision.
+						  </long_desc>
+						</intopt>	
+						
+						<boolopt>
+						  <name>Blocking strategy for recursive calls</name>
+						  <alias>geom-blocking</alias>
+						  <default>true</default>
+						  <short_desc>Enable blocking strategy for recursive calls</short_desc>
+						  <long_desc>
+						    When this option is on, we perform the blocking strategy to the recursive calls. This strategy significantly improves the precision. The details are presented in our paper.
+						  </long_desc>
+						</boolopt>		
+						
+						<intopt>
+						  <name>Iterations</name>
+						  <alias>geom-runs</alias>
+						  <default>1</default>
+						  <short_desc>Iterations of analysis</short_desc>
+						  <long_desc>
+						    We can run multiple times of the geometric analysis to continuously improve the analysis precision.
+						  </long_desc>
+						</intopt>
+						
+-->																					
+					</section>
 				</sub_phase>
 				<sub_phase>
 					<name>Paddle</name>
