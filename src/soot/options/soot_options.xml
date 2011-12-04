@@ -2308,7 +2308,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						    </long_desc>
 						  </value>
 						  <value>
-						    <name>PtIns</name>
+						    <name>Pointer Insensitive</name>
 						    <alias>PtIns</alias>
 						    <short_desc>PtIns</short_desc>
 						    <long_desc>
