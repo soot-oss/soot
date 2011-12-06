@@ -232,7 +232,7 @@ public class GeomPointsTo extends PAG
     	// We dump the processing statistics to an external file if needed by the user
     	dump_file_name = opts.geom_dump_verbose();
     	if ( !dump_file_name.isEmpty() ) {
-			File file = new File( "dump/" + dump_file_name + "_" + solver_encoding + "_log.txt" );
+			File file = new File( dump_file_name + "_" + solver_encoding + "_log.txt" );
 			try {
 				ps = new PrintStream(file);
 			} catch (FileNotFoundException e) {
