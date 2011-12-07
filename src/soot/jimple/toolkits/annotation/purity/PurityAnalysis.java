@@ -63,24 +63,8 @@ public class PurityAnalysis extends SceneTransformer
 
 	CallGraph cg = Scene.v().getCallGraph();
 
-	// Find main methods
-	List<SootMethod> heads = new LinkedList<SootMethod>();
-	Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
-	while (getClassesIt.hasNext()) {
-	    SootClass appClass = (SootClass)getClassesIt.next();
-	    Iterator getMethodsIt = appClass.getMethods().iterator();
-	    while (getMethodsIt.hasNext()) {
-		SootMethod method = (SootMethod) getMethodsIt.next();
-		if (method.getName().equals("main")) {
-		    heads.add(method);
-		    G.v().out.println("  |- will treat "+appClass.getName()+
-				      "."+method.getName());
-		}
-	    }
-	}
-
 	// launch the analysis
 	PurityInterproceduralAnalysis p =
-	    new PurityInterproceduralAnalysis(cg, heads.iterator(), opts); 
+	    new PurityInterproceduralAnalysis(cg, Collections.singleton(Scene.v().getMainMethod()).iterator(), opts); 
     }
 }
