@@ -50,7 +50,10 @@ Improvements and API changes in trunk
    The code was contributed to Soot by Richard (Xiao) Xiao. Thanks for
    this! You can find the code in soot.jimple.spark.geom. There are
    new phase options in cg.spark to enable and configure this
-   analysis.    
+   analysis.   
+9. Improved support for custom entry points in the points-to analysis.
+10.Added option allowing putiry analysis to add a "Pure" bytecode
+   attribute for pure methods.
         
 Improvements and API changes in version 2.4.0
 

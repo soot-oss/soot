@@ -290,6 +290,8 @@ public class PurityInterproceduralAnalysis
 		   (new String(isPure?"yes":"no")).getBytes()));
 		*/
 		m.addTag(new StringTag("purity: "+(isPure?"pure":"impure")));
+		if(isPure && opts.annotate())
+			m.addTag(new GenericAttribute("Pure", new byte[0]));
 		if (opts.print()) 
 		    G.v().out.println("  |- method "+m.toString()+" is "+(isPure?"pure":"impure"));
 

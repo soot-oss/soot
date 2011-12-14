@@ -481,7 +481,7 @@ public class SparkOptions
     
     /** Precision evaluation methodologies --
     
-     * precision evaluation methodologies.
+     * Precision evaluation methodologies.
     
      * 						 We internally provide some precision evaluation 
      * methodologies, and classify the evaluation strength into three 

@@ -3853,6 +3853,12 @@ Alexandru Salcianu and Martin Rinard.
 		       <default>true</default>
 		    </boolopt>
    	   	    <boolopt>
+  		       <name>Annotate class files</name>
+			   <short_desc>Marks pure methods with a purity bytecode attribute</short_desc>
+		       <alias>annotate</alias>
+		       <default>true</default>
+		    </boolopt>
+   	   	    <boolopt>
   		       <name>Be (quite) verbose</name>
 		       <alias>verbose</alias>
 		       <default>false</default>

@@ -82,6 +82,16 @@ public class PurityOptions
         return soot.PhaseOptions.getBoolean( options, "print" );
     }
     
+    /** Annotate class files --
+    
+     * Marks pure methods with a purity bytecode attribute.
+    
+     * 
+     */
+    public boolean annotate() {
+        return soot.PhaseOptions.getBoolean( options, "annotate" );
+    }
+    
     /** Be (quite) verbose --
     
      * .

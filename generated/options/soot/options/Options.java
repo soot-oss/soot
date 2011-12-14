@@ -1675,7 +1675,7 @@ public class Options extends OptionsBase {
                 
                 +padOpt( "geom-dump-verbose ()", "Filename for detailed execution log" )
                 +padOpt( "geom-verify-name ()", "Filename for verification file" )
-                +padOpt( "geom-eval (0)", "precision evaluation methodologies" )
+                +padOpt( "geom-eval (0)", "Precision evaluation methodologies" )
                 +padOpt( "geom-trans (false)", "Transform to context-insensitive result" )
                 +padOpt( "geom-frac-base (40)", "Fractional parameter for precision/performance trade-off" )
                 +padOpt( "geom-blocking (true)", "Enable blocking strategy for recursive calls" )
@@ -1951,6 +1951,7 @@ public class Options extends OptionsBase {
                 +padOpt( "dump-cg (false)", "" )
                 +padOpt( "dump-intra (false)", "" )
                 +padOpt( "print (true)", "" )
+                +padOpt( "annotate (true)", "Marks pure methods with a purity bytecode attribute" )
                 +padOpt( "verbose (false)", "" );
     
         if( phaseName.equals( "shimple" ) )
@@ -2680,6 +2681,7 @@ public class Options extends OptionsBase {
                 +"dump-cg "
                 +"dump-intra "
                 +"print "
+                +"annotate "
                 +"verbose ";
     
         if( phaseName.equals( "shimple" ) )
@@ -3283,6 +3285,7 @@ public class Options extends OptionsBase {
               +"dump-cg:false "
               +"dump-intra:false "
               +"print:true "
+              +"annotate:true "
               +"verbose:false ";
     
         if( phaseName.equals( "shimple" ) )

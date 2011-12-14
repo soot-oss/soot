@@ -1972,6 +1972,12 @@ public class AntTask extends MatchingTask {
             addArg("print:"+(arg?"true":"false"));
           }
       
+          public void setannotate(boolean arg) {
+            addArg("-p");
+            addArg("wjap.purity");
+            addArg("annotate:"+(arg?"true":"false"));
+          }
+      
           public void setverbose(boolean arg) {
             addArg("-p");
             addArg("wjap.purity");
