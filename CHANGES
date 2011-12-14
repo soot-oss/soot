@@ -54,6 +54,8 @@ Improvements and API changes in trunk
 9. Improved support for custom entry points in the points-to analysis.
 10.Added option allowing putiry analysis to add a "Pure" bytecode
    attribute for pure methods.
+11.GenericAttribute instances are now automatically read from class
+   files and stored in class files.
         
 Improvements and API changes in version 2.4.0
 

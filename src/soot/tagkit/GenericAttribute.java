@@ -44,8 +44,9 @@ public class GenericAttribute implements Attribute
     
     public GenericAttribute(String name, byte[] value)
     {
-	mName = name;
-	mValue = value;
+    	if(value==null) value = new byte[0];
+		mName = name;
+		mValue = value;
     }
     public String getName()
     {

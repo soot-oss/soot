@@ -786,6 +786,7 @@ public class ClassFile {
             }
             a = (attribute_info)ga;
          }
+         if(this.toString().endsWith("Main")) System.out.println(s);
          a.attribute_name = j;
          a.attribute_length = len;
          ai[i] = a;

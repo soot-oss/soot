@@ -206,6 +206,12 @@ public class Util
                 {
                     addAnnotationVisibilityAttribute(field, fieldInfo.attributes[j], coffiClass, references);
                 }
+                else if (fieldInfo.attributes[j] instanceof Generic_attribute)
+                {        	
+                	Generic_attribute attr = (Generic_attribute) fieldInfo.attributes[j];
+                    String name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.attribute_name])).convert();
+        			field.addTag(new GenericAttribute(name, attr.info));
+                }
 		    }
         }
     
@@ -294,6 +300,12 @@ public class Util
                         input[0] = attr.default_value;
                         ArrayList<AnnotationElem> list = createElementTags(1, coffiClass, input);
                         method.addTag(new AnnotationDefaultTag(list.get(0)));
+                    }
+                    else if (methodInfo.attributes[j] instanceof Generic_attribute)
+                    {        	
+                    	Generic_attribute attr = (Generic_attribute) methodInfo.attributes[j];
+                        String name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.attribute_name])).convert();
+            			method.addTag(new GenericAttribute(name, attr.info));
                     }
                 }
             }
@@ -400,6 +412,12 @@ public class Util
         else if (coffiClass.attributes[i] instanceof RuntimeVisibleAnnotations_attribute || coffiClass.attributes[i] instanceof RuntimeInvisibleAnnotations_attribute)
         {
             addAnnotationVisibilityAttribute(bclass, coffiClass.attributes[i], coffiClass, references);
+        }
+        else if (coffiClass.attributes[i] instanceof Generic_attribute)
+        {        	
+        	Generic_attribute attr = (Generic_attribute) coffiClass.attributes[i];
+            String name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.attribute_name])).convert();
+			bclass.addTag(new GenericAttribute(name, attr.info));
         }
    
     }
