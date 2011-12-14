@@ -35,14 +35,16 @@ public class CallGraphPack extends RadioScenePack
     protected void internalApply()
     {
         CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions(this) );
-        if(!options.implicit_entry()) {
-            Scene.v().setEntryPoints(EntryPoints.v().application());
-        }
-        if( options.all_reachable() ) {
-            List<SootMethod> entryPoints = new ArrayList<SootMethod>();
-            entryPoints.addAll( EntryPoints.v().all() );
-            entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
-            Scene.v().setEntryPoints( entryPoints );
+        if(!Scene.v().hasCustomEntryPoints()) {
+	        if(!options.implicit_entry()) {
+	            Scene.v().setEntryPoints(EntryPoints.v().application());
+	        }
+	        if( options.all_reachable() ) {
+	            List<SootMethod> entryPoints = new ArrayList<SootMethod>();
+	            entryPoints.addAll( EntryPoints.v().all() );
+	            entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
+	            Scene.v().setEntryPoints( entryPoints );
+	        }
         }
         super.internalApply();
         ClinitElimTransformer trimmer = new ClinitElimTransformer();
