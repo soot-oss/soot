@@ -65,6 +65,6 @@ public class PurityAnalysis extends SceneTransformer
 
 	// launch the analysis
 	PurityInterproceduralAnalysis p =
-	    new PurityInterproceduralAnalysis(cg, Collections.singleton(Scene.v().getMainMethod()).iterator(), opts); 
+	    new PurityInterproceduralAnalysis(cg, Scene.v().getEntryPoints().iterator(), opts); 
     }
 }
