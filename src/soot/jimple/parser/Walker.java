@@ -1342,7 +1342,7 @@ public class Walker extends DepthFirstAdapter
       identifier fixed_array_descriptor;
     */
 
-    public void outAArrayRef(AArrayRef node)
+    public void outAArrayReference(AArrayReference node)
     {
 	Value immediate = (Value) mProductions.removeLast();
 	String identifier = (String) mProductions.removeLast();

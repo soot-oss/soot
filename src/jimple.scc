@@ -359,7 +359,8 @@ class_name_list =
     {field} field_ref;
 
   array_ref =
-    identifier fixed_array_descriptor;
+    {ident} identifier fixed_array_descriptor |
+    {quoted} quoted_name fixed_array_descriptor;
 
   field_ref =
     {local} local_name dot field_signature |
