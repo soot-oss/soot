@@ -86,6 +86,17 @@ public class IterableSet extends HashChain implements Set
 	return true;
     }
     
+    @Override
+    public int hashCode() {
+    	int code = 23;
+    	Iterator it = iterator();
+    	while (it.hasNext()) {
+    		//use addition here to have hash code independent of order
+    		code += it.next().hashCode();
+    	}
+    	return code;
+    }
+    
     public Object clone()
     {
 	IterableSet s = new IterableSet();
