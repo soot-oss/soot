@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AUnknownJimpleType extends PJimpleType
 {
     private TUnknown _unknown_;
 
     public AUnknownJimpleType()
     {
+        // Constructor
     }
 
     public AUnknownJimpleType(
-        TUnknown _unknown_)
+        @SuppressWarnings("hiding") TUnknown _unknown_)
     {
+        // Constructor
         setUnknown(_unknown_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AUnknownJimpleType(
-            (TUnknown) cloneNode(_unknown_));
+            cloneNode(this._unknown_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AUnknownJimpleType extends PJimpleType
 
     public TUnknown getUnknown()
     {
-        return _unknown_;
+        return this._unknown_;
     }
 
     public void setUnknown(TUnknown node)
     {
-        if(_unknown_ != null)
+        if(this._unknown_ != null)
         {
-            _unknown_.parent(null);
+            this._unknown_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AUnknownJimpleType extends PJimpleType
             node.parent(this);
         }
 
-        _unknown_ = node;
+        this._unknown_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_unknown_);
+            + toString(this._unknown_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_unknown_ == child)
+        // Remove child
+        if(this._unknown_ == child)
         {
-            _unknown_ = null;
+            this._unknown_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_unknown_ == oldChild)
+        // Replace child
+        if(this._unknown_ == oldChild)
         {
             setUnknown((TUnknown) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

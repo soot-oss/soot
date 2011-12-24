@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AFieldReference extends PReference
 {
     private PFieldRef _fieldRef_;
 
     public AFieldReference()
     {
+        // Constructor
     }
 
     public AFieldReference(
-        PFieldRef _fieldRef_)
+        @SuppressWarnings("hiding") PFieldRef _fieldRef_)
     {
+        // Constructor
         setFieldRef(_fieldRef_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AFieldReference(
-            (PFieldRef) cloneNode(_fieldRef_));
+            cloneNode(this._fieldRef_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AFieldReference extends PReference
 
     public PFieldRef getFieldRef()
     {
-        return _fieldRef_;
+        return this._fieldRef_;
     }
 
     public void setFieldRef(PFieldRef node)
     {
-        if(_fieldRef_ != null)
+        if(this._fieldRef_ != null)
         {
-            _fieldRef_.parent(null);
+            this._fieldRef_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AFieldReference extends PReference
             node.parent(this);
         }
 
-        _fieldRef_ = node;
+        this._fieldRef_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_fieldRef_);
+            + toString(this._fieldRef_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_fieldRef_ == child)
+        // Remove child
+        if(this._fieldRef_ == child)
         {
-            _fieldRef_ = null;
+            this._fieldRef_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_fieldRef_ == oldChild)
+        // Replace child
+        if(this._fieldRef_ == oldChild)
         {
             setFieldRef((PFieldRef) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

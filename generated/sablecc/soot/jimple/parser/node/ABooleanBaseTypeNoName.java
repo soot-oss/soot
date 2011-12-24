@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ABooleanBaseTypeNoName extends PBaseTypeNoName
 {
     private TBoolean _boolean_;
 
     public ABooleanBaseTypeNoName()
     {
+        // Constructor
     }
 
     public ABooleanBaseTypeNoName(
-        TBoolean _boolean_)
+        @SuppressWarnings("hiding") TBoolean _boolean_)
     {
+        // Constructor
         setBoolean(_boolean_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ABooleanBaseTypeNoName(
-            (TBoolean) cloneNode(_boolean_));
+            cloneNode(this._boolean_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ABooleanBaseTypeNoName extends PBaseTypeNoName
 
     public TBoolean getBoolean()
     {
-        return _boolean_;
+        return this._boolean_;
     }
 
     public void setBoolean(TBoolean node)
     {
-        if(_boolean_ != null)
+        if(this._boolean_ != null)
         {
-            _boolean_.parent(null);
+            this._boolean_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ABooleanBaseTypeNoName extends PBaseTypeNoName
             node.parent(this);
         }
 
-        _boolean_ = node;
+        this._boolean_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_boolean_);
+            + toString(this._boolean_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_boolean_ == child)
+        // Remove child
+        if(this._boolean_ == child)
         {
-            _boolean_ = null;
+            this._boolean_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_boolean_ == oldChild)
+        // Replace child
+        if(this._boolean_ == oldChild)
         {
             setBoolean((TBoolean) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

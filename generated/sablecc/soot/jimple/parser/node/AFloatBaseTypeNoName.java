@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AFloatBaseTypeNoName extends PBaseTypeNoName
 {
     private TFloat _float_;
 
     public AFloatBaseTypeNoName()
     {
+        // Constructor
     }
 
     public AFloatBaseTypeNoName(
-        TFloat _float_)
+        @SuppressWarnings("hiding") TFloat _float_)
     {
+        // Constructor
         setFloat(_float_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AFloatBaseTypeNoName(
-            (TFloat) cloneNode(_float_));
+            cloneNode(this._float_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AFloatBaseTypeNoName extends PBaseTypeNoName
 
     public TFloat getFloat()
     {
-        return _float_;
+        return this._float_;
     }
 
     public void setFloat(TFloat node)
     {
-        if(_float_ != null)
+        if(this._float_ != null)
         {
-            _float_.parent(null);
+            this._float_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AFloatBaseTypeNoName extends PBaseTypeNoName
             node.parent(this);
         }
 
-        _float_ = node;
+        this._float_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_float_);
+            + toString(this._float_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_float_ == child)
+        // Remove child
+        if(this._float_ == child)
         {
-            _float_ = null;
+            this._float_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_float_ == oldChild)
+        // Replace child
+        if(this._float_ == oldChild)
         {
             setFloat((TFloat) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

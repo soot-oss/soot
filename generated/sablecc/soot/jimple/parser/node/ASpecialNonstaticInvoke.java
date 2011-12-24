@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ASpecialNonstaticInvoke extends PNonstaticInvoke
 {
     private TSpecialinvoke _specialinvoke_;
 
     public ASpecialNonstaticInvoke()
     {
+        // Constructor
     }
 
     public ASpecialNonstaticInvoke(
-        TSpecialinvoke _specialinvoke_)
+        @SuppressWarnings("hiding") TSpecialinvoke _specialinvoke_)
     {
+        // Constructor
         setSpecialinvoke(_specialinvoke_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ASpecialNonstaticInvoke(
-            (TSpecialinvoke) cloneNode(_specialinvoke_));
+            cloneNode(this._specialinvoke_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ASpecialNonstaticInvoke extends PNonstaticInvoke
 
     public TSpecialinvoke getSpecialinvoke()
     {
-        return _specialinvoke_;
+        return this._specialinvoke_;
     }
 
     public void setSpecialinvoke(TSpecialinvoke node)
     {
-        if(_specialinvoke_ != null)
+        if(this._specialinvoke_ != null)
         {
-            _specialinvoke_.parent(null);
+            this._specialinvoke_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ASpecialNonstaticInvoke extends PNonstaticInvoke
             node.parent(this);
         }
 
-        _specialinvoke_ = node;
+        this._specialinvoke_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_specialinvoke_);
+            + toString(this._specialinvoke_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_specialinvoke_ == child)
+        // Remove child
+        if(this._specialinvoke_ == child)
         {
-            _specialinvoke_ = null;
+            this._specialinvoke_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_specialinvoke_ == oldChild)
+        // Replace child
+        if(this._specialinvoke_ == oldChild)
         {
             setSpecialinvoke((TSpecialinvoke) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

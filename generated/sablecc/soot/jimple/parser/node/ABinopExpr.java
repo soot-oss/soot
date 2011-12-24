@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ABinopExpr extends PBinopExpr
 {
     private PImmediate _left_;
@@ -13,13 +13,15 @@ public final class ABinopExpr extends PBinopExpr
 
     public ABinopExpr()
     {
+        // Constructor
     }
 
     public ABinopExpr(
-        PImmediate _left_,
-        PBinop _binop_,
-        PImmediate _right_)
+        @SuppressWarnings("hiding") PImmediate _left_,
+        @SuppressWarnings("hiding") PBinop _binop_,
+        @SuppressWarnings("hiding") PImmediate _right_)
     {
+        // Constructor
         setLeft(_left_);
 
         setBinop(_binop_);
@@ -27,12 +29,14 @@ public final class ABinopExpr extends PBinopExpr
         setRight(_right_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ABinopExpr(
-            (PImmediate) cloneNode(_left_),
-            (PBinop) cloneNode(_binop_),
-            (PImmediate) cloneNode(_right_));
+            cloneNode(this._left_),
+            cloneNode(this._binop_),
+            cloneNode(this._right_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class ABinopExpr extends PBinopExpr
 
     public PImmediate getLeft()
     {
-        return _left_;
+        return this._left_;
     }
 
     public void setLeft(PImmediate node)
     {
-        if(_left_ != null)
+        if(this._left_ != null)
         {
-            _left_.parent(null);
+            this._left_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class ABinopExpr extends PBinopExpr
             node.parent(this);
         }
 
-        _left_ = node;
+        this._left_ = node;
     }
 
     public PBinop getBinop()
     {
-        return _binop_;
+        return this._binop_;
     }
 
     public void setBinop(PBinop node)
     {
-        if(_binop_ != null)
+        if(this._binop_ != null)
         {
-            _binop_.parent(null);
+            this._binop_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class ABinopExpr extends PBinopExpr
             node.parent(this);
         }
 
-        _binop_ = node;
+        this._binop_ = node;
     }
 
     public PImmediate getRight()
     {
-        return _right_;
+        return this._right_;
     }
 
     public void setRight(PImmediate node)
     {
-        if(_right_ != null)
+        if(this._right_ != null)
         {
-            _right_.parent(null);
+            this._right_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class ABinopExpr extends PBinopExpr
             node.parent(this);
         }
 
-        _right_ = node;
+        this._right_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_left_)
-            + toString(_binop_)
-            + toString(_right_);
+            + toString(this._left_)
+            + toString(this._binop_)
+            + toString(this._right_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_left_ == child)
+        // Remove child
+        if(this._left_ == child)
         {
-            _left_ = null;
+            this._left_ = null;
             return;
         }
 
-        if(_binop_ == child)
+        if(this._binop_ == child)
         {
-            _binop_ = null;
+            this._binop_ = null;
             return;
         }
 
-        if(_right_ == child)
+        if(this._right_ == child)
         {
-            _right_ = null;
+            this._right_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_left_ == oldChild)
+        // Replace child
+        if(this._left_ == oldChild)
         {
             setLeft((PImmediate) newChild);
             return;
         }
 
-        if(_binop_ == oldChild)
+        if(this._binop_ == oldChild)
         {
             setBinop((PBinop) newChild);
             return;
         }
 
-        if(_right_ == oldChild)
+        if(this._right_ == oldChild)
         {
             setRight((PImmediate) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

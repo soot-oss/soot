@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AEntermonitorStatement extends PStatement
 {
     private TEntermonitor _entermonitor_;
@@ -13,13 +13,15 @@ public final class AEntermonitorStatement extends PStatement
 
     public AEntermonitorStatement()
     {
+        // Constructor
     }
 
     public AEntermonitorStatement(
-        TEntermonitor _entermonitor_,
-        PImmediate _immediate_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TEntermonitor _entermonitor_,
+        @SuppressWarnings("hiding") PImmediate _immediate_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setEntermonitor(_entermonitor_);
 
         setImmediate(_immediate_);
@@ -27,12 +29,14 @@ public final class AEntermonitorStatement extends PStatement
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AEntermonitorStatement(
-            (TEntermonitor) cloneNode(_entermonitor_),
-            (PImmediate) cloneNode(_immediate_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._entermonitor_),
+            cloneNode(this._immediate_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AEntermonitorStatement extends PStatement
 
     public TEntermonitor getEntermonitor()
     {
-        return _entermonitor_;
+        return this._entermonitor_;
     }
 
     public void setEntermonitor(TEntermonitor node)
     {
-        if(_entermonitor_ != null)
+        if(this._entermonitor_ != null)
         {
-            _entermonitor_.parent(null);
+            this._entermonitor_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AEntermonitorStatement extends PStatement
             node.parent(this);
         }
 
-        _entermonitor_ = node;
+        this._entermonitor_ = node;
     }
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AEntermonitorStatement extends PStatement
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AEntermonitorStatement extends PStatement
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_entermonitor_)
-            + toString(_immediate_)
-            + toString(_semicolon_);
+            + toString(this._entermonitor_)
+            + toString(this._immediate_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_entermonitor_ == child)
+        // Remove child
+        if(this._entermonitor_ == child)
         {
-            _entermonitor_ = null;
+            this._entermonitor_ = null;
             return;
         }
 
-        if(_immediate_ == child)
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_entermonitor_ == oldChild)
+        // Replace child
+        if(this._entermonitor_ == oldChild)
         {
             setEntermonitor((TEntermonitor) newChild);
             return;
         }
 
-        if(_immediate_ == oldChild)
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

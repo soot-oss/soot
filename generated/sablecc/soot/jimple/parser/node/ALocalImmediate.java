@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ALocalImmediate extends PImmediate
 {
     private PLocalName _localName_;
 
     public ALocalImmediate()
     {
+        // Constructor
     }
 
     public ALocalImmediate(
-        PLocalName _localName_)
+        @SuppressWarnings("hiding") PLocalName _localName_)
     {
+        // Constructor
         setLocalName(_localName_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ALocalImmediate(
-            (PLocalName) cloneNode(_localName_));
+            cloneNode(this._localName_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ALocalImmediate extends PImmediate
 
     public PLocalName getLocalName()
     {
-        return _localName_;
+        return this._localName_;
     }
 
     public void setLocalName(PLocalName node)
     {
-        if(_localName_ != null)
+        if(this._localName_ != null)
         {
-            _localName_.parent(null);
+            this._localName_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ALocalImmediate extends PImmediate
             node.parent(this);
         }
 
-        _localName_ = node;
+        this._localName_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_localName_);
+            + toString(this._localName_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_localName_ == child)
+        // Remove child
+        if(this._localName_ == child)
         {
-            _localName_ = null;
+            this._localName_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_localName_ == oldChild)
+        // Replace child
+        if(this._localName_ == oldChild)
         {
             setLocalName((PLocalName) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

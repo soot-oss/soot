@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACharBaseTypeNoName extends PBaseTypeNoName
 {
     private TChar _char_;
 
     public ACharBaseTypeNoName()
     {
+        // Constructor
     }
 
     public ACharBaseTypeNoName(
-        TChar _char_)
+        @SuppressWarnings("hiding") TChar _char_)
     {
+        // Constructor
         setChar(_char_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACharBaseTypeNoName(
-            (TChar) cloneNode(_char_));
+            cloneNode(this._char_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACharBaseTypeNoName extends PBaseTypeNoName
 
     public TChar getChar()
     {
-        return _char_;
+        return this._char_;
     }
 
     public void setChar(TChar node)
     {
-        if(_char_ != null)
+        if(this._char_ != null)
         {
-            _char_.parent(null);
+            this._char_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACharBaseTypeNoName extends PBaseTypeNoName
             node.parent(this);
         }
 
-        _char_ = node;
+        this._char_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_char_);
+            + toString(this._char_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_char_ == child)
+        // Remove child
+        if(this._char_ == child)
         {
-            _char_ = null;
+            this._char_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_char_ == oldChild)
+        // Replace child
+        if(this._char_ == oldChild)
         {
             setChar((TChar) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

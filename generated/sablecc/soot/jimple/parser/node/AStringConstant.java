@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AStringConstant extends PConstant
 {
     private TStringConstant _stringConstant_;
 
     public AStringConstant()
     {
+        // Constructor
     }
 
     public AStringConstant(
-        TStringConstant _stringConstant_)
+        @SuppressWarnings("hiding") TStringConstant _stringConstant_)
     {
+        // Constructor
         setStringConstant(_stringConstant_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AStringConstant(
-            (TStringConstant) cloneNode(_stringConstant_));
+            cloneNode(this._stringConstant_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AStringConstant extends PConstant
 
     public TStringConstant getStringConstant()
     {
-        return _stringConstant_;
+        return this._stringConstant_;
     }
 
     public void setStringConstant(TStringConstant node)
     {
-        if(_stringConstant_ != null)
+        if(this._stringConstant_ != null)
         {
-            _stringConstant_.parent(null);
+            this._stringConstant_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AStringConstant extends PConstant
             node.parent(this);
         }
 
-        _stringConstant_ = node;
+        this._stringConstant_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_stringConstant_);
+            + toString(this._stringConstant_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_stringConstant_ == child)
+        // Remove child
+        if(this._stringConstant_ == child)
         {
-            _stringConstant_ = null;
+            this._stringConstant_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_stringConstant_ == oldChild)
+        // Replace child
+        if(this._stringConstant_ == oldChild)
         {
             setStringConstant((TStringConstant) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

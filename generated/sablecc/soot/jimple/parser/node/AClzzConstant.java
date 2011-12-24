@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AClzzConstant extends PConstant
 {
     private TClass _id_;
@@ -12,22 +12,26 @@ public final class AClzzConstant extends PConstant
 
     public AClzzConstant()
     {
+        // Constructor
     }
 
     public AClzzConstant(
-        TClass _id_,
-        TStringConstant _stringConstant_)
+        @SuppressWarnings("hiding") TClass _id_,
+        @SuppressWarnings("hiding") TStringConstant _stringConstant_)
     {
+        // Constructor
         setId(_id_);
 
         setStringConstant(_stringConstant_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AClzzConstant(
-            (TClass) cloneNode(_id_),
-            (TStringConstant) cloneNode(_stringConstant_));
+            cloneNode(this._id_),
+            cloneNode(this._stringConstant_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class AClzzConstant extends PConstant
 
     public TClass getId()
     {
-        return _id_;
+        return this._id_;
     }
 
     public void setId(TClass node)
     {
-        if(_id_ != null)
+        if(this._id_ != null)
         {
-            _id_.parent(null);
+            this._id_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class AClzzConstant extends PConstant
             node.parent(this);
         }
 
-        _id_ = node;
+        this._id_ = node;
     }
 
     public TStringConstant getStringConstant()
     {
-        return _stringConstant_;
+        return this._stringConstant_;
     }
 
     public void setStringConstant(TStringConstant node)
     {
-        if(_stringConstant_ != null)
+        if(this._stringConstant_ != null)
         {
-            _stringConstant_.parent(null);
+            this._stringConstant_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class AClzzConstant extends PConstant
             node.parent(this);
         }
 
-        _stringConstant_ = node;
+        this._stringConstant_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_id_)
-            + toString(_stringConstant_);
+            + toString(this._id_)
+            + toString(this._stringConstant_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_id_ == child)
+        // Remove child
+        if(this._id_ == child)
         {
-            _id_ = null;
+            this._id_ = null;
             return;
         }
 
-        if(_stringConstant_ == child)
+        if(this._stringConstant_ == child)
         {
-            _stringConstant_ = null;
+            this._stringConstant_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_id_ == oldChild)
+        // Replace child
+        if(this._id_ == oldChild)
         {
             setId((TClass) newChild);
             return;
         }
 
-        if(_stringConstant_ == oldChild)
+        if(this._stringConstant_ == oldChild)
         {
             setStringConstant((TStringConstant) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

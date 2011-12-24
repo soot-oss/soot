@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AMultiArgList extends PArgList
 {
     private PImmediate _immediate_;
@@ -13,13 +13,15 @@ public final class AMultiArgList extends PArgList
 
     public AMultiArgList()
     {
+        // Constructor
     }
 
     public AMultiArgList(
-        PImmediate _immediate_,
-        TComma _comma_,
-        PArgList _argList_)
+        @SuppressWarnings("hiding") PImmediate _immediate_,
+        @SuppressWarnings("hiding") TComma _comma_,
+        @SuppressWarnings("hiding") PArgList _argList_)
     {
+        // Constructor
         setImmediate(_immediate_);
 
         setComma(_comma_);
@@ -27,12 +29,14 @@ public final class AMultiArgList extends PArgList
         setArgList(_argList_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AMultiArgList(
-            (PImmediate) cloneNode(_immediate_),
-            (TComma) cloneNode(_comma_),
-            (PArgList) cloneNode(_argList_));
+            cloneNode(this._immediate_),
+            cloneNode(this._comma_),
+            cloneNode(this._argList_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AMultiArgList extends PArgList
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AMultiArgList extends PArgList
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
     public TComma getComma()
     {
-        return _comma_;
+        return this._comma_;
     }
 
     public void setComma(TComma node)
     {
-        if(_comma_ != null)
+        if(this._comma_ != null)
         {
-            _comma_.parent(null);
+            this._comma_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AMultiArgList extends PArgList
             node.parent(this);
         }
 
-        _comma_ = node;
+        this._comma_ = node;
     }
 
     public PArgList getArgList()
     {
-        return _argList_;
+        return this._argList_;
     }
 
     public void setArgList(PArgList node)
     {
-        if(_argList_ != null)
+        if(this._argList_ != null)
         {
-            _argList_.parent(null);
+            this._argList_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AMultiArgList extends PArgList
             node.parent(this);
         }
 
-        _argList_ = node;
+        this._argList_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_immediate_)
-            + toString(_comma_)
-            + toString(_argList_);
+            + toString(this._immediate_)
+            + toString(this._comma_)
+            + toString(this._argList_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_immediate_ == child)
+        // Remove child
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
-        if(_comma_ == child)
+        if(this._comma_ == child)
         {
-            _comma_ = null;
+            this._comma_ = null;
             return;
         }
 
-        if(_argList_ == child)
+        if(this._argList_ == child)
         {
-            _argList_ = null;
+            this._argList_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_immediate_ == oldChild)
+        // Replace child
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
-        if(_comma_ == oldChild)
+        if(this._comma_ == oldChild)
         {
             setComma((TComma) newChild);
             return;
         }
 
-        if(_argList_ == oldChild)
+        if(this._argList_ == oldChild)
         {
             setArgList((PArgList) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

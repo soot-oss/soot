@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmplBinop extends PBinop
 {
     private TCmpl _cmpl_;
 
     public ACmplBinop()
     {
+        // Constructor
     }
 
     public ACmplBinop(
-        TCmpl _cmpl_)
+        @SuppressWarnings("hiding") TCmpl _cmpl_)
     {
+        // Constructor
         setCmpl(_cmpl_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmplBinop(
-            (TCmpl) cloneNode(_cmpl_));
+            cloneNode(this._cmpl_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmplBinop extends PBinop
 
     public TCmpl getCmpl()
     {
-        return _cmpl_;
+        return this._cmpl_;
     }
 
     public void setCmpl(TCmpl node)
     {
-        if(_cmpl_ != null)
+        if(this._cmpl_ != null)
         {
-            _cmpl_.parent(null);
+            this._cmpl_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmplBinop extends PBinop
             node.parent(this);
         }
 
-        _cmpl_ = node;
+        this._cmpl_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmpl_);
+            + toString(this._cmpl_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmpl_ == child)
+        // Remove child
+        if(this._cmpl_ == child)
         {
-            _cmpl_ = null;
+            this._cmpl_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmpl_ == oldChild)
+        // Replace child
+        if(this._cmpl_ == oldChild)
         {
             setCmpl((TCmpl) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

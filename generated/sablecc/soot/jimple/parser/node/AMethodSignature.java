@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AMethodSignature extends PMethodSignature
 {
     private TCmplt _cmplt_;
@@ -19,19 +19,21 @@ public final class AMethodSignature extends PMethodSignature
 
     public AMethodSignature()
     {
+        // Constructor
     }
 
     public AMethodSignature(
-        TCmplt _cmplt_,
-        PClassName _className_,
-        TColon _first_,
-        PType _type_,
-        PName _methodName_,
-        TLParen _lParen_,
-        PParameterList _parameterList_,
-        TRParen _rParen_,
-        TCmpgt _cmpgt_)
+        @SuppressWarnings("hiding") TCmplt _cmplt_,
+        @SuppressWarnings("hiding") PClassName _className_,
+        @SuppressWarnings("hiding") TColon _first_,
+        @SuppressWarnings("hiding") PType _type_,
+        @SuppressWarnings("hiding") PName _methodName_,
+        @SuppressWarnings("hiding") TLParen _lParen_,
+        @SuppressWarnings("hiding") PParameterList _parameterList_,
+        @SuppressWarnings("hiding") TRParen _rParen_,
+        @SuppressWarnings("hiding") TCmpgt _cmpgt_)
     {
+        // Constructor
         setCmplt(_cmplt_);
 
         setClassName(_className_);
@@ -51,18 +53,20 @@ public final class AMethodSignature extends PMethodSignature
         setCmpgt(_cmpgt_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AMethodSignature(
-            (TCmplt) cloneNode(_cmplt_),
-            (PClassName) cloneNode(_className_),
-            (TColon) cloneNode(_first_),
-            (PType) cloneNode(_type_),
-            (PName) cloneNode(_methodName_),
-            (TLParen) cloneNode(_lParen_),
-            (PParameterList) cloneNode(_parameterList_),
-            (TRParen) cloneNode(_rParen_),
-            (TCmpgt) cloneNode(_cmpgt_));
+            cloneNode(this._cmplt_),
+            cloneNode(this._className_),
+            cloneNode(this._first_),
+            cloneNode(this._type_),
+            cloneNode(this._methodName_),
+            cloneNode(this._lParen_),
+            cloneNode(this._parameterList_),
+            cloneNode(this._rParen_),
+            cloneNode(this._cmpgt_));
     }
 
     public void apply(Switch sw)
@@ -72,14 +76,14 @@ public final class AMethodSignature extends PMethodSignature
 
     public TCmplt getCmplt()
     {
-        return _cmplt_;
+        return this._cmplt_;
     }
 
     public void setCmplt(TCmplt node)
     {
-        if(_cmplt_ != null)
+        if(this._cmplt_ != null)
         {
-            _cmplt_.parent(null);
+            this._cmplt_.parent(null);
         }
 
         if(node != null)
@@ -92,19 +96,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _cmplt_ = node;
+        this._cmplt_ = node;
     }
 
     public PClassName getClassName()
     {
-        return _className_;
+        return this._className_;
     }
 
     public void setClassName(PClassName node)
     {
-        if(_className_ != null)
+        if(this._className_ != null)
         {
-            _className_.parent(null);
+            this._className_.parent(null);
         }
 
         if(node != null)
@@ -117,19 +121,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _className_ = node;
+        this._className_ = node;
     }
 
     public TColon getFirst()
     {
-        return _first_;
+        return this._first_;
     }
 
     public void setFirst(TColon node)
     {
-        if(_first_ != null)
+        if(this._first_ != null)
         {
-            _first_.parent(null);
+            this._first_.parent(null);
         }
 
         if(node != null)
@@ -142,19 +146,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _first_ = node;
+        this._first_ = node;
     }
 
     public PType getType()
     {
-        return _type_;
+        return this._type_;
     }
 
     public void setType(PType node)
     {
-        if(_type_ != null)
+        if(this._type_ != null)
         {
-            _type_.parent(null);
+            this._type_.parent(null);
         }
 
         if(node != null)
@@ -167,19 +171,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _type_ = node;
+        this._type_ = node;
     }
 
     public PName getMethodName()
     {
-        return _methodName_;
+        return this._methodName_;
     }
 
     public void setMethodName(PName node)
     {
-        if(_methodName_ != null)
+        if(this._methodName_ != null)
         {
-            _methodName_.parent(null);
+            this._methodName_.parent(null);
         }
 
         if(node != null)
@@ -192,19 +196,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _methodName_ = node;
+        this._methodName_ = node;
     }
 
     public TLParen getLParen()
     {
-        return _lParen_;
+        return this._lParen_;
     }
 
     public void setLParen(TLParen node)
     {
-        if(_lParen_ != null)
+        if(this._lParen_ != null)
         {
-            _lParen_.parent(null);
+            this._lParen_.parent(null);
         }
 
         if(node != null)
@@ -217,19 +221,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _lParen_ = node;
+        this._lParen_ = node;
     }
 
     public PParameterList getParameterList()
     {
-        return _parameterList_;
+        return this._parameterList_;
     }
 
     public void setParameterList(PParameterList node)
     {
-        if(_parameterList_ != null)
+        if(this._parameterList_ != null)
         {
-            _parameterList_.parent(null);
+            this._parameterList_.parent(null);
         }
 
         if(node != null)
@@ -242,19 +246,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _parameterList_ = node;
+        this._parameterList_ = node;
     }
 
     public TRParen getRParen()
     {
-        return _rParen_;
+        return this._rParen_;
     }
 
     public void setRParen(TRParen node)
     {
-        if(_rParen_ != null)
+        if(this._rParen_ != null)
         {
-            _rParen_.parent(null);
+            this._rParen_.parent(null);
         }
 
         if(node != null)
@@ -267,19 +271,19 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _rParen_ = node;
+        this._rParen_ = node;
     }
 
     public TCmpgt getCmpgt()
     {
-        return _cmpgt_;
+        return this._cmpgt_;
     }
 
     public void setCmpgt(TCmpgt node)
     {
-        if(_cmpgt_ != null)
+        if(this._cmpgt_ != null)
         {
-            _cmpgt_.parent(null);
+            this._cmpgt_.parent(null);
         }
 
         if(node != null)
@@ -292,136 +296,143 @@ public final class AMethodSignature extends PMethodSignature
             node.parent(this);
         }
 
-        _cmpgt_ = node;
+        this._cmpgt_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmplt_)
-            + toString(_className_)
-            + toString(_first_)
-            + toString(_type_)
-            + toString(_methodName_)
-            + toString(_lParen_)
-            + toString(_parameterList_)
-            + toString(_rParen_)
-            + toString(_cmpgt_);
+            + toString(this._cmplt_)
+            + toString(this._className_)
+            + toString(this._first_)
+            + toString(this._type_)
+            + toString(this._methodName_)
+            + toString(this._lParen_)
+            + toString(this._parameterList_)
+            + toString(this._rParen_)
+            + toString(this._cmpgt_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmplt_ == child)
+        // Remove child
+        if(this._cmplt_ == child)
         {
-            _cmplt_ = null;
+            this._cmplt_ = null;
             return;
         }
 
-        if(_className_ == child)
+        if(this._className_ == child)
         {
-            _className_ = null;
+            this._className_ = null;
             return;
         }
 
-        if(_first_ == child)
+        if(this._first_ == child)
         {
-            _first_ = null;
+            this._first_ = null;
             return;
         }
 
-        if(_type_ == child)
+        if(this._type_ == child)
         {
-            _type_ = null;
+            this._type_ = null;
             return;
         }
 
-        if(_methodName_ == child)
+        if(this._methodName_ == child)
         {
-            _methodName_ = null;
+            this._methodName_ = null;
             return;
         }
 
-        if(_lParen_ == child)
+        if(this._lParen_ == child)
         {
-            _lParen_ = null;
+            this._lParen_ = null;
             return;
         }
 
-        if(_parameterList_ == child)
+        if(this._parameterList_ == child)
         {
-            _parameterList_ = null;
+            this._parameterList_ = null;
             return;
         }
 
-        if(_rParen_ == child)
+        if(this._rParen_ == child)
         {
-            _rParen_ = null;
+            this._rParen_ = null;
             return;
         }
 
-        if(_cmpgt_ == child)
+        if(this._cmpgt_ == child)
         {
-            _cmpgt_ = null;
+            this._cmpgt_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmplt_ == oldChild)
+        // Replace child
+        if(this._cmplt_ == oldChild)
         {
             setCmplt((TCmplt) newChild);
             return;
         }
 
-        if(_className_ == oldChild)
+        if(this._className_ == oldChild)
         {
             setClassName((PClassName) newChild);
             return;
         }
 
-        if(_first_ == oldChild)
+        if(this._first_ == oldChild)
         {
             setFirst((TColon) newChild);
             return;
         }
 
-        if(_type_ == oldChild)
+        if(this._type_ == oldChild)
         {
             setType((PType) newChild);
             return;
         }
 
-        if(_methodName_ == oldChild)
+        if(this._methodName_ == oldChild)
         {
             setMethodName((PName) newChild);
             return;
         }
 
-        if(_lParen_ == oldChild)
+        if(this._lParen_ == oldChild)
         {
             setLParen((TLParen) newChild);
             return;
         }
 
-        if(_parameterList_ == oldChild)
+        if(this._parameterList_ == oldChild)
         {
             setParameterList((PParameterList) newChild);
             return;
         }
 
-        if(_rParen_ == oldChild)
+        if(this._rParen_ == oldChild)
         {
             setRParen((TRParen) newChild);
             return;
         }
 
-        if(_cmpgt_ == oldChild)
+        if(this._cmpgt_ == oldChild)
         {
             setCmpgt((TCmpgt) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

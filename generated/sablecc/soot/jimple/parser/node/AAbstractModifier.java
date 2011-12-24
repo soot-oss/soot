@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AAbstractModifier extends PModifier
 {
     private TAbstract _abstract_;
 
     public AAbstractModifier()
     {
+        // Constructor
     }
 
     public AAbstractModifier(
-        TAbstract _abstract_)
+        @SuppressWarnings("hiding") TAbstract _abstract_)
     {
+        // Constructor
         setAbstract(_abstract_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AAbstractModifier(
-            (TAbstract) cloneNode(_abstract_));
+            cloneNode(this._abstract_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AAbstractModifier extends PModifier
 
     public TAbstract getAbstract()
     {
-        return _abstract_;
+        return this._abstract_;
     }
 
     public void setAbstract(TAbstract node)
     {
-        if(_abstract_ != null)
+        if(this._abstract_ != null)
         {
-            _abstract_.parent(null);
+            this._abstract_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AAbstractModifier extends PModifier
             node.parent(this);
         }
 
-        _abstract_ = node;
+        this._abstract_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_abstract_);
+            + toString(this._abstract_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_abstract_ == child)
+        // Remove child
+        if(this._abstract_ == child)
         {
-            _abstract_ = null;
+            this._abstract_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_abstract_ == oldChild)
+        // Replace child
+        if(this._abstract_ == oldChild)
         {
             setAbstract((TAbstract) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

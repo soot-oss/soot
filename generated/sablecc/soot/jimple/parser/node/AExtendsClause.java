@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AExtendsClause extends PExtendsClause
 {
     private TExtends _extends_;
@@ -12,22 +12,26 @@ public final class AExtendsClause extends PExtendsClause
 
     public AExtendsClause()
     {
+        // Constructor
     }
 
     public AExtendsClause(
-        TExtends _extends_,
-        PClassName _className_)
+        @SuppressWarnings("hiding") TExtends _extends_,
+        @SuppressWarnings("hiding") PClassName _className_)
     {
+        // Constructor
         setExtends(_extends_);
 
         setClassName(_className_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AExtendsClause(
-            (TExtends) cloneNode(_extends_),
-            (PClassName) cloneNode(_className_));
+            cloneNode(this._extends_),
+            cloneNode(this._className_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class AExtendsClause extends PExtendsClause
 
     public TExtends getExtends()
     {
-        return _extends_;
+        return this._extends_;
     }
 
     public void setExtends(TExtends node)
     {
-        if(_extends_ != null)
+        if(this._extends_ != null)
         {
-            _extends_.parent(null);
+            this._extends_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class AExtendsClause extends PExtendsClause
             node.parent(this);
         }
 
-        _extends_ = node;
+        this._extends_ = node;
     }
 
     public PClassName getClassName()
     {
-        return _className_;
+        return this._className_;
     }
 
     public void setClassName(PClassName node)
     {
-        if(_className_ != null)
+        if(this._className_ != null)
         {
-            _className_.parent(null);
+            this._className_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class AExtendsClause extends PExtendsClause
             node.parent(this);
         }
 
-        _className_ = node;
+        this._className_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_extends_)
-            + toString(_className_);
+            + toString(this._extends_)
+            + toString(this._className_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_extends_ == child)
+        // Remove child
+        if(this._extends_ == child)
         {
-            _extends_ = null;
+            this._extends_ = null;
             return;
         }
 
-        if(_className_ == child)
+        if(this._className_ == child)
         {
-            _className_ = null;
+            this._className_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_extends_ == oldChild)
+        // Replace child
+        if(this._extends_ == oldChild)
         {
             setExtends((TExtends) newChild);
             return;
         }
 
-        if(_className_ == oldChild)
+        if(this._className_ == oldChild)
         {
             setClassName((PClassName) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

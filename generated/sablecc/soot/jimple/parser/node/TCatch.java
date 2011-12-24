@@ -4,6 +4,7 @@ package soot.jimple.parser.node;
 
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class TCatch extends Token
 {
     public TCatch()
@@ -18,6 +19,7 @@ public final class TCatch extends Token
         setPos(pos);
     }
 
+    @Override
     public Object clone()
     {
       return new TCatch(getLine(), getPos());
@@ -28,7 +30,8 @@ public final class TCatch extends Token
         ((Analysis) sw).caseTCatch(this);
     }
 
-    public void setText(String text)
+    @Override
+    public void setText(@SuppressWarnings("unused") String text)
     {
         throw new RuntimeException("Cannot change TCatch text.");
     }

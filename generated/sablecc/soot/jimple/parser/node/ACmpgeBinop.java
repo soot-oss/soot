@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmpgeBinop extends PBinop
 {
     private TCmpge _cmpge_;
 
     public ACmpgeBinop()
     {
+        // Constructor
     }
 
     public ACmpgeBinop(
-        TCmpge _cmpge_)
+        @SuppressWarnings("hiding") TCmpge _cmpge_)
     {
+        // Constructor
         setCmpge(_cmpge_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmpgeBinop(
-            (TCmpge) cloneNode(_cmpge_));
+            cloneNode(this._cmpge_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmpgeBinop extends PBinop
 
     public TCmpge getCmpge()
     {
-        return _cmpge_;
+        return this._cmpge_;
     }
 
     public void setCmpge(TCmpge node)
     {
-        if(_cmpge_ != null)
+        if(this._cmpge_ != null)
         {
-            _cmpge_.parent(null);
+            this._cmpge_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmpgeBinop extends PBinop
             node.parent(this);
         }
 
-        _cmpge_ = node;
+        this._cmpge_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmpge_);
+            + toString(this._cmpge_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmpge_ == child)
+        // Remove child
+        if(this._cmpge_ == child)
         {
-            _cmpge_ = null;
+            this._cmpge_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmpge_ == oldChild)
+        // Replace child
+        if(this._cmpge_ == oldChild)
         {
             setCmpge((TCmpge) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

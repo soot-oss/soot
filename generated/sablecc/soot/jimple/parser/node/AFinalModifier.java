@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AFinalModifier extends PModifier
 {
     private TFinal _final_;
 
     public AFinalModifier()
     {
+        // Constructor
     }
 
     public AFinalModifier(
-        TFinal _final_)
+        @SuppressWarnings("hiding") TFinal _final_)
     {
+        // Constructor
         setFinal(_final_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AFinalModifier(
-            (TFinal) cloneNode(_final_));
+            cloneNode(this._final_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AFinalModifier extends PModifier
 
     public TFinal getFinal()
     {
-        return _final_;
+        return this._final_;
     }
 
     public void setFinal(TFinal node)
     {
-        if(_final_ != null)
+        if(this._final_ != null)
         {
-            _final_.parent(null);
+            this._final_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AFinalModifier extends PModifier
             node.parent(this);
         }
 
-        _final_ = node;
+        this._final_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_final_);
+            + toString(this._final_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_final_ == child)
+        // Remove child
+        if(this._final_ == child)
         {
-            _final_ = null;
+            this._final_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_final_ == oldChild)
+        // Replace child
+        if(this._final_ == oldChild)
         {
             setFinal((TFinal) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AEnumModifier extends PModifier
 {
     private TEnum _enum_;
 
     public AEnumModifier()
     {
+        // Constructor
     }
 
     public AEnumModifier(
-        TEnum _enum_)
+        @SuppressWarnings("hiding") TEnum _enum_)
     {
+        // Constructor
         setEnum(_enum_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AEnumModifier(
-            (TEnum) cloneNode(_enum_));
+            cloneNode(this._enum_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AEnumModifier extends PModifier
 
     public TEnum getEnum()
     {
-        return _enum_;
+        return this._enum_;
     }
 
     public void setEnum(TEnum node)
     {
-        if(_enum_ != null)
+        if(this._enum_ != null)
         {
-            _enum_.parent(null);
+            this._enum_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AEnumModifier extends PModifier
             node.parent(this);
         }
 
-        _enum_ = node;
+        this._enum_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_enum_);
+            + toString(this._enum_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_enum_ == child)
+        // Remove child
+        if(this._enum_ == child)
         {
-            _enum_ = null;
+            this._enum_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_enum_ == oldChild)
+        // Replace child
+        if(this._enum_ == oldChild)
         {
             setEnum((TEnum) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

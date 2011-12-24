@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACastExpression extends PExpression
 {
     private TLParen _lParen_;
@@ -14,14 +14,16 @@ public final class ACastExpression extends PExpression
 
     public ACastExpression()
     {
+        // Constructor
     }
 
     public ACastExpression(
-        TLParen _lParen_,
-        PNonvoidType _nonvoidType_,
-        TRParen _rParen_,
-        PImmediate _immediate_)
+        @SuppressWarnings("hiding") TLParen _lParen_,
+        @SuppressWarnings("hiding") PNonvoidType _nonvoidType_,
+        @SuppressWarnings("hiding") TRParen _rParen_,
+        @SuppressWarnings("hiding") PImmediate _immediate_)
     {
+        // Constructor
         setLParen(_lParen_);
 
         setNonvoidType(_nonvoidType_);
@@ -31,13 +33,15 @@ public final class ACastExpression extends PExpression
         setImmediate(_immediate_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACastExpression(
-            (TLParen) cloneNode(_lParen_),
-            (PNonvoidType) cloneNode(_nonvoidType_),
-            (TRParen) cloneNode(_rParen_),
-            (PImmediate) cloneNode(_immediate_));
+            cloneNode(this._lParen_),
+            cloneNode(this._nonvoidType_),
+            cloneNode(this._rParen_),
+            cloneNode(this._immediate_));
     }
 
     public void apply(Switch sw)
@@ -47,14 +51,14 @@ public final class ACastExpression extends PExpression
 
     public TLParen getLParen()
     {
-        return _lParen_;
+        return this._lParen_;
     }
 
     public void setLParen(TLParen node)
     {
-        if(_lParen_ != null)
+        if(this._lParen_ != null)
         {
-            _lParen_.parent(null);
+            this._lParen_.parent(null);
         }
 
         if(node != null)
@@ -67,19 +71,19 @@ public final class ACastExpression extends PExpression
             node.parent(this);
         }
 
-        _lParen_ = node;
+        this._lParen_ = node;
     }
 
     public PNonvoidType getNonvoidType()
     {
-        return _nonvoidType_;
+        return this._nonvoidType_;
     }
 
     public void setNonvoidType(PNonvoidType node)
     {
-        if(_nonvoidType_ != null)
+        if(this._nonvoidType_ != null)
         {
-            _nonvoidType_.parent(null);
+            this._nonvoidType_.parent(null);
         }
 
         if(node != null)
@@ -92,19 +96,19 @@ public final class ACastExpression extends PExpression
             node.parent(this);
         }
 
-        _nonvoidType_ = node;
+        this._nonvoidType_ = node;
     }
 
     public TRParen getRParen()
     {
-        return _rParen_;
+        return this._rParen_;
     }
 
     public void setRParen(TRParen node)
     {
-        if(_rParen_ != null)
+        if(this._rParen_ != null)
         {
-            _rParen_.parent(null);
+            this._rParen_.parent(null);
         }
 
         if(node != null)
@@ -117,19 +121,19 @@ public final class ACastExpression extends PExpression
             node.parent(this);
         }
 
-        _rParen_ = node;
+        this._rParen_ = node;
     }
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -142,71 +146,78 @@ public final class ACastExpression extends PExpression
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_lParen_)
-            + toString(_nonvoidType_)
-            + toString(_rParen_)
-            + toString(_immediate_);
+            + toString(this._lParen_)
+            + toString(this._nonvoidType_)
+            + toString(this._rParen_)
+            + toString(this._immediate_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_lParen_ == child)
+        // Remove child
+        if(this._lParen_ == child)
         {
-            _lParen_ = null;
+            this._lParen_ = null;
             return;
         }
 
-        if(_nonvoidType_ == child)
+        if(this._nonvoidType_ == child)
         {
-            _nonvoidType_ = null;
+            this._nonvoidType_ = null;
             return;
         }
 
-        if(_rParen_ == child)
+        if(this._rParen_ == child)
         {
-            _rParen_ = null;
+            this._rParen_ = null;
             return;
         }
 
-        if(_immediate_ == child)
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_lParen_ == oldChild)
+        // Replace child
+        if(this._lParen_ == oldChild)
         {
             setLParen((TLParen) newChild);
             return;
         }
 
-        if(_nonvoidType_ == oldChild)
+        if(this._nonvoidType_ == oldChild)
         {
             setNonvoidType((PNonvoidType) newChild);
             return;
         }
 
-        if(_rParen_ == oldChild)
+        if(this._rParen_ == oldChild)
         {
             setRParen((TRParen) newChild);
             return;
         }
 
-        if(_immediate_ == oldChild)
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AReturnStatement extends PStatement
 {
     private TReturn _return_;
@@ -13,13 +13,15 @@ public final class AReturnStatement extends PStatement
 
     public AReturnStatement()
     {
+        // Constructor
     }
 
     public AReturnStatement(
-        TReturn _return_,
-        PImmediate _immediate_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TReturn _return_,
+        @SuppressWarnings("hiding") PImmediate _immediate_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setReturn(_return_);
 
         setImmediate(_immediate_);
@@ -27,12 +29,14 @@ public final class AReturnStatement extends PStatement
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AReturnStatement(
-            (TReturn) cloneNode(_return_),
-            (PImmediate) cloneNode(_immediate_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._return_),
+            cloneNode(this._immediate_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AReturnStatement extends PStatement
 
     public TReturn getReturn()
     {
-        return _return_;
+        return this._return_;
     }
 
     public void setReturn(TReturn node)
     {
-        if(_return_ != null)
+        if(this._return_ != null)
         {
-            _return_.parent(null);
+            this._return_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AReturnStatement extends PStatement
             node.parent(this);
         }
 
-        _return_ = node;
+        this._return_ = node;
     }
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AReturnStatement extends PStatement
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AReturnStatement extends PStatement
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_return_)
-            + toString(_immediate_)
-            + toString(_semicolon_);
+            + toString(this._return_)
+            + toString(this._immediate_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_return_ == child)
+        // Remove child
+        if(this._return_ == child)
         {
-            _return_ = null;
+            this._return_ = null;
             return;
         }
 
-        if(_immediate_ == child)
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_return_ == oldChild)
+        // Replace child
+        if(this._return_ == oldChild)
         {
             setReturn((TReturn) newChild);
             return;
         }
 
-        if(_immediate_ == oldChild)
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ASimpleNewExpr extends PNewExpr
 {
     private TNew _new_;
@@ -12,22 +12,26 @@ public final class ASimpleNewExpr extends PNewExpr
 
     public ASimpleNewExpr()
     {
+        // Constructor
     }
 
     public ASimpleNewExpr(
-        TNew _new_,
-        PBaseType _baseType_)
+        @SuppressWarnings("hiding") TNew _new_,
+        @SuppressWarnings("hiding") PBaseType _baseType_)
     {
+        // Constructor
         setNew(_new_);
 
         setBaseType(_baseType_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ASimpleNewExpr(
-            (TNew) cloneNode(_new_),
-            (PBaseType) cloneNode(_baseType_));
+            cloneNode(this._new_),
+            cloneNode(this._baseType_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class ASimpleNewExpr extends PNewExpr
 
     public TNew getNew()
     {
-        return _new_;
+        return this._new_;
     }
 
     public void setNew(TNew node)
     {
-        if(_new_ != null)
+        if(this._new_ != null)
         {
-            _new_.parent(null);
+            this._new_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class ASimpleNewExpr extends PNewExpr
             node.parent(this);
         }
 
-        _new_ = node;
+        this._new_ = node;
     }
 
     public PBaseType getBaseType()
     {
-        return _baseType_;
+        return this._baseType_;
     }
 
     public void setBaseType(PBaseType node)
     {
-        if(_baseType_ != null)
+        if(this._baseType_ != null)
         {
-            _baseType_.parent(null);
+            this._baseType_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class ASimpleNewExpr extends PNewExpr
             node.parent(this);
         }
 
-        _baseType_ = node;
+        this._baseType_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_new_)
-            + toString(_baseType_);
+            + toString(this._new_)
+            + toString(this._baseType_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_new_ == child)
+        // Remove child
+        if(this._new_ == child)
         {
-            _new_ = null;
+            this._new_ = null;
             return;
         }
 
-        if(_baseType_ == child)
+        if(this._baseType_ == child)
         {
-            _baseType_ = null;
+            this._baseType_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_new_ == oldChild)
+        // Replace child
+        if(this._new_ == oldChild)
         {
             setNew((TNew) newChild);
             return;
         }
 
-        if(_baseType_ == oldChild)
+        if(this._baseType_ == oldChild)
         {
             setBaseType((PBaseType) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

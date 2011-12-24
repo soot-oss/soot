@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AProtectedModifier extends PModifier
 {
     private TProtected _protected_;
 
     public AProtectedModifier()
     {
+        // Constructor
     }
 
     public AProtectedModifier(
-        TProtected _protected_)
+        @SuppressWarnings("hiding") TProtected _protected_)
     {
+        // Constructor
         setProtected(_protected_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AProtectedModifier(
-            (TProtected) cloneNode(_protected_));
+            cloneNode(this._protected_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AProtectedModifier extends PModifier
 
     public TProtected getProtected()
     {
-        return _protected_;
+        return this._protected_;
     }
 
     public void setProtected(TProtected node)
     {
-        if(_protected_ != null)
+        if(this._protected_ != null)
         {
-            _protected_.parent(null);
+            this._protected_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AProtectedModifier extends PModifier
             node.parent(this);
         }
 
-        _protected_ = node;
+        this._protected_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_protected_);
+            + toString(this._protected_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_protected_ == child)
+        // Remove child
+        if(this._protected_ == child)
         {
-            _protected_ = null;
+            this._protected_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_protected_ == oldChild)
+        // Replace child
+        if(this._protected_ == oldChild)
         {
             setProtected((TProtected) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ADefaultCaseLabel extends PCaseLabel
 {
     private TDefault _default_;
 
     public ADefaultCaseLabel()
     {
+        // Constructor
     }
 
     public ADefaultCaseLabel(
-        TDefault _default_)
+        @SuppressWarnings("hiding") TDefault _default_)
     {
+        // Constructor
         setDefault(_default_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ADefaultCaseLabel(
-            (TDefault) cloneNode(_default_));
+            cloneNode(this._default_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ADefaultCaseLabel extends PCaseLabel
 
     public TDefault getDefault()
     {
-        return _default_;
+        return this._default_;
     }
 
     public void setDefault(TDefault node)
     {
-        if(_default_ != null)
+        if(this._default_ != null)
         {
-            _default_.parent(null);
+            this._default_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ADefaultCaseLabel extends PCaseLabel
             node.parent(this);
         }
 
-        _default_ = node;
+        this._default_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_default_);
+            + toString(this._default_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_default_ == child)
+        // Remove child
+        if(this._default_ == child)
         {
-            _default_ = null;
+            this._default_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_default_ == oldChild)
+        // Replace child
+        if(this._default_ == oldChild)
         {
             setDefault((TDefault) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

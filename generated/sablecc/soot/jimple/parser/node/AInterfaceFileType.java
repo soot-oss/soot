@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AInterfaceFileType extends PFileType
 {
     private TInterface _interface_;
 
     public AInterfaceFileType()
     {
+        // Constructor
     }
 
     public AInterfaceFileType(
-        TInterface _interface_)
+        @SuppressWarnings("hiding") TInterface _interface_)
     {
+        // Constructor
         setInterface(_interface_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AInterfaceFileType(
-            (TInterface) cloneNode(_interface_));
+            cloneNode(this._interface_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AInterfaceFileType extends PFileType
 
     public TInterface getInterface()
     {
-        return _interface_;
+        return this._interface_;
     }
 
     public void setInterface(TInterface node)
     {
-        if(_interface_ != null)
+        if(this._interface_ != null)
         {
-            _interface_.parent(null);
+            this._interface_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AInterfaceFileType extends PFileType
             node.parent(this);
         }
 
-        _interface_ = node;
+        this._interface_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_interface_);
+            + toString(this._interface_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_interface_ == child)
+        // Remove child
+        if(this._interface_ == child)
         {
-            _interface_ = null;
+            this._interface_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_interface_ == oldChild)
+        // Replace child
+        if(this._interface_ == oldChild)
         {
             setInterface((TInterface) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

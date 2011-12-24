@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmpgBinop extends PBinop
 {
     private TCmpg _cmpg_;
 
     public ACmpgBinop()
     {
+        // Constructor
     }
 
     public ACmpgBinop(
-        TCmpg _cmpg_)
+        @SuppressWarnings("hiding") TCmpg _cmpg_)
     {
+        // Constructor
         setCmpg(_cmpg_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmpgBinop(
-            (TCmpg) cloneNode(_cmpg_));
+            cloneNode(this._cmpg_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmpgBinop extends PBinop
 
     public TCmpg getCmpg()
     {
-        return _cmpg_;
+        return this._cmpg_;
     }
 
     public void setCmpg(TCmpg node)
     {
-        if(_cmpg_ != null)
+        if(this._cmpg_ != null)
         {
-            _cmpg_.parent(null);
+            this._cmpg_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmpgBinop extends PBinop
             node.parent(this);
         }
 
-        _cmpg_ = node;
+        this._cmpg_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmpg_);
+            + toString(this._cmpg_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmpg_ == child)
+        // Remove child
+        if(this._cmpg_ == child)
         {
-            _cmpg_ = null;
+            this._cmpg_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmpg_ == oldChild)
+        // Replace child
+        if(this._cmpg_ == oldChild)
         {
             setCmpg((TCmpg) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

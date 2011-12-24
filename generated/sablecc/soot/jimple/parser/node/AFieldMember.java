@@ -5,27 +5,27 @@ package soot.jimple.parser.node;
 import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AFieldMember extends PMember
 {
-    private final LinkedList _modifier_ = new TypedLinkedList(new Modifier_Cast());
+    private final LinkedList<PModifier> _modifier_ = new LinkedList<PModifier>();
     private PType _type_;
     private PName _name_;
     private TSemicolon _semicolon_;
 
     public AFieldMember()
     {
+        // Constructor
     }
 
     public AFieldMember(
-        List _modifier_,
-        PType _type_,
-        PName _name_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") List<PModifier> _modifier_,
+        @SuppressWarnings("hiding") PType _type_,
+        @SuppressWarnings("hiding") PName _name_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
-        {
-            this._modifier_.clear();
-            this._modifier_.addAll(_modifier_);
-        }
+        // Constructor
+        setModifier(_modifier_);
 
         setType(_type_);
 
@@ -35,36 +35,14 @@ public final class AFieldMember extends PMember
 
     }
 
-    public AFieldMember(
-        XPModifier _modifier_,
-        PType _type_,
-        PName _name_,
-        TSemicolon _semicolon_)
-    {
-        if(_modifier_ != null)
-        {
-            while(_modifier_ instanceof X1PModifier)
-            {
-                this._modifier_.addFirst(((X1PModifier) _modifier_).getPModifier());
-                _modifier_ = ((X1PModifier) _modifier_).getXPModifier();
-            }
-            this._modifier_.addFirst(((X2PModifier) _modifier_).getPModifier());
-        }
-
-        setType(_type_);
-
-        setName(_name_);
-
-        setSemicolon(_semicolon_);
-
-    }
+    @Override
     public Object clone()
     {
         return new AFieldMember(
-            cloneList(_modifier_),
-            (PType) cloneNode(_type_),
-            (PName) cloneNode(_name_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneList(this._modifier_),
+            cloneNode(this._type_),
+            cloneNode(this._name_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -72,27 +50,36 @@ public final class AFieldMember extends PMember
         ((Analysis) sw).caseAFieldMember(this);
     }
 
-    public LinkedList getModifier()
+    public LinkedList<PModifier> getModifier()
     {
-        return _modifier_;
+        return this._modifier_;
     }
 
-    public void setModifier(List list)
+    public void setModifier(List<PModifier> list)
     {
-        _modifier_.clear();
-        _modifier_.addAll(list);
+        this._modifier_.clear();
+        this._modifier_.addAll(list);
+        for(PModifier e : list)
+        {
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+        }
     }
 
     public PType getType()
     {
-        return _type_;
+        return this._type_;
     }
 
     public void setType(PType node)
     {
-        if(_type_ != null)
+        if(this._type_ != null)
         {
-            _type_.parent(null);
+            this._type_.parent(null);
         }
 
         if(node != null)
@@ -105,19 +92,19 @@ public final class AFieldMember extends PMember
             node.parent(this);
         }
 
-        _type_ = node;
+        this._type_ = node;
     }
 
     public PName getName()
     {
-        return _name_;
+        return this._name_;
     }
 
     public void setName(PName node)
     {
-        if(_name_ != null)
+        if(this._name_ != null)
         {
-            _name_.parent(null);
+            this._name_.parent(null);
         }
 
         if(node != null)
@@ -130,19 +117,19 @@ public final class AFieldMember extends PMember
             node.parent(this);
         }
 
-        _name_ = node;
+        this._name_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -155,54 +142,61 @@ public final class AFieldMember extends PMember
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_modifier_)
-            + toString(_type_)
-            + toString(_name_)
-            + toString(_semicolon_);
+            + toString(this._modifier_)
+            + toString(this._type_)
+            + toString(this._name_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_modifier_.remove(child))
+        // Remove child
+        if(this._modifier_.remove(child))
         {
             return;
         }
 
-        if(_type_ == child)
+        if(this._type_ == child)
         {
-            _type_ = null;
+            this._type_ = null;
             return;
         }
 
-        if(_name_ == child)
+        if(this._name_ == child)
         {
-            _name_ = null;
+            this._name_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        for(ListIterator i = _modifier_.listIterator(); i.hasNext();)
+        // Replace child
+        for(ListIterator<PModifier> i = this._modifier_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set(newChild);
+                    i.set((PModifier) newChild);
+                    newChild.parent(this);
                     oldChild.parent(null);
                     return;
                 }
@@ -213,45 +207,24 @@ public final class AFieldMember extends PMember
             }
         }
 
-        if(_type_ == oldChild)
+        if(this._type_ == oldChild)
         {
             setType((PType) newChild);
             return;
         }
 
-        if(_name_ == oldChild)
+        if(this._name_ == oldChild)
         {
             setName((PName) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
-    }
-
-    private class Modifier_Cast implements Cast
-    {
-        public Object cast(Object o)
-        {
-            PModifier node = (PModifier) o;
-
-            if((node.parent() != null) &&
-                (node.parent() != AFieldMember.this))
-            {
-                node.parent().removeChild(node);
-            }
-
-            if((node.parent() == null) ||
-                (node.parent() != AFieldMember.this))
-            {
-                node.parent(AFieldMember.this);
-            }
-
-            return node;
-        }
+        throw new RuntimeException("Not a child.");
     }
 }

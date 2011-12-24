@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AClassNameMultiClassNameList extends PClassNameList
 {
     private PClassName _className_;
@@ -13,13 +13,15 @@ public final class AClassNameMultiClassNameList extends PClassNameList
 
     public AClassNameMultiClassNameList()
     {
+        // Constructor
     }
 
     public AClassNameMultiClassNameList(
-        PClassName _className_,
-        TComma _comma_,
-        PClassNameList _classNameList_)
+        @SuppressWarnings("hiding") PClassName _className_,
+        @SuppressWarnings("hiding") TComma _comma_,
+        @SuppressWarnings("hiding") PClassNameList _classNameList_)
     {
+        // Constructor
         setClassName(_className_);
 
         setComma(_comma_);
@@ -27,12 +29,14 @@ public final class AClassNameMultiClassNameList extends PClassNameList
         setClassNameList(_classNameList_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AClassNameMultiClassNameList(
-            (PClassName) cloneNode(_className_),
-            (TComma) cloneNode(_comma_),
-            (PClassNameList) cloneNode(_classNameList_));
+            cloneNode(this._className_),
+            cloneNode(this._comma_),
+            cloneNode(this._classNameList_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AClassNameMultiClassNameList extends PClassNameList
 
     public PClassName getClassName()
     {
-        return _className_;
+        return this._className_;
     }
 
     public void setClassName(PClassName node)
     {
-        if(_className_ != null)
+        if(this._className_ != null)
         {
-            _className_.parent(null);
+            this._className_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AClassNameMultiClassNameList extends PClassNameList
             node.parent(this);
         }
 
-        _className_ = node;
+        this._className_ = node;
     }
 
     public TComma getComma()
     {
-        return _comma_;
+        return this._comma_;
     }
 
     public void setComma(TComma node)
     {
-        if(_comma_ != null)
+        if(this._comma_ != null)
         {
-            _comma_.parent(null);
+            this._comma_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AClassNameMultiClassNameList extends PClassNameList
             node.parent(this);
         }
 
-        _comma_ = node;
+        this._comma_ = node;
     }
 
     public PClassNameList getClassNameList()
     {
-        return _classNameList_;
+        return this._classNameList_;
     }
 
     public void setClassNameList(PClassNameList node)
     {
-        if(_classNameList_ != null)
+        if(this._classNameList_ != null)
         {
-            _classNameList_.parent(null);
+            this._classNameList_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AClassNameMultiClassNameList extends PClassNameList
             node.parent(this);
         }
 
-        _classNameList_ = node;
+        this._classNameList_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_className_)
-            + toString(_comma_)
-            + toString(_classNameList_);
+            + toString(this._className_)
+            + toString(this._comma_)
+            + toString(this._classNameList_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_className_ == child)
+        // Remove child
+        if(this._className_ == child)
         {
-            _className_ = null;
+            this._className_ = null;
             return;
         }
 
-        if(_comma_ == child)
+        if(this._comma_ == child)
         {
-            _comma_ = null;
+            this._comma_ = null;
             return;
         }
 
-        if(_classNameList_ == child)
+        if(this._classNameList_ == child)
         {
-            _classNameList_ = null;
+            this._classNameList_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_className_ == oldChild)
+        // Replace child
+        if(this._className_ == oldChild)
         {
             setClassName((PClassName) newChild);
             return;
         }
 
-        if(_comma_ == oldChild)
+        if(this._comma_ == oldChild)
         {
             setComma((TComma) newChild);
             return;
         }
 
-        if(_classNameList_ == oldChild)
+        if(this._classNameList_ == oldChild)
         {
             setClassNameList((PClassNameList) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ALocalFieldRef extends PFieldRef
 {
     private PLocalName _localName_;
@@ -13,13 +13,15 @@ public final class ALocalFieldRef extends PFieldRef
 
     public ALocalFieldRef()
     {
+        // Constructor
     }
 
     public ALocalFieldRef(
-        PLocalName _localName_,
-        TDot _dot_,
-        PFieldSignature _fieldSignature_)
+        @SuppressWarnings("hiding") PLocalName _localName_,
+        @SuppressWarnings("hiding") TDot _dot_,
+        @SuppressWarnings("hiding") PFieldSignature _fieldSignature_)
     {
+        // Constructor
         setLocalName(_localName_);
 
         setDot(_dot_);
@@ -27,12 +29,14 @@ public final class ALocalFieldRef extends PFieldRef
         setFieldSignature(_fieldSignature_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ALocalFieldRef(
-            (PLocalName) cloneNode(_localName_),
-            (TDot) cloneNode(_dot_),
-            (PFieldSignature) cloneNode(_fieldSignature_));
+            cloneNode(this._localName_),
+            cloneNode(this._dot_),
+            cloneNode(this._fieldSignature_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class ALocalFieldRef extends PFieldRef
 
     public PLocalName getLocalName()
     {
-        return _localName_;
+        return this._localName_;
     }
 
     public void setLocalName(PLocalName node)
     {
-        if(_localName_ != null)
+        if(this._localName_ != null)
         {
-            _localName_.parent(null);
+            this._localName_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class ALocalFieldRef extends PFieldRef
             node.parent(this);
         }
 
-        _localName_ = node;
+        this._localName_ = node;
     }
 
     public TDot getDot()
     {
-        return _dot_;
+        return this._dot_;
     }
 
     public void setDot(TDot node)
     {
-        if(_dot_ != null)
+        if(this._dot_ != null)
         {
-            _dot_.parent(null);
+            this._dot_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class ALocalFieldRef extends PFieldRef
             node.parent(this);
         }
 
-        _dot_ = node;
+        this._dot_ = node;
     }
 
     public PFieldSignature getFieldSignature()
     {
-        return _fieldSignature_;
+        return this._fieldSignature_;
     }
 
     public void setFieldSignature(PFieldSignature node)
     {
-        if(_fieldSignature_ != null)
+        if(this._fieldSignature_ != null)
         {
-            _fieldSignature_.parent(null);
+            this._fieldSignature_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class ALocalFieldRef extends PFieldRef
             node.parent(this);
         }
 
-        _fieldSignature_ = node;
+        this._fieldSignature_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_localName_)
-            + toString(_dot_)
-            + toString(_fieldSignature_);
+            + toString(this._localName_)
+            + toString(this._dot_)
+            + toString(this._fieldSignature_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_localName_ == child)
+        // Remove child
+        if(this._localName_ == child)
         {
-            _localName_ = null;
+            this._localName_ = null;
             return;
         }
 
-        if(_dot_ == child)
+        if(this._dot_ == child)
         {
-            _dot_ = null;
+            this._dot_ = null;
             return;
         }
 
-        if(_fieldSignature_ == child)
+        if(this._fieldSignature_ == child)
         {
-            _fieldSignature_ = null;
+            this._fieldSignature_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_localName_ == oldChild)
+        // Replace child
+        if(this._localName_ == oldChild)
         {
             setLocalName((PLocalName) newChild);
             return;
         }
 
-        if(_dot_ == oldChild)
+        if(this._dot_ == oldChild)
         {
             setDot((TDot) newChild);
             return;
         }
 
-        if(_fieldSignature_ == oldChild)
+        if(this._fieldSignature_ == oldChild)
         {
             setFieldSignature((PFieldSignature) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

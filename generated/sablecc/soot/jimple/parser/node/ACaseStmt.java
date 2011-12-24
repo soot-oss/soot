@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACaseStmt extends PCaseStmt
 {
     private PCaseLabel _caseLabel_;
@@ -13,13 +13,15 @@ public final class ACaseStmt extends PCaseStmt
 
     public ACaseStmt()
     {
+        // Constructor
     }
 
     public ACaseStmt(
-        PCaseLabel _caseLabel_,
-        TColon _colon_,
-        PGotoStmt _gotoStmt_)
+        @SuppressWarnings("hiding") PCaseLabel _caseLabel_,
+        @SuppressWarnings("hiding") TColon _colon_,
+        @SuppressWarnings("hiding") PGotoStmt _gotoStmt_)
     {
+        // Constructor
         setCaseLabel(_caseLabel_);
 
         setColon(_colon_);
@@ -27,12 +29,14 @@ public final class ACaseStmt extends PCaseStmt
         setGotoStmt(_gotoStmt_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACaseStmt(
-            (PCaseLabel) cloneNode(_caseLabel_),
-            (TColon) cloneNode(_colon_),
-            (PGotoStmt) cloneNode(_gotoStmt_));
+            cloneNode(this._caseLabel_),
+            cloneNode(this._colon_),
+            cloneNode(this._gotoStmt_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class ACaseStmt extends PCaseStmt
 
     public PCaseLabel getCaseLabel()
     {
-        return _caseLabel_;
+        return this._caseLabel_;
     }
 
     public void setCaseLabel(PCaseLabel node)
     {
-        if(_caseLabel_ != null)
+        if(this._caseLabel_ != null)
         {
-            _caseLabel_.parent(null);
+            this._caseLabel_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class ACaseStmt extends PCaseStmt
             node.parent(this);
         }
 
-        _caseLabel_ = node;
+        this._caseLabel_ = node;
     }
 
     public TColon getColon()
     {
-        return _colon_;
+        return this._colon_;
     }
 
     public void setColon(TColon node)
     {
-        if(_colon_ != null)
+        if(this._colon_ != null)
         {
-            _colon_.parent(null);
+            this._colon_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class ACaseStmt extends PCaseStmt
             node.parent(this);
         }
 
-        _colon_ = node;
+        this._colon_ = node;
     }
 
     public PGotoStmt getGotoStmt()
     {
-        return _gotoStmt_;
+        return this._gotoStmt_;
     }
 
     public void setGotoStmt(PGotoStmt node)
     {
-        if(_gotoStmt_ != null)
+        if(this._gotoStmt_ != null)
         {
-            _gotoStmt_.parent(null);
+            this._gotoStmt_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class ACaseStmt extends PCaseStmt
             node.parent(this);
         }
 
-        _gotoStmt_ = node;
+        this._gotoStmt_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_caseLabel_)
-            + toString(_colon_)
-            + toString(_gotoStmt_);
+            + toString(this._caseLabel_)
+            + toString(this._colon_)
+            + toString(this._gotoStmt_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_caseLabel_ == child)
+        // Remove child
+        if(this._caseLabel_ == child)
         {
-            _caseLabel_ = null;
+            this._caseLabel_ = null;
             return;
         }
 
-        if(_colon_ == child)
+        if(this._colon_ == child)
         {
-            _colon_ = null;
+            this._colon_ = null;
             return;
         }
 
-        if(_gotoStmt_ == child)
+        if(this._gotoStmt_ == child)
         {
-            _gotoStmt_ = null;
+            this._gotoStmt_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_caseLabel_ == oldChild)
+        // Replace child
+        if(this._caseLabel_ == oldChild)
         {
             setCaseLabel((PCaseLabel) newChild);
             return;
         }
 
-        if(_colon_ == oldChild)
+        if(this._colon_ == oldChild)
         {
             setColon((TColon) newChild);
             return;
         }
 
-        if(_gotoStmt_ == oldChild)
+        if(this._gotoStmt_ == oldChild)
         {
             setGotoStmt((PGotoStmt) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

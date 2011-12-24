@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AClassNameSingleClassNameList extends PClassNameList
 {
     private PClassName _className_;
 
     public AClassNameSingleClassNameList()
     {
+        // Constructor
     }
 
     public AClassNameSingleClassNameList(
-        PClassName _className_)
+        @SuppressWarnings("hiding") PClassName _className_)
     {
+        // Constructor
         setClassName(_className_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AClassNameSingleClassNameList(
-            (PClassName) cloneNode(_className_));
+            cloneNode(this._className_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AClassNameSingleClassNameList extends PClassNameList
 
     public PClassName getClassName()
     {
-        return _className_;
+        return this._className_;
     }
 
     public void setClassName(PClassName node)
     {
-        if(_className_ != null)
+        if(this._className_ != null)
         {
-            _className_.parent(null);
+            this._className_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AClassNameSingleClassNameList extends PClassNameList
             node.parent(this);
         }
 
-        _className_ = node;
+        this._className_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_className_);
+            + toString(this._className_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_className_ == child)
+        // Remove child
+        if(this._className_ == child)
         {
-            _className_ = null;
+            this._className_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_className_ == oldChild)
+        // Replace child
+        if(this._className_ == oldChild)
         {
             setClassName((PClassName) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

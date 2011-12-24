@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ANonvoidJimpleType extends PJimpleType
 {
     private PNonvoidType _nonvoidType_;
 
     public ANonvoidJimpleType()
     {
+        // Constructor
     }
 
     public ANonvoidJimpleType(
-        PNonvoidType _nonvoidType_)
+        @SuppressWarnings("hiding") PNonvoidType _nonvoidType_)
     {
+        // Constructor
         setNonvoidType(_nonvoidType_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ANonvoidJimpleType(
-            (PNonvoidType) cloneNode(_nonvoidType_));
+            cloneNode(this._nonvoidType_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ANonvoidJimpleType extends PJimpleType
 
     public PNonvoidType getNonvoidType()
     {
-        return _nonvoidType_;
+        return this._nonvoidType_;
     }
 
     public void setNonvoidType(PNonvoidType node)
     {
-        if(_nonvoidType_ != null)
+        if(this._nonvoidType_ != null)
         {
-            _nonvoidType_.parent(null);
+            this._nonvoidType_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ANonvoidJimpleType extends PJimpleType
             node.parent(this);
         }
 
-        _nonvoidType_ = node;
+        this._nonvoidType_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_nonvoidType_);
+            + toString(this._nonvoidType_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_nonvoidType_ == child)
+        // Remove child
+        if(this._nonvoidType_ == child)
         {
-            _nonvoidType_ = null;
+            this._nonvoidType_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_nonvoidType_ == oldChild)
+        // Replace child
+        if(this._nonvoidType_ == oldChild)
         {
             setNonvoidType((PNonvoidType) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

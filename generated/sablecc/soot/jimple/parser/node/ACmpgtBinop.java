@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmpgtBinop extends PBinop
 {
     private TCmpgt _cmpgt_;
 
     public ACmpgtBinop()
     {
+        // Constructor
     }
 
     public ACmpgtBinop(
-        TCmpgt _cmpgt_)
+        @SuppressWarnings("hiding") TCmpgt _cmpgt_)
     {
+        // Constructor
         setCmpgt(_cmpgt_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmpgtBinop(
-            (TCmpgt) cloneNode(_cmpgt_));
+            cloneNode(this._cmpgt_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmpgtBinop extends PBinop
 
     public TCmpgt getCmpgt()
     {
-        return _cmpgt_;
+        return this._cmpgt_;
     }
 
     public void setCmpgt(TCmpgt node)
     {
-        if(_cmpgt_ != null)
+        if(this._cmpgt_ != null)
         {
-            _cmpgt_.parent(null);
+            this._cmpgt_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmpgtBinop extends PBinop
             node.parent(this);
         }
 
-        _cmpgt_ = node;
+        this._cmpgt_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmpgt_);
+            + toString(this._cmpgt_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmpgt_ == child)
+        // Remove child
+        if(this._cmpgt_ == child)
         {
-            _cmpgt_ = null;
+            this._cmpgt_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmpgt_ == oldChild)
+        // Replace child
+        if(this._cmpgt_ == oldChild)
         {
             setCmpgt((TCmpgt) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

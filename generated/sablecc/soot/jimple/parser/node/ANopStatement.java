@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ANopStatement extends PStatement
 {
     private TNop _nop_;
@@ -12,22 +12,26 @@ public final class ANopStatement extends PStatement
 
     public ANopStatement()
     {
+        // Constructor
     }
 
     public ANopStatement(
-        TNop _nop_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TNop _nop_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setNop(_nop_);
 
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ANopStatement(
-            (TNop) cloneNode(_nop_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._nop_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class ANopStatement extends PStatement
 
     public TNop getNop()
     {
-        return _nop_;
+        return this._nop_;
     }
 
     public void setNop(TNop node)
     {
-        if(_nop_ != null)
+        if(this._nop_ != null)
         {
-            _nop_.parent(null);
+            this._nop_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class ANopStatement extends PStatement
             node.parent(this);
         }
 
-        _nop_ = node;
+        this._nop_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class ANopStatement extends PStatement
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_nop_)
-            + toString(_semicolon_);
+            + toString(this._nop_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_nop_ == child)
+        // Remove child
+        if(this._nop_ == child)
         {
-            _nop_ = null;
+            this._nop_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_nop_ == oldChild)
+        // Replace child
+        if(this._nop_ == oldChild)
         {
             setNop((TNop) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

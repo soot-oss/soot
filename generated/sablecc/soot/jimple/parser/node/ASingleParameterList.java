@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ASingleParameterList extends PParameterList
 {
     private PParameter _parameter_;
 
     public ASingleParameterList()
     {
+        // Constructor
     }
 
     public ASingleParameterList(
-        PParameter _parameter_)
+        @SuppressWarnings("hiding") PParameter _parameter_)
     {
+        // Constructor
         setParameter(_parameter_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ASingleParameterList(
-            (PParameter) cloneNode(_parameter_));
+            cloneNode(this._parameter_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ASingleParameterList extends PParameterList
 
     public PParameter getParameter()
     {
-        return _parameter_;
+        return this._parameter_;
     }
 
     public void setParameter(PParameter node)
     {
-        if(_parameter_ != null)
+        if(this._parameter_ != null)
         {
-            _parameter_.parent(null);
+            this._parameter_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ASingleParameterList extends PParameterList
             node.parent(this);
         }
 
-        _parameter_ = node;
+        this._parameter_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_parameter_);
+            + toString(this._parameter_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_parameter_ == child)
+        // Remove child
+        if(this._parameter_ == child)
         {
-            _parameter_ = null;
+            this._parameter_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_parameter_ == oldChild)
+        // Replace child
+        if(this._parameter_ == oldChild)
         {
             setParameter((PParameter) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

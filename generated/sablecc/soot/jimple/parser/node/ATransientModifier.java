@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ATransientModifier extends PModifier
 {
     private TTransient _transient_;
 
     public ATransientModifier()
     {
+        // Constructor
     }
 
     public ATransientModifier(
-        TTransient _transient_)
+        @SuppressWarnings("hiding") TTransient _transient_)
     {
+        // Constructor
         setTransient(_transient_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ATransientModifier(
-            (TTransient) cloneNode(_transient_));
+            cloneNode(this._transient_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ATransientModifier extends PModifier
 
     public TTransient getTransient()
     {
-        return _transient_;
+        return this._transient_;
     }
 
     public void setTransient(TTransient node)
     {
-        if(_transient_ != null)
+        if(this._transient_ != null)
         {
-            _transient_.parent(null);
+            this._transient_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ATransientModifier extends PModifier
             node.parent(this);
         }
 
-        _transient_ = node;
+        this._transient_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_transient_);
+            + toString(this._transient_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_transient_ == child)
+        // Remove child
+        if(this._transient_ == child)
         {
-            _transient_ = null;
+            this._transient_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_transient_ == oldChild)
+        // Replace child
+        if(this._transient_ == oldChild)
         {
             setTransient((TTransient) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

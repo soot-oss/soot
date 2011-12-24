@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AUnopBoolExpr extends PBoolExpr
 {
     private PUnopExpr _unopExpr_;
 
     public AUnopBoolExpr()
     {
+        // Constructor
     }
 
     public AUnopBoolExpr(
-        PUnopExpr _unopExpr_)
+        @SuppressWarnings("hiding") PUnopExpr _unopExpr_)
     {
+        // Constructor
         setUnopExpr(_unopExpr_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AUnopBoolExpr(
-            (PUnopExpr) cloneNode(_unopExpr_));
+            cloneNode(this._unopExpr_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AUnopBoolExpr extends PBoolExpr
 
     public PUnopExpr getUnopExpr()
     {
-        return _unopExpr_;
+        return this._unopExpr_;
     }
 
     public void setUnopExpr(PUnopExpr node)
     {
-        if(_unopExpr_ != null)
+        if(this._unopExpr_ != null)
         {
-            _unopExpr_.parent(null);
+            this._unopExpr_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AUnopBoolExpr extends PBoolExpr
             node.parent(this);
         }
 
-        _unopExpr_ = node;
+        this._unopExpr_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_unopExpr_);
+            + toString(this._unopExpr_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_unopExpr_ == child)
+        // Remove child
+        if(this._unopExpr_ == child)
         {
-            _unopExpr_ = null;
+            this._unopExpr_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_unopExpr_ == oldChild)
+        // Replace child
+        if(this._unopExpr_ == oldChild)
         {
             setUnopExpr((PUnopExpr) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

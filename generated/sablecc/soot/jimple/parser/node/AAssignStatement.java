@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AAssignStatement extends PStatement
 {
     private PVariable _variable_;
@@ -14,14 +14,16 @@ public final class AAssignStatement extends PStatement
 
     public AAssignStatement()
     {
+        // Constructor
     }
 
     public AAssignStatement(
-        PVariable _variable_,
-        TEquals _equals_,
-        PExpression _expression_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") PVariable _variable_,
+        @SuppressWarnings("hiding") TEquals _equals_,
+        @SuppressWarnings("hiding") PExpression _expression_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setVariable(_variable_);
 
         setEquals(_equals_);
@@ -31,13 +33,15 @@ public final class AAssignStatement extends PStatement
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AAssignStatement(
-            (PVariable) cloneNode(_variable_),
-            (TEquals) cloneNode(_equals_),
-            (PExpression) cloneNode(_expression_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._variable_),
+            cloneNode(this._equals_),
+            cloneNode(this._expression_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -47,14 +51,14 @@ public final class AAssignStatement extends PStatement
 
     public PVariable getVariable()
     {
-        return _variable_;
+        return this._variable_;
     }
 
     public void setVariable(PVariable node)
     {
-        if(_variable_ != null)
+        if(this._variable_ != null)
         {
-            _variable_.parent(null);
+            this._variable_.parent(null);
         }
 
         if(node != null)
@@ -67,19 +71,19 @@ public final class AAssignStatement extends PStatement
             node.parent(this);
         }
 
-        _variable_ = node;
+        this._variable_ = node;
     }
 
     public TEquals getEquals()
     {
-        return _equals_;
+        return this._equals_;
     }
 
     public void setEquals(TEquals node)
     {
-        if(_equals_ != null)
+        if(this._equals_ != null)
         {
-            _equals_.parent(null);
+            this._equals_.parent(null);
         }
 
         if(node != null)
@@ -92,19 +96,19 @@ public final class AAssignStatement extends PStatement
             node.parent(this);
         }
 
-        _equals_ = node;
+        this._equals_ = node;
     }
 
     public PExpression getExpression()
     {
-        return _expression_;
+        return this._expression_;
     }
 
     public void setExpression(PExpression node)
     {
-        if(_expression_ != null)
+        if(this._expression_ != null)
         {
-            _expression_.parent(null);
+            this._expression_.parent(null);
         }
 
         if(node != null)
@@ -117,19 +121,19 @@ public final class AAssignStatement extends PStatement
             node.parent(this);
         }
 
-        _expression_ = node;
+        this._expression_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -142,71 +146,78 @@ public final class AAssignStatement extends PStatement
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_variable_)
-            + toString(_equals_)
-            + toString(_expression_)
-            + toString(_semicolon_);
+            + toString(this._variable_)
+            + toString(this._equals_)
+            + toString(this._expression_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_variable_ == child)
+        // Remove child
+        if(this._variable_ == child)
         {
-            _variable_ = null;
+            this._variable_ = null;
             return;
         }
 
-        if(_equals_ == child)
+        if(this._equals_ == child)
         {
-            _equals_ = null;
+            this._equals_ = null;
             return;
         }
 
-        if(_expression_ == child)
+        if(this._expression_ == child)
         {
-            _expression_ = null;
+            this._expression_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_variable_ == oldChild)
+        // Replace child
+        if(this._variable_ == oldChild)
         {
             setVariable((PVariable) newChild);
             return;
         }
 
-        if(_equals_ == oldChild)
+        if(this._equals_ == oldChild)
         {
             setEquals((TEquals) newChild);
             return;
         }
 
-        if(_expression_ == oldChild)
+        if(this._expression_ == oldChild)
         {
             setExpression((PExpression) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

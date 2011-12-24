@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AStaticModifier extends PModifier
 {
     private TStatic _static_;
 
     public AStaticModifier()
     {
+        // Constructor
     }
 
     public AStaticModifier(
-        TStatic _static_)
+        @SuppressWarnings("hiding") TStatic _static_)
     {
+        // Constructor
         setStatic(_static_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AStaticModifier(
-            (TStatic) cloneNode(_static_));
+            cloneNode(this._static_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AStaticModifier extends PModifier
 
     public TStatic getStatic()
     {
-        return _static_;
+        return this._static_;
     }
 
     public void setStatic(TStatic node)
     {
-        if(_static_ != null)
+        if(this._static_ != null)
         {
-            _static_.parent(null);
+            this._static_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AStaticModifier extends PModifier
             node.parent(this);
         }
 
-        _static_ = node;
+        this._static_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_static_);
+            + toString(this._static_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_static_ == child)
+        // Remove child
+        if(this._static_ == child)
         {
-            _static_ = null;
+            this._static_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_static_ == oldChild)
+        // Replace child
+        if(this._static_ == oldChild)
         {
             setStatic((TStatic) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

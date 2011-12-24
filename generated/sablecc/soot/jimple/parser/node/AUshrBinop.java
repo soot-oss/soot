@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AUshrBinop extends PBinop
 {
     private TUshr _ushr_;
 
     public AUshrBinop()
     {
+        // Constructor
     }
 
     public AUshrBinop(
-        TUshr _ushr_)
+        @SuppressWarnings("hiding") TUshr _ushr_)
     {
+        // Constructor
         setUshr(_ushr_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AUshrBinop(
-            (TUshr) cloneNode(_ushr_));
+            cloneNode(this._ushr_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AUshrBinop extends PBinop
 
     public TUshr getUshr()
     {
-        return _ushr_;
+        return this._ushr_;
     }
 
     public void setUshr(TUshr node)
     {
-        if(_ushr_ != null)
+        if(this._ushr_ != null)
         {
-            _ushr_.parent(null);
+            this._ushr_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AUshrBinop extends PBinop
             node.parent(this);
         }
 
-        _ushr_ = node;
+        this._ushr_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_ushr_);
+            + toString(this._ushr_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_ushr_ == child)
+        // Remove child
+        if(this._ushr_ == child)
         {
-            _ushr_ = null;
+            this._ushr_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_ushr_ == oldChild)
+        // Replace child
+        if(this._ushr_ == oldChild)
         {
             setUshr((TUshr) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

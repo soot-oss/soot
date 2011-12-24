@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AAnnotationModifier extends PModifier
 {
     private TAnnotation _annotation_;
 
     public AAnnotationModifier()
     {
+        // Constructor
     }
 
     public AAnnotationModifier(
-        TAnnotation _annotation_)
+        @SuppressWarnings("hiding") TAnnotation _annotation_)
     {
+        // Constructor
         setAnnotation(_annotation_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AAnnotationModifier(
-            (TAnnotation) cloneNode(_annotation_));
+            cloneNode(this._annotation_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AAnnotationModifier extends PModifier
 
     public TAnnotation getAnnotation()
     {
-        return _annotation_;
+        return this._annotation_;
     }
 
     public void setAnnotation(TAnnotation node)
     {
-        if(_annotation_ != null)
+        if(this._annotation_ != null)
         {
-            _annotation_.parent(null);
+            this._annotation_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AAnnotationModifier extends PModifier
             node.parent(this);
         }
 
-        _annotation_ = node;
+        this._annotation_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_annotation_);
+            + toString(this._annotation_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_annotation_ == child)
+        // Remove child
+        if(this._annotation_ == child)
         {
-            _annotation_ = null;
+            this._annotation_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_annotation_ == oldChild)
+        // Replace child
+        if(this._annotation_ == oldChild)
         {
             setAnnotation((TAnnotation) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

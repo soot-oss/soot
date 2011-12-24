@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AConstantCaseLabel extends PCaseLabel
 {
     private TCase _case_;
@@ -13,13 +13,15 @@ public final class AConstantCaseLabel extends PCaseLabel
 
     public AConstantCaseLabel()
     {
+        // Constructor
     }
 
     public AConstantCaseLabel(
-        TCase _case_,
-        TMinus _minus_,
-        TIntegerConstant _integerConstant_)
+        @SuppressWarnings("hiding") TCase _case_,
+        @SuppressWarnings("hiding") TMinus _minus_,
+        @SuppressWarnings("hiding") TIntegerConstant _integerConstant_)
     {
+        // Constructor
         setCase(_case_);
 
         setMinus(_minus_);
@@ -27,12 +29,14 @@ public final class AConstantCaseLabel extends PCaseLabel
         setIntegerConstant(_integerConstant_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AConstantCaseLabel(
-            (TCase) cloneNode(_case_),
-            (TMinus) cloneNode(_minus_),
-            (TIntegerConstant) cloneNode(_integerConstant_));
+            cloneNode(this._case_),
+            cloneNode(this._minus_),
+            cloneNode(this._integerConstant_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AConstantCaseLabel extends PCaseLabel
 
     public TCase getCase()
     {
-        return _case_;
+        return this._case_;
     }
 
     public void setCase(TCase node)
     {
-        if(_case_ != null)
+        if(this._case_ != null)
         {
-            _case_.parent(null);
+            this._case_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AConstantCaseLabel extends PCaseLabel
             node.parent(this);
         }
 
-        _case_ = node;
+        this._case_ = node;
     }
 
     public TMinus getMinus()
     {
-        return _minus_;
+        return this._minus_;
     }
 
     public void setMinus(TMinus node)
     {
-        if(_minus_ != null)
+        if(this._minus_ != null)
         {
-            _minus_.parent(null);
+            this._minus_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AConstantCaseLabel extends PCaseLabel
             node.parent(this);
         }
 
-        _minus_ = node;
+        this._minus_ = node;
     }
 
     public TIntegerConstant getIntegerConstant()
     {
-        return _integerConstant_;
+        return this._integerConstant_;
     }
 
     public void setIntegerConstant(TIntegerConstant node)
     {
-        if(_integerConstant_ != null)
+        if(this._integerConstant_ != null)
         {
-            _integerConstant_.parent(null);
+            this._integerConstant_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AConstantCaseLabel extends PCaseLabel
             node.parent(this);
         }
 
-        _integerConstant_ = node;
+        this._integerConstant_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_case_)
-            + toString(_minus_)
-            + toString(_integerConstant_);
+            + toString(this._case_)
+            + toString(this._minus_)
+            + toString(this._integerConstant_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_case_ == child)
+        // Remove child
+        if(this._case_ == child)
         {
-            _case_ = null;
+            this._case_ = null;
             return;
         }
 
-        if(_minus_ == child)
+        if(this._minus_ == child)
         {
-            _minus_ = null;
+            this._minus_ = null;
             return;
         }
 
-        if(_integerConstant_ == child)
+        if(this._integerConstant_ == child)
         {
-            _integerConstant_ = null;
+            this._integerConstant_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_case_ == oldChild)
+        // Replace child
+        if(this._case_ == oldChild)
         {
             setCase((TCase) newChild);
             return;
         }
 
-        if(_minus_ == oldChild)
+        if(this._minus_ == oldChild)
         {
             setMinus((TMinus) newChild);
             return;
         }
 
-        if(_integerConstant_ == oldChild)
+        if(this._integerConstant_ == oldChild)
         {
             setIntegerConstant((TIntegerConstant) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

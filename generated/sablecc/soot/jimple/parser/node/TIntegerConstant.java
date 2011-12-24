@@ -4,6 +4,7 @@ package soot.jimple.parser.node;
 
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class TIntegerConstant extends Token
 {
     public TIntegerConstant(String text)
@@ -18,6 +19,7 @@ public final class TIntegerConstant extends Token
         setPos(pos);
     }
 
+    @Override
     public Object clone()
     {
       return new TIntegerConstant(getText(), getLine(), getPos());

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class APublicModifier extends PModifier
 {
     private TPublic _public_;
 
     public APublicModifier()
     {
+        // Constructor
     }
 
     public APublicModifier(
-        TPublic _public_)
+        @SuppressWarnings("hiding") TPublic _public_)
     {
+        // Constructor
         setPublic(_public_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new APublicModifier(
-            (TPublic) cloneNode(_public_));
+            cloneNode(this._public_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class APublicModifier extends PModifier
 
     public TPublic getPublic()
     {
-        return _public_;
+        return this._public_;
     }
 
     public void setPublic(TPublic node)
     {
-        if(_public_ != null)
+        if(this._public_ != null)
         {
-            _public_.parent(null);
+            this._public_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class APublicModifier extends PModifier
             node.parent(this);
         }
 
-        _public_ = node;
+        this._public_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_public_);
+            + toString(this._public_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_public_ == child)
+        // Remove child
+        if(this._public_ == child)
         {
-            _public_ = null;
+            this._public_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_public_ == oldChild)
+        // Replace child
+        if(this._public_ == oldChild)
         {
             setPublic((TPublic) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

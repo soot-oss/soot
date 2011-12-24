@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AArrayBrackets extends PArrayBrackets
 {
     private TLBracket _lBracket_;
@@ -12,22 +12,26 @@ public final class AArrayBrackets extends PArrayBrackets
 
     public AArrayBrackets()
     {
+        // Constructor
     }
 
     public AArrayBrackets(
-        TLBracket _lBracket_,
-        TRBracket _rBracket_)
+        @SuppressWarnings("hiding") TLBracket _lBracket_,
+        @SuppressWarnings("hiding") TRBracket _rBracket_)
     {
+        // Constructor
         setLBracket(_lBracket_);
 
         setRBracket(_rBracket_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AArrayBrackets(
-            (TLBracket) cloneNode(_lBracket_),
-            (TRBracket) cloneNode(_rBracket_));
+            cloneNode(this._lBracket_),
+            cloneNode(this._rBracket_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class AArrayBrackets extends PArrayBrackets
 
     public TLBracket getLBracket()
     {
-        return _lBracket_;
+        return this._lBracket_;
     }
 
     public void setLBracket(TLBracket node)
     {
-        if(_lBracket_ != null)
+        if(this._lBracket_ != null)
         {
-            _lBracket_.parent(null);
+            this._lBracket_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class AArrayBrackets extends PArrayBrackets
             node.parent(this);
         }
 
-        _lBracket_ = node;
+        this._lBracket_ = node;
     }
 
     public TRBracket getRBracket()
     {
-        return _rBracket_;
+        return this._rBracket_;
     }
 
     public void setRBracket(TRBracket node)
     {
-        if(_rBracket_ != null)
+        if(this._rBracket_ != null)
         {
-            _rBracket_.parent(null);
+            this._rBracket_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class AArrayBrackets extends PArrayBrackets
             node.parent(this);
         }
 
-        _rBracket_ = node;
+        this._rBracket_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_lBracket_)
-            + toString(_rBracket_);
+            + toString(this._lBracket_)
+            + toString(this._rBracket_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_lBracket_ == child)
+        // Remove child
+        if(this._lBracket_ == child)
         {
-            _lBracket_ = null;
+            this._lBracket_ = null;
             return;
         }
 
-        if(_rBracket_ == child)
+        if(this._rBracket_ == child)
         {
-            _rBracket_ = null;
+            this._rBracket_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_lBracket_ == oldChild)
+        // Replace child
+        if(this._lBracket_ == oldChild)
         {
             setLBracket((TLBracket) newChild);
             return;
         }
 
-        if(_rBracket_ == oldChild)
+        if(this._rBracket_ == oldChild)
         {
             setRBracket((TRBracket) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

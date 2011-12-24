@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AVoidType extends PType
 {
     private TVoid _void_;
 
     public AVoidType()
     {
+        // Constructor
     }
 
     public AVoidType(
-        TVoid _void_)
+        @SuppressWarnings("hiding") TVoid _void_)
     {
+        // Constructor
         setVoid(_void_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AVoidType(
-            (TVoid) cloneNode(_void_));
+            cloneNode(this._void_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AVoidType extends PType
 
     public TVoid getVoid()
     {
-        return _void_;
+        return this._void_;
     }
 
     public void setVoid(TVoid node)
     {
-        if(_void_ != null)
+        if(this._void_ != null)
         {
-            _void_.parent(null);
+            this._void_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AVoidType extends PType
             node.parent(this);
         }
 
-        _void_ = node;
+        this._void_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_void_);
+            + toString(this._void_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_void_ == child)
+        // Remove child
+        if(this._void_ == child)
         {
-            _void_ = null;
+            this._void_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_void_ == oldChild)
+        // Replace child
+        if(this._void_ == oldChild)
         {
             setVoid((TVoid) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

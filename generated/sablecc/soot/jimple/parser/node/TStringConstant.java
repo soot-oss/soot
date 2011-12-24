@@ -4,6 +4,7 @@ package soot.jimple.parser.node;
 
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class TStringConstant extends Token
 {
     public TStringConstant(String text)
@@ -18,6 +19,7 @@ public final class TStringConstant extends Token
         setPos(pos);
     }
 
+    @Override
     public Object clone()
     {
       return new TStringConstant(getText(), getLine(), getPos());

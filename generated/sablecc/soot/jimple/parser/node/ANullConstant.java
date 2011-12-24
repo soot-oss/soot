@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ANullConstant extends PConstant
 {
     private TNull _null_;
 
     public ANullConstant()
     {
+        // Constructor
     }
 
     public ANullConstant(
-        TNull _null_)
+        @SuppressWarnings("hiding") TNull _null_)
     {
+        // Constructor
         setNull(_null_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ANullConstant(
-            (TNull) cloneNode(_null_));
+            cloneNode(this._null_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ANullConstant extends PConstant
 
     public TNull getNull()
     {
-        return _null_;
+        return this._null_;
     }
 
     public void setNull(TNull node)
     {
-        if(_null_ != null)
+        if(this._null_ != null)
         {
-            _null_.parent(null);
+            this._null_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ANullConstant extends PConstant
             node.parent(this);
         }
 
-        _null_ = node;
+        this._null_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_null_);
+            + toString(this._null_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_null_ == child)
+        // Remove child
+        if(this._null_ == child)
         {
-            _null_ = null;
+            this._null_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_null_ == oldChild)
+        // Replace child
+        if(this._null_ == oldChild)
         {
             setNull((TNull) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

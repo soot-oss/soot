@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AConstantImmediate extends PImmediate
 {
     private PConstant _constant_;
 
     public AConstantImmediate()
     {
+        // Constructor
     }
 
     public AConstantImmediate(
-        PConstant _constant_)
+        @SuppressWarnings("hiding") PConstant _constant_)
     {
+        // Constructor
         setConstant(_constant_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AConstantImmediate(
-            (PConstant) cloneNode(_constant_));
+            cloneNode(this._constant_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AConstantImmediate extends PImmediate
 
     public PConstant getConstant()
     {
-        return _constant_;
+        return this._constant_;
     }
 
     public void setConstant(PConstant node)
     {
-        if(_constant_ != null)
+        if(this._constant_ != null)
         {
-            _constant_.parent(null);
+            this._constant_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AConstantImmediate extends PImmediate
             node.parent(this);
         }
 
-        _constant_ = node;
+        this._constant_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_constant_);
+            + toString(this._constant_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_constant_ == child)
+        // Remove child
+        if(this._constant_ == child)
         {
-            _constant_ = null;
+            this._constant_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_constant_ == oldChild)
+        // Replace child
+        if(this._constant_ == oldChild)
         {
             setConstant((PConstant) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

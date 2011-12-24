@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AMinusBinop extends PBinop
 {
     private TMinus _minus_;
 
     public AMinusBinop()
     {
+        // Constructor
     }
 
     public AMinusBinop(
-        TMinus _minus_)
+        @SuppressWarnings("hiding") TMinus _minus_)
     {
+        // Constructor
         setMinus(_minus_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AMinusBinop(
-            (TMinus) cloneNode(_minus_));
+            cloneNode(this._minus_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AMinusBinop extends PBinop
 
     public TMinus getMinus()
     {
-        return _minus_;
+        return this._minus_;
     }
 
     public void setMinus(TMinus node)
     {
-        if(_minus_ != null)
+        if(this._minus_ != null)
         {
-            _minus_.parent(null);
+            this._minus_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AMinusBinop extends PBinop
             node.parent(this);
         }
 
-        _minus_ = node;
+        this._minus_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_minus_);
+            + toString(this._minus_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_minus_ == child)
+        // Remove child
+        if(this._minus_ == child)
         {
-            _minus_ = null;
+            this._minus_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_minus_ == oldChild)
+        // Replace child
+        if(this._minus_ == oldChild)
         {
             setMinus((TMinus) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ANullBaseTypeNoName extends PBaseTypeNoName
 {
     private TNullType _nullType_;
 
     public ANullBaseTypeNoName()
     {
+        // Constructor
     }
 
     public ANullBaseTypeNoName(
-        TNullType _nullType_)
+        @SuppressWarnings("hiding") TNullType _nullType_)
     {
+        // Constructor
         setNullType(_nullType_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ANullBaseTypeNoName(
-            (TNullType) cloneNode(_nullType_));
+            cloneNode(this._nullType_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ANullBaseTypeNoName extends PBaseTypeNoName
 
     public TNullType getNullType()
     {
-        return _nullType_;
+        return this._nullType_;
     }
 
     public void setNullType(TNullType node)
     {
-        if(_nullType_ != null)
+        if(this._nullType_ != null)
         {
-            _nullType_.parent(null);
+            this._nullType_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ANullBaseTypeNoName extends PBaseTypeNoName
             node.parent(this);
         }
 
-        _nullType_ = node;
+        this._nullType_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_nullType_);
+            + toString(this._nullType_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_nullType_ == child)
+        // Remove child
+        if(this._nullType_ == child)
         {
-            _nullType_ = null;
+            this._nullType_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_nullType_ == oldChild)
+        // Replace child
+        if(this._nullType_ == oldChild)
         {
             setNullType((TNullType) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

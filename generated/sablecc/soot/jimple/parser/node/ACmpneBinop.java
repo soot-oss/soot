@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmpneBinop extends PBinop
 {
     private TCmpne _cmpne_;
 
     public ACmpneBinop()
     {
+        // Constructor
     }
 
     public ACmpneBinop(
-        TCmpne _cmpne_)
+        @SuppressWarnings("hiding") TCmpne _cmpne_)
     {
+        // Constructor
         setCmpne(_cmpne_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmpneBinop(
-            (TCmpne) cloneNode(_cmpne_));
+            cloneNode(this._cmpne_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmpneBinop extends PBinop
 
     public TCmpne getCmpne()
     {
-        return _cmpne_;
+        return this._cmpne_;
     }
 
     public void setCmpne(TCmpne node)
     {
-        if(_cmpne_ != null)
+        if(this._cmpne_ != null)
         {
-            _cmpne_.parent(null);
+            this._cmpne_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmpneBinop extends PBinop
             node.parent(this);
         }
 
-        _cmpne_ = node;
+        this._cmpne_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmpne_);
+            + toString(this._cmpne_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmpne_ == child)
+        // Remove child
+        if(this._cmpne_ == child)
         {
-            _cmpne_ = null;
+            this._cmpne_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmpne_ == oldChild)
+        // Replace child
+        if(this._cmpne_ == oldChild)
         {
             setCmpne((TCmpne) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

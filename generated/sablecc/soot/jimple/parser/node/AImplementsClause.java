@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AImplementsClause extends PImplementsClause
 {
     private TImplements _implements_;
@@ -12,22 +12,26 @@ public final class AImplementsClause extends PImplementsClause
 
     public AImplementsClause()
     {
+        // Constructor
     }
 
     public AImplementsClause(
-        TImplements _implements_,
-        PClassNameList _classNameList_)
+        @SuppressWarnings("hiding") TImplements _implements_,
+        @SuppressWarnings("hiding") PClassNameList _classNameList_)
     {
+        // Constructor
         setImplements(_implements_);
 
         setClassNameList(_classNameList_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AImplementsClause(
-            (TImplements) cloneNode(_implements_),
-            (PClassNameList) cloneNode(_classNameList_));
+            cloneNode(this._implements_),
+            cloneNode(this._classNameList_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class AImplementsClause extends PImplementsClause
 
     public TImplements getImplements()
     {
-        return _implements_;
+        return this._implements_;
     }
 
     public void setImplements(TImplements node)
     {
-        if(_implements_ != null)
+        if(this._implements_ != null)
         {
-            _implements_.parent(null);
+            this._implements_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class AImplementsClause extends PImplementsClause
             node.parent(this);
         }
 
-        _implements_ = node;
+        this._implements_ = node;
     }
 
     public PClassNameList getClassNameList()
     {
-        return _classNameList_;
+        return this._classNameList_;
     }
 
     public void setClassNameList(PClassNameList node)
     {
-        if(_classNameList_ != null)
+        if(this._classNameList_ != null)
         {
-            _classNameList_.parent(null);
+            this._classNameList_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class AImplementsClause extends PImplementsClause
             node.parent(this);
         }
 
-        _classNameList_ = node;
+        this._classNameList_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_implements_)
-            + toString(_classNameList_);
+            + toString(this._implements_)
+            + toString(this._classNameList_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_implements_ == child)
+        // Remove child
+        if(this._implements_ == child)
         {
-            _implements_ = null;
+            this._implements_ = null;
             return;
         }
 
-        if(_classNameList_ == child)
+        if(this._classNameList_ == child)
         {
-            _classNameList_ = null;
+            this._classNameList_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_implements_ == oldChild)
+        // Replace child
+        if(this._implements_ == oldChild)
         {
             setImplements((TImplements) newChild);
             return;
         }
 
-        if(_classNameList_ == oldChild)
+        if(this._classNameList_ == oldChild)
         {
             setClassNameList((PClassNameList) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AImmediateExpression extends PExpression
 {
     private PImmediate _immediate_;
 
     public AImmediateExpression()
     {
+        // Constructor
     }
 
     public AImmediateExpression(
-        PImmediate _immediate_)
+        @SuppressWarnings("hiding") PImmediate _immediate_)
     {
+        // Constructor
         setImmediate(_immediate_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AImmediateExpression(
-            (PImmediate) cloneNode(_immediate_));
+            cloneNode(this._immediate_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AImmediateExpression extends PExpression
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AImmediateExpression extends PExpression
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_immediate_);
+            + toString(this._immediate_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_immediate_ == child)
+        // Remove child
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_immediate_ == oldChild)
+        // Replace child
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ANativeModifier extends PModifier
 {
     private TNative _native_;
 
     public ANativeModifier()
     {
+        // Constructor
     }
 
     public ANativeModifier(
-        TNative _native_)
+        @SuppressWarnings("hiding") TNative _native_)
     {
+        // Constructor
         setNative(_native_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ANativeModifier(
-            (TNative) cloneNode(_native_));
+            cloneNode(this._native_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ANativeModifier extends PModifier
 
     public TNative getNative()
     {
-        return _native_;
+        return this._native_;
     }
 
     public void setNative(TNative node)
     {
-        if(_native_ != null)
+        if(this._native_ != null)
         {
-            _native_.parent(null);
+            this._native_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ANativeModifier extends PModifier
             node.parent(this);
         }
 
-        _native_ = node;
+        this._native_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_native_);
+            + toString(this._native_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_native_ == child)
+        // Remove child
+        if(this._native_ == child)
         {
-            _native_ = null;
+            this._native_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_native_ == oldChild)
+        // Replace child
+        if(this._native_ == oldChild)
         {
             setNative((TNative) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

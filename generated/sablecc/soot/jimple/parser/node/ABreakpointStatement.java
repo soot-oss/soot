@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ABreakpointStatement extends PStatement
 {
     private TBreakpoint _breakpoint_;
@@ -12,22 +12,26 @@ public final class ABreakpointStatement extends PStatement
 
     public ABreakpointStatement()
     {
+        // Constructor
     }
 
     public ABreakpointStatement(
-        TBreakpoint _breakpoint_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TBreakpoint _breakpoint_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setBreakpoint(_breakpoint_);
 
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ABreakpointStatement(
-            (TBreakpoint) cloneNode(_breakpoint_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._breakpoint_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class ABreakpointStatement extends PStatement
 
     public TBreakpoint getBreakpoint()
     {
-        return _breakpoint_;
+        return this._breakpoint_;
     }
 
     public void setBreakpoint(TBreakpoint node)
     {
-        if(_breakpoint_ != null)
+        if(this._breakpoint_ != null)
         {
-            _breakpoint_.parent(null);
+            this._breakpoint_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class ABreakpointStatement extends PStatement
             node.parent(this);
         }
 
-        _breakpoint_ = node;
+        this._breakpoint_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class ABreakpointStatement extends PStatement
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_breakpoint_)
-            + toString(_semicolon_);
+            + toString(this._breakpoint_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_breakpoint_ == child)
+        // Remove child
+        if(this._breakpoint_ == child)
         {
-            _breakpoint_ = null;
+            this._breakpoint_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_breakpoint_ == oldChild)
+        // Replace child
+        if(this._breakpoint_ == oldChild)
         {
             setBreakpoint((TBreakpoint) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

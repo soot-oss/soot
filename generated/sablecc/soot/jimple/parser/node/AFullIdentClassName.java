@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AFullIdentClassName extends PClassName
 {
     private TFullIdentifier _fullIdentifier_;
 
     public AFullIdentClassName()
     {
+        // Constructor
     }
 
     public AFullIdentClassName(
-        TFullIdentifier _fullIdentifier_)
+        @SuppressWarnings("hiding") TFullIdentifier _fullIdentifier_)
     {
+        // Constructor
         setFullIdentifier(_fullIdentifier_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AFullIdentClassName(
-            (TFullIdentifier) cloneNode(_fullIdentifier_));
+            cloneNode(this._fullIdentifier_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AFullIdentClassName extends PClassName
 
     public TFullIdentifier getFullIdentifier()
     {
-        return _fullIdentifier_;
+        return this._fullIdentifier_;
     }
 
     public void setFullIdentifier(TFullIdentifier node)
     {
-        if(_fullIdentifier_ != null)
+        if(this._fullIdentifier_ != null)
         {
-            _fullIdentifier_.parent(null);
+            this._fullIdentifier_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AFullIdentClassName extends PClassName
             node.parent(this);
         }
 
-        _fullIdentifier_ = node;
+        this._fullIdentifier_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_fullIdentifier_);
+            + toString(this._fullIdentifier_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_fullIdentifier_ == child)
+        // Remove child
+        if(this._fullIdentifier_ == child)
         {
-            _fullIdentifier_ = null;
+            this._fullIdentifier_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_fullIdentifier_ == oldChild)
+        // Replace child
+        if(this._fullIdentifier_ == oldChild)
         {
             setFullIdentifier((TFullIdentifier) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

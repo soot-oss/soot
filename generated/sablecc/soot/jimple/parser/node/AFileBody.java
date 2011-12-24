@@ -5,58 +5,39 @@ package soot.jimple.parser.node;
 import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AFileBody extends PFileBody
 {
     private TLBrace _lBrace_;
-    private final LinkedList _member_ = new TypedLinkedList(new Member_Cast());
+    private final LinkedList<PMember> _member_ = new LinkedList<PMember>();
     private TRBrace _rBrace_;
 
     public AFileBody()
     {
+        // Constructor
     }
 
     public AFileBody(
-        TLBrace _lBrace_,
-        List _member_,
-        TRBrace _rBrace_)
+        @SuppressWarnings("hiding") TLBrace _lBrace_,
+        @SuppressWarnings("hiding") List<PMember> _member_,
+        @SuppressWarnings("hiding") TRBrace _rBrace_)
     {
+        // Constructor
         setLBrace(_lBrace_);
 
-        {
-            this._member_.clear();
-            this._member_.addAll(_member_);
-        }
+        setMember(_member_);
 
         setRBrace(_rBrace_);
 
     }
 
-    public AFileBody(
-        TLBrace _lBrace_,
-        XPMember _member_,
-        TRBrace _rBrace_)
-    {
-        setLBrace(_lBrace_);
-
-        if(_member_ != null)
-        {
-            while(_member_ instanceof X1PMember)
-            {
-                this._member_.addFirst(((X1PMember) _member_).getPMember());
-                _member_ = ((X1PMember) _member_).getXPMember();
-            }
-            this._member_.addFirst(((X2PMember) _member_).getPMember());
-        }
-
-        setRBrace(_rBrace_);
-
-    }
+    @Override
     public Object clone()
     {
         return new AFileBody(
-            (TLBrace) cloneNode(_lBrace_),
-            cloneList(_member_),
-            (TRBrace) cloneNode(_rBrace_));
+            cloneNode(this._lBrace_),
+            cloneList(this._member_),
+            cloneNode(this._rBrace_));
     }
 
     public void apply(Switch sw)
@@ -66,14 +47,14 @@ public final class AFileBody extends PFileBody
 
     public TLBrace getLBrace()
     {
-        return _lBrace_;
+        return this._lBrace_;
     }
 
     public void setLBrace(TLBrace node)
     {
-        if(_lBrace_ != null)
+        if(this._lBrace_ != null)
         {
-            _lBrace_.parent(null);
+            this._lBrace_.parent(null);
         }
 
         if(node != null)
@@ -86,30 +67,39 @@ public final class AFileBody extends PFileBody
             node.parent(this);
         }
 
-        _lBrace_ = node;
+        this._lBrace_ = node;
     }
 
-    public LinkedList getMember()
+    public LinkedList<PMember> getMember()
     {
-        return _member_;
+        return this._member_;
     }
 
-    public void setMember(List list)
+    public void setMember(List<PMember> list)
     {
-        _member_.clear();
-        _member_.addAll(list);
+        this._member_.clear();
+        this._member_.addAll(list);
+        for(PMember e : list)
+        {
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+        }
     }
 
     public TRBrace getRBrace()
     {
-        return _rBrace_;
+        return this._rBrace_;
     }
 
     public void setRBrace(TRBrace node)
     {
-        if(_rBrace_ != null)
+        if(this._rBrace_ != null)
         {
-            _rBrace_.parent(null);
+            this._rBrace_.parent(null);
         }
 
         if(node != null)
@@ -122,53 +112,60 @@ public final class AFileBody extends PFileBody
             node.parent(this);
         }
 
-        _rBrace_ = node;
+        this._rBrace_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_lBrace_)
-            + toString(_member_)
-            + toString(_rBrace_);
+            + toString(this._lBrace_)
+            + toString(this._member_)
+            + toString(this._rBrace_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_lBrace_ == child)
+        // Remove child
+        if(this._lBrace_ == child)
         {
-            _lBrace_ = null;
+            this._lBrace_ = null;
             return;
         }
 
-        if(_member_.remove(child))
+        if(this._member_.remove(child))
         {
             return;
         }
 
-        if(_rBrace_ == child)
+        if(this._rBrace_ == child)
         {
-            _rBrace_ = null;
+            this._rBrace_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_lBrace_ == oldChild)
+        // Replace child
+        if(this._lBrace_ == oldChild)
         {
             setLBrace((TLBrace) newChild);
             return;
         }
 
-        for(ListIterator i = _member_.listIterator(); i.hasNext();)
+        for(ListIterator<PMember> i = this._member_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set(newChild);
+                    i.set((PMember) newChild);
+                    newChild.parent(this);
                     oldChild.parent(null);
                     return;
                 }
@@ -179,33 +176,12 @@ public final class AFileBody extends PFileBody
             }
         }
 
-        if(_rBrace_ == oldChild)
+        if(this._rBrace_ == oldChild)
         {
             setRBrace((TRBrace) newChild);
             return;
         }
 
-    }
-
-    private class Member_Cast implements Cast
-    {
-        public Object cast(Object o)
-        {
-            PMember node = (PMember) o;
-
-            if((node.parent() != null) &&
-                (node.parent() != AFileBody.this))
-            {
-                node.parent().removeChild(node);
-            }
-
-            if((node.parent() == null) ||
-                (node.parent() != AFileBody.this))
-            {
-                node.parent(AFileBody.this);
-            }
-
-            return node;
-        }
+        throw new RuntimeException("Not a child.");
     }
 }

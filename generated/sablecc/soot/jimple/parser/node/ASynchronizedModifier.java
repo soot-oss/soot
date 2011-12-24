@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ASynchronizedModifier extends PModifier
 {
     private TSynchronized _synchronized_;
 
     public ASynchronizedModifier()
     {
+        // Constructor
     }
 
     public ASynchronizedModifier(
-        TSynchronized _synchronized_)
+        @SuppressWarnings("hiding") TSynchronized _synchronized_)
     {
+        // Constructor
         setSynchronized(_synchronized_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ASynchronizedModifier(
-            (TSynchronized) cloneNode(_synchronized_));
+            cloneNode(this._synchronized_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ASynchronizedModifier extends PModifier
 
     public TSynchronized getSynchronized()
     {
-        return _synchronized_;
+        return this._synchronized_;
     }
 
     public void setSynchronized(TSynchronized node)
     {
-        if(_synchronized_ != null)
+        if(this._synchronized_ != null)
         {
-            _synchronized_.parent(null);
+            this._synchronized_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ASynchronizedModifier extends PModifier
             node.parent(this);
         }
 
-        _synchronized_ = node;
+        this._synchronized_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_synchronized_);
+            + toString(this._synchronized_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_synchronized_ == child)
+        // Remove child
+        if(this._synchronized_ == child)
         {
-            _synchronized_ = null;
+            this._synchronized_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_synchronized_ == oldChild)
+        // Replace child
+        if(this._synchronized_ == oldChild)
         {
             setSynchronized((TSynchronized) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

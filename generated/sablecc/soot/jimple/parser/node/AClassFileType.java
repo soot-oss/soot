@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AClassFileType extends PFileType
 {
     private TClass _theclass_;
 
     public AClassFileType()
     {
+        // Constructor
     }
 
     public AClassFileType(
-        TClass _theclass_)
+        @SuppressWarnings("hiding") TClass _theclass_)
     {
+        // Constructor
         setTheclass(_theclass_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AClassFileType(
-            (TClass) cloneNode(_theclass_));
+            cloneNode(this._theclass_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AClassFileType extends PFileType
 
     public TClass getTheclass()
     {
-        return _theclass_;
+        return this._theclass_;
     }
 
     public void setTheclass(TClass node)
     {
-        if(_theclass_ != null)
+        if(this._theclass_ != null)
         {
-            _theclass_.parent(null);
+            this._theclass_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AClassFileType extends PFileType
             node.parent(this);
         }
 
-        _theclass_ = node;
+        this._theclass_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_theclass_);
+            + toString(this._theclass_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_theclass_ == child)
+        // Remove child
+        if(this._theclass_ == child)
         {
-            _theclass_ = null;
+            this._theclass_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_theclass_ == oldChild)
+        // Replace child
+        if(this._theclass_ == oldChild)
         {
             setTheclass((TClass) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AUnopExpr extends PUnopExpr
 {
     private PUnop _unop_;
@@ -12,22 +12,26 @@ public final class AUnopExpr extends PUnopExpr
 
     public AUnopExpr()
     {
+        // Constructor
     }
 
     public AUnopExpr(
-        PUnop _unop_,
-        PImmediate _immediate_)
+        @SuppressWarnings("hiding") PUnop _unop_,
+        @SuppressWarnings("hiding") PImmediate _immediate_)
     {
+        // Constructor
         setUnop(_unop_);
 
         setImmediate(_immediate_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AUnopExpr(
-            (PUnop) cloneNode(_unop_),
-            (PImmediate) cloneNode(_immediate_));
+            cloneNode(this._unop_),
+            cloneNode(this._immediate_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class AUnopExpr extends PUnopExpr
 
     public PUnop getUnop()
     {
-        return _unop_;
+        return this._unop_;
     }
 
     public void setUnop(PUnop node)
     {
-        if(_unop_ != null)
+        if(this._unop_ != null)
         {
-            _unop_.parent(null);
+            this._unop_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class AUnopExpr extends PUnopExpr
             node.parent(this);
         }
 
-        _unop_ = node;
+        this._unop_ = node;
     }
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class AUnopExpr extends PUnopExpr
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_unop_)
-            + toString(_immediate_);
+            + toString(this._unop_)
+            + toString(this._immediate_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_unop_ == child)
+        // Remove child
+        if(this._unop_ == child)
         {
-            _unop_ = null;
+            this._unop_ = null;
             return;
         }
 
-        if(_immediate_ == child)
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_unop_ == oldChild)
+        // Replace child
+        if(this._unop_ == oldChild)
         {
             setUnop((PUnop) newChild);
             return;
         }
 
-        if(_immediate_ == oldChild)
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AInterfaceNonstaticInvoke extends PNonstaticInvoke
 {
     private TInterfaceinvoke _interfaceinvoke_;
 
     public AInterfaceNonstaticInvoke()
     {
+        // Constructor
     }
 
     public AInterfaceNonstaticInvoke(
-        TInterfaceinvoke _interfaceinvoke_)
+        @SuppressWarnings("hiding") TInterfaceinvoke _interfaceinvoke_)
     {
+        // Constructor
         setInterfaceinvoke(_interfaceinvoke_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AInterfaceNonstaticInvoke(
-            (TInterfaceinvoke) cloneNode(_interfaceinvoke_));
+            cloneNode(this._interfaceinvoke_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AInterfaceNonstaticInvoke extends PNonstaticInvoke
 
     public TInterfaceinvoke getInterfaceinvoke()
     {
-        return _interfaceinvoke_;
+        return this._interfaceinvoke_;
     }
 
     public void setInterfaceinvoke(TInterfaceinvoke node)
     {
-        if(_interfaceinvoke_ != null)
+        if(this._interfaceinvoke_ != null)
         {
-            _interfaceinvoke_.parent(null);
+            this._interfaceinvoke_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AInterfaceNonstaticInvoke extends PNonstaticInvoke
             node.parent(this);
         }
 
-        _interfaceinvoke_ = node;
+        this._interfaceinvoke_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_interfaceinvoke_);
+            + toString(this._interfaceinvoke_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_interfaceinvoke_ == child)
+        // Remove child
+        if(this._interfaceinvoke_ == child)
         {
-            _interfaceinvoke_ = null;
+            this._interfaceinvoke_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_interfaceinvoke_ == oldChild)
+        // Replace child
+        if(this._interfaceinvoke_ == oldChild)
         {
             setInterfaceinvoke((TInterfaceinvoke) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

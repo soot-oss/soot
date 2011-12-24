@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmpeqBinop extends PBinop
 {
     private TCmpeq _cmpeq_;
 
     public ACmpeqBinop()
     {
+        // Constructor
     }
 
     public ACmpeqBinop(
-        TCmpeq _cmpeq_)
+        @SuppressWarnings("hiding") TCmpeq _cmpeq_)
     {
+        // Constructor
         setCmpeq(_cmpeq_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmpeqBinop(
-            (TCmpeq) cloneNode(_cmpeq_));
+            cloneNode(this._cmpeq_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmpeqBinop extends PBinop
 
     public TCmpeq getCmpeq()
     {
-        return _cmpeq_;
+        return this._cmpeq_;
     }
 
     public void setCmpeq(TCmpeq node)
     {
-        if(_cmpeq_ != null)
+        if(this._cmpeq_ != null)
         {
-            _cmpeq_.parent(null);
+            this._cmpeq_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmpeqBinop extends PBinop
             node.parent(this);
         }
 
-        _cmpeq_ = node;
+        this._cmpeq_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmpeq_);
+            + toString(this._cmpeq_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmpeq_ == child)
+        // Remove child
+        if(this._cmpeq_ == child)
         {
-            _cmpeq_ = null;
+            this._cmpeq_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmpeq_ == oldChild)
+        // Replace child
+        if(this._cmpeq_ == oldChild)
         {
             setCmpeq((TCmpeq) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

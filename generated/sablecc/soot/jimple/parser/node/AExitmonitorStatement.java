@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AExitmonitorStatement extends PStatement
 {
     private TExitmonitor _exitmonitor_;
@@ -13,13 +13,15 @@ public final class AExitmonitorStatement extends PStatement
 
     public AExitmonitorStatement()
     {
+        // Constructor
     }
 
     public AExitmonitorStatement(
-        TExitmonitor _exitmonitor_,
-        PImmediate _immediate_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TExitmonitor _exitmonitor_,
+        @SuppressWarnings("hiding") PImmediate _immediate_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setExitmonitor(_exitmonitor_);
 
         setImmediate(_immediate_);
@@ -27,12 +29,14 @@ public final class AExitmonitorStatement extends PStatement
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AExitmonitorStatement(
-            (TExitmonitor) cloneNode(_exitmonitor_),
-            (PImmediate) cloneNode(_immediate_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._exitmonitor_),
+            cloneNode(this._immediate_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AExitmonitorStatement extends PStatement
 
     public TExitmonitor getExitmonitor()
     {
-        return _exitmonitor_;
+        return this._exitmonitor_;
     }
 
     public void setExitmonitor(TExitmonitor node)
     {
-        if(_exitmonitor_ != null)
+        if(this._exitmonitor_ != null)
         {
-            _exitmonitor_.parent(null);
+            this._exitmonitor_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AExitmonitorStatement extends PStatement
             node.parent(this);
         }
 
-        _exitmonitor_ = node;
+        this._exitmonitor_ = node;
     }
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AExitmonitorStatement extends PStatement
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AExitmonitorStatement extends PStatement
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_exitmonitor_)
-            + toString(_immediate_)
-            + toString(_semicolon_);
+            + toString(this._exitmonitor_)
+            + toString(this._immediate_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_exitmonitor_ == child)
+        // Remove child
+        if(this._exitmonitor_ == child)
         {
-            _exitmonitor_ = null;
+            this._exitmonitor_ = null;
             return;
         }
 
-        if(_immediate_ == child)
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_exitmonitor_ == oldChild)
+        // Replace child
+        if(this._exitmonitor_ == oldChild)
         {
             setExitmonitor((TExitmonitor) newChild);
             return;
         }
 
-        if(_immediate_ == oldChild)
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmpleBinop extends PBinop
 {
     private TCmple _cmple_;
 
     public ACmpleBinop()
     {
+        // Constructor
     }
 
     public ACmpleBinop(
-        TCmple _cmple_)
+        @SuppressWarnings("hiding") TCmple _cmple_)
     {
+        // Constructor
         setCmple(_cmple_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmpleBinop(
-            (TCmple) cloneNode(_cmple_));
+            cloneNode(this._cmple_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmpleBinop extends PBinop
 
     public TCmple getCmple()
     {
-        return _cmple_;
+        return this._cmple_;
     }
 
     public void setCmple(TCmple node)
     {
-        if(_cmple_ != null)
+        if(this._cmple_ != null)
         {
-            _cmple_.parent(null);
+            this._cmple_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmpleBinop extends PBinop
             node.parent(this);
         }
 
-        _cmple_ = node;
+        this._cmple_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmple_);
+            + toString(this._cmple_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmple_ == child)
+        // Remove child
+        if(this._cmple_ == child)
         {
-            _cmple_ = null;
+            this._cmple_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmple_ == oldChild)
+        // Replace child
+        if(this._cmple_ == oldChild)
         {
             setCmple((TCmple) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

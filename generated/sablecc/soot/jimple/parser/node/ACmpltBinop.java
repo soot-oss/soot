@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACmpltBinop extends PBinop
 {
     private TCmplt _cmplt_;
 
     public ACmpltBinop()
     {
+        // Constructor
     }
 
     public ACmpltBinop(
-        TCmplt _cmplt_)
+        @SuppressWarnings("hiding") TCmplt _cmplt_)
     {
+        // Constructor
         setCmplt(_cmplt_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACmpltBinop(
-            (TCmplt) cloneNode(_cmplt_));
+            cloneNode(this._cmplt_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ACmpltBinop extends PBinop
 
     public TCmplt getCmplt()
     {
-        return _cmplt_;
+        return this._cmplt_;
     }
 
     public void setCmplt(TCmplt node)
     {
-        if(_cmplt_ != null)
+        if(this._cmplt_ != null)
         {
-            _cmplt_.parent(null);
+            this._cmplt_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ACmpltBinop extends PBinop
             node.parent(this);
         }
 
-        _cmplt_ = node;
+        this._cmplt_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_cmplt_);
+            + toString(this._cmplt_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_cmplt_ == child)
+        // Remove child
+        if(this._cmplt_ == child)
         {
-            _cmplt_ = null;
+            this._cmplt_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_cmplt_ == oldChild)
+        // Replace child
+        if(this._cmplt_ == oldChild)
         {
             setCmplt((TCmplt) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

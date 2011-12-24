@@ -4,6 +4,7 @@ package soot.jimple.parser.node;
 
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class TBoolConstant extends Token
 {
     public TBoolConstant(String text)
@@ -18,6 +19,7 @@ public final class TBoolConstant extends Token
         setPos(pos);
     }
 
+    @Override
     public Object clone()
     {
       return new TBoolConstant(getText(), getLine(), getPos());

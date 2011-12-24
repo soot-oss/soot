@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AGotoStatement extends PStatement
 {
     private PGotoStmt _gotoStmt_;
 
     public AGotoStatement()
     {
+        // Constructor
     }
 
     public AGotoStatement(
-        PGotoStmt _gotoStmt_)
+        @SuppressWarnings("hiding") PGotoStmt _gotoStmt_)
     {
+        // Constructor
         setGotoStmt(_gotoStmt_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AGotoStatement(
-            (PGotoStmt) cloneNode(_gotoStmt_));
+            cloneNode(this._gotoStmt_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AGotoStatement extends PStatement
 
     public PGotoStmt getGotoStmt()
     {
-        return _gotoStmt_;
+        return this._gotoStmt_;
     }
 
     public void setGotoStmt(PGotoStmt node)
     {
-        if(_gotoStmt_ != null)
+        if(this._gotoStmt_ != null)
         {
-            _gotoStmt_.parent(null);
+            this._gotoStmt_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AGotoStatement extends PStatement
             node.parent(this);
         }
 
-        _gotoStmt_ = node;
+        this._gotoStmt_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_gotoStmt_);
+            + toString(this._gotoStmt_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_gotoStmt_ == child)
+        // Remove child
+        if(this._gotoStmt_ == child)
         {
-            _gotoStmt_ = null;
+            this._gotoStmt_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_gotoStmt_ == oldChild)
+        // Replace child
+        if(this._gotoStmt_ == oldChild)
         {
             setGotoStmt((PGotoStmt) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

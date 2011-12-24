@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ALabelStatement extends PStatement
 {
     private PLabelName _labelName_;
@@ -12,22 +12,26 @@ public final class ALabelStatement extends PStatement
 
     public ALabelStatement()
     {
+        // Constructor
     }
 
     public ALabelStatement(
-        PLabelName _labelName_,
-        TColon _colon_)
+        @SuppressWarnings("hiding") PLabelName _labelName_,
+        @SuppressWarnings("hiding") TColon _colon_)
     {
+        // Constructor
         setLabelName(_labelName_);
 
         setColon(_colon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ALabelStatement(
-            (PLabelName) cloneNode(_labelName_),
-            (TColon) cloneNode(_colon_));
+            cloneNode(this._labelName_),
+            cloneNode(this._colon_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class ALabelStatement extends PStatement
 
     public PLabelName getLabelName()
     {
-        return _labelName_;
+        return this._labelName_;
     }
 
     public void setLabelName(PLabelName node)
     {
-        if(_labelName_ != null)
+        if(this._labelName_ != null)
         {
-            _labelName_.parent(null);
+            this._labelName_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class ALabelStatement extends PStatement
             node.parent(this);
         }
 
-        _labelName_ = node;
+        this._labelName_ = node;
     }
 
     public TColon getColon()
     {
-        return _colon_;
+        return this._colon_;
     }
 
     public void setColon(TColon node)
     {
-        if(_colon_ != null)
+        if(this._colon_ != null)
         {
-            _colon_.parent(null);
+            this._colon_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class ALabelStatement extends PStatement
             node.parent(this);
         }
 
-        _colon_ = node;
+        this._colon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_labelName_)
-            + toString(_colon_);
+            + toString(this._labelName_)
+            + toString(this._colon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_labelName_ == child)
+        // Remove child
+        if(this._labelName_ == child)
         {
-            _labelName_ = null;
+            this._labelName_ = null;
             return;
         }
 
-        if(_colon_ == child)
+        if(this._colon_ == child)
         {
-            _colon_ = null;
+            this._colon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_labelName_ == oldChild)
+        // Replace child
+        if(this._labelName_ == oldChild)
         {
             setLabelName((PLabelName) newChild);
             return;
         }
 
-        if(_colon_ == oldChild)
+        if(this._colon_ == oldChild)
         {
             setColon((TColon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ANewExpression extends PExpression
 {
     private PNewExpr _newExpr_;
 
     public ANewExpression()
     {
+        // Constructor
     }
 
     public ANewExpression(
-        PNewExpr _newExpr_)
+        @SuppressWarnings("hiding") PNewExpr _newExpr_)
     {
+        // Constructor
         setNewExpr(_newExpr_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ANewExpression(
-            (PNewExpr) cloneNode(_newExpr_));
+            cloneNode(this._newExpr_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ANewExpression extends PExpression
 
     public PNewExpr getNewExpr()
     {
-        return _newExpr_;
+        return this._newExpr_;
     }
 
     public void setNewExpr(PNewExpr node)
     {
-        if(_newExpr_ != null)
+        if(this._newExpr_ != null)
         {
-            _newExpr_.parent(null);
+            this._newExpr_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ANewExpression extends PExpression
             node.parent(this);
         }
 
-        _newExpr_ = node;
+        this._newExpr_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_newExpr_);
+            + toString(this._newExpr_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_newExpr_ == child)
+        // Remove child
+        if(this._newExpr_ == child)
         {
-            _newExpr_ = null;
+            this._newExpr_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_newExpr_ == oldChild)
+        // Replace child
+        if(this._newExpr_ == oldChild)
         {
             setNewExpr((PNewExpr) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

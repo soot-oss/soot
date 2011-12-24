@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ALengthofUnop extends PUnop
 {
     private TLengthof _lengthof_;
 
     public ALengthofUnop()
     {
+        // Constructor
     }
 
     public ALengthofUnop(
-        TLengthof _lengthof_)
+        @SuppressWarnings("hiding") TLengthof _lengthof_)
     {
+        // Constructor
         setLengthof(_lengthof_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ALengthofUnop(
-            (TLengthof) cloneNode(_lengthof_));
+            cloneNode(this._lengthof_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ALengthofUnop extends PUnop
 
     public TLengthof getLengthof()
     {
-        return _lengthof_;
+        return this._lengthof_;
     }
 
     public void setLengthof(TLengthof node)
     {
-        if(_lengthof_ != null)
+        if(this._lengthof_ != null)
         {
-            _lengthof_.parent(null);
+            this._lengthof_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ALengthofUnop extends PUnop
             node.parent(this);
         }
 
-        _lengthof_ = node;
+        this._lengthof_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_lengthof_);
+            + toString(this._lengthof_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_lengthof_ == child)
+        // Remove child
+        if(this._lengthof_ == child)
         {
-            _lengthof_ = null;
+            this._lengthof_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_lengthof_ == oldChild)
+        // Replace child
+        if(this._lengthof_ == oldChild)
         {
             setLengthof((TLengthof) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

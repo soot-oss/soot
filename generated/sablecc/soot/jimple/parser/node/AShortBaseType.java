@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AShortBaseType extends PBaseType
 {
     private TShort _short_;
 
     public AShortBaseType()
     {
+        // Constructor
     }
 
     public AShortBaseType(
-        TShort _short_)
+        @SuppressWarnings("hiding") TShort _short_)
     {
+        // Constructor
         setShort(_short_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AShortBaseType(
-            (TShort) cloneNode(_short_));
+            cloneNode(this._short_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AShortBaseType extends PBaseType
 
     public TShort getShort()
     {
-        return _short_;
+        return this._short_;
     }
 
     public void setShort(TShort node)
     {
-        if(_short_ != null)
+        if(this._short_ != null)
         {
-            _short_.parent(null);
+            this._short_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AShortBaseType extends PBaseType
             node.parent(this);
         }
 
-        _short_ = node;
+        this._short_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_short_);
+            + toString(this._short_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_short_ == child)
+        // Remove child
+        if(this._short_ == child)
         {
-            _short_ = null;
+            this._short_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_short_ == oldChild)
+        // Replace child
+        if(this._short_ == oldChild)
         {
             setShort((TShort) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

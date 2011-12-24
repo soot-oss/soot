@@ -4,6 +4,7 @@ package soot.jimple.parser.node;
 
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class TRParen extends Token
 {
     public TRParen()
@@ -18,6 +19,7 @@ public final class TRParen extends Token
         setPos(pos);
     }
 
+    @Override
     public Object clone()
     {
       return new TRParen(getLine(), getPos());
@@ -28,7 +30,8 @@ public final class TRParen extends Token
         ((Analysis) sw).caseTRParen(this);
     }
 
-    public void setText(String text)
+    @Override
+    public void setText(@SuppressWarnings("unused") String text)
     {
         throw new RuntimeException("Cannot change TRParen text.");
     }

@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AInstanceofExpression extends PExpression
 {
     private PImmediate _immediate_;
@@ -13,13 +13,15 @@ public final class AInstanceofExpression extends PExpression
 
     public AInstanceofExpression()
     {
+        // Constructor
     }
 
     public AInstanceofExpression(
-        PImmediate _immediate_,
-        TInstanceof _instanceof_,
-        PNonvoidType _nonvoidType_)
+        @SuppressWarnings("hiding") PImmediate _immediate_,
+        @SuppressWarnings("hiding") TInstanceof _instanceof_,
+        @SuppressWarnings("hiding") PNonvoidType _nonvoidType_)
     {
+        // Constructor
         setImmediate(_immediate_);
 
         setInstanceof(_instanceof_);
@@ -27,12 +29,14 @@ public final class AInstanceofExpression extends PExpression
         setNonvoidType(_nonvoidType_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AInstanceofExpression(
-            (PImmediate) cloneNode(_immediate_),
-            (TInstanceof) cloneNode(_instanceof_),
-            (PNonvoidType) cloneNode(_nonvoidType_));
+            cloneNode(this._immediate_),
+            cloneNode(this._instanceof_),
+            cloneNode(this._nonvoidType_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AInstanceofExpression extends PExpression
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AInstanceofExpression extends PExpression
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
     public TInstanceof getInstanceof()
     {
-        return _instanceof_;
+        return this._instanceof_;
     }
 
     public void setInstanceof(TInstanceof node)
     {
-        if(_instanceof_ != null)
+        if(this._instanceof_ != null)
         {
-            _instanceof_.parent(null);
+            this._instanceof_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AInstanceofExpression extends PExpression
             node.parent(this);
         }
 
-        _instanceof_ = node;
+        this._instanceof_ = node;
     }
 
     public PNonvoidType getNonvoidType()
     {
-        return _nonvoidType_;
+        return this._nonvoidType_;
     }
 
     public void setNonvoidType(PNonvoidType node)
     {
-        if(_nonvoidType_ != null)
+        if(this._nonvoidType_ != null)
         {
-            _nonvoidType_.parent(null);
+            this._nonvoidType_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AInstanceofExpression extends PExpression
             node.parent(this);
         }
 
-        _nonvoidType_ = node;
+        this._nonvoidType_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_immediate_)
-            + toString(_instanceof_)
-            + toString(_nonvoidType_);
+            + toString(this._immediate_)
+            + toString(this._instanceof_)
+            + toString(this._nonvoidType_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_immediate_ == child)
+        // Remove child
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
-        if(_instanceof_ == child)
+        if(this._instanceof_ == child)
         {
-            _instanceof_ = null;
+            this._instanceof_ = null;
             return;
         }
 
-        if(_nonvoidType_ == child)
+        if(this._nonvoidType_ == child)
         {
-            _nonvoidType_ = null;
+            this._nonvoidType_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_immediate_ == oldChild)
+        // Replace child
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
-        if(_instanceof_ == oldChild)
+        if(this._instanceof_ == oldChild)
         {
             setInstanceof((TInstanceof) newChild);
             return;
         }
 
-        if(_nonvoidType_ == oldChild)
+        if(this._nonvoidType_ == oldChild)
         {
             setNonvoidType((PNonvoidType) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

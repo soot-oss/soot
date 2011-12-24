@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class APrivateModifier extends PModifier
 {
     private TPrivate _private_;
 
     public APrivateModifier()
     {
+        // Constructor
     }
 
     public APrivateModifier(
-        TPrivate _private_)
+        @SuppressWarnings("hiding") TPrivate _private_)
     {
+        // Constructor
         setPrivate(_private_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new APrivateModifier(
-            (TPrivate) cloneNode(_private_));
+            cloneNode(this._private_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class APrivateModifier extends PModifier
 
     public TPrivate getPrivate()
     {
-        return _private_;
+        return this._private_;
     }
 
     public void setPrivate(TPrivate node)
     {
-        if(_private_ != null)
+        if(this._private_ != null)
         {
-            _private_.parent(null);
+            this._private_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class APrivateModifier extends PModifier
             node.parent(this);
         }
 
-        _private_ = node;
+        this._private_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_private_);
+            + toString(this._private_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_private_ == child)
+        // Remove child
+        if(this._private_ == child)
         {
-            _private_ = null;
+            this._private_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_private_ == oldChild)
+        // Replace child
+        if(this._private_ == oldChild)
         {
             setPrivate((TPrivate) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

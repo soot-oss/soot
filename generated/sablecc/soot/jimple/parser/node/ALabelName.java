@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ALabelName extends PLabelName
 {
     private TIdentifier _identifier_;
 
     public ALabelName()
     {
+        // Constructor
     }
 
     public ALabelName(
-        TIdentifier _identifier_)
+        @SuppressWarnings("hiding") TIdentifier _identifier_)
     {
+        // Constructor
         setIdentifier(_identifier_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ALabelName(
-            (TIdentifier) cloneNode(_identifier_));
+            cloneNode(this._identifier_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ALabelName extends PLabelName
 
     public TIdentifier getIdentifier()
     {
-        return _identifier_;
+        return this._identifier_;
     }
 
     public void setIdentifier(TIdentifier node)
     {
-        if(_identifier_ != null)
+        if(this._identifier_ != null)
         {
-            _identifier_.parent(null);
+            this._identifier_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ALabelName extends PLabelName
             node.parent(this);
         }
 
-        _identifier_ = node;
+        this._identifier_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_identifier_);
+            + toString(this._identifier_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_identifier_ == child)
+        // Remove child
+        if(this._identifier_ == child)
         {
-            _identifier_ = null;
+            this._identifier_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_identifier_ == oldChild)
+        // Replace child
+        if(this._identifier_ == oldChild)
         {
             setIdentifier((TIdentifier) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

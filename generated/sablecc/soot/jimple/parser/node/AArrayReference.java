@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AArrayReference extends PReference
 {
     private PArrayRef _arrayRef_;
 
     public AArrayReference()
     {
+        // Constructor
     }
 
     public AArrayReference(
-        PArrayRef _arrayRef_)
+        @SuppressWarnings("hiding") PArrayRef _arrayRef_)
     {
+        // Constructor
         setArrayRef(_arrayRef_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AArrayReference(
-            (PArrayRef) cloneNode(_arrayRef_));
+            cloneNode(this._arrayRef_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AArrayReference extends PReference
 
     public PArrayRef getArrayRef()
     {
-        return _arrayRef_;
+        return this._arrayRef_;
     }
 
     public void setArrayRef(PArrayRef node)
     {
-        if(_arrayRef_ != null)
+        if(this._arrayRef_ != null)
         {
-            _arrayRef_.parent(null);
+            this._arrayRef_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AArrayReference extends PReference
             node.parent(this);
         }
 
-        _arrayRef_ = node;
+        this._arrayRef_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_arrayRef_);
+            + toString(this._arrayRef_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_arrayRef_ == child)
+        // Remove child
+        if(this._arrayRef_ == child)
         {
-            _arrayRef_ = null;
+            this._arrayRef_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_arrayRef_ == oldChild)
+        // Replace child
+        if(this._arrayRef_ == oldChild)
         {
             setArrayRef((PArrayRef) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

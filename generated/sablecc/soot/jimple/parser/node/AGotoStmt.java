@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AGotoStmt extends PGotoStmt
 {
     private TGoto _goto_;
@@ -13,13 +13,15 @@ public final class AGotoStmt extends PGotoStmt
 
     public AGotoStmt()
     {
+        // Constructor
     }
 
     public AGotoStmt(
-        TGoto _goto_,
-        PLabelName _labelName_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TGoto _goto_,
+        @SuppressWarnings("hiding") PLabelName _labelName_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setGoto(_goto_);
 
         setLabelName(_labelName_);
@@ -27,12 +29,14 @@ public final class AGotoStmt extends PGotoStmt
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AGotoStmt(
-            (TGoto) cloneNode(_goto_),
-            (PLabelName) cloneNode(_labelName_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._goto_),
+            cloneNode(this._labelName_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AGotoStmt extends PGotoStmt
 
     public TGoto getGoto()
     {
-        return _goto_;
+        return this._goto_;
     }
 
     public void setGoto(TGoto node)
     {
-        if(_goto_ != null)
+        if(this._goto_ != null)
         {
-            _goto_.parent(null);
+            this._goto_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AGotoStmt extends PGotoStmt
             node.parent(this);
         }
 
-        _goto_ = node;
+        this._goto_ = node;
     }
 
     public PLabelName getLabelName()
     {
-        return _labelName_;
+        return this._labelName_;
     }
 
     public void setLabelName(PLabelName node)
     {
-        if(_labelName_ != null)
+        if(this._labelName_ != null)
         {
-            _labelName_.parent(null);
+            this._labelName_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AGotoStmt extends PGotoStmt
             node.parent(this);
         }
 
-        _labelName_ = node;
+        this._labelName_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AGotoStmt extends PGotoStmt
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_goto_)
-            + toString(_labelName_)
-            + toString(_semicolon_);
+            + toString(this._goto_)
+            + toString(this._labelName_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_goto_ == child)
+        // Remove child
+        if(this._goto_ == child)
         {
-            _goto_ = null;
+            this._goto_ = null;
             return;
         }
 
-        if(_labelName_ == child)
+        if(this._labelName_ == child)
         {
-            _labelName_ = null;
+            this._labelName_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_goto_ == oldChild)
+        // Replace child
+        if(this._goto_ == oldChild)
         {
             setGoto((TGoto) newChild);
             return;
         }
 
-        if(_labelName_ == oldChild)
+        if(this._labelName_ == oldChild)
         {
             setLabelName((PLabelName) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

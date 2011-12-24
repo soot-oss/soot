@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AByteBaseType extends PBaseType
 {
     private TByte _byte_;
 
     public AByteBaseType()
     {
+        // Constructor
     }
 
     public AByteBaseType(
-        TByte _byte_)
+        @SuppressWarnings("hiding") TByte _byte_)
     {
+        // Constructor
         setByte(_byte_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AByteBaseType(
-            (TByte) cloneNode(_byte_));
+            cloneNode(this._byte_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AByteBaseType extends PBaseType
 
     public TByte getByte()
     {
-        return _byte_;
+        return this._byte_;
     }
 
     public void setByte(TByte node)
     {
-        if(_byte_ != null)
+        if(this._byte_ != null)
         {
-            _byte_.parent(null);
+            this._byte_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AByteBaseType extends PBaseType
             node.parent(this);
         }
 
-        _byte_ = node;
+        this._byte_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_byte_);
+            + toString(this._byte_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_byte_ == child)
+        // Remove child
+        if(this._byte_ == child)
         {
-            _byte_ = null;
+            this._byte_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_byte_ == oldChild)
+        // Replace child
+        if(this._byte_ == oldChild)
         {
             setByte((TByte) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

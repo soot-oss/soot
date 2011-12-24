@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AMultiNameList extends PNameList
 {
     private PName _name_;
@@ -13,13 +13,15 @@ public final class AMultiNameList extends PNameList
 
     public AMultiNameList()
     {
+        // Constructor
     }
 
     public AMultiNameList(
-        PName _name_,
-        TComma _comma_,
-        PNameList _nameList_)
+        @SuppressWarnings("hiding") PName _name_,
+        @SuppressWarnings("hiding") TComma _comma_,
+        @SuppressWarnings("hiding") PNameList _nameList_)
     {
+        // Constructor
         setName(_name_);
 
         setComma(_comma_);
@@ -27,12 +29,14 @@ public final class AMultiNameList extends PNameList
         setNameList(_nameList_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AMultiNameList(
-            (PName) cloneNode(_name_),
-            (TComma) cloneNode(_comma_),
-            (PNameList) cloneNode(_nameList_));
+            cloneNode(this._name_),
+            cloneNode(this._comma_),
+            cloneNode(this._nameList_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AMultiNameList extends PNameList
 
     public PName getName()
     {
-        return _name_;
+        return this._name_;
     }
 
     public void setName(PName node)
     {
-        if(_name_ != null)
+        if(this._name_ != null)
         {
-            _name_.parent(null);
+            this._name_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AMultiNameList extends PNameList
             node.parent(this);
         }
 
-        _name_ = node;
+        this._name_ = node;
     }
 
     public TComma getComma()
     {
-        return _comma_;
+        return this._comma_;
     }
 
     public void setComma(TComma node)
     {
-        if(_comma_ != null)
+        if(this._comma_ != null)
         {
-            _comma_.parent(null);
+            this._comma_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AMultiNameList extends PNameList
             node.parent(this);
         }
 
-        _comma_ = node;
+        this._comma_ = node;
     }
 
     public PNameList getNameList()
     {
-        return _nameList_;
+        return this._nameList_;
     }
 
     public void setNameList(PNameList node)
     {
-        if(_nameList_ != null)
+        if(this._nameList_ != null)
         {
-            _nameList_.parent(null);
+            this._nameList_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AMultiNameList extends PNameList
             node.parent(this);
         }
 
-        _nameList_ = node;
+        this._nameList_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_name_)
-            + toString(_comma_)
-            + toString(_nameList_);
+            + toString(this._name_)
+            + toString(this._comma_)
+            + toString(this._nameList_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_name_ == child)
+        // Remove child
+        if(this._name_ == child)
         {
-            _name_ = null;
+            this._name_ = null;
             return;
         }
 
-        if(_comma_ == child)
+        if(this._comma_ == child)
         {
-            _comma_ = null;
+            this._comma_ = null;
             return;
         }
 
-        if(_nameList_ == child)
+        if(this._nameList_ == child)
         {
-            _nameList_ = null;
+            this._nameList_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_name_ == oldChild)
+        // Replace child
+        if(this._name_ == oldChild)
         {
             setName((PName) newChild);
             return;
         }
 
-        if(_comma_ == oldChild)
+        if(this._comma_ == oldChild)
         {
             setComma((TComma) newChild);
             return;
         }
 
-        if(_nameList_ == oldChild)
+        if(this._nameList_ == oldChild)
         {
             setNameList((PNameList) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

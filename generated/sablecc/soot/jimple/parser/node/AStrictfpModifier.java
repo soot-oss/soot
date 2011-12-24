@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AStrictfpModifier extends PModifier
 {
     private TStrictfp _strictfp_;
 
     public AStrictfpModifier()
     {
+        // Constructor
     }
 
     public AStrictfpModifier(
-        TStrictfp _strictfp_)
+        @SuppressWarnings("hiding") TStrictfp _strictfp_)
     {
+        // Constructor
         setStrictfp(_strictfp_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AStrictfpModifier(
-            (TStrictfp) cloneNode(_strictfp_));
+            cloneNode(this._strictfp_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AStrictfpModifier extends PModifier
 
     public TStrictfp getStrictfp()
     {
-        return _strictfp_;
+        return this._strictfp_;
     }
 
     public void setStrictfp(TStrictfp node)
     {
-        if(_strictfp_ != null)
+        if(this._strictfp_ != null)
         {
-            _strictfp_.parent(null);
+            this._strictfp_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AStrictfpModifier extends PModifier
             node.parent(this);
         }
 
-        _strictfp_ = node;
+        this._strictfp_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_strictfp_);
+            + toString(this._strictfp_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_strictfp_ == child)
+        // Remove child
+        if(this._strictfp_ == child)
         {
-            _strictfp_ = null;
+            this._strictfp_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_strictfp_ == oldChild)
+        // Replace child
+        if(this._strictfp_ == oldChild)
         {
             setStrictfp((TStrictfp) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

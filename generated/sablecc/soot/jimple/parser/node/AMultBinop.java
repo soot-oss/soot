@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AMultBinop extends PBinop
 {
     private TMult _mult_;
 
     public AMultBinop()
     {
+        // Constructor
     }
 
     public AMultBinop(
-        TMult _mult_)
+        @SuppressWarnings("hiding") TMult _mult_)
     {
+        // Constructor
         setMult(_mult_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AMultBinop(
-            (TMult) cloneNode(_mult_));
+            cloneNode(this._mult_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AMultBinop extends PBinop
 
     public TMult getMult()
     {
-        return _mult_;
+        return this._mult_;
     }
 
     public void setMult(TMult node)
     {
-        if(_mult_ != null)
+        if(this._mult_ != null)
         {
-            _mult_.parent(null);
+            this._mult_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AMultBinop extends PBinop
             node.parent(this);
         }
 
-        _mult_ = node;
+        this._mult_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_mult_);
+            + toString(this._mult_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_mult_ == child)
+        // Remove child
+        if(this._mult_ == child)
         {
-            _mult_ = null;
+            this._mult_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_mult_ == oldChild)
+        // Replace child
+        if(this._mult_ == oldChild)
         {
             setMult((TMult) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

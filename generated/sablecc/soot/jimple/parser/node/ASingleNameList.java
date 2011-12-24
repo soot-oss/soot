@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ASingleNameList extends PNameList
 {
     private PName _name_;
 
     public ASingleNameList()
     {
+        // Constructor
     }
 
     public ASingleNameList(
-        PName _name_)
+        @SuppressWarnings("hiding") PName _name_)
     {
+        // Constructor
         setName(_name_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ASingleNameList(
-            (PName) cloneNode(_name_));
+            cloneNode(this._name_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ASingleNameList extends PNameList
 
     public PName getName()
     {
-        return _name_;
+        return this._name_;
     }
 
     public void setName(PName node)
     {
-        if(_name_ != null)
+        if(this._name_ != null)
         {
-            _name_.parent(null);
+            this._name_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ASingleNameList extends PNameList
             node.parent(this);
         }
 
-        _name_ = node;
+        this._name_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(this._name_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_name_ == child)
+        // Remove child
+        if(this._name_ == child)
         {
-            _name_ = null;
+            this._name_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_name_ == oldChild)
+        // Replace child
+        if(this._name_ == oldChild)
         {
             setName((PName) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

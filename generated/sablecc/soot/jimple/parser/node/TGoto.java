@@ -4,6 +4,7 @@ package soot.jimple.parser.node;
 
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class TGoto extends Token
 {
     public TGoto()
@@ -18,6 +19,7 @@ public final class TGoto extends Token
         setPos(pos);
     }
 
+    @Override
     public Object clone()
     {
       return new TGoto(getLine(), getPos());
@@ -28,7 +30,8 @@ public final class TGoto extends Token
         ((Analysis) sw).caseTGoto(this);
     }
 
-    public void setText(String text)
+    @Override
+    public void setText(@SuppressWarnings("unused") String text)
     {
         throw new RuntimeException("Cannot change TGoto text.");
     }

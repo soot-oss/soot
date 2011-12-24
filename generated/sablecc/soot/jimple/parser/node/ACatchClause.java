@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ACatchClause extends PCatchClause
 {
     private TCatch _catch_;
@@ -19,19 +19,21 @@ public final class ACatchClause extends PCatchClause
 
     public ACatchClause()
     {
+        // Constructor
     }
 
     public ACatchClause(
-        TCatch _catch_,
-        PClassName _name_,
-        TFrom _from_,
-        PLabelName _fromLabel_,
-        TTo _to_,
-        PLabelName _toLabel_,
-        TWith _with_,
-        PLabelName _withLabel_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TCatch _catch_,
+        @SuppressWarnings("hiding") PClassName _name_,
+        @SuppressWarnings("hiding") TFrom _from_,
+        @SuppressWarnings("hiding") PLabelName _fromLabel_,
+        @SuppressWarnings("hiding") TTo _to_,
+        @SuppressWarnings("hiding") PLabelName _toLabel_,
+        @SuppressWarnings("hiding") TWith _with_,
+        @SuppressWarnings("hiding") PLabelName _withLabel_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setCatch(_catch_);
 
         setName(_name_);
@@ -51,18 +53,20 @@ public final class ACatchClause extends PCatchClause
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ACatchClause(
-            (TCatch) cloneNode(_catch_),
-            (PClassName) cloneNode(_name_),
-            (TFrom) cloneNode(_from_),
-            (PLabelName) cloneNode(_fromLabel_),
-            (TTo) cloneNode(_to_),
-            (PLabelName) cloneNode(_toLabel_),
-            (TWith) cloneNode(_with_),
-            (PLabelName) cloneNode(_withLabel_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._catch_),
+            cloneNode(this._name_),
+            cloneNode(this._from_),
+            cloneNode(this._fromLabel_),
+            cloneNode(this._to_),
+            cloneNode(this._toLabel_),
+            cloneNode(this._with_),
+            cloneNode(this._withLabel_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -72,14 +76,14 @@ public final class ACatchClause extends PCatchClause
 
     public TCatch getCatch()
     {
-        return _catch_;
+        return this._catch_;
     }
 
     public void setCatch(TCatch node)
     {
-        if(_catch_ != null)
+        if(this._catch_ != null)
         {
-            _catch_.parent(null);
+            this._catch_.parent(null);
         }
 
         if(node != null)
@@ -92,19 +96,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _catch_ = node;
+        this._catch_ = node;
     }
 
     public PClassName getName()
     {
-        return _name_;
+        return this._name_;
     }
 
     public void setName(PClassName node)
     {
-        if(_name_ != null)
+        if(this._name_ != null)
         {
-            _name_.parent(null);
+            this._name_.parent(null);
         }
 
         if(node != null)
@@ -117,19 +121,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _name_ = node;
+        this._name_ = node;
     }
 
     public TFrom getFrom()
     {
-        return _from_;
+        return this._from_;
     }
 
     public void setFrom(TFrom node)
     {
-        if(_from_ != null)
+        if(this._from_ != null)
         {
-            _from_.parent(null);
+            this._from_.parent(null);
         }
 
         if(node != null)
@@ -142,19 +146,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _from_ = node;
+        this._from_ = node;
     }
 
     public PLabelName getFromLabel()
     {
-        return _fromLabel_;
+        return this._fromLabel_;
     }
 
     public void setFromLabel(PLabelName node)
     {
-        if(_fromLabel_ != null)
+        if(this._fromLabel_ != null)
         {
-            _fromLabel_.parent(null);
+            this._fromLabel_.parent(null);
         }
 
         if(node != null)
@@ -167,19 +171,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _fromLabel_ = node;
+        this._fromLabel_ = node;
     }
 
     public TTo getTo()
     {
-        return _to_;
+        return this._to_;
     }
 
     public void setTo(TTo node)
     {
-        if(_to_ != null)
+        if(this._to_ != null)
         {
-            _to_.parent(null);
+            this._to_.parent(null);
         }
 
         if(node != null)
@@ -192,19 +196,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _to_ = node;
+        this._to_ = node;
     }
 
     public PLabelName getToLabel()
     {
-        return _toLabel_;
+        return this._toLabel_;
     }
 
     public void setToLabel(PLabelName node)
     {
-        if(_toLabel_ != null)
+        if(this._toLabel_ != null)
         {
-            _toLabel_.parent(null);
+            this._toLabel_.parent(null);
         }
 
         if(node != null)
@@ -217,19 +221,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _toLabel_ = node;
+        this._toLabel_ = node;
     }
 
     public TWith getWith()
     {
-        return _with_;
+        return this._with_;
     }
 
     public void setWith(TWith node)
     {
-        if(_with_ != null)
+        if(this._with_ != null)
         {
-            _with_.parent(null);
+            this._with_.parent(null);
         }
 
         if(node != null)
@@ -242,19 +246,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _with_ = node;
+        this._with_ = node;
     }
 
     public PLabelName getWithLabel()
     {
-        return _withLabel_;
+        return this._withLabel_;
     }
 
     public void setWithLabel(PLabelName node)
     {
-        if(_withLabel_ != null)
+        if(this._withLabel_ != null)
         {
-            _withLabel_.parent(null);
+            this._withLabel_.parent(null);
         }
 
         if(node != null)
@@ -267,19 +271,19 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _withLabel_ = node;
+        this._withLabel_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -292,136 +296,143 @@ public final class ACatchClause extends PCatchClause
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_catch_)
-            + toString(_name_)
-            + toString(_from_)
-            + toString(_fromLabel_)
-            + toString(_to_)
-            + toString(_toLabel_)
-            + toString(_with_)
-            + toString(_withLabel_)
-            + toString(_semicolon_);
+            + toString(this._catch_)
+            + toString(this._name_)
+            + toString(this._from_)
+            + toString(this._fromLabel_)
+            + toString(this._to_)
+            + toString(this._toLabel_)
+            + toString(this._with_)
+            + toString(this._withLabel_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_catch_ == child)
+        // Remove child
+        if(this._catch_ == child)
         {
-            _catch_ = null;
+            this._catch_ = null;
             return;
         }
 
-        if(_name_ == child)
+        if(this._name_ == child)
         {
-            _name_ = null;
+            this._name_ = null;
             return;
         }
 
-        if(_from_ == child)
+        if(this._from_ == child)
         {
-            _from_ = null;
+            this._from_ = null;
             return;
         }
 
-        if(_fromLabel_ == child)
+        if(this._fromLabel_ == child)
         {
-            _fromLabel_ = null;
+            this._fromLabel_ = null;
             return;
         }
 
-        if(_to_ == child)
+        if(this._to_ == child)
         {
-            _to_ = null;
+            this._to_ = null;
             return;
         }
 
-        if(_toLabel_ == child)
+        if(this._toLabel_ == child)
         {
-            _toLabel_ = null;
+            this._toLabel_ = null;
             return;
         }
 
-        if(_with_ == child)
+        if(this._with_ == child)
         {
-            _with_ = null;
+            this._with_ = null;
             return;
         }
 
-        if(_withLabel_ == child)
+        if(this._withLabel_ == child)
         {
-            _withLabel_ = null;
+            this._withLabel_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_catch_ == oldChild)
+        // Replace child
+        if(this._catch_ == oldChild)
         {
             setCatch((TCatch) newChild);
             return;
         }
 
-        if(_name_ == oldChild)
+        if(this._name_ == oldChild)
         {
             setName((PClassName) newChild);
             return;
         }
 
-        if(_from_ == oldChild)
+        if(this._from_ == oldChild)
         {
             setFrom((TFrom) newChild);
             return;
         }
 
-        if(_fromLabel_ == oldChild)
+        if(this._fromLabel_ == oldChild)
         {
             setFromLabel((PLabelName) newChild);
             return;
         }
 
-        if(_to_ == oldChild)
+        if(this._to_ == oldChild)
         {
             setTo((TTo) newChild);
             return;
         }
 
-        if(_toLabel_ == oldChild)
+        if(this._toLabel_ == oldChild)
         {
             setToLabel((PLabelName) newChild);
             return;
         }
 
-        if(_with_ == oldChild)
+        if(this._with_ == oldChild)
         {
             setWith((TWith) newChild);
             return;
         }
 
-        if(_withLabel_ == oldChild)
+        if(this._withLabel_ == oldChild)
         {
             setWithLabel((PLabelName) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

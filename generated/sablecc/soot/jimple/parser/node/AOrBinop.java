@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AOrBinop extends PBinop
 {
     private TOr _or_;
 
     public AOrBinop()
     {
+        // Constructor
     }
 
     public AOrBinop(
-        TOr _or_)
+        @SuppressWarnings("hiding") TOr _or_)
     {
+        // Constructor
         setOr(_or_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AOrBinop(
-            (TOr) cloneNode(_or_));
+            cloneNode(this._or_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AOrBinop extends PBinop
 
     public TOr getOr()
     {
-        return _or_;
+        return this._or_;
     }
 
     public void setOr(TOr node)
     {
-        if(_or_ != null)
+        if(this._or_ != null)
         {
-            _or_.parent(null);
+            this._or_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AOrBinop extends PBinop
             node.parent(this);
         }
 
-        _or_ = node;
+        this._or_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_or_);
+            + toString(this._or_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_or_ == child)
+        // Remove child
+        if(this._or_ == child)
         {
-            _or_ = null;
+            this._or_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_or_ == oldChild)
+        // Replace child
+        if(this._or_ == oldChild)
         {
             setOr((TOr) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

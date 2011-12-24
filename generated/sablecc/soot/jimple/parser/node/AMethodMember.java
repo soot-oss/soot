@@ -5,9 +5,10 @@ package soot.jimple.parser.node;
 import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AMethodMember extends PMember
 {
-    private final LinkedList _modifier_ = new TypedLinkedList(new Modifier_Cast());
+    private final LinkedList<PModifier> _modifier_ = new LinkedList<PModifier>();
     private PType _type_;
     private PName _name_;
     private TLParen _lParen_;
@@ -18,22 +19,21 @@ public final class AMethodMember extends PMember
 
     public AMethodMember()
     {
+        // Constructor
     }
 
     public AMethodMember(
-        List _modifier_,
-        PType _type_,
-        PName _name_,
-        TLParen _lParen_,
-        PParameterList _parameterList_,
-        TRParen _rParen_,
-        PThrowsClause _throwsClause_,
-        PMethodBody _methodBody_)
+        @SuppressWarnings("hiding") List<PModifier> _modifier_,
+        @SuppressWarnings("hiding") PType _type_,
+        @SuppressWarnings("hiding") PName _name_,
+        @SuppressWarnings("hiding") TLParen _lParen_,
+        @SuppressWarnings("hiding") PParameterList _parameterList_,
+        @SuppressWarnings("hiding") TRParen _rParen_,
+        @SuppressWarnings("hiding") PThrowsClause _throwsClause_,
+        @SuppressWarnings("hiding") PMethodBody _methodBody_)
     {
-        {
-            this._modifier_.clear();
-            this._modifier_.addAll(_modifier_);
-        }
+        // Constructor
+        setModifier(_modifier_);
 
         setType(_type_);
 
@@ -51,52 +51,18 @@ public final class AMethodMember extends PMember
 
     }
 
-    public AMethodMember(
-        XPModifier _modifier_,
-        PType _type_,
-        PName _name_,
-        TLParen _lParen_,
-        PParameterList _parameterList_,
-        TRParen _rParen_,
-        PThrowsClause _throwsClause_,
-        PMethodBody _methodBody_)
-    {
-        if(_modifier_ != null)
-        {
-            while(_modifier_ instanceof X1PModifier)
-            {
-                this._modifier_.addFirst(((X1PModifier) _modifier_).getPModifier());
-                _modifier_ = ((X1PModifier) _modifier_).getXPModifier();
-            }
-            this._modifier_.addFirst(((X2PModifier) _modifier_).getPModifier());
-        }
-
-        setType(_type_);
-
-        setName(_name_);
-
-        setLParen(_lParen_);
-
-        setParameterList(_parameterList_);
-
-        setRParen(_rParen_);
-
-        setThrowsClause(_throwsClause_);
-
-        setMethodBody(_methodBody_);
-
-    }
+    @Override
     public Object clone()
     {
         return new AMethodMember(
-            cloneList(_modifier_),
-            (PType) cloneNode(_type_),
-            (PName) cloneNode(_name_),
-            (TLParen) cloneNode(_lParen_),
-            (PParameterList) cloneNode(_parameterList_),
-            (TRParen) cloneNode(_rParen_),
-            (PThrowsClause) cloneNode(_throwsClause_),
-            (PMethodBody) cloneNode(_methodBody_));
+            cloneList(this._modifier_),
+            cloneNode(this._type_),
+            cloneNode(this._name_),
+            cloneNode(this._lParen_),
+            cloneNode(this._parameterList_),
+            cloneNode(this._rParen_),
+            cloneNode(this._throwsClause_),
+            cloneNode(this._methodBody_));
     }
 
     public void apply(Switch sw)
@@ -104,27 +70,36 @@ public final class AMethodMember extends PMember
         ((Analysis) sw).caseAMethodMember(this);
     }
 
-    public LinkedList getModifier()
+    public LinkedList<PModifier> getModifier()
     {
-        return _modifier_;
+        return this._modifier_;
     }
 
-    public void setModifier(List list)
+    public void setModifier(List<PModifier> list)
     {
-        _modifier_.clear();
-        _modifier_.addAll(list);
+        this._modifier_.clear();
+        this._modifier_.addAll(list);
+        for(PModifier e : list)
+        {
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+        }
     }
 
     public PType getType()
     {
-        return _type_;
+        return this._type_;
     }
 
     public void setType(PType node)
     {
-        if(_type_ != null)
+        if(this._type_ != null)
         {
-            _type_.parent(null);
+            this._type_.parent(null);
         }
 
         if(node != null)
@@ -137,19 +112,19 @@ public final class AMethodMember extends PMember
             node.parent(this);
         }
 
-        _type_ = node;
+        this._type_ = node;
     }
 
     public PName getName()
     {
-        return _name_;
+        return this._name_;
     }
 
     public void setName(PName node)
     {
-        if(_name_ != null)
+        if(this._name_ != null)
         {
-            _name_.parent(null);
+            this._name_.parent(null);
         }
 
         if(node != null)
@@ -162,19 +137,19 @@ public final class AMethodMember extends PMember
             node.parent(this);
         }
 
-        _name_ = node;
+        this._name_ = node;
     }
 
     public TLParen getLParen()
     {
-        return _lParen_;
+        return this._lParen_;
     }
 
     public void setLParen(TLParen node)
     {
-        if(_lParen_ != null)
+        if(this._lParen_ != null)
         {
-            _lParen_.parent(null);
+            this._lParen_.parent(null);
         }
 
         if(node != null)
@@ -187,19 +162,19 @@ public final class AMethodMember extends PMember
             node.parent(this);
         }
 
-        _lParen_ = node;
+        this._lParen_ = node;
     }
 
     public PParameterList getParameterList()
     {
-        return _parameterList_;
+        return this._parameterList_;
     }
 
     public void setParameterList(PParameterList node)
     {
-        if(_parameterList_ != null)
+        if(this._parameterList_ != null)
         {
-            _parameterList_.parent(null);
+            this._parameterList_.parent(null);
         }
 
         if(node != null)
@@ -212,19 +187,19 @@ public final class AMethodMember extends PMember
             node.parent(this);
         }
 
-        _parameterList_ = node;
+        this._parameterList_ = node;
     }
 
     public TRParen getRParen()
     {
-        return _rParen_;
+        return this._rParen_;
     }
 
     public void setRParen(TRParen node)
     {
-        if(_rParen_ != null)
+        if(this._rParen_ != null)
         {
-            _rParen_.parent(null);
+            this._rParen_.parent(null);
         }
 
         if(node != null)
@@ -237,19 +212,19 @@ public final class AMethodMember extends PMember
             node.parent(this);
         }
 
-        _rParen_ = node;
+        this._rParen_ = node;
     }
 
     public PThrowsClause getThrowsClause()
     {
-        return _throwsClause_;
+        return this._throwsClause_;
     }
 
     public void setThrowsClause(PThrowsClause node)
     {
-        if(_throwsClause_ != null)
+        if(this._throwsClause_ != null)
         {
-            _throwsClause_.parent(null);
+            this._throwsClause_.parent(null);
         }
 
         if(node != null)
@@ -262,19 +237,19 @@ public final class AMethodMember extends PMember
             node.parent(this);
         }
 
-        _throwsClause_ = node;
+        this._throwsClause_ = node;
     }
 
     public PMethodBody getMethodBody()
     {
-        return _methodBody_;
+        return this._methodBody_;
     }
 
     public void setMethodBody(PMethodBody node)
     {
-        if(_methodBody_ != null)
+        if(this._methodBody_ != null)
         {
-            _methodBody_.parent(null);
+            this._methodBody_.parent(null);
         }
 
         if(node != null)
@@ -287,82 +262,89 @@ public final class AMethodMember extends PMember
             node.parent(this);
         }
 
-        _methodBody_ = node;
+        this._methodBody_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_modifier_)
-            + toString(_type_)
-            + toString(_name_)
-            + toString(_lParen_)
-            + toString(_parameterList_)
-            + toString(_rParen_)
-            + toString(_throwsClause_)
-            + toString(_methodBody_);
+            + toString(this._modifier_)
+            + toString(this._type_)
+            + toString(this._name_)
+            + toString(this._lParen_)
+            + toString(this._parameterList_)
+            + toString(this._rParen_)
+            + toString(this._throwsClause_)
+            + toString(this._methodBody_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_modifier_.remove(child))
+        // Remove child
+        if(this._modifier_.remove(child))
         {
             return;
         }
 
-        if(_type_ == child)
+        if(this._type_ == child)
         {
-            _type_ = null;
+            this._type_ = null;
             return;
         }
 
-        if(_name_ == child)
+        if(this._name_ == child)
         {
-            _name_ = null;
+            this._name_ = null;
             return;
         }
 
-        if(_lParen_ == child)
+        if(this._lParen_ == child)
         {
-            _lParen_ = null;
+            this._lParen_ = null;
             return;
         }
 
-        if(_parameterList_ == child)
+        if(this._parameterList_ == child)
         {
-            _parameterList_ = null;
+            this._parameterList_ = null;
             return;
         }
 
-        if(_rParen_ == child)
+        if(this._rParen_ == child)
         {
-            _rParen_ = null;
+            this._rParen_ = null;
             return;
         }
 
-        if(_throwsClause_ == child)
+        if(this._throwsClause_ == child)
         {
-            _throwsClause_ = null;
+            this._throwsClause_ = null;
             return;
         }
 
-        if(_methodBody_ == child)
+        if(this._methodBody_ == child)
         {
-            _methodBody_ = null;
+            this._methodBody_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        for(ListIterator i = _modifier_.listIterator(); i.hasNext();)
+        // Replace child
+        for(ListIterator<PModifier> i = this._modifier_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set(newChild);
+                    i.set((PModifier) newChild);
+                    newChild.parent(this);
                     oldChild.parent(null);
                     return;
                 }
@@ -373,69 +355,48 @@ public final class AMethodMember extends PMember
             }
         }
 
-        if(_type_ == oldChild)
+        if(this._type_ == oldChild)
         {
             setType((PType) newChild);
             return;
         }
 
-        if(_name_ == oldChild)
+        if(this._name_ == oldChild)
         {
             setName((PName) newChild);
             return;
         }
 
-        if(_lParen_ == oldChild)
+        if(this._lParen_ == oldChild)
         {
             setLParen((TLParen) newChild);
             return;
         }
 
-        if(_parameterList_ == oldChild)
+        if(this._parameterList_ == oldChild)
         {
             setParameterList((PParameterList) newChild);
             return;
         }
 
-        if(_rParen_ == oldChild)
+        if(this._rParen_ == oldChild)
         {
             setRParen((TRParen) newChild);
             return;
         }
 
-        if(_throwsClause_ == oldChild)
+        if(this._throwsClause_ == oldChild)
         {
             setThrowsClause((PThrowsClause) newChild);
             return;
         }
 
-        if(_methodBody_ == oldChild)
+        if(this._methodBody_ == oldChild)
         {
             setMethodBody((PMethodBody) newChild);
             return;
         }
 
-    }
-
-    private class Modifier_Cast implements Cast
-    {
-        public Object cast(Object o)
-        {
-            PModifier node = (PModifier) o;
-
-            if((node.parent() != null) &&
-                (node.parent() != AMethodMember.this))
-            {
-                node.parent().removeChild(node);
-            }
-
-            if((node.parent() == null) ||
-                (node.parent() != AMethodMember.this))
-            {
-                node.parent(AMethodMember.this);
-            }
-
-            return node;
-        }
+        throw new RuntimeException("Not a child.");
     }
 }

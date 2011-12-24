@@ -2,6 +2,7 @@
 
 package soot.jimple.parser.node;
 
+@SuppressWarnings("nls")
 public abstract class Token extends Node
 {
     private String text;
@@ -10,44 +11,49 @@ public abstract class Token extends Node
 
     public String getText()
     {
-        return text;
+        return this.text;
     }
 
-    public void setText(String text)
+    public void setText(@SuppressWarnings("hiding") String text)
     {
         this.text = text;
     }
 
     public int getLine()
     {
-        return line;
+        return this.line;
     }
 
-    public void setLine(int line)
+    public void setLine(@SuppressWarnings("hiding") int line)
     {
         this.line = line;
     }
 
     public int getPos()
     {
-        return pos;
+        return this.pos;
     }
 
-    public void setPos(int pos)
+    public void setPos(@SuppressWarnings("hiding") int pos)
     {
         this.pos = pos;
     }
 
+    @Override
     public String toString()
     {
-        return text + " ";
+        return this.text + " ";
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
+        throw new RuntimeException("Not a child.");
     }
 }

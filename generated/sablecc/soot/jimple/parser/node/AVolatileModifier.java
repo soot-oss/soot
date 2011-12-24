@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AVolatileModifier extends PModifier
 {
     private TVolatile _volatile_;
 
     public AVolatileModifier()
     {
+        // Constructor
     }
 
     public AVolatileModifier(
-        TVolatile _volatile_)
+        @SuppressWarnings("hiding") TVolatile _volatile_)
     {
+        // Constructor
         setVolatile(_volatile_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AVolatileModifier(
-            (TVolatile) cloneNode(_volatile_));
+            cloneNode(this._volatile_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AVolatileModifier extends PModifier
 
     public TVolatile getVolatile()
     {
-        return _volatile_;
+        return this._volatile_;
     }
 
     public void setVolatile(TVolatile node)
     {
-        if(_volatile_ != null)
+        if(this._volatile_ != null)
         {
-            _volatile_.parent(null);
+            this._volatile_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AVolatileModifier extends PModifier
             node.parent(this);
         }
 
-        _volatile_ = node;
+        this._volatile_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_volatile_);
+            + toString(this._volatile_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_volatile_ == child)
+        // Remove child
+        if(this._volatile_ == child)
         {
-            _volatile_ = null;
+            this._volatile_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_volatile_ == oldChild)
+        // Replace child
+        if(this._volatile_ == oldChild)
         {
             setVolatile((TVolatile) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

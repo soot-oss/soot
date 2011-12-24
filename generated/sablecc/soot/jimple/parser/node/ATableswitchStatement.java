@@ -5,6 +5,7 @@ package soot.jimple.parser.node;
 import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ATableswitchStatement extends PStatement
 {
     private TTableswitch _tableswitch_;
@@ -12,24 +13,26 @@ public final class ATableswitchStatement extends PStatement
     private PImmediate _immediate_;
     private TRParen _rParen_;
     private TLBrace _lBrace_;
-    private final LinkedList _caseStmt_ = new TypedLinkedList(new CaseStmt_Cast());
+    private final LinkedList<PCaseStmt> _caseStmt_ = new LinkedList<PCaseStmt>();
     private TRBrace _rBrace_;
     private TSemicolon _semicolon_;
 
     public ATableswitchStatement()
     {
+        // Constructor
     }
 
     public ATableswitchStatement(
-        TTableswitch _tableswitch_,
-        TLParen _lParen_,
-        PImmediate _immediate_,
-        TRParen _rParen_,
-        TLBrace _lBrace_,
-        List _caseStmt_,
-        TRBrace _rBrace_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") TTableswitch _tableswitch_,
+        @SuppressWarnings("hiding") TLParen _lParen_,
+        @SuppressWarnings("hiding") PImmediate _immediate_,
+        @SuppressWarnings("hiding") TRParen _rParen_,
+        @SuppressWarnings("hiding") TLBrace _lBrace_,
+        @SuppressWarnings("hiding") List<PCaseStmt> _caseStmt_,
+        @SuppressWarnings("hiding") TRBrace _rBrace_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setTableswitch(_tableswitch_);
 
         setLParen(_lParen_);
@@ -40,10 +43,7 @@ public final class ATableswitchStatement extends PStatement
 
         setLBrace(_lBrace_);
 
-        {
-            this._caseStmt_.clear();
-            this._caseStmt_.addAll(_caseStmt_);
-        }
+        setCaseStmt(_caseStmt_);
 
         setRBrace(_rBrace_);
 
@@ -51,52 +51,18 @@ public final class ATableswitchStatement extends PStatement
 
     }
 
-    public ATableswitchStatement(
-        TTableswitch _tableswitch_,
-        TLParen _lParen_,
-        PImmediate _immediate_,
-        TRParen _rParen_,
-        TLBrace _lBrace_,
-        XPCaseStmt _caseStmt_,
-        TRBrace _rBrace_,
-        TSemicolon _semicolon_)
-    {
-        setTableswitch(_tableswitch_);
-
-        setLParen(_lParen_);
-
-        setImmediate(_immediate_);
-
-        setRParen(_rParen_);
-
-        setLBrace(_lBrace_);
-
-        if(_caseStmt_ != null)
-        {
-            while(_caseStmt_ instanceof X1PCaseStmt)
-            {
-                this._caseStmt_.addFirst(((X1PCaseStmt) _caseStmt_).getPCaseStmt());
-                _caseStmt_ = ((X1PCaseStmt) _caseStmt_).getXPCaseStmt();
-            }
-            this._caseStmt_.addFirst(((X2PCaseStmt) _caseStmt_).getPCaseStmt());
-        }
-
-        setRBrace(_rBrace_);
-
-        setSemicolon(_semicolon_);
-
-    }
+    @Override
     public Object clone()
     {
         return new ATableswitchStatement(
-            (TTableswitch) cloneNode(_tableswitch_),
-            (TLParen) cloneNode(_lParen_),
-            (PImmediate) cloneNode(_immediate_),
-            (TRParen) cloneNode(_rParen_),
-            (TLBrace) cloneNode(_lBrace_),
-            cloneList(_caseStmt_),
-            (TRBrace) cloneNode(_rBrace_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._tableswitch_),
+            cloneNode(this._lParen_),
+            cloneNode(this._immediate_),
+            cloneNode(this._rParen_),
+            cloneNode(this._lBrace_),
+            cloneList(this._caseStmt_),
+            cloneNode(this._rBrace_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -106,14 +72,14 @@ public final class ATableswitchStatement extends PStatement
 
     public TTableswitch getTableswitch()
     {
-        return _tableswitch_;
+        return this._tableswitch_;
     }
 
     public void setTableswitch(TTableswitch node)
     {
-        if(_tableswitch_ != null)
+        if(this._tableswitch_ != null)
         {
-            _tableswitch_.parent(null);
+            this._tableswitch_.parent(null);
         }
 
         if(node != null)
@@ -126,19 +92,19 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _tableswitch_ = node;
+        this._tableswitch_ = node;
     }
 
     public TLParen getLParen()
     {
-        return _lParen_;
+        return this._lParen_;
     }
 
     public void setLParen(TLParen node)
     {
-        if(_lParen_ != null)
+        if(this._lParen_ != null)
         {
-            _lParen_.parent(null);
+            this._lParen_.parent(null);
         }
 
         if(node != null)
@@ -151,19 +117,19 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _lParen_ = node;
+        this._lParen_ = node;
     }
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -176,19 +142,19 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
     public TRParen getRParen()
     {
-        return _rParen_;
+        return this._rParen_;
     }
 
     public void setRParen(TRParen node)
     {
-        if(_rParen_ != null)
+        if(this._rParen_ != null)
         {
-            _rParen_.parent(null);
+            this._rParen_.parent(null);
         }
 
         if(node != null)
@@ -201,19 +167,19 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _rParen_ = node;
+        this._rParen_ = node;
     }
 
     public TLBrace getLBrace()
     {
-        return _lBrace_;
+        return this._lBrace_;
     }
 
     public void setLBrace(TLBrace node)
     {
-        if(_lBrace_ != null)
+        if(this._lBrace_ != null)
         {
-            _lBrace_.parent(null);
+            this._lBrace_.parent(null);
         }
 
         if(node != null)
@@ -226,30 +192,39 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _lBrace_ = node;
+        this._lBrace_ = node;
     }
 
-    public LinkedList getCaseStmt()
+    public LinkedList<PCaseStmt> getCaseStmt()
     {
-        return _caseStmt_;
+        return this._caseStmt_;
     }
 
-    public void setCaseStmt(List list)
+    public void setCaseStmt(List<PCaseStmt> list)
     {
-        _caseStmt_.clear();
-        _caseStmt_.addAll(list);
+        this._caseStmt_.clear();
+        this._caseStmt_.addAll(list);
+        for(PCaseStmt e : list)
+        {
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+        }
     }
 
     public TRBrace getRBrace()
     {
-        return _rBrace_;
+        return this._rBrace_;
     }
 
     public void setRBrace(TRBrace node)
     {
-        if(_rBrace_ != null)
+        if(this._rBrace_ != null)
         {
-            _rBrace_.parent(null);
+            this._rBrace_.parent(null);
         }
 
         if(node != null)
@@ -262,19 +237,19 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _rBrace_ = node;
+        this._rBrace_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -287,112 +262,119 @@ public final class ATableswitchStatement extends PStatement
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_tableswitch_)
-            + toString(_lParen_)
-            + toString(_immediate_)
-            + toString(_rParen_)
-            + toString(_lBrace_)
-            + toString(_caseStmt_)
-            + toString(_rBrace_)
-            + toString(_semicolon_);
+            + toString(this._tableswitch_)
+            + toString(this._lParen_)
+            + toString(this._immediate_)
+            + toString(this._rParen_)
+            + toString(this._lBrace_)
+            + toString(this._caseStmt_)
+            + toString(this._rBrace_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_tableswitch_ == child)
+        // Remove child
+        if(this._tableswitch_ == child)
         {
-            _tableswitch_ = null;
+            this._tableswitch_ = null;
             return;
         }
 
-        if(_lParen_ == child)
+        if(this._lParen_ == child)
         {
-            _lParen_ = null;
+            this._lParen_ = null;
             return;
         }
 
-        if(_immediate_ == child)
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
-        if(_rParen_ == child)
+        if(this._rParen_ == child)
         {
-            _rParen_ = null;
+            this._rParen_ = null;
             return;
         }
 
-        if(_lBrace_ == child)
+        if(this._lBrace_ == child)
         {
-            _lBrace_ = null;
+            this._lBrace_ = null;
             return;
         }
 
-        if(_caseStmt_.remove(child))
+        if(this._caseStmt_.remove(child))
         {
             return;
         }
 
-        if(_rBrace_ == child)
+        if(this._rBrace_ == child)
         {
-            _rBrace_ = null;
+            this._rBrace_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_tableswitch_ == oldChild)
+        // Replace child
+        if(this._tableswitch_ == oldChild)
         {
             setTableswitch((TTableswitch) newChild);
             return;
         }
 
-        if(_lParen_ == oldChild)
+        if(this._lParen_ == oldChild)
         {
             setLParen((TLParen) newChild);
             return;
         }
 
-        if(_immediate_ == oldChild)
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
-        if(_rParen_ == oldChild)
+        if(this._rParen_ == oldChild)
         {
             setRParen((TRParen) newChild);
             return;
         }
 
-        if(_lBrace_ == oldChild)
+        if(this._lBrace_ == oldChild)
         {
             setLBrace((TLBrace) newChild);
             return;
         }
 
-        for(ListIterator i = _caseStmt_.listIterator(); i.hasNext();)
+        for(ListIterator<PCaseStmt> i = this._caseStmt_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set(newChild);
+                    i.set((PCaseStmt) newChild);
+                    newChild.parent(this);
                     oldChild.parent(null);
                     return;
                 }
@@ -403,39 +385,18 @@ public final class ATableswitchStatement extends PStatement
             }
         }
 
-        if(_rBrace_ == oldChild)
+        if(this._rBrace_ == oldChild)
         {
             setRBrace((TRBrace) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
-    }
-
-    private class CaseStmt_Cast implements Cast
-    {
-        public Object cast(Object o)
-        {
-            PCaseStmt node = (PCaseStmt) o;
-
-            if((node.parent() != null) &&
-                (node.parent() != ATableswitchStatement.this))
-            {
-                node.parent().removeChild(node);
-            }
-
-            if((node.parent() == null) ||
-                (node.parent() != ATableswitchStatement.this))
-            {
-                node.parent(ATableswitchStatement.this);
-            }
-
-            return node;
-        }
+        throw new RuntimeException("Not a child.");
     }
 }

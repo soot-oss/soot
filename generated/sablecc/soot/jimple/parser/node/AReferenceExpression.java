@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AReferenceExpression extends PExpression
 {
     private PReference _reference_;
 
     public AReferenceExpression()
     {
+        // Constructor
     }
 
     public AReferenceExpression(
-        PReference _reference_)
+        @SuppressWarnings("hiding") PReference _reference_)
     {
+        // Constructor
         setReference(_reference_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AReferenceExpression(
-            (PReference) cloneNode(_reference_));
+            cloneNode(this._reference_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AReferenceExpression extends PExpression
 
     public PReference getReference()
     {
-        return _reference_;
+        return this._reference_;
     }
 
     public void setReference(PReference node)
     {
-        if(_reference_ != null)
+        if(this._reference_ != null)
         {
-            _reference_.parent(null);
+            this._reference_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AReferenceExpression extends PExpression
             node.parent(this);
         }
 
-        _reference_ = node;
+        this._reference_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_reference_);
+            + toString(this._reference_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_reference_ == child)
+        // Remove child
+        if(this._reference_ == child)
         {
-            _reference_ = null;
+            this._reference_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_reference_ == oldChild)
+        // Replace child
+        if(this._reference_ == oldChild)
         {
             setReference((PReference) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

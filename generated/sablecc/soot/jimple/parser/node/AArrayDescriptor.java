@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AArrayDescriptor extends PArrayDescriptor
 {
     private TLBracket _lBracket_;
@@ -13,13 +13,15 @@ public final class AArrayDescriptor extends PArrayDescriptor
 
     public AArrayDescriptor()
     {
+        // Constructor
     }
 
     public AArrayDescriptor(
-        TLBracket _lBracket_,
-        PImmediate _immediate_,
-        TRBracket _rBracket_)
+        @SuppressWarnings("hiding") TLBracket _lBracket_,
+        @SuppressWarnings("hiding") PImmediate _immediate_,
+        @SuppressWarnings("hiding") TRBracket _rBracket_)
     {
+        // Constructor
         setLBracket(_lBracket_);
 
         setImmediate(_immediate_);
@@ -27,12 +29,14 @@ public final class AArrayDescriptor extends PArrayDescriptor
         setRBracket(_rBracket_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AArrayDescriptor(
-            (TLBracket) cloneNode(_lBracket_),
-            (PImmediate) cloneNode(_immediate_),
-            (TRBracket) cloneNode(_rBracket_));
+            cloneNode(this._lBracket_),
+            cloneNode(this._immediate_),
+            cloneNode(this._rBracket_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AArrayDescriptor extends PArrayDescriptor
 
     public TLBracket getLBracket()
     {
-        return _lBracket_;
+        return this._lBracket_;
     }
 
     public void setLBracket(TLBracket node)
     {
-        if(_lBracket_ != null)
+        if(this._lBracket_ != null)
         {
-            _lBracket_.parent(null);
+            this._lBracket_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AArrayDescriptor extends PArrayDescriptor
             node.parent(this);
         }
 
-        _lBracket_ = node;
+        this._lBracket_ = node;
     }
 
     public PImmediate getImmediate()
     {
-        return _immediate_;
+        return this._immediate_;
     }
 
     public void setImmediate(PImmediate node)
     {
-        if(_immediate_ != null)
+        if(this._immediate_ != null)
         {
-            _immediate_.parent(null);
+            this._immediate_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AArrayDescriptor extends PArrayDescriptor
             node.parent(this);
         }
 
-        _immediate_ = node;
+        this._immediate_ = node;
     }
 
     public TRBracket getRBracket()
     {
-        return _rBracket_;
+        return this._rBracket_;
     }
 
     public void setRBracket(TRBracket node)
     {
-        if(_rBracket_ != null)
+        if(this._rBracket_ != null)
         {
-            _rBracket_.parent(null);
+            this._rBracket_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AArrayDescriptor extends PArrayDescriptor
             node.parent(this);
         }
 
-        _rBracket_ = node;
+        this._rBracket_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_lBracket_)
-            + toString(_immediate_)
-            + toString(_rBracket_);
+            + toString(this._lBracket_)
+            + toString(this._immediate_)
+            + toString(this._rBracket_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_lBracket_ == child)
+        // Remove child
+        if(this._lBracket_ == child)
         {
-            _lBracket_ = null;
+            this._lBracket_ = null;
             return;
         }
 
-        if(_immediate_ == child)
+        if(this._immediate_ == child)
         {
-            _immediate_ = null;
+            this._immediate_ = null;
             return;
         }
 
-        if(_rBracket_ == child)
+        if(this._rBracket_ == child)
         {
-            _rBracket_ = null;
+            this._rBracket_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_lBracket_ == oldChild)
+        // Replace child
+        if(this._lBracket_ == oldChild)
         {
             setLBracket((TLBracket) newChild);
             return;
         }
 
-        if(_immediate_ == oldChild)
+        if(this._immediate_ == oldChild)
         {
             setImmediate((PImmediate) newChild);
             return;
         }
 
-        if(_rBracket_ == oldChild)
+        if(this._rBracket_ == oldChild)
         {
             setRBracket((TRBracket) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

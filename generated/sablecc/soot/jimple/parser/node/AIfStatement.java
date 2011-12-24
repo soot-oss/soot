@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AIfStatement extends PStatement
 {
     private TIf _if_;
@@ -13,13 +13,15 @@ public final class AIfStatement extends PStatement
 
     public AIfStatement()
     {
+        // Constructor
     }
 
     public AIfStatement(
-        TIf _if_,
-        PBoolExpr _boolExpr_,
-        PGotoStmt _gotoStmt_)
+        @SuppressWarnings("hiding") TIf _if_,
+        @SuppressWarnings("hiding") PBoolExpr _boolExpr_,
+        @SuppressWarnings("hiding") PGotoStmt _gotoStmt_)
     {
+        // Constructor
         setIf(_if_);
 
         setBoolExpr(_boolExpr_);
@@ -27,12 +29,14 @@ public final class AIfStatement extends PStatement
         setGotoStmt(_gotoStmt_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AIfStatement(
-            (TIf) cloneNode(_if_),
-            (PBoolExpr) cloneNode(_boolExpr_),
-            (PGotoStmt) cloneNode(_gotoStmt_));
+            cloneNode(this._if_),
+            cloneNode(this._boolExpr_),
+            cloneNode(this._gotoStmt_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class AIfStatement extends PStatement
 
     public TIf getIf()
     {
-        return _if_;
+        return this._if_;
     }
 
     public void setIf(TIf node)
     {
-        if(_if_ != null)
+        if(this._if_ != null)
         {
-            _if_.parent(null);
+            this._if_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class AIfStatement extends PStatement
             node.parent(this);
         }
 
-        _if_ = node;
+        this._if_ = node;
     }
 
     public PBoolExpr getBoolExpr()
     {
-        return _boolExpr_;
+        return this._boolExpr_;
     }
 
     public void setBoolExpr(PBoolExpr node)
     {
-        if(_boolExpr_ != null)
+        if(this._boolExpr_ != null)
         {
-            _boolExpr_.parent(null);
+            this._boolExpr_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class AIfStatement extends PStatement
             node.parent(this);
         }
 
-        _boolExpr_ = node;
+        this._boolExpr_ = node;
     }
 
     public PGotoStmt getGotoStmt()
     {
-        return _gotoStmt_;
+        return this._gotoStmt_;
     }
 
     public void setGotoStmt(PGotoStmt node)
     {
-        if(_gotoStmt_ != null)
+        if(this._gotoStmt_ != null)
         {
-            _gotoStmt_.parent(null);
+            this._gotoStmt_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class AIfStatement extends PStatement
             node.parent(this);
         }
 
-        _gotoStmt_ = node;
+        this._gotoStmt_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_if_)
-            + toString(_boolExpr_)
-            + toString(_gotoStmt_);
+            + toString(this._if_)
+            + toString(this._boolExpr_)
+            + toString(this._gotoStmt_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_if_ == child)
+        // Remove child
+        if(this._if_ == child)
         {
-            _if_ = null;
+            this._if_ = null;
             return;
         }
 
-        if(_boolExpr_ == child)
+        if(this._boolExpr_ == child)
         {
-            _boolExpr_ = null;
+            this._boolExpr_ = null;
             return;
         }
 
-        if(_gotoStmt_ == child)
+        if(this._gotoStmt_ == child)
         {
-            _gotoStmt_ = null;
+            this._gotoStmt_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_if_ == oldChild)
+        // Replace child
+        if(this._if_ == oldChild)
         {
             setIf((TIf) newChild);
             return;
         }
 
-        if(_boolExpr_ == oldChild)
+        if(this._boolExpr_ == oldChild)
         {
             setBoolExpr((PBoolExpr) newChild);
             return;
         }
 
-        if(_gotoStmt_ == oldChild)
+        if(this._gotoStmt_ == oldChild)
         {
             setGotoStmt((PGotoStmt) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

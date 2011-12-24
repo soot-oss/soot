@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ADeclaration extends PDeclaration
 {
     private PJimpleType _jimpleType_;
@@ -13,13 +13,15 @@ public final class ADeclaration extends PDeclaration
 
     public ADeclaration()
     {
+        // Constructor
     }
 
     public ADeclaration(
-        PJimpleType _jimpleType_,
-        PLocalNameList _localNameList_,
-        TSemicolon _semicolon_)
+        @SuppressWarnings("hiding") PJimpleType _jimpleType_,
+        @SuppressWarnings("hiding") PLocalNameList _localNameList_,
+        @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
+        // Constructor
         setJimpleType(_jimpleType_);
 
         setLocalNameList(_localNameList_);
@@ -27,12 +29,14 @@ public final class ADeclaration extends PDeclaration
         setSemicolon(_semicolon_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ADeclaration(
-            (PJimpleType) cloneNode(_jimpleType_),
-            (PLocalNameList) cloneNode(_localNameList_),
-            (TSemicolon) cloneNode(_semicolon_));
+            cloneNode(this._jimpleType_),
+            cloneNode(this._localNameList_),
+            cloneNode(this._semicolon_));
     }
 
     public void apply(Switch sw)
@@ -42,14 +46,14 @@ public final class ADeclaration extends PDeclaration
 
     public PJimpleType getJimpleType()
     {
-        return _jimpleType_;
+        return this._jimpleType_;
     }
 
     public void setJimpleType(PJimpleType node)
     {
-        if(_jimpleType_ != null)
+        if(this._jimpleType_ != null)
         {
-            _jimpleType_.parent(null);
+            this._jimpleType_.parent(null);
         }
 
         if(node != null)
@@ -62,19 +66,19 @@ public final class ADeclaration extends PDeclaration
             node.parent(this);
         }
 
-        _jimpleType_ = node;
+        this._jimpleType_ = node;
     }
 
     public PLocalNameList getLocalNameList()
     {
-        return _localNameList_;
+        return this._localNameList_;
     }
 
     public void setLocalNameList(PLocalNameList node)
     {
-        if(_localNameList_ != null)
+        if(this._localNameList_ != null)
         {
-            _localNameList_.parent(null);
+            this._localNameList_.parent(null);
         }
 
         if(node != null)
@@ -87,19 +91,19 @@ public final class ADeclaration extends PDeclaration
             node.parent(this);
         }
 
-        _localNameList_ = node;
+        this._localNameList_ = node;
     }
 
     public TSemicolon getSemicolon()
     {
-        return _semicolon_;
+        return this._semicolon_;
     }
 
     public void setSemicolon(TSemicolon node)
     {
-        if(_semicolon_ != null)
+        if(this._semicolon_ != null)
         {
-            _semicolon_.parent(null);
+            this._semicolon_.parent(null);
         }
 
         if(node != null)
@@ -112,58 +116,65 @@ public final class ADeclaration extends PDeclaration
             node.parent(this);
         }
 
-        _semicolon_ = node;
+        this._semicolon_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_jimpleType_)
-            + toString(_localNameList_)
-            + toString(_semicolon_);
+            + toString(this._jimpleType_)
+            + toString(this._localNameList_)
+            + toString(this._semicolon_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_jimpleType_ == child)
+        // Remove child
+        if(this._jimpleType_ == child)
         {
-            _jimpleType_ = null;
+            this._jimpleType_ = null;
             return;
         }
 
-        if(_localNameList_ == child)
+        if(this._localNameList_ == child)
         {
-            _localNameList_ = null;
+            this._localNameList_ = null;
             return;
         }
 
-        if(_semicolon_ == child)
+        if(this._semicolon_ == child)
         {
-            _semicolon_ = null;
+            this._semicolon_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_jimpleType_ == oldChild)
+        // Replace child
+        if(this._jimpleType_ == oldChild)
         {
             setJimpleType((PJimpleType) newChild);
             return;
         }
 
-        if(_localNameList_ == oldChild)
+        if(this._localNameList_ == oldChild)
         {
             setLocalNameList((PLocalNameList) newChild);
             return;
         }
 
-        if(_semicolon_ == oldChild)
+        if(this._semicolon_ == oldChild)
         {
             setSemicolon((TSemicolon) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

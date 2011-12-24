@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ALongBaseType extends PBaseType
 {
     private TLong _long_;
 
     public ALongBaseType()
     {
+        // Constructor
     }
 
     public ALongBaseType(
-        TLong _long_)
+        @SuppressWarnings("hiding") TLong _long_)
     {
+        // Constructor
         setLong(_long_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ALongBaseType(
-            (TLong) cloneNode(_long_));
+            cloneNode(this._long_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ALongBaseType extends PBaseType
 
     public TLong getLong()
     {
-        return _long_;
+        return this._long_;
     }
 
     public void setLong(TLong node)
     {
-        if(_long_ != null)
+        if(this._long_ != null)
         {
-            _long_.parent(null);
+            this._long_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ALongBaseType extends PBaseType
             node.parent(this);
         }
 
-        _long_ = node;
+        this._long_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_long_);
+            + toString(this._long_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_long_ == child)
+        // Remove child
+        if(this._long_ == child)
         {
-            _long_ = null;
+            this._long_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_long_ == oldChild)
+        // Replace child
+        if(this._long_ == oldChild)
         {
             setLong((TLong) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

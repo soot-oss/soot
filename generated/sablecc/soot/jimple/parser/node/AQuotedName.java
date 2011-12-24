@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AQuotedName extends PName
 {
     private TQuotedName _quotedName_;
 
     public AQuotedName()
     {
+        // Constructor
     }
 
     public AQuotedName(
-        TQuotedName _quotedName_)
+        @SuppressWarnings("hiding") TQuotedName _quotedName_)
     {
+        // Constructor
         setQuotedName(_quotedName_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AQuotedName(
-            (TQuotedName) cloneNode(_quotedName_));
+            cloneNode(this._quotedName_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class AQuotedName extends PName
 
     public TQuotedName getQuotedName()
     {
-        return _quotedName_;
+        return this._quotedName_;
     }
 
     public void setQuotedName(TQuotedName node)
     {
-        if(_quotedName_ != null)
+        if(this._quotedName_ != null)
         {
-            _quotedName_.parent(null);
+            this._quotedName_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class AQuotedName extends PName
             node.parent(this);
         }
 
-        _quotedName_ = node;
+        this._quotedName_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_quotedName_);
+            + toString(this._quotedName_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_quotedName_ == child)
+        // Remove child
+        if(this._quotedName_ == child)
         {
-            _quotedName_ = null;
+            this._quotedName_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_quotedName_ == oldChild)
+        // Replace child
+        if(this._quotedName_ == oldChild)
         {
             setQuotedName((TQuotedName) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

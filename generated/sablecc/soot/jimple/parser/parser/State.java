@@ -2,14 +2,16 @@
 
 package soot.jimple.parser.parser;
 
+import java.util.ArrayList;
+
 final class State
 {
     int state;
-    Object node;
+    ArrayList nodes;
 
-    State(int state, Object node)
+    State(@SuppressWarnings("hiding") int state, @SuppressWarnings("hiding") ArrayList nodes)
     {
         this.state = state;
-        this.node = node;
+        this.nodes = nodes;
     }
 }

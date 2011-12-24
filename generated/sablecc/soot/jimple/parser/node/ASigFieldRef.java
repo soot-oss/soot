@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ASigFieldRef extends PFieldRef
 {
     private PFieldSignature _fieldSignature_;
 
     public ASigFieldRef()
     {
+        // Constructor
     }
 
     public ASigFieldRef(
-        PFieldSignature _fieldSignature_)
+        @SuppressWarnings("hiding") PFieldSignature _fieldSignature_)
     {
+        // Constructor
         setFieldSignature(_fieldSignature_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ASigFieldRef(
-            (PFieldSignature) cloneNode(_fieldSignature_));
+            cloneNode(this._fieldSignature_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ASigFieldRef extends PFieldRef
 
     public PFieldSignature getFieldSignature()
     {
-        return _fieldSignature_;
+        return this._fieldSignature_;
     }
 
     public void setFieldSignature(PFieldSignature node)
     {
-        if(_fieldSignature_ != null)
+        if(this._fieldSignature_ != null)
         {
-            _fieldSignature_.parent(null);
+            this._fieldSignature_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ASigFieldRef extends PFieldRef
             node.parent(this);
         }
 
-        _fieldSignature_ = node;
+        this._fieldSignature_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_fieldSignature_);
+            + toString(this._fieldSignature_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_fieldSignature_ == child)
+        // Remove child
+        if(this._fieldSignature_ == child)
         {
-            _fieldSignature_ = null;
+            this._fieldSignature_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_fieldSignature_ == oldChild)
+        // Replace child
+        if(this._fieldSignature_ == oldChild)
         {
             setFieldSignature((PFieldSignature) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

@@ -7,29 +7,29 @@ import soot.jimple.parser.node.*;
 
 public class AnalysisAdapter implements Analysis
 {
-    private Hashtable in;
-    private Hashtable out;
+    private Hashtable<Node,Object> in;
+    private Hashtable<Node,Object> out;
 
     public Object getIn(Node node)
     {
-        if(in == null)
+        if(this.in == null)
         {
             return null;
         }
 
-        return in.get(node);
+        return this.in.get(node);
     }
 
-    public void setIn(Node node, Object in)
+    public void setIn(Node node, Object o)
     {
         if(this.in == null)
         {
-            this.in = new Hashtable(1);
+            this.in = new Hashtable<Node,Object>(1);
         }
 
-        if(in != null)
+        if(o != null)
         {
-            this.in.put(node, in);
+            this.in.put(node, o);
         }
         else
         {
@@ -39,30 +39,31 @@ public class AnalysisAdapter implements Analysis
 
     public Object getOut(Node node)
     {
-        if(out == null)
+        if(this.out == null)
         {
             return null;
         }
 
-        return out.get(node);
+        return this.out.get(node);
     }
 
-    public void setOut(Node node, Object out)
+    public void setOut(Node node, Object o)
     {
         if(this.out == null)
         {
-            this.out = new Hashtable(1);
+            this.out = new Hashtable<Node,Object>(1);
         }
 
-        if(out != null)
+        if(o != null)
         {
-            this.out.put(node, out);
+            this.out.put(node, o);
         }
         else
         {
             this.out.remove(node);
         }
     }
+
     public void caseStart(Start node)
     {
         defaultCase(node);
@@ -623,7 +624,12 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseAArrayRef(AArrayRef node)
+    public void caseAIdentArrayRef(AIdentArrayRef node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAQuotedArrayRef(AQuotedArrayRef node)
     {
         defaultCase(node);
     }
@@ -1333,7 +1339,8 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void defaultCase(Node node)
+    public void defaultCase(@SuppressWarnings("unused") Node node)
     {
+        // do nothing
     }
 }

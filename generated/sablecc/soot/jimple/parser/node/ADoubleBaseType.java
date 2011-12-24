@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ADoubleBaseType extends PBaseType
 {
     private TDouble _double_;
 
     public ADoubleBaseType()
     {
+        // Constructor
     }
 
     public ADoubleBaseType(
-        TDouble _double_)
+        @SuppressWarnings("hiding") TDouble _double_)
     {
+        // Constructor
         setDouble(_double_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ADoubleBaseType(
-            (TDouble) cloneNode(_double_));
+            cloneNode(this._double_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ADoubleBaseType extends PBaseType
 
     public TDouble getDouble()
     {
-        return _double_;
+        return this._double_;
     }
 
     public void setDouble(TDouble node)
     {
-        if(_double_ != null)
+        if(this._double_ != null)
         {
-            _double_.parent(null);
+            this._double_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ADoubleBaseType extends PBaseType
             node.parent(this);
         }
 
-        _double_ = node;
+        this._double_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_double_);
+            + toString(this._double_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_double_ == child)
+        // Remove child
+        if(this._double_ == child)
         {
-            _double_ = null;
+            this._double_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_double_ == oldChild)
+        // Replace child
+        if(this._double_ == oldChild)
         {
             setDouble((TDouble) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

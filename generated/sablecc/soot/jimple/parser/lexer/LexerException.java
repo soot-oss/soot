@@ -2,6 +2,7 @@
 
 package soot.jimple.parser.lexer;
 
+@SuppressWarnings("serial")
 public class LexerException extends Exception
 {
     public LexerException(String message)

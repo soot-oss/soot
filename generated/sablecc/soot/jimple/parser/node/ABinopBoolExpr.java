@@ -2,27 +2,31 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class ABinopBoolExpr extends PBoolExpr
 {
     private PBinopExpr _binopExpr_;
 
     public ABinopBoolExpr()
     {
+        // Constructor
     }
 
     public ABinopBoolExpr(
-        PBinopExpr _binopExpr_)
+        @SuppressWarnings("hiding") PBinopExpr _binopExpr_)
     {
+        // Constructor
         setBinopExpr(_binopExpr_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new ABinopBoolExpr(
-            (PBinopExpr) cloneNode(_binopExpr_));
+            cloneNode(this._binopExpr_));
     }
 
     public void apply(Switch sw)
@@ -32,14 +36,14 @@ public final class ABinopBoolExpr extends PBoolExpr
 
     public PBinopExpr getBinopExpr()
     {
-        return _binopExpr_;
+        return this._binopExpr_;
     }
 
     public void setBinopExpr(PBinopExpr node)
     {
-        if(_binopExpr_ != null)
+        if(this._binopExpr_ != null)
         {
-            _binopExpr_.parent(null);
+            this._binopExpr_.parent(null);
         }
 
         if(node != null)
@@ -52,32 +56,39 @@ public final class ABinopBoolExpr extends PBoolExpr
             node.parent(this);
         }
 
-        _binopExpr_ = node;
+        this._binopExpr_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_binopExpr_);
+            + toString(this._binopExpr_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_binopExpr_ == child)
+        // Remove child
+        if(this._binopExpr_ == child)
         {
-            _binopExpr_ = null;
+            this._binopExpr_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_binopExpr_ == oldChild)
+        // Replace child
+        if(this._binopExpr_ == oldChild)
         {
             setBinopExpr((PBinopExpr) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }

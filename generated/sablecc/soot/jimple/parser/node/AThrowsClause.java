@@ -2,9 +2,9 @@
 
 package soot.jimple.parser.node;
 
-import java.util.*;
 import soot.jimple.parser.analysis.*;
 
+@SuppressWarnings("nls")
 public final class AThrowsClause extends PThrowsClause
 {
     private TThrows _throws_;
@@ -12,22 +12,26 @@ public final class AThrowsClause extends PThrowsClause
 
     public AThrowsClause()
     {
+        // Constructor
     }
 
     public AThrowsClause(
-        TThrows _throws_,
-        PClassNameList _classNameList_)
+        @SuppressWarnings("hiding") TThrows _throws_,
+        @SuppressWarnings("hiding") PClassNameList _classNameList_)
     {
+        // Constructor
         setThrows(_throws_);
 
         setClassNameList(_classNameList_);
 
     }
+
+    @Override
     public Object clone()
     {
         return new AThrowsClause(
-            (TThrows) cloneNode(_throws_),
-            (PClassNameList) cloneNode(_classNameList_));
+            cloneNode(this._throws_),
+            cloneNode(this._classNameList_));
     }
 
     public void apply(Switch sw)
@@ -37,14 +41,14 @@ public final class AThrowsClause extends PThrowsClause
 
     public TThrows getThrows()
     {
-        return _throws_;
+        return this._throws_;
     }
 
     public void setThrows(TThrows node)
     {
-        if(_throws_ != null)
+        if(this._throws_ != null)
         {
-            _throws_.parent(null);
+            this._throws_.parent(null);
         }
 
         if(node != null)
@@ -57,19 +61,19 @@ public final class AThrowsClause extends PThrowsClause
             node.parent(this);
         }
 
-        _throws_ = node;
+        this._throws_ = node;
     }
 
     public PClassNameList getClassNameList()
     {
-        return _classNameList_;
+        return this._classNameList_;
     }
 
     public void setClassNameList(PClassNameList node)
     {
-        if(_classNameList_ != null)
+        if(this._classNameList_ != null)
         {
-            _classNameList_.parent(null);
+            this._classNameList_.parent(null);
         }
 
         if(node != null)
@@ -82,45 +86,52 @@ public final class AThrowsClause extends PThrowsClause
             node.parent(this);
         }
 
-        _classNameList_ = node;
+        this._classNameList_ = node;
     }
 
+    @Override
     public String toString()
     {
         return ""
-            + toString(_throws_)
-            + toString(_classNameList_);
+            + toString(this._throws_)
+            + toString(this._classNameList_);
     }
 
-    void removeChild(Node child)
+    @Override
+    void removeChild(@SuppressWarnings("unused") Node child)
     {
-        if(_throws_ == child)
+        // Remove child
+        if(this._throws_ == child)
         {
-            _throws_ = null;
+            this._throws_ = null;
             return;
         }
 
-        if(_classNameList_ == child)
+        if(this._classNameList_ == child)
         {
-            _classNameList_ = null;
+            this._classNameList_ = null;
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 
-    void replaceChild(Node oldChild, Node newChild)
+    @Override
+    void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
-        if(_throws_ == oldChild)
+        // Replace child
+        if(this._throws_ == oldChild)
         {
             setThrows((TThrows) newChild);
             return;
         }
 
-        if(_classNameList_ == oldChild)
+        if(this._classNameList_ == oldChild)
         {
             setClassNameList((PClassNameList) newChild);
             return;
         }
 
+        throw new RuntimeException("Not a child.");
     }
 }
