@@ -145,10 +145,15 @@ public class BytecodeHierarchy implements IHierarchy
 			Object. */
 			
 			LinkedList<Type> r = new LinkedList<Type>();
-			if ( ancestor_(RefType.v("java.io.Serializable"), rt) )
-				r.add(RefType.v("java.io.Serializable"));
-			if ( ancestor_(RefType.v("java.lang.Cloneable"), rt) )
-				r.add(RefType.v("java.lang.Cloneable"));
+			/* Do not consider Object to be a subtype of Serializable or Cloneable
+			(it can appear this way if phantom-refs is enabled and rt.jar is not
+			available) otherwise an infinite loop can result. */
+			if (!TypeResolver.typesEqual(RefType.v("java.lang.Object"), rt)) {
+			    if ( ancestor_(RefType.v("java.io.Serializable"), rt) )
+			        r.add(RefType.v("java.io.Serializable"));
+			    if ( ancestor_(RefType.v("java.lang.Cloneable"), rt) )
+			        r.add(RefType.v("java.lang.Cloneable"));
+			}
 			
 			if ( r.isEmpty() )
 				r.add(RefType.v("java.lang.Object"));
