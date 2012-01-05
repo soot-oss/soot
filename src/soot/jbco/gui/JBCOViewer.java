@@ -22,16 +22,6 @@ import java.io.*;
 */
 public class JBCOViewer extends javax.swing.JFrame {
 
-	{
-		//Set Look & Feel
-		try {
-			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
   private JMenuItem speedMenuItem;
   private JMenuItem sizeMenuItem;
   private JMenuItem protMenuItem;
