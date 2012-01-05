@@ -37,6 +37,7 @@
             <src path="generated/jastadd"/>
             <src path="generated/options"/>
         </javac>
+        <copy file="src/soot/jbco/gui/jbco.jpg" tofile="classes/soot/jbco/gui/jbco.jpg"/>
     </target>
 
     <target name="singletons" depends="singletons-dep" unless="singletons-uptodate">
