@@ -224,12 +224,12 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
     public void removeNode(Object node)
     {
-        List succs = (List)nodeToSuccs.get(node).clone();
+    	LinkedHashSet succs = (LinkedHashSet)nodeToSuccs.get(node).clone();
         for (Iterator succsIt = succs.iterator(); succsIt.hasNext(); )
             removeEdge(node, succsIt.next());
         nodeToSuccs.remove(node);
 
-        List preds = (List)nodeToPreds.get(node).clone();
+        LinkedHashSet preds = (LinkedHashSet)nodeToPreds.get(node).clone();
         for (Iterator predsIt = preds.iterator(); predsIt.hasNext(); )
             removeEdge(predsIt.next(), node);
         nodeToPreds.remove(node);
