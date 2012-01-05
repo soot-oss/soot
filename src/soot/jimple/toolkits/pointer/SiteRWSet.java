@@ -23,7 +23,7 @@ import soot.*;
 
 /** Represents the read or write set of a statement. */
 public class SiteRWSet extends RWSet {
-    protected HashSet<RWSet> sets = new HashSet<RWSet>();
+    public HashSet<RWSet> sets = new HashSet<RWSet>();
     protected boolean callsNative = false;
 
    	public int size()
