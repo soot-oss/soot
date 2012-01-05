@@ -40,7 +40,7 @@ public class MapNumberer implements Numberer {
         if( i == null ) throw new RuntimeException( "couldn't find "+o );
         return i.intValue();
     }
-    public int size() { return nextIndex; }
+    public int size() { return nextIndex-1; /*subtract 1 for null*/ }
     public MapNumberer() { al.add(null); }
     public boolean contains(Object o) { return map.containsKey(o); }
 }
