@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import soot.Value;
+import soot.jimple.IntConstant;
+
 /** A constant pool entry of type CONSTANT_Integer
  * @see cp_info
  * @author Clark Verbrugge
@@ -69,5 +72,9 @@ class CONSTANT_Integer_info extends cp_info {
       if (tag!=cp.tag) return tag-cp.tag;
       CONSTANT_Integer_info cu = (CONSTANT_Integer_info)cp;
       return ((int) bytes) - (int) cu.bytes;
+   }
+
+   public Value createJimpleConstantValue(cp_info[] constant_pool) {
+		return IntConstant.v((int) bytes);
    }
 }

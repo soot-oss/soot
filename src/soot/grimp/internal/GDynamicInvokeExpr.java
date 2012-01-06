@@ -49,10 +49,12 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 {
     private ValueBox[] argBoxes;
 	private SootMethodRef methodRef;
+	private SootMethodRef bsmRef;
 
 
-	public GDynamicInvokeExpr(SootMethodRef methodRef, List args)
+	public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, SootMethodRef methodRef, List args)
     {
+		this.bsmRef = bootStrapMethodRef;
 		this.methodRef = methodRef; 
 		this.argBoxes = new ValueBox[args.size()];
 		
@@ -69,7 +71,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
             clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
         }
         
-        return new  GDynamicInvokeExpr(methodRef, clonedArgs);
+        return new  GDynamicInvokeExpr(bsmRef, methodRef, clonedArgs);
     }
 	
 	public List getUseBoxes() {
@@ -84,22 +86,45 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 	}
 
 
-	public void toString(UnitPrinter up) {
-		up.literal(Jimple.DYNAMICINVOKE);
-		up.literal(" ");
-		up.methodRef(methodRef);
-		up.literal("(");
+	 public String toString()
+	    {
+	        StringBuffer buffer = new StringBuffer();
 
-		for(int i = 0; i < argBoxes.length; i++)
-		{
-			if(i != 0)
-				up.literal(", ");
+	        buffer.append(Jimple.DYNAMICINVOKE + " " + methodRef.getSignature() + "(");
 
-			argBoxes[i].toString(up);
-		}
+	        for(int i = 0; i < argBoxes.length; i++)
+	        {
+	            if(i != 0)
+	                buffer.append(", ");
 
-		up.literal(")");
-	}
+	            buffer.append(argBoxes[i].getValue().toString());
+	        }
+
+	        buffer.append(") - bootstrap: ");
+
+	        buffer.append(bsmRef.getSignature());
+
+	        return buffer.toString();
+	    }
+	    
+	    public void toString(UnitPrinter up)
+	    {
+	        up.literal(Jimple.DYNAMICINVOKE);
+	        up.literal(" ");
+	        up.methodRef(methodRef);
+	        up.literal("(");
+	        
+	        for(int i = 0; i < argBoxes.length; i++)
+	        {
+	            if(i != 0)
+	                up.literal(", ");
+	                
+	            argBoxes[i].toString(up);
+	        }
+
+	        up.literal(") - ");
+	        up.methodRef(bsmRef);
+	    }
 
 
 	public void apply(Switch sw) {
@@ -107,23 +132,30 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 	}
 
 
-	public boolean equivTo(Object o) {
-		if (o instanceof GDynamicInvokeExpr)
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof GDynamicInvokeExpr)
         {
             GDynamicInvokeExpr ie = (GDynamicInvokeExpr)o;
             if (!(getMethod().equals(ie.getMethod()) && 
-                  argBoxes.length == ie.argBoxes.length))
+                    argBoxes.length == ie.argBoxes.length))
                 return false;
             for (ValueBox element : argBoxes)
 				if (!(element.getValue().equivTo(element.getValue())))
                     return false;
+            if(!methodRef.equals(ie.methodRef)) return false;
+            if(!bsmRef.equals(ie.bsmRef)) return false;
             return true;
         }
         return false;
-	}
+    }
 
 
 	public int equivHashCode() {
 		return getMethod().equivHashCode();
+	}
+	
+	public SootMethodRef getBootstrapMethodRef() {
+		return bsmRef;
 	}
 }

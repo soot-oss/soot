@@ -51,6 +51,34 @@ abstract class cp_info {
    public static final byte CONSTANT_Methodref = 10;
    public static final byte CONSTANT_InterfaceMethodref = 11;
    public static final byte CONSTANT_NameAndType = 12;
+   public static final byte CONSTANT_MethodHandle = 15;
+   public static final byte CONSTANT_MethodType = 16; //TODO
+   public static final byte CONSTANT_InvokeDynamic = 18;
+   
+   /* constants for method handle kinds */
+   public static final byte REF_getField = 1;
+   public static final byte REF_getStatic = 2;
+   public static final byte REF_putField = 3;
+   public static final byte REF_putStatic = 4;
+   public static final byte REF_invokeVirtual = 5;
+   public static final byte REF_invokeStatic = 6;
+   public static final byte REF_invokeSpecial = 7;
+   public static final byte REF_newInvokeSpecial = 8;
+   public static final byte REF_invokeInterface = 9;
+   
+   //mapping from the above to the kinds of members they refer to
+   public static final byte[] REF_TO_CONSTANT = {
+	   -1,
+	   CONSTANT_Fieldref,//getField...
+	   CONSTANT_Fieldref,//
+	   CONSTANT_Fieldref,//
+	   CONSTANT_Fieldref,//
+	   CONSTANT_Methodref,//invokeVirtual...
+	   CONSTANT_Methodref,
+	   CONSTANT_Methodref,
+	   CONSTANT_Methodref,
+	   CONSTANT_InterfaceMethodref,//invokeInterface
+   };
 
    /** One of the CONSTANT_* constants. */
    public byte tag;
@@ -238,4 +266,9 @@ abstract class cp_info {
    public static String fieldType(cp_info constant_pool[],int i) {
       return ClassFile.parseDesc(getTypeDescr(constant_pool,i),"");
    }
+   
+   /** Creates an appropriate jimple representation of this constant.
+    * Field and method constants are assumed to point to static fields/methods.
+    * */
+   public abstract Value createJimpleConstantValue(cp_info[] constant_pool);
 }

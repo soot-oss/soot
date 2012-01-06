@@ -1,0 +1,31 @@
+//             byte constantKind = cp_info.REF_TO_CONSTANT[kind];
+//             switch(constantKind) {
+//				case cp_info.CONSTANT_Fieldref: {
+//					CONSTANT_Fieldref_info mh_cp = new CONSTANT_Fieldref_info();
+//					mh_cp.class_index = d.readUnsignedShort();
+//					mh_cp.name_and_type_index = d.readUnsignedShort();
+//					((CONSTANT_MethodHandle_info)cp).target = mh_cp; 
+//					break;
+//				}
+//				case cp_info.CONSTANT_Methodref: {
+//					CONSTANT_Methodref_info mh_cp = new CONSTANT_Methodref_info();
+//		            mh_cp.class_index = d.readUnsignedShort();
+//		            mh_cp.name_and_type_index = d.readUnsignedShort();
+//					((CONSTANT_MethodHandle_info)cp).target = mh_cp; 
+//					break;
+//				}
+//				case cp_info.CONSTANT_InterfaceMethodref: {
+//					CONSTANT_InterfaceMethodref_info mh_cp = new CONSTANT_InterfaceMethodref_info();
+//		            mh_cp.class_index = d.readUnsignedShort();
+//		            mh_cp.name_and_type_index = d.readUnsignedShort();
+//					((CONSTANT_MethodHandle_info)cp).target = mh_cp; 
+//					break;
+//				}
+//			}
+
+
+TODO:
+	Complete GDynamicInvokeExpr
+	Generate correct bytecode; create BootstrapMethods attibute
+	Handle MethodType constant-pool entries	
+	Jimple Parser

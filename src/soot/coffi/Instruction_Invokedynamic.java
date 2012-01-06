@@ -30,6 +30,9 @@
 
 
 package soot.coffi;
+
+import soot.G;
+
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>
@@ -72,4 +75,30 @@ class Instruction_Invokedynamic extends Instruction_intindex {
      i[0] = null;
      return i;
      }*/
+   
+   public short invoke_dynamic_index;
+   
+   public short reserved;
+   
+   public int parse(byte bc[],int index) {
+	      invoke_dynamic_index = getShort(bc, index);
+	      index += 2;
+	      reserved = getShort(bc, index);
+	      if(reserved>0) {
+	    	  G.v().out.println("reserved value in invokedynamic is "+reserved);
+	      }
+	      index += 2;
+	      return index;
+   }
+   
+   public int compile(byte bc[],int index) {
+	      bc[index++] = code;
+	      shortToBytes(invoke_dynamic_index,bc,index);
+	      index += 2;
+	      shortToBytes(reserved,bc,index);
+	      index += 2;
+	      return index;
+   }
+
+
 }

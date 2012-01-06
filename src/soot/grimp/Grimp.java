@@ -356,11 +356,10 @@ public class Grimp
     }
     
     /**
-        Constructs a DynamicInvokeExpression(SootMethodRef method, List of Expr) grammar chunk.
+     * Constructs a new DynamicInvokeExpr(SootMethodRef bootstrapMethodRef, SootMethodRef methodRef, List args) grammar chunk.
      */
-    public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef method, List args)
-    {
-    	return new GDynamicInvokeExpr(method, args);
+    public DynamicInvokeExpr newDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, SootMethodRef methodRef, List args){
+    	return new GDynamicInvokeExpr(bootstrapMethodRef, methodRef, args);
     }
     
 
@@ -907,7 +906,7 @@ public class Grimp
                     	for (int i = 0; i < v.getArgCount(); i++)
                             newArgList.add(newExpr(v.getArg(i)));
                         returnedExpr.setValue
-                            (newDynamicInvokeExpr(v.getMethodRef(),
+                            (newDynamicInvokeExpr(v.getBootstrapMethodRef(),v.getMethodRef(),
                                                   newArgList));
                     }
 

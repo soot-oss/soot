@@ -31,6 +31,12 @@
 
 package soot.coffi;
 
+import soot.Scene;
+import soot.Type;
+import soot.Value;
+import soot.jimple.Constant;
+import soot.jimple.Jimple;
+
 /** A constant pool entry of type CONSTANT_Fieldref.
  * @see cp_info
  * @author Clark Verbrugge
@@ -85,4 +91,16 @@ class CONSTANT_Fieldref_info extends cp_info {
          compareTo(constant_pool,cp_constant_pool[cu.name_and_type_index],
                    cp_constant_pool);
    }
+	public Value createJimpleConstantValue(cp_info[] constant_pool) {
+	    CONSTANT_Class_info cc = (CONSTANT_Class_info)(constant_pool[class_index]);
+	    CONSTANT_NameAndType_info cn =
+	         (CONSTANT_NameAndType_info)(constant_pool[name_and_type_index]);
+	    String className = cc.toString(constant_pool);
+	    String nameAndType = cn.toString(constant_pool);
+	    String name = nameAndType.substring(0, nameAndType.indexOf(":"));
+	    String typeName = nameAndType.substring(nameAndType.indexOf(":")+1);
+	    Type type = Util.v().jimpleTypeOfFieldDescriptor(typeName);
+	    return Jimple.v().newStaticFieldRef(Scene.v().makeFieldRef(Scene.v().getSootClass(className), name, type, true));
+	}
+
 }

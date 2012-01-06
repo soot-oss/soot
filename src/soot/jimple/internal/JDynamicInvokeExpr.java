@@ -31,39 +31,97 @@
 
 package soot.jimple.internal;
 
-import soot.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import soot.RefType;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
 import soot.baf.Baf;
-import soot.jimple.*;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.DynamicInvokeExpr;
+import soot.jimple.ExprSwitch;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
 import soot.tagkit.Tag;
 import soot.util.Switch;
-
-import java.util.*;
 @SuppressWarnings({"serial","unchecked","rawtypes"})
 public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicInvokeExpr, ConvertToBaf
 {
-    public JDynamicInvokeExpr(SootMethodRef methodRef, List args)
+	protected SootMethodRef bsmRef;
+	protected ValueBox[] bsmArgBoxes;
+	
+    public JDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, List<Value> methodArgs)
     {
-    	if(!methodRef.getSignature().startsWith("<java.dyn.InvokeDynamic: "))
-    		throw new RuntimeException("Receiver type of JDynamicInvokeExpr must be java.dyn.InvokeDynamic!");
-    	
+		if(!methodRef.getSignature().startsWith("<"+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+": "))
+    		throw new RuntimeException("Receiver type of JDynamicInvokeExpr must be "+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+"!");
+		
+		if(bootstrapMethodRef.parameterTypes().size()<3 ||
+		   !bootstrapMethodRef.parameterType(0).equals(RefType.v("java.lang.invoke.MethodHandles$Lookup")) ||
+		   !bootstrapMethodRef.parameterType(1).equals(RefType.v("java.lang.String")) ||
+		   !bootstrapMethodRef.parameterType(2).equals(RefType.v("java.lang.invoke.MethodType"))) {
+			throw new IllegalArgumentException("Bootstrap method's first three arguments must be of types java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType"); 
+		}
+		
+		if(bootstrapArgs.size()!=bootstrapMethodRef.parameterTypes().size()-3) {
+			throw new IllegalArgumentException("Bootstrap method's signature demands "+bootstrapMethodRef.parameterTypes().size()+"-3="+
+					(bootstrapMethodRef.parameterTypes().size()-3)+"arguments, but there are "+bootstrapArgs.size()); 
+		}
+		
+		for(int i=3;i<bootstrapMethodRef.parameterTypes().size();i++) {
+			Type type = bootstrapMethodRef.parameterType(i);
+			if(!type.equals(bootstrapArgs.get(i-3).getType())) {
+				throw new IllegalArgumentException("Bootstrap method's argument number "+i+", according to signature, is "+type+", but " +
+						"argument is of type "+bootstrapArgs.get(i-3).getType()); 
+			}
+		}
+		    	
+    	this.bsmRef = bootstrapMethodRef;
         this.methodRef = methodRef;
-        this.argBoxes = new ValueBox[args.size()];
+        this.bsmArgBoxes = new ValueBox[bootstrapArgs.size()];
+        this.argBoxes = new ValueBox[methodArgs.size()];
 
-        for(int i = 0; i < args.size(); i++)
+        for(int i = 0; i < bootstrapArgs.size(); i++)
         {
-        	this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));	
+        	this.bsmArgBoxes[i] = Jimple.v().newImmediateBox((Value) bootstrapArgs.get(i));	
+        }
+        for(int i = 0; i < methodArgs.size(); i++)
+        {
+        	this.argBoxes[i] = Jimple.v().newImmediateBox((Value) methodArgs.get(i));	
         }
     }
     
+    public int getBootstrapArgCount()
+    {
+        return bsmArgBoxes.length;
+    }
+
+    public Value getBootstrapArg(int index)
+    {
+        return bsmArgBoxes[index].getValue();
+    }
+
+    
     public Object clone() 
     {
+        ArrayList clonedBsmArgs = new ArrayList(getBootstrapArgCount());
+        for(int i = 0; i < getBootstrapArgCount(); i++) {
+            clonedBsmArgs.add(i, getBootstrapArg(i));
+        }
+        
         ArrayList clonedArgs = new ArrayList(getArgCount());
-
         for(int i = 0; i < getArgCount(); i++) {
             clonedArgs.add(i, getArg(i));
         }
         
-        return new  JDynamicInvokeExpr(methodRef, clonedArgs);
+        return new  JDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, clonedArgs);
     }
     
     public boolean equivTo(Object o)
@@ -72,20 +130,40 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
         {
             JDynamicInvokeExpr ie = (JDynamicInvokeExpr)o;
             if (!(getMethod().equals(ie.getMethod()) && 
+                    bsmArgBoxes.length == ie.bsmArgBoxes.length))
+                return false;
+            int i = 0;
+            for (ValueBox element : bsmArgBoxes) {
+				if (!(element.getValue().equivTo(ie.getBootstrapArg(i))))
+                    return false;
+				i++;
+			}
+            if (!(getMethod().equals(ie.getMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
-            for (ValueBox element : argBoxes)
-				if (!(element.getValue().equivTo(element.getValue())))
+            i = 0;
+            for (ValueBox element : argBoxes) {
+				if (!(element.getValue().equivTo(ie.getArg(i))))
                     return false;
+				i++;
+			}
+            if(!methodRef.equals(ie.methodRef)) return false;
+            if(!bsmRef.equals(ie.bsmRef)) return false;
             return true;
         }
         return false;
     }
+    
+    public SootMethod getBootstrapMethod()
+    {
+        return bsmRef.resolve();
+    }
+
 
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return getMethod().equivHashCode() * 17;
+        return getBootstrapMethod().equivHashCode() * getMethod().equivHashCode() * 17;
     }
 
     public String toString()
@@ -102,6 +180,17 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
             buffer.append(argBoxes[i].getValue().toString());
         }
 
+        buffer.append(") ");
+
+        buffer.append(bsmRef.getSignature());
+        buffer.append("(");
+        for(int i = 0; i < bsmArgBoxes.length; i++)
+        {
+            if(i != 0)
+                buffer.append(", ");
+
+            buffer.append(bsmArgBoxes[i].getValue().toString());
+        }
         buffer.append(")");
 
         return buffer.toString();
@@ -122,6 +211,18 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
             argBoxes[i].toString(up);
         }
 
+        up.literal(") ");
+        up.methodRef(bsmRef);
+        up.literal("(");
+        
+        for(int i = 0; i < bsmArgBoxes.length; i++)
+        {
+            if(i != 0)
+                up.literal(", ");
+                
+            bsmArgBoxes[i].toString(up);
+        }
+
         up.literal(")");
     }
 
@@ -132,7 +233,8 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     }
     
     public List getUseBoxes()
-    {
+    { 
+    	//we do not include the bootstrap-method arguments here because they are static arguments
         List list = new ArrayList();
 
         for (ValueBox element : argBoxes) {
@@ -149,8 +251,14 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     		((ConvertToBaf)(element.getValue())).convertToBaf(context, out);
     	}
 
+    	List<Value> bsmArgs = new ArrayList();
+    	for (ValueBox argBox : bsmArgBoxes) {
+    		bsmArgs.add(argBox.getValue());
+    	}
+    	
     	Unit u;
-    	out.add(u = Baf.v().newDynamicInvokeInst(methodRef));
+    	//FIXME we are losing the static arguments to the bootstrap method here
+    	out.add(u = Baf.v().newDynamicInvokeInst(bsmRef, bsmArgs, methodRef));
 
     	Unit currentUnit = context.getCurrentUnit();
 
@@ -159,4 +267,8 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     		u.addTag((Tag) it.next());
     	}
     }
+    
+    public SootMethodRef getBootstrapMethodRef() {
+		return bsmRef;
+	}
 }

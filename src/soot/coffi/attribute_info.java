@@ -67,6 +67,11 @@ class attribute_info {
     * @see Synthetic_attribute
     */
    public static final String Synthetic = "Synthetic";
+   /** String by which a BootstrapMethods attribute is recognized.
+    * @see BootstrapMethods_attribute
+    */
+   public static final String BootstrapMethods = "BootstrapMethods";
+
    
    /**
     * the following tags are added for java1.5

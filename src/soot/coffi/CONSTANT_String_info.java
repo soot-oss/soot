@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import soot.Value;
+import soot.jimple.StringConstant;
+
 /** A constant pool entry of type CONSTANT_String.
  * @see cp_info
  * @author Clark Verbrugge
@@ -74,4 +77,9 @@ class CONSTANT_String_info extends cp_info {
       return ((CONSTANT_Utf8_info)(constant_pool[string_index])).
          compareTo(cp_constant_pool[cu.string_index]);
    }
+   
+	public Value createJimpleConstantValue(cp_info[] constant_pool) {
+	    CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info)(constant_pool[string_index]);
+		return StringConstant.v(ci.convert());
+	}
 }

@@ -25,6 +25,13 @@
 
 package soot.baf;
 
+import java.util.List;
+
+import soot.SootMethodRef;
+import soot.Value;
+
 public interface DynamicInvokeInst extends MethodArgInst
 {
+	public SootMethodRef getBootstrapMethodRef();
+	public List<Value> getBootstrapArgs();
 }

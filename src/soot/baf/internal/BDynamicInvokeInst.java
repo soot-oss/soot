@@ -26,16 +26,22 @@
 
 package soot.baf.internal;
 
+import java.util.List;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 @SuppressWarnings({ "serial", "unchecked" })
 public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInvokeInst
-{
-    public BDynamicInvokeInst(SootMethodRef methodRef) { 
-        if( !methodRef.isStatic() ) throw new RuntimeException("wrong static-ness: dynamicinvoke instructions always assumed to be static!");
-        this.methodRef = methodRef;
+{	
+    protected final SootMethodRef bsmMethodRef;
+	private final List<Value> bsmArgs;
+
+	public BDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef) { 
+        this.bsmMethodRef = bsmMethodRef;
+		this.bsmArgs = bsmArgs;
+		this.methodRef = methodRef;
     }
 
     public int getInCount()
@@ -46,10 +52,8 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
 
     public Object clone() 
     {
-        return new  BDynamicInvokeInst(methodRef);
+        return new  BDynamicInvokeInst(bsmMethodRef, bsmArgs, methodRef);
     }
-
-
    
     public int getOutCount()
     {
@@ -59,7 +63,13 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
             return 1;
     }
 
-   
+    public SootMethodRef getBootstrapMethodRef() {
+		return bsmMethodRef;
+	}   
+    
+    public List<Value> getBootstrapArgs() {
+    	return bsmArgs;
+    }
 
     public String getName() { return "dynamicinvoke"; }
 

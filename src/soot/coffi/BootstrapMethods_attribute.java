@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2012 Eric Bodden
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,21 +23,18 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+package soot.coffi;
 
+/** There should be exactly one BootstrapMethods attribute in every class file.
+ * @author Eric Bodden
+ * @see http://www.xiebiao.com/docs/javase/7/api/java/lang/invoke/package-summary.html#bsmattr
+ */
+class BootstrapMethods_attribute extends attribute_info {
 
+	//indices to method handles
+	short[] method_handles;
+	
+	//arguments to method handles, in same order as above, i.e., arg_indices[i] holds the arguments to method_handles[i]
+	short[][] arg_indices;
 
-
-package soot.jimple;
-
-import soot.SootMethodRef;
-
-public interface DynamicInvokeExpr extends InvokeExpr
-{
-	public SootMethodRef getBootstrapMethodRef();	
 }
-
-
-
-
-
-

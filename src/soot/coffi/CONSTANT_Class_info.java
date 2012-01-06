@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import soot.Value;
+import soot.jimple.ClassConstant;
+
 /** A constant pool entry of type CONSTANT_Class.
  * @see cp_info
  * @author Clark Verbrugge
@@ -74,6 +77,11 @@ public class CONSTANT_Class_info extends cp_info {
       return ((CONSTANT_Utf8_info)(constant_pool[name_index])).
          compareTo(cp_constant_pool[cu.name_index]);
    }
+	public Value createJimpleConstantValue(cp_info[] constant_pool) {
+	    CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info)(constant_pool[name_index]);
+	    String name = ci.convert();
+		return ClassConstant.v(name);
+	}
 }
 
 

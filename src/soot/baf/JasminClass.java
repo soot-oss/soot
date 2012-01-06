@@ -60,6 +60,7 @@ import soot.Trap;
 import soot.Type;
 import soot.TypeSwitch;
 import soot.Unit;
+import soot.Value;
 import soot.ValueBox;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
@@ -1487,7 +1488,16 @@ public class JasminClass extends AbstractJasminClass
             public void caseDynamicInvokeInst(DynamicInvokeInst i)
             {
                 SootMethodRef m = i.getMethodRef();
-                emit("invokedynamic " + m.name() + jasminDescriptorOf(m));
+                SootMethodRef bsm = i.getBootstrapMethodRef();
+                String bsmArgString = "";
+                for (Iterator<Value> iterator = i.getBootstrapArgs().iterator(); iterator.hasNext();) {
+					Value val = iterator.next();
+					bsmArgString += val.toString();
+					if(iterator.hasNext()) bsmArgString += ",";
+					
+				}
+                emit("invokedynamic \"" + m.name() +"\" "+ jasminDescriptorOf(m) +
+                		" " + slashify(bsm.declaringClass().getName()) + "/" + bsm.name() + jasminDescriptorOf(bsm) +"("+bsmArgString+")");
             }
             
             

@@ -31,6 +31,8 @@
 
 package soot.coffi;
 
+import soot.Value;
+
 /** A constant pool entry of type CONSTANT_NameAndType
  * @see cp_info
  * @author Clark Verbrugge
@@ -83,4 +85,9 @@ class CONSTANT_NameAndType_info extends cp_info {
       return ((CONSTANT_Utf8_info)(constant_pool[descriptor_index])).
          compareTo(cp_constant_pool[cu.descriptor_index]);
    }
+   
+   public Value createJimpleConstantValue(cp_info[] constant_pool) {
+	   throw new UnsupportedOperationException("cannot convert to Jimple: "+typeName());
+   }
+
 }

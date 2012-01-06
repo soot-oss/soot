@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import soot.Value;
+import soot.jimple.FloatConstant;
+
 /** A constant pool entry of type CONSTANT_Float
  * @see cp_info
  * @author Clark Verbrugge
@@ -74,4 +77,8 @@ class CONSTANT_Float_info extends cp_info {
       d = convert()-cu.convert();
       return ((d>0.0) ? 1 : ((d<0.0) ? -1 : 0));
    }
+   
+	public Value createJimpleConstantValue(cp_info[] constant_pool) {
+		return FloatConstant.v(convert());
+	}
 }

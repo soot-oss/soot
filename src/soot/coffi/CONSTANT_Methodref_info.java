@@ -31,6 +31,14 @@
 
 package soot.coffi;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import soot.Scene;
+import soot.Type;
+import soot.Value;
+import soot.jimple.Jimple;
+
 /** A constant pool entry of type CONSTANT_Methodref
  * @see cp_info
  * @author Clark Verbrugge
@@ -84,4 +92,30 @@ class CONSTANT_Methodref_info extends cp_info {
          compareTo(constant_pool,cp_constant_pool[cu.name_and_type_index],
                    cp_constant_pool);
    }
+   
+	public Value createJimpleConstantValue(cp_info[] constant_pool) {
+		CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[class_index]);
+		CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[name_and_type_index]);
+		String className = cc.toString(constant_pool);
+		String nameAndType = cn.toString(constant_pool);
+		String name = nameAndType.substring(0, nameAndType.indexOf(":"));
+		String typeName = nameAndType.substring(nameAndType.indexOf(":") + 1);
+
+		List parameterTypes;
+		Type returnType;
+
+		// Generate parameters & returnType & parameterTypes
+		{
+			Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(
+					typeName);
+			parameterTypes = new ArrayList();
+			for (int k = 0; k < types.length - 1; k++) {
+				parameterTypes.add(types[k]);
+			}
+			returnType = types[types.length - 1];
+		}
+
+	    return Jimple.v().newStaticInvokeExpr(Scene.v().makeMethodRef(Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
+	}
+
 }

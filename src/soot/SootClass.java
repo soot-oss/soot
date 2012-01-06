@@ -72,6 +72,8 @@ public class SootClass extends AbstractHost implements Numberable
 
     protected boolean isPhantom;
     
+    public final static String INVOKEDYNAMIC_DUMMY_CLASS_NAME = "soot.dummy.InvokeDynamic";
+    
     
     /**
         Constructs an empty SootClass with the given name and modifiers.
