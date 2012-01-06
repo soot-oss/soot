@@ -55,9 +55,12 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
                     getMethod().equals(ie.getMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
-            for (ValueBox element : argBoxes)
-				if (!(element.getValue().equivTo(element.getValue())))
+            int i = 0;
+            for (ValueBox element : argBoxes) {
+				if (!(element.getValue().equivTo(ie.getArg(i))))
                     return false;
+				i++;
+			}
             return true;
         }
         return false;
