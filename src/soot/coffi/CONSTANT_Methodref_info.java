@@ -43,7 +43,7 @@ import soot.jimple.Jimple;
  * @see cp_info
  * @author Clark Verbrugge
  */
-class CONSTANT_Methodref_info extends cp_info {
+class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_info {
    /** Constant pool index of a CONSTANT_Class object.
     * @see CONSTANT_Class_info
     */
@@ -116,6 +116,13 @@ class CONSTANT_Methodref_info extends cp_info {
 		}
 
 	    return Jimple.v().newStaticInvokeExpr(Scene.v().makeMethodRef(Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
+	}
+
+	public int getClassIndex() {
+		return class_index;
+	}
+	public int getNameAndTypeIndex() {
+		return name_and_type_index;
 	}
 
 }

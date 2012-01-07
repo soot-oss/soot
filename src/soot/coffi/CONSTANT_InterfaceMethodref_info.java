@@ -43,7 +43,7 @@ import soot.jimple.Jimple;
  * @see cp_info
  * @author Clark Verbrugge
  */
-class CONSTANT_InterfaceMethodref_info extends cp_info {
+class CONSTANT_InterfaceMethodref_info extends cp_info implements ICONSTANT_Methodref_info {
    /** Constant pool index of a CONSTANT_Class object.
     * @see CONSTANT_Class_info
     */
@@ -96,4 +96,10 @@ class CONSTANT_InterfaceMethodref_info extends cp_info {
    public Value createJimpleConstantValue(cp_info[] constant_pool) {
 	   throw new UnsupportedOperationException("cannot convert to Jimple: "+typeName());
    }
+	public int getClassIndex() {
+		return class_index;
+	}
+	public int getNameAndTypeIndex() {
+		return name_and_type_index;
+	}
 }

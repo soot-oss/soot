@@ -4534,8 +4534,8 @@ public class CFG {
             Instruction_Invokeinterface ii = (Instruction_Invokeinterface)ins;
             args = cp_info.countParams(constant_pool,ii.arg_i);
 
-    		CONSTANT_Methodref_info methodInfo =
-    		    (CONSTANT_Methodref_info) constant_pool[ii.arg_i];
+            CONSTANT_InterfaceMethodref_info methodInfo =
+                (CONSTANT_InterfaceMethodref_info) constant_pool[ii.arg_i];
 
             SootMethodRef methodRef = createMethodRef(constant_pool, methodInfo, false);
 
@@ -4646,17 +4646,17 @@ public class CFG {
    }
 
     private SootMethodRef createMethodRef(cp_info[] constant_pool,
-			CONSTANT_Methodref_info methodInfo, boolean isStatic) {
+			ICONSTANT_Methodref_info methodInfo, boolean isStatic) {
 		SootMethodRef methodRef;
 
 		CONSTANT_Class_info c =
-		    (CONSTANT_Class_info) constant_pool[methodInfo.class_index];
+		    (CONSTANT_Class_info) constant_pool[methodInfo.getClassIndex()];
 
 		String className = ((CONSTANT_Utf8_info) (constant_pool[c.name_index])).convert();
 		    className = className.replace('/', '.');
 
 		CONSTANT_NameAndType_info i =
-		    (CONSTANT_NameAndType_info) constant_pool[methodInfo.name_and_type_index];
+		    (CONSTANT_NameAndType_info) constant_pool[methodInfo.getNameAndTypeIndex()];
 
 		String methodName = ((CONSTANT_Utf8_info) (constant_pool[i.name_index])).convert();
 		String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
