@@ -32,9 +32,9 @@ package soot.coffi;
 class BootstrapMethods_attribute extends attribute_info {
 
 	//indices to method handles
-	short[] method_handles;
+	public short[] method_handles;
 	
 	//arguments to method handles, in same order as above, i.e., arg_indices[i] holds the arguments to method_handles[i]
-	short[][] arg_indices;
+	public short[][] arg_indices;
 
 }
