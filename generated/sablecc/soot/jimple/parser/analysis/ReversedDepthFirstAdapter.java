@@ -2731,6 +2731,63 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAStaticInvokeExpr(node);
     }
 
+    public void inADynamicInvokeExpr(ADynamicInvokeExpr node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADynamicInvokeExpr(ADynamicInvokeExpr node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADynamicInvokeExpr(ADynamicInvokeExpr node)
+    {
+        inADynamicInvokeExpr(node);
+        if(node.getRParen() != null)
+        {
+            node.getRParen().apply(this);
+        }
+        if(node.getStaticargs() != null)
+        {
+            node.getStaticargs().apply(this);
+        }
+        if(node.getLParen() != null)
+        {
+            node.getLParen().apply(this);
+        }
+        if(node.getBsm() != null)
+        {
+            node.getBsm().apply(this);
+        }
+        if(node.getFirstr() != null)
+        {
+            node.getFirstr().apply(this);
+        }
+        if(node.getDynargs() != null)
+        {
+            node.getDynargs().apply(this);
+        }
+        if(node.getFirstl() != null)
+        {
+            node.getFirstl().apply(this);
+        }
+        if(node.getDynmethod() != null)
+        {
+            node.getDynmethod().apply(this);
+        }
+        if(node.getStringConstant() != null)
+        {
+            node.getStringConstant().apply(this);
+        }
+        if(node.getDynamicinvoke() != null)
+        {
+            node.getDynamicinvoke().apply(this);
+        }
+        outADynamicInvokeExpr(node);
+    }
+
     public void inABinopExpr(ABinopExpr node)
     {
         defaultIn(node);
@@ -2846,6 +2903,47 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getInterfaceinvoke().apply(this);
         }
         outAInterfaceNonstaticInvoke(node);
+    }
+
+    public void inAUnnamedMethodSignature(AUnnamedMethodSignature node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAUnnamedMethodSignature(AUnnamedMethodSignature node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAUnnamedMethodSignature(AUnnamedMethodSignature node)
+    {
+        inAUnnamedMethodSignature(node);
+        if(node.getCmpgt() != null)
+        {
+            node.getCmpgt().apply(this);
+        }
+        if(node.getRParen() != null)
+        {
+            node.getRParen().apply(this);
+        }
+        if(node.getParameterList() != null)
+        {
+            node.getParameterList().apply(this);
+        }
+        if(node.getLParen() != null)
+        {
+            node.getLParen().apply(this);
+        }
+        if(node.getType() != null)
+        {
+            node.getType().apply(this);
+        }
+        if(node.getCmplt() != null)
+        {
+            node.getCmplt().apply(this);
+        }
+        outAUnnamedMethodSignature(node);
     }
 
     public void inAMethodSignature(AMethodSignature node)

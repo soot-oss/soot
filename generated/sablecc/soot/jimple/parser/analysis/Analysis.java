@@ -115,11 +115,13 @@ public interface Analysis extends Switch
     void caseAUnopBoolExpr(AUnopBoolExpr node);
     void caseANonstaticInvokeExpr(ANonstaticInvokeExpr node);
     void caseAStaticInvokeExpr(AStaticInvokeExpr node);
+    void caseADynamicInvokeExpr(ADynamicInvokeExpr node);
     void caseABinopExpr(ABinopExpr node);
     void caseAUnopExpr(AUnopExpr node);
     void caseASpecialNonstaticInvoke(ASpecialNonstaticInvoke node);
     void caseAVirtualNonstaticInvoke(AVirtualNonstaticInvoke node);
     void caseAInterfaceNonstaticInvoke(AInterfaceNonstaticInvoke node);
+    void caseAUnnamedMethodSignature(AUnnamedMethodSignature node);
     void caseAMethodSignature(AMethodSignature node);
     void caseAArrayReference(AArrayReference node);
     void caseAFieldReference(AFieldReference node);
@@ -219,6 +221,7 @@ public interface Analysis extends Switch
     void caseTReturn(TReturn node);
     void caseTSpecialinvoke(TSpecialinvoke node);
     void caseTStaticinvoke(TStaticinvoke node);
+    void caseTDynamicinvoke(TDynamicinvoke node);
     void caseTTableswitch(TTableswitch node);
     void caseTThrow(TThrow node);
     void caseTThrows(TThrows node);

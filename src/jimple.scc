@@ -66,7 +66,7 @@ Tokens
   boolean = 'boolean';
   byte = 'byte';
   short = 'short';
-  char = 'char';
+  char = 'char'; 
   int = 'int';
   long = 'long';
   float = 'float';
@@ -101,6 +101,7 @@ Tokens
   return = 'return';
   specialinvoke = 'specialinvoke';
   staticinvoke = 'staticinvoke';
+  dynamicinvoke = 'dynamicinvoke';
   tableswitch = 'tableswitch';
   throw = 'throw';
   throws = 'throws';
@@ -338,7 +339,9 @@ class_name_list =
 
   invoke_expr = 
     {nonstatic} nonstatic_invoke local_name dot method_signature l_paren arg_list? r_paren |
-    {static}    staticinvoke method_signature l_paren arg_list? r_paren;
+    {static}    staticinvoke method_signature l_paren arg_list? r_paren |
+    {dynamic}   dynamicinvoke string_constant [dynmethod]:unnamed_method_signature [firstl]:l_paren [dynargs]:arg_list? [firstr]:r_paren
+                                              [bsm]:method_signature l_paren [staticargs]:arg_list? r_paren;
 
   binop_expr =
     [left]:immediate binop [right]:immediate;
@@ -350,6 +353,9 @@ class_name_list =
     {special}   specialinvoke |
     {virtual}   virtualinvoke |
     {interface} interfaceinvoke;
+
+  unnamed_method_signature =
+    cmplt type l_paren parameter_list? r_paren cmpgt;
 
   method_signature =
     cmplt [class_name]:class_name [first]:colon type [method_name]:name  l_paren parameter_list? r_paren cmpgt;

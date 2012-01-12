@@ -584,6 +584,11 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseADynamicInvokeExpr(ADynamicInvokeExpr node)
+    {
+        defaultCase(node);
+    }
+
     public void caseABinopExpr(ABinopExpr node)
     {
         defaultCase(node);
@@ -605,6 +610,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAInterfaceNonstaticInvoke(AInterfaceNonstaticInvoke node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAUnnamedMethodSignature(AUnnamedMethodSignature node)
     {
         defaultCase(node);
     }
@@ -1095,6 +1105,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTStaticinvoke(TStaticinvoke node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTDynamicinvoke(TDynamicinvoke node)
     {
         defaultCase(node);
     }

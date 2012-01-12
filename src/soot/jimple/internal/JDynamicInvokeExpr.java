@@ -170,7 +170,12 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(Jimple.DYNAMICINVOKE + " " + methodRef.getSignature() + "(");
+        buffer.append(Jimple.DYNAMICINVOKE);
+        buffer.append(" \"");
+        buffer.append(methodRef.name()); //quoted method name (can be any UTF8 string)
+        buffer.append("\" <");
+        buffer.append(SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()));
+        buffer.append(">(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -198,10 +203,8 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     
     public void toString(UnitPrinter up)
     {
-        up.literal(Jimple.DYNAMICINVOKE);
-        up.literal(" ");
-        up.methodRef(methodRef);
-        up.literal("(");
+        up.literal(Jimple.DYNAMICINVOKE);        
+        up.literal(" \"" + methodRef.name() + "\" <" + SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()) +">(");        
         
         for(int i = 0; i < argBoxes.length; i++)
         {

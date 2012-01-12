@@ -30,6 +30,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 
+import soot.jimple.internal.JDynamicInvokeExpr;
 import soot.jimple.parser.node.*;
 import soot.jimple.parser.analysis.*;
 
@@ -906,7 +907,8 @@ public class Walker extends DepthFirstAdapter
     
     public void outAAssignStatement(AAssignStatement node)
     {
-	Value rvalue = (Value) mProductions.removeLast();
+	Object removeLast = mProductions.removeLast();
+	Value rvalue = (Value) removeLast;
 	Value variable =(Value)mProductions.removeLast();
 
 
@@ -1520,6 +1522,42 @@ public class Walker extends DepthFirstAdapter
         
 	mProductions.addLast(Jimple.v().newStaticInvokeExpr(method, args));   
     }
+    
+    public void outADynamicInvokeExpr(ADynamicInvokeExpr node)
+    {
+    	List<Value> bsmArgs;
+        if(node.getStaticargs() != null)
+        	bsmArgs = (List) mProductions.removeLast();
+        else
+        	bsmArgs = Collections.emptyList();
+
+        SootMethodRef bsmMethodRef = (SootMethodRef) mProductions.removeLast();
+
+        List<Value> dynArgs;
+        if(node.getDynargs() != null)
+        	dynArgs = (List) mProductions.removeLast();
+        else 
+        	dynArgs = Collections.emptyList();
+
+        SootMethodRef dynMethodRef = (SootMethodRef) mProductions.removeLast();
+    	
+    	mProductions.addLast(Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmArgs, dynMethodRef, dynArgs));
+    }
+    
+    public void outAUnnamedMethodSignature(AUnnamedMethodSignature node) {
+        String className, methodName;
+        List parameterList = new ArrayList();
+        if(node.getParameterList() != null)
+	    parameterList =  (List) mProductions.removeLast();
+        
+		Type type = (Type) mProductions.removeLast();
+		String name = (String) mProductions.removeLast();
+	
+        SootClass sootClass =  mResolver.makeClassRef(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+        SootMethodRef sootMethod = Scene.v().makeMethodRef(sootClass, name, parameterList, type, false);
+	
+		mProductions.addLast(sootMethod);
+	}
 
     /*
       method_signature =
