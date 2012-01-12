@@ -29,11 +29,15 @@
 
 package soot.jimple;
 
+import java.util.List;
+
 import soot.SootMethodRef;
+import soot.Value;
 
 public interface DynamicInvokeExpr extends InvokeExpr
 {
-	public SootMethodRef getBootstrapMethodRef();	
+	public SootMethodRef getBootstrapMethodRef();
+	public List<Value> getBootstrapArgs();
 }
 
 

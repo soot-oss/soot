@@ -273,4 +273,13 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     public SootMethodRef getBootstrapMethodRef() {
 		return bsmRef;
 	}
+    
+    public List getBootstrapArgs()
+    {
+        List l = new ArrayList();
+        for (ValueBox element : bsmArgBoxes)
+			l.add(element.getValue());
+
+        return l;
+    }
 }

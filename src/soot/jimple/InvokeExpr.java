@@ -38,7 +38,7 @@ public interface InvokeExpr extends Expr
     public void setMethodRef(SootMethodRef smr);
     public SootMethodRef getMethodRef();
     public SootMethod getMethod();
-    public List getArgs();
+    public List<Value> getArgs();
     public Value getArg(int index);
     public int getArgCount();
     public void setArg(int index, Value arg);
