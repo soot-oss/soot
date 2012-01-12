@@ -26,6 +26,7 @@
 
 package soot.coffi;
 import soot.*;
+import soot.jimple.StringConstant;
 
 import java.io.*;
 
@@ -182,6 +183,6 @@ public class CONSTANT_Utf8_info extends cp_info {
    public String typeName() { return "utf8"; }
 
    public Value createJimpleConstantValue(cp_info[] constant_pool) {
-	   throw new UnsupportedOperationException("cannot convert to Jimple: "+typeName());
+		return StringConstant.v(convert());
    }
 }

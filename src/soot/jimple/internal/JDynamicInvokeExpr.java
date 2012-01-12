@@ -256,9 +256,8 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     		bsmArgs.add(argBox.getValue());
     	}
     	
-    	Unit u;
-    	//FIXME we are losing the static arguments to the bootstrap method here
-    	out.add(u = Baf.v().newDynamicInvokeInst(bsmRef, bsmArgs, methodRef));
+    	Unit u = Baf.v().newDynamicInvokeInst(bsmRef, bsmArgs, methodRef);
+    	out.add(u);
 
     	Unit currentUnit = context.getCurrentUnit();
 

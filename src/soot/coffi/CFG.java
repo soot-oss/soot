@@ -4371,7 +4371,7 @@ public class CFG {
 
         		 returnType = types[types.length - 1];
         	 }
-        	 //we always model invokeDynamic method refs as static method references of methods on the type java.dyn.InvokeDynamic
+        	 //we always model invokeDynamic method refs as static method references of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
         	 methodRef = Scene.v().makeMethodRef(bclass, methodName, parameterTypes, returnType, true);
 
         	 // build Vector of parameters

@@ -1492,7 +1492,9 @@ public class JasminClass extends AbstractJasminClass
                 String bsmArgString = "";
                 for (Iterator<Value> iterator = i.getBootstrapArgs().iterator(); iterator.hasNext();) {
 					Value val = iterator.next();
+					bsmArgString += "("+jasminDescriptorOf(val.getType())+")";
 					bsmArgString += val.toString();
+										
 					if(iterator.hasNext()) bsmArgString += ",";
 					
 				}
