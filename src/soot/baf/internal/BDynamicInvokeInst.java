@@ -30,16 +30,17 @@ import java.util.List;
 
 import soot.*;
 import soot.baf.*;
+import soot.jimple.Jimple;
 import soot.util.*;
 
 @SuppressWarnings({ "serial", "unchecked" })
 public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInvokeInst
 {	
-    protected final SootMethodRef bsmMethodRef;
+    protected final SootMethodRef bsmRef;
 	private final List<Value> bsmArgs;
 
 	public BDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef) { 
-        this.bsmMethodRef = bsmMethodRef;
+        this.bsmRef = bsmMethodRef;
 		this.bsmArgs = bsmArgs;
 		this.methodRef = methodRef;
     }
@@ -52,7 +53,7 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
 
     public Object clone() 
     {
-        return new  BDynamicInvokeInst(bsmMethodRef, bsmArgs, methodRef);
+        return new  BDynamicInvokeInst(bsmRef, bsmArgs, methodRef);
     }
    
     public int getOutCount()
@@ -64,7 +65,7 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
     }
 
     public SootMethodRef getBootstrapMethodRef() {
-		return bsmMethodRef;
+		return bsmRef;
 	}   
     
     public List<Value> getBootstrapArgs() {
@@ -77,4 +78,46 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
     {
         ((InstSwitch) sw).caseDynamicInvokeInst(this);
     }   
+    
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(Jimple.DYNAMICINVOKE);
+        buffer.append(" \"");
+        buffer.append(methodRef.name()); //quoted method name (can be any UTF8 string)
+        buffer.append("\" <");
+        buffer.append(SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()));
+        buffer.append(">");
+        buffer.append(bsmRef.getSignature());
+        buffer.append("(");
+        for(int i = 0; i < bsmArgs.size(); i++)
+        {
+            if(i != 0)
+                buffer.append(", ");
+
+            buffer.append(bsmArgs.get(i).toString());
+        }
+        buffer.append(")");
+
+        return buffer.toString();
+    }
+    
+    public void toString(UnitPrinter up)
+    {
+        up.literal(Jimple.DYNAMICINVOKE);        
+        up.literal(" \"" + methodRef.name() + "\" <" + SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()) +"> ");        
+        up.methodRef(bsmRef);
+        up.literal("(");
+        
+        for(int i = 0; i < bsmArgs.size(); i++)
+        {
+            if(i != 0)
+                up.literal(", ");
+                
+            bsmArgs.get(i).toString(up);
+        }
+
+        up.literal(")");
+    }
 }
