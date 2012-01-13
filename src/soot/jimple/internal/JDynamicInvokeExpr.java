@@ -35,11 +35,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
-import soot.Type;
 import soot.Unit;
 import soot.UnitPrinter;
 import soot.Value;
