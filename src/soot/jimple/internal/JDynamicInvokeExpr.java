@@ -63,26 +63,6 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
 		if(!methodRef.getSignature().startsWith("<"+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+": "))
     		throw new RuntimeException("Receiver type of JDynamicInvokeExpr must be "+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+"!");
 		
-		if(bootstrapMethodRef.parameterTypes().size()<3 ||
-		   !bootstrapMethodRef.parameterType(0).equals(RefType.v("java.lang.invoke.MethodHandles$Lookup")) ||
-		   !bootstrapMethodRef.parameterType(1).equals(RefType.v("java.lang.String")) ||
-		   !bootstrapMethodRef.parameterType(2).equals(RefType.v("java.lang.invoke.MethodType"))) {
-			throw new IllegalArgumentException("Bootstrap method's first three arguments must be of types java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType"); 
-		}
-		
-		if(bootstrapArgs.size()!=bootstrapMethodRef.parameterTypes().size()-3) {
-			throw new IllegalArgumentException("Bootstrap method's signature demands "+bootstrapMethodRef.parameterTypes().size()+"-3="+
-					(bootstrapMethodRef.parameterTypes().size()-3)+"arguments, but there are "+bootstrapArgs.size()); 
-		}
-		
-		for(int i=3;i<bootstrapMethodRef.parameterTypes().size();i++) {
-			Type type = bootstrapMethodRef.parameterType(i);
-			if(!type.equals(bootstrapArgs.get(i-3).getType())) {
-				throw new IllegalArgumentException("Bootstrap method's argument number "+i+", according to signature, is "+type+", but " +
-						"argument is of type "+bootstrapArgs.get(i-3).getType()); 
-			}
-		}
-		    	
     	this.bsmRef = bootstrapMethodRef;
         this.methodRef = methodRef;
         this.bsmArgBoxes = new ValueBox[bootstrapArgs.size()];
