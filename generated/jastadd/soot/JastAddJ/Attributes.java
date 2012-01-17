@@ -1,17 +1,35 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
+
+/**
+ * @ast class
+ * @declaredat :0
+ */
 public class Attributes extends java.lang.Object {
-    // Declared in BytecodeAttributes.jrag at line 14
 
     protected BytecodeParser p;
 
-    // Declared in BytecodeAttributes.jrag at line 15
 
     protected boolean isSynthetic;
 
-    // Declared in BytecodeAttributes.jrag at line 17
 
 
     protected Attributes(BytecodeParser parser) {
@@ -19,7 +37,6 @@ public class Attributes extends java.lang.Object {
       isSynthetic = false;
     }
 
-    // Declared in BytecodeAttributes.jrag at line 22
 
 
     protected void processAttribute(String attribute_name, int attribute_length) {
@@ -30,7 +47,6 @@ public class Attributes extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeAttributes.jrag at line 30
 
 
     protected void attributes() {
@@ -48,14 +64,12 @@ public class Attributes extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeAttributes.jrag at line 45
 
 
     public boolean isSynthetic() {
       return isSynthetic;
     }
 
-    // Declared in BytecodeAttributes.jrag at line 50
 
 
     // 4.8.15.1
@@ -92,7 +106,6 @@ public class Attributes extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeAttributes.jrag at line 84
 
 
     // 4.8.15
@@ -109,7 +122,6 @@ public class Attributes extends java.lang.Object {
       return new Annotation("Annotation", typeAccess, list);
     }
 
-    // Declared in BytecodeAttributes.jrag at line 97
 
 
     public static class FieldAttributes extends Attributes {
@@ -155,7 +167,6 @@ public class Attributes extends java.lang.Object {
       }
     }
 
-    // Declared in BytecodeAttributes.jrag at line 140
 
 
     public static class MethodAttributes extends Attributes {
@@ -281,7 +292,6 @@ public class Attributes extends java.lang.Object {
 
     }
 
-    // Declared in BytecodeAttributes.jrag at line 263
 
 
     public static class TypeAttributes extends Attributes {

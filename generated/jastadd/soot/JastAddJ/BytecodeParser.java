@@ -1,37 +1,51 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
+
+/**
+ * @ast class
+ * @declaredat :0
+ */
 public class BytecodeParser extends java.lang.Object implements Flags, BytecodeReader {
-    // Declared in BytecodeReader.jrag at line 13
 
     public CompilationUnit read(InputStream is, String fullName, Program p) throws FileNotFoundException, IOException {
       return new BytecodeParser(is, fullName).parse(null, null, p);
     }
 
-    // Declared in BytecodeReader.jrag at line 17
 
 
     public static final boolean VERBOSE = false;
 
-    // Declared in BytecodeReader.jrag at line 19
 
 
     private DataInputStream is;
 
-    // Declared in BytecodeReader.jrag at line 20
 
     public CONSTANT_Class_Info classInfo;
 
-    // Declared in BytecodeReader.jrag at line 21
 
     public String outerClassName;
 
-    // Declared in BytecodeReader.jrag at line 22
 
     public String name;
 
-    // Declared in BytecodeReader.jrag at line 24
 
 
     public BytecodeParser(byte[] buffer, int size, String name) {
@@ -40,7 +54,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       this.name = name;
     }
 
-    // Declared in BytecodeReader.jrag at line 29
 
     public BytecodeParser(InputStream in, String name) {
       //this.is = new DataInputStream(new DummyInputStream(buffer, size));
@@ -48,14 +61,12 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       this.name = name;
     }
 
-    // Declared in BytecodeReader.jrag at line 35
 
 
     public BytecodeParser() {
       this("");
     }
 
-    // Declared in BytecodeReader.jrag at line 38
 
     public BytecodeParser(String name) {
       if (!name.endsWith(".class")) {
@@ -65,7 +76,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       this.name = name;
     }
 
-    // Declared in BytecodeReader.jrag at line 46
 
 
     private static class DummyInputStream extends InputStream {
@@ -152,7 +162,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 130
 
 
     public int next() {
@@ -164,7 +173,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 139
 
 
     public int u1() {
@@ -176,7 +184,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 148
 
 
     public int u2() {
@@ -188,7 +195,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 157
 
 
     public int u4() {
@@ -200,7 +206,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 166
 
 
     public int readInt() {
@@ -212,7 +217,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 175
 
 
     public float readFloat() {
@@ -224,7 +228,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 184
 
 
     public long readLong() {
@@ -236,7 +239,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 193
 
 
     public double readDouble() {
@@ -248,7 +250,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return -1;
     }
 
-    // Declared in BytecodeReader.jrag at line 202
 
 
     public String readUTF() {
@@ -260,7 +261,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return "";
     }
 
-    // Declared in BytecodeReader.jrag at line 211
 
 
     public void skip(int length) {
@@ -271,35 +271,30 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 219
 
 
     public void error(String s) {
       throw new RuntimeException(s);
     }
 
-    // Declared in BytecodeReader.jrag at line 223
 
 
     public void print(String s) {
       //System.out.print(s);
     }
 
-    // Declared in BytecodeReader.jrag at line 227
 
 
     public void println(String s) {
       print(s + "\n");
     }
 
-    // Declared in BytecodeReader.jrag at line 231
 
 
     public void println() {
       print("\n");
     }
 
-    // Declared in BytecodeReader.jrag at line 235
 
 
 	  public CompilationUnit parse(TypeDecl outerTypeDecl, String outerClassName, Program classPath, boolean isInner) 
@@ -308,7 +303,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
           return parse(outerTypeDecl, outerClassName, classPath);
     }
 
-    // Declared in BytecodeReader.jrag at line 241
 
 
     public CompilationUnit parse(TypeDecl outerTypeDecl, String outerClassName, Program program) 
@@ -363,7 +357,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
         return cu;
       }
 
-    // Declared in BytecodeReader.jrag at line 293
 
 
     public void parseMagic() {
@@ -371,7 +364,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
         error("magic error");
     }
 
-    // Declared in BytecodeReader.jrag at line 298
 
 
     public void parseMinor() {
@@ -381,7 +373,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
         println("Minor: " + high + "." + low);
     }
 
-    // Declared in BytecodeReader.jrag at line 305
 
 
     public void parseMajor() {
@@ -391,12 +382,10 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
         println("Major: " + high + "." + low);
     }
 
-    // Declared in BytecodeReader.jrag at line 312
 
 
     public boolean isInnerClass = false;
 
-    // Declared in BytecodeReader.jrag at line 314
 
 
     public TypeDecl parseTypeDecl() {
@@ -442,7 +431,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 358
 
 
 
@@ -453,7 +441,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return info.simpleName();
     }
 
-    // Declared in BytecodeReader.jrag at line 365
 
 
     public Access parseSuperClass() {
@@ -464,7 +451,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return info.access();
     }
 
-    // Declared in BytecodeReader.jrag at line 373
 
 
     public List parseInterfaces(List list) {
@@ -476,7 +462,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return list;
     }
 
-    // Declared in BytecodeReader.jrag at line 383
 
 
 
@@ -497,7 +482,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
         return new TypeAccess(packageName, typeName);
     }
 
-    // Declared in BytecodeReader.jrag at line 400
 
 
     public static Modifiers modifiers(int flags) {
@@ -527,7 +511,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return m;
     }
 
-    // Declared in BytecodeReader.jrag at line 427
 
 
     public void parseFields(TypeDecl typeDecl) {
@@ -543,7 +526,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 441
 
 
 
@@ -561,13 +543,11 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       }
     }
 
-    // Declared in BytecodeReader.jrag at line 456
 
 
 
     public CONSTANT_Info[] constantPool = null;
 
-    // Declared in BytecodeReader.jrag at line 458
 
 
     private void checkLengthAndNull(int index) {
@@ -578,20 +558,17 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
         throw new Error("Unexpected null element in constant pool at index " + index);
     }
 
-    // Declared in BytecodeReader.jrag at line 465
 
     public boolean validConstantPoolIndex(int index) {
       return index < constantPool.length && constantPool[index] != null;
     }
 
-    // Declared in BytecodeReader.jrag at line 468
 
     public CONSTANT_Info getCONSTANT_Info(int index) {
       checkLengthAndNull(index);
       return constantPool[index];
     }
 
-    // Declared in BytecodeReader.jrag at line 472
 
     public CONSTANT_Utf8_Info getCONSTANT_Utf8_Info(int index) {
       checkLengthAndNull(index);
@@ -601,7 +578,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return (CONSTANT_Utf8_Info)info;
     }
 
-    // Declared in BytecodeReader.jrag at line 479
 
     public CONSTANT_Class_Info getCONSTANT_Class_Info(int index) {
       checkLengthAndNull(index);
@@ -611,7 +587,6 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
       return (CONSTANT_Class_Info)info;
     }
 
-    // Declared in BytecodeReader.jrag at line 487
 
 
     public void parseConstantPool() {
@@ -633,52 +608,40 @@ public class BytecodeParser extends java.lang.Object implements Flags, BytecodeR
 
     }
 
-    // Declared in BytecodeReader.jrag at line 506
 
 
     private static final int CONSTANT_Class = 7;
 
-    // Declared in BytecodeReader.jrag at line 507
 
     private static final int CONSTANT_FieldRef = 9;
 
-    // Declared in BytecodeReader.jrag at line 508
 
     private static final int CONSTANT_MethodRef = 10;
 
-    // Declared in BytecodeReader.jrag at line 509
 
     private static final int CONSTANT_InterfaceMethodRef = 11;
 
-    // Declared in BytecodeReader.jrag at line 510
 
     private static final int CONSTANT_String = 8;
 
-    // Declared in BytecodeReader.jrag at line 511
 
     private static final int CONSTANT_Integer = 3;
 
-    // Declared in BytecodeReader.jrag at line 512
 
     private static final int CONSTANT_Float = 4;
 
-    // Declared in BytecodeReader.jrag at line 513
 
     private static final int CONSTANT_Long = 5;
 
-    // Declared in BytecodeReader.jrag at line 514
 
     private static final int CONSTANT_Double = 6;
 
-    // Declared in BytecodeReader.jrag at line 515
 
     private static final int CONSTANT_NameAndType = 12;
 
-    // Declared in BytecodeReader.jrag at line 516
 
     private static final int CONSTANT_Utf8 = 1;
 
-    // Declared in BytecodeReader.jrag at line 518
 
 
     public void parseEntry(int i) {

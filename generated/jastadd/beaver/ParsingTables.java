@@ -64,16 +64,16 @@ public final class ParsingTables
 	/** Number of terminal symbols. */
 	final int n_term;
 
-	public ParsingTables(Class impl_class)
-	{
-		this(getSpecAsResourceStream(impl_class));
-	}
-	
 	/**
 	 * Ensures that parser tables are loaded.
 	 *
 	 * @param impl_class class of the instance of the Parser
 	 */
+	public ParsingTables(Class impl_class)
+	{
+		this(getSpecAsResourceStream(impl_class));
+	}
+	
 	public ParsingTables(String spec)
 	{
 		this(new ByteArrayInputStream(decode(spec)));

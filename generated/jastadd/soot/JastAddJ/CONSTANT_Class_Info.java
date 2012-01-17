@@ -1,13 +1,32 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
+
+/**
+ * @ast class
+ * @declaredat :0
+ */
 public class CONSTANT_Class_Info extends CONSTANT_Info {
-    // Declared in BytecodeCONSTANT.jrag at line 12
 
     public int name_index;
 
-    // Declared in BytecodeCONSTANT.jrag at line 14
 
 
     public CONSTANT_Class_Info(BytecodeParser parser) {
@@ -15,14 +34,12 @@ public class CONSTANT_Class_Info extends CONSTANT_Info {
       name_index = p.u2();
     }
 
-    // Declared in BytecodeCONSTANT.jrag at line 19
 
 
     public String toString() {
       return "ClassInfo: " + name();
     }
 
-    // Declared in BytecodeCONSTANT.jrag at line 23
 
 
     public String name() {
@@ -32,7 +49,6 @@ public class CONSTANT_Class_Info extends CONSTANT_Info {
       return name;
     }
 
-    // Declared in BytecodeCONSTANT.jrag at line 30
 
 
     public String simpleName() {
@@ -42,7 +58,6 @@ public class CONSTANT_Class_Info extends CONSTANT_Info {
       return name.substring(pos + 1, name.length());
     }
 
-    // Declared in BytecodeCONSTANT.jrag at line 37
 
 
     public String packageDecl() {
@@ -54,7 +69,6 @@ public class CONSTANT_Class_Info extends CONSTANT_Info {
       return name.substring(0, pos);
     }
 
-    // Declared in BytecodeCONSTANT.jrag at line 46
 
 
     public Access access() {

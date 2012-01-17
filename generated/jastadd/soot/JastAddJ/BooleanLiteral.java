@@ -1,157 +1,233 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
 
+/**
+ * Represents a Java boolean; either "true" or "false".
+ * @ast node
+ * @declaredat Literals.ast:9
+ */
 public class BooleanLiteral extends Literal implements Cloneable {
-    public void flushCache() {
-        super.flushCache();
-        constant_computed = false;
-        constant_value = null;
-        type_computed = false;
-        type_value = null;
-    }
-    public void flushCollectionCache() {
-        super.flushCollectionCache();
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public BooleanLiteral clone() throws CloneNotSupportedException {
-        BooleanLiteral node = (BooleanLiteral)super.clone();
-        node.constant_computed = false;
-        node.constant_value = null;
-        node.type_computed = false;
-        node.type_value = null;
-        node.in$Circle(false);
-        node.is$Final(false);
-        return node;
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public BooleanLiteral copy() {
+  /**
+   * @apilevel low-level
+   */
+  public void flushCache() {
+    super.flushCache();
+    constant_computed = false;
+    constant_value = null;
+    type_computed = false;
+    type_value = null;
+  }
+  /**
+   * @apilevel internal
+   */
+  public void flushCollectionCache() {
+    super.flushCollectionCache();
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public BooleanLiteral clone() throws CloneNotSupportedException {
+    BooleanLiteral node = (BooleanLiteral)super.clone();
+    node.constant_computed = false;
+    node.constant_value = null;
+    node.type_computed = false;
+    node.type_value = null;
+    node.in$Circle(false);
+    node.is$Final(false);
+    return node;
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public BooleanLiteral copy() {
       try {
-          BooleanLiteral node = (BooleanLiteral)clone();
-          if(children != null) node.children = (ASTNode[])children.clone();
-          return node;
+        BooleanLiteral node = (BooleanLiteral)clone();
+        if(children != null) node.children = (ASTNode[])children.clone();
+        return node;
       } catch (CloneNotSupportedException e) {
       }
       System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
       return null;
+  }
+  /**
+   * @apilevel low-level
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public BooleanLiteral fullCopy() {
+    BooleanLiteral res = (BooleanLiteral)copy();
+    for(int i = 0; i < getNumChildNoTransform(); i++) {
+      ASTNode node = getChildNoTransform(i);
+      if(node != null) node = node.fullCopy();
+      res.setChild(node, i);
     }
-     @SuppressWarnings({"unchecked", "cast"})  public BooleanLiteral fullCopy() {
-        BooleanLiteral res = (BooleanLiteral)copy();
-        for(int i = 0; i < getNumChildNoTransform(); i++) {
-          ASTNode node = getChildNoTransform(i);
-          if(node != null) node = node.fullCopy();
-          res.setChild(node, i);
-        }
-        return res;
+    return res;
     }
-    // Declared in NodeConstructors.jrag at line 52
-
-
+  /**
+   * @ast method 
+   * @aspect NodeConstructors
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NodeConstructors.jrag:52
+   */
   public BooleanLiteral(boolean b) {
     this(b ? "true" : "false");
   }
-
-    // Declared in Expressions.jrag at line 38
-
+  /**
+   * @ast method 
+   * @aspect Expressions
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Expressions.jrag:38
+   */
   public soot.Value eval(Body b) {
     return BooleanType.emitConstant(constant().booleanValue());
   }
-
-    // Declared in java.ast at line 3
-    // Declared in java.ast line 129
-
-    public BooleanLiteral() {
-        super();
-
-
-    }
-
-    // Declared in java.ast at line 10
+  /**
+   * @ast method 
+   * @declaredat Literals.ast:1
+   */
+  public BooleanLiteral() {
+    super();
 
 
-    // Declared in java.ast line 129
-    public BooleanLiteral(String p0) {
-        setLITERAL(p0);
-    }
-
-    // Declared in java.ast at line 15
-
-
-    // Declared in java.ast line 129
-    public BooleanLiteral(beaver.Symbol p0) {
-        setLITERAL(p0);
-    }
-
-    // Declared in java.ast at line 19
-
-
+  }
+  /**
+   * @ast method 
+   * @declaredat Literals.ast:7
+   */
+  public BooleanLiteral(String p0) {
+    setLITERAL(p0);
+  }
+  /**
+   * @ast method 
+   * @declaredat Literals.ast:10
+   */
+  public BooleanLiteral(beaver.Symbol p0) {
+    setLITERAL(p0);
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat Literals.ast:16
+   */
   protected int numChildren() {
     return 0;
   }
-
-    // Declared in java.ast at line 22
-
-    public boolean mayHaveRewrite() {
-        return false;
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat Literals.ast:22
+   */
+  public boolean mayHaveRewrite() {
+    return false;
+  }
+  /**
+   * Setter for lexeme LITERAL
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Literals.ast:5
+   */
+  public void setLITERAL(String value) {
+    tokenString_LITERAL = value;
+  }
+  /**
+   * @ast method 
+   * @declaredat Literals.ast:8
+   */
+  public void setLITERAL(beaver.Symbol symbol) {
+    if(symbol.value != null && !(symbol.value instanceof String))
+      throw new UnsupportedOperationException("setLITERAL is only valid for String lexemes");
+    tokenString_LITERAL = (String)symbol.value;
+    LITERALstart = symbol.getStart();
+    LITERALend = symbol.getEnd();
+  }
+  /**
+   * Getter for lexeme LITERAL
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Literals.ast:19
+   */
+  public String getLITERAL() {
+    return tokenString_LITERAL != null ? tokenString_LITERAL : "";
+  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean constant_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected Constant constant_value;
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:302
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Constant constant() {
+    if(constant_computed) {
+      return constant_value;
     }
-
-    // Declared in java.ast at line 2
-    // Declared in java.ast line 124
-    public void setLITERAL(String value) {
-        tokenString_LITERAL = value;
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    constant_value = constant_compute();
+if(isFinal && num == state().boundariesCrossed) constant_computed = true;
+    return constant_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private Constant constant_compute() {  return Constant.create(Boolean.valueOf(getLITERAL()).booleanValue());  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean type_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected TypeDecl type_value;
+  /**
+   * @attribute syn
+   * @aspect TypeAnalysis
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:304
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public TypeDecl type() {
+    if(type_computed) {
+      return type_value;
     }
-
-    // Declared in java.ast at line 5
-
-    public void setLITERAL(beaver.Symbol symbol) {
-        if(symbol.value != null && !(symbol.value instanceof String))
-          throw new UnsupportedOperationException("setLITERAL is only valid for String lexemes");
-        tokenString_LITERAL = (String)symbol.value;
-        LITERALstart = symbol.getStart();
-        LITERALend = symbol.getEnd();
-    }
-
-    // Declared in java.ast at line 12
-
-    public String getLITERAL() {
-        return tokenString_LITERAL != null ? tokenString_LITERAL : "";
-    }
-
-    // Declared in ConstantExpression.jrag at line 302
- @SuppressWarnings({"unchecked", "cast"})     public Constant constant() {
-        if(constant_computed) {
-            return constant_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        constant_value = constant_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            constant_computed = true;
-        return constant_value;
-    }
-
-    private Constant constant_compute() {  return Constant.create(Boolean.valueOf(getLITERAL()).booleanValue());  }
-
-    protected boolean type_computed = false;
-    protected TypeDecl type_value;
-    // Declared in TypeAnalysis.jrag at line 304
- @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed) {
-            return type_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        type_value = type_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            type_computed = true;
-        return type_value;
-    }
-
-    private TypeDecl type_compute() {  return typeBoolean();  }
-
-public ASTNode rewriteTo() {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    type_value = type_compute();
+if(isFinal && num == state().boundariesCrossed) type_computed = true;
+    return type_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private TypeDecl type_compute() {  return typeBoolean();  }
+  /**
+   * @apilevel internal
+   */
+  public ASTNode rewriteTo() {
     return super.rewriteTo();
-}
-
+  }
 }

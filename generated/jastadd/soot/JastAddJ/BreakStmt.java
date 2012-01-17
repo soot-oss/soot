@@ -1,72 +1,113 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
 
-
+/**
+ * @ast node
+ * @declaredat java.ast:209
+ */
 public class BreakStmt extends Stmt implements Cloneable {
-    public void flushCache() {
-        super.flushCache();
-        targetStmt_computed = false;
-        targetStmt_value = null;
-        finallyList_computed = false;
-        finallyList_value = null;
-        isDAafter_Variable_values = null;
-        isDUafterReachedFinallyBlocks_Variable_values = null;
-        isDAafterReachedFinallyBlocks_Variable_values = null;
-        isDUafter_Variable_values = null;
-        canCompleteNormally_computed = false;
-        inSynchronizedBlock_computed = false;
-        lookupLabel_String_values = null;
-    }
-    public void flushCollectionCache() {
-        super.flushCollectionCache();
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public BreakStmt clone() throws CloneNotSupportedException {
-        BreakStmt node = (BreakStmt)super.clone();
-        node.targetStmt_computed = false;
-        node.targetStmt_value = null;
-        node.finallyList_computed = false;
-        node.finallyList_value = null;
-        node.isDAafter_Variable_values = null;
-        node.isDUafterReachedFinallyBlocks_Variable_values = null;
-        node.isDAafterReachedFinallyBlocks_Variable_values = null;
-        node.isDUafter_Variable_values = null;
-        node.canCompleteNormally_computed = false;
-        node.inSynchronizedBlock_computed = false;
-        node.lookupLabel_String_values = null;
-        node.in$Circle(false);
-        node.is$Final(false);
-        return node;
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public BreakStmt copy() {
+  /**
+   * @apilevel low-level
+   */
+  public void flushCache() {
+    super.flushCache();
+    targetStmt_computed = false;
+    targetStmt_value = null;
+    finallyList_computed = false;
+    finallyList_value = null;
+    isDAafter_Variable_values = null;
+    isDUafterReachedFinallyBlocks_Variable_values = null;
+    isDAafterReachedFinallyBlocks_Variable_values = null;
+    isDUafter_Variable_values = null;
+    canCompleteNormally_computed = false;
+    inSynchronizedBlock_computed = false;
+    lookupLabel_String_values = null;
+  }
+  /**
+   * @apilevel internal
+   */
+  public void flushCollectionCache() {
+    super.flushCollectionCache();
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public BreakStmt clone() throws CloneNotSupportedException {
+    BreakStmt node = (BreakStmt)super.clone();
+    node.targetStmt_computed = false;
+    node.targetStmt_value = null;
+    node.finallyList_computed = false;
+    node.finallyList_value = null;
+    node.isDAafter_Variable_values = null;
+    node.isDUafterReachedFinallyBlocks_Variable_values = null;
+    node.isDAafterReachedFinallyBlocks_Variable_values = null;
+    node.isDUafter_Variable_values = null;
+    node.canCompleteNormally_computed = false;
+    node.inSynchronizedBlock_computed = false;
+    node.lookupLabel_String_values = null;
+    node.in$Circle(false);
+    node.is$Final(false);
+    return node;
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public BreakStmt copy() {
       try {
-          BreakStmt node = (BreakStmt)clone();
-          if(children != null) node.children = (ASTNode[])children.clone();
-          return node;
+        BreakStmt node = (BreakStmt)clone();
+        if(children != null) node.children = (ASTNode[])children.clone();
+        return node;
       } catch (CloneNotSupportedException e) {
       }
       System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
       return null;
+  }
+  /**
+   * @apilevel low-level
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public BreakStmt fullCopy() {
+    BreakStmt res = (BreakStmt)copy();
+    for(int i = 0; i < getNumChildNoTransform(); i++) {
+      ASTNode node = getChildNoTransform(i);
+      if(node != null) node = node.fullCopy();
+      res.setChild(node, i);
     }
-     @SuppressWarnings({"unchecked", "cast"})  public BreakStmt fullCopy() {
-        BreakStmt res = (BreakStmt)copy();
-        for(int i = 0; i < getNumChildNoTransform(); i++) {
-          ASTNode node = getChildNoTransform(i);
-          if(node != null) node = node.fullCopy();
-          res.setChild(node, i);
-        }
-        return res;
+    return res;
     }
-    // Declared in BranchTarget.jrag at line 52
-
+  /**
+   * @ast method 
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:52
+   */
   public void collectBranches(Collection c) {
     c.add(this);
   }
-
-    // Declared in NameCheck.jrag at line 374
-
-
+  /**
+   * @ast method 
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:374
+   */
   public void nameCheck() {
     if(!hasLabel() && !insideLoop() && !insideSwitch())
       error("break outside switch or loop");
@@ -76,10 +117,11 @@ public class BreakStmt extends Stmt implements Cloneable {
         error("labeled break must have visible matching label");
     }
   }
-
-    // Declared in PrettyPrint.jadd at line 666
-
-
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:667
+   */
   public void toString(StringBuffer s) {
     s.append(indent());
     s.append("break ");
@@ -87,10 +129,11 @@ public class BreakStmt extends Stmt implements Cloneable {
       s.append(getLabel());
     s.append(";");
   }
-
-    // Declared in Statements.jrag at line 209
-
-
+  /**
+   * @ast method 
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:210
+   */
   public void jimplify2(Body b) {
     ArrayList list = exceptionRanges();
     if(!inSynchronizedBlock())
@@ -105,164 +148,216 @@ public class BreakStmt extends Stmt implements Cloneable {
     b.add(b.newGotoStmt(targetStmt().break_label(), this));
     beginExceptionRange(b, list);
   }
-
-    // Declared in java.ast at line 3
-    // Declared in java.ast line 215
-
-    public BreakStmt() {
-        super();
-
-
-    }
-
-    // Declared in java.ast at line 10
+  /**
+   * @ast method 
+   * @declaredat java.ast:1
+   */
+  public BreakStmt() {
+    super();
 
 
-    // Declared in java.ast line 215
-    public BreakStmt(String p0) {
-        setLabel(p0);
-    }
-
-    // Declared in java.ast at line 15
-
-
-    // Declared in java.ast line 215
-    public BreakStmt(beaver.Symbol p0) {
-        setLabel(p0);
-    }
-
-    // Declared in java.ast at line 19
-
-
+  }
+  /**
+   * @ast method 
+   * @declaredat java.ast:7
+   */
+  public BreakStmt(String p0) {
+    setLabel(p0);
+  }
+  /**
+   * @ast method 
+   * @declaredat java.ast:10
+   */
+  public BreakStmt(beaver.Symbol p0) {
+    setLabel(p0);
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat java.ast:16
+   */
   protected int numChildren() {
     return 0;
   }
-
-    // Declared in java.ast at line 22
-
-    public boolean mayHaveRewrite() {
-        return false;
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat java.ast:22
+   */
+  public boolean mayHaveRewrite() {
+    return false;
+  }
+  /**
+   * Setter for lexeme Label
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:5
+   */
+  public void setLabel(String value) {
+    tokenString_Label = value;
+  }
+  /**   * @apilevel internal   * @ast method 
+   * @declaredat java.ast:8
+   */
+  
+  /**   * @apilevel internal   */  protected String tokenString_Label;
+  /**
+   * @ast method 
+   * @declaredat java.ast:9
+   */
+  
+  public int Labelstart;
+  /**
+   * @ast method 
+   * @declaredat java.ast:10
+   */
+  
+  public int Labelend;
+  /**
+   * @ast method 
+   * @declaredat java.ast:11
+   */
+  public void setLabel(beaver.Symbol symbol) {
+    if(symbol.value != null && !(symbol.value instanceof String))
+      throw new UnsupportedOperationException("setLabel is only valid for String lexemes");
+    tokenString_Label = (String)symbol.value;
+    Labelstart = symbol.getStart();
+    Labelend = symbol.getEnd();
+  }
+  /**
+   * Getter for lexeme Label
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:22
+   */
+  public String getLabel() {
+    return tokenString_Label != null ? tokenString_Label : "";
+  }
+  /**
+   * @attribute syn
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:66
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean hasLabel() {
+      ASTNode$State state = state();
+    boolean hasLabel_value = hasLabel_compute();
+    return hasLabel_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean hasLabel_compute() {  return !getLabel().equals("");  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean targetStmt_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected Stmt targetStmt_value;
+  /**
+   * @attribute syn
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:149
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Stmt targetStmt() {
+    if(targetStmt_computed) {
+      return targetStmt_value;
     }
-
-    // Declared in java.ast at line 2
-    // Declared in java.ast line 215
-    protected String tokenString_Label;
-
-    // Declared in java.ast at line 3
-
-    public void setLabel(String value) {
-        tokenString_Label = value;
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    targetStmt_value = targetStmt_compute();
+if(isFinal && num == state().boundariesCrossed) targetStmt_computed = true;
+    return targetStmt_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private Stmt targetStmt_compute() {  return branchTarget(this);  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean finallyList_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected ArrayList finallyList_value;
+  /**
+   * @attribute syn
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:176
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ArrayList finallyList() {
+    if(finallyList_computed) {
+      return finallyList_value;
     }
-
-    // Declared in java.ast at line 6
-
-    public int Labelstart;
-
-    // Declared in java.ast at line 7
-
-    public int Labelend;
-
-    // Declared in java.ast at line 8
-
-    public void setLabel(beaver.Symbol symbol) {
-        if(symbol.value != null && !(symbol.value instanceof String))
-          throw new UnsupportedOperationException("setLabel is only valid for String lexemes");
-        tokenString_Label = (String)symbol.value;
-        Labelstart = symbol.getStart();
-        Labelend = symbol.getEnd();
-    }
-
-    // Declared in java.ast at line 15
-
-    public String getLabel() {
-        return tokenString_Label != null ? tokenString_Label : "";
-    }
-
-    // Declared in BranchTarget.jrag at line 66
- @SuppressWarnings({"unchecked", "cast"})     public boolean hasLabel() {
-        ASTNode$State state = state();
-        boolean hasLabel_value = hasLabel_compute();
-        return hasLabel_value;
-    }
-
-    private boolean hasLabel_compute() {  return !getLabel().equals("");  }
-
-    protected boolean targetStmt_computed = false;
-    protected Stmt targetStmt_value;
-    // Declared in BranchTarget.jrag at line 149
- @SuppressWarnings({"unchecked", "cast"})     public Stmt targetStmt() {
-        if(targetStmt_computed) {
-            return targetStmt_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        targetStmt_value = targetStmt_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            targetStmt_computed = true;
-        return targetStmt_value;
-    }
-
-    private Stmt targetStmt_compute() {  return branchTarget(this);  }
-
-    protected boolean finallyList_computed = false;
-    protected ArrayList finallyList_value;
-    // Declared in BranchTarget.jrag at line 176
- @SuppressWarnings({"unchecked", "cast"})     public ArrayList finallyList() {
-        if(finallyList_computed) {
-            return finallyList_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        finallyList_value = finallyList_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            finallyList_computed = true;
-        return finallyList_value;
-    }
-
-    private ArrayList finallyList_compute() {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    finallyList_value = finallyList_compute();
+if(isFinal && num == state().boundariesCrossed) finallyList_computed = true;
+    return finallyList_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private ArrayList finallyList_compute() {
     ArrayList list = new ArrayList();
     collectFinally(this, list);
     return list;
   }
-
-    // Declared in DefiniteAssignment.jrag at line 650
- @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
-        Object _parameters = v;
-if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
-        if(isDAafter_Variable_values.containsKey(_parameters)) {
-            return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        boolean isDAafter_Variable_value = isDAafter_compute(v);
-        if(isFinal && num == state().boundariesCrossed)
-            isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
-        return isDAafter_Variable_value;
+  protected java.util.Map isDAafter_Variable_values;
+  /**
+   * @attribute syn
+   * @aspect DA
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:646
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isDAafter(Variable v) {
+    Object _parameters = v;
+    if(isDAafter_Variable_values == null) isDAafter_Variable_values = new java.util.HashMap(4);
+    if(isDAafter_Variable_values.containsKey(_parameters)) {
+      return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-
-    private boolean isDAafter_compute(Variable v) {  return true;  }
-
-    protected java.util.Map isDUafterReachedFinallyBlocks_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 927
- @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafterReachedFinallyBlocks(Variable v) {
-        Object _parameters = v;
-if(isDUafterReachedFinallyBlocks_Variable_values == null) isDUafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
-        if(isDUafterReachedFinallyBlocks_Variable_values.containsKey(_parameters)) {
-            return ((Boolean)isDUafterReachedFinallyBlocks_Variable_values.get(_parameters)).booleanValue();
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        boolean isDUafterReachedFinallyBlocks_Variable_value = isDUafterReachedFinallyBlocks_compute(v);
-        if(isFinal && num == state().boundariesCrossed)
-            isDUafterReachedFinallyBlocks_Variable_values.put(_parameters, Boolean.valueOf(isDUafterReachedFinallyBlocks_Variable_value));
-        return isDUafterReachedFinallyBlocks_Variable_value;
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    boolean isDAafter_Variable_value = isDAafter_compute(v);
+if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+    return isDAafter_Variable_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isDAafter_compute(Variable v) {  return true;  }
+  protected java.util.Map isDUafterReachedFinallyBlocks_Variable_values;
+  /**
+   * @attribute syn
+   * @aspect DU
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:920
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isDUafterReachedFinallyBlocks(Variable v) {
+    Object _parameters = v;
+    if(isDUafterReachedFinallyBlocks_Variable_values == null) isDUafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
+    if(isDUafterReachedFinallyBlocks_Variable_values.containsKey(_parameters)) {
+      return ((Boolean)isDUafterReachedFinallyBlocks_Variable_values.get(_parameters)).booleanValue();
     }
-
-    private boolean isDUafterReachedFinallyBlocks_compute(Variable v) {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    boolean isDUafterReachedFinallyBlocks_Variable_value = isDUafterReachedFinallyBlocks_compute(v);
+if(isFinal && num == state().boundariesCrossed) isDUafterReachedFinallyBlocks_Variable_values.put(_parameters, Boolean.valueOf(isDUafterReachedFinallyBlocks_Variable_value));
+    return isDUafterReachedFinallyBlocks_Variable_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isDUafterReachedFinallyBlocks_compute(Variable v) {
     if(!isDUbefore(v) && finallyList().isEmpty())
       return false;
     for(Iterator iter = finallyList().iterator(); iter.hasNext(); ) {
@@ -272,25 +367,30 @@ if(isDUafterReachedFinallyBlocks_Variable_values == null) isDUafterReachedFinall
     }
     return true;
   }
-
-    protected java.util.Map isDAafterReachedFinallyBlocks_Variable_values;
-    // Declared in DefiniteAssignment.jrag at line 959
- @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafterReachedFinallyBlocks(Variable v) {
-        Object _parameters = v;
-if(isDAafterReachedFinallyBlocks_Variable_values == null) isDAafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
-        if(isDAafterReachedFinallyBlocks_Variable_values.containsKey(_parameters)) {
-            return ((Boolean)isDAafterReachedFinallyBlocks_Variable_values.get(_parameters)).booleanValue();
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        boolean isDAafterReachedFinallyBlocks_Variable_value = isDAafterReachedFinallyBlocks_compute(v);
-        if(isFinal && num == state().boundariesCrossed)
-            isDAafterReachedFinallyBlocks_Variable_values.put(_parameters, Boolean.valueOf(isDAafterReachedFinallyBlocks_Variable_value));
-        return isDAafterReachedFinallyBlocks_Variable_value;
+  protected java.util.Map isDAafterReachedFinallyBlocks_Variable_values;
+  /**
+   * @attribute syn
+   * @aspect DU
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:952
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isDAafterReachedFinallyBlocks(Variable v) {
+    Object _parameters = v;
+    if(isDAafterReachedFinallyBlocks_Variable_values == null) isDAafterReachedFinallyBlocks_Variable_values = new java.util.HashMap(4);
+    if(isDAafterReachedFinallyBlocks_Variable_values.containsKey(_parameters)) {
+      return ((Boolean)isDAafterReachedFinallyBlocks_Variable_values.get(_parameters)).booleanValue();
     }
-
-    private boolean isDAafterReachedFinallyBlocks_compute(Variable v) {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    boolean isDAafterReachedFinallyBlocks_Variable_value = isDAafterReachedFinallyBlocks_compute(v);
+if(isFinal && num == state().boundariesCrossed) isDAafterReachedFinallyBlocks_Variable_values.put(_parameters, Boolean.valueOf(isDAafterReachedFinallyBlocks_Variable_value));
+    return isDAafterReachedFinallyBlocks_Variable_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isDAafterReachedFinallyBlocks_compute(Variable v) {
     if(isDAbefore(v))
       return true;
     if(finallyList().isEmpty())
@@ -302,99 +402,145 @@ if(isDAafterReachedFinallyBlocks_Variable_values == null) isDAafterReachedFinall
     }
     return true;
   }
-
-    // Declared in DefiniteAssignment.jrag at line 1176
- @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
-        Object _parameters = v;
-if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
-        if(isDUafter_Variable_values.containsKey(_parameters)) {
-            return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        boolean isDUafter_Variable_value = isDUafter_compute(v);
-        if(isFinal && num == state().boundariesCrossed)
-            isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
-        return isDUafter_Variable_value;
+  protected java.util.Map isDUafter_Variable_values;
+  /**
+   * @attribute syn
+   * @aspect DU
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1169
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isDUafter(Variable v) {
+    Object _parameters = v;
+    if(isDUafter_Variable_values == null) isDUafter_Variable_values = new java.util.HashMap(4);
+    if(isDUafter_Variable_values.containsKey(_parameters)) {
+      return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-
-    private boolean isDUafter_compute(Variable v) {  return true;  }
-
-    // Declared in UnreachableStatements.jrag at line 105
- @SuppressWarnings({"unchecked", "cast"})     public boolean canCompleteNormally() {
-        if(canCompleteNormally_computed) {
-            return canCompleteNormally_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        canCompleteNormally_value = canCompleteNormally_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            canCompleteNormally_computed = true;
-        return canCompleteNormally_value;
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    boolean isDUafter_Variable_value = isDUafter_compute(v);
+if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+    return isDUafter_Variable_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isDUafter_compute(Variable v) {  return true;  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean canCompleteNormally_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected boolean canCompleteNormally_value;
+  /**
+   * @attribute syn
+   * @aspect UnreachableStatements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:105
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean canCompleteNormally() {
+    if(canCompleteNormally_computed) {
+      return canCompleteNormally_value;
     }
-
-    private boolean canCompleteNormally_compute() {  return false;  }
-
-    protected boolean inSynchronizedBlock_computed = false;
-    protected boolean inSynchronizedBlock_value;
-    // Declared in Statements.jrag at line 250
- @SuppressWarnings({"unchecked", "cast"})     public boolean inSynchronizedBlock() {
-        if(inSynchronizedBlock_computed) {
-            return inSynchronizedBlock_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        inSynchronizedBlock_value = inSynchronizedBlock_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            inSynchronizedBlock_computed = true;
-        return inSynchronizedBlock_value;
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    canCompleteNormally_value = canCompleteNormally_compute();
+if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+    return canCompleteNormally_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean canCompleteNormally_compute() {  return false;  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean inSynchronizedBlock_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected boolean inSynchronizedBlock_value;
+  /**
+   * @attribute syn
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:251
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean inSynchronizedBlock() {
+    if(inSynchronizedBlock_computed) {
+      return inSynchronizedBlock_value;
     }
-
-    private boolean inSynchronizedBlock_compute() {  return !finallyList().isEmpty() && finallyList().iterator().next() instanceof SynchronizedStmt;  }
-
-    protected java.util.Map lookupLabel_String_values;
-    // Declared in BranchTarget.jrag at line 169
- @SuppressWarnings({"unchecked", "cast"})     public LabeledStmt lookupLabel(String name) {
-        Object _parameters = name;
-if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.HashMap(4);
-        if(lookupLabel_String_values.containsKey(_parameters)) {
-            return (LabeledStmt)lookupLabel_String_values.get(_parameters);
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        LabeledStmt lookupLabel_String_value = getParent().Define_LabeledStmt_lookupLabel(this, null, name);
-        if(isFinal && num == state().boundariesCrossed)
-            lookupLabel_String_values.put(_parameters, lookupLabel_String_value);
-        return lookupLabel_String_value;
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    inSynchronizedBlock_value = inSynchronizedBlock_compute();
+if(isFinal && num == state().boundariesCrossed) inSynchronizedBlock_computed = true;
+    return inSynchronizedBlock_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean inSynchronizedBlock_compute() {  return !finallyList().isEmpty() && finallyList().iterator().next() instanceof SynchronizedStmt;  }
+  protected java.util.Map lookupLabel_String_values;
+  /**
+   * @attribute inh
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:169
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public LabeledStmt lookupLabel(String name) {
+    Object _parameters = name;
+    if(lookupLabel_String_values == null) lookupLabel_String_values = new java.util.HashMap(4);
+    if(lookupLabel_String_values.containsKey(_parameters)) {
+      return (LabeledStmt)lookupLabel_String_values.get(_parameters);
     }
-
-    // Declared in NameCheck.jrag at line 360
- @SuppressWarnings({"unchecked", "cast"})     public boolean insideLoop() {
-        ASTNode$State state = state();
-        boolean insideLoop_value = getParent().Define_boolean_insideLoop(this, null);
-        return insideLoop_value;
-    }
-
-    // Declared in NameCheck.jrag at line 369
- @SuppressWarnings({"unchecked", "cast"})     public boolean insideSwitch() {
-        ASTNode$State state = state();
-        boolean insideSwitch_value = getParent().Define_boolean_insideSwitch(this, null);
-        return insideSwitch_value;
-    }
-
-    // Declared in Statements.jrag at line 444
- @SuppressWarnings({"unchecked", "cast"})     public ArrayList exceptionRanges() {
-        ASTNode$State state = state();
-        ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
-        return exceptionRanges_value;
-    }
-
-public ASTNode rewriteTo() {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    LabeledStmt lookupLabel_String_value = getParent().Define_LabeledStmt_lookupLabel(this, null, name);
+if(isFinal && num == state().boundariesCrossed) lookupLabel_String_values.put(_parameters, lookupLabel_String_value);
+    return lookupLabel_String_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:360
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean insideLoop() {
+      ASTNode$State state = state();
+    boolean insideLoop_value = getParent().Define_boolean_insideLoop(this, null);
+    return insideLoop_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:369
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean insideSwitch() {
+      ASTNode$State state = state();
+    boolean insideSwitch_value = getParent().Define_boolean_insideSwitch(this, null);
+    return insideSwitch_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:445
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ArrayList exceptionRanges() {
+      ASTNode$State state = state();
+    ArrayList exceptionRanges_value = getParent().Define_ArrayList_exceptionRanges(this, null);
+    return exceptionRanges_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  public ASTNode rewriteTo() {
     return super.rewriteTo();
-}
-
+  }
 }

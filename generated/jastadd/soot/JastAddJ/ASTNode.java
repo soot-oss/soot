@@ -1,79 +1,129 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
-// Generated with JastAdd II (http://jastadd.cs.lth.se) version R20090610
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
 
+
+// Generated with JastAdd II (http://jastadd.org) version R20110924
+
+/**
+ * @ast node
+ * @declaredat ASTNode.ast:0
+ */
 public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Cloneable, Iterable<T> {
-    public void flushCache() {
-    }
-    public void flushCollectionCache() {
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public ASTNode<T> clone() throws CloneNotSupportedException {
-        ASTNode node = (ASTNode)super.clone();
-        node.in$Circle(false);
-        node.is$Final(false);
-        return node;
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public ASTNode<T> copy() {
+  /**
+   * @apilevel low-level
+   */
+  public void flushCache() {
+  }
+  /**
+   * @apilevel internal
+   */
+  public void flushCollectionCache() {
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ASTNode<T> clone() throws CloneNotSupportedException {
+    ASTNode node = (ASTNode)super.clone();
+    node.in$Circle(false);
+    node.is$Final(false);
+    return node;
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ASTNode<T> copy() {
       try {
-          ASTNode node = (ASTNode)clone();
-          if(children != null) node.children = (ASTNode[])children.clone();
-          return node;
+        ASTNode node = (ASTNode)clone();
+        if(children != null) node.children = (ASTNode[])children.clone();
+        return node;
       } catch (CloneNotSupportedException e) {
       }
       System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
       return null;
+  }
+  /**
+   * @apilevel low-level
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ASTNode<T> fullCopy() {
+    ASTNode res = (ASTNode)copy();
+    for(int i = 0; i < getNumChildNoTransform(); i++) {
+      ASTNode node = getChildNoTransform(i);
+      if(node != null) node = node.fullCopy();
+      res.setChild(node, i);
     }
-     @SuppressWarnings({"unchecked", "cast"})  public ASTNode<T> fullCopy() {
-        ASTNode res = (ASTNode)copy();
-        for(int i = 0; i < getNumChildNoTransform(); i++) {
-          ASTNode node = getChildNoTransform(i);
-          if(node != null) node = node.fullCopy();
-          res.setChild(node, i);
-        }
-        return res;
+    return res;
     }
-    // Declared in AccessControl.jrag at line 125
-
-    
+  /**
+   * @ast method 
+   * @aspect AccessControl
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AccessControl.jrag:125
+   */
   public void accessControl() {
   }
-
-    // Declared in AnonymousClasses.jrag at line 190
-
-
+  /**
+   * @ast method 
+   * @aspect AnonymousClasses
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:192
+   */
   protected void collectExceptions(Collection c, ASTNode target) {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).collectExceptions(c, target);
   }
-
-    // Declared in BranchTarget.jrag at line 45
-
-  
+  /**
+   * @ast method 
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:45
+   */
   public void collectBranches(Collection c) {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).collectBranches(c);
   }
-
-    // Declared in BranchTarget.jrag at line 151
-
+  /**
+   * @ast method 
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:151
+   */
   public Stmt branchTarget(Stmt branchStmt) {
     if(getParent() != null)
       return getParent().branchTarget(branchStmt);
     else
       return null;
   }
-
-    // Declared in BranchTarget.jrag at line 191
-
+  /**
+   * @ast method 
+   * @aspect BranchTarget
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:191
+   */
   public void collectFinally(Stmt branchStmt, ArrayList list) {
     if(getParent() != null)
       getParent().collectFinally(branchStmt, list);
   }
-
-    // Declared in DeclareBeforeUse.jrag at line 13
-
+  /**
+   * @ast method 
+   * @aspect DeclareBeforeUse
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DeclareBeforeUse.jrag:13
+   */
   public int varChildIndex(Block b) {
     ASTNode node = this;
     while(node.getParent().getParent() != b) {
@@ -81,10 +131,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
     return b.getStmtListNoTransform().getIndexOfChild(node);
   }
-
-    // Declared in DeclareBeforeUse.jrag at line 31
-
-
+  /**
+   * @ast method 
+   * @aspect DeclareBeforeUse
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DeclareBeforeUse.jrag:31
+   */
   public int varChildIndex(TypeDecl t) {
     ASTNode node = this;
     while(node != null && node.getParent() != null && node.getParent().getParent() != t) {
@@ -94,27 +145,29 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       return -1;
     return t.getBodyDeclListNoTransform().getIndexOfChild(node);
   }
-
-    // Declared in DefiniteAssignment.jrag at line 12
-
-
+  /**
+   * @ast method 
+   * @aspect DefiniteAssignment
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:12
+   */
   public void definiteAssignment() {
   }
-
-    // Declared in DefiniteAssignment.jrag at line 453
-
-
-  // 16.2.2 9th, 10th bullet
+  /**
+   * @ast method 
+   * @aspect DA
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:449
+   */
   protected boolean checkDUeverywhere(Variable v) {
     for(int i = 0; i < getNumChild(); i++)
       if(!getChild(i).checkDUeverywhere(v))
         return false;
     return true;
   }
-
-    // Declared in DefiniteAssignment.jrag at line 563
-
-
+  /**
+   * @ast method 
+   * @aspect DA
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:559
+   */
   protected boolean isDescendantTo(ASTNode node) {
     if(this == node)
       return true;
@@ -122,10 +175,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       return false;
     return getParent().isDescendantTo(node);
   }
-
-    // Declared in ErrorCheck.jrag at line 12
-
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:12
+   */
   protected String sourceFile() {
     ASTNode node = this;
     while(node != null && !(node instanceof CompilationUnit))
@@ -135,66 +189,79 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     CompilationUnit u = (CompilationUnit)node;
     return u.relativeName();
   }
-
-    // Declared in ErrorCheck.jrag at line 34
-
-
-  // set start and end position to the same as the argument and return self
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:34
+   */
   public ASTNode setLocation(ASTNode node) {
     setStart(node.getStart());
     setEnd(node.getEnd());
     return this;
   }
-
-    // Declared in ErrorCheck.jrag at line 40
-
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:40
+   */
   public ASTNode setStart(int i) {
     start = i;
     return this;
   }
-
-    // Declared in ErrorCheck.jrag at line 44
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:44
+   */
   public int start() {
     return start;
   }
-
-    // Declared in ErrorCheck.jrag at line 47
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:47
+   */
   public ASTNode setEnd(int i) {
     end = i;
     return this;
   }
-
-    // Declared in ErrorCheck.jrag at line 51
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:51
+   */
   public int end() {
     return end;
   }
-
-    // Declared in ErrorCheck.jrag at line 55
-
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:55
+   */
   public String location() {
     return "" + lineNumber();
   }
-
-    // Declared in ErrorCheck.jrag at line 58
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:58
+   */
   public String errorPrefix() {
     return sourceFile() + ":" + location() + ":\n" + "  *** Semantic Error: ";
   }
-
-    // Declared in ErrorCheck.jrag at line 61
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:61
+   */
   public String warningPrefix() {
     return sourceFile() + ":" + location() + ":\n" + "  *** WARNING: ";
   }
-
-    // Declared in ErrorCheck.jrag at line 171
-
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:171
+   */
   public void error(String s) {
     ASTNode node = this;
     while(node != null && !(node instanceof CompilationUnit))
@@ -210,10 +277,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     else
       cu.errors.add(new Problem(sourceFile(), s, lineNumber(), Problem.Severity.ERROR, Problem.Kind.SEMANTIC));
   }
-
-    // Declared in ErrorCheck.jrag at line 187
-
-
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:187
+   */
   public void warning(String s) {
     ASTNode node = this;
     while(node != null && !(node instanceof CompilationUnit))
@@ -221,10 +289,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     CompilationUnit cu = (CompilationUnit)node;
     cu.warnings.add(new Problem(sourceFile(), "WARNING: " + s, lineNumber(), Problem.Severity.WARNING));
   }
-
-    // Declared in ErrorCheck.jrag at line 195
-
-  
+  /**
+   * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:195
+   */
   public void collectErrors() {
     nameCheck();
     typeCheck();
@@ -237,25 +306,29 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChild(i).collectErrors();
     }
   }
-
-    // Declared in ExceptionHandling.jrag at line 40
-
-  
+  /**
+   * @ast method 
+   * @aspect ExceptionHandling
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:40
+   */
   public void exceptionHandling() {
   }
-
-    // Declared in ExceptionHandling.jrag at line 196
-
-
+  /**
+   * @ast method 
+   * @aspect ExceptionHandling
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:210
+   */
   protected boolean reachedException(TypeDecl type) {
     for(int i = 0; i < getNumChild(); i++)
       if(getChild(i).reachedException(type))
         return true;
     return false;
   }
-
-    // Declared in LookupMethod.jrag at line 54
-
+  /**
+   * @ast method 
+   * @aspect LookupMethod
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:54
+   */
   public static Collection removeInstanceMethods(Collection c) {
     c = new LinkedList(c);
     for(Iterator iter = c.iterator(); iter.hasNext(); ) {
@@ -265,18 +338,21 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
     return c;
   }
-
-    // Declared in LookupMethod.jrag at line 348
-
+  /**
+   * @ast method 
+   * @aspect MemberMethods
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:348
+   */
   protected static void putSimpleSetElement(HashMap map, Object key, Object value) {
     SimpleSet set = (SimpleSet)map.get(key);
     if(set == null) set = SimpleSet.emptySet;
     map.put(key, set.add(value));
   }
-
-    // Declared in LookupVariable.jrag at line 177
-
-
+  /**
+   * @ast method 
+   * @aspect VariableScope
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:179
+   */
   public SimpleSet removeInstanceVariables(SimpleSet oldSet) {
     SimpleSet newSet = SimpleSet.emptySet;
     for(Iterator iter = oldSet.iterator(); iter.hasNext(); ) {
@@ -286,63 +362,71 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
     return newSet;
   }
-
-    // Declared in Modifiers.jrag at line 11
-
+  /**
+   * @ast method 
+   * @aspect Modifiers
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:11
+   */
   void checkModifiers() {
   }
-
-    // Declared in NameCheck.jrag at line 11
-
+  /**
+   * @ast method 
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:11
+   */
   public void nameCheck() {
   }
-
-    // Declared in NameCheck.jrag at line 14
-
-
+  /**
+   * @ast method 
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:14
+   */
   public TypeDecl extractSingleType(SimpleSet c) {
     if(c.size() != 1)
       return null;
     return (TypeDecl)c.iterator().next();
   }
-
-    // Declared in Options.jadd at line 14
-
+  /**
+   * @ast method 
+   * @aspect AddOptionsToProgram
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Options.jadd:14
+   */
   public Options options() {
     return state().options;
   }
-
-    // Declared in PrettyPrint.jadd at line 13
-
-  // Default output
-  
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:13
+   */
   public String toString() {
     StringBuffer s = new StringBuffer();
     toString(s);
     return s.toString().trim();
   }
-
-    // Declared in PrettyPrint.jadd at line 19
-
-  
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:19
+   */
   public void toString(StringBuffer s) {
     throw new Error("Operation toString(StringBuffer s) not implemented for " + getClass().getName());
   }
-
-    // Declared in PrettyPrint.jadd at line 769
-
-
-  // dump the AST to standard output
-
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:770
+   */
   public String dumpTree() {
     StringBuffer s = new StringBuffer();
     dumpTree(s, 0);
     return s.toString();
   }
-
-    // Declared in PrettyPrint.jadd at line 775
-
-
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:776
+   */
   public void dumpTree(StringBuffer s, int j) {
     for(int i = 0; i < j; i++) {
       s.append("  ");
@@ -351,18 +435,21 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).dumpTree(s, j + 1);
   }
-
-    // Declared in PrettyPrint.jadd at line 784
-
-
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:785
+   */
   public String dumpTreeNoRewrite() {
     StringBuffer s = new StringBuffer();
     dumpTreeNoRewrite(s, 0);
     return s.toString();
   }
-
-    // Declared in PrettyPrint.jadd at line 789
-
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:790
+   */
   protected void dumpTreeNoRewrite(StringBuffer s, int indent) {
     for(int i = 0; i < indent; i++)
       s.append("  ");
@@ -372,35 +459,43 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       getChildNoTransform(i).dumpTreeNoRewrite(s, indent+1);
     }
   }
-
-    // Declared in PrimitiveTypes.jrag at line 11
-
+  /**
+   * @ast method 
+   * @aspect PrimitiveTypes
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrimitiveTypes.jrag:11
+   */
+  
   protected static final String PRIMITIVE_PACKAGE_NAME = "@primitive";
-
-    // Declared in TypeCheck.jrag at line 12
-
+  /**
+   * @ast method 
+   * @aspect TypeCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:12
+   */
   public void typeCheck() {
   }
-
-    // Declared in UnreachableStatements.jrag at line 12
-
-
+  /**
+   * @ast method 
+   * @aspect UnreachableStatements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:12
+   */
   void checkUnreachableStmt() {
   }
-
-    // Declared in VariableDeclaration.jrag at line 157
-
-
+  /**
+   * @ast method 
+   * @aspect VariableDeclarationTransformation
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:134
+   */
   public void clearLocations() {
     setStart(0);
     setEnd(0);
     for(int i = 0; i < getNumChildNoTransform(); i++)
       getChildNoTransform(i).clearLocations();
   }
-
-    // Declared in Enums.jrag at line 128
-
-
+  /**
+   * @ast method 
+   * @aspect Enums
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:131
+   */
   protected void transformEnumConstructors() {
     for(int i = 0; i < getNumChildNoTransform(); i++) {
       ASTNode child = getChildNoTransform(i);
@@ -408,108 +503,123 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
         child.transformEnumConstructors();
     }
   }
-
-    // Declared in Enums.jrag at line 436
-
-  
-  /*
-    14) It is a compile-time error to reference a static field of an enum type that
-    is not a compile-time constant (\ufffd15.28) from constructors, instance
-    initializer blocks, or instance variable initializer expressions of that
-    type.
-  */
-
+  /**
+   * @ast method 
+   * @aspect Enums
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:444
+   */
   protected void checkEnum(EnumDecl enumDecl) {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).checkEnum(enumDecl);
   }
-
-    // Declared in InnerClasses.jrag at line 155
-
-
+  /**
+   * @ast method 
+   * @aspect FlushCaches
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/FlushCaches.jrag:3
+   */
+  public void flushCaches() {
+	    flushCache();
+	    for(int i = 0; i < getNumChild(); i++)
+	      getChild(i).flushCaches();
+	  }
+  /**
+   * @ast method 
+   * @aspect InnerClasses
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:155
+   */
   public void collectEnclosingVariables(HashSet set, TypeDecl typeDecl) {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).collectEnclosingVariables(set, typeDecl);
   }
-
-    // Declared in Transformations.jrag at line 12
-
-  // generic traversal of the tree
+  /**
+   * @ast method 
+   * @aspect Transformations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Transformations.jrag:12
+   */
   public void transformation() {
     for(int i = 0; i < getNumChild(); i++) {
         getChild(i).transformation();
     }
   }
-
-    // Declared in Transformations.jrag at line 209
-
-  
-  // imperative transformation of the AST
-  // syntax ASTNode.replace(sourcenode).with(destnode)
-  // this syntax is used to allow for building the destnode using the sourcenode
+  /**
+   * @ast method 
+   * @aspect Transformations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Transformations.jrag:209
+   */
   protected ASTNode replace(ASTNode node) {
     state().replacePos = node.getParent().getIndexOfChild(node);
     node.getParent().in$Circle(true);
     return node.getParent();
   }
-
-    // Declared in Transformations.jrag at line 214
-
+  /**
+   * @ast method 
+   * @aspect Transformations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Transformations.jrag:214
+   */
   protected ASTNode with(ASTNode node) {
    ((ASTNode)this).setChild(node, state().replacePos);
    in$Circle(false);
    return node;
   }
-
-    // Declared in EmitJimple.jrag at line 60
-
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:60
+   */
   public void jimplify1phase1() {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).jimplify1phase1();
   }
-
-    // Declared in EmitJimple.jrag at line 137
-
-  
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:137
+   */
   public void jimplify1phase2() {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).jimplify1phase2();
   }
-
-    // Declared in EmitJimple.jrag at line 366
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:366
+   */
   public void jimplify2() {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).jimplify2();
   }
-
-    // Declared in EmitJimple.jrag at line 371
-
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:371
+   */
   public void jimplify2(Body b) {
     for(int i = 0; i < getNumChild(); i++)
       getChild(i).jimplify2(b);
   }
-
-    // Declared in EmitJimple.jrag at line 405
-
-
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:405
+   */
   public soot.Immediate asImmediate(Body b, soot.Value v) {
     if(v instanceof soot.Immediate) return (soot.Immediate)v;
     return b.newTemp(v);
   }
-
-    // Declared in EmitJimple.jrag at line 409
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:409
+   */
   public soot.Local asLocal(Body b, soot.Value v) {
     if(v instanceof soot.Local) return (soot.Local)v;
     return b.newTemp(v);
   }
-
-    // Declared in EmitJimple.jrag at line 413
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:413
+   */
   public soot.Local asLocal(Body b, soot.Value v, Type t) {
     if(v instanceof soot.Local) return (soot.Local)v;
     soot.Local local = b.newTemp(t);
@@ -517,9 +627,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     b.copyLocation(v, local);
     return local;
   }
-
-    // Declared in EmitJimple.jrag at line 420
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:420
+   */
   public soot.Value asRValue(Body b, soot.Value v) {
     if(v instanceof soot.Local) return v;
     if(v instanceof soot.jimple.Constant) return v;
@@ -527,23 +639,26 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(v instanceof soot.jimple.Expr) return v;
     throw new Error("Need to convert " + v.getClass().getName() + " to RValue");
   }
-
-    // Declared in EmitJimple.jrag at line 879
-
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:879
+   */
   protected soot.jimple.Stmt newLabel() {
     return soot.jimple.Jimple.v().newNopStmt();
   }
-
-    // Declared in EmitJimple.jrag at line 959
-
-
+  /**
+   * @ast method 
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:959
+   */
   public void addAttributes() {
   }
-
-    // Declared in Expressions.jrag at line 718
-
-
+  /**
+   * @ast method 
+   * @aspect Expressions
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Expressions.jrag:718
+   */
   public static soot.Value emitConstant(Constant constant) {
     if(constant instanceof Constant.ConstantInt)
       return IntType.emitConstant(constant.intValue());
@@ -561,10 +676,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       return soot.jimple.StringConstant.v(constant.stringValue());
     throw new Error("Unexpected constant");
   }
-
-    // Declared in Statements.jrag at line 255
-
-
+  /**
+   * @ast method 
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:256
+   */
   public void endExceptionRange(Body b, ArrayList list) {
     if(list != null) {
       soot.jimple.Stmt label = newLabel();
@@ -573,92 +689,146 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       //list.add(b.previousStmt());
     }
   }
-
-    // Declared in Statements.jrag at line 263
-
+  /**
+   * @ast method 
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:264
+   */
   public void beginExceptionRange(Body b, ArrayList list) {
     if(list != null)
       b.addNextStmt(list);
   }
-
-    // Declared in EmitJimpleRefinements.jrag at line 197
-
-
+  /**
+   * @ast method 
+   * @aspect EmitJimpleRefinements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/SootJastAddJ/EmitJimpleRefinements.jrag:197
+   */
   public void collectTypesToHierarchy(Collection<Type> set) {
 	 for(int i = 0; i < getNumChild(); i++)
 	  getChild(i).collectTypesToHierarchy(set);
   }
-
-    // Declared in EmitJimpleRefinements.jrag at line 215
-
-	
+  /**
+   * @ast method 
+   * @aspect EmitJimpleRefinements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/SootJastAddJ/EmitJimpleRefinements.jrag:215
+   */
   public void collectTypesToSignatures(Collection<Type> set) {
 	 for(int i = 0; i < getNumChild(); i++)
 	  getChild(i).collectTypesToSignatures(set);
   }
-
-    // Declared in ASTNode.ast at line 3
-    // Declared in ASTNode.ast line 0
-
-    public ASTNode() {
-        super();
-
-
-    }
-
-    // Declared in ASTNode.ast at line 9
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:1
+   */
+  public ASTNode() {
+    super();
 
 
-   public static final boolean generatedWithCircularEnabled = true;
+  }
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:10
+   */
+  
 
-    // Declared in ASTNode.ast at line 10
-
-   public static final boolean generatedWithCacheCycle = false;
-
-    // Declared in ASTNode.ast at line 11
-
-   public static final boolean generatedWithComponentCheck = false;
-
-    // Declared in ASTNode.ast at line 12
-
-   protected static ASTNode$State state = new ASTNode$State();
-
-    // Declared in ASTNode.ast at line 13
-
-   public final ASTNode$State state() { return state; }
-
-    // Declared in ASTNode.ast at line 14
-
+  /**
+   * @apilevel internal
+   */
+  public static final boolean generatedWithCircularEnabled = true;
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:14
+   */
+  
+  /**
+   * @apilevel internal
+   */
+  public static final boolean generatedWithCacheCycle = false;
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:18
+   */
+  
+  /**
+   * @apilevel internal
+   */
+  public static final boolean generatedWithComponentCheck = false;
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:22
+   */
+  
+  /**
+   * @apilevel internal
+   */
+  protected static ASTNode$State state = new ASTNode$State();
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:26
+   */
+  public final ASTNode$State state() { return state; }
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:30
+   */
+  
+  /**
+   * @apilevel internal
+   */
   public boolean in$Circle = false;
-
-    // Declared in ASTNode.ast at line 15
-
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:34
+   */
   public boolean in$Circle() { return in$Circle; }
-
-    // Declared in ASTNode.ast at line 16
-
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:38
+   */
   public void in$Circle(boolean b) { in$Circle = b; }
-
-    // Declared in ASTNode.ast at line 17
-
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:42
+   */
+  
+  /**
+   * @apilevel internal
+   */
   public boolean is$Final = false;
-
-    // Declared in ASTNode.ast at line 18
-
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:46
+   */
   public boolean is$Final() { return is$Final; }
-
-    // Declared in ASTNode.ast at line 19
-
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:50
+   */
   public void is$Final(boolean b) { is$Final = b; }
-
-    // Declared in ASTNode.ast at line 20
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:54
+   */
   @SuppressWarnings("cast") public T getChild(int i) {
     return (T)ASTNode.getChild(this, i);
   }
-
-    // Declared in ASTNode.ast at line 23
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:60
+   */
   public static ASTNode getChild(ASTNode that, int i) {
     ASTNode node = that.getChildNoTransform(i);
     if(node.is$Final()) return node;
@@ -687,13 +857,21 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     else if(that.is$Final() != node.is$Final()) that.state().boundariesCrossed++;
     return node;
   }
-
-    // Declared in ASTNode.ast at line 51
-
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:91
+   */
+  
+  /**
+   * @apilevel internal
+   */
   private int childIndex;
-
-    // Declared in ASTNode.ast at line 52
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:95
+   */
   public int getIndexOfChild(ASTNode node) {
     if(node != null && node.childIndex < getNumChildNoTransform() && node == getChildNoTransform(node.childIndex))
       return node.childIndex;
@@ -704,48 +882,66 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       }
     return -1;
   }
-
-    // Declared in ASTNode.ast at line 63
-
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:109
+   */
   public void addChild(T node) {
     setChild(node, getNumChildNoTransform());
   }
-
-    // Declared in ASTNode.ast at line 66
-
-  @SuppressWarnings("cast") public final T getChildNoTransform(int i) {
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:115
+   */
+  @SuppressWarnings("cast")
+  public final T getChildNoTransform(int i) {
     return (T)children[i];
   }
-
-    // Declared in ASTNode.ast at line 69
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:122
+   */
+  
+  /**
+   * @apilevel low-level
+   */
   protected int numChildren;
-
-    // Declared in ASTNode.ast at line 70
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:126
+   */
   protected int numChildren() {
     return numChildren;
   }
-
-    // Declared in ASTNode.ast at line 73
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:132
+   */
   public int getNumChild() {
     return numChildren();
   }
-
-    // Declared in ASTNode.ast at line 76
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:138
+   */
   public final int getNumChildNoTransform() {
     return numChildren();
   }
-
-    // Declared in ASTNode.ast at line 79
-
-  public void setChild(T node, int i) {
-    if(children == null) {
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:144
+   */
+  public void setChild(ASTNode node, int i) {
+  if(children == null) {
       children = new ASTNode[i + 1];
-    } else if (i >= children.length) {
+  } else if (i >= children.length) {
       ASTNode c[] = new ASTNode[i << 1];
       System.arraycopy(children, 0, c, 0, children.length);
       children = c;
@@ -754,10 +950,12 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(i >= numChildren) numChildren = i+1;
     if(node != null) { node.setParent(this); node.childIndex = i; }
   }
-
-    // Declared in ASTNode.ast at line 91
-
-  public void insertChild(T node, int i) {
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:159
+   */
+  public void insertChild(ASTNode node, int i) {
     if(children == null) {
       children = new ASTNode[i + 1];
       children[i] = node;
@@ -772,9 +970,11 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     numChildren++;
     if(node != null) { node.setParent(this); node.childIndex = i; }
   }
-
-    // Declared in ASTNode.ast at line 106
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:177
+   */
   public void removeChild(int i) {
     if(children != null) {
       ASTNode child = (ASTNode)children[i];
@@ -786,249 +986,304 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       numChildren--;
     }
   }
-
-    // Declared in ASTNode.ast at line 117
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:191
+   */
   public ASTNode getParent() {
     if(parent != null && ((ASTNode)parent).is$Final() != is$Final()) {
       state().boundariesCrossed++;
     }
     return (ASTNode)parent;
   }
-
-    // Declared in ASTNode.ast at line 123
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:200
+   */
   public void setParent(ASTNode node) {
     parent = node;
   }
-
-    // Declared in ASTNode.ast at line 126
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:206
+   */
+  
+  /**
+   * @apilevel low-level
+   */
   protected ASTNode parent;
-
-    // Declared in ASTNode.ast at line 127
-
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:210
+   */
+  
+  /**
+   * @apilevel low-level
+   */
   protected ASTNode[] children;
-
-    // Declared in ASTNode.ast at line 129
-
-    protected boolean duringLookupConstructor() {
-        if(state().duringLookupConstructor == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:212
+   */
+  protected boolean duringLookupConstructor() {
+    if(state().duringLookupConstructor == 0) {
+      return false;
     }
-
-    // Declared in ASTNode.ast at line 140
-
-    protected boolean duringBoundNames() {
-        if(state().duringBoundNames == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
     }
-
-    // Declared in ASTNode.ast at line 151
-
-    protected boolean duringResolveAmbiguousNames() {
-        if(state().duringResolveAmbiguousNames == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:223
+   */
+  protected boolean duringBoundNames() {
+    if(state().duringBoundNames == 0) {
+      return false;
     }
-
-    // Declared in ASTNode.ast at line 162
-
-    protected boolean duringSyntacticClassification() {
-        if(state().duringSyntacticClassification == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
     }
-
-    // Declared in ASTNode.ast at line 173
-
-    protected boolean duringAnonymousClasses() {
-        if(state().duringAnonymousClasses == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:234
+   */
+  protected boolean duringResolveAmbiguousNames() {
+    if(state().duringResolveAmbiguousNames == 0) {
+      return false;
     }
-
-    // Declared in ASTNode.ast at line 184
-
-    protected boolean duringVariableDeclaration() {
-        if(state().duringVariableDeclaration == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
     }
-
-    // Declared in ASTNode.ast at line 195
-
-    protected boolean duringConstantExpression() {
-        if(state().duringConstantExpression == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:245
+   */
+  protected boolean duringSyntacticClassification() {
+    if(state().duringSyntacticClassification == 0) {
+      return false;
     }
-
-    // Declared in ASTNode.ast at line 206
-
-    protected boolean duringDefiniteAssignment() {
-        if(state().duringDefiniteAssignment == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
     }
-
-    // Declared in ASTNode.ast at line 217
-
-    protected boolean duringAnnotations() {
-        if(state().duringAnnotations == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:256
+   */
+  protected boolean duringAnonymousClasses() {
+    if(state().duringAnonymousClasses == 0) {
+      return false;
     }
-
-    // Declared in ASTNode.ast at line 228
-
-    protected boolean duringEnums() {
-        if(state().duringEnums == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
     }
-
-    // Declared in ASTNode.ast at line 239
-
-    protected boolean duringGenericTypeVariables() {
-        if(state().duringGenericTypeVariables == 0) {
-            return false;
-        }
-        else {
-            state().pop();
-            state().push(ASTNode$State.REWRITE_INTERRUPT);
-            return true;
-        }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:267
+   */
+  protected boolean duringVariableDeclaration() {
+    if(state().duringVariableDeclaration == 0) {
+      return false;
     }
-
-    // Declared in ASTNode.ast at line 299
-
-    public java.util.Iterator<T> iterator() {
-        return new java.util.Iterator<T>() {
-            private int counter = 0;
-            public boolean hasNext() {
-                return counter < getNumChild();
-            }
-            @SuppressWarnings("unchecked") public T next() {
-                if(hasNext())
-                    return (T)getChild(counter++);
-                else
-                    return null;
-            }
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
     }
-
-    // Declared in ASTNode.ast at line 316
-
-    public boolean mayHaveRewrite() {
-        return false;
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:278
+   */
+  protected boolean duringConstantExpression() {
+    if(state().duringConstantExpression == 0) {
+      return false;
     }
-
-    // Declared in DefiniteAssignment.jrag at line 1202
- @SuppressWarnings({"unchecked", "cast"})     public boolean unassignedEverywhere(Variable v, TryStmt stmt) {
-        ASTNode$State state = state();
-        boolean unassignedEverywhere_Variable_TryStmt_value = unassignedEverywhere_compute(v, stmt);
-        return unassignedEverywhere_Variable_TryStmt_value;
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
     }
-
-    private boolean unassignedEverywhere_compute(Variable v, TryStmt stmt) {
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:289
+   */
+  protected boolean duringDefiniteAssignment() {
+    if(state().duringDefiniteAssignment == 0) {
+      return false;
+    }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
+    }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:300
+   */
+  protected boolean duringAnnotations() {
+    if(state().duringAnnotations == 0) {
+      return false;
+    }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
+    }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:311
+   */
+  protected boolean duringEnums() {
+    if(state().duringEnums == 0) {
+      return false;
+    }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
+    }
+  }
+  /**
+   * @ast method 
+   * @declaredat ASTNode.ast:322
+   */
+  protected boolean duringGenericTypeVariables() {
+    if(state().duringGenericTypeVariables == 0) {
+      return false;
+    }
+    else {
+      state().pop();
+      state().push(ASTNode$State.REWRITE_INTERRUPT);
+      return true;
+    }
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat ASTNode.ast:388
+   */
+  public java.util.Iterator<T> iterator() {
+  return new java.util.Iterator<T>() {
+      private int counter = 0;
+      public boolean hasNext() {
+        return counter < getNumChild();
+      }
+      @SuppressWarnings("unchecked") public T next() {
+        if(hasNext())
+          return (T)getChild(counter++);
+        else
+          return null;
+      }
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+  };
+  }
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat ASTNode.ast:408
+   */
+  public boolean mayHaveRewrite() {
+    return false;
+  }
+  /**
+   * @attribute syn
+   * @aspect DU
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1195
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean unassignedEverywhere(Variable v, TryStmt stmt) {
+      ASTNode$State state = state();
+    boolean unassignedEverywhere_Variable_TryStmt_value = unassignedEverywhere_compute(v, stmt);
+    return unassignedEverywhere_Variable_TryStmt_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean unassignedEverywhere_compute(Variable v, TryStmt stmt) {
     for(int i = 0; i < getNumChild(); i++) {
       if(!getChild(i).unassignedEverywhere(v, stmt))
         return false;
     }
     return true;
   }
-
-    // Declared in ErrorCheck.jrag at line 22
- @SuppressWarnings({"unchecked", "cast"})     public int lineNumber() {
-        ASTNode$State state = state();
-        int lineNumber_value = lineNumber_compute();
-        return lineNumber_value;
-    }
-
-    private int lineNumber_compute() {
+  /**
+   * @attribute syn
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:22
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public int lineNumber() {
+      ASTNode$State state = state();
+    int lineNumber_value = lineNumber_compute();
+    return lineNumber_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private int lineNumber_compute() {
     ASTNode n = this;
     while(n.getParent() != null && n.getStart() == 0) {
       n = n.getParent();
     }
     return getLine(n.getStart());
   }
-
-    // Declared in PrettyPrint.jadd at line 743
- @SuppressWarnings({"unchecked", "cast"})     public String indent() {
-        ASTNode$State state = state();
-        String indent_value = indent_compute();
-        return indent_value;
-    }
-
-    private String indent_compute() {
+  /**
+   * @attribute syn
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:744
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public String indent() {
+      ASTNode$State state = state();
+    String indent_value = indent_compute();
+    return indent_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private String indent_compute() {
     String indent = extractIndent();
     return indent.startsWith("\n") ? indent : ("\n" + indent);
   }
-
-    // Declared in PrettyPrint.jadd at line 748
- @SuppressWarnings({"unchecked", "cast"})     public String extractIndent() {
-        ASTNode$State state = state();
-        String extractIndent_value = extractIndent_compute();
-        return extractIndent_value;
-    }
-
-    private String extractIndent_compute() {
+  /**
+   * @attribute syn
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:749
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public String extractIndent() {
+      ASTNode$State state = state();
+    String extractIndent_value = extractIndent_compute();
+    return extractIndent_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private String extractIndent_compute() {
     if(getParent() == null)
       return "";
     String indent = getParent().extractIndent();
@@ -1036,378 +1291,712 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       indent += "  ";
     return indent;
   }
-
-    // Declared in PrettyPrint.jadd at line 757
- @SuppressWarnings({"unchecked", "cast"})     public boolean addsIndentationLevel() {
-        ASTNode$State state = state();
-        boolean addsIndentationLevel_value = addsIndentationLevel_compute();
-        return addsIndentationLevel_value;
-    }
-
-    private boolean addsIndentationLevel_compute() {  return false;  }
-
-    // Declared in PrettyPrint.jadd at line 799
- @SuppressWarnings({"unchecked", "cast"})     public String dumpString() {
-        ASTNode$State state = state();
-        String dumpString_value = dumpString_compute();
-        return dumpString_value;
-    }
-
-    private String dumpString_compute() {  return getClass().getName();  }
-
-    // Declared in Generics.jrag at line 901
- @SuppressWarnings({"unchecked", "cast"})     public boolean usesTypeVariable() {
-        ASTNode$State state = state();
-        boolean usesTypeVariable_value = usesTypeVariable_compute();
-        return usesTypeVariable_value;
-    }
-
-    private boolean usesTypeVariable_compute() {
+  /**
+   * @attribute syn
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:758
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean addsIndentationLevel() {
+      ASTNode$State state = state();
+    boolean addsIndentationLevel_value = addsIndentationLevel_compute();
+    return addsIndentationLevel_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean addsIndentationLevel_compute() {  return false;  }
+  /**
+   * @attribute syn
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:800
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public String dumpString() {
+      ASTNode$State state = state();
+    String dumpString_value = dumpString_compute();
+    return dumpString_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private String dumpString_compute() {  return getClass().getName();  }
+  /**
+   * @attribute syn
+   * @aspect LookupParTypeDecl
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:901
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean usesTypeVariable() {
+      ASTNode$State state = state();
+    boolean usesTypeVariable_value = usesTypeVariable_compute();
+    return usesTypeVariable_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean usesTypeVariable_compute() {
     for(int i = 0; i < getNumChild(); i++)
       if(getChild(i).usesTypeVariable())
         return true;
     return false;
   }
-
-    // Declared in InnerClasses.jrag at line 85
- @SuppressWarnings({"unchecked", "cast"})     public boolean isStringAdd() {
-        ASTNode$State state = state();
-        boolean isStringAdd_value = isStringAdd_compute();
-        return isStringAdd_value;
-    }
-
-    private boolean isStringAdd_compute() {  return false;  }
-
-    // Declared in BooleanExpressions.jrag at line 21
- @SuppressWarnings({"unchecked", "cast"})     public boolean definesLabel() {
-        ASTNode$State state = state();
-        boolean definesLabel_value = definesLabel_compute();
-        return definesLabel_value;
-    }
-
-    private boolean definesLabel_compute() {  return false;  }
-
-public ASTNode rewriteTo() {
+  /**
+   * @attribute syn
+   * @aspect InnerClasses
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:85
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isStringAdd() {
+      ASTNode$State state = state();
+    boolean isStringAdd_value = isStringAdd_compute();
+    return isStringAdd_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isStringAdd_compute() {  return false;  }
+  /**
+   * @attribute syn
+   * @aspect BooleanExpressions
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:21
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean definesLabel() {
+      ASTNode$State state = state();
+    boolean definesLabel_value = definesLabel_compute();
+    return definesLabel_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean definesLabel_compute() {  return false;  }
+  /**
+   * @apilevel internal
+   */
+  public ASTNode rewriteTo() {
     if(state().peek() == ASTNode$State.REWRITE_CHANGE) {
-        state().pop();
-        state().push(ASTNode$State.REWRITE_NOCHANGE);
+      state().pop();
+      state().push(ASTNode$State.REWRITE_NOCHANGE);
     }
     return this;
-}
-
-    public TypeDecl Define_TypeDecl_superType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_superType(this, caller);
-    }
-    public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_componentType(this, caller);
-    }
-    public LabeledStmt Define_LabeledStmt_lookupLabel(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_LabeledStmt_lookupLabel(this, caller, name);
-    }
-    public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isDest(this, caller);
-    }
-    public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isSource(this, caller);
-    }
-    public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isIncOrDec(this, caller);
-    }
-    public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-        return getParent().Define_boolean_isDAbefore(this, caller, v);
-    }
-    public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-        return getParent().Define_boolean_isDUbefore(this, caller, v);
-    }
-    public TypeDecl Define_TypeDecl_typeException(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeException(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeRuntimeException(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeRuntimeException(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeError(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeError(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeNullPointerException(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeNullPointerException(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeThrowable(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeThrowable(this, caller);
-    }
-    public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
-        return getParent().Define_boolean_handlesException(this, caller, exceptionType);
-    }
-    public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
-        return getParent().Define_Collection_lookupConstructor(this, caller);
-    }
-    public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
-        return getParent().Define_Collection_lookupSuperConstructor(this, caller);
-    }
-    public Expr Define_Expr_nestedScope(ASTNode caller, ASTNode child) {
-        return getParent().Define_Expr_nestedScope(this, caller);
-    }
-    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_Collection_lookupMethod(this, caller, name);
-    }
-    public TypeDecl Define_TypeDecl_typeObject(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeObject(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeCloneable(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeCloneable(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeSerializable(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeSerializable(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeBoolean(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeBoolean(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeByte(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeByte(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeShort(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeShort(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeChar(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeChar(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeInt(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeInt(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeLong(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeLong(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeFloat(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeFloat(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeDouble(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeDouble(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeString(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeString(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeVoid(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeVoid(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeNull(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeNull(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_unknownType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_unknownType(this, caller);
-    }
-    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
-        return getParent().Define_boolean_hasPackage(this, caller, packageName);
-    }
-    public TypeDecl Define_TypeDecl_lookupType(ASTNode caller, ASTNode child, String packageName, String typeName) {
-        return getParent().Define_TypeDecl_lookupType(this, caller, packageName, typeName);
-    }
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
-    }
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-    public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBePublic(this, caller);
-    }
-    public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeProtected(this, caller);
-    }
-    public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBePrivate(this, caller);
-    }
-    public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeStatic(this, caller);
-    }
-    public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeFinal(this, caller);
-    }
-    public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeAbstract(this, caller);
-    }
-    public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeVolatile(this, caller);
-    }
-    public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeTransient(this, caller);
-    }
-    public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeStrictfp(this, caller);
-    }
-    public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeSynchronized(this, caller);
-    }
-    public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_mayBeNative(this, caller);
-    }
-    public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
-        return getParent().Define_ASTNode_enclosingBlock(this, caller);
-    }
-    public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-        return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-    public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_insideLoop(this, caller);
-    }
-    public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_insideSwitch(this, caller);
-    }
-    public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
-        return getParent().Define_Case_bind(this, caller, c);
-    }
-    public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
-        return getParent().Define_String_typeDeclIndent(this, caller);
-    }
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        return getParent().Define_NameType_nameType(this, caller);
-    }
-    public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isAnonymous(this, caller);
-    }
-    public Variable Define_Variable_unknownField(ASTNode caller, ASTNode child) {
-        return getParent().Define_Variable_unknownField(this, caller);
-    }
-    public MethodDecl Define_MethodDecl_unknownMethod(ASTNode caller, ASTNode child) {
-        return getParent().Define_MethodDecl_unknownMethod(this, caller);
-    }
-    public ConstructorDecl Define_ConstructorDecl_unknownConstructor(ASTNode caller, ASTNode child) {
-        return getParent().Define_ConstructorDecl_unknownConstructor(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_declType(this, caller);
-    }
-    public BodyDecl Define_BodyDecl_enclosingBodyDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
-    }
-    public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isMemberType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_hostType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_switchType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_switchType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_returnType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_enclosingInstance(this, caller);
-    }
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-        return getParent().Define_String_methodHost(this, caller);
-    }
-    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
-    }
-    public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_inStaticContext(this, caller);
-    }
-    public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_reportUnreachable(this, caller);
-    }
-    public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isMethodParameter(this, caller);
-    }
-    public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isConstructorParameter(this, caller);
-    }
-    public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
-    }
-    public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
-    }
-    public ElementValue Define_ElementValue_lookupElementTypeValue(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
-    }
-    public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
-        return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
-    }
-    public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
-    }
-    public Annotation Define_Annotation_lookupAnnotation(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-        return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
-    }
-    public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
-    }
-    public GenericMethodDecl Define_GenericMethodDecl_genericMethodDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_GenericMethodDecl_genericMethodDecl(this, caller);
-    }
-    public GenericConstructorDecl Define_GenericConstructorDecl_genericConstructorDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_GenericConstructorDecl_genericConstructorDecl(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_assignConvertedType(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_typeWildcard(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-        return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
-    }
-    public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-        return getParent().Define_TypeDecl_lookupWildcardSuper(this, caller, typeDecl);
-    }
-    public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
-        return getParent().Define_LUBType_lookupLUBType(this, caller, bounds);
-    }
-    public GLBType Define_GLBType_lookupGLBType(ASTNode caller, ASTNode child, ArrayList bounds) {
-        return getParent().Define_GLBType_lookupGLBType(this, caller, bounds);
-    }
-    public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_genericDecl(this, caller);
-    }
-    public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_variableArityValid(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_expectedType(this, caller);
-    }
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-        return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
-    }
-    public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-        return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
-    }
-    public int Define_int_localNum(ASTNode caller, ASTNode child) {
-        return getParent().Define_int_localNum(this, caller);
-    }
-    public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
-    }
-    public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
-        return getParent().Define_ArrayList_exceptionRanges(this, caller);
-    }
-    public CompilationUnit Define_CompilationUnit_compilationUnit(ASTNode caller, ASTNode child) {
-        return getParent().Define_CompilationUnit_compilationUnit(this, caller);
-    }
-    public SimpleSet Define_SimpleSet_allImportedTypes(ASTNode caller, ASTNode child, String name) {
-        return getParent().Define_SimpleSet_allImportedTypes(this, caller, name);
-    }
-    public String Define_String_packageName(ASTNode caller, ASTNode child) {
-        return getParent().Define_String_packageName(this, caller);
-    }
-    public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
-        return getParent().Define_TypeDecl_enclosingType(this, caller);
-    }
-    public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isNestedType(this, caller);
-    }
-    public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_isLocalClass(this, caller);
-    }
-    public String Define_String_hostPackage(ASTNode caller, ASTNode child) {
-        return getParent().Define_String_hostPackage(this, caller);
-    }
-    public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_reachable(this, caller);
-    }
-    public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child) {
-        return getParent().Define_boolean_reachableCatchClause(this, caller);
-    }
+  }
+  /**
+   * @apilevel internal
+   */
+  public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+    return getParent().Define_VariableScope_outerScope(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    return getParent().Define_NameType_nameType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_reachable(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isMethodParameter(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isConstructorParameter(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_variableArityValid(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_superType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_superType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
+    return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_componentType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public LabeledStmt Define_LabeledStmt_lookupLabel(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_LabeledStmt_lookupLabel(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isDest(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isSource(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isIncOrDec(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    return getParent().Define_boolean_isDAbefore(this, caller, v);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
+    return getParent().Define_boolean_isDUbefore(this, caller, v);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeException(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeException(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeRuntimeException(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeRuntimeException(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeError(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeError(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeNullPointerException(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeNullPointerException(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeThrowable(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeThrowable(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
+    return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+  }
+  /**
+   * @apilevel internal
+   */
+  public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
+    return getParent().Define_Collection_lookupConstructor(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
+    return getParent().Define_Collection_lookupSuperConstructor(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public Expr Define_Expr_nestedScope(ASTNode caller, ASTNode child) {
+    return getParent().Define_Expr_nestedScope(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_Collection_lookupMethod(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeObject(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeObject(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeCloneable(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeCloneable(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeSerializable(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeSerializable(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeBoolean(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeBoolean(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeByte(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeByte(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeShort(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeShort(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeChar(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeChar(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeInt(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeInt(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeLong(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeLong(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeFloat(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeFloat(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeDouble(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeDouble(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeString(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeString(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeVoid(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeVoid(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeNull(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeNull(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_unknownType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_unknownType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
+    return getParent().Define_boolean_hasPackage(this, caller, packageName);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_lookupType(ASTNode caller, ASTNode child, String packageName, String typeName) {
+    return getParent().Define_TypeDecl_lookupType(this, caller, packageName, typeName);
+  }
+  /**
+   * @apilevel internal
+   */
+  public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_SimpleSet_lookupType(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBePublic(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeProtected(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBePrivate(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeStatic(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeFinal(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeAbstract(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeVolatile(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeTransient(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeStrictfp(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeSynchronized(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_mayBeNative(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
+    return getParent().Define_ASTNode_enclosingBlock(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_insideLoop(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_insideSwitch(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
+    return getParent().Define_Case_bind(this, caller, c);
+  }
+  /**
+   * @apilevel internal
+   */
+  public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
+    return getParent().Define_String_typeDeclIndent(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isAnonymous(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public Variable Define_Variable_unknownField(ASTNode caller, ASTNode child) {
+    return getParent().Define_Variable_unknownField(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public MethodDecl Define_MethodDecl_unknownMethod(ASTNode caller, ASTNode child) {
+    return getParent().Define_MethodDecl_unknownMethod(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public ConstructorDecl Define_ConstructorDecl_unknownConstructor(ASTNode caller, ASTNode child) {
+    return getParent().Define_ConstructorDecl_unknownConstructor(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_declType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public BodyDecl Define_BodyDecl_enclosingBodyDecl(ASTNode caller, ASTNode child) {
+    return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isMemberType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_hostType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_switchType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_switchType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_returnType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_enclosingInstance(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+    return getParent().Define_String_methodHost(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_inStaticContext(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_reportUnreachable(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public ElementValue Define_ElementValue_lookupElementTypeValue(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
+    return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public Annotation Define_Annotation_lookupAnnotation(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
+    return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_typeWildcard(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
+    return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
+    return getParent().Define_TypeDecl_lookupWildcardSuper(this, caller, typeDecl);
+  }
+  /**
+   * @apilevel internal
+   */
+  public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
+    return getParent().Define_LUBType_lookupLUBType(this, caller, bounds);
+  }
+  /**
+   * @apilevel internal
+   */
+  public GLBType Define_GLBType_lookupGLBType(ASTNode caller, ASTNode child, ArrayList bounds) {
+    return getParent().Define_GLBType_lookupGLBType(this, caller, bounds);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_genericDecl(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_expectedType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
+    return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
+    return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public int Define_int_localNum(ASTNode caller, ASTNode child) {
+    return getParent().Define_int_localNum(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
+    return getParent().Define_ArrayList_exceptionRanges(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public CompilationUnit Define_CompilationUnit_compilationUnit(ASTNode caller, ASTNode child) {
+    return getParent().Define_CompilationUnit_compilationUnit(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public SimpleSet Define_SimpleSet_allImportedTypes(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_SimpleSet_allImportedTypes(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public String Define_String_packageName(ASTNode caller, ASTNode child) {
+    return getParent().Define_String_packageName(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
+    return getParent().Define_TypeDecl_enclosingType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isNestedType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isLocalClass(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public String Define_String_hostPackage(ASTNode caller, ASTNode child) {
+    return getParent().Define_String_hostPackage(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
+    return getParent().Define_boolean_reachableCatchClause(this, caller, exceptionType);
+  }
 }

@@ -1,24 +1,42 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
-// load files in a zip file
+
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
+
+
+/**
+ * @ast class
+ * @declaredat :0
+ */
 public class ZipFilePart extends PathPart {
-    // Declared in ClassPath.jrag at line 441
 
     private HashSet set = new HashSet();
 
-    // Declared in ClassPath.jrag at line 442
 
     private ZipFile file;
 
-    // Declared in ClassPath.jrag at line 444
 
 
     public boolean hasPackage(String name) {
       return set.contains(name);
     }
 
-    // Declared in ClassPath.jrag at line 448
 
 
     public ZipFilePart(ZipFile file) {
@@ -43,7 +61,6 @@ public class ZipFilePart extends PathPart {
       }
     }
 
-    // Declared in ClassPath.jrag at line 470
 
 
     public boolean selectCompilationUnit(String canonicalName) throws IOException {

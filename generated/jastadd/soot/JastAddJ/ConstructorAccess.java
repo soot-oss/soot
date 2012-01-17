@@ -1,55 +1,95 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
 
+/**
+ * @ast node
+ * @declaredat java.ast:18
+ */
 public class ConstructorAccess extends Access implements Cloneable {
-    public void flushCache() {
-        super.flushCache();
-        decls_computed = false;
-        decls_value = null;
-        decl_computed = false;
-        decl_value = null;
-        type_computed = false;
-        type_value = null;
-    }
-    public void flushCollectionCache() {
-        super.flushCollectionCache();
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public ConstructorAccess clone() throws CloneNotSupportedException {
-        ConstructorAccess node = (ConstructorAccess)super.clone();
-        node.decls_computed = false;
-        node.decls_value = null;
-        node.decl_computed = false;
-        node.decl_value = null;
-        node.type_computed = false;
-        node.type_value = null;
-        node.in$Circle(false);
-        node.is$Final(false);
-        return node;
-    }
-     @SuppressWarnings({"unchecked", "cast"})  public ConstructorAccess copy() {
+  /**
+   * @apilevel low-level
+   */
+  public void flushCache() {
+    super.flushCache();
+    decls_computed = false;
+    decls_value = null;
+    decl_computed = false;
+    decl_value = null;
+    type_computed = false;
+    type_value = null;
+  }
+  /**
+   * @apilevel internal
+   */
+  public void flushCollectionCache() {
+    super.flushCollectionCache();
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ConstructorAccess clone() throws CloneNotSupportedException {
+    ConstructorAccess node = (ConstructorAccess)super.clone();
+    node.decls_computed = false;
+    node.decls_value = null;
+    node.decl_computed = false;
+    node.decl_value = null;
+    node.type_computed = false;
+    node.type_value = null;
+    node.in$Circle(false);
+    node.is$Final(false);
+    return node;
+  }
+  /**
+   * @apilevel internal
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ConstructorAccess copy() {
       try {
-          ConstructorAccess node = (ConstructorAccess)clone();
-          if(children != null) node.children = (ASTNode[])children.clone();
-          return node;
+        ConstructorAccess node = (ConstructorAccess)clone();
+        if(children != null) node.children = (ASTNode[])children.clone();
+        return node;
       } catch (CloneNotSupportedException e) {
       }
       System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
       return null;
+  }
+  /**
+   * @apilevel low-level
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ConstructorAccess fullCopy() {
+    ConstructorAccess res = (ConstructorAccess)copy();
+    for(int i = 0; i < getNumChildNoTransform(); i++) {
+      ASTNode node = getChildNoTransform(i);
+      if(node != null) node = node.fullCopy();
+      res.setChild(node, i);
     }
-     @SuppressWarnings({"unchecked", "cast"})  public ConstructorAccess fullCopy() {
-        ConstructorAccess res = (ConstructorAccess)copy();
-        for(int i = 0; i < getNumChildNoTransform(); i++) {
-          ASTNode node = getChildNoTransform(i);
-          if(node != null) node = node.fullCopy();
-          res.setChild(node, i);
-        }
-        return res;
+    return res;
     }
-    // Declared in ExceptionHandling.jrag at line 97
-
-
+  /**
+   * @ast method 
+   * @aspect ExceptionHandling
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:97
+   */
   public void exceptionHandling() {
     for(int i = 0; i < decl().getNumException(); i++) {
       TypeDecl exceptionType = decl().getException(i).type();
@@ -57,11 +97,11 @@ public class ConstructorAccess extends Access implements Cloneable {
         error("" + this + " may throw uncaught exception " + exceptionType.fullName());
     }
   }
-
-    // Declared in ExceptionHandling.jrag at line 244
-
-  
-  // 8.8.4 (8.4.4)
+  /**
+   * @ast method 
+   * @aspect ExceptionHandling
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:258
+   */
   protected boolean reachedException(TypeDecl catchType) {
     for(int i = 0; i < decl().getNumException(); i++) {
       TypeDecl exceptionType = decl().getException(i).type();
@@ -70,10 +110,11 @@ public class ConstructorAccess extends Access implements Cloneable {
     }
     return super.reachedException(catchType);
   }
-
-    // Declared in NameCheck.jrag at line 112
-
-
+  /**
+   * @ast method 
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:112
+   */
   public void nameCheck() {
     super.nameCheck();
     if(decls().isEmpty())
@@ -85,10 +126,11 @@ public class ConstructorAccess extends Access implements Cloneable {
       }
     }
   }
-
-    // Declared in PrettyPrint.jadd at line 469
-
-
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:470
+   */
   public void toString(StringBuffer s) {
     s.append(name());
     s.append("(");
@@ -101,10 +143,11 @@ public class ConstructorAccess extends Access implements Cloneable {
     }
     s.append(")");
   }
-
-    // Declared in Annotations.jrag at line 355
-
-
+  /**
+   * @ast method 
+   * @aspect Annotations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:355
+   */
   public void checkModifiers() {
     if(decl().isDeprecated() &&
       !withinDeprecatedAnnotation() &&
@@ -112,24 +155,30 @@ public class ConstructorAccess extends Access implements Cloneable {
       !withinSuppressWarnings("deprecation"))
         warning(decl().signature() + " in " + decl().hostType().typeName() + " has been deprecated");
   }
-
-    // Declared in Enums.jrag at line 158
-
-  // applied to both ConstructorAccess and SuperConstructorAccess
+  /**
+   * @ast method 
+   * @aspect Enums
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:171
+   */
   protected void transformEnumConstructors() {
     super.transformEnumConstructors();
     getArgList().insertChild(new VarAccess("@p0"),0);
     getArgList().insertChild(new VarAccess("@p1"),1);
   }
-
-    // Declared in InnerClasses.jrag at line 457
-
+  /**
+   * @ast method 
+   * @aspect InnerClasses
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:457
+   */
+  
 
   // add val$name as arguments to the constructor
   protected boolean addEnclosingVariables = true;
-
-    // Declared in InnerClasses.jrag at line 458
-
+  /**
+   * @ast method 
+   * @aspect InnerClasses
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:458
+   */
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
     addEnclosingVariables = false;
@@ -139,11 +188,11 @@ public class ConstructorAccess extends Access implements Cloneable {
       getArgList().add(new VarAccess("val$" + v.name()));
     }
   }
-
-    // Declared in Transformations.jrag at line 138
-
-
-  // remote collection / demand driven creation of accessor
+  /**
+   * @ast method 
+   * @aspect Transformations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Transformations.jrag:138
+   */
   public void refined_Transformations_ConstructorAccess_transformation() {
     // this$val
     addEnclosingVariables();
@@ -153,164 +202,203 @@ public class ConstructorAccess extends Access implements Cloneable {
     }
     super.transformation();
   }
-
-    // Declared in EmitJimpleRefinements.jrag at line 235
-
+  /**
+   * @ast method 
+   * @aspect EmitJimpleRefinements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/SootJastAddJ/EmitJimpleRefinements.jrag:235
+   */
   public void collectTypesToSignatures(Collection<Type> set) {
 	 super.collectTypesToSignatures(set);
    addDependencyIfNeeded(set, decl().erasedConstructor().hostType());
   }
+  /**
+   * @ast method 
+   * @declaredat java.ast:1
+   */
+  public ConstructorAccess() {
+    super();
 
-    // Declared in java.ast at line 3
-    // Declared in java.ast line 18
+    setChild(new List(), 0);
 
-    public ConstructorAccess() {
-        super();
-
-        setChild(new List(), 0);
-
-    }
-
-    // Declared in java.ast at line 11
-
-
-    // Declared in java.ast line 18
-    public ConstructorAccess(String p0, List<Expr> p1) {
-        setID(p0);
-        setChild(p1, 0);
-    }
-
-    // Declared in java.ast at line 17
-
-
-    // Declared in java.ast line 18
-    public ConstructorAccess(beaver.Symbol p0, List<Expr> p1) {
-        setID(p0);
-        setChild(p1, 0);
-    }
-
-    // Declared in java.ast at line 22
-
-
+  }
+  /**
+   * @ast method 
+   * @declaredat java.ast:8
+   */
+  public ConstructorAccess(String p0, List<Expr> p1) {
+    setID(p0);
+    setChild(p1, 0);
+  }
+  /**
+   * @ast method 
+   * @declaredat java.ast:12
+   */
+  public ConstructorAccess(beaver.Symbol p0, List<Expr> p1) {
+    setID(p0);
+    setChild(p1, 0);
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat java.ast:19
+   */
   protected int numChildren() {
     return 1;
   }
-
-    // Declared in java.ast at line 25
-
-    public boolean mayHaveRewrite() {
-        return false;
-    }
-
-    // Declared in java.ast at line 2
-    // Declared in java.ast line 18
-    protected String tokenString_ID;
-
-    // Declared in java.ast at line 3
-
-    public void setID(String value) {
-        tokenString_ID = value;
-    }
-
-    // Declared in java.ast at line 6
-
-    public int IDstart;
-
-    // Declared in java.ast at line 7
-
-    public int IDend;
-
-    // Declared in java.ast at line 8
-
-    public void setID(beaver.Symbol symbol) {
-        if(symbol.value != null && !(symbol.value instanceof String))
-          throw new UnsupportedOperationException("setID is only valid for String lexemes");
-        tokenString_ID = (String)symbol.value;
-        IDstart = symbol.getStart();
-        IDend = symbol.getEnd();
-    }
-
-    // Declared in java.ast at line 15
-
-    public String getID() {
-        return tokenString_ID != null ? tokenString_ID : "";
-    }
-
-    // Declared in java.ast at line 2
-    // Declared in java.ast line 18
-    public void setArgList(List<Expr> list) {
-        setChild(list, 0);
-    }
-
-    // Declared in java.ast at line 6
-
-
-    public int getNumArg() {
-        return getArgList().getNumChild();
-    }
-
-    // Declared in java.ast at line 10
-
-
-     @SuppressWarnings({"unchecked", "cast"})  public Expr getArg(int i) {
-        return (Expr)getArgList().getChild(i);
-    }
-
-    // Declared in java.ast at line 14
-
-
-    public void addArg(Expr node) {
-        List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
-        list.addChild(node);
-    }
-
-    // Declared in java.ast at line 19
-
-
-    public void addArgNoTransform(Expr node) {
-        List<Expr> list = getArgListNoTransform();
-        list.addChild(node);
-    }
-
-    // Declared in java.ast at line 24
-
-
-    public void setArg(Expr node, int i) {
-        List<Expr> list = getArgList();
-        list.setChild(node, i);
-    }
-
-    // Declared in java.ast at line 28
-
-    public List<Expr> getArgs() {
-        return getArgList();
-    }
-
-    // Declared in java.ast at line 31
-
-    public List<Expr> getArgsNoTransform() {
-        return getArgListNoTransform();
-    }
-
-    // Declared in java.ast at line 35
-
-
-     @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgList() {
-        List<Expr> list = (List<Expr>)getChild(0);
-        list.getNumChild();
-        return list;
-    }
-
-    // Declared in java.ast at line 41
-
-
-     @SuppressWarnings({"unchecked", "cast"})  public List<Expr> getArgListNoTransform() {
-        return (List<Expr>)getChildNoTransform(0);
-    }
-
-    // Declared in VariableArityParametersCodegen.jrag at line 57
-
-
+  /**
+   * @apilevel internal
+   * @ast method 
+   * @declaredat java.ast:25
+   */
+  public boolean mayHaveRewrite() {
+    return false;
+  }
+  /**
+   * Setter for lexeme ID
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:5
+   */
+  public void setID(String value) {
+    tokenString_ID = value;
+  }
+  /**   * @apilevel internal   * @ast method 
+   * @declaredat java.ast:8
+   */
+  
+  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @ast method 
+   * @declaredat java.ast:9
+   */
+  
+  public int IDstart;
+  /**
+   * @ast method 
+   * @declaredat java.ast:10
+   */
+  
+  public int IDend;
+  /**
+   * @ast method 
+   * @declaredat java.ast:11
+   */
+  public void setID(beaver.Symbol symbol) {
+    if(symbol.value != null && !(symbol.value instanceof String))
+      throw new UnsupportedOperationException("setID is only valid for String lexemes");
+    tokenString_ID = (String)symbol.value;
+    IDstart = symbol.getStart();
+    IDend = symbol.getEnd();
+  }
+  /**
+   * Getter for lexeme ID
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:22
+   */
+  public String getID() {
+    return tokenString_ID != null ? tokenString_ID : "";
+  }
+  /**
+   * Setter for ArgList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:5
+   */
+  public void setArgList(List<Expr> list) {
+    setChild(list, 0);
+  }
+  /**
+   * @return number of children in ArgList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:12
+   */
+  public int getNumArg() {
+    return getArgList().getNumChild();
+  }
+  /**
+   * Getter for child in list ArgList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:19
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Expr getArg(int i) {
+    return (Expr)getArgList().getChild(i);
+  }
+  /**
+   * Add element to list ArgList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:27
+   */
+  public void addArg(Expr node) {
+    List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
+    list.addChild(node);
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat java.ast:34
+   */
+  public void addArgNoTransform(Expr node) {
+    List<Expr> list = getArgListNoTransform();
+    list.addChild(node);
+  }
+  /**
+   * Setter for child in list ArgList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:42
+   */
+  public void setArg(Expr node, int i) {
+    List<Expr> list = getArgList();
+    list.setChild(node, i);
+  }
+  /**
+   * Getter for Arg list.
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:50
+   */
+  public List<Expr> getArgs() {
+    return getArgList();
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat java.ast:56
+   */
+  public List<Expr> getArgsNoTransform() {
+    return getArgListNoTransform();
+  }
+  /**
+   * Getter for list ArgList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat java.ast:63
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public List<Expr> getArgList() {
+    List<Expr> list = (List<Expr>)getChild(0);
+    list.getNumChild();
+    return list;
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat java.ast:72
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public List<Expr> getArgListNoTransform() {
+    return (List<Expr>)getChildNoTransform(0);
+  }
+  /**
+   * @ast method 
+   * @aspect VariableArityParametersCodegen
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/VariableArityParametersCodegen.jrag:57
+   */
     public void transformation() {
     if(decl().isVariableArity() && !invokesVariableArityAsArray()) {
       // arguments to normal parameters
@@ -331,10 +419,11 @@ public class ConstructorAccess extends Access implements Cloneable {
     }
     refined_Transformations_ConstructorAccess_transformation();
   }
-
-    // Declared in GenericsCodegen.jrag at line 216
-
-
+  /**
+   * @ast method 
+   * @aspect GenericsCodegen
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:216
+   */
     public soot.Value eval(Body b) {
     b.setLine(this);
     ConstructorDecl c = decl().erasedConstructor();
@@ -373,235 +462,345 @@ public class ConstructorAccess extends Access implements Cloneable {
       return b.newSpecialInvokeExpr(base, c.sootRef(), list, this);
     }
   }
-
-    // Declared in DefiniteAssignment.jrag at line 298
- @SuppressWarnings({"unchecked", "cast"})     public boolean isDAafter(Variable v) {
-        ASTNode$State state = state();
-        boolean isDAafter_Variable_value = isDAafter_compute(v);
-        return isDAafter_Variable_value;
+  /**
+   * @attribute syn
+   * @aspect DA
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:296
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isDAafter(Variable v) {
+      ASTNode$State state = state();
+    boolean isDAafter_Variable_value = isDAafter_compute(v);
+    return isDAafter_Variable_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isDAafter_compute(Variable v) {  return decl().isDAafter(v);  }
+  /**
+   * @attribute syn
+   * @aspect DU
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:752
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isDUafter(Variable v) {
+      ASTNode$State state = state();
+    boolean isDUafter_Variable_value = isDUafter_compute(v);
+    return isDUafter_Variable_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isDUafter_compute(Variable v) {  return decl().isDUafter(v);  }
+  /**
+   * @attribute syn
+   * @aspect ConstructScope
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:51
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean applicableAndAccessible(ConstructorDecl decl) {
+      ASTNode$State state = state();
+    boolean applicableAndAccessible_ConstructorDecl_value = applicableAndAccessible_compute(decl);
+    return applicableAndAccessible_ConstructorDecl_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean applicableAndAccessible_compute(ConstructorDecl decl) {  return decl.applicable(getArgList()) && decl.accessibleFrom(hostType());  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean decls_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected SimpleSet decls_value;
+  /**
+   * @attribute syn
+   * @aspect MethodSignature15
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:74
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public SimpleSet decls() {
+    if(decls_computed) {
+      return decls_value;
     }
-
-    private boolean isDAafter_compute(Variable v) {  return decl().isDAafter(v);  }
-
-    // Declared in DefiniteAssignment.jrag at line 756
- @SuppressWarnings({"unchecked", "cast"})     public boolean isDUafter(Variable v) {
-        ASTNode$State state = state();
-        boolean isDUafter_Variable_value = isDUafter_compute(v);
-        return isDUafter_Variable_value;
-    }
-
-    private boolean isDUafter_compute(Variable v) {  return decl().isDUafter(v);  }
-
-    // Declared in LookupConstructor.jrag at line 51
- @SuppressWarnings({"unchecked", "cast"})     public boolean applicableAndAccessible(ConstructorDecl decl) {
-        ASTNode$State state = state();
-        boolean applicableAndAccessible_ConstructorDecl_value = applicableAndAccessible_compute(decl);
-        return applicableAndAccessible_ConstructorDecl_value;
-    }
-
-    private boolean applicableAndAccessible_compute(ConstructorDecl decl) {  return decl.applicable(getArgList()) && decl.accessibleFrom(hostType());  }
-
-    protected boolean decls_computed = false;
-    protected SimpleSet decls_value;
-    // Declared in MethodSignature.jrag at line 74
- @SuppressWarnings({"unchecked", "cast"})     public SimpleSet decls() {
-        if(decls_computed) {
-            return decls_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        decls_value = decls_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            decls_computed = true;
-        return decls_value;
-    }
-
-    private SimpleSet decls_compute() {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    decls_value = decls_compute();
+if(isFinal && num == state().boundariesCrossed) decls_computed = true;
+    return decls_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private SimpleSet decls_compute() {
     return chooseConstructor(lookupConstructor(), getArgList());
   }
-
-    protected boolean decl_computed = false;
-    protected ConstructorDecl decl_value;
-    // Declared in LookupConstructor.jrag at line 65
- @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl decl() {
-        if(decl_computed) {
-            return decl_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        decl_value = decl_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            decl_computed = true;
-        return decl_value;
+  /**
+   * @apilevel internal
+   */
+  protected boolean decl_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected ConstructorDecl decl_value;
+  /**
+   * @attribute syn
+   * @aspect ConstructScope
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:65
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ConstructorDecl decl() {
+    if(decl_computed) {
+      return decl_value;
     }
-
-    private ConstructorDecl decl_compute() {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    decl_value = decl_compute();
+if(isFinal && num == state().boundariesCrossed) decl_computed = true;
+    return decl_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private ConstructorDecl decl_compute() {
     SimpleSet decls = decls();
     if(decls.size() == 1)
       return (ConstructorDecl)decls.iterator().next();
     return unknownConstructor();
   }
-
-    // Declared in NameCheck.jrag at line 124
- @SuppressWarnings({"unchecked", "cast"})     public boolean validArgs() {
-        ASTNode$State state = state();
-        boolean validArgs_value = validArgs_compute();
-        return validArgs_value;
-    }
-
-    private boolean validArgs_compute() {
+  /**
+   * @attribute syn
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:124
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean validArgs() {
+      ASTNode$State state = state();
+    boolean validArgs_value = validArgs_compute();
+    return validArgs_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean validArgs_compute() {
     for(int i = 0; i < getNumArg(); i++)
       if(getArg(i).type().isUnknown())
         return false;
     return true;
   }
-
-    // Declared in QualifiedNames.jrag at line 19
- @SuppressWarnings({"unchecked", "cast"})     public String name() {
-        ASTNode$State state = state();
-        String name_value = name_compute();
-        return name_value;
+  /**
+   * @attribute syn
+   * @aspect Names
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/QualifiedNames.jrag:19
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public String name() {
+      ASTNode$State state = state();
+    String name_value = name_compute();
+    return name_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private String name_compute() {  return "this";  }
+  /**
+   * @attribute syn
+   * @aspect SyntacticClassification
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:129
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public NameType predNameType() {
+      ASTNode$State state = state();
+    NameType predNameType_value = predNameType_compute();
+    return predNameType_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean type_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected TypeDecl type_value;
+  /**
+   * @attribute syn
+   * @aspect TypeAnalysis
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:285
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public TypeDecl type() {
+    if(type_computed) {
+      return type_value;
     }
-
-    private String name_compute() {  return "this";  }
-
-    // Declared in SyntacticClassification.jrag at line 129
- @SuppressWarnings({"unchecked", "cast"})     public NameType predNameType() {
-        ASTNode$State state = state();
-        NameType predNameType_value = predNameType_compute();
-        return predNameType_value;
-    }
-
-    private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
-
-    // Declared in TypeAnalysis.jrag at line 285
- @SuppressWarnings({"unchecked", "cast"})     public TypeDecl type() {
-        if(type_computed) {
-            return type_value;
-        }
-        ASTNode$State state = state();
-        int num = state.boundariesCrossed;
-        boolean isFinal = this.is$Final();
-        type_value = type_compute();
-        if(isFinal && num == state().boundariesCrossed)
-            type_computed = true;
-        return type_value;
-    }
-
-    private TypeDecl type_compute() {  return decl().type();  }
-
-    // Declared in MethodSignature.jrag at line 326
- @SuppressWarnings({"unchecked", "cast"})     public int arity() {
-        ASTNode$State state = state();
-        int arity_value = arity_compute();
-        return arity_value;
-    }
-
-    private int arity_compute() {  return getNumArg();  }
-
-    // Declared in VariableArityParameters.jrag at line 47
- @SuppressWarnings({"unchecked", "cast"})     public boolean invokesVariableArityAsArray() {
-        ASTNode$State state = state();
-        boolean invokesVariableArityAsArray_value = invokesVariableArityAsArray_compute();
-        return invokesVariableArityAsArray_value;
-    }
-
-    private boolean invokesVariableArityAsArray_compute() {
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    type_value = type_compute();
+if(isFinal && num == state().boundariesCrossed) type_computed = true;
+    return type_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private TypeDecl type_compute() {  return decl().type();  }
+  /**
+   * @attribute syn
+   * @aspect MethodSignature15
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:326
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public int arity() {
+      ASTNode$State state = state();
+    int arity_value = arity_compute();
+    return arity_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private int arity_compute() {  return getNumArg();  }
+  /**
+   * @attribute syn
+   * @aspect VariableArityParameters
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:47
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean invokesVariableArityAsArray() {
+      ASTNode$State state = state();
+    boolean invokesVariableArityAsArray_value = invokesVariableArityAsArray_compute();
+    return invokesVariableArityAsArray_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean invokesVariableArityAsArray_compute() {
     if(!decl().isVariableArity())
       return false;
     if(arity() != decl().arity())
       return false;
     return getArg(getNumArg()-1).type().methodInvocationConversionTo(decl().lastParameter().type());
   }
-
-    // Declared in ExceptionHandling.jrag at line 30
- @SuppressWarnings({"unchecked", "cast"})     public boolean handlesException(TypeDecl exceptionType) {
-        ASTNode$State state = state();
-        boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
-        return handlesException_TypeDecl_value;
-    }
-
-    // Declared in LookupConstructor.jrag at line 14
- @SuppressWarnings({"unchecked", "cast"})     public Collection lookupConstructor() {
-        ASTNode$State state = state();
-        Collection lookupConstructor_value = getParent().Define_Collection_lookupConstructor(this, null);
-        return lookupConstructor_value;
-    }
-
-    // Declared in LookupConstructor.jrag at line 71
- @SuppressWarnings({"unchecked", "cast"})     public ConstructorDecl unknownConstructor() {
-        ASTNode$State state = state();
-        ConstructorDecl unknownConstructor_value = getParent().Define_ConstructorDecl_unknownConstructor(this, null);
-        return unknownConstructor_value;
-    }
-
-    // Declared in LookupMethod.jrag at line 29
-    public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
+  /**
+   * @attribute inh
+   * @aspect ExceptionHandling
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:30
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean handlesException(TypeDecl exceptionType) {
+      ASTNode$State state = state();
+    boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
+    return handlesException_TypeDecl_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect ConstructScope
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:14
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Collection lookupConstructor() {
+      ASTNode$State state = state();
+    Collection lookupConstructor_value = getParent().Define_Collection_lookupConstructor(this, null);
+    return lookupConstructor_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect ConstructScope
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:71
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public ConstructorDecl unknownConstructor() {
+      ASTNode$State state = state();
+    ConstructorDecl unknownConstructor_value = getParent().Define_ConstructorDecl_unknownConstructor(this, null);
+    return unknownConstructor_value;
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:29
+   * @apilevel internal
+   */
+  public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
+    if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupMethod(name);
-        }
-        return getParent().Define_Collection_lookupMethod(this, caller, name);
+      return unqualifiedScope().lookupMethod(name);
     }
-
-    // Declared in LookupType.jrag at line 88
-    public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
-        if(caller == getArgListNoTransform()) {
+    return getParent().Define_Collection_lookupMethod(this, caller, name);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:88
+   * @apilevel internal
+   */
+  public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
+    if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().hasPackage(packageName);
-        }
-        return getParent().Define_boolean_hasPackage(this, caller, packageName);
+      return unqualifiedScope().hasPackage(packageName);
     }
-
-    // Declared in LookupType.jrag at line 166
-    public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
+    return getParent().Define_boolean_hasPackage(this, caller, packageName);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:166
+   * @apilevel internal
+   */
+  public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
+    if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupType(name);
-        }
-        return getParent().Define_SimpleSet_lookupType(this, caller, name);
+      return unqualifiedScope().lookupType(name);
     }
-
-    // Declared in LookupVariable.jrag at line 131
-    public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-        if(caller == getArgListNoTransform()) {
+    return getParent().Define_SimpleSet_lookupType(this, caller, name);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:133
+   * @apilevel internal
+   */
+  public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+    if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return unqualifiedScope().lookupVariable(name);
-        }
-        return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+      return unqualifiedScope().lookupVariable(name);
     }
-
-    // Declared in SyntacticClassification.jrag at line 121
-    public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-        if(caller == getArgListNoTransform()) {
+    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:121
+   * @apilevel internal
+   */
+  public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return NameType.EXPRESSION_NAME;
-        }
-        return getParent().Define_NameType_nameType(this, caller);
+      return NameType.EXPRESSION_NAME;
     }
-
-    // Declared in TypeHierarchyCheck.jrag at line 18
-    public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-        if(true) {
+    return getParent().Define_NameType_nameType(this, caller);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:18
+   * @apilevel internal
+   */
+  public String Define_String_methodHost(ASTNode caller, ASTNode child) {
+    if(true) {
       int childIndex = this.getIndexOfChild(caller);
-            return unqualifiedScope().methodHost();
-        }
-        return getParent().Define_String_methodHost(this, caller);
+      return unqualifiedScope().methodHost();
     }
-
-    // Declared in TypeHierarchyCheck.jrag at line 130
-    public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
-        if(caller == getArgListNoTransform()) {
+    return getParent().Define_String_methodHost(this, caller);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:130
+   * @apilevel internal
+   */
+  public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
+    if(caller == getArgListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
-            return true;
-        }
-        return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+      return true;
     }
-
-public ASTNode rewriteTo() {
+    return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public ASTNode rewriteTo() {
     return super.rewriteTo();
-}
-
+  }
 }

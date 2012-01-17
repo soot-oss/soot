@@ -1,9 +1,29 @@
-
 package soot.JastAddJ;
-import java.util.HashSet;import java.util.LinkedHashSet;import java.io.File;import java.util.*;import beaver.*;import java.util.ArrayList;import java.util.zip.*;import java.io.*;import java.io.FileNotFoundException;import java.util.Collection;import soot.*;import soot.util.*;import soot.jimple.*;import soot.coffi.ClassFile;import soot.coffi.method_info;import soot.coffi.CONSTANT_Utf8_info;import soot.tagkit.SourceFileTag;import soot.coffi.CoffiMethodSource;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.io.File;
+import java.util.*;
+import beaver.*;
+import java.util.ArrayList;
+import java.util.zip.*;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.util.Collection;
+import soot.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.coffi.ClassFile;
+import soot.coffi.method_info;
+import soot.coffi.CONSTANT_Utf8_info;
+import soot.tagkit.SourceFileTag;
+import soot.coffi.CoffiMethodSource;
+
+/**
+ * @ast class
+ * @declaredat :0
+ */
 public class Constraints extends java.lang.Object {
-    // Declared in GenericMethodsInference.jrag at line 102
 
     static class ConstraintSet {
       public Collection supertypeConstraints = new HashSet(4);
@@ -12,19 +32,15 @@ public class Constraints extends java.lang.Object {
       public TypeDecl typeArgument;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 108
 
     private Collection typeVariables;
 
-    // Declared in GenericMethodsInference.jrag at line 109
 
     private Map constraintsMap;
 
-    // Declared in GenericMethodsInference.jrag at line 110
 
     public boolean rawAccess = false;
 
-    // Declared in GenericMethodsInference.jrag at line 112
 
 
     public Constraints() {
@@ -32,7 +48,6 @@ public class Constraints extends java.lang.Object {
       constraintsMap = new HashMap();
     }
 
-    // Declared in GenericMethodsInference.jrag at line 117
 
 
     public void addTypeVariable(TypeVariable T) {
@@ -42,7 +57,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 124
 
 
     public boolean unresolvedTypeArguments() {
@@ -55,7 +69,6 @@ public class Constraints extends java.lang.Object {
       return false;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 134
 
 
     public void printConstraints() {
@@ -78,7 +91,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 155
 
 
     
@@ -95,7 +107,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 168
 
 
     public void resolveEqualityConstraints() {
@@ -125,7 +136,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 195
 
 
     public void replaceEqualityConstraints(TypeDecl before, TypeDecl after) {
@@ -136,7 +146,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 203
 
     
     public void replaceAllConstraints(TypeDecl before, TypeDecl after) {
@@ -149,7 +158,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 213
 
     
     private void replaceConstraints(Collection constraints, TypeDecl before, TypeDecl after) {
@@ -164,7 +172,6 @@ public class Constraints extends java.lang.Object {
       constraints.addAll(newConstraints);
     }
 
-    // Declared in GenericMethodsInference.jrag at line 225
 
 
     public void resolveSubtypeConstraints() {
@@ -184,7 +191,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 242
 
     
     public void resolveSupertypeConstraints() {
@@ -211,7 +217,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 294
 
     
     /*
@@ -270,7 +275,6 @@ public class Constraints extends java.lang.Object {
         throw new Error("Operation not supported for " + t.fullName() + ", " + t.getClass().getName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 322
 
 
     public static HashSet parameterizedSupertypes(TypeDecl t) {
@@ -279,7 +283,6 @@ public class Constraints extends java.lang.Object {
       return result;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 327
 
     public static void addParameterizedSupertypes(TypeDecl t, HashSet processed, HashSet result) {
       if(!processed.contains(t)) {
@@ -293,7 +296,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 339
 
 
     public Collection typeArguments() {
@@ -306,7 +308,6 @@ public class Constraints extends java.lang.Object {
       return list;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 349
 
 
     public void addSupertypeConstraint(TypeDecl T, TypeDecl A) {
@@ -315,7 +316,6 @@ public class Constraints extends java.lang.Object {
       //System.out.println(T.name() + " :> " + A.fullName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 354
 
     public void addSubtypeConstraint(TypeDecl T, TypeDecl A) {
       ConstraintSet set = (ConstraintSet)constraintsMap.get(T);
@@ -323,7 +323,6 @@ public class Constraints extends java.lang.Object {
       //System.out.println(T.name() + " <: " + A.fullName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 359
 
     public void addEqualConstraint(TypeDecl T, TypeDecl A) {
       ConstraintSet set = (ConstraintSet)constraintsMap.get(T);
@@ -331,7 +330,6 @@ public class Constraints extends java.lang.Object {
       //System.out.println(T.name() + " = " + A.fullName());
     }
 
-    // Declared in GenericMethodsInference.jrag at line 365
 
     
     public void convertibleTo(TypeDecl A, TypeDecl F) {
@@ -425,7 +423,6 @@ public class Constraints extends java.lang.Object {
       }
     }
 
-    // Declared in GenericMethodsInference.jrag at line 457
 
 
 
@@ -553,7 +550,6 @@ public class Constraints extends java.lang.Object {
         rawAccess = true;
     }
 
-    // Declared in GenericMethodsInference.jrag at line 581
 
 
     public void constraintEqual(TypeDecl A, TypeDecl F) {
