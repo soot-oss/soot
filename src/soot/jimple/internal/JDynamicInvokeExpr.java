@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -59,7 +60,11 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     public JDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, List<Value> methodArgs)
     {
 		if(!methodRef.getSignature().startsWith("<"+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+": "))
-    		throw new RuntimeException("Receiver type of JDynamicInvokeExpr must be "+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+"!");
+    		throw new IllegalArgumentException("Receiver type of JDynamicInvokeExpr must be "+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+"!");
+		if(!bootstrapMethodRef.returnType().equals(RefType.v("java.lang.invoke.CallSite"))) {
+    		throw new IllegalArgumentException("Return type of bootstrap method must be java.lang.invoke.CallSite!");
+		}
+		
 		
     	this.bsmRef = bootstrapMethodRef;
         this.methodRef = methodRef;
