@@ -489,22 +489,7 @@ public class PackManager {
     }
 
     private Iterator reachableClasses() {
-        if( false && (Options.v().whole_program() ||
-                      Options.v().whole_shimple())) {
-            QueueReader methods = Scene.v().getReachableMethods().listener();
-            HashSet reachableClasses = new HashSet();
-            
-            while(true) {
-                    SootMethod m = (SootMethod) methods.next();
-                    if(m == null) break;
-                    SootClass c = m.getDeclaringClass();
-                    if( !c.isApplicationClass() ) continue;
-                    reachableClasses.add( c );
-            }
-            return reachableClasses.iterator();
-        } else {
-            return Scene.v().getApplicationClasses().iterator();
-        }
+        return Scene.v().getApplicationClasses().iterator();
     }
 
     /* post process for DAVA */
