@@ -16,12 +16,13 @@
 \maketitle
 
 \begin{abstract}
-This document describes Soot's support for JSR292, also known as the
-\id bytecode. Since version 2.5.0, Soot supports the \id
-bytecode in all its intermediate representations. Users can use Soot to easily
-parse Java 7+ bytecode into these different representations, or can
-converserly use the representations to generate Java 7+ bytecode containing
-invokedyanmic instructions.
+This document describes Soot's support for
+JSR292\footnote{http://jcp.org/en/jsr/detail?id=292}, also known as the \id
+bytecode. Since version 2.5.0, Soot supports the \id bytecode in all its
+intermediate representations. Users can use Soot to easily parse Java 7+
+bytecode into these different representations, or can conversely use the
+representations to generate Java 7+ bytecode containing invokedynamic.
+instructions.
 \end{abstract}
 
 \section{Introduction: invokedynamic bytecode}
@@ -30,15 +31,19 @@ JSR292 describes a new bytecode, \id, and a series of new
 constant-pool entries the in combination allow the execution of \id
 instructions. Unlike all other invoke instructions in Java, the target method of
 an \id instruction is not defined by the language semantics but
-rather by a user-defined method, called the bootstrap method. Each single \id
-instruction can be associated with its own bootstrap method, or multiple
+rather by a user-defined method, called the bootstrap method. The purpose of a
+bootstrap method is to associate an \id statement with a CallSite object. This
+object will then return a method handle to the statement's target method when
+invoking \texttt{CallSite.getTarget()}. Call sites may be constant or mutable,
+i.e., may return either always the same method handle object or not. Each single
+\id instruction can be associated with its own bootstrap method, or multiple
 instructions can share the same one. In addition to its bootstrap method, an \id
 instruction can state a number of static arguments that can be passed to this
 method. The arguments are called static because the bootstrap method is executed
 at load time. For the same reason, static arguments are restricted to such
 arguments types that can be encoded in the constant pool. Last but not least, an
 \id instruction states a method name, and a number of regular
-invokcation arguments. Opposed to normal methods, however, this method name does
+invocation arguments. Opposed to normal methods, however, this method name does
 not have to follow Java's naming conventions; instead it is an uninterpreted
 Utf8 String. To summarize, an \id instruction refers to the following:
 \begin{itemize}
@@ -56,7 +61,7 @@ Utf8 String. To summarize, an \id instruction refers to the following:
 The information is stored in the bytecode's constant pool in a rather complex
 way, using a set of different kinds of constant pools entry and a new attribute
 called \texttt{BootstrapMethods}. Soot's bytecode parser Coffi parses these
-entries in order to create jimple expressions from invokedynamic bytecodes.
+entries in order to create Jimple expressions from invokedynamic bytecodes.
 The \texttt{BootstrapMethods} attribute is stripped during this process; it will
 not occur as a tag on the corresponding SootClass. Instead, the attribute is
 re-generated when Jimple is converted back to bytecode. (see below)
@@ -91,10 +96,15 @@ In the Jimple IR, a invokedynamic bytecode is represented as a
   accordingly. Those arguments must all be Jimple Constant objects.
   \item[SootMethodRef methodRef] A method reference stating the name and type
   signature of this \id call site. The method name may be any valid Utf8 string.
-  The name of the declaring class must be \texttt{soot.dummy.InvokeDynamic}.
-  Soot will handle this special class as a phantom class. The class name is only
-  used internally, it is stripped again when the
-  \texttt{JDynamicInvokeExpression} is converted to bytecode. This is because
+  The sole purpose of this name is to be passed, by the virtual machine, as an
+  argument to the provided bootstrap method. The type signature is used for type
+  checking the \id call site in its invocation context. This is necessary for
+  guaranteeing the integrity of the bytecode.
+  In this signature, the name of the declaring class must be
+  \texttt{soot.dummy.InvokeDynamic}.
+  Soot will handle this special class as a phantom class. (Even if phantom
+  classes are disabled otherwise.) The class name is only used internally, it is
+  stripped again when the \texttt{JDynamicInvokeExpression} is converted to bytecode. This is because
   invokedynamic instructions do not have a declaring class. 
   \item[List methodArgs] A number of regular, dynamic, method arguments in the
   form of Jimple Immediate objects.
@@ -197,12 +207,13 @@ that a bootstrap method always receives three implicit arguments from the
 virtual machine. Those arguments are of type \texttt{Lookup}, \texttt{String},
 and \texttt{MethodType}. This does not mean, however, that one can rely on the
 bootstrap method's signature to start with those argument types. Instead, a
-botstrap method could consume any number of those arguments through a varargs
+bootstrap method could consume any number of those arguments through a varargs
 argument, as in:
 \begin{verbatim}
 CallSite bootstrap(Object caller, Object... nameAndTypeWithArgs)
 \end{verbatim}
 For this reason, Soot currently does not check the correctness of the bootstrap
-method's signature against the provided arguments. Users hence have to be
-careful to provide a correct signature.
+method's arguments against the provided arguments. Users hence have to be
+careful to provide a correct signature. Note that we \emph{do} check, however,
+that the correct return type, \texttt{java.lang.invoke.CallSite}, is provided.
 \end{document}
