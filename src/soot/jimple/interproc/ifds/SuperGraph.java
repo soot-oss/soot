@@ -2,14 +2,29 @@ package soot.jimple.interproc.ifds;
 
 import java.util.List;
 
-public class SuperGraph<N>  {
+import soot.SootMethod;
 
-	public List<N> getCalleesOfCallAt(N s) {
+public class SuperGraph<N>  {
+	
+	public SootMethod getMethodOf(N n) {
+		return null;
+	}
+
+	public List<N> getSuccsOf(N n) {
+		return null;
+	}
+
+	public List<N> getCallersOfCallAt(N n) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public N getReturnSiteOfCallAt(N s) {
+	public List<N> getCalleesOfCallAt(N n) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public N getReturnSiteOfCallAt(N n) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -6,7 +6,7 @@ public interface FlowFunctions<N> {
 
 	  public SimpleFlowFunction getCallFlowFunction(N src, N dest);
 
-	  public MergingFlowFunction getReturnFlowFunction(N call, N src, N dest);
+	  public SimpleFlowFunction getReturnFlowFunction();
 
 	  public SimpleFlowFunction getCallToReturnFlowFunction(N src, N dest);
 
