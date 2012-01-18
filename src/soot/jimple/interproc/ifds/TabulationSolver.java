@@ -35,7 +35,7 @@ public class TabulationSolver<N,A> {
 	
 	protected FlowFunctions<N> flowFunctions = null;
 	
-	protected Map<SootMethod,Set<PathEdge<N>>> methodToSummaries = new HashMap<SootMethod, Set<PathEdge<N>>>();
+	protected Map<SootMethod,SummaryEdges> methodToSummaries = new HashMap<SootMethod, SummaryEdges>();
 	
 	public void solve() {
 		N entryPoint = null;
@@ -52,7 +52,6 @@ public class TabulationSolver<N,A> {
 			PathEdge<N> edge = iter.next();
 			iter.remove();
 			
-			propagate(edge);
 			if(superGraph.isCallStmt(edge.getTarget())) {
 				processCall(edge);
 			} else if(superGraph.isReturnStmt(edge.getTarget())) {
@@ -63,9 +62,8 @@ public class TabulationSolver<N,A> {
 		}
 	}
 
-
-
-	private void propagate(PathEdge<N> edge) {
+	private void propagate(N src, int dataAtSource, N tgt, int dataAtTgt) {
+		PathEdge<N> edge = new PathEdge<N>(src, dataAtSource, tgt, dataAtTgt);
 		if(!pathEdges.contains(edge)) {
 			pathEdges.add(edge);
 			worklist.add(edge);
@@ -83,7 +81,7 @@ public class TabulationSolver<N,A> {
 			SimpleFlowFunction flowFunction = flowFunctions.getNormalFlowFunction(n,m);
 			Set<Integer> res = flowFunction.computeTargets(d2);
 			for (Integer d3 : res) {
-				propagate(new PathEdge<N>(n, d2, m, d3));
+				propagate(n, d2, m, d3);
 			}
 		}
 	}
@@ -103,11 +101,8 @@ public class TabulationSolver<N,A> {
 	private void processReturn(PathEdge<N> edge) {
 		N n = edge.getTarget(); // an exit node; line 21...
 		SootMethod methodThatNeedsSummary = superGraph.getMethodOf(n);
-		Set<PathEdge<N>> summaries = summaryEdgesOf(methodThatNeedsSummary);
-		if(!summaries.contains(edge)) {
-			summaries.add(edge);
-		}
-		
+		SummaryEdges summaries = summaryEdgesOf(methodThatNeedsSummary);
+		summaries.insertEdge(edge.factAtSource(),edge.factAtTarget());	
 		
 		SimpleFlowFunction retFunction = flowFunctions.getReturnFlowFunction();
 		Set<Integer> targets = retFunction.computeTargets(edge.factAtTarget());
@@ -116,7 +111,7 @@ public class TabulationSolver<N,A> {
 			N sProcOfC = pair.getO1();
 			int d3 = pair.getO2();//FIXME must be start node of caller procedure
 			for(int d5: targets) {
-				propagate(new PathEdge<N>(sProcOfC, d3, retSiteOfCall(sProcOfC), d5));
+				propagate(sProcOfC, d3, retSiteOfCall(sProcOfC), d5);
 			}
 		}
 		
@@ -132,10 +127,10 @@ public class TabulationSolver<N,A> {
 		return null;
 	}
 
-	private Set<PathEdge<N>> summaryEdgesOf(SootMethod methodThatNeedsSummary) {
-		Set<PathEdge<N>> summaries = methodToSummaries.get(methodThatNeedsSummary);
+	private SummaryEdges summaryEdgesOf(SootMethod methodThatNeedsSummary) {
+		SummaryEdges summaries = methodToSummaries.get(methodThatNeedsSummary);
 		if(summaries==null) {
-			summaries = new HashSet<PathEdge<N>>();
+			summaries = new SummaryEdges();
 			methodToSummaries.put(methodThatNeedsSummary, summaries);
 		}
 		return summaries;
@@ -148,28 +143,32 @@ public class TabulationSolver<N,A> {
 	private void processCall(PathEdge<N> edge) {
 		N n = edge.getTarget(); // a call node; line 14...
 		int d2 = edge.factAtTarget();
-		for(N sCalledProcN: superGraph.getCalleesOfCallAt(n)) { //still line 14
+		List<N> callees = superGraph.getCalleesOfCallAt(n);
+		N returnSiteN = superGraph.getReturnSiteOfCallAt(n); 
+		for(N sCalledProcN: callees) { //still line 14
 			SimpleFlowFunction function = flowFunctions.getCallFlowFunction(n, sCalledProcN);
 			Set<Integer> res = function.computeTargets(d2);
 			for(Integer d3: res) {
-				propagate(new PathEdge<N>(sCalledProcN, d3, sCalledProcN, d3)); //line 15
+				propagate(sCalledProcN, d3, sCalledProcN, d3); //line 15
 			}
+			
+			//line 17 for SummaryEdge (here callee-side)
+			SummaryEdges summaryEdges = summaryEdgesOf(superGraph.getMethodOf(sCalledProcN));
+			for(Integer d3: summaryEdges.targetsOf(d2)) {
+				N sP = edge.getSource();  
+				int d1 = edge.factAtSource();
+				propagate(sP, d1, returnSiteN, d3); //line 18
+			}		
 		}		
 		
-		N returnSiteN = superGraph.getReturnSiteOfCallAt(n); //line 17
 		SimpleFlowFunction retFunction = flowFunctions.getCallToReturnFlowFunction(n, returnSiteN); //line 17 for E_Hash
 		Set<Integer> retRes = retFunction.computeTargets(d2);
-		retRes.addAll(summaryEdgesFor(n,d2)); //line 17 for SummaryEdge
+		
 		for(Integer d3: retRes) {
 			N sP = edge.getSource();  
 			int d1 = edge.factAtSource();
-			propagate(new PathEdge<N>(sP, d1, returnSiteN, d3)); //line 18
+			propagate(sP, d1, returnSiteN, d3); //line 18
 		}		
-	}
-
-	private Set<Integer> summaryEdgesFor(N call, int factAtCall) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
