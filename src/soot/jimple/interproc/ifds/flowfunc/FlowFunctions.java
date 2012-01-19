@@ -8,6 +8,6 @@ public interface FlowFunctions<N> {
 
 	  public SimpleFlowFunction getReturnFlowFunction();
 
-	  public SimpleFlowFunction getCallToReturnFlowFunction(N src, N dest);
+	  public SimpleFlowFunction getCallToReturnFlowFunction(N call);
 
 }

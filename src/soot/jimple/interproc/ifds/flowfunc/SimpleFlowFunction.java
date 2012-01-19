@@ -6,4 +6,6 @@ public interface SimpleFlowFunction {
 
 	Set<Integer> computeTargets(int d);
 
+	Set<Integer> computeSources(int d);
+
 }
