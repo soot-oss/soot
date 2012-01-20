@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import soot.SootMethod;
@@ -31,23 +32,37 @@ public class TabulationSolver<N,A> {
 	 * reverse lookup, computing d1 (called d3 in line [26]) from the remaining items.
 	 * The map allows to look this up quickly.
 	 */
-	protected Map<MultiKey,Set<Integer>> pathEdges = new HashMap<MultiKey, Set<Integer>>();
+	protected final Map<MultiKey,Set<Integer>> pathEdges = new HashMap<MultiKey, Set<Integer>>();
 
-	protected InterproceduralCFG<N> icfg;
+	protected final Map<SootMethod,SummaryEdges> methodToSummaries = new HashMap<SootMethod, SummaryEdges>();
+
+	protected final int ZERO_VALUE = 0;
+
+	protected final InterproceduralCFG<N> icfg;
 	
-	protected FixedUniverse<A> domain;
+	protected final FlowFunctions<N> flowFunctions;
+
+	protected final FixedUniverse<A> universe;
+
+	private final Map<SootMethod, Set<A>> initialSeeds;
 	
-	protected final int ZERO_VALUE = -1;
-	
-	protected FlowFunctions<N> flowFunctions = null;
-	
-	protected Map<SootMethod,SummaryEdges> methodToSummaries = new HashMap<SootMethod, SummaryEdges>();
-	
+	public TabulationSolver(InterproceduralCFG<N> icfg, FixedUniverse<A> universe, FlowFunctions<N> flowFunctions, Map<SootMethod,Set<A>> initialSeeds) {
+		this.icfg = icfg;
+		this.universe = universe;
+		this.flowFunctions = flowFunctions;
+		this.initialSeeds = initialSeeds;
+	}
+
 	public void solve() {
-		for (N entryPoint : icfg.entryPoints()) {
-			addPathEdge(entryPoint, ZERO_VALUE, entryPoint, ZERO_VALUE);
-			PathEdge<N> initEdge = new PathEdge<N>(entryPoint, ZERO_VALUE, entryPoint, ZERO_VALUE);
-			worklist.add(initEdge);
+		for(Entry<SootMethod, Set<A>> seed: initialSeeds.entrySet()) {
+			SootMethod entryPoint = seed.getKey();
+			Set<A> initialAbstraction = seed.getValue();
+			N startPoint = icfg.getStartPointOf(entryPoint);
+			propagate(startPoint, ZERO_VALUE, startPoint, ZERO_VALUE);
+			for (A val : initialAbstraction) {
+				int index = universe.indexOf(val);
+				propagate(startPoint, index, startPoint, index);
+			}
 		}
 		forwardTabulateSLRPs();		
 	}
@@ -156,13 +171,15 @@ public class TabulationSolver<N,A> {
 	 * @param edge
 	 */
 	private void processNormalFlow(PathEdge<N> edge) {
+		N sP = edge.getSource();
+		int d1 = edge.factAtSource();
 		N n = edge.getTarget(); 
 		int d2 = edge.factAtTarget();
 		for (N m : icfg.getSuccsOf(n)) {
 			SimpleFlowFunction flowFunction = flowFunctions.getNormalFlowFunction(n,m);
 			Set<Integer> res = flowFunction.computeTargets(d2);
 			for (Integer d3 : res) {
-				propagate(n, d2, m, d3);
+				propagate(sP, d1, m, d3);
 			}
 		}
 	}
@@ -176,15 +193,15 @@ public class TabulationSolver<N,A> {
 		return summaries;
 	}
 
-	private void addPathEdge(N source, int dataAtSource, N target, int dataAtTarget) {
-		MultiKey key = new MultiKey(source, target, dataAtTarget);
-		Set<Integer> dataValuesAtSource = pathEdges.get(key);
-		if(dataValuesAtSource==null) {
-			dataValuesAtSource = new HashSet<Integer>();
-			pathEdges.put(key, dataValuesAtSource);
-		}
-		dataValuesAtSource.add(dataAtSource);
-	}
+//	private void addPathEdge(N source, int dataAtSource, N target, int dataAtTarget) {
+//		MultiKey key = new MultiKey(source, target, dataAtTarget);
+//		Set<Integer> dataValuesAtSource = pathEdges.get(key);
+//		if(dataValuesAtSource==null) {
+//			dataValuesAtSource = new HashSet<Integer>();
+//			pathEdges.put(key, dataValuesAtSource);
+//		}
+//		dataValuesAtSource.add(dataAtSource);
+//	}
 	
 	private Set<Integer> getDataValuesAtSourcePathEdge(N source, N target, int dataAtTarget) {
 		MultiKey key = new MultiKey(source, target, dataAtTarget);
@@ -207,6 +224,19 @@ public class TabulationSolver<N,A> {
 			
 			PathEdge<N> edge = new PathEdge<N>(src, dataAtSource, tgt, dataAtTgt);
 			worklist.add(edge);
+			
+			StringBuffer result = new StringBuffer();
+			result.append("<");
+			result.append(src);
+			result.append(",");
+			A elementAt = universe.elementAt(dataAtSource);
+			result.append(elementAt);
+			result.append("> -> <");
+			result.append(tgt);
+			result.append(",");
+			result.append(universe.elementAt(dataAtTgt));
+			result.append(">");
+			System.err.println(result.toString());
 		}
 	}
 	

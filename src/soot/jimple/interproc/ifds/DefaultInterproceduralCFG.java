@@ -48,29 +48,33 @@ public class DefaultInterproceduralCFG implements InterproceduralCFG<Unit> {
 				for (Unit unit : units) {
 					unitToOwner.put(unit, b);
 				}
-				
-				bodyToUnitGraph.put(b, new ExceptionalUnitGraph(b));
 			}
 		}
 	}
 
-	/* Returns the first unit of the body of each method that is an entry point.
-	 */
-	public Set<Unit> entryPoints() {
-		Set<Unit> res = new HashSet<Unit>();
-		for (SootMethod m: Scene.v().getEntryPoints()) {
-			Unit startPoint = getStartPointOf(m);
-			if(startPoint!=null) res.add(startPoint);
-		}		
-		return res;
-	}
+//	/* Returns the first unit of the body of each method that is an entry point.
+//	 */
+//	public Set<Unit> entryPoints() {
+//		Set<Unit> res = new HashSet<Unit>();
+//		for (SootMethod m: Scene.v().getEntryPoints()) {
+//			Unit startPoint = getStartPointOf(m);
+//			if(startPoint!=null) res.add(startPoint);
+//		}		
+//		return res;
+//	}
 
 	public SootMethod getMethodOf(Unit u) {
 		return unitToOwner.get(u).getMethod();
 	}
 
 	public List<Unit> getSuccsOf(Unit u) {
-		return bodyToUnitGraph.get(unitToOwner.get(u)).getSuccsOf(u);
+		Body body = unitToOwner.get(u);
+		UnitGraph unitGraph = bodyToUnitGraph.get(body);
+		if(unitGraph==null) {
+			unitGraph = new ExceptionalUnitGraph(body); 
+			bodyToUnitGraph.put(body, unitGraph);
+		}
+		return unitGraph.getSuccsOf(u);
 	}
 
 	public Set<Unit> getCalleesOfCallAt(Unit u) {

@@ -28,6 +28,4 @@ public interface InterproceduralCFG<N>  {
 
 	public boolean isReturnStmt(N stmt);
 
-	public Set<N> entryPoints();
-
 }
