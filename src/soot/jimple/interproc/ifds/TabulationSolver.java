@@ -43,35 +43,19 @@ public class TabulationSolver<N,A> {
 	
 	protected Map<SootMethod,SummaryEdges> methodToSummaries = new HashMap<SootMethod, SummaryEdges>();
 	
-	private void addPathEdge(N source, int dataAtSource, N target, int dataAtTarget) {
-		MultiKey key = new MultiKey(source, target, dataAtTarget);
-		Set<Integer> dataValuesAtSource = pathEdges.get(key);
-		if(dataValuesAtSource==null) {
-			dataValuesAtSource = new HashSet<Integer>();
-			pathEdges.put(key, dataValuesAtSource);
-		}
-		dataValuesAtSource.add(dataAtSource);
-	}
-	
-	private Set<Integer> getDataValuesAtSourcePathEdge(N source, N target, int dataAtTarget) {
-		MultiKey key = new MultiKey(source, target, dataAtTarget);
-		Set<Integer> dataValuesAtSource = pathEdges.get(key);
-		if(dataValuesAtSource==null)
-			return Collections.emptySet();
-		else 
-			return dataValuesAtSource;		
-	}
-	
 	public void solve() {
 		for (N entryPoint : icfg.entryPoints()) {
 			addPathEdge(entryPoint, ZERO_VALUE, entryPoint, ZERO_VALUE);
 			PathEdge<N> initEdge = new PathEdge<N>(entryPoint, ZERO_VALUE, entryPoint, ZERO_VALUE);
 			worklist.add(initEdge);
 		}
-		forwardTabulate();		
+		forwardTabulateSLRPs();		
 	}
-
-	private void forwardTabulate() {
+	
+	/*
+	 * Forward-tabulates the same-level realizable paths.
+	 */
+	private void forwardTabulateSLRPs() {
 		while(!worklist.isEmpty()) {
 			//pop edge
 			Iterator<PathEdge<N>> iter = worklist.iterator();
@@ -81,44 +65,55 @@ public class TabulationSolver<N,A> {
 			if(icfg.isCallStmt(edge.getTarget())) {
 				processCall(edge);
 			} else if(icfg.isReturnStmt(edge.getTarget())) {
-				processReturn(edge);
+				processExit(edge);
 			} else {
 				processNormalFlow(edge);
 			}
 		}
 	}
+	
+	/**
+	 * Lines 13-20 of the algorithm; processing a call site in the caller's context
+	 * @param edge an edge whose target node resembles a method call
+	 */
+	private void processCall(PathEdge<N> edge) {
+		N n = edge.getTarget(); // a call node; line 14...
+		int d2 = edge.factAtTarget();
+		Set<N> callees = icfg.getCalleesOfCallAt(n);
+		List<N> returnSiteNs = icfg.getReturnSitesOfCallAt(n);
+		for(N sCalledProcN: callees) { //still line 14
+			SimpleFlowFunction function = flowFunctions.getCallFlowFunction(n, sCalledProcN);
+			Set<Integer> res = function.computeTargets(d2);
+			for(Integer d3: res) {
+				propagate(sCalledProcN, d3, sCalledProcN, d3); //line 15
 
-	private void propagate(N src, int dataAtSource, N tgt, int dataAtTgt) {
-		MultiKey key = new MultiKey(src, tgt, dataAtTgt);
-		Set<Integer> dataValuesAtSource = pathEdges.get(key);
-		if(dataValuesAtSource==null) {
-			dataValuesAtSource = new HashSet<Integer>();
-			pathEdges.put(key, dataValuesAtSource);
-		}
-		if(!dataValuesAtSource.contains(dataAtSource)) {
-			dataValuesAtSource.add(dataAtSource);
+				//line 17 for SummaryEdge (here callee-side)
+				SummaryEdges summaryEdges = summaryEdgesOf(icfg.getMethodOf(sCalledProcN));
+				for(Integer d3Prime: summaryEdges.targetsOf(d3)) {  
+					N sP = edge.getSource();  
+					int d1 = edge.factAtSource();
+					for (N returnSiteN : returnSiteNs) {
+						SimpleFlowFunction retFunction  = flowFunctions.getReturnFlowFunction();
+						for (Integer d3Prime2 : retFunction.computeTargets(d3Prime)) { //d3prime2 is the d3 at line 17/18 (note that we use callee summaries)
+							propagate(sP, d1, returnSiteN, d3Prime2); //line 18
+						}
+					}
+				}		
+			}
 			
-			PathEdge<N> edge = new PathEdge<N>(src, dataAtSource, tgt, dataAtTgt);
-			worklist.add(edge);
+		}		
+		
+		N sP = edge.getSource();  
+		int d1 = edge.factAtSource();
+		for (N returnSiteN : returnSiteNs) {
+			SimpleFlowFunction retFunction = flowFunctions.getCallToReturnFlowFunction(n,returnSiteN); //line 17 for E_Hash
+			Set<Integer> retRes = retFunction.computeTargets(d2);			
+			for(Integer d3: retRes) {
+				propagate(sP, d1, returnSiteN, d3); //line 18
+			}		
 		}
 	}
 	
-	/**
-	 * Lines 33-37 of the algorithm.
-	 * @param edge
-	 */
-	private void processNormalFlow(PathEdge<N> edge) {
-		N n = edge.getTarget(); 
-		int d2 = edge.factAtTarget();
-		for (N m : icfg.getSuccsOf(n)) {
-			SimpleFlowFunction flowFunction = flowFunctions.getNormalFlowFunction(n,m);
-			Set<Integer> res = flowFunction.computeTargets(d2);
-			for (Integer d3 : res) {
-				propagate(n, d2, m, d3);
-			}
-		}
-	}
-
 	/**
 	 * Lines 21-32 of the algorithm.
 	 * With respect to summary edges, we follow the approach also taken in Wala:
@@ -129,12 +124,11 @@ public class TabulationSolver<N,A> {
 	 * need to be re-computed more often. 
 	 * @param edge an edge where the target resembles an exit node
 	 */
-	private void processReturn(PathEdge<N> edge) {
+	private void processExit(PathEdge<N> edge) {
 		N n = edge.getTarget(); // an exit node; line 21...
 		SootMethod methodThatNeedsSummary = icfg.getMethodOf(n);
 		SummaryEdges summaries = summaryEdgesOf(methodThatNeedsSummary);
-		summaries.insertEdge(edge.factAtSource(),edge.factAtTarget());	
-		
+		summaries.insertEdge(edge.factAtSource(),edge.factAtTarget());			
 		
 		SimpleFlowFunction retFunction = flowFunctions.getReturnFlowFunction();
 		Set<Integer> targets = retFunction.computeTargets(edge.factAtTarget());
@@ -156,6 +150,22 @@ public class TabulationSolver<N,A> {
 		}
 		
 	}
+	
+	/**
+	 * Lines 33-37 of the algorithm.
+	 * @param edge
+	 */
+	private void processNormalFlow(PathEdge<N> edge) {
+		N n = edge.getTarget(); 
+		int d2 = edge.factAtTarget();
+		for (N m : icfg.getSuccsOf(n)) {
+			SimpleFlowFunction flowFunction = flowFunctions.getNormalFlowFunction(n,m);
+			Set<Integer> res = flowFunction.computeTargets(d2);
+			for (Integer d3 : res) {
+				propagate(n, d2, m, d3);
+			}
+		}
+	}
 
 	private SummaryEdges summaryEdgesOf(SootMethod methodThatNeedsSummary) {
 		SummaryEdges summaries = methodToSummaries.get(methodThatNeedsSummary);
@@ -166,44 +176,42 @@ public class TabulationSolver<N,A> {
 		return summaries;
 	}
 
-	/**
-	 * Lines 13-20 of the algorithm; processing a call site in the caller's context
-	 * @param edge an edge whose target node resembles a method call
-	 */
-	private void processCall(PathEdge<N> edge) {
-		N n = edge.getTarget(); // a call node; line 14...
-		int d2 = edge.factAtTarget();
-		Set<N> callees = icfg.getCalleesOfCallAt(n);
-		List<N> returnSiteNs = icfg.getReturnSitesOfCallAt(n);
-		for(N sCalledProcN: callees) { //still line 14
-			SimpleFlowFunction function = flowFunctions.getCallFlowFunction(n, sCalledProcN);
-			Set<Integer> res = function.computeTargets(d2);
-			for(Integer d3: res) {
-				propagate(sCalledProcN, d3, sCalledProcN, d3); //line 15
-			}
-			
-			//line 17 for SummaryEdge (here callee-side)
-			SummaryEdges summaryEdges = summaryEdgesOf(icfg.getMethodOf(sCalledProcN));
-			for(Integer d3: summaryEdges.targetsOf(d2)) {
-				N sP = edge.getSource();  
-				int d1 = edge.factAtSource();
-				for (N returnSiteN : returnSiteNs) {
-					propagate(sP, d1, returnSiteN, d3); //line 18
-				}
-			}		
-		}		
-		
-		SimpleFlowFunction retFunction = flowFunctions.getCallToReturnFlowFunction(n); //line 17 for E_Hash
-		Set<Integer> retRes = retFunction.computeTargets(d2);
-		
-		for(Integer d3: retRes) {
-			N sP = edge.getSource();  
-			int d1 = edge.factAtSource();
-			for (N returnSiteN : returnSiteNs) {
-				propagate(sP, d1, returnSiteN, d3); //line 18
-			}
-		}		
+	private void addPathEdge(N source, int dataAtSource, N target, int dataAtTarget) {
+		MultiKey key = new MultiKey(source, target, dataAtTarget);
+		Set<Integer> dataValuesAtSource = pathEdges.get(key);
+		if(dataValuesAtSource==null) {
+			dataValuesAtSource = new HashSet<Integer>();
+			pathEdges.put(key, dataValuesAtSource);
+		}
+		dataValuesAtSource.add(dataAtSource);
 	}
+	
+	private Set<Integer> getDataValuesAtSourcePathEdge(N source, N target, int dataAtTarget) {
+		MultiKey key = new MultiKey(source, target, dataAtTarget);
+		Set<Integer> dataValuesAtSource = pathEdges.get(key);
+		if(dataValuesAtSource==null)
+			return Collections.emptySet();
+		else 
+			return dataValuesAtSource;		
+	}
+	
+	private void propagate(N src, int dataAtSource, N tgt, int dataAtTgt) {
+		MultiKey key = new MultiKey(src, tgt, dataAtTgt);
+		Set<Integer> dataValuesAtSource = pathEdges.get(key);
+		if(dataValuesAtSource==null) {
+			dataValuesAtSource = new HashSet<Integer>();
+			pathEdges.put(key, dataValuesAtSource);
+		}
+		if(!dataValuesAtSource.contains(dataAtSource)) {
+			dataValuesAtSource.add(dataAtSource);
+			
+			PathEdge<N> edge = new PathEdge<N>(src, dataAtSource, tgt, dataAtTgt);
+			worklist.add(edge);
+		}
+	}
+	
+
+	
 	
 	class MultiKey {
 		private final N src;
