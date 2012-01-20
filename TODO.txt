@@ -1,2 +1,11 @@
 TODO:
 	Handle MethodType constant-pool entries	
+
+	
+IFDS:
+	Flow functions should use N-type arguments instead of int
+	Flow functions should receive more arguments
+	Better way to initialize analysis?
+	Provide query API
+	Useful templates
+	Performance optimizations	
