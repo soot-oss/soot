@@ -1,13 +1,13 @@
 package soot.jimple.interproc.ifds.flowfunc;
 
-public interface FlowFunctions<N> {
+public interface FlowFunctions<N,A> {
 	
-	  public SimpleFlowFunction getNormalFlowFunction(N src, N dest);
+	  public SimpleFlowFunction<A> getNormalFlowFunction(N src, N dest);
 
-	  public SimpleFlowFunction getCallFlowFunction(N src, N dest);
+	  public SimpleFlowFunction<A> getCallFlowFunction(N src, N dest);
 
-	  public SimpleFlowFunction getReturnFlowFunction();
+	  public SimpleFlowFunction<A> getReturnFlowFunction();
 
-	  public SimpleFlowFunction getCallToReturnFlowFunction(N call, N returnSite);
+	  public SimpleFlowFunction<A> getCallToReturnFlowFunction(N call, N returnSite);
 
 }

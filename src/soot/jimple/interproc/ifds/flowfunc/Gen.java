@@ -4,17 +4,17 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Gen implements SimpleFlowFunction {
+public class Gen<A> implements SimpleFlowFunction<A> {
 	
-	private final int genValue;
+	private final A genValue;
 	
-	public Gen(int genValue){
+	public Gen(A genValue){
 		this.genValue = genValue;
 	} 
 
-	public Set<Integer> computeTargets(int source) {
-		if(source==0) {
-			HashSet<Integer> res = new HashSet<Integer>();
+	public Set<A> computeTargets(A source) {
+		if(source==null) {
+			HashSet<A> res = new HashSet<A>();
 			res.add(source);
 			res.add(genValue);
 			return res;
@@ -22,9 +22,9 @@ public class Gen implements SimpleFlowFunction {
 			return Collections.singleton(source);
 	}
 
-	public Set<Integer> computeSources(int target) {
-		if(target==0 || target==genValue)
-			return Collections.singleton(0);
+	public Set<A> computeSources(A target) {
+		if(target==null || target==genValue)
+			return Collections.singleton(null);
 		else
 			return Collections.singleton(target);
 	}

@@ -40,13 +40,13 @@ public class TabulationSolver<N,A> {
 
 	protected final InterproceduralCFG<N> icfg;
 	
-	protected final FlowFunctions<N> flowFunctions;
+	protected final FlowFunctions<N,A> flowFunctions;
 
 	protected final FixedUniverse<A> universe;
 
 	private final Map<SootMethod, Set<A>> initialSeeds;
 	
-	public TabulationSolver(InterproceduralCFG<N> icfg, FixedUniverse<A> universe, FlowFunctions<N> flowFunctions, Map<SootMethod,Set<A>> initialSeeds) {
+	public TabulationSolver(InterproceduralCFG<N> icfg, FixedUniverse<A> universe, FlowFunctions<N,A> flowFunctions, Map<SootMethod,Set<A>> initialSeeds) {
 		this.icfg = icfg;
 		this.universe = universe;
 		this.flowFunctions = flowFunctions;
@@ -97,9 +97,10 @@ public class TabulationSolver<N,A> {
 		Set<N> callees = icfg.getCalleesOfCallAt(n);
 		List<N> returnSiteNs = icfg.getReturnSitesOfCallAt(n);
 		for(N sCalledProcN: callees) { //still line 14
-			SimpleFlowFunction function = flowFunctions.getCallFlowFunction(n, sCalledProcN);
-			Set<Integer> res = function.computeTargets(d2);
-			for(Integer d3: res) {
+			SimpleFlowFunction<A> function = flowFunctions.getCallFlowFunction(n, sCalledProcN);
+			Set<A> res = function.computeTargets(universe.elementAt(d2));
+			for(A d3val: res) {
+				int d3 = universe.indexOf(d3val);
 				propagate(sCalledProcN, d3, sCalledProcN, d3); //line 15
 
 				//line 17 for SummaryEdge (here callee-side)
@@ -108,8 +109,10 @@ public class TabulationSolver<N,A> {
 					N sP = edge.getSource();  
 					int d1 = edge.factAtSource();
 					for (N returnSiteN : returnSiteNs) {
-						SimpleFlowFunction retFunction  = flowFunctions.getReturnFlowFunction();
-						for (Integer d3Prime2 : retFunction.computeTargets(d3Prime)) { //d3prime2 is the d3 at line 17/18 (note that we use callee summaries)
+						SimpleFlowFunction<A> retFunction  = flowFunctions.getReturnFlowFunction();
+						Set<A> d3Prime2vals = retFunction.computeTargets(universe.elementAt(d3Prime));
+						for (A d3Prime2val : d3Prime2vals) { //d3prime2 is the d3 at line 17/18 (note that we use callee summaries)
+							int d3Prime2 = universe.indexOf(d3Prime2val);
 							propagate(sP, d1, returnSiteN, d3Prime2); //line 18
 						}
 					}
@@ -121,9 +124,10 @@ public class TabulationSolver<N,A> {
 		N sP = edge.getSource();  
 		int d1 = edge.factAtSource();
 		for (N returnSiteN : returnSiteNs) {
-			SimpleFlowFunction retFunction = flowFunctions.getCallToReturnFlowFunction(n,returnSiteN); //line 17 for E_Hash
-			Set<Integer> retRes = retFunction.computeTargets(d2);			
-			for(Integer d3: retRes) {
+			SimpleFlowFunction<A> retFunction = flowFunctions.getCallToReturnFlowFunction(n,returnSiteN); //line 17 for E_Hash
+			Set<A> retRes = retFunction.computeTargets(universe.elementAt(d2));			
+			for(A d3val: retRes) {
+				int d3 = universe.indexOf(d3val);
 				propagate(sP, d1, returnSiteN, d3); //line 18
 			}		
 		}
@@ -145,15 +149,17 @@ public class TabulationSolver<N,A> {
 		SummaryEdges summaries = summaryEdgesOf(methodThatNeedsSummary);
 		summaries.insertEdge(edge.factAtSource(),edge.factAtTarget());			
 		
-		SimpleFlowFunction retFunction = flowFunctions.getReturnFlowFunction();
-		Set<Integer> targets = retFunction.computeTargets(edge.factAtTarget());
+		SimpleFlowFunction<A> retFunction = flowFunctions.getReturnFlowFunction();
+		Set<A> targets = retFunction.computeTargets(universe.elementAt(edge.factAtTarget()));
 		Set<N> callersP = icfg.getCallersOf(methodThatNeedsSummary);
 		int d1 = edge.factAtSource();
 		for (N c : callersP) {
-			SimpleFlowFunction callFlowFunction = flowFunctions.getCallFlowFunction(c, icfg.getStartPointOf(icfg.getMethodOf(n)));
-			Set<Integer> d4s = callFlowFunction.computeSources(d1);
-			for(int d4: d4s) {
-				for(int d5: targets) {
+			SimpleFlowFunction<A> callFlowFunction = flowFunctions.getCallFlowFunction(c, icfg.getStartPointOf(icfg.getMethodOf(n)));
+			Set<A> d4s = callFlowFunction.computeSources(universe.elementAt(d1));
+			for(A d4val: d4s) {
+				int d4 = universe.indexOf(d4val);
+				for(A d5val: targets) {
+					int d5 = universe.indexOf(d5val);
 					N sProcOfC = icfg.getStartPointOf(icfg.getMethodOf(c));
 					for(int d3: getDataValuesAtSourcePathEdge(sProcOfC, c, d4)) {
 						for(N retSiteC: icfg.getReturnSitesOfCallAt(n)) {
@@ -176,9 +182,10 @@ public class TabulationSolver<N,A> {
 		N n = edge.getTarget(); 
 		int d2 = edge.factAtTarget();
 		for (N m : icfg.getSuccsOf(n)) {
-			SimpleFlowFunction flowFunction = flowFunctions.getNormalFlowFunction(n,m);
-			Set<Integer> res = flowFunction.computeTargets(d2);
-			for (Integer d3 : res) {
+			SimpleFlowFunction<A> flowFunction = flowFunctions.getNormalFlowFunction(n,m);
+			Set<A> res = flowFunction.computeTargets(universe.elementAt(d2));
+			for (A d3val : res) {
+				int d3 = universe.indexOf(d3val);
 				propagate(sP, d1, m, d3);
 			}
 		}
@@ -192,16 +199,6 @@ public class TabulationSolver<N,A> {
 		}
 		return summaries;
 	}
-
-//	private void addPathEdge(N source, int dataAtSource, N target, int dataAtTarget) {
-//		MultiKey key = new MultiKey(source, target, dataAtTarget);
-//		Set<Integer> dataValuesAtSource = pathEdges.get(key);
-//		if(dataValuesAtSource==null) {
-//			dataValuesAtSource = new HashSet<Integer>();
-//			pathEdges.put(key, dataValuesAtSource);
-//		}
-//		dataValuesAtSource.add(dataAtSource);
-//	}
 	
 	private Set<Integer> getDataValuesAtSourcePathEdge(N source, N target, int dataAtTarget) {
 		MultiKey key = new MultiKey(source, target, dataAtTarget);

@@ -3,21 +3,23 @@ package soot.jimple.interproc.ifds.flowfunc;
 import java.util.Collections;
 import java.util.Set;
 
-public class Identity implements SimpleFlowFunction {
+public class Identity<A> implements SimpleFlowFunction<A> {
 	
+	@SuppressWarnings("rawtypes")
 	private final static Identity instance = new Identity();
 	
 	private Identity(){} //use v() instead
 
-	public Set<Integer> computeTargets(int source) {
+	public Set<A> computeTargets(A source) {
 		return Collections.singleton(source);
 	}
 
-	public Set<Integer> computeSources(int target) {
+	public Set<A> computeSources(A target) {
 		return Collections.singleton(target);
 	}
 	
-	public static Identity v() {
+	@SuppressWarnings("unchecked")
+	public static <A> Identity<A> v() {
 		return instance;
 	}
 

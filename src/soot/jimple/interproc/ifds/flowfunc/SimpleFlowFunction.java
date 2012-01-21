@@ -2,11 +2,12 @@ package soot.jimple.interproc.ifds.flowfunc;
 
 import java.util.Set;
 
-public interface SimpleFlowFunction {
+public interface SimpleFlowFunction<A> {
 
-	//TODO should better operate on N instead of int
-	Set<Integer> computeTargets(int source);
+	@interface Nullable{}
+	
+	Set<A> computeTargets(@Nullable A source);
 
-	Set<Integer> computeSources(int target);
+	Set<A> computeSources(@Nullable A target);
 
 }

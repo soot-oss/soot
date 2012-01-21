@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,14 +15,10 @@ import soot.SootMethod;
 import soot.Transform;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
 import soot.jimple.AssignStmt;
-import soot.jimple.Stmt;
 import soot.jimple.interproc.ifds.flowfunc.FlowFunctions;
-import soot.jimple.interproc.ifds.flowfunc.Gen;
 import soot.jimple.interproc.ifds.flowfunc.Identity;
 import soot.jimple.interproc.ifds.flowfunc.SimpleFlowFunction;
-
 
 public class Main {
 
@@ -54,31 +49,32 @@ public class Main {
 				TabulationSolver<Unit, Local> solver = new TabulationSolver<Unit,Local>(
 					new DefaultInterproceduralCFG(),
 					allLocals,
-					new FlowFunctions<Unit>() {
+					new FlowFunctions<Unit,Local>() {
 
-						public SimpleFlowFunction getNormalFlowFunction(Unit src, Unit dest) {
+						public SimpleFlowFunction<Local> getNormalFlowFunction(Unit src, Unit dest) {
 							if(src instanceof AssignStmt) {
 								AssignStmt assignStmt = (AssignStmt) src;
 								Value right = assignStmt.getRightOp();
 								if(right instanceof Local) {
-									Local rightLocal = (Local) right;
-									final int rightIndex = allLocals.indexOf(rightLocal);
-									final int leftIndex = allLocals.indexOf((Local)assignStmt.getLeftOp());
-									return new SimpleFlowFunction() {
+									final Local rightLocal = (Local) right;
+									final Local leftLocal = (Local) assignStmt.getLeftOp();
+									return new SimpleFlowFunction<Local>() {
 										
-										public Set<Integer> computeTargets(int source) {
-											if(source==rightIndex) {
-												Set<Integer> res = new HashSet<Integer>();
+										public Set<Local> computeTargets(@Nullable Local source) {
+											if(source==null) return Collections.singleton(null);
+											if(source.equals(rightLocal)) {
+												Set<Local> res = new HashSet<Local>();
 												res.add(source);
-												res.add(leftIndex);
+												res.add(leftLocal);
 												return res;
 											}
 											return Collections.singleton(source);
 										}
 										
-										public Set<Integer> computeSources(int target) {
-											if(target==rightIndex || target==leftIndex) {
-												return Collections.singleton(rightIndex);
+										public Set<Local> computeSources(@Nullable Local target) {
+											if(target==null) return Collections.singleton(null);
+											if(target.equals(rightLocal) || target.equals(leftLocal)) {
+												return Collections.singleton(rightLocal);
 											} 
 											return Collections.singleton(target);
 										}
@@ -88,15 +84,15 @@ public class Main {
 							return Identity.v();
 						}
 
-						public SimpleFlowFunction getCallFlowFunction(Unit src, Unit dest) {
+						public SimpleFlowFunction<Local> getCallFlowFunction(Unit src, Unit dest) {
 							return Identity.v();
 						}
 
-						public SimpleFlowFunction getReturnFlowFunction() {
+						public SimpleFlowFunction<Local> getReturnFlowFunction() {
 							return Identity.v();
 						}
 
-						public SimpleFlowFunction getCallToReturnFlowFunction(Unit call, Unit returnSite) {
+						public SimpleFlowFunction<Local> getCallToReturnFlowFunction(Unit call, Unit returnSite) {
 							return Identity.v();
 						}
 					}, initialSeeds

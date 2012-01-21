@@ -24,10 +24,12 @@ public class FixedUniverse<E> {
     }
     
     public int indexOf(E element) {
+    	if(element==null) return 0;
     	return elemToIndex.get(element);
     }
     
     public E elementAt(int index) {
+    	if(index==0) return null;
     	return indexToElem.get(index);
     }
    
