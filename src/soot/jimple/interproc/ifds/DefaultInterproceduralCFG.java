@@ -24,7 +24,7 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
 //FIXME use basic blocks instead of units to save edges
-public class DefaultInterproceduralCFG implements InterproceduralCFG<Unit> {
+public class DefaultInterproceduralCFG implements InterproceduralCFG<Unit,SootMethod> {
 	
 	private final CallGraph cg;
 	
@@ -77,14 +77,14 @@ public class DefaultInterproceduralCFG implements InterproceduralCFG<Unit> {
 		return unitGraph.getSuccsOf(u);
 	}
 
-	public Set<Unit> getCalleesOfCallAt(Unit u) {
+	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
 		//TODO implement soft cache
-		Set<Unit> res = new HashSet<Unit>();
+		Set<SootMethod> res = new HashSet<SootMethod>();
 		for(Iterator<Edge> edgeIter = cg.edgesOutOf(u); edgeIter.hasNext(); ) {
 			Edge edge = edgeIter.next();
 			SootMethod m = edge.getTgt().method();
-			Unit startPoint = getStartPointOf(m);
-			if(startPoint!=null) res.add(startPoint);
+			if(m.hasActiveBody())
+			res.add(m);
 		}
 		return res; 
 	}

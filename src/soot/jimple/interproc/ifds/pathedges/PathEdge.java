@@ -1,12 +1,13 @@
 package soot.jimple.interproc.ifds.pathedges;
 
 
-public class PathEdge<N,A> {
+public class PathEdge<N,A,M> {
 
-	protected final N source, target;
+	protected final M source;
+	protected final N target;
 	protected final A dSource, dTarget;
 
-	public PathEdge(N source, A dSource, N target, A dTarget) {
+	public PathEdge(M source, A dSource, N target, A dTarget) {
 		super();
 		this.source = source;
 		this.target = target;
@@ -14,7 +15,7 @@ public class PathEdge<N,A> {
 		this.dTarget = dTarget;
 	}
 	
-	public N getSource() {
+	public M getSource() {
 		return source;
 	}
 

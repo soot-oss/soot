@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import soot.SootMethod;
 import soot.jimple.interproc.ifds.flowfunc.FlowFunctions;
 import soot.jimple.interproc.ifds.flowfunc.SimpleFlowFunction;
 import soot.jimple.interproc.ifds.pathedges.PathEdge;
@@ -22,9 +21,9 @@ import soot.jimple.interproc.ifds.pathedges.PathEdge;
  * @param <N> Type of CFG nodes
  * @param <A> Abstraction type
  */
-public class TabulationSolver<N,A> {
+public class TabulationSolver<N,A,M> {
 	
-	protected Collection<PathEdge<N,A>> worklist = new HashSet<PathEdge<N,A>>();
+	protected Collection<PathEdge<N,A,M>> worklist = new HashSet<PathEdge<N,A,M>>();
 	
 	/*
 	 * We store the "list" of path edges <s_p,d1> -> <n,d2> as a mapping that maps
@@ -34,28 +33,28 @@ public class TabulationSolver<N,A> {
 	 */
 	protected final Map<MultiKey,Set<A>> pathEdges = new HashMap<MultiKey, Set<A>>();
 
-	protected final Map<SootMethod,SummaryEdges<A>> methodToSummaries = new HashMap<SootMethod, SummaryEdges<A>>();
+	protected final Map<M,SummaryEdges<A>> methodToSummaries = new HashMap<M, SummaryEdges<A>>();
 
-	protected final InterproceduralCFG<N> icfg;
+	protected final InterproceduralCFG<N,M> icfg;
 	
-	protected final FlowFunctions<N,A> flowFunctions;
+	protected final FlowFunctions<N,A,M> flowFunctions;
 
-	private final Map<SootMethod, Set<A>> initialSeeds;
+	private final Map<M, Set<A>> initialSeeds;
 	
-	public TabulationSolver(InterproceduralCFG<N> icfg, FlowFunctions<N,A> flowFunctions, Map<SootMethod,Set<A>> initialSeeds) {
+	public TabulationSolver(InterproceduralCFG<N,M> icfg, FlowFunctions<N,A,M> flowFunctions, Map<M,Set<A>> initialSeeds) {
 		this.icfg = icfg;
 		this.flowFunctions = flowFunctions;
 		this.initialSeeds = initialSeeds;
 	}
 
 	public void solve() {
-		for(Entry<SootMethod, Set<A>> seed: initialSeeds.entrySet()) {
-			SootMethod entryPoint = seed.getKey();
+		for(Entry<M, Set<A>> seed: initialSeeds.entrySet()) {
+			M entryPoint = seed.getKey();
 			Set<A> initialAbstraction = seed.getValue();
 			N startPoint = icfg.getStartPointOf(entryPoint);
-			propagate(startPoint, null, startPoint, null); //null represents the special value zero in the RHS algorithm
+			propagate(entryPoint, null, startPoint, null); //null represents the special value zero in the RHS algorithm
 			for (A val : initialAbstraction) {
-				propagate(startPoint, val, startPoint, val);
+				propagate(entryPoint, val, startPoint, val);
 			}
 		}
 		forwardTabulateSLRPs();		
@@ -67,8 +66,8 @@ public class TabulationSolver<N,A> {
 	private void forwardTabulateSLRPs() {
 		while(!worklist.isEmpty()) {
 			//pop edge
-			Iterator<PathEdge<N,A>> iter = worklist.iterator();
-			PathEdge<N,A> edge = iter.next();
+			Iterator<PathEdge<N,A,M>> iter = worklist.iterator();
+			PathEdge<N,A,M> edge = iter.next();
 			iter.remove();
 			
 			if(icfg.isCallStmt(edge.getTarget())) {
@@ -85,24 +84,24 @@ public class TabulationSolver<N,A> {
 	 * Lines 13-20 of the algorithm; processing a call site in the caller's context
 	 * @param edge an edge whose target node resembles a method call
 	 */
-	private void processCall(PathEdge<N,A> edge) {
+	private void processCall(PathEdge<N,A,M> edge) {
 		N n = edge.getTarget(); // a call node; line 14...
 		A d2 = edge.factAtTarget();
-		Set<N> callees = icfg.getCalleesOfCallAt(n);
+		Set<M> callees = icfg.getCalleesOfCallAt(n);
 		List<N> returnSiteNs = icfg.getReturnSitesOfCallAt(n);
-		for(N sCalledProcN: callees) { //still line 14
+		for(M sCalledProcN: callees) { //still line 14
 			SimpleFlowFunction<A> function = flowFunctions.getCallFlowFunction(n, sCalledProcN);
 			Set<A> res = function.computeTargets(d2);
 			for(A d3: res) {
-				propagate(sCalledProcN, d3, sCalledProcN, d3); //line 15
+				propagate(sCalledProcN, d3, icfg.getStartPointOf(sCalledProcN), d3); //line 15
 
 				//line 17 for SummaryEdge (here callee-side)
-				SummaryEdges<A> summaryEdges = summaryEdgesOf(icfg.getMethodOf(sCalledProcN));
+				SummaryEdges<A> summaryEdges = summaryEdgesOf(sCalledProcN);
 				for(A d3Prime: summaryEdges.targetsOf(d3)) {  
-					N sP = edge.getSource();  
+					M sP = edge.getSource();  
 					A d1 = edge.factAtSource();
 					for (N returnSiteN : returnSiteNs) {
-						SimpleFlowFunction<A> retFunction  = flowFunctions.getReturnFlowFunction();
+						SimpleFlowFunction<A> retFunction  = flowFunctions.getReturnFlowFunction(sCalledProcN,returnSiteN);
 						Set<A> d3Prime2vals = retFunction.computeTargets(d3Prime);
 						for (A d3Prime2 : d3Prime2vals) { //d3prime2 is the d3 at line 17/18 (note that we use callee summaries)
 							propagate(sP, d1, returnSiteN, d3Prime2); //line 18
@@ -113,7 +112,7 @@ public class TabulationSolver<N,A> {
 			
 		}		
 		
-		N sP = edge.getSource();  
+		M sP = edge.getSource();  
 		A d1 = edge.factAtSource();
 		for (N returnSiteN : returnSiteNs) {
 			SimpleFlowFunction<A> retFunction = flowFunctions.getCallToReturnFlowFunction(n,returnSiteN); //line 17 for E_Hash
@@ -134,24 +133,24 @@ public class TabulationSolver<N,A> {
 	 * need to be re-computed more often. 
 	 * @param edge an edge where the target resembles an exit node
 	 */
-	private void processExit(PathEdge<N,A> edge) {
+	private void processExit(PathEdge<N,A,M> edge) {
 		N n = edge.getTarget(); // an exit node; line 21...
-		SootMethod methodThatNeedsSummary = icfg.getMethodOf(n);
+		M methodThatNeedsSummary = icfg.getMethodOf(n);
 		SummaryEdges<A> summaries = summaryEdgesOf(methodThatNeedsSummary);
 		summaries.insertEdge(edge.factAtSource(),edge.factAtTarget());			
 		
-		SimpleFlowFunction<A> retFunction = flowFunctions.getReturnFlowFunction();
-		Set<A> targets = retFunction.computeTargets(edge.factAtTarget());
 		Set<N> callersP = icfg.getCallersOf(methodThatNeedsSummary);
 		A d1 = edge.factAtSource();
 		for (N c : callersP) {
-			SimpleFlowFunction<A> callFlowFunction = flowFunctions.getCallFlowFunction(c, icfg.getStartPointOf(icfg.getMethodOf(n)));
+			SimpleFlowFunction<A> callFlowFunction = flowFunctions.getCallFlowFunction(c, icfg.getMethodOf(n));
 			Set<A> d4s = callFlowFunction.computeSources(d1);
-			for(A d4: d4s) {
-				for(A d5: targets) {
-					N sProcOfC = icfg.getStartPointOf(icfg.getMethodOf(c));
-					for(A d3: getDataValuesAtSourcePathEdge(sProcOfC, c, d4)) {
-						for(N retSiteC: icfg.getReturnSitesOfCallAt(n)) {
+			for(N retSiteC: icfg.getReturnSitesOfCallAt(n)) {
+				SimpleFlowFunction<A> retFunction = flowFunctions.getReturnFlowFunction(methodThatNeedsSummary,retSiteC);
+				Set<A> targets = retFunction.computeTargets(edge.factAtTarget());
+				for(A d4: d4s) {
+					for(A d5: targets) {
+						M sProcOfC = icfg.getMethodOf(c);
+						for(A d3: getDataValuesAtSourcePathEdge(sProcOfC, c, d4)) {
 							propagate(sProcOfC, d3, retSiteC, d5);
 						}
 					}
@@ -165,8 +164,8 @@ public class TabulationSolver<N,A> {
 	 * Lines 33-37 of the algorithm.
 	 * @param edge
 	 */
-	private void processNormalFlow(PathEdge<N,A> edge) {
-		N sP = edge.getSource();
+	private void processNormalFlow(PathEdge<N,A,M> edge) {
+		M sP = edge.getSource();
 		A d1 = edge.factAtSource();
 		N n = edge.getTarget(); 
 		A d2 = edge.factAtTarget();
@@ -179,7 +178,7 @@ public class TabulationSolver<N,A> {
 		}
 	}
 
-	private SummaryEdges<A> summaryEdgesOf(SootMethod methodThatNeedsSummary) {
+	private SummaryEdges<A> summaryEdgesOf(M methodThatNeedsSummary) {
 		SummaryEdges<A> summaries = methodToSummaries.get(methodThatNeedsSummary);
 		if(summaries==null) {
 			summaries = new SummaryEdges<A>();
@@ -188,7 +187,7 @@ public class TabulationSolver<N,A> {
 		return summaries;
 	}
 	
-	private Set<A> getDataValuesAtSourcePathEdge(N source, N target, A dataAtTarget) {
+	private Set<A> getDataValuesAtSourcePathEdge(M source, N target, A dataAtTarget) {
 		MultiKey key = new MultiKey(source, target, dataAtTarget);
 		Set<A> dataValuesAtSource = pathEdges.get(key);
 		if(dataValuesAtSource==null)
@@ -197,7 +196,7 @@ public class TabulationSolver<N,A> {
 			return dataValuesAtSource;		
 	}
 	
-	private void propagate(N src, A dataAtSource, N tgt, A dataAtTgt) {
+	private void propagate(M src, A dataAtSource, N tgt, A dataAtTgt) {
 		MultiKey key = new MultiKey(src, tgt, dataAtTgt);
 		Set<A> dataValuesAtSource = pathEdges.get(key);
 		if(dataValuesAtSource==null) {
@@ -207,7 +206,7 @@ public class TabulationSolver<N,A> {
 		if(!dataValuesAtSource.contains(dataAtSource)) {
 			dataValuesAtSource.add(dataAtSource);
 			
-			PathEdge<N,A> edge = new PathEdge<N,A>(src, dataAtSource, tgt, dataAtTgt);
+			PathEdge<N,A,M> edge = new PathEdge<N,A,M>(src, dataAtSource, tgt, dataAtTgt);
 			worklist.add(edge);
 			
 			StringBuffer result = new StringBuffer();
@@ -228,11 +227,11 @@ public class TabulationSolver<N,A> {
 	
 	
 	class MultiKey {
-		private final N src;
+		private final M src;
 		private final N tgt;
 		private final A dataAtTgt;
 		
-		public MultiKey(N src, N tgt, A dataAtTgt) {
+		public MultiKey(M src, N tgt, A dataAtTgt) {
 			this.src = src;
 			this.tgt = tgt;
 			this.dataAtTgt = dataAtTgt;
@@ -277,7 +276,7 @@ public class TabulationSolver<N,A> {
 			return true;
 		}
 
-		public N getSource() {
+		public M getSource() {
 			return src;
 		}
 

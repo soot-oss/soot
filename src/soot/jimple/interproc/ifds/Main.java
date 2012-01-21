@@ -45,9 +45,9 @@ public class Main {
 				Map<SootMethod, Set<Local>> initialSeeds = new HashMap<SootMethod, Set<Local>>();
 				initialSeeds.put(Scene.v().getMainMethod(), Collections.singleton(Scene.v().getMainMethod().getActiveBody().getLocals().getFirst()));
 				
-				TabulationSolver<Unit, Local> solver = new TabulationSolver<Unit,Local>(
+				TabulationSolver<Unit,Local,SootMethod> solver = new TabulationSolver<Unit,Local,SootMethod>(
 					new DefaultInterproceduralCFG(),
-					new FlowFunctions<Unit,Local>() {
+					new FlowFunctions<Unit,Local,SootMethod>() {
 
 						public SimpleFlowFunction<Local> getNormalFlowFunction(Unit src, Unit dest) {
 							if(src instanceof AssignStmt) {
@@ -82,11 +82,11 @@ public class Main {
 							return Identity.v();
 						}
 
-						public SimpleFlowFunction<Local> getCallFlowFunction(Unit src, Unit dest) {
+						public SimpleFlowFunction<Local> getCallFlowFunction(Unit src, SootMethod dest) {
 							return Identity.v();
 						}
 
-						public SimpleFlowFunction<Local> getReturnFlowFunction() {
+						public SimpleFlowFunction<Local> getReturnFlowFunction(SootMethod callee, Unit retSite) {
 							return Identity.v();
 						}
 

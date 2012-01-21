@@ -3,19 +3,17 @@ package soot.jimple.interproc.ifds;
 import java.util.List;
 import java.util.Set;
 
-import soot.SootMethod;
-
-public interface InterproceduralCFG<N>  {
+public interface InterproceduralCFG<N,M>  {
 	
-	public SootMethod getMethodOf(N n);
+	public M getMethodOf(N n);
 
 	public List<N> getSuccsOf(N n);
 
-	public Set<N> getCalleesOfCallAt(N n);
+	public Set<M> getCalleesOfCallAt(N n);
 
-	public Set<N> getCallersOf(SootMethod m);
+	public Set<N> getCallersOf(M m);
 
-	public N getStartPointOf(SootMethod m);
+	public N getStartPointOf(M m);
 
 	/*
 	 * In the RHS paper, for every call there is just one return site.
