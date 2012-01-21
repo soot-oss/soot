@@ -6,7 +6,7 @@ public interface FlowFunctions<N,A,M> {
 
 	  public SimpleFlowFunction<A> getCallFlowFunction(N callStmt, M destinationMethod);
 
-	  public SimpleFlowFunction<A> getReturnFlowFunction(M calleeMethod, N returnSite);
+	  public SimpleFlowFunction<A> getReturnFlowFunction(M calleeMethod, N exitStmt, N returnSite);
 
 	  public SimpleFlowFunction<A> getCallToReturnFlowFunction(N callStmt, N returnSite);
 

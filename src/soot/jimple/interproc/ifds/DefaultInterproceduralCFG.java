@@ -14,8 +14,6 @@ import soot.PatchingChain;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
-import soot.jimple.ReturnStmt;
-import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -69,12 +67,17 @@ public class DefaultInterproceduralCFG implements InterproceduralCFG<Unit,SootMe
 
 	public List<Unit> getSuccsOf(Unit u) {
 		Body body = unitToOwner.get(u);
+		UnitGraph unitGraph = getOrCreateUnitGraph(body);
+		return unitGraph.getSuccsOf(u);
+	}
+
+	private UnitGraph getOrCreateUnitGraph(Body body) {
 		UnitGraph unitGraph = bodyToUnitGraph.get(body);
 		if(unitGraph==null) {
 			unitGraph = new ExceptionalUnitGraph(body); 
 			bodyToUnitGraph.put(body, unitGraph);
 		}
-		return unitGraph.getSuccsOf(u);
+		return unitGraph;
 	}
 
 	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
@@ -97,8 +100,10 @@ public class DefaultInterproceduralCFG implements InterproceduralCFG<Unit,SootMe
 		return ((Stmt)u).containsInvokeExpr();
 	}
 
-	public boolean isReturnStmt(Unit u) {
-		return (u instanceof ReturnStmt || u instanceof ReturnVoidStmt);
+	public boolean isExitStmt(Unit u) {
+		Body body = unitToOwner.get(u);
+		UnitGraph unitGraph = getOrCreateUnitGraph(body);
+		return unitGraph.getTails().contains(u);
 	}
 
 	public Set<Unit> getCallersOf(SootMethod m) {

@@ -24,6 +24,6 @@ public interface InterproceduralCFG<N,M>  {
 
 	public boolean isCallStmt(N stmt);
 
-	public boolean isReturnStmt(N stmt);
+	public boolean isExitStmt(N stmt);
 
 }
