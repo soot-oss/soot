@@ -18,10 +18,13 @@ import soot.Transform;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.InvokeExpr;
+import soot.jimple.ReturnStmt;
 import soot.jimple.Stmt;
 import soot.jimple.interproc.ifds.flowfunc.FlowFunctions;
 import soot.jimple.interproc.ifds.flowfunc.Identity;
+import soot.jimple.interproc.ifds.flowfunc.KillAll;
 import soot.jimple.interproc.ifds.flowfunc.SimpleFlowFunction;
 
 public class Main {
@@ -125,19 +128,37 @@ public class Main {
 						}
 
 						public SimpleFlowFunction<Local> getReturnFlowFunction(SootMethod callee, Unit exitStmt, Unit retSite) {
-							return new SimpleFlowFunction<Local>() {
+							if (exitStmt instanceof ReturnStmt) {								
+								ReturnStmt returnStmt = (ReturnStmt) exitStmt;
+								Value op = returnStmt.getOp();
+								if(op instanceof Local) {
+									if(retSite instanceof DefinitionStmt) {
+										DefinitionStmt defnStmt = (DefinitionStmt) retSite;
+										Value leftOp = defnStmt.getLeftOp();
+										if(leftOp instanceof Local) {
+											final Local tgtLocal = (Local) leftOp;
+											final Local retLocal = (Local) op;
+											return new SimpleFlowFunction<Local>() {
 
-								public Set<Local> computeTargets(Local source) {
-									if(source==null) return Collections.singleton(null);
-									return Collections.singleton(source);
-								}
+												public Set<Local> computeTargets(Local source) {
+													if(source==null) return Collections.singleton(null);
+													if(source==retLocal)
+														return Collections.singleton(tgtLocal);
+													return Collections.emptySet();
+												}
 
-								public Set<Local> computeSources(Local target) {
-									if(target==null) return Collections.singleton(null);
-									return Collections.singleton(target);
+												public Set<Local> computeSources(Local target) {
+													if(target==null) return Collections.singleton(null);
+													if(target==tgtLocal) return Collections.singleton(retLocal);
+													return Collections.emptySet();
+												}
+												
+											};
+										}
+									}
 								}
-								
-							};
+							} 
+							return KillAll.v();
 						}
 
 						public SimpleFlowFunction<Local> getCallToReturnFlowFunction(Unit call, Unit returnSite) {

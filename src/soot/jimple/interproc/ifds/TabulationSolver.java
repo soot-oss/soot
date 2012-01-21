@@ -147,7 +147,7 @@ public class TabulationSolver<N,A,M> {
 		for (N c : callersP) {
 			SimpleFlowFunction<A> callFlowFunction = flowFunctions.getCallFlowFunction(c, icfg.getMethodOf(n));
 			Set<A> d4s = callFlowFunction.computeSources(d1);
-			for(N retSiteC: icfg.getReturnSitesOfCallAt(n)) {
+			for(N retSiteC: icfg.getReturnSitesOfCallAt(c)) {
 				SimpleFlowFunction<A> retFunction = flowFunctions.getReturnFlowFunction(methodThatNeedsSummary,n,retSiteC);
 				Set<A> targets = retFunction.computeTargets(edge.factAtTarget());
 				for(A d4: d4s) {
