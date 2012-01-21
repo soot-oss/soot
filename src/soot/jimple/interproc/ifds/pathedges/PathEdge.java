@@ -1,12 +1,12 @@
 package soot.jimple.interproc.ifds.pathedges;
 
 
-public class PathEdge<N> {
+public class PathEdge<N,A> {
 
 	protected final N source, target;
-	protected final int dSource, dTarget;
+	protected final A dSource, dTarget;
 
-	public PathEdge(N source, int dSource, N target, int dTarget) {
+	public PathEdge(N source, A dSource, N target, A dTarget) {
 		super();
 		this.source = source;
 		this.target = target;
@@ -22,11 +22,11 @@ public class PathEdge<N> {
 		return target;
 	}
 
-	public int factAtSource() {
+	public A factAtSource() {
 		return dSource;
 	}
 
-	public int factAtTarget() {
+	public A factAtTarget() {
 		return dTarget;
 	}
 
@@ -34,8 +34,8 @@ public class PathEdge<N> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + dSource;
-		result = prime * result + dTarget;
+		result = prime * result + ((dSource == null) ? 0 : dSource.hashCode());
+		result = prime * result + ((dTarget == null) ? 0 : dTarget.hashCode());
 		result = prime * result + ((source == null) ? 0 : source.hashCode());
 		result = prime * result + ((target == null) ? 0 : target.hashCode());
 		return result;
@@ -51,9 +51,15 @@ public class PathEdge<N> {
 			return false;
 		@SuppressWarnings("rawtypes")
 		PathEdge other = (PathEdge) obj;
-		if (dSource != other.dSource)
+		if (dSource == null) {
+			if (other.dSource != null)
+				return false;
+		} else if (!dSource.equals(other.dSource))
 			return false;
-		if (dTarget != other.dTarget)
+		if (dTarget == null) {
+			if (other.dTarget != null)
+				return false;
+		} else if (!dTarget.equals(other.dTarget))
 			return false;
 		if (source == null) {
 			if (other.source != null)

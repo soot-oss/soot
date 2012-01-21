@@ -35,7 +35,6 @@ public class Main {
 					if(m.hasActiveBody())
 						universe.addAll(m.getActiveBody().getLocals());					
 				}
-				final FixedUniverse<Local> allLocals = new FixedUniverse<Local>(universe);
 				
 				for(SootMethod m: Scene.v().getMainClass().getMethods()) {
 					if(m.hasActiveBody())
@@ -48,7 +47,6 @@ public class Main {
 				
 				TabulationSolver<Unit, Local> solver = new TabulationSolver<Unit,Local>(
 					new DefaultInterproceduralCFG(),
-					allLocals,
 					new FlowFunctions<Unit,Local>() {
 
 						public SimpleFlowFunction<Local> getNormalFlowFunction(Unit src, Unit dest) {

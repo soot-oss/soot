@@ -6,21 +6,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SummaryEdges {
+public class SummaryEdges<A> {
 	
-	protected Map<Integer,Set<Integer>> inToOuts = new HashMap<Integer, Set<Integer>>();
+	protected Map<A,Set<A>> inToOuts = new HashMap<A, Set<A>>();
 	
-	public void insertEdge(int dataAtEntry, int dataAtExit) {
-		Set<Integer> set = inToOuts.get(dataAtEntry);
+	public void insertEdge(A dataAtEntry, A dataAtExit) {
+		Set<A> set = inToOuts.get(dataAtEntry);
 		if(set==null) {
-			set = new HashSet<Integer>();
+			set = new HashSet<A>();
 			inToOuts.put(dataAtEntry, set);
 		}
 		set.add(dataAtExit);
 	}
 
-	public Set<Integer> targetsOf(int d2) {
-		Set<Integer> set = inToOuts.get(d2);
+	public Set<A> targetsOf(A d2) {
+		Set<A> set = inToOuts.get(d2);
 		if(set==null) return Collections.emptySet();
 		return set; 
 	}
