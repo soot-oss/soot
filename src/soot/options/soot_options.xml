@@ -2362,7 +2362,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						  <set_arg_label>path</set_arg_label>
 						  <short_desc>Filename for verification file</short_desc>
 						  <long_desc>
-						    If you want to compare the precision of the points-to results with other solvers (e.g. Paddle), you can use the "verify-file" to specify the list of methods (soot method signature format) that are reachable by that solver. Then, in the internal evaluations (see the switch geom-eval), we only consider the methods that are present to both solvers.
+						    If you want to compare the precision of the points-to results with other solvers (e.g. Paddle), you can use the 'verify-file' to specify the list of methods (soot method signature format) that are reachable by that solver. Then, in the internal evaluations (see the switch geom-eval), we only consider the methods that are present to both solvers.
 						  </long_desc>
 						</stropt>
 						
