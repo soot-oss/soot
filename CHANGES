@@ -1,4 +1,4 @@
-Improvements and API changes in trunk
+Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass
    from Soot's own JAR file if the class cannot be found on the
