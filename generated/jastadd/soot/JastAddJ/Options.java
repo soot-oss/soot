@@ -109,7 +109,10 @@ public  void addOptions(String[] args) {
             newArgs[index] = (String)iter.next();
           }
           addOptions(newArgs);
+        } catch (java.io.FileNotFoundException e) {
+          System.err.println("File not found: "+arg.substring(1));
         } catch (java.io.IOException e) {
+          System.err.println("Exception: "+e.getMessage());
         }
       }
       else if(arg.startsWith("-")) {

@@ -950,7 +950,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
    */
   private boolean noConstructor_compute() {
     if(!compilationUnit().fromSource())
-	  return false;
+      return false;
     for(int i = 0; i < getNumBodyDecl(); i++)
       if(getBodyDecl(i) instanceof ConstructorDecl)
         return false;

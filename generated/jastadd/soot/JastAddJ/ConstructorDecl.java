@@ -156,7 +156,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:176
    */
   public void setDefaultConstructor() {
-	  isDefaultConstructor = true;
+    isDefaultConstructor = true;
   }
   /**
    * @ast method 
