@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2010 Raja Vallee-Rai and others
+ * Copyright (C) 1997-2012 Raja Vallee-Rai and others
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
