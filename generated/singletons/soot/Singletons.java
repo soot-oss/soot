@@ -268,12 +268,6 @@ public class Singletons {
         return instance_soot_Printer;
     }
 
-    private soot.sootify.TemplatePrinter instance_soot_TemplatePrinter;
-    public soot.sootify.TemplatePrinter soot_TemplatePrinter() {
-        if( instance_soot_TemplatePrinter == null ) instance_soot_TemplatePrinter = new soot.sootify.TemplatePrinter( g );
-        return instance_soot_TemplatePrinter;
-    }
-
     private soot.jimple.toolkits.scalar.DeadAssignmentEliminator instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator;
     public soot.jimple.toolkits.scalar.DeadAssignmentEliminator soot_jimple_toolkits_scalar_DeadAssignmentEliminator() {
         if( instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator == null ) instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator = new soot.jimple.toolkits.scalar.DeadAssignmentEliminator( g );
