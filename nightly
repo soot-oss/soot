@@ -45,8 +45,8 @@ function getJasminAndSoot(){
 }
 
 function getJastAdd() {
-    svn export -q http://svn.jastadd.org/projects/trunk/JastAddJ
-    svn export -q http://svn.jastadd.org/projects/trunk/JastAddExtensions
+    svn export -q http://svn.cs.lth.se/svn/jastadd-oxford/projects/trunk/JastAddJ
+    svn export -q http://svn.cs.lth.se/svn/jastadd-oxford/projects/trunk/JastAddExtensions/
 }
 
 # set up date and revision tags
