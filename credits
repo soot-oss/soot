@@ -24,6 +24,7 @@ Eric Bodden
       - Local must-alias analysis
     - Integration of JastAdd frontend
     - TamiFlex support for reflection
+    - Support for invkedynamic (JSR 292)
 
 Phong Co (phong@hasc.com)
     - Jimple scalar optimizations

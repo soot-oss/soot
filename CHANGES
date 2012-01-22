@@ -56,6 +56,8 @@ Improvements and API changes in trunk
    attribute for pure methods.
 11.GenericAttribute instances are now automatically read from class
    files and stored in class files.
+12.Soot now has virtually complete support for invokedynamic.
+   See tutorial/invokedynamic for details.
         
 Improvements and API changes in version 2.4.0
 
