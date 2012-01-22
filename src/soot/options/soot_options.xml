@@ -2269,7 +2269,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						</intopt>
 					</section>
 					<section>
-						<name>Geometric, context-sensitive analysis (ISSTA 2011)</name>
+						<name>Geometric context-sensitive analysis from ISSTA 2011</name>
 						<boolopt>
 						  <name>Geometric, context-sensitive points-to analysis</name>
 						  <alias>geom-pta</alias>
