@@ -880,4 +880,10 @@ public class Singletons {
         return instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator;
     }
 
+    private soot.sootify.TemplatePrinter instance_soot_sootify_TemplatePrinter;
+    public soot.sootify.TemplatePrinter soot_sootify_TemplatePrinter() {
+        if( instance_soot_sootify_TemplatePrinter == null ) instance_soot_sootify_TemplatePrinter = new soot.sootify.TemplatePrinter( g );
+        return instance_soot_sootify_TemplatePrinter;
+    }
+
 }

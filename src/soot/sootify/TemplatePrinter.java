@@ -38,7 +38,7 @@ public class TemplatePrinter {
     }
 	
     public static TemplatePrinter v() {
-        return G.v().soot_TemplatePrinter();
+        return G.v().soot_sootify_TemplatePrinter();
     }
 
     //see also class soot.Printer!
