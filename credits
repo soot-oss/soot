@@ -96,7 +96,7 @@ Nomair Naeem (nomain.naeem@mail.mcgill.ca)
     - Dava decompiler
 
 Matthias Perner (snafu@chaos-darmstadt.de)
-    - invokedynamic support
+    - inital invokedynamic support based on JDK7 beta
 
 Chris Pickett (cpicke@sable.mcgill.ca)
     - documentation

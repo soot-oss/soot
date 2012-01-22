@@ -22,25 +22,8 @@ Improvements and API changes in trunk
    course, such an analysis may be unsound - you get what you are asking
    for.
 5. Added new packs "wjpp" and "wspp" for adding pre-processors. 
-6. Thanks to Matthias Perner, added support for handling invokedynamic
-   instructions. The instructions are handled as follows:
-   - On the Jimple, Grimp and Baf level, invokedynamic instructions
-     appear as DynamicInvokeExpr with a static SootMethodRef that
-     has class java.dyn.InvokeDynamic as target class. This is in
-     accordance with the internal handling in JDK 7.
-   - SootMethodRefs which have java.dyn.InvokeDynamic as target class
-     may not be resolved: calling resolve() will throw an exception
-   - On the Jasmin level, invokedynamic instruction appear in the
-   	 form "invokedynamic <methodName>(<methodParams>)<methodRetType>".
-   	 In particular, there is no target class given.
-   - Jasmin translates this into an invokedynamic instruction with
-     two arguments:
-     a) a NameAndType attribute referring to
-        <methodName>(<methodParams>)<methodRetType> and
-     b) the constant "0" (two zero bytes, i.e., a short);
-        according to the VM spec this is reserved for future use
-7. ReflectiveCallsInliner now supports field set/get through reflection.        
-8. Integrated a novel context-sensitive points-to analysis that uses
+6. ReflectiveCallsInliner now supports field set/get through reflection.        
+7. Integrated a novel context-sensitive points-to analysis that uses
    a memory-efficient geometric encoding. The analysis was presented
    in the following paper:
    Xiao Xiao and Charles Zhang. Geometric Encoding: Forging high
@@ -51,12 +34,12 @@ Improvements and API changes in trunk
    this! You can find the code in soot.jimple.spark.geom. There are
    new phase options in cg.spark to enable and configure this
    analysis.   
-9. Improved support for custom entry points in the points-to analysis.
-10.Added option allowing putiry analysis to add a "Pure" bytecode
+8. Improved support for custom entry points in the points-to analysis.
+9. Added option allowing putiry analysis to add a "Pure" bytecode
    attribute for pure methods.
-11.GenericAttribute instances are now automatically read from class
+10.GenericAttribute instances are now automatically read from class
    files and stored in class files.
-12.Soot now has virtually complete support for invokedynamic.
+11.Soot now has virtually complete support for invokedynamic.
    See tutorial/invokedynamic for details.
         
 Improvements and API changes in version 2.4.0
