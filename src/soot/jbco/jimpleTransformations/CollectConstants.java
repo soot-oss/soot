@@ -162,7 +162,13 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
       newInit = true;
     } else {
       SootMethod m = clas.getMethodByName("<clinit>");
-      b = m.getActiveBody();
+      if(!m.hasActiveBody()) {
+          b = Jimple.v().newBody(m);
+          m.setActiveBody(b);
+          newInit = true;
+      } else {
+    	  b = m.getActiveBody();
+      }
     }
 
     PatchingChain units = b.getUnits();
