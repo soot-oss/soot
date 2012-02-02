@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.internal;
+import java.util.*;
 import soot.jimple.spark.pag.*;
 import soot.*;
 import soot.util.*;
@@ -27,8 +28,22 @@ import soot.Type;
 
 /** A map of bit-vectors representing subtype relationships.
  * @author Ondrej Lhotak
+ * 
+ *  @author Hamid A. Toussi (hamid2c@gmail.com):
+ * Making TypeManager faster by making type masks during a
+ * depth-first-traversal on the class hierarchy. First, type-masks of the
+ * leaves of Class Hierarchy are created and then the type mask of each
+ * type T is obtained by ORing type maks of T’s sub-types and setting the
+ * bit-numbers associated with Allocation Nodes of type T. The type-mask
+ * of each interface is achieved by ORing the type-masks of its top-level
+ * concrete implementers. In fact, Reference types are visited in
+ * reversed-topological-order.
  */
 public final class TypeManager {
+    private Map<SootClass, List<AllocNode>> class2allocs = 
+        new HashMap<SootClass, List<AllocNode>>(1024);
+    private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();
+
     public TypeManager( PAG pag ) {
         this.pag = pag;
     }
@@ -79,13 +94,28 @@ public final class TypeManager {
         int numTypes = Scene.v().getTypeNumberer().size();
         if( pag.getOpts().verbose() )
             G.v().out.println( "Total types: "+numTypes );
-
+        // **
+        initClass2allocs();
+        makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
+        // **
         ArrayNumberer allocNodes = pag.getAllocNodeNumberer();
         for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {
             final Type t = (Type) tIt.next();
             if( !(t instanceof RefLikeType) ) continue;
             if( t instanceof AnySubType ) continue;
             if( isUnresolved(t) ) continue;
+            // **
+            if (t instanceof RefType && !t.equals(RefType.v("java.lang.Object"))
+                    && !t.equals(RefType.v("java.io.Serializable"))
+                    && !t.equals(RefType.v("java.lang.Cloneable"))) {
+                
+                SootClass sc = ((RefType)t).getSootClass();
+                if (sc.isInterface()) {
+                    makeMaskOfInterface(sc);
+                }
+                continue;
+            }
+            // **
             BitVector mask = new BitVector( allocNodes.size() );
             for( Iterator nIt = allocNodes.iterator(); nIt.hasNext(); ) {
                 final Node n = (Node) nIt.next();
@@ -118,5 +148,82 @@ public final class TypeManager {
     protected FastHierarchy fh = null;
     protected PAG pag;
     protected QueueReader allocNodeListener = null;
+    // ** new methods
+    private void initClass2allocs() {
+        Iterator allocIt = pag.getAllocNodeNumberer().iterator();
+        while (allocIt.hasNext()) {
+            AllocNode an = (AllocNode) allocIt.next();
+            addAllocNode(an);
+        }
+    }
+     
+    final private void addAllocNode(final AllocNode alloc) {
+        alloc.getType().apply(new TypeSwitch() {
+            final public void caseRefType(RefType t) {              
+                SootClass cl = t.getSootClass();
+                List<AllocNode> list ;
+                if ((list = class2allocs.get(cl)) == null) {
+                    list = new LinkedList<AllocNode>();
+                    class2allocs.put(cl, list);
+                }
+                list.add(alloc);
+            }
+            final public void caseAnySubType(AnySubType t) {
+                anySubtypeAllocs.add(alloc);
+            } 
+        });
+    }
+
+    final private BitVector makeClassTypeMask(SootClass clazz) {
+        int nBits = pag.getAllocNodeNumberer().size();
+        final BitVector mask = new BitVector(nBits);
+        
+        List<AllocNode> allocs = null;
+        if (clazz.isConcrete()) {
+            allocs = class2allocs.get(clazz);
+        }
+        if (allocs != null){
+            for (AllocNode an : allocs) {
+                mask.set(an.getNumber());
+            }
+        }
+
+        Collection<SootClass> subclasses = fh.getSubclassesOf(clazz);
+        if (subclasses == Collections.EMPTY_LIST) {
+            for (AllocNode an : anySubtypeAllocs) {
+                mask.set(an.getNumber());
+            }
+            typeMask.put(clazz.getType(), mask);
+            return mask;
+        }
+        
+        for (SootClass subcl : subclasses) {
+            mask.or(makeClassTypeMask(subcl));
+        }
+        
+        typeMask.put(clazz.getType(), mask);
+        return mask;
+    }
+    
+    final private BitVector makeMaskOfInterface(SootClass interf) {
+        if (!(interf.isInterface())) throw new RuntimeException();
+        
+        BitVector ret = new BitVector(pag.getAllocNodeNumberer().size());
+        typeMask.put(interf.getType(), ret);
+        Collection<SootClass> implementers = fh.getAllImplementersOfInterface(interf);
+            
+        for (SootClass impl : implementers) {
+            BitVector other = (BitVector)typeMask.get(impl.getType());
+            if (other == null) throw new RuntimeException(impl.toString());
+            ret.or(other);          
+        }
+        // I think, the following can be eliminated. It is added to make
+        // type-masks exactly the same as the original type-masks
+        if (implementers.size() == 0) {
+            for (AllocNode an : anySubtypeAllocs) ret.set(an.getNumber());
+        }
+        return ret;
+    }
+    
 }
 
