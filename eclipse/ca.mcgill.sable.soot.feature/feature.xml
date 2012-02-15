@@ -2,7 +2,7 @@
 <feature
       id="ca.mcgill.sable.soot.feature"
       label="Soot Eclipse Plugin"
-      version="2.5.0"
+      version="2.5.1"
       provider-name="Sable Research Group, McGill University">
 
    <description>
@@ -46,20 +46,20 @@ Boston, MA 02111-1307, USA.
          id="ca.mcgill.sable.soot"
          download-size="0"
          install-size="0"
-         version="2.5.0"
+         version="2.5.1"
          unpack="false"/>
 
    <plugin
          id="ca.mcgill.sable.soot.help"
          download-size="0"
          install-size="0"
-         version="2.5.0"
+         version="2.5.1"
          unpack="false"/>
 
    <plugin
          id="ca.mcgill.sable.soot.lib"
          download-size="0"
          install-size="0"
-         version="2.5.0"/>
+         version="2.5.1"/>
 
 </feature>
