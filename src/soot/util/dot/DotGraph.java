@@ -109,8 +109,8 @@ public class DotGraph implements Renderable{
   /**
    * Draws a node.
    * @param name, the node to draw.
-   * @return the node with the specified name, adding a new node
-   * to the graph if there is no such node.
+   * @return the {@link DotGraphNode} corresponding to the 
+   * specified name.
    */
   public DotGraphNode drawNode(String name){
       DotGraphNode node = getNode(name);
@@ -127,8 +127,8 @@ public class DotGraph implements Renderable{
   /**
    * Gets the graph node by name.
    * @param name, unique name of the node.
-   * @return the node with the specified name, or <code>null</code>
-   * if there is no such node.
+   * @return the node with the specified name, adding a new node
+   * to the graph if there is no such node.
    */
   public DotGraphNode getNode(String name){
       DotGraphNode node = nodes.get(name);
