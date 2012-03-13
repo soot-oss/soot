@@ -153,14 +153,10 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 
     protected void copy(Object source, Object dest) {
 
-        //System.out.println("copy");
         HashMap sourceIn = (HashMap)source;
         HashMap destOut = (HashMap)dest;
-        //dest = new HashMap();
-        //HashMap destOut = new HashMap();
+        destOut.clear();
         destOut.putAll(sourceIn);
-        dest = destOut;
-
     }
    
     // Parity Tests: 	even + even = even
