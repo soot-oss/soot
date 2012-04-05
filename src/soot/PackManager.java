@@ -68,6 +68,7 @@ import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstru
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.misc.*;
 import soot.xml.*;
+import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.interaction.*;
 
 /** Manages the Packs containing the various phases and their options. */
@@ -88,7 +89,7 @@ public class PackManager {
         // Jimple body creation
         addPack(p = new JimpleBodyPack());
         {
-            p.add(new Transform("jb.tt", soot.toolkits.exceptions.TrapTightener.v()));
+            p.add(new Transform("jb.tt", TrapTightener.v()));
             p.add(new Transform("jb.ls", LocalSplitter.v()));
             p.add(new Transform("jb.a", Aggregator.v()));
             p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));
