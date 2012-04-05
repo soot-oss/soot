@@ -113,6 +113,12 @@ public class LocalGenerator{
                 if (!bodyContainsLocal(name)) break;
             }
         }
+        else if (type instanceof soot.UnknownType) {
+            while (true){
+                name = nextUnknownTypeName();
+                if (!bodyContainsLocal(name)) break;
+            }
+        }
         else {
         	localNames = null;
             throw new RuntimeException("Unhandled Type of Local variable to Generate - Not Implemented");
@@ -133,6 +139,7 @@ public class LocalGenerator{
     private int tempByte = -1;
     private int tempShort = -1;
     private int tempChar = -1;
+    private int tempUnknownType = -1;
 	
     private String nextIntName(){
 		tempInt++;
@@ -183,7 +190,12 @@ public class LocalGenerator{
         tempRefLikeType++;
         return "$r"+tempRefLikeType;
     }
-    
+
+    private String nextUnknownTypeName(){
+    	tempUnknownType++;
+        return "$u"+tempUnknownType;
+    }
+
     // this should be used for generated locals only
     private soot.Local createLocal(String name, soot.Type sootType) {
         soot.Local sootLocal = soot.jimple.Jimple.v().newLocal(name, sootType);
