@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
+import java.util.HashSet;
 
 import soot.Body;
 import soot.SootClass;
@@ -91,7 +93,6 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 	protected List<PDGRegion> m_pdgRegions = null;
 	private RegionAnalysis m_regionAnalysis = null;
 	private int m_strongRegionStartID;
-
 	
 	public HashMutablePDG(UnitGraph cfg)
 	{
@@ -126,6 +127,10 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 		this.m_startNode.setNode(r);
 		
 	}
+
+    public BlockGraph getBlockGraph(){
+      return m_blockCFG;
+    }
 	
 	/**
 	 * This is the heart of the PDG contruction. It is huge and definitely needs 
@@ -153,12 +158,14 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 		this.m_startNode = pdgnode;
 		topLevelRegion.setParent(null);
 		
+        Set<Region> processedRegions = new HashSet<Region>();
 		regions2process.add(topLevelRegion);
 		
 		//while there's a (weak) region to process
 		while(!regions2process.isEmpty())
 		{
 			Region r = regions2process.remove(0);
+            processedRegions.add(r);
 			
 			//get the corresponding pdgnode
 			pdgnode = this.m_obj2pdgNode.get(r);
@@ -276,7 +283,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 					//add the dependency edges
 					this.addEdge(pdgNodeOfA, pdgnodeOfBRegion, "dependency");
 					pdgNodeOfA.addDependent(pdgnodeOfBRegion);
-					regions2process.add(regionOfB);
+                    if(!processedRegions.contains(regionOfB)){
+					  regions2process.add(regionOfB);
+                    }
 					//now remove b and all the nodes in the same weak region from the list of dependents
 					copyOfDependents.remove(b);
 					copyOfDependents.removeAll(regionOfB.getBlocks());
@@ -326,7 +335,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 							//add the dependency edges
 							this.addEdge(pdgnodeOfBRegion, pdgnodeOfdepBRegion, "dependency");
 							pdgnodeOfBRegion.addDependent(pdgnodeOfdepBRegion);
-							regions2process.add(rdepB);
+                            if(!processedRegions.contains(rdepB)){
+							  regions2process.add(rdepB);
+                            }
 							
 							//now remove all the nodes in the same weak region from the list of dependents
 							
@@ -371,7 +382,9 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 							
 							this.addEdge(pdgnodeOfBRegion, pdgnodeOfdepBRegion, "dependency");
 							pdgnodeOfBRegion.addDependent(pdgnodeOfdepBRegion);
-							regions2process.add(rdepB);
+                            if(!processedRegions.contains(rdepB)){
+							  regions2process.add(rdepB);
+                            }
 							
 							//now remove all the nodes in the same weak region from the list of dependents
 							
@@ -686,8 +699,11 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 	
 	private static PDGRegion pdgpostorder(PDGNode node, List<PDGRegion> list)
 	{
+        if(node.getVisited()){
+          return null;
+        }
 		node.setVisited(true);
-		
+
 		PDGRegion region = null;
 		if(!node2Region.containsKey(node))
 		{
@@ -696,8 +712,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 		}
 		else
 			region = node2Region.get(node);
-		
-		
+
 		//If there are children, push the children to the stack
 		List<PDGNode> dependents = node.getDependets();
 		if(!dependents.isEmpty())
@@ -713,12 +728,13 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 				{
 					PDGNode body = ((LoopedPDGNode)curNode).getBody();
 					PDGRegion kid = pdgpostorder(body, list);
-					kid.setParent(region);
-					region.addChildRegion(kid);
+                    if(kid != null){
+					  kid.setParent(region);
+					  region.addChildRegion(kid);
 					
-					//This sets the node from the old Region into a PDGRegion
-					body.setNode(kid);
-					
+					  //This sets the node from the old Region into a PDGRegion
+					  body.setNode(kid);
+                    }
 				}
 				else if(curNode instanceof ConditionalPDGNode)
 				{
@@ -728,12 +744,13 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 					{
 						PDGNode child = (PDGNode)condItr.next();
 						PDGRegion kid = pdgpostorder(child, list);
-						kid.setParent(region);
-						region.addChildRegion(kid);
-						//This sets the node from the old Region into a PDGRegion
+                        if(kid != null){
+						  kid.setParent(region);
+						  region.addChildRegion(kid);
+						  //This sets the node from the old Region into a PDGRegion
 
-						child.setNode(kid);
-						
+						  child.setNode(kid);
+						}
 					}
 
 				}

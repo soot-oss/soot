@@ -22,6 +22,7 @@ package soot.toolkits.graph.pdg;
 import java.util.List;
 
 import soot.toolkits.graph.MutableEdgeLabelledDirectedGraph;
+import soot.toolkits.graph.BlockGraph;
 
 
 /**
@@ -60,6 +61,8 @@ public interface ProgramDependenceGraph extends MutableEdgeLabelledDirectedGraph
 	 * @return The root region of the PDG.
 	 */
 	public IRegion GetStartRegion();
+
+    public BlockGraph getBlockGraph();
 	
 	/**
 	 * @return The root node of the PDG, which is essentially the same as the start region
