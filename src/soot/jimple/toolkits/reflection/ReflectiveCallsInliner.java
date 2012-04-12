@@ -416,8 +416,6 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 						args.add((Value) ie.getArgs().get(0));					
 						break;
 					case MethodInvoke:
-						//add Constructor argument
-						args.add((Value) ((InstanceInvokeExpr)ie).getBase());					
 						//add Object argument
 						args.add((Value) ie.getArgs().get(0));					
 						//add Object[] argument
