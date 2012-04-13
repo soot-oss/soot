@@ -490,7 +490,7 @@ public class PackManager {
     }
 
     private Iterator reachableClasses() {
-        return Scene.v().getApplicationClasses().iterator();
+        return Scene.v().getApplicationClasses().snapshotIterator();
     }
 
     /* post process for DAVA */
