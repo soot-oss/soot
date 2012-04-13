@@ -269,7 +269,7 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
      * iterated over! */
     public Iterator<E> snapshotIterator() 
     {
-        List<E> l = new ArrayList<E>(); l.addAll(this);
+        List<E> l = new LinkedList<E>(this); 
         return l.iterator();
     }
    
