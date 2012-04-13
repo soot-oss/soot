@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -361,7 +362,7 @@ public class HashChain<E> extends AbstractCollection<E>
     
     public Iterator<E> snapshotIterator() 
     {
-	List l = new ArrayList( map.size()); 
+	List l = new LinkedList(); 
 	
 	l.addAll(this);
 
