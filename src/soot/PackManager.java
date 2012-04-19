@@ -791,12 +791,7 @@ public class PackManager {
                 m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                 PackManager.v().getPack("gop").apply(m.getActiveBody());
             } else if (produceBaf) {
-                m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
-                PackManager.v().getPack("bop").apply(m.getActiveBody());
-                PackManager.v().getPack("tag").apply(m.getActiveBody());
-                if( Options.v().validate() ) {
-                    m.getActiveBody().validate();
-                }
+        		m.setActiveBody(convertJimpleBodyToBaf(m));
             }
         }
             
@@ -835,6 +830,16 @@ public class PackManager {
         }//end if produceDava
     }
 
+	public BafBody convertJimpleBodyToBaf(SootMethod m) {
+		BafBody bafBody = Baf.v().newBody((JimpleBody) m.getActiveBody());
+		PackManager.v().getPack("bop").apply(bafBody);
+		PackManager.v().getPack("tag").apply(bafBody);
+		if( Options.v().validate() ) {
+		    bafBody.validate();
+		}
+		return bafBody;
+	}
+	
     public void writeClass(SootClass c) {
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;

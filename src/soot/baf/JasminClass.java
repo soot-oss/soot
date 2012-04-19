@@ -43,11 +43,13 @@ import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Modifier;
 import soot.NullType;
+import soot.PackManager;
 import soot.RefType;
 import soot.ShortType;
 import soot.SootClass;
@@ -68,6 +70,7 @@ import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IdentityRef;
 import soot.jimple.IntConstant;
+import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.ParameterRef;
@@ -108,8 +111,15 @@ public class JasminClass extends AbstractJasminClass
         
         Body activeBody = method.getActiveBody();
         
-        if(!(activeBody instanceof BafBody))
-            throw new RuntimeException("method: " + method.getName() + " has an invalid active body!");
+        if(!(activeBody instanceof BafBody)) {
+        	if(activeBody instanceof JimpleBody) {
+        		if(Options.v().verbose()) {
+        			G.v().out.println("Was expecting Baf body for "+method+" but found a Jimple body. Will convert body to Baf on the fly.");
+        		}
+        		activeBody = PackManager.v().convertJimpleBodyToBaf(method);
+        	} else 
+        		throw new RuntimeException("method: " + method.getName() + " has an invalid active body!");
+        } 
         
         BafBody body = (BafBody) activeBody;
         
