@@ -70,8 +70,8 @@ public class PhiNodeManager
     {
         update();
         boolean change = false;
-        MultiMap localsToDefPoints = new SHashMultiMap();
         varToBlocks = new HashMultiMap();    
+        Map<Local, List<Block>> localsToDefPoints = new HashMap<Local, List<Block>>();
         
         // compute localsToDefPoints and varToBlocks
         for(Iterator blocksIt = cfg.iterator(); blocksIt.hasNext();){
@@ -83,8 +83,17 @@ public class PhiNodeManager
                 List defBoxes = unit.getDefBoxes();
                 for(Iterator defBoxesIt = defBoxes.iterator(); defBoxesIt.hasNext();){
                     Value def = ((ValueBox)defBoxesIt.next()).getValue();
-                    if(def instanceof Local)
-                        localsToDefPoints.put(def, block);
+                    if(def instanceof Local){
+                      Local local = (Local) def;
+                      List<Block> def_points = null;
+                      if(localsToDefPoints.containsKey(local)){
+                        def_points = localsToDefPoints.get(local);
+                      } else {
+                        def_points = new ArrayList<Block>();
+                        localsToDefPoints.put(local, def_points);
+                      }
+                      def_points.add(block);
+                    }
                 }
 
                 if(Shimple.isPhiNode(unit))
@@ -98,6 +107,12 @@ public class PhiNodeManager
         int iterCount = 0;
         Stack<Block> workList = new Stack<Block>();
 
+        Map<Integer, Integer> has_already = new HashMap<Integer, Integer>();
+        for(Iterator blocksIt = cfg.iterator(); blocksIt.hasNext(); ){
+          Block block = (Block) blocksIt.next();
+          has_already.put(block.getIndexInMethod(), 0);
+        }
+
         /* Main Cytron algorithm. */
         
         {
@@ -110,9 +125,12 @@ public class PhiNodeManager
 
                 // initialise worklist
                 {
-                    Iterator defNodesIt = localsToDefPoints.get(local).iterator();
-                    while(defNodesIt.hasNext()){
-                        Block block = (Block) defNodesIt.next();
+                    List<Block> def_points = localsToDefPoints.get(local);
+                    //if the local is only defined once, no need for phi nodes
+                    if(def_points.size() == 1){
+                      continue;
+                    }
+                    for(Block block : def_points){
                         workFlags[block.getIndexInMethod()] = iterCount;
                         workList.push(block);
                     }
@@ -127,7 +145,9 @@ public class PhiNodeManager
                         Block frontierBlock = (Block) ((DominatorNode) frontierNodes.next()).getGode();
                         int fBIndex = frontierBlock.getIndexInMethod();
                         
-                        if(needsPhiNode(local, frontierBlock)){
+                        if(has_already.get(frontierBlock.getIndexInMethod()) < iterCount)
+                        {
+                            has_already.put(frontierBlock.getIndexInMethod(), iterCount);
                             prependTrivialPhiNode(local, frontierBlock);
                             change = true;
 
@@ -135,7 +155,7 @@ public class PhiNodeManager
                                 workFlags[fBIndex] = iterCount;
                                 workList.push(frontierBlock);
                             }
-                        }
+                        } 
                     }
                 }
             }
@@ -163,43 +183,6 @@ public class PhiNodeManager
             frontierBlock.insertBefore(trivialPhi, frontierBlock.getHead());
 
         varToBlocks.put(local, frontierBlock);
-    }
-
-    /**
-     * Function that allows us to weed out special cases where
-     * we do not require Phi nodes.
-     *
-     * <p> Temporary implementation, with much room for improvement.
-     **/
-    protected boolean needsPhiNode(Local local, Block block)
-    {
-        if(varToBlocks.get(local).contains(block))
-            return false;
-
-        Iterator unitsIt = block.iterator();
-
-        if(!unitsIt.hasNext()){
-            if(!block.getSuccs().isEmpty())
-                throw new RuntimeException("Empty block in CFG?");
-            
-            // tail block
-            return false;
-        }
-
-        Unit unit = (Unit) unitsIt.next();
-
-        // this will return null if the head unit is an inserted Phi statement
-        List definedLocals = gd.getGuaranteedDefs(unit);
-
-        // this should not fail
-        while(definedLocals == null){
-            if(!unitsIt.hasNext())
-                throw new RuntimeException("Almost empty block in CFG?");
-            unit = (Unit) unitsIt.next();
-            definedLocals = gd.getGuaranteedDefs(unit);
-        }
-        
-        return definedLocals.contains(local);
     }
 
     /**
