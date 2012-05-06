@@ -403,7 +403,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     sc.setModifiers(sootTypeModifiers());
     sc.setApplicationClass();
     SourceFileTag st = new soot.tagkit.SourceFileTag(sourceNameWithoutPath());
-    st.setAbsolutePath(new File(sourceFile()).getAbsolutePath());
+    st.setAbsolutePath(compilationUnit().pathName());
     sc.addTag(st);
     if(hasSuperclass()) {
       sc.setSuperclass(superclass().getSootClassDecl());
