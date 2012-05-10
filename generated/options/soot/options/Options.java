@@ -40,6 +40,7 @@ public class Options extends OptionsBase {
     public static final int src_prec_J = 3;
     public static final int src_prec_jimple = 3;
     public static final int src_prec_java = 4;
+    public static final int src_prec_apk = 5;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -268,6 +269,17 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     src_prec = src_prec_java;
+                }
+    
+                else if( false
+                || value.equals( "apk" )
+                ) {
+                    if( src_prec != 0
+                    && src_prec != src_prec_apk ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    src_prec = src_prec_apk;
                 }
     
                 else {
@@ -1170,6 +1182,7 @@ public class Options extends OptionsBase {
 +padVal(" only-class", "Use only class files as Soot source" )
 +padVal(" J jimple", "Favour Jimple files as Soot source" )
 +padVal(" java", "Favour Java files as Soot source" )
++padVal(" apk", "Favour APK files as Soot source" )
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +padOpt(" -no-bodies-for-excluded", "Do not load bodies for excluded classes" )

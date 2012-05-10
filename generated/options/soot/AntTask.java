@@ -198,6 +198,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "J" )
                 || arg.equals( "jimple" )
                 || arg.equals( "java" )
+                || arg.equals( "apk" )
                 ) {
                 addArg("-src-prec");
                 addArg(arg);
