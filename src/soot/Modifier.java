@@ -56,7 +56,13 @@ public class Modifier
     public static final int STRICTFP =     0x0800; 
     public static final int ANNOTATION =   0x2000; 
     public static final int ENUM =         0x4000; 
-    
+
+    // dex specifific modifiers
+    public static final int SYNTHETIC = 0x1000;
+    public static final int CONSTRUCTOR = 0x10000;
+    public static final int DECLARED_SYNCHRONIZED = 0x20000;
+    // add
+
     private Modifier()
     {
     }
@@ -130,7 +136,19 @@ public class Modifier
     {
         return (m & ENUM) != 0;
     }
-    
+
+    public static boolean isSynthetic(int m) {
+        return (m & SYNTHETIC) != 0;
+    }
+
+    public static boolean isConstructor(int m) {
+        return (m & CONSTRUCTOR) != 0;
+    }
+
+    public static boolean isDeclaredSynchronized(int m) {
+        return (m & DECLARED_SYNCHRONIZED) != 0;
+    }
+
     /**
      *  Converts the given modifiers to their string representation, in canonical form.
      *   @param m  a modifier set
@@ -179,7 +197,7 @@ public class Modifier
         
         if(isInterface(m))
         	buffer.append("interface ");
-        
+
         return (buffer.toString()).trim();
     }
 

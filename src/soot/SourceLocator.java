@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
@@ -128,12 +129,30 @@ public class SourceLocator
                 classProviders.add(new CoffiClassProvider());
                 classProviders.add(new JavaClassProvider());
                 break;
+            case Options.src_prec_apk:
+                classProviders.add(dexClassProvider());
+				classProviders.add(new CoffiClassProvider());
+				classProviders.add(new JavaClassProvider());
+				classProviders.add(new JimpleClassProvider());
+                break;
             default:
                 throw new RuntimeException("Other source precedences are not currently supported.");
         }
     }
 
-    private List<ClassProvider> classProviders;
+    private IDexClassProvider dexClassProvider() {
+    	if(dexCP==null) {
+			try {
+				dexCP = (IDexClassProvider) Class.forName("soot.DexClassProvider").newInstance();
+	            return dexCP;
+			} catch (Exception e) {
+				throw new Error("Tried to load input from DEX but class soot.DexClassProvider is not present on the classpath." +
+						" Did you forget to include the DEX plugin?",e);
+			}
+    	} else return dexCP;
+	}
+
+	private List<ClassProvider> classProviders;
     public void setClassProviders( List<ClassProvider> classProviders ) {
         this.classProviders = classProviders;
     }
@@ -149,28 +168,28 @@ public class SourceLocator
         if( sourcePath == null ) {
             sourcePath = new ArrayList<String>();
             for (String dir : classPath) {
-                if( !isJar(dir) ) sourcePath.add(dir);
+                if( !isArchive(dir) ) sourcePath.add(dir);
             }
         }
         return sourcePath;
     }
 
-    private boolean isJar(String path) {
-	File f = new File(path);	
-	if(f.isFile() && f.canRead()) { 		
-	    if(path.endsWith("zip") || path.endsWith("jar")) {
-		return true;
-	    } else {
-		G.v().out.println("Warning: the following soot-classpath entry is not a supported archive file (must be .zip or .jar): " + path);
-	    }
-	}  
-	return false;
+    private boolean isArchive(String path) {
+        File f = new File(path);
+        if (f.isFile() && f.canRead()) {
+            if (path.endsWith(".zip") || path.endsWith(".jar") || path.endsWith(".apk")) {
+                return true;
+            } else {
+            G.v().out.println("Warning: the following soot-classpath entry is not a supported archive file (must be .zip, .jar or .apk): " + path);
+            }
+        }
+        return false;
     }
 
     public List<String> getClassesUnder(String aPath) {
-        List<String> fileNames = new ArrayList<String>();
+        List<String> classes = new ArrayList<String>();
 
-	if (isJar(aPath)) {
+	if (isArchive(aPath)) {
 	    List inputExtensions = new ArrayList(2);
             inputExtensions.add(".class");
             inputExtensions.add(".jimple");
@@ -188,8 +207,11 @@ public class SourceLocator
 			if (inputExtensions.contains(entryExtension)) {
 			    entryName = entryName.substring(0, extensionIndex);
 			    entryName = entryName.replace('/', '.');
-			    fileNames.add(entryName);
+			    classes.add(entryName);
 			}
+            // We are dealing with an apk file
+            if (entryName == "classes.dex")
+                classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
 		    }
 		}
 	    } catch(IOException e) {
@@ -214,29 +236,34 @@ public class SourceLocator
 		    Iterator<String> it = l.iterator();
 		    while (it.hasNext()) {
 			String s = it.next();
-			fileNames.add(element.getName() + "." + s);
+			classes.add(element.getName() + "." + s);
 		    }
 		} else {
 		    String fileName = element.getName();
 
 		    if (fileName.endsWith(".class")) {
 			int index = fileName.lastIndexOf(".class");
-			fileNames.add(fileName.substring(0, index));
+			classes.add(fileName.substring(0, index));
 		    }
 
 		    if (fileName.endsWith(".jimple")) {
 			int index = fileName.lastIndexOf(".jimple");
-			fileNames.add(fileName.substring(0, index));
+			classes.add(fileName.substring(0, index));
 		    }
 
 		    if (fileName.endsWith(".java")) {
 			int index = fileName.lastIndexOf(".java");
-			fileNames.add(fileName.substring(0, index));
+			classes.add(fileName.substring(0, index));
+		    }
+		    if (fileName.endsWith(".dex")) {
+                try {
+					classes.addAll(dexClassProvider().classesOfDex(element));
+				} catch (IOException e) { /* Ignore unreadable files */}
 		    }
 		}
 	    }
 	}
-        return fileNames;
+        return classes;
     }
 
     public String getFileNameFor(SootClass c, int rep) {
@@ -443,8 +470,8 @@ public class SourceLocator
     public FoundFile lookupInClassPath( String fileName ) {
         for (String dir : classPath) {
             FoundFile ret;
-            if(isJar(dir)) {
-                ret = lookupInJar(dir, fileName);
+            if(isArchive(dir)) {
+                ret = lookupInArchive(dir, fileName);
             } else {
                 ret = lookupInDir(dir, fileName);
             }
@@ -459,14 +486,14 @@ public class SourceLocator
         }
         return null;
     }
-    private FoundFile lookupInJar(String jar, String fileName) {
+    private FoundFile lookupInArchive(String archivePath, String fileName) {
         try {
-            ZipFile jarFile = new ZipFile(jar);
-            ZipEntry entry = jarFile.getEntry(fileName);
+            ZipFile archive = new ZipFile(archivePath);
+            ZipEntry entry = archive.getEntry(fileName);
             if( entry == null ) return null;
-            return new FoundFile(jarFile, entry);
+            return new FoundFile(archive, entry);
         } catch( IOException e ) {
-            throw new RuntimeException( "Caught IOException "+e+" looking in jar file "+jar+" for file "+fileName );
+            throw new RuntimeException("Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);
         }
     }
     private HashMap<String, String> sourceToClassMap;
@@ -499,6 +526,39 @@ public class SourceLocator
             }
         }
         return javaClassName;
+    }
+
+    /**
+     * The index that maps classes to the files they are defined in.
+     * This is necessary because a dex file can hold multiple classes.
+     */
+    private Map<String, File> dexClassIndex;
+
+    /**
+     * Handle to the class provider for Dalvik DEX files (if present).
+     */
+    private IDexClassProvider dexCP;
+
+    /**
+     * Return the dex class index that maps class names to files
+     *
+     * @return the index
+     */
+    public Map<String, File> dexClassIndex() {
+        return dexClassIndex;
+    }
+
+    /**
+     * Set the dex class index
+     *
+     * @param index the index
+     */
+    public void setDexClassIndex(Map<String, File> index) {
+    	dexClassIndex = index;
+    }
+    
+    interface IDexClassProvider extends ClassProvider {
+    	public Set<String> classesOfDex(File file) throws IOException;    	
     }
 }
 
