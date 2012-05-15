@@ -24,7 +24,7 @@ import java.io.PrintStream;
  * It is the the abstract super type of geometric figures, also the manager of all the generated sub-type figures.
  * We implement a simple compression by eliminating identical figures.
  * 
- * @author richardxx
+ * @author xiao
  *
  */
 public abstract class ShapeNode 

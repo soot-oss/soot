@@ -24,6 +24,14 @@ import java.util.Vector;
 
 import soot.Type;
 import soot.jimple.spark.geom.geomE.GeometricManager;
+import soot.jimple.spark.geom.geomPA.CallsiteContextVar;
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
+import soot.jimple.spark.geom.geomPA.IFigureManager;
+import soot.jimple.spark.geom.geomPA.IVarAbstraction;
+import soot.jimple.spark.geom.geomPA.IWorklist;
+import soot.jimple.spark.geom.geomPA.PlainConstraint;
+import soot.jimple.spark.geom.geomPA.RectangleNode;
+import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
@@ -31,20 +39,18 @@ import soot.util.Numberable;
 /**
  * An interface makes the points-to solver automatically adapt to different kind of encodings.
  * This interface defines the operations that are needed for manipulating a variable (pointer/object).
- * @author richardxx
+ * 
+ * @author xiao
  *
  */
 public abstract class IVarAbstraction implements Numberable {
 	
-	// Used for the context insensitive points-to information recharged from SPARK
-	protected static GeometricManager stubManager;
+	// A shape manager that has only one all map to all member, representing the context insensitive points-to info
+	protected static IFigureManager stubManager;
+	// This is used to indicate the corresponding object should be removed
+	protected static IFigureManager deadManager;
+	// A temporary rectangle for public use 
 	protected static RectangleNode pres;
-	
-	static {
-		stubManager = new GeometricManager();
-		pres = new RectangleNode(1, 1, GeomPointsTo.MAX_CONTEXTS, GeomPointsTo.MAX_CONTEXTS);
-		stubManager.addNewObject(GeomPointsTo.MANY_TO_MANY, pres);
-	}
 	
 	// Corresponding SPARK node
 	public Node me;
@@ -54,7 +60,8 @@ public abstract class IVarAbstraction implements Numberable {
 	public int Qpos = 0;
 	// top_value: the topological value for this node on the symbolic assignment graph
 	// lrf_value: the least recently fired time for this node
-	public int top_value = Integer.MIN_VALUE, lrf_value = 0;
+	// top_value will be modified in the offlineProcessor
+	public int top_value = 1, lrf_value = 0;
 	// union-find tree link
 	private IVarAbstraction parent;
 	
@@ -94,12 +101,10 @@ public abstract class IVarAbstraction implements Numberable {
 		return parent;
 	}
 	
-	
 	public void setNumber( int number )
 	{
 		id = number;
 	}
-	
 	
     public int getNumber()
     {
@@ -123,6 +128,8 @@ public abstract class IVarAbstraction implements Numberable {
 	public abstract void drop_duplicates();
 	public abstract void remove_points_to( AllocNode obj );
 	public abstract void discard();
+	public abstract void injectPts();
+	public abstract boolean isDeadObject( AllocNode obj );
 	
 	// Querying points-to information
 	public abstract boolean is_empty();

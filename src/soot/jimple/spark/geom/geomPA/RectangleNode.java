@@ -18,7 +18,12 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
-
+/**
+ * The rectangle figure for encoding the points-to/flows-to relations.
+ * 
+ * @author xiao
+ *
+ */
 public class RectangleNode extends SegmentNode {
 
 	// I1 : the starting x coordinate

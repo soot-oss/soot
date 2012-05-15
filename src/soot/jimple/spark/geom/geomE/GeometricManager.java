@@ -18,9 +18,10 @@
  */
 package soot.jimple.spark.geom.geomE;
 
-import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
 import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.geomE.GeometricManager;
+import soot.jimple.spark.geom.geomPA.IFigureManager;
 
 /**
  * Currently, we apply a naive management strategy:
@@ -28,22 +29,24 @@ import soot.jimple.spark.geom.geomPA.SegmentNode;
  * all the geometric objects on the plane together can cover the new object. Instead, we test if there is 
  * one object already covers the new object.
  * 
- * @author richardxx
- * @since 1/11/2010
+ * @author xiao
+ *
  */
-public class GeometricManager 
+public class GeometricManager implements IFigureManager
 {
 	public static final int Divisions = 2;
-//	public static final int sizeIncrement = (1<<16) + 1;
-	private SegmentNode header[] = { null, null };
-	/*
-	 * The size field is divided into two sections. 
-	 * The upper 16-bits records the number of shapes, the lower 16-bits records how many of them are newly added.
-	 */
-	private int size[] = { 0, 0 };
-	private boolean hasNewObject = false;
+
+	// The type ID for different figures
+	public static final int ONE_TO_ONE = 0;
+	public static final int MANY_TO_MANY = 1;
+	public static final int Undefined_Mapping = -1;
 	
-	public SegmentNode[] getObjects() 
+	private SegmentNode header[] = { null, null };
+	private int size[] = { 0, 0 };
+	private boolean hasNewFigure = false;
+
+	
+	public SegmentNode[] getFigures() 
 	{
 		return header;
 	}
@@ -53,14 +56,17 @@ public class GeometricManager
 		return size;
 	}
 	
-	public boolean isThereUnprocessedObject()
+	public boolean isThereUnprocessedFigures()
 	{
-		return hasNewObject;
+		return hasNewFigure;
 	}
 	
+	/**
+	 * Remove the new labels for all the figures.
+	 */
 	public void flush()
 	{
-		hasNewObject = false;
+		hasNewFigure = false;
 		
 		for ( int i = 0; i < Divisions; ++i ) {
 			SegmentNode p = header[i];
@@ -71,24 +77,27 @@ public class GeometricManager
 		}
 	}
 	
-	public SegmentNode addNewObject(int code, RectangleNode pnew) 
+	/**
+	 * Insert a new figure into this manager if it is not covered by any exisiting figure.
+	 */
+	public SegmentNode addNewFigure(int code, RectangleNode pnew) 
 	{
 		SegmentNode p;
 		
 		// We first check if there is an existing object contains this new object
-		if ( check_redundancy( code, pnew ) )
+		if ( checkRedundancy( code, pnew ) )
 			return null;
 		
 		// Oppositely, we check if any existing objects are obsoleted
-		filter_out_duplicates( code, pnew );
+		filterOutDuplicates( code, pnew );
 		
 		// Ok, now we generate a copy
-		if ( code == GeomPointsTo.ONE_TO_ONE )
+		if ( code == GeometricManager.ONE_TO_ONE )
 			p = new SegmentNode( pnew );
 		else
 			p = new RectangleNode( pnew );
 		
-		hasNewObject = true;
+		hasNewFigure = true;
 		p.next = header[code];
 		header[code] = p;
 		size[code]++;
@@ -97,12 +106,14 @@ public class GeometricManager
 	}
 
 	/**
-	 * merge the set of objects in the same category into one.
-	 * @param buget_size
+	 * Merge the set of objects in the same category into one.
 	 */
-	public void mergeObjects( int buget_size ) 
+	public void mergeFigures( int buget_size ) 
 	{
 		RectangleNode p;
+		
+		// We don't merge the figures if there are no new figures in this geometric manager
+		if ( !hasNewFigure ) return;
 		
 		for ( int i = 0; i < Divisions; ++i ) {
 			p = null;
@@ -111,25 +122,25 @@ public class GeometricManager
 				// Merging is finding the bounding rectangles for every type of objects
 				
 				switch ( i ) {
-				case GeomPointsTo.ONE_TO_ONE:
-					p = merge_one_to_one();
+				case GeometricManager.ONE_TO_ONE:
+					p = mergeOneToOne();
 					break;
 				
-				case GeomPointsTo.MANY_TO_MANY:
-					p = merge_many_to_many();
+				case GeometricManager.MANY_TO_MANY:
+					p = mergeManyToMany();
 					break;
 				}
 			}
 			
 			if ( p != null ) {
-				if ( i == GeomPointsTo.ONE_TO_ONE ) {
-					if ( check_redundancy(GeomPointsTo.MANY_TO_MANY, p) ) continue;
-					filter_out_duplicates(GeomPointsTo.MANY_TO_MANY, p);
+				if ( i == GeometricManager.ONE_TO_ONE ) {
+					if ( checkRedundancy(GeometricManager.MANY_TO_MANY, p) ) continue;
+					filterOutDuplicates(GeometricManager.MANY_TO_MANY, p);
 				}
 				
-				p.next = header[GeomPointsTo.MANY_TO_MANY];
-				header[GeomPointsTo.MANY_TO_MANY] = p;
-				size[GeomPointsTo.MANY_TO_MANY]++;
+				p.next = header[GeometricManager.MANY_TO_MANY];
+				header[GeometricManager.MANY_TO_MANY] = p;
+				size[GeometricManager.MANY_TO_MANY]++;
 			}
 		}
 	}
@@ -137,15 +148,15 @@ public class GeometricManager
 	/**
 	 * The lines that are included in some rectangles can be deleted.
 	 */
-	public void remove_useless_lines() 
+	public void removeUselessSegments() 
 	{
-		SegmentNode pnew = header[GeomPointsTo.ONE_TO_ONE];
+		SegmentNode pnew = header[GeometricManager.ONE_TO_ONE];
 		SegmentNode q = null;
 		int countAll = 0;
 		
 		while (pnew != null) {
 			SegmentNode temp = pnew.next;
-			if (!is_contained_in_rectangles(pnew)) {
+			if (!isContainedInRectangles(pnew)) {
 				pnew.next = q;
 				q = pnew;
 				++countAll;
@@ -153,9 +164,8 @@ public class GeometricManager
 			pnew = temp;
 		}
 
-//		size[IntervalPointsTo.One_To_One] = (countAll) << 16;
-		size[GeomPointsTo.ONE_TO_ONE] = countAll;
-		header[GeomPointsTo.ONE_TO_ONE] = q;
+		size[GeometricManager.ONE_TO_ONE] = countAll;
+		header[GeometricManager.ONE_TO_ONE] = q;
 	}
 	
 	/**
@@ -163,9 +173,9 @@ public class GeometricManager
 	 * @param pnew, must be a line
 	 * @return
 	 */
-	private boolean is_contained_in_rectangles(SegmentNode pnew)
+	private boolean isContainedInRectangles(SegmentNode pnew)
 	{
-		SegmentNode p = header[ GeomPointsTo.MANY_TO_MANY ];
+		SegmentNode p = header[ GeometricManager.MANY_TO_MANY ];
 		
 		while ( p != null ) {
 			if (pnew.I1 >= p.I1 && pnew.I2 >= p.I2) {
@@ -186,19 +196,19 @@ public class GeometricManager
 	 * @param pnew
 	 * @return
 	 */
-	private boolean check_redundancy(int code, RectangleNode pnew) 
+	private boolean checkRedundancy(int code, RectangleNode pnew) 
 	{
 		// Expand it temporarily
-		if (code == GeomPointsTo.ONE_TO_ONE)
+		if (code == GeometricManager.ONE_TO_ONE)
 			pnew.L_prime = pnew.L;
 		
 		// Check redundancy
-		for ( int i = code; i <= GeomPointsTo.MANY_TO_MANY; ++i ) {
+		for ( int i = code; i <= GeometricManager.MANY_TO_MANY; ++i ) {
 			SegmentNode p = header[i];
 			
 			while ( p != null ) {
 				switch ( i ) {
-				case GeomPointsTo.ONE_TO_ONE:
+				case GeometricManager.ONE_TO_ONE:
 					if ( (p.I2 - p.I1) == (pnew.I2 - pnew.I1) ) {
 						// Have the same intercept and it is completely contained in an existing segment
 						if ( pnew.I1 >= p.I1 && (pnew.I1 + pnew.L) <= (p.I1 + p.L) )
@@ -206,7 +216,7 @@ public class GeometricManager
 					}
 					break;
 					
-				case GeomPointsTo.MANY_TO_MANY:
+				case GeometricManager.MANY_TO_MANY:
 					if ( pnew.I1 >= p.I1 && pnew.I2 >= p.I2 ) {
 						if ( (pnew.I1 + pnew.L) <= (p.I1 + p.L) &&
 								(pnew.I2 + pnew.L_prime) <= (p.I2 + ((RectangleNode)p).L_prime) )
@@ -227,7 +237,7 @@ public class GeometricManager
 	 * @param code
 	 * @param p
 	 */
-	private void filter_out_duplicates(int code, SegmentNode p) 
+	private void filterOutDuplicates(int code, SegmentNode p) 
 	{
 		boolean flag;
 		SegmentNode q_head, q_tail;
@@ -244,8 +254,8 @@ public class GeometricManager
 				flag = false;
 				
 				switch ( i ) {
-				case GeomPointsTo.ONE_TO_ONE:
-					if ( code == GeomPointsTo.MANY_TO_MANY ) {
+				case GeometricManager.ONE_TO_ONE:
+					if ( code == GeometricManager.MANY_TO_MANY ) {
 						if (pold.I1 >= p.I1 && pold.I2 >= p.I2) {
 							if ((pold.I1 + pold.L) <= (p.I1 + p.L)
 									&& (pold.I2 + pold.L) <= (p.I2 + ((RectangleNode) p).L_prime))
@@ -260,7 +270,7 @@ public class GeometricManager
 					}
 					break;
 					
-				case GeomPointsTo.MANY_TO_MANY:
+				case GeometricManager.MANY_TO_MANY:
 					if ( pold.I1 >= p.I1 && pold.I2 >= p.I2 ) {
 						if ( (pold.I1 + pold.L) <= (p.I1 + p.L) &&
 								(pold.I2 + ((RectangleNode)pold).L_prime) <= (p.I2 + ((RectangleNode)p).L_prime) )
@@ -290,12 +300,16 @@ public class GeometricManager
 		}
 	}
 
-	private RectangleNode merge_many_to_many() 
+	/**
+	 * Find the bounding rectangle for all the rectangle figures.
+	 * @return
+	 */
+	private RectangleNode mergeManyToMany() 
 	{
 		long x_min = Long.MAX_VALUE, y_min = Long.MAX_VALUE;
 		long x_max = Long.MIN_VALUE, y_max = Long.MIN_VALUE;
 		
-		RectangleNode p = (RectangleNode)header[GeomPointsTo.MANY_TO_MANY];
+		RectangleNode p = (RectangleNode)header[GeometricManager.MANY_TO_MANY];
 		
 		while ( p != null ) {
 			if ( p.I1 < x_min ) x_min = p.I1;
@@ -306,9 +320,9 @@ public class GeometricManager
 		}
 		
 		// We assume the list has at least one element
-		p = (RectangleNode)header[GeomPointsTo.MANY_TO_MANY];
-		header[GeomPointsTo.MANY_TO_MANY] = null;
-		size[GeomPointsTo.MANY_TO_MANY] = 0;
+		p = (RectangleNode)header[GeometricManager.MANY_TO_MANY];
+		header[GeometricManager.MANY_TO_MANY] = null;
+		size[GeometricManager.MANY_TO_MANY] = 0;
 		p.I1 = x_min;
 		p.I2 = y_min;
 		p.L = x_max - x_min;
@@ -318,14 +332,18 @@ public class GeometricManager
 		return p;
 	}
 
-	private RectangleNode merge_one_to_one() 
+	/**
+	 * Find the bounding rectangle for all segment figures.
+	 * @return
+	 */
+	private RectangleNode mergeOneToOne() 
 	{
 		long x_min = Long.MAX_VALUE, y_min = Long.MAX_VALUE;
 		long x_max = Long.MIN_VALUE, y_max = Long.MIN_VALUE;
 		
-		SegmentNode p = header[GeomPointsTo.ONE_TO_ONE];
-		header[GeomPointsTo.ONE_TO_ONE] = null;
-		size[GeomPointsTo.ONE_TO_ONE] = 0;
+		SegmentNode p = header[GeometricManager.ONE_TO_ONE];
+		header[GeometricManager.ONE_TO_ONE] = null;
+		size[GeometricManager.ONE_TO_ONE] = 0;
 		
 		while ( p != null ) {
 			if ( p.I1 < x_min ) x_min = p.I1;

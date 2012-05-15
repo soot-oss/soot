@@ -31,9 +31,7 @@ import soot.util.Numberable;
  * And most importantly, we permits the search for a particular object efficiently.
  * Therefore, this class supports both efficiently insert, lookup, deletion and list queries.
  * 
- * @author richardxx
- *
- * @param <E>
+ * @author xiao
  */
 public class ZArrayNumberer<E extends Numberable > implements IterableNumberer<E> , Iterable<E>
 {
@@ -112,8 +110,40 @@ public class ZArrayNumberer<E extends Numberable > implements IterableNumberer<E
     	return true;
     }
     
-    public int size() { return filledCells; }
+    /**
+     * Return how many objects are in the container but not the capacity of the container.
+     */
+    public int size() 
+    { 
+    	return filledCells; 
+    }
 
+    /**
+     * The removed objects cause some empty slots. 
+     * We shift the objects to the empty slots in order to ensure ids of the objects are less than the filledCells. 
+     */
+    public void reassign()
+    {
+    	int i, j;
+    	
+    	for ( i = 0, j = lastNumber - 1; i < j; ++i ) {
+    		if ( numberToObj[i] != null )
+    			continue;
+    		
+    		while ( j > i ) {
+    			if ( numberToObj[j] != null ) break;
+    			--j;
+    		}
+    		
+    		if ( i == j ) break;
+    		
+    		numberToObj[i] = numberToObj[j];
+    		numberToObj[i].setNumber(i);
+    		numberToObj[j] = null;
+    	}
+    	
+    	lastNumber = i;
+    }
     
     public Iterator<E> iterator() {
         return new NumbererIterator();
@@ -121,6 +151,7 @@ public class ZArrayNumberer<E extends Numberable > implements IterableNumberer<E
 
     final class NumbererIterator implements Iterator<E> {
         int cur = 0;
+        E lastElement = null;
         
         /**
          * We locate the next non-null item.
@@ -141,12 +172,12 @@ public class ZArrayNumberer<E extends Numberable > implements IterableNumberer<E
          */
         @SuppressWarnings("unchecked")
 		public final E next() {
-        	return (E)numberToObj[cur++];
+        	lastElement = (E)numberToObj[cur++];
+        	return lastElement;
         }
         
         public final void remove() {
-            throw new UnsupportedOperationException();
+            ZArrayNumberer.this.remove( lastElement );
         }
     }
 }
-

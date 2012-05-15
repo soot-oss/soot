@@ -21,10 +21,24 @@ package soot.jimple.spark.geom.geomPA;
 import soot.jimple.spark.pag.Node;
 import soot.options.SparkOptions;
 
+/**
+ * An abstract class for hiding different encoding methods, e.g. Geom, HeapIns, PtIns.
+ * 
+ * @author xiao
+ *
+ */
 public abstract class IEncodingBroker 
 {
-	public static int n_added_flowedge = 0;
-	public static int n_added_pts = 0;
+	// Define the mapping types
+	public final static int Undefined_Mapping = -1;
+	public final static int ONE_TO_ONE = 0;
+	public final static int MANY_TO_MANY = 1;
+	
+	public static final int full_convertor[] = { 
+		ONE_TO_ONE, MANY_TO_MANY, 
+		MANY_TO_MANY, MANY_TO_MANY 
+	};
+	
 	
 	/**
 	 * Generate a node of proper kind.

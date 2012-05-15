@@ -26,14 +26,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import soot.SootMethod;
+import soot.jimple.spark.geom.geomPA.CallsiteContextVar;
+import soot.jimple.spark.geom.geomPA.CgEdge;
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
+import soot.jimple.spark.geom.geomPA.IVarAbstraction;
+import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
-import soot.jimple.spark.sets.P2SetVisitor;
-import soot.jimple.spark.sets.PointsToSetInternal;
 
 /**
  * Output the points-to matrix in various formats.
@@ -45,40 +49,6 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 public class PointsToDumper 
 {	
 	/**
-	 * Dump the points-to vector for each pointer stored in the SPARK pointer node.
-	 */
-	public static void dump_spark_result( GeomPointsTo ptsProvider )
-	{
-		try {
-			final PrintWriter file = new PrintWriter(new FileOutputStream(
-					new File("pags", ptsProvider.dump_file_name + ".txt")));
-			
-			file.println( ptsProvider.pointers.size() + " " + ptsProvider.getAllocNodeNumberer().size() );
-			
-			for ( IVarAbstraction pn : ptsProvider.pointers ) {
-				pn = pn.getRepresentative();
-				Node node = pn.getWrappedNode();
-				PointsToSetInternal p2set = node.getP2Set();
-				p2set.flushNew();
-				
-				file.print( p2set.size() );
-				
-				p2set.forall(new P2SetVisitor() {
-					public final void visit(Node n) {
-						file.print( " " + (((AllocNode)n).getNumber()-1) );
-					}
-				});
-				
-				file.println();
-			}
-			
-			file.close();
-        } catch( IOException e ) {
-            throw new RuntimeException( "Couldn't dump solution."+e );
-        }
-	}
-	
-	/**
 	 * Dump the context insensitive points-to result generated from the geometric analysis by throwing away the context information.
 	 * @param ptsProvider
 	 */
@@ -88,15 +58,20 @@ public class PointsToDumper
 			final PrintWriter file = new PrintWriter(new FileOutputStream(
 					new File("pags", ptsProvider.dump_file_name + ".ptm")));
 			
+			// First dump a descriptor
+			// 0 is the result of pointer and object insensitive matrix
+			file.println( "0" );
 			file.println( ptsProvider.getNumberOfPointers() + " " + ptsProvider.getNumberOfObjects() );
 			
 			for (IVarAbstraction pn : ptsProvider.pointers) {
 				pn = pn.getRepresentative();
+				Set<AllocNode> objSet = pn.get_all_points_to_objects();
 				
-				file.print( pn.get_all_points_to_objects().size() );
+				file.print( objSet.size() );
 				
-				for ( AllocNode obj : pn.get_all_points_to_objects() ) {
-					file.print( " " + (obj.getNumber()-1) );
+				for ( AllocNode obj : objSet ) {
+					IVarAbstraction pobj = ptsProvider.findInternalNode(obj);
+					file.print( " " + pobj.getNumber() );
 				}
 				
 				file.println();
@@ -119,6 +94,10 @@ public class PointsToDumper
 		try {
 			final PrintWriter file = new PrintWriter(new FileOutputStream(
 					new File("pags", ptsProvider.dump_file_name + ".ptm")));
+			
+			// First dump a descriptor
+			// 0 is the result of pointer and object insensitive matrix
+			file.println( "16" );		// 0x00000010
 			
 			var_num = 0;
 			for ( IVarAbstraction pn : ptsProvider.pointers ) {
@@ -161,18 +140,21 @@ public class PointsToDumper
 						
 						file.print( list.size() );
 					
-						for (Iterator<AllocNode> obj_it = list.iterator(); obj_it.hasNext(); ) {
-							file.print( " " + (obj_it.next().getNumber()-1) );
+						for ( AllocNode obj : list ) {
+							IVarAbstraction po = ptsProvider.findInternalNode(obj);
+							file.print( " " + po.getNumber() );
 						}
 
 						file.println();
 					}
 				}
 				else {
-					file.print( pn.get_all_points_to_objects().size() );
+					Set<AllocNode> objSet = pn.get_all_points_to_objects();
+					file.print( objSet.size() );
 					
-					for (Iterator<AllocNode> it = pn.get_all_points_to_objects().iterator(); it.hasNext(); ) {
-						file.print( " " + (it.next().getNumber()-1) );
+					for ( AllocNode obj : objSet ) {
+						IVarAbstraction po = ptsProvider.findInternalNode(obj);
+						file.print( " " + po.getNumber() );
 					}
 					
 					file.println();
@@ -198,6 +180,10 @@ public class PointsToDumper
 		try {
 			final PrintWriter file = new PrintWriter(new FileOutputStream(
 					new File("pags", ptsProvider.dump_file_name + ".ptm")));
+			
+			// First dump a descriptor
+			// 0 is the result of pointer and object insensitive matrix
+			file.println( "1" );		//0x00000001
 			
 			var_num = 0;
 			obj_num = 0;
@@ -232,9 +218,7 @@ public class PointsToDumper
 				}
 			}
 			
-			// We first output the predefined style of this points-to matrix
-			// Here is: callsite based (0) pointer 0cfa (0) object 1cfa (1)
-			file.println( (0<<16) + (0 << 8) + 1 );  
+			// The points-to matrix rows and columns
 			file.println( var_num + " " + obj_num );
 			
 			// The points-to matrix
@@ -251,13 +235,13 @@ public class PointsToDumper
 				file.println();
 			}
 			
-			// The context objects to syntax objects table
+			// The context objects to callsites table
 			obj_num = ptsProvider.getNumberOfObjects();
 			file.println( obj_num );
 			int i = 1, j = 0;
 			
 			while ( true ) {
-				// We first identify all the objects that are mapped to the same context insensitive version
+				// We first identify all the objects that are mapped to the same callsite
 				CallsiteContextVar first_obj = ct_sens_objs.get(j);
 				while ( i < obj_num ) {
 					CallsiteContextVar cobj = ct_sens_objs.get(i);
@@ -298,6 +282,10 @@ public class PointsToDumper
 		try {
 			final PrintWriter file = new PrintWriter(new FileOutputStream(
 					new File("pags", ptsProvider.dump_file_name + ".ptm")));
+			
+			// First dump a descriptor
+			// 0 is the result of pointer and object insensitive matrix
+			file.println( "17" );		//0x00000011
 			
 			var_num = 0;
 			obj_num = 0;
@@ -341,6 +329,7 @@ public class PointsToDumper
 				}
 			}
 			
+			// Matrix rows and columns
 			file.println( var_num + " " + obj_num );
 			
 			for (IVarAbstraction pn : ptsProvider.pointers) {

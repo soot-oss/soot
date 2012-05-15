@@ -22,8 +22,9 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.toolkits.callgraph.Edge;
 
 /**
- * Call graph edge
- * @author richardxx
+ * The internal call graph edge representation.
+ * 
+ * @author xiao
  *
  */
 public class CgEdge {

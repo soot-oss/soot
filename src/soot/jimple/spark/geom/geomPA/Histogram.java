@@ -20,6 +20,12 @@ package soot.jimple.spark.geom.geomPA;
 
 import java.io.PrintStream;
 
+/**
+ * A helper class for plotting the evaluation results in histogram form.
+ * 
+ * @author xiao
+ *
+ */
 public class Histogram {
 	// private static Histogram instance;
 

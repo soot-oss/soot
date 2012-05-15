@@ -27,40 +27,21 @@ import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
 import soot.jimple.spark.geom.heapinsE.HeapInsNode;
+import soot.jimple.spark.geom.geomE.GeometricManager;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.SparkOptions;
 
+/**
+ * Build the initial encoding with the PtIns encoding.
+ * 
+ * @author xiao
+ *
+ */
 public class PtInsNodeGenerator extends IEncodingBroker
 {
-	private static final int full_convertor[] = { 
-		GeomPointsTo.ONE_TO_ONE, GeomPointsTo.MANY_TO_MANY, 
-		GeomPointsTo.MANY_TO_MANY, GeomPointsTo.MANY_TO_MANY 
-	};
-	
-	@Override
-	public IVarAbstraction generateNode(Node vNode ) 
-	{
-		IVarAbstraction ret;
-		
-		if ( vNode instanceof AllocNode ||
-				vNode instanceof FieldRefNode ) {
-			ret = new DummyNode(vNode);
-		}
-		else {
-			ret = new HeapInsNode(vNode);
-		}
-		
-		return ret;
-	}
-
-	@Override
-	public int getEncodingType() {
-		return SparkOptions.geom_encoding_PtIns;
-	}
-
 	@Override
 	public void initFlowGraph(GeomPointsTo ptAnalyzer) 
 	{
@@ -116,40 +97,6 @@ public class PtInsNodeGenerator extends IEncodingBroker
 						if (q.is_obsoleted == true) {
 							continue;
 						}
-						
-						// Build the THIS ptr filter
-//						if ( ((VarNode)rhs).is_this_ptr() ) {
-//							if ( sEdge.isVirtual() ) {
-//								// A virtual call has special treatment, but special call does not, :>
-//								final SootMethod func = ((LocalVarNode)rhs).getMethod();
-//								final SootClass defClass = func.getDeclaringClass();
-//								
-//								lhs.getP2Set().forall( new P2SetVisitor() {
-//									public void visit(Node n) {
-//										if ( !IntervalPointsTo.type_manager.castNeverFails(n.getType(), rhs.getType()) )
-//											return;
-//											
-//										if ( n.getType() instanceof RefType ) {
-//											SootClass sc = ((RefType)n.getType()).getSootClass();
-//											if ( defClass != sc && 
-//													Scene.v().getActiveHierarchy().resolveConcreteDispatch(sc, func) != func ) {
-//												return;
-//											}
-//										}
-//										
-//										rhs.getP2Set().add(n);
-//									}
-//								});
-//							}
-//							else {
-//								lhs.getP2Set().forall( new P2SetVisitor() {
-//									public void visit(Node n) {
-//										if ( IntervalPointsTo.type_manager.castNeverFails(n.getType(), rhs.getType()) )
-//											rhs.getP2Set().add(n);
-//									}
-//								} );
-//							}
-//						}
 						
 						if ( nf2 == q.t ) {
 							// Parameter passing
@@ -210,7 +157,7 @@ public class PtInsNodeGenerator extends IEncodingBroker
 					// And, assignment involves global variable goes here. By
 					// definition, global variables belong to SUPER_MAIN.
 					// By the Jimple IR, not both sides are global variables
-//					
+
 					my_lhs.add_simple_constraint_3(
 							my_rhs,
 							nf1 == GeomPointsTo.SUPER_MAIN ? 0 : 1,
@@ -244,7 +191,29 @@ public class PtInsNodeGenerator extends IEncodingBroker
 			++n_legal_cons;
 		}
 
-		ptAnalyzer.ps.println("We have " + n_legal_cons + " legal constraints at the beginning," +
-				" occupies " + ((double)n_legal_cons/ptAnalyzer.constraints.size()) + " of the total.");
+		ptAnalyzer.ps.printf("We have %d legal constraints at the beginning, accounting for %.1f%% of the total.\n",
+				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.constraints.size()) * 100 );
+	}
+	
+	@Override
+	public IVarAbstraction generateNode(Node vNode ) 
+	{
+		IVarAbstraction ret;
+		
+		if ( vNode instanceof AllocNode ||
+				vNode instanceof FieldRefNode ) {
+			ret = new DummyNode(vNode);
+		}
+		else {
+			ret = new HeapInsNode(vNode);
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public int getEncodingType() 
+	{
+		return SparkOptions.geom_encoding_PtIns;
 	}
 }

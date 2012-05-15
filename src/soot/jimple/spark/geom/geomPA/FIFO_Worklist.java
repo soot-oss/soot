@@ -21,6 +21,12 @@ package soot.jimple.spark.geom.geomPA;
 import java.util.Deque;
 import java.util.LinkedList;
 
+/**
+ * Implement the worklist with FIFO strategy.
+ * 
+ * @author xiao
+ *
+ */
 public class FIFO_Worklist implements IWorklist 
 {
 	Deque<IVarAbstraction> Q = null;

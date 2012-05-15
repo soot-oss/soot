@@ -22,7 +22,8 @@ import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
 
 /**
- * A general interface for generating traditional context represented variables.
+ * A general interface for generating the traditional context sensitive variable representation.
+ * 
  * @author xiao
  *
  */

@@ -18,7 +18,17 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
-
+/**
+ * The implementation of prioritized worklist.
+ * The priority is computed by two parameters: the topsort code and the least recent fired code
+ * For two pointers p and q
+ * p has higher priority than q iff:
+ * 1. topsort_code(p) < topsort_code(q)
+ * 2. topsort_code(p) == topsort_code(q) && lrf(p) < lrf(q)
+ * 
+ * @author xiao
+ *
+ */
 public class PQ_Worklist implements IWorklist {
 
 	private IVarAbstraction[] heap = null;

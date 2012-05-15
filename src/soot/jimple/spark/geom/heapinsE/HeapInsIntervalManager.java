@@ -20,33 +20,59 @@ package soot.jimple.spark.geom.heapinsE;
 
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.geomPA.IFigureManager;
+import soot.jimple.spark.geom.geomPA.RectangleNode;
 
 /**
- * An abstraction for the management of all the intervals pertaining to a specific node.
- * We employ the naive management strategy, which is linked list based manager.
- * @author richardxx
+ * An abstraction for the management of all the geometric figures pertaining to a specific node.
+ * We employ the naive management strategy, which is a linked list based manager.
+ * 
+ * For HeapIns analysis, we have four types of figures:
+ * Type			|		Index
+ * all-to-many	|		0
+ * many-to-all 	|		1
+ * one-to-one	|		2
+ * all-to-all
+ * all-to-all is special because whenever it was presented, all others can be deleted (its semantics is context insensitive).
+ * The corresponding index means header[0] stores all the all-to-one figures, and so on.
+ * 
+ * @author xiao
  *
  */
-public class HeapInsIntervalManager {
+public class HeapInsIntervalManager implements IFigureManager {
 	public static int Divisions = 3;
 	
-	private int size[] = {0, 0, 0};
-	private SegmentNode header[] = {null, null, null};
-	private boolean hasNewObject = false;
+	// Type IDs for the figures
+	public static final int ALL_TO_ALL = -1;		// A special case
+	public static final int ALL_TO_MANY = 0;
+	public static final int MANY_TO_ALL = 1;
+	public static final int ONE_TO_ONE = 2;
 	
-	public SegmentNode[] get_intervals()
+	// Recording the size of each type of figure
+	private int size[] = {0, 0, 0};
+	// Recording the geometric figures, categorized by the type IDs.
+	private SegmentNode header[] = {null, null, null};
+	private boolean hasNewFigure = false;
+	
+	
+	public SegmentNode[] getFigures()
 	{
 		return header;
 	}
 	
-	public boolean isThereUnprocessedObject()
+	public int[] getSizes()
 	{
-		return hasNewObject;
+		return size;
+	}
+	
+	public boolean isThereUnprocessedFigures()
+	{
+		return hasNewFigure;
 	}
 	
 	public void flush()
 	{
-		hasNewObject = false;
+		hasNewFigure = false;
 		
 		for ( int i = 0; i < Divisions; ++i ) {
 			SegmentNode p = header[i];
@@ -67,162 +93,139 @@ public class HeapInsIntervalManager {
 			header[i] = null;
 		}
 		
-		hasNewObject = false;
+		hasNewFigure = false;
 	}
 	
-	public SegmentNode add_new_interval( long I1, long I2, long L )
+	/*
+	 * pnew.L < 0 is a special case we used to indicate a square: L = L_prime
+	 * This case is specially handled because it is very common in the program.
+	 * And, treating it as a MANY-TO-ALL is loss of precision.
+	 */
+	public SegmentNode addNewFigure( int code, RectangleNode pnew )
 	{
-		int k;
 		SegmentNode p;
 		
-		if ( I1 == 0 && I2 == 0 ) {
-			// Directly clean all the existing intervals
-			if ( header[0] != null && header[0].I2 == 0 )
+		if ( code == ALL_TO_ALL ) {
+			// The input figure is a all-to-all figure
+			// Directly clean all the existing intervals unless the all-to-all figure is existing.
+			if ( header[ALL_TO_MANY] != null && 
+					header[ALL_TO_MANY].I2 == 0 )
 				return null;
 			
 			p = new SegmentNode();
 			
-			k = 0;
+			code = ALL_TO_MANY;
 			p.I1 = p.I2 = 0;
-			size[0] = size[1] = size[2] = 0;
-			header[0] = header[1] = header[2] = null;
 			p.L = GeomPointsTo.MAX_CONTEXTS;
+			for ( int i = 0; i < Divisions; ++i ) {
+				size[i] = 0;
+				header[i] = null;
+			}
 		}
 		else {
-			// Duplicate testing
-			long LL = ( L < 0 ? -L : L );
-//			long LL = L;
+			// Before inserting into the figure list, we do duplicate testing
 			
-			if ( I1 == 0 || I2 != 0 ) {
-				p = header[0];
+			// This is a all-to-many or one-to-one figure
+			if ( code == ALL_TO_MANY || code == ONE_TO_ONE ) {
+				p = header[ALL_TO_MANY];
 				while ( p != null ) {
-					if ( (p.I2 <= I2) && (p.I2 + p.L >= I2 + LL) )
+					if ( (p.I2 <= pnew.I2) && (p.I2 + p.L >= pnew.I2 + pnew.L) )
 						return null;
 					p = p.next;
 				}
 			}
 			
-			if ( I2 == 0 || I1 != 0 ) {
-				p = header[1];
+			// This is a many-to-all or one-to-one figure
+			if ( code == MANY_TO_ALL || code == ONE_TO_ONE ) {
+				p = header[MANY_TO_ALL];
 				while ( p != null ) {
-					if ( (p.I1 <= I1) && (p.I1 + p.L >= I1 + LL) )
+					if ( (p.I1 <= pnew.I1) && (p.I1 + p.L >= pnew.I1 + pnew.L) )
 						return null;
 					p = p.next;
 				}
 			}
 			
-			// Be careful of this!
-			if ( I1 != 0 && I2 != 0 ) {
-				p = header[2];
+			// This is a one-to-one figure
+			if ( code == ONE_TO_ONE ) {
+				p = header[ONE_TO_ONE];
 				while ( p != null ) {
-					if ( p.L < 0 ) {
-						// A many-many relation
-						if ( I1 >= p.I1 && I2 >= p.I2 && 
-							 I1 + LL < p.I1 - p.L &&
-							 I2 + LL < p.I2 - p.L )
+					// We don't process the case: the input figure is a square but the tested figure is a segment
+					if ( p.I1 - p.I2 == pnew.I1 - pnew.I2 ) {
+						// On the same line
+						if ( p.I1 <= pnew.I1 && p.I1 + p.L >= pnew.I1 + pnew.L )
 							return null;
-					}
-					else if ( L > 0 ) {
-						if ( p.I1 - p.I2 == I1 - I2 ) {
-							// On the same line
-							if ( p.I1 <= I1 && p.I1 + p.L >= I1 + LL )
-								return null;
-						}
 					}
 					
 					p = p.next;
 				}
 			}
-			
-			k = (I1 == 0 ? 0 : (I2 == 0 ? 1 : 2) );
 	
 			// Insert the new interval immediately, and we delay the merging until necessary
-			p = new SegmentNode(I1, I2, L);
-			if ( k == 0 )
-				clean_garbage_I1_is_zero(p);
-			else if ( k == 1 )
-				clean_garbage_I2_is_zero(p);
-			else {
-				if ( L < 0 )
-					clean_garbage_is_square(p);
-			}
+			p = new SegmentNode( pnew );
+			
+			if ( code == ALL_TO_MANY )
+				clean_garbage_all_to_many(p);
+			else if ( code == MANY_TO_ALL )
+				clean_garbage_many_to_all(p);
+			else
+				clean_garbage_one_to_one(p);
 		}
 		
-		hasNewObject = true;
-		size[k]++;
-		p.next = header[k];
-		header[k] = p;
+		hasNewFigure = true;
+		size[code]++;
+		p.next = header[code];
+		header[code] = p;
 		return p;
 	}
 	
-	public void merge_flow_edges()
+	// This function tries to do the geometric merging
+	public void mergeFigures(int upperSize)
 	{
-		if ( size[2] > GeomPointsTo.max_cons_budget && 
-				header[2].is_new == true ) {
-			// After the merging, we must propagate this interval, thus it has to be a new interval
+		if ( !hasNewFigure ) return;
+		
+		/*
+		 * We start the merging from ONE_TO_ONE, because the generated figure may be merged with those figures in MANY_TO_ALL
+		 */
+		if ( size[ONE_TO_ONE] > upperSize && 
+				header[ONE_TO_ONE].is_new == true ) {
 			
-			SegmentNode p = collapse_I1( header[2] );
-			clean_garbage_I1_is_zero(p);
-			p.next = header[0];
-			header[0] = p;
-			header[2] = null;
-			size[0]++;
-			size[2] = 0;
+			// We prefer to generate a heap insensitive figure
+			SegmentNode p = generate_many_to_all( header[ONE_TO_ONE] );
+			clean_garbage_many_to_all(p);
+			p.next = header[MANY_TO_ALL];
+			header[MANY_TO_ALL] = p;
+			header[ONE_TO_ONE] = null;
+			size[MANY_TO_ALL]++;
+			size[ONE_TO_ONE] = 0;
 		}
 
-		if ( size[1] > GeomPointsTo.max_cons_budget &&
-				header[1].is_new == true ) {
+		if ( size[MANY_TO_ALL] > upperSize &&
+				header[MANY_TO_ALL].is_new == true ) {
 			
-			header[1] = collapse_I2( header[1] );
-			size[1] = 1;
+			header[MANY_TO_ALL] = generate_many_to_all( header[MANY_TO_ALL] );
+			size[MANY_TO_ALL] = 1;
 		}
 		
-		if ( size[0] > GeomPointsTo.max_cons_budget &&
-				header[0].is_new == true ) {
+		if ( size[ALL_TO_MANY] > upperSize &&
+				header[ALL_TO_MANY].is_new == true ) {
 			
-			header[0] = collapse_I1( header[0] );
-			size[0] = 1;
+			header[ALL_TO_MANY] = generate_all_to_many( header[ALL_TO_MANY] );
+			size[ALL_TO_MANY] = 1;
 		}
 	}
 	
-	public void merge_points_to_tuples( int budget )
-	{
-		if ( size[2] > budget && header[2].is_new == true ) {
-			// After the merging, we must propagate this interval, thus it has to be a new interval
-			
-			SegmentNode p = collapse_I2( header[2] );
-			clean_garbage_I2_is_zero(p);
-			p.next = header[1];
-			header[1] = p;
-			header[2] = null;
-			size[1]++;
-			size[2] = 0;
-		}
-
-		if ( size[1] > budget && header[1].is_new == true ) {
-			
-			header[1] = collapse_I2( header[1] );
-			size[1] = 1;
-		}
-		
-		if ( size[0] > budget && header[0].is_new == true ) {
-			
-			header[0] = collapse_I1( header[0] );
-			size[0] = 1;
-		}
-	}
-	
-	public void remove_useless_intervals()
+	public void removeUselessSegments()
 	{
 		int i;
 		SegmentNode p, q, temp;
 		
-		p = header[2];
-		size[2] = 0;
+		p = header[ONE_TO_ONE];
+		size[ONE_TO_ONE] = 0;
 		q = null;
+		
 		while ( p != null ) {
 			boolean contained = false;
-			long L = ( p.L < 0 ? -p.L : p.L );
+			long L = p.L;
 
 			for ( i = 0; i < 2; ++i ) {
 				temp = header[i];
@@ -243,35 +246,35 @@ public class HeapInsIntervalManager {
 			if ( contained == false ) {
 				p.next = q;
 				q = p;
-				++size[2];
+				++size[ONE_TO_ONE];
 			}
 			p = temp;
 		}
 		
-		header[2] = q;
+		header[ONE_TO_ONE] = q;
 	}
 	
 	/**
-	 * Merge all the context sensitive intervals. The result is
-	 * in the form (p, q, 0, I, L).
+	 * Merge all the ONE_TO_ONE figures pointed to by mp.
+	 * The result is in the form (p, q, 0, I, L).
 	 */
-	private SegmentNode collapse_I1( SegmentNode mp ) 
+	private SegmentNode generate_all_to_many( SegmentNode mp ) 
 	{
 		long left, right;
 		SegmentNode p;
 
 		left = mp.I2;
-		right = left + ( mp.L < 0 ? -mp.L : mp.L );
+		right = left + mp.L;
 		p = mp.next;
 
 		while (p != null) {
 			if (p.I2 < left) left = p.I2;
-			long t = p.I2 + ( p.L < 0 ? -p.L : p.L );
+			long t = p.I2 + p.L;
 			if ( t > right ) right = t;
 			p = p.next;
 		}
 
-		//System.err.println( "~~~~~~~~~~~~Sorry, it happens~~~~~~~~" );
+		// We reuse the first element in the list mp
 		mp.I1 = 0;
 		mp.I2 = left;
 		mp.L = right - left;
@@ -280,28 +283,25 @@ public class HeapInsIntervalManager {
 		return mp;
 	}
 	
-	/** The result is in the form: (p, q, I, 0, L)
+	/** 
+	 * The result is in the form: (p, q, I, 0, L)
 	 */
-	private SegmentNode collapse_I2( SegmentNode mp ) 
+	private SegmentNode generate_many_to_all( SegmentNode mp ) 
 	{
 		long left, right;
 		SegmentNode p;
 
 		left = mp.I1;
-		right = left + ( mp.L < 0 ? -mp.L : mp.L );
+		right = left + mp.L;
 		p = mp.next;
 
 		while (p != null) {
 			if (p.I1 < left) left = p.I1;
-			long t = p.I1 + ( p.L < 0 ? -p.L : p.L );
+			long t = p.I1 + p.L;
 			if ( t > right ) right = t;
 			p = p.next;
 		}
-
-		//System.err.println( "~~~~~~~~~~~~Sorry, it happens~~~~~~~~" );
 		
-		// Note, left could be 0. In that case, the propagation along this edge
-		// becomes totally insensitive
 		mp.I1 = left;
 		mp.I2 = 0;
 		mp.L = right - left;
@@ -310,37 +310,37 @@ public class HeapInsIntervalManager {
 		return mp;
 	}
 	
-	// Clean garbages in list that the information is already covered by mp
-	// BTW, we do some simple concatenation 
-	private void clean_garbage_I2_is_zero(SegmentNode mp) 
+	// Clean garbages in the MANY_TO_ALL list that the information is already covered by mp
+	// BTW, we also do simple adjacent figures concatenation 
+	private void clean_garbage_many_to_all(SegmentNode predator) 
 	{
 		SegmentNode p, q, list;
 		int num;
 		long right, left;
 
-		list = header[1];
+		list = header[MANY_TO_ALL];
 		p = q = null;
 		num = 0;
-		left = mp.I1;
-		right = left + mp.L;
+		left = predator.I1;
+		right = left + predator.L;
 
 		while (list != null) {
+			
+			// We first process the overlapped cases
 			if (list.I1 >= left) {
 				if (list.I1 <= right) {
 					if ( list.I1 + list.L > right ) {
-						// We extend mp to the right
+						// We extend predator to the right
 						right = list.I1 + list.L;
 					}
-//					else {
-//						System.err.println( "haha I2" );
-//					}
-//					
-//					assert list != list.next;
+					// else, this figure is completely contained in predator, we swallow it
+					
 					list = list.next;
 					continue;
 				}
+				//else, this figure has no overlap with the predator
 			} else if (list.I1 + list.L >= left) {
-				// We extend mp to the left
+				// We extend predator to the left
 				left = list.I1;
 				list = list.next;
 				continue;
@@ -348,7 +348,7 @@ public class HeapInsIntervalManager {
 			
 			// No intersection, no overlap
 			// Notice that, we have to preserve the order of the list
-			// Because the unprocessed points-to tuples are headed at the list
+			// Because the newly inserted figures are headed at the list
 			if ( q == null ) {
 				p = q = list;
 			}
@@ -361,42 +361,39 @@ public class HeapInsIntervalManager {
 			list = list.next;
 		}
 
-		mp.I1 = left;
-		mp.L = right - left;
+		predator.I1 = left;
+		predator.L = right - left;
 		if ( q != null ) q.next = null;
-		header[1] = p;
-		size[1] = num;
+		header[MANY_TO_ALL] = p;
+		size[MANY_TO_ALL] = num;
 	}
 	
-	private void clean_garbage_I1_is_zero(SegmentNode mp) 
+	// Clean the ALL_TO_MANY list
+	private void clean_garbage_all_to_many(SegmentNode predator) 
 	{
 		SegmentNode p, q, list;
 		int num;
 		long right, left;
 
-		list = header[0];
+		list = header[ALL_TO_MANY];
 		p = q = null;
 		num = 0;
-		left = mp.I2;
-		right = mp.I2 + mp.L;
+		left = predator.I2;
+		right = predator.I2 + predator.L;
 
 		while (list != null) {
 			if (list.I2 >= left) {
 				if (list.I2 <= right) {
 					if ( list.I2 + list.L > right ) {
-						// We extend mp to the right
+						// We extend predator to the right
 						right = list.I2 + list.L;
 					}
-//					else {
-//						System.err.println( "haha I1" );
-//					}
-//					
-//					assert list != list.next;
+
 					list = list.next;
 					continue;
 				}
 			} else if (list.I2 + list.L >= left) {
-				// We extend mp to the left
+				// We extend predator to the left
 				left = list.I2;
 				list = list.next;
 				continue;
@@ -417,26 +414,32 @@ public class HeapInsIntervalManager {
 			list = list.next;
 		}
 
-		mp.I2 = left;
-		mp.L = right - left;
+		predator.I2 = left;
+		predator.L = right - left;
 		if ( q != null ) q.next = null;
-		header[0] = p;
-		size[0] = num;
+		header[ALL_TO_MANY] = p;
+		size[ALL_TO_MANY] = num;
 	}
 	
-	private void clean_garbage_is_square(SegmentNode mp) 
+	/*
+	 * Eliminate the redundant ONE_TO_ONE figures
+	 */
+	private void clean_garbage_one_to_one(SegmentNode predator) 
 	{
 		SegmentNode p, q, list;
 		int num;
 		
-		list = header[2];
+		list = header[ONE_TO_ONE];
 		p = q = null;
 		num = 0;
 
 		while (list != null) {
-			long L = ( list.L < 0 ? -list.L : list.L );
-			if ( mp.I1 < list.I1 && mp.I1 - mp.L >= list.I1 + L &&
-					mp.I2 < list.I2 && mp.I2 - mp.L >= list.I2 + L )
+			long L = list.L;
+			if ( (predator.I2 - predator.I1 == list.I2 - list.I1) && 
+					predator.I1 <= list.I1 && 
+					(predator.I1 + predator.L >= list.I2 + L) )
+				// The checked figure is completely contained in the predator
+				// So we ignore it
 				;
 			else { 
 				if ( q == null ) {
@@ -454,7 +457,7 @@ public class HeapInsIntervalManager {
 		}
 
 		if ( q != null ) q.next = null;
-		header[2] = p;
-		size[2] = num;
+		header[ONE_TO_ONE] = p;
+		size[ONE_TO_ONE] = num;
 	}
 }

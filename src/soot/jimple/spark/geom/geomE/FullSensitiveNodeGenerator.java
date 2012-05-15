@@ -26,23 +26,26 @@ import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
+import soot.jimple.spark.geom.geomE.FullSensitiveNode;
+import soot.jimple.spark.geom.geomE.GeometricManager;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.SparkOptions;
 
+/**
+ * Build the initial encoding with the geometric encoding.
+ * 
+ * @author xiao
+ *
+ */
 public class FullSensitiveNodeGenerator extends IEncodingBroker 
 {
-	private static final int full_convertor[] = { 
-		GeomPointsTo.ONE_TO_ONE, GeomPointsTo.MANY_TO_MANY, 
-		GeomPointsTo.MANY_TO_MANY, GeomPointsTo.MANY_TO_MANY 
-	};
-	
 	@Override
 	public void initFlowGraph( GeomPointsTo ptAnalyzer ) 
 	{
-		int k;
+		int i, k;
 		int n_legal_cons;
 		int nf1, nf2;
 		int code;
@@ -59,11 +62,6 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 			my_rhs = cons.expr.getO2().getRepresentative();
 			nf1 = ptAnalyzer.getMappedMethodID(my_lhs.getWrappedNode());
 			nf2 = ptAnalyzer.getMappedMethodID(my_rhs.getWrappedNode());
-			if ( nf1 == GeomPointsTo.UNKNOWN_FUNCTION || 
-					nf2 == GeomPointsTo.UNKNOWN_FUNCTION ) {
-				cons.isViable = false;
-				continue;
-			}
 			
 			// Test how many globals are in this constraint
 			code = ((nf1==GeomPointsTo.SUPER_MAIN ? 1 : 0) << 1) |
@@ -110,12 +108,13 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 							 */
 							
 							// Handle the special case first
-							// In that case, nf1 is 0.
+							// In that case, nf1 is SUPER_MAIN.
 							if ( nf1 == GeomPointsTo.SUPER_MAIN ) {
-								my_lhs.add_simple_constraint_3( 
-										my_rhs, 
-										0,
-										q.map_offset, 
+								my_lhs.add_simple_constraint_4( 
+										my_rhs,
+										1,
+										q.map_offset,
+										1,
 										ptAnalyzer.max_context_size_block[q.s]);
 							}
 							else {
@@ -166,7 +165,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				}
 				else {			
 					// Intra-procedural assignment
-					// And, the assignment involving the global variables goes here. By our definition, global variables belong to SUPER_MAIN.
+					// And, the assignments involving the global variables go here. By our definition, the global variables belong to SUPER_MAIN.
 					// And according to the Jimple IR, not both sides are global variables
 					
 					if ( code == 0 ) {
@@ -208,8 +207,8 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 			++n_legal_cons;
 		}
 
-		ptAnalyzer.ps.printf("We have %d legal constraints at the beginning, occupies %.3f of the total.\n",
-				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.constraints.size()) );
+		ptAnalyzer.ps.printf("We have %d legal constraints at the beginning, accounting for %.1f%% of the total.\n",
+				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.constraints.size()) * 100 );
 	}
 
 	@Override

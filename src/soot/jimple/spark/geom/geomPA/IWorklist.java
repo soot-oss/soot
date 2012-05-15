@@ -19,7 +19,8 @@
 package soot.jimple.spark.geom.geomPA;
 
 /**
- * Worklist, abstracts the selection strategy
+ * The worklist interface that abstracts the selection strategy.
+ * 
  * @author xiao
  *
  */

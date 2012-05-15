@@ -18,11 +18,10 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
-
 /**
- * The descriptor for a segment.
+ * The segment figure for the points-to/flows-to descriptor.
  * 
- * @author richardxx
+ * @author xiao
  * 
  */
 public class SegmentNode implements Comparable<SegmentNode> {

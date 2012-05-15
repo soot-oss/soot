@@ -184,7 +184,7 @@ public class SparkTransformer extends SceneTransformer
         	else {
         		// We perform the geometric points-to analysis
         		GeomPointsTo geomPTA = (GeomPointsTo)pag;
-        		geomPTA.parametrize();
+        		geomPTA.parametrize( endProp.getTime() - startSimplify.getTime() );
         		geomPTA.solve();
         	}
         }

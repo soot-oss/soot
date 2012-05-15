@@ -26,49 +26,29 @@ import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
+import soot.jimple.spark.geom.geomE.GeometricManager;
+import soot.jimple.spark.geom.heapinsE.HeapInsNode;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.SparkOptions;
 
+/**
+ * Build the initial encoding with the HeapIns encoding.
+ * 
+ * @author xiao
+ *
+ */
 public class HeapInsNodeGenerator extends IEncodingBroker 
 {	
-	private static final int full_convertor[] = { 
-		GeomPointsTo.ONE_TO_ONE, GeomPointsTo.MANY_TO_MANY, 
-		GeomPointsTo.MANY_TO_MANY, GeomPointsTo.MANY_TO_MANY 
-	};
-	
-	@Override
-	public IVarAbstraction generateNode(Node vNode ) 
-	{
-		IVarAbstraction ret = null;
-		
-		if ( vNode instanceof AllocNode ||
-				vNode instanceof FieldRefNode ) {
-			ret = new DummyNode(vNode);
-		}
-		else {
-			ret = new HeapInsNode(vNode);
-		}
-		
-		return ret;
-	}
-
-	@Override
-	public int getEncodingType() {
-		return SparkOptions.geom_encoding_HeapIns;
-	}
-
 	@Override
 	public void initFlowGraph(GeomPointsTo ptAnalyzer) 
 	{
-		int k;
+		int i, k;
 		int n_legal_cons;
 		int nf1, nf2;
 		int code;
-		;
-		CgEdge q;
 		IVarAbstraction my_lhs, my_rhs;
 		
 		// Visit all the simple constraints
@@ -82,11 +62,6 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 			my_rhs = cons.expr.getO2().getRepresentative();
 			nf1 = ptAnalyzer.getMappedMethodID(my_lhs.getWrappedNode());
 			nf2 = ptAnalyzer.getMappedMethodID(my_rhs.getWrappedNode());
-			if ( nf1 == GeomPointsTo.UNKNOWN_FUNCTION || 
-					nf2 == GeomPointsTo.UNKNOWN_FUNCTION ) {
-				cons.isViable = false;
-				continue;
-			}
 			
 			// Test how many globals are in this constraint
 			code = ((nf1==GeomPointsTo.SUPER_MAIN ? 1 : 0) << 1) |
@@ -112,45 +87,10 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 					// Inter-procedural assignment
 					for ( Iterator<Edge> it = cons.interCallEdges.iterator(); it.hasNext(); ) {
 						Edge sEdge = it.next();
-						q = ptAnalyzer.getInternalEdgeFromSootEdge( sEdge );
+						CgEdge q = ptAnalyzer.getInternalEdgeFromSootEdge( sEdge );
 						if (q.is_obsoleted == true) {
 							continue;
 						}
-						
-						// Build the THIS ptr filter
-//						if ( ((VarNode)rhs).is_this_ptr() ) {
-//							if ( sEdge.isVirtual() ) {
-//								// A virtual call has special treatment, but special call does not, :>
-//								final SootMethod func = ((LocalVarNode)rhs).getMethod();
-//								final SootClass defClass = func.getDeclaringClass();
-//								
-//								lhs.getP2Set().forall( new P2SetVisitor() {
-//									public void visit(Node n) {
-//										if ( !IntervalPointsTo.type_manager.castNeverFails(n.getType(), rhs.getType()) )
-//											return;
-//											
-//										if ( n.getType() instanceof RefType ) {
-//											SootClass sc = ((RefType)n.getType()).getSootClass();
-//											if ( defClass != sc && 
-//													Scene.v().getActiveHierarchy().resolveConcreteDispatch(sc, func) != func ) {
-//												return;
-//											}
-//										}
-//										
-//										rhs.getP2Set().add(n);
-//									}
-//								});
-//							}
-//							else {
-//								lhs.getP2Set().forall( new P2SetVisitor() {
-//									public void visit(Node n) {
-//										if ( IntervalPointsTo.type_manager.castNeverFails(n.getType(), rhs.getType()) )
-//											rhs.getP2Set().add(n);
-//									}
-//								} );
-//							}
-//						}
-
 						
 						// Parameter passing
 						if ( nf2 == q.t ) {
@@ -250,7 +190,28 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 			++n_legal_cons;
 		}
 
-		ptAnalyzer.ps.println("We have " + n_legal_cons + " legal constraints at the beginning," +
-				" occupies " + ((double)n_legal_cons/ptAnalyzer.constraints.size()) + " of the total.");
+		ptAnalyzer.ps.printf("We have %d legal constraints at the beginning, accounting for %.1f%% of the total.\n",
+				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.constraints.size()) * 100 );
+	}
+	
+	@Override
+	public IVarAbstraction generateNode(Node vNode ) 
+	{
+		IVarAbstraction ret = null;
+		
+		if ( vNode instanceof AllocNode ||
+				vNode instanceof FieldRefNode ) {
+			ret = new DummyNode(vNode);
+		}
+		else {
+			ret = new HeapInsNode(vNode);
+		}
+		
+		return ret;
+	}
+
+	@Override
+	public int getEncodingType() {
+		return SparkOptions.geom_encoding_HeapIns;
 	}
 }

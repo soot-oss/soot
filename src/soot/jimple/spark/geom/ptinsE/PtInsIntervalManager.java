@@ -20,20 +20,39 @@ package soot.jimple.spark.geom.ptinsE;
 
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.geomPA.IFigureManager;
+import soot.jimple.spark.geom.geomPA.RectangleNode;
 
-public class PtInsIntervalManager {
+/**
+ * The figure manager for the PtIns descriptors.
+ * The implementation is almost same to the HeapIns manager, please refer to HeapInsIntervalManager for more detailed comments.
+ * 
+ * @author xiao
+ *
+ */
+public class PtInsIntervalManager implements IFigureManager
+{
 	public static final int Divisions = 3;
-
+	public static final int ALL_TO_ALL = -1;		// A special case
+	public static final int ALL_TO_MANY = 0;
+	public static final int MANY_TO_ALL = 1;
+	public static final int ONE_TO_ONE = 2;
+	
 	int size[] = {0, 0, 0};
 	SegmentNode header[] = {null, null, null};
 	private boolean hasNewObject = false;
 	
-	public SegmentNode[] get_intervals()
+	public SegmentNode[] getFigures()
 	{
 		return header;
 	}
 	
-	public boolean isThereUnprocessedObject()
+	public int[] getSizes()
+	{
+		return size;
+	}
+	
+	public boolean isThereUnprocessedFigures()
 	{
 		return hasNewObject;
 	}
@@ -51,52 +70,52 @@ public class PtInsIntervalManager {
 		}
 	}
 	
-	public SegmentNode add_new_interval( long I1, long I2, long L )
+	public SegmentNode addNewFigure( int code, RectangleNode pnew )
 	{
-		int k;
 		SegmentNode p;
 		
-		if ( I1 == 0 && I2 == 0 ) {
+		if ( code == ALL_TO_ALL ) {
 			// Directly clean all the existing intervals
 			if ( header[0] != null && header[0].I2 == 0 )
 				return null;
 			
 			p = new SegmentNode();
 			
-			k = 0;
 			p.I1 = p.I2 = 0;
-			size[0] = size[1] = size[2] = 0;
-			header[0] = header[1] = header[2] = null;
 			p.L = GeomPointsTo.MAX_CONTEXTS;
+			for ( int i = 0; i < Divisions; ++i ) {
+				size[i] = 0;
+				header[i] = null;
+			}
 		}
 		else {
 			// Duplicate testing
 			
-			if ( I1 == 0 || I2 != 0 ) {
-				p = header[0];
+			if ( code == ALL_TO_MANY || code == ONE_TO_ONE ) {
+				p = header[ALL_TO_MANY];
 				while ( p != null ) {
-					if ( (p.I2 <= I2) && (p.I2 + p.L >= I2 + L) )
+					if ( (p.I2 <= pnew.I2) && (p.I2 + p.L >= pnew.I2 + pnew.L) )
 						return null;
 					p = p.next;
 				}
 			}
 			
-			if ( I2 == 0 || I1 != 0 ) {
-				p = header[1];
+			if ( code == MANY_TO_ALL || code == ONE_TO_ONE ) {
+				p = header[MANY_TO_ALL];
 				while ( p != null ) {
-					if ( (p.I1 <= I1) && (p.I1 + p.L >= I1 + L) )
+					if ( (p.I1 <= pnew.I1) && (p.I1 + p.L >= pnew.I1 + pnew.L) )
 						return null;
 					p = p.next;
 				}
 			}
 			
 			// Be careful of this!
-			if ( I1 != 0 && I2 != 0 ) {
-				p = header[2];
+			if ( code == ONE_TO_ONE ) {
+				p = header[ONE_TO_ONE];
 				while ( p != null ) {
-					if (p.I1 - p.I2 == I1 - I2) {
+					if (p.I1 - p.I2 == pnew.I1 - pnew.I2) {
 						// On the same line
-						if (p.I1 <= I1 && p.I1 + p.L >= I1 + L)
+						if (p.I1 <= pnew.I1 && p.I1 + p.L >= pnew.I1 + pnew.L)
 							return null;
 					}
 					
@@ -104,90 +123,61 @@ public class PtInsIntervalManager {
 				}
 			}
 			
-			k = (I1 == 0 ? 0 : (I2 == 0 ? 1 : 2) );
-	
 			// Insert the new interval immediately, and we delay the merging until necessary
-			p = new SegmentNode(I1, I2, L);
-			if ( k == 0 )
-				clean_garbage_I1_is_zero(p);
-			else if ( k == 1 )
-				clean_garbage_I2_is_zero(p);
+			p = new SegmentNode(pnew);
+			
+			if ( code == ALL_TO_MANY )
+				clean_garbage_all_to_many(p);
+			else if ( code == MANY_TO_ALL )
+				clean_garbage_many_to_all(p);
+			else
+				clean_garbage_one_to_one(p);
 		}
 		
 		hasNewObject = true;
-		size[k]++;
-		p.next = header[k];
-		header[k] = p;
+		size[code]++;
+		p.next = header[code];
+		header[code] = p;
 		return p;
 	}
 	
-	public void merge_points_to_tuples()
+	public void mergeFigures(int upperSize)
 	{
-		if ( size[2] > GeomPointsTo.max_cons_budget && 
-				header[2].is_new == true ) {
+		if ( size[ONE_TO_ONE] > upperSize && 
+				header[ONE_TO_ONE].is_new == true ) {
 			// After the merging, we must propagate this interval, thus it has to be a new interval
 			
-			SegmentNode p = collapse_I1( header[2] );
-			clean_garbage_I1_is_zero(p);
-			p.next = header[0];
-			header[0] = p;
-			header[2] = null;
-			size[0]++;
-			size[2] = 0;
+			SegmentNode p = generate_all_to_many( header[ONE_TO_ONE] );
+			clean_garbage_all_to_many(p);
+			p.next = header[ALL_TO_MANY];
+			header[ALL_TO_MANY] = p;
+			header[ONE_TO_ONE] = null;
+			size[ALL_TO_MANY]++;
+			size[ONE_TO_ONE] = 0;
 		}
 
-		if ( size[1] > GeomPointsTo.max_cons_budget &&
-				header[1].is_new == true ) {
+		if ( size[MANY_TO_ALL] > upperSize &&
+				header[MANY_TO_ALL].is_new == true ) {
 			
-			header[1] = collapse_I2( header[1] );
-			size[1] = 1;
+			header[MANY_TO_ALL] = generate_many_to_all( header[MANY_TO_ALL] );
+			size[MANY_TO_ALL] = 1;
 		}
 		
-		if ( size[0] > GeomPointsTo.max_cons_budget &&
-				header[0].is_new == true ) {
+		if ( size[ALL_TO_MANY] > upperSize &&
+				header[ALL_TO_MANY].is_new == true ) {
 			
-			header[0] = collapse_I1( header[0] );
-			size[0] = 1;
+			header[0] = generate_all_to_many( header[ALL_TO_MANY] );
+			size[ALL_TO_MANY] = 1;
 		}
 	}
 	
-	public void merge_flow_edges()
-	{
-		if ( size[2] > GeomPointsTo.max_pts_budget && 
-				header[2].is_new == true ) {
-			// After the merging, we must propagate this interval, thus it has to be a new interval
-			
-			SegmentNode p = collapse_I2( header[2] );
-			clean_garbage_I2_is_zero(p);
-			p.next = header[1];
-			header[1] = p;
-			header[2] = null;
-			size[1]++;
-			size[2] = 0;
-		}
-
-		if ( size[1] > GeomPointsTo.max_pts_budget &&
-				header[1].is_new == true ) {
-			
-			header[1] = collapse_I2( header[1] );
-			size[1] = 1;
-		}
-		
-		if ( size[0] > GeomPointsTo.max_pts_budget &&
-				header[0].is_new == true ) {
-			
-			header[0] = collapse_I1( header[0] );
-			size[0] = 1;
-		}
-	}
-	
-	public void remove_useless_intervals()
+	public void removeUselessSegments()
 	{
 		int i;
 		SegmentNode p, q, temp;
 		
-		p = header[2];
-		size[2] = 0;
+		p = header[ONE_TO_ONE];
+		size[ONE_TO_ONE] = 0;
 		q = null;
 		while ( p != null ) {
 			boolean contained = false;
@@ -210,19 +200,19 @@ public class PtInsIntervalManager {
 			if ( contained == false ) {
 				p.next = q;
 				q = p;
-				++size[2];
+				++size[ONE_TO_ONE];
 			}
 			p = temp;
 		}
 		
-		header[2] = q;
+		header[ONE_TO_ONE] = q;
 	}
 	
 	/**
 	 * Merge all the context sensitive intervals. The result is
 	 * in the form (p, q, 0, I, L).
 	 */
-	private SegmentNode collapse_I1( SegmentNode mp ) 
+	private SegmentNode generate_all_to_many( SegmentNode mp ) 
 	{
 		long left, right, t;
 		SegmentNode p;
@@ -238,7 +228,6 @@ public class PtInsIntervalManager {
 			p = p.next;
 		}
 
-		//System.err.println( "~~~~~~~~~~~~Sorry, it happens~~~~~~~~" );
 		mp.I1 = 0;
 		mp.I2 = left;
 		mp.L = right - left;
@@ -249,7 +238,7 @@ public class PtInsIntervalManager {
 	
 	/** The result is in the form: (p, q, I, 0, L)
 	 */
-	private SegmentNode collapse_I2( SegmentNode mp ) 
+	private SegmentNode generate_many_to_all( SegmentNode mp ) 
 	{
 		long left, right, t;
 		SegmentNode p;
@@ -265,10 +254,7 @@ public class PtInsIntervalManager {
 			p = p.next;
 		}
 
-		//System.err.println( "~~~~~~~~~~~~Sorry, it happens~~~~~~~~" );
-		
-		// Note, left could be 0. In that case, the propagation along this edge
-		// becomes totally insensitive
+		// Note, left could be 0. In that case, the propagation along this edge becomes totally insensitive
 		mp.I1 = left;
 		mp.I2 = 0;
 		mp.L = right - left;
@@ -279,7 +265,7 @@ public class PtInsIntervalManager {
 	
 	// Clean garbages in list that the information is already covered by mp
 	// BTW, we do some simple concatenation 
-	private void clean_garbage_I2_is_zero(SegmentNode mp) 
+	private void clean_garbage_many_to_all(SegmentNode mp) 
 	{
 		SegmentNode p, q, list;
 		int num;
@@ -331,7 +317,7 @@ public class PtInsIntervalManager {
 		size[1] = num;
 	}
 	
-	private void clean_garbage_I1_is_zero(SegmentNode mp) 
+	private void clean_garbage_all_to_many(SegmentNode mp) 
 	{
 		SegmentNode p, q, list;
 		int num;
@@ -381,5 +367,45 @@ public class PtInsIntervalManager {
 		if ( q != null ) q.next = null;
 		header[0] = p;
 		size[0] = num;
+	}
+	
+	/*
+	 * Eliminate the redundant ONE_TO_ONE figures
+	 */
+	private void clean_garbage_one_to_one(SegmentNode predator) 
+	{
+		SegmentNode p, q, list;
+		int num;
+		
+		list = header[ONE_TO_ONE];
+		p = q = null;
+		num = 0;
+
+		while (list != null) {
+			long L = list.L;
+			if ( (predator.I2 - predator.I1 == list.I2 - list.I1) && 
+					predator.I1 <= list.I1 && 
+					(predator.I1 + predator.L >= list.I2 + L) )
+				// The checked figure is completely contained in the predator
+				// So we ignore it
+				;
+			else { 
+				if ( q == null ) {
+					p = q = list;
+				}
+				else {
+					q.next = list;
+					q = list;
+				}
+				
+				++num;
+			}
+			
+			list = list.next;
+		}
+
+		if ( q != null ) q.next = null;
+		header[ONE_TO_ONE] = p;
+		size[ONE_TO_ONE] = num;
 	}
 }

@@ -20,8 +20,9 @@ package soot.jimple.spark.geom.geomPA;
 
 /**
  * It provides the utilities to translate our numbering context representation to other commonly used representation.
- * For example, k-cfa, etc.
- * @author richardxx
+ * For example, k-cfa, 1-object, etc.
+ * 
+ * @author xiao
  *
  */
 public class ContextTranslator {

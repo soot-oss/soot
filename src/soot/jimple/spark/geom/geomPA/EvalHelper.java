@@ -24,12 +24,15 @@ import java.util.Set;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
+import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
- * In this class, we provide various methods to explore the internals of points-to result.
+ * This class provides various methods to explore the internals of the geometric points-to result.
+ * The major purpose for this class is to help programmers debug.
  * 
  * @author xiao
  *
@@ -38,7 +41,7 @@ public class EvalHelper
 {
 	public static void debug_succint_pointsto_info(Node vn, GeomPointsTo ptsProvider )
 	{
-		IVarAbstraction pn = ptsProvider.getInternalNode(vn);
+		IVarAbstraction pn = ptsProvider.makeInternalNode(vn);
 		ptsProvider.ps.println("My objects(" + pn.num_of_diff_objs() + ") :");
 	}
 	
@@ -50,7 +53,7 @@ public class EvalHelper
 		if ( N > 10 ) return;
 		
 		vn.getP2Set().forall( new P2SetVisitor() {
-			
+			@Override
 			public void visit(Node n) {
 				// TODO Auto-generated method stub
 				ptsProvider.ps.println( n.toString() );
@@ -62,7 +65,7 @@ public class EvalHelper
 	public static void debug_context_insensitive_points_to(Node vn, final GeomPointsTo ptsProvider) 
 	{
 		ptsProvider.ps.println("VarNode : " + vn + ", Type : " + vn.getType());
-		IVarAbstraction pn = ptsProvider.getInternalNode(vn);
+		IVarAbstraction pn = ptsProvider.makeInternalNode(vn);
 		ptsProvider.ps.println("My objects(" + pn.num_of_diff_objs() + ") :");
 		
 		if ( vn.getType() instanceof RefType ) {

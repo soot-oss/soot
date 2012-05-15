@@ -24,6 +24,12 @@ import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.toolkits.scalar.Pair;
 
+/**
+ * The constraint descriptor class.
+ * 
+ * @author xiao
+ *
+ */
 public class PlainConstraint {
 	// Plain constraint descriptor
 	// This is a full description that we can read/write without context

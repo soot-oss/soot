@@ -28,6 +28,7 @@ import soot.Context;
 import soot.G;
 import soot.RefLikeType;
 import soot.Type;
+import soot.toolkits.scalar.Pair;
 
 /** Represents a simple variable node (Green) in the pointer assignment graph.
  * @author Ondrej Lhotak
@@ -86,7 +87,17 @@ public abstract class VarNode extends ValNode implements Comparable {
     public boolean isInterProcSource() {
         return interProcSource;
     }
-
+    /** Returns true if this VarNode represents the THIS pointer */
+	public boolean isThisPtr()
+	{
+		if ( variable instanceof Pair ) {
+			Pair o = (Pair)variable;
+			return o.isThisParameter();
+		}
+		
+		return false;
+	}
+	
     /* End of public methods. */
 
     VarNode( PAG pag, Object variable, Type t ) {

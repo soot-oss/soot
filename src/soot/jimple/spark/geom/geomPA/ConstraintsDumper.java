@@ -22,9 +22,6 @@ package soot.jimple.spark.geom.geomPA;
  * For anyone who wants to experiment their own points-to analysis outside Soot,
  * we provide a facility to dump the program facts to an external file.
  * 
- * You can call this dumper either before or after the running of geometric points-to analysis.
- * The difference is the geometric analysis can eliminate some unreachable code.
- * 
  * @author xiao
  *
  */

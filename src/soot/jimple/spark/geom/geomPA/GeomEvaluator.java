@@ -47,6 +47,11 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.spark.geom.geomPA.CgEdge;
+import soot.jimple.spark.geom.geomPA.EvalHelper;
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
+import soot.jimple.spark.geom.geomPA.Histogram;
+import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.GlobalVarNode;
@@ -54,7 +59,9 @@ import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.util.queue.QueueReader;
 
 /**
  * We provide a set of methods to evaluate the quality of geometric points-to analysis.
@@ -63,7 +70,6 @@ import soot.jimple.toolkits.callgraph.Edge;
  * 1. Count the computed points-to matrix for avg. points-to set size, constraints evaluation graph size, etc;
  * 2. Virtual function resolution comparison;
  * 3. Static casts checking;
- * 4. Type purity checking;
  * 
  * @author xiao
  *
@@ -80,39 +86,14 @@ public class GeomEvaluator {
 		outputer = ps;
 	}
 	
-	private boolean is_legal_pointer( Node v )
-	{
-		SootMethod sm = null;
-		int method = 0;
-		
-		// We do not count the exception handler pointers
-		if ( v.getType() instanceof RefType ) {
-			SootClass sc = ((RefType)v.getType()).getSootClass();
-			if ( !sc.isInterface() && Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
-					sc, GeomPointsTo.exeception_type.getSootClass()) ) {
-				return false;
-			}
-		}
-		
-		method = ptsProvider.getMappedMethodID(v);
-		
-		// Obsoleted
-		if ( method == GeomPointsTo.UNKNOWN_FUNCTION )
-			return false;
-		
-		// Global variable
-		if ( method == GeomPointsTo.SUPER_MAIN )
-			return true;
-		
-		sm = ptsProvider.getSootMethodFromID(method);
-		return !sm.isJavaLibraryMethod();
-	}
-	
+	/**
+	 * We assess the quality of building the 1-cfa call graph with the geometric points-to result.
+	 */
 	private void test_1cfa_call_graph (LocalVarNode vn, 
 			SootMethod caller, SootMethod callee_signature, Histogram ce_range) 
 	{	
 		long l, r;
-		IVarAbstraction pn = ptsProvider.getInternalNode(vn);
+		IVarAbstraction pn = ptsProvider.makeInternalNode(vn);
 		Set<SootMethod> tgts = new HashSet<SootMethod>();
 		Set<AllocNode> set = pn.get_all_points_to_objects();
 		
@@ -131,7 +112,9 @@ public class GeomEvaluator {
 				
 				Type t = obj.getType();
 				
-				if ( t instanceof AnySubType )
+				if ( t == null )
+					continue;
+				else if ( t instanceof AnySubType )
 					t = ((AnySubType)t).getBase();
 				else if ( t instanceof ArrayType )
 					t = RefType.v( "java.lang.Object" );
@@ -152,7 +135,7 @@ public class GeomEvaluator {
 	}
 	
 	/**
-	 * Summarize the geometric points-to analysis.
+	 * Summarize the geometric points-to analysis and report the basic metrics.
 	 */
 	public void reportBasicMetrics() 
 	{
@@ -173,10 +156,10 @@ public class GeomEvaluator {
 		max_pts_geom = 0;
 		
 		for ( IVarAbstraction pn : ptsProvider.pointers ) {
+			if ( ptsProvider.isLegalPointer(pn) == false ) continue;
 			pn = pn.getRepresentative();
-			Node v = pn.getWrappedNode();
-			if ( is_legal_pointer(v) == false ) continue;
-			if ( v instanceof AllocDotField )   ++n_alloc_dot_fields;
+			Node var = pn.getWrappedNode();
+			if ( var instanceof AllocDotField ) ++n_alloc_dot_fields;
 			++n_legal_var;
 			
 			// ...geom
@@ -186,7 +169,7 @@ public class GeomEvaluator {
 			if (size > max_pts_geom) max_pts_geom = size;
 
 			// ...spark
-			size = pn.getWrappedNode().getP2Set().size();
+			size = var.getP2Set().size();
 			pts_size_bar_spark.addNumber(size);
 			total_spark_pts += size;
 			if ( size > max_pts_spark ) max_pts_spark = size;
@@ -215,7 +198,7 @@ public class GeomEvaluator {
 			
 			// ...spark
 			spark_types.clear();
-			pn.getWrappedNode().getP2Set().forall(new P2SetVisitor() {
+			var.getP2Set().forall(new P2SetVisitor() {
 				public final void visit(Node n) {
 					AllocNode an = (AllocNode)n;
 					
@@ -240,54 +223,63 @@ public class GeomEvaluator {
 		outputer.println("");
 		outputer.println("--------------------Points-to Analysis Basic Information-------------------");
 		outputer.println("------>>>> Format:  Geometric Analysis (SPARK)" );
-		outputer.println("Legal pointers : " + n_legal_var + ", in which the #AllocDot Fields : " + n_alloc_dot_fields );
 		outputer.println("All Pointers : " + ptsProvider.n_var);
 		outputer.println("Reachable Methods : " + ptsProvider.n_reach_methods + " (" + (ptsProvider.n_func - 1) + ")" );
-		outputer.println("Reachable User Methods : " + ptsProvider.n_reach_user_methods );
-		outputer.printf("Total/Average Projected Points-to Tuples : %d (%d) / %.3f (%.3f) \n", 
+		outputer.printf("Reachable User Methods : %d (%d)\n", ptsProvider.n_reach_user_methods, ptsProvider.n_reach_spark_user_methods );
+		outputer.println("Legal pointers (app code): " + n_legal_var + ", in which the #AllocDot Fields : " + n_alloc_dot_fields );
+		outputer.printf("Total/Average Projected Points-to Tuples (app code): %d (%d) / %.3f (%.3f) \n", 
 				total_geom_ins_pts, total_spark_pts, 
 				(double) total_geom_ins_pts / (n_legal_var), (double) total_spark_pts / n_legal_var );
-		outputer.printf("Total/Average Context Sensitive Points-to Tuples : %d / %.3f \n", 
+		outputer.printf("Total/Average Context Sensitive Points-to Tuples (app code): %d / %.3f \n", 
 				total_geom_sen_pts, (double) total_geom_sen_pts / (n_legal_var) );
-		outputer.println("The largest points-to set size : " + max_pts_geom + " (" + max_pts_spark + ")");
+		outputer.println("The largest points-to set size (app code): " + max_pts_geom + " (" + max_pts_spark + ")");
 		
 		outputer.println();
-		pts_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Sizes Distribution :", pts_size_bar_spark );
-		type_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Types Distribution :", type_size_bar_spark );
+		pts_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Sizes Distribution (app code):", pts_size_bar_spark );
+		type_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Types Distribution (app code):", type_size_bar_spark );
 	}
 
-	public void check_virtual_functions()
+	/**
+	 * Report the virtual callsites resolution result for the user's code.
+	 */
+	public void checkCallGraph()
 	{
 		Map<Stmt, Set<SootMethod>> my_vir_tgts = new HashMap<Stmt, Set<SootMethod>>();
 		int n_func;
 		int total_virtual_calls = 0;
+		int n_geom_call_edges = 0, n_geom_user_edges = 0;
+		int n_spark_user_edges = 0, n_spark_cinit_edges = 0;
 		int geom_solved = 0, spark_solved = 0;
 		
 		n_func = ptsProvider.n_func;
 		
 		// We first collect the internal call graph information
-		for (int i = 0; i < n_func; ++i) {
+		for (int i = 1; i < n_func; ++i) {
 			if ( !ptsProvider.isReachableMethod(i) )
 				continue;
 			
 			CgEdge p = ptsProvider.getCallEgesOutFrom(i);
+			int edge_cnt = 0;
 			while (p != null) {
-				if ( p.sootEdge != null ) {
-					if (p.is_obsoleted == false ) {
-						Stmt expr = p.sootEdge.srcStmt();
-						if (expr != null) {
-							Set<SootMethod> tgts = my_vir_tgts.get(expr);
-							if (tgts == null) {
-								tgts = new HashSet<SootMethod>();
-								my_vir_tgts.put(expr, tgts);
-							}
-							tgts.add( p.sootEdge.tgt().method() );
+				if ( p.base_var != null ) {
+					Stmt expr = p.sootEdge.srcStmt();
+					if (expr != null) {
+						Set<SootMethod> tgts = my_vir_tgts.get(expr);
+						if (tgts == null) {
+							tgts = new HashSet<SootMethod>();
+							my_vir_tgts.put(expr, tgts);
 						}
+						tgts.add( p.sootEdge.tgt().method() );
 					}
 				}
 				
+				++edge_cnt;
 				p = p.next;
 			}
+			
+			n_geom_call_edges += edge_cnt;
+			if ( !ptsProvider.getSootMethodFromID(i).isJavaLibraryMethod() )
+				n_geom_user_edges += edge_cnt;
 		}
 
 		int[] limits = new int[] { 1, 2, 4, 8 };
@@ -296,6 +288,8 @@ public class GeomEvaluator {
 		System.gc();
 		System.gc();
 		System.gc();
+		
+		CallGraph cGraph = Scene.v().getCallGraph();
 		
 		// Scan all the callsites
 		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
@@ -312,8 +306,7 @@ public class GeomEvaluator {
 				continue;
 			
 			// All the statements in the method
-			for (@SuppressWarnings("rawtypes")
-			Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext();) {
+			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext();) {
 				Stmt st = (Stmt) stmts.next();
 				if (st.containsInvokeExpr()) {
 					InvokeExpr ie = st.getInvokeExpr();
@@ -321,9 +314,6 @@ public class GeomEvaluator {
 						total_virtual_calls++;
 						Local l = (Local) ((VirtualInvokeExpr)ie).getBase();
 						LocalVarNode vn = ptsProvider.findLocalVarNode(l);
-						
-//						if ( vn.toString().equals("<org.mortbay.start.Monitor: void <init>()>:this"))
-//							System.err.println();
 						
 						// Test my points-to analysis
 						solved = false;
@@ -337,6 +327,7 @@ public class GeomEvaluator {
 								Histogram call_edges = new Histogram(limits);
 								test_1cfa_call_graph(vn, sm, ie.getMethod(), call_edges);
 								total_call_edges.merge(call_edges);
+								call_edges = null;
 							}
 						} else {
 							// It has zero target, dead code
@@ -346,7 +337,7 @@ public class GeomEvaluator {
 						
 						
 						int count = 0;
-						for ( Iterator<Edge> it = Scene.v().getCallGraph().edgesOutOf(st); it.hasNext(); ) {
+						for ( Iterator<Edge> it = cGraph.edgesOutOf(st); it.hasNext(); ) {
 							it.next();
 							++count;
 						}
@@ -366,18 +357,37 @@ public class GeomEvaluator {
 					}
 				}
 			}
+			
+			for ( Iterator<Edge> it = cGraph.edgesOutOf(sm); it.hasNext(); ) {
+				Edge e = it.next();
+				if ( !e.isClinit() )
+					++n_spark_user_edges;
+			}
 		}
 
+		// Now we count the cinit edges
+		QueueReader<Edge> edgeList = Scene.v().getCallGraph().listener();
+		while (edgeList.hasNext()) {
+			Edge edge = edgeList.next();
+			if ( edge.isClinit() )
+				++n_spark_cinit_edges;
+		}
+		
 		ptsProvider.ps.println();
-		ptsProvider.ps.println("Total virtual callsites : " + total_virtual_calls);
+		ptsProvider.ps.printf( "Call graph edges (total): Geom = %d, SPARK = %d\n", n_geom_call_edges, cGraph.size() - n_spark_cinit_edges );
+		ptsProvider.ps.printf( "Call graph edges (app code): Geom = %d, SPARK = %d\n", n_geom_user_edges, n_spark_user_edges );
+		ptsProvider.ps.println("Total virtual callsites (app code): " + total_virtual_calls);
 		ptsProvider.ps.println("Resolved virtual callsites : Geom = " + geom_solved + ", SPARK = " + spark_solved );
-		total_call_edges.printResult( ptsProvider.ps, "Random testing of the context sensitive call graph : " );
+		total_call_edges.printResult( ptsProvider.ps, "Random testing of the 1-CFA call graph : " );
 		
 		if ( ptsProvider.getOpts().verbose() )
 			ptsProvider.outputNotEvaluatedMethods();
 	}
 	
-	public void check_alias_analysis()
+	/**
+	 * Count how many alias pairs in each function that are made up by all the variables accessed by that function.
+	 */
+	public void checkAliasAnalysis()
 	{
 		IVarAbstraction pn, qn;
 		final Set<Node> access_expr = new HashSet<Node>();
@@ -400,8 +410,7 @@ public class GeomEvaluator {
 			
 			// We first gather all the memory access expressions
 			access_expr.clear();
-			for (@SuppressWarnings("rawtypes")
-			Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts
+			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts
 					.hasNext();) {
 				Stmt st = (Stmt) stmts.next();
 				
@@ -416,30 +425,36 @@ public class GeomEvaluator {
 							LocalVarNode vn = ptsProvider.findLocalVarNode(l);
 							access_expr.add( vn );
 						}
-						else if (v instanceof InstanceFieldRef) {
-							InstanceFieldRef ifr = (InstanceFieldRef) v;
-							final SootField field = ifr.getField();
-							if ( !(field.getType() instanceof RefType) )
-								continue;
-							
-							LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
-							if ( vn == null ) 
-								continue;
-							
-							access_expr.add( vn );
-							
-							pn = ptsProvider.getInternalNode(vn);
-							for ( AllocNode an : pn.get_all_points_to_objects() ) {
-								AllocDotField adf = ptsProvider.makeAllocDotField(an, field);
-								access_expr.add( adf );
-							}
-						} else if (v instanceof StaticFieldRef) {
+//						else if (v instanceof InstanceFieldRef) {
+//							InstanceFieldRef ifr = (InstanceFieldRef) v;
+//							final SootField field = ifr.getField();
+//							if ( !(field.getType() instanceof RefType) )
+//								continue;
+//							
+//							LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
+//							if ( vn == null ) 
+//								continue;
+//							
+//							pn = ptsProvider.makeInternalNode(vn);
+//							for ( AllocNode an : pn.get_all_points_to_objects() ) {
+//								AllocDotField adf = ptsProvider.findAllocDotField(an, field);
+//								access_expr.add( adf );
+//							}
+//						}
+						else if (v instanceof StaticFieldRef) {
 							StaticFieldRef sfr = (StaticFieldRef) v;
 							GlobalVarNode vn = ptsProvider.findGlobalVarNode( sfr.getField() );
 							access_expr.add( vn );
-						} else if (v instanceof ArrayRef) {
+						}
+						else if (v instanceof ArrayRef) {
 							ArrayRef ar = (ArrayRef) v;
 							LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ar.getBase());
+//							pn = ptsProvider.getInternalNode(vn);
+//							for ( AllocNode an : pn.get_all_points_to_objects() ) {
+//								AllocDotField adf = ptsProvider.makeAllocDotField(an, ArrayElement.v() );
+//								access_expr.add( adf );
+//							}
+							
 							access_expr.add( vn );
 						}
 					}
@@ -451,18 +466,23 @@ public class GeomEvaluator {
 			al.clear();
 			
 			for ( Node v : access_expr ) {
-				if ( !is_legal_pointer(v) )
-					continue;
+				if ( v.getType() instanceof RefType ) {
+					SootClass sc = ((RefType)v.getType()).getSootClass();
+					if ( !sc.isInterface() && Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
+							sc, GeomPointsTo.exeception_type.getSootClass()) ) {
+						continue;
+					}
+				}
 				al.add(v);
 			}
 			
 			for ( int i = 0; i < al.size(); ++i ) {
 				Node n1 = al.get(i);
-				pn =  ptsProvider.getInternalNode(n1);
+				pn =  ptsProvider.makeInternalNode(n1);
 				pn = pn.getRepresentative();
 				for ( int j = i + 1; j < al.size(); ++j ) {
 					Node n2 = al.get(j);
-					qn = ptsProvider.getInternalNode(n2);
+					qn = ptsProvider.makeInternalNode(n2);
 					qn = qn.getRepresentative();
 					
 					if ( pn.heap_sensitive_intersection( qn ) )
@@ -479,15 +499,18 @@ public class GeomEvaluator {
 		
 		ptsProvider.ps.println();
 		ptsProvider.ps.println( "--------> Alias Pairs Evaluation <---------" );
-		ptsProvider.ps.println("All pointer pairs : " + cnt_all_interval );
+		ptsProvider.ps.println("All pointer pairs (app code) : " + cnt_all_interval );
 		ptsProvider.ps.println("Heap sensitive alias pairs (by Geom) : " + cnt_hs_alias
 				+ ", Percentage = " + (double) cnt_hs_alias / cnt_all_interval );
-		ptsProvider.ps.println("Heap sensitive alias pairs (by SPARK) : " + cnt_hi_alias
+		ptsProvider.ps.println("Heap insensitive alias pairs (by SPARK) : " + cnt_hi_alias
 				+ ", Percentage = " + (double) cnt_hi_alias / cnt_all_interval );
 		ptsProvider.ps.println();
 	}
 	
-	public void check_casts_safety() 
+	/**
+	 * Count how many static casts can be determined safe.
+	 */
+	public void checkCastsSafety() 
 	{
 		int total_casts = 0;
 		int geom_solved_casts = 0, spark_solved_casts = 0;
@@ -504,8 +527,7 @@ public class GeomEvaluator {
 				continue;
 			
 			// All the statements in the method
-			for (@SuppressWarnings("rawtypes")
-			Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext();) {
+			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext();) {
 				Stmt st = (Stmt) stmts.next();
 
 				if (st instanceof AssignStmt) {
@@ -514,14 +536,15 @@ public class GeomEvaluator {
 					if (rhs instanceof CastExpr
 							&& lhs.getType() instanceof RefLikeType) {
 
-						final Type targetType = (RefLikeType) ((CastExpr) rhs)
-								.getCastType();
+						
 						Value v = ((CastExpr) rhs).getOp();
 						VarNode node = ptsProvider.findLocalVarNode(v);
 						if (node == null) continue;
 						total_casts++;
-						IVarAbstraction pn = ptsProvider.getInternalNode(node);
-
+						
+						IVarAbstraction pn = ptsProvider.makeInternalNode(node).getRepresentative();
+						final Type targetType = (RefLikeType) ((CastExpr) rhs).getCastType();
+						
 						// We first use the geometric points-to result to evaluate
 						solved = true;
 						Set<AllocNode> set = pn.get_all_points_to_objects();
@@ -537,7 +560,8 @@ public class GeomEvaluator {
 						solved = true;
 						node.getP2Set().forall(new P2SetVisitor() {
 							public void visit(Node arg0) {
-								solved &= ptsProvider.castNeverFails(arg0.getType(), targetType);
+								if ( solved == false ) return;
+								solved = ptsProvider.castNeverFails(arg0.getType(), targetType);
 							}
 						});
 						
@@ -550,7 +574,94 @@ public class GeomEvaluator {
 
 		ptsProvider.ps.println();
 		ptsProvider.ps.println( "-----------> Static Casts Safety Evaluation <------------" );
-		ptsProvider.ps.println( "Total casts : " + total_casts );
+		ptsProvider.ps.println( "Total casts (app code) : " + total_casts );
 		ptsProvider.ps.println( "Safe casts: Geom = " + geom_solved_casts + ", SPARK = " + spark_solved_casts );
+	}
+	
+	/**
+	 * Estimate the size of the def-use graph for the heap memory.
+	 * The graph is estimated without context information.
+	 */
+	public void estimateHeapDefuseGraph()
+	{
+		long ans = 0;
+		final Map<IVarAbstraction, int[]> defUseCounter = new HashMap<IVarAbstraction, int[]>();
+		
+		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
+//			if (sm.isJavaLibraryMethod())
+//				continue;
+			if (!sm.isConcrete())
+				continue;
+			if (!sm.hasActiveBody()) {
+				sm.retrieveActiveBody();
+			}
+			if ( !ptsProvider.isValidMethod(sm) )
+				continue;
+			
+			// We first gather all the memory access expressions
+			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts
+					.hasNext();) {
+				Stmt st = (Stmt) stmts.next();
+				
+				if ( !(st instanceof AssignStmt) ) continue;
+				
+				AssignStmt a = (AssignStmt) st;
+				Value lValue = a.getLeftOp();
+				Value rValue = a.getRightOp();
+				
+				InstanceFieldRef ifr = null;
+				
+				if (lValue instanceof InstanceFieldRef) {
+					// Def statement
+					ifr = (InstanceFieldRef)lValue;
+				}
+				else if ( rValue instanceof InstanceFieldRef ) {
+					// Use statement
+					ifr = (InstanceFieldRef)rValue;
+				}
+				
+				if (ifr != null) {
+					final SootField field = ifr.getField();
+						
+					LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
+					if ( vn == null ) continue;
+					
+					IVarAbstraction pn = ptsProvider.findInternalNode(vn);
+					if ( pn == null ) continue;
+					Set<AllocNode> objsSet = pn.get_all_points_to_objects();
+					ans += objsSet.size();
+					
+					for ( AllocNode obj : objsSet ) {
+						/*
+						 * We will create a lot of instance fields.
+						 * Because in points-to analysis, we concern only the reference type.
+						 * But here, we concern all the fields read write including the primitive type fields.
+						 */
+						IVarAbstraction padf = ptsProvider.findAndInsertInstanceField(obj, field);
+						int[] defUseUnit = defUseCounter.get(padf);
+						if ( defUseUnit == null ) {
+							defUseUnit = new int[2];
+							defUseCounter.put(padf, defUseUnit);
+						}
+						
+						if (lValue instanceof InstanceFieldRef) {
+							defUseUnit[0]++;
+						}
+						else {
+							defUseUnit[1]++;
+						}
+					}
+				}
+			}
+		}
+		
+		for ( int[] defUseUnit : defUseCounter.values() ) {
+			ans += ((long)defUseUnit[0]) * defUseUnit[1];
+		}
+		
+		ptsProvider.ps.println();
+		ptsProvider.ps.println( "-----------> Heap Def Use Graph Evaluation <------------" );
+		ptsProvider.ps.println("The edges in the heap def-use graph is: " + ans);
+		ptsProvider.ps.println();
 	}
 }
