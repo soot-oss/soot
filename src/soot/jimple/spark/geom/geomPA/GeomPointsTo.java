@@ -841,9 +841,10 @@ public class GeomPointsTo extends PAG
 	 */
 	private void prepareNextRun() 
 	{
-		// Clean the context sensitive points-to results
+		// Clean the context sensitive points-to results for the representative pointers
 		for (IVarAbstraction pn : pointers) {
-			pn.reconstruct();
+			if ( pn == pn.getRepresentative() )
+				pn.reconstruct();
 		}
 		
 		// Reclaim
@@ -962,7 +963,8 @@ public class GeomPointsTo extends PAG
 		// Release the useless resource
 		offlineProcessor.destroy();
 		for ( IVarAbstraction pn : pointers )
-			pn.discard();
+			if ( pn == pn.getRepresentative() )
+				pn.keepPointsToOnly();
 	}
 	
 	/**
@@ -983,21 +985,18 @@ public class GeomPointsTo extends PAG
 		// The we rebuild it from the updated Soot call graph
 		Scene.v().getReachableMethods();
 		
-		// Finally, we transform the points-to facts to context insensitive form
+		// Finally, we transform the points-to facts back to context insensitive form
 		for ( IVarAbstraction pn : pointers ) {
-			Node node = pn.getWrappedNode();
+			if ( !pn.willUpdate ) continue;
 			
-			if ( node.getP2Set() == EmptyPointsToSet.v() ) {
-				PointsToSetInternal ptSet = node.makeP2Set();
-				for ( AllocNode obj : pn.getRepresentative().get_all_points_to_objects() ) {
-					ptSet.add( obj );
-				}
+			Node node = pn.getWrappedNode();
+			IVarAbstraction pRep = pn.getRepresentative();
+			node.discardP2Set();
+			PointsToSetInternal ptSet = node.makeP2Set();
+			for ( AllocNode obj : pRep.get_all_points_to_objects() ) {
+				ptSet.add( obj );
 			}
 		}
-		
-		// Release the resource occupied by the geometric points-to analysis
-		for ( IVarAbstraction pn : pointers )
-			pn.discard();
 	}
 	
 	/**
@@ -1067,15 +1066,11 @@ public class GeomPointsTo extends PAG
 		// Prepare for use in various of clients
 		postProcess();
 		
-		// Do we need to obtain the context insensitive points-to result?
-		if ( opts.geom_trans() ) {
-			transformToCIResult();
-			hasTransformed = true;
-		}
-		else {
-			// Otherwise, we inject the SPARK points-to result into our unprocessed pointers
+		// We inject the SPARK points-to result into our unprocessed pointers
+		// Now we have full points-to information
+		if ( !opts.geom_trans() ) {
 			for ( IVarAbstraction pn : pointers ) {
-				if ( !offlineProcessor.isUsefulVar(pn) )
+				if ( !pn.willUpdate )
 					pn.injectPts();
 			}
 		}
@@ -1086,11 +1081,18 @@ public class GeomPointsTo extends PAG
 			GeomEvaluator ge = new GeomEvaluator(this, ps);
 			ge.reportBasicMetrics();
 			
-			if ( evalLevel == 2 ) {
+			if ( evalLevel > 1 ) {
 				ge.checkCallGraph();
 				ge.checkCastsSafety();
 				ge.checkAliasAnalysis();
+//				ge.estimateHeapDefuseGraph();
 			}
+		}
+		
+		// Do we need to obtain the context insensitive points-to result?
+		if ( opts.geom_trans() ) {
+			transformToCIResult();
+			hasTransformed = true;
 		}
 		
 		System.gc(); System.gc(); System.gc(); System.gc(); System.gc();
@@ -1318,10 +1320,6 @@ public class GeomPointsTo extends PAG
 		
 		// Is this a valid method in the verification list?
 		if ( !isValidMethod(sm) )
-			return false;
-		
-		// A useful variable that is processed in the geometric analysis?
-		if ( !offlineProcessor.isUsefulVar(v) )
 			return false;
 		
 		return !sm.isJavaLibraryMethod();

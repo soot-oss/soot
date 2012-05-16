@@ -58,6 +58,9 @@ public abstract class IVarAbstraction implements Numberable {
 	public int id = -1;
 	// Position in the queue
 	public int Qpos = 0;
+	// Will we update the points-to information for this node in the geometric analysis?
+	// Because of constraints distillation, not all the pointers will be updated.
+	public boolean willUpdate = false;
 	// top_value: the topological value for this node on the symbolic assignment graph
 	// lrf_value: the least recently fired time for this node
 	// top_value will be modified in the offlineProcessor
@@ -127,7 +130,7 @@ public abstract class IVarAbstraction implements Numberable {
 	// Points-to post-processing
 	public abstract void drop_duplicates();
 	public abstract void remove_points_to( AllocNode obj );
-	public abstract void discard();
+	public abstract void keepPointsToOnly();
 	public abstract void injectPts();
 	public abstract boolean isDeadObject( AllocNode obj );
 	

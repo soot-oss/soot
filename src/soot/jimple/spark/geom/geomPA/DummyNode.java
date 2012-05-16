@@ -200,7 +200,7 @@ public class DummyNode extends IVarAbstraction
 	}
 
 	@Override
-	public void discard() {
+	public void keepPointsToOnly() {
 		// TODO Auto-generated method stub
 		
 	}

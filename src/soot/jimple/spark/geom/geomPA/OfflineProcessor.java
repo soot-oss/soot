@@ -20,15 +20,24 @@ package soot.jimple.spark.geom.geomPA;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
+import soot.RefLikeType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Type;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.Stmt;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
 import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
+import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.GlobalVarNode;
 import soot.jimple.spark.pag.LocalVarNode;
@@ -36,6 +45,7 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * This class contains the implementation of all kinds of preprocessing algorithms performed prior to the pointer analysis.
@@ -55,7 +65,7 @@ public class OfflineProcessor
 		// Start and end of this edge
 		int s, t;
 		// If this edge is created via complex constraint (e.g. p.f = q), base_var = p
-		int base_var = -1;
+		IVarAbstraction base_var;
 		
 		off_graph_edge next;
 	}
@@ -76,7 +86,6 @@ public class OfflineProcessor
 	{
 		ptAnalyzer = pta;
 		int2var = ptAnalyzer.pointers;
-		n_var = size;
 		varGraph = new ArrayList<off_graph_edge>(size);
 		queue = new LinkedList<Integer>();
 		pre = new int[size];
@@ -84,33 +93,32 @@ public class OfflineProcessor
 		count = new int[size];
 		rep = new int[size];
 		repsize = new int[size];
-		usefulVar = new boolean[n_var];
 		
-		for ( int i = 0; i < n_var; ++i ) varGraph.add(null);
+		for ( int i = 0; i < size; ++i ) varGraph.add(null);
 	}
 	
 	public void runOptimizations( boolean useSpark, Set<VarNode> basePointers )
 	{
 		// We prepare the essential data structure first
+		n_var = int2var.size();						// The size of the pointers will shrink after each round of analysis
 		queue.clear();
 		for ( int i = 0; i < n_var; ++i ) {
 			varGraph.set(i, null);
-			usefulVar[i] = false;
+			int2var.get(i).willUpdate = false;
 		}
 		
-		// We first run the constraints distillation
+		// The instance graph reverses the assignment relations. E.g., p = q  => p -> q
 		buildInstanceAssignmentGraph( useSpark );
-		// We second label the pointers that will be evaluated in the geometric points-to analysis
 		setAllUserCodeVariablesUseful();
+		// In any case, we need the virtual callsites pointers to update the call graph
 		addUsefulVariables(basePointers);
 		eliminateUselessConstraints( useSpark );
-		cleanSparkResults();
 		
-		// Then, we do the rest of the work on the symbolic assignment graph
+		// The symbolic graph does not reverse the assignment relations.
 		buildSymbolicAssignmentGraph( useSpark );
 		makeTopologicalOrder();
 		if ( useSpark == true ) {
-			// We only do once the local variable merging
+			// We only perform the local merging once.
 			mergeLocalVariables();
 		}
 	}
@@ -124,24 +132,6 @@ public class OfflineProcessor
 		repsize = null;
 		varGraph = null;
 		queue = null;
-	}
-	
-	/**
-	 * Return true if the points-to information of the queried pointer is computed by our geometric points-to engine.
-	 */
-	public boolean isUsefulVar( Node node )
-	{
-		IVarAbstraction var = ptAnalyzer.findInternalNode(node);
-		if ( var == null ) return false;
-		int k = var.getNumber();
-		return usefulVar[ k ];
-	}
-	
-	public boolean isUsefulVar( IVarAbstraction pn )
-	{
-		int k = pn.getNumber();
-		if ( k == -1 ) return false;
-		return usefulVar[ k ];
 	}
 	
 	/**
@@ -197,7 +187,7 @@ public class OfflineProcessor
 							IVarAbstraction padf = ptAnalyzer.findAndInsertInstanceField((AllocNode)n, field);
 							if ( padf == null ) return;
 							off_graph_edge e = add_graph_edge(rhs.id, padf.id);
-							e.base_var = lhs.id;
+							e.base_var = lhs;
 						}
 					});
 				}
@@ -207,7 +197,7 @@ public class OfflineProcessor
 						IVarAbstraction padf = ptAnalyzer.findAndInsertInstanceField((AllocNode)o, field);
 						if ( padf == null ) return;
 						off_graph_edge e = add_graph_edge(rhs.id, padf.id);
-						e.base_var = lhs.id;
+						e.base_var = lhs;
 					}
 				}
 				
@@ -222,7 +212,7 @@ public class OfflineProcessor
 							IVarAbstraction padf = ptAnalyzer.findAndInsertInstanceField((AllocNode)n, field);
 							if ( padf == null ) return;
 							off_graph_edge e = add_graph_edge(padf.id, lhs.id);
-							e.base_var = rhs.id;
+							e.base_var = rhs;
 						}
 					});
 				}
@@ -232,7 +222,7 @@ public class OfflineProcessor
 						IVarAbstraction padf = ptAnalyzer.findAndInsertInstanceField((AllocNode)o, field);
 						if ( padf == null ) return;
 						off_graph_edge e = add_graph_edge(padf.id, lhs.id);
-						e.base_var = rhs.id;
+						e.base_var = rhs;
 					}
 				}
 				
@@ -251,7 +241,7 @@ public class OfflineProcessor
 			IVarAbstraction node = int2var.get(i);
 			if ( initVars.contains( node.getWrappedNode() ) ) {
 				queue.add(i);
-				usefulVar[i] = true;
+				node.willUpdate = true;
 			}
 		}
 	}
@@ -285,7 +275,111 @@ public class OfflineProcessor
 				if ( !defined_in_lib ) {
 					// Defined in the user code
 					queue.add(i);
-					usefulVar[i] = true;
+					int2var.get(i).willUpdate = true;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * A client driven constraints distillation interface.
+	 * We only set the base variables at the virtual callsites in the user's code as useful
+	 */
+	protected void setVirualBaseVarsUseful()
+	{
+		// We go through all the callsites
+		for ( int i = ptAnalyzer.n_func - 1; i > 1; --i ) {
+			SootMethod sm = ptAnalyzer.getSootMethodFromID(i);
+			if ( sm.isJavaLibraryMethod() )
+				continue;
+			
+			CgEdge p = ptAnalyzer.getCallEgesOutFrom(i);
+			while ( p != null ) {
+				if ( p.base_var != null ) {
+					// We check if this callsites has been solved
+					int count = 0;
+					for ( Iterator<Edge> it = Scene.v().getCallGraph().edgesOutOf(p.sootEdge.srcStmt()); it.hasNext(); ) {
+						it.next();
+						++count;
+					}
+					
+					if ( count > 1 ) {
+						IVarAbstraction pn = ptAnalyzer.findInternalNode(p.base_var);
+						if ( pn != null ) {
+							int k = pn.getNumber();
+							queue.add(k);	
+							int2var.get(k).willUpdate = true;
+						}
+					}
+				}
+				
+				p = p.next;
+			}
+		}
+	}
+	
+	/**
+	 * Another client driven constraints distillation interface.
+	 * We only keep the variables that are involved in the static casts.
+	 */
+	protected void setStaticCastsVarUseful( boolean useSpark )
+	{
+		for ( SootMethod sm : ptAnalyzer.getAllReachableMethods() ) {
+			if (sm.isJavaLibraryMethod())
+				continue;
+			if (!sm.isConcrete())
+				continue;
+			if (!sm.hasActiveBody()) {
+				sm.retrieveActiveBody();
+			}
+			if ( !ptAnalyzer.isValidMethod(sm) )
+				continue;
+			
+			// All the statements in the method
+			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext();) {
+				Stmt st = (Stmt) stmts.next();
+
+				if (st instanceof AssignStmt) {
+					Value rhs = ((AssignStmt) st).getRightOp();
+					Value lhs = ((AssignStmt) st).getLeftOp();
+					if (rhs instanceof CastExpr
+							&& lhs.getType() instanceof RefLikeType) {
+
+						
+						Value v = ((CastExpr) rhs).getOp();
+						VarNode node = ptAnalyzer.findLocalVarNode(v);
+						if (node == null) continue;
+						final Type targetType = (RefLikeType) ((CastExpr) rhs).getCastType();
+						
+						visitedFlag = true;
+						
+						if ( useSpark ) {
+							node.getP2Set().forall(new P2SetVisitor() {
+								public void visit(Node arg0) {
+									if ( !visitedFlag ) return;
+									visitedFlag &= ptAnalyzer.castNeverFails(arg0.getType(), targetType);
+								}
+							});
+						}
+						else {
+							// use geom
+							IVarAbstraction pn = ptAnalyzer.findInternalNode(node).getRepresentative();
+							Set<AllocNode> set = pn.get_all_points_to_objects();
+							for ( AllocNode obj : set ) {
+								visitedFlag = ptAnalyzer.castNeverFails( obj.getType(), targetType );
+								if ( visitedFlag== false ) break;
+							}
+						}
+						
+						if ( visitedFlag == false ) {
+							IVarAbstraction pn = ptAnalyzer.findInternalNode(node);
+							if ( pn != null ) {
+								int k = pn.getNumber();
+								queue.add(k);	
+								int2var.get(k).willUpdate = true;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -304,7 +398,7 @@ public class OfflineProcessor
 	protected void eliminateUselessConstraints( boolean useSpark )
 	{
 		int i;
-		IVarAbstraction rhs;
+		IVarAbstraction pn;
 		off_graph_edge p;
 		
 		// Worklist based graph traversal
@@ -314,14 +408,15 @@ public class OfflineProcessor
 			
 			p = varGraph.get(i);
 			while ( p != null ) {
-				if ( usefulVar[p.t] == false ) {
-					usefulVar[p.t] = true;
+				pn = int2var.get(p.t);
+				if ( pn.willUpdate == false ) {
+					pn.willUpdate = true;
 					queue.add(p.t);
 				}
 				
-				if ( p.base_var != -1 && usefulVar[p.base_var] == false ) {
-					usefulVar[p.base_var] = true;
-					queue.add(p.base_var);
+				if ( p.base_var != null && p.base_var.willUpdate == false ) {
+					p.base_var.willUpdate = true;
+					queue.add(p.base_var.id);
 				}
 				
 				p = p.next;
@@ -332,7 +427,8 @@ public class OfflineProcessor
 		for ( PlainConstraint cons : ptAnalyzer.constraints ) {
 			if ( cons.isViable == false ) continue;
 			
-			rhs = cons.expr.getO2();
+			// We care only the pointer at the right hand side
+			pn = cons.expr.getO2();
 			final SparkField field = cons.f;
 			visitedFlag = false;
 			
@@ -340,28 +436,28 @@ public class OfflineProcessor
 			case GeomPointsTo.NEW_CONS:
 			case GeomPointsTo.ASSIGN_CONS:
 			case GeomPointsTo.LOAD_CONS:
-				visitedFlag = usefulVar[rhs.id];
+				visitedFlag = pn.willUpdate;
 				break;
 			
 			case GeomPointsTo.STORE_CONS:
 				if ( useSpark ) {
-					rhs.getWrappedNode().getP2Set().forall( new P2SetVisitor() {
+					pn.getWrappedNode().getP2Set().forall( new P2SetVisitor() {
 						@Override
 						public void visit(Node n) {
 							if ( !visitedFlag ) {
 								IVarAbstraction padf = ptAnalyzer.findAndInsertInstanceField((AllocNode)n, field);
 								if ( padf == null ) return;
-								visitedFlag = usefulVar[padf.id];
+								visitedFlag = padf.willUpdate;
 							}
 						}
 					});
 				}
 				else {
 					// Use the geometric points-to result
-					for ( AllocNode o : rhs.getRepresentative().get_all_points_to_objects() ) {
+					for ( AllocNode o : pn.getRepresentative().get_all_points_to_objects() ) {
 						IVarAbstraction padf = ptAnalyzer.findAndInsertInstanceField((AllocNode)o, field);
 						if ( padf == null ) return;
-						visitedFlag = usefulVar[padf.id];
+						visitedFlag = padf.willUpdate;
 						if ( visitedFlag ) break;
 					}
 				}
@@ -371,26 +467,6 @@ public class OfflineProcessor
 			
 			cons.isViable = visitedFlag;
 		}
-	}
-	
-	/**
-	 * The pointers that we will refine in our context sensitive analysis do not need the spark results any more.
-	 */
-	protected void cleanSparkResults() 
-	{
-		// Later the evaluator would use the SPARK points-to facts
-		// Thereby, we keep it
-		if ( ptAnalyzer.getOpts().geom_eval() > 0 )
-			return;
-		
-		for ( int i = 0; i < n_var; ++i ) {
-			if ( usefulVar[i] == true ) {
-				IVarAbstraction node = int2var.get(i);
-				node.getWrappedNode().discardP2Set();
-			}
-		}
-		
-		ptAnalyzer.cleanPAG();
 	}
 	
 	/**
@@ -560,8 +636,8 @@ public class OfflineProcessor
 	 * Find and eliminate the redundancies as early as possible.
 	 * 
 	 * Our approach is :
-	 * 1. Reuse the instance assignment graph;
-	 * 2. If a variable q has only one incoming edge p -> q and p, q both local to the same function, then we merge them.
+	 * 1. Reuse the symbolic assignment graph;
+	 * 2. If a variable q has only one incoming edge p -> q and p, q both local to the same function and they have the same type, then we merge them.
 	 */
 	protected void mergeLocalVariables()
 	{
@@ -580,9 +656,12 @@ public class OfflineProcessor
 		
 		// If this pointer is a allocation result receiver
 		// We charge the degree counting with new constraint
-		while ( !queue.isEmpty() ) {
-			int id = queue.removeFirst();
-			count[ id ]++;
+		for ( PlainConstraint cons : ptAnalyzer.constraints ) {
+			if ( (cons.isViable == true ) &&
+					(cons.type == GeomPointsTo.NEW_CONS) ) {
+				my_rhs = cons.expr.getO2();
+				count[ my_rhs.id ]++;
+			}
 		}
 		
 		// Second time scan, we delete those constraints that only duplicate points-to information
@@ -605,8 +684,9 @@ public class OfflineProcessor
 							&& lhs.getType() == rhs.getType() ) {
 						// We directly merge the SPARK nodes to save effort for maintaining additional data structures
 						// Maybe lhs and rhs have different types, however, we have already delete the SPARK points-to result.
-						// Therefore, there is no exception thrown.
-						my_rhs.merge(my_lhs);
+						// Therefore, there is no exception threw.
+						my_rhs = my_rhs.merge(my_lhs);
+						if ( my_rhs.willUpdate == false ) my_rhs.willUpdate = true;
 						cons.isViable = false;
 					}
 				}

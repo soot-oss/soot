@@ -156,6 +156,8 @@ public class GeomEvaluator {
 		max_pts_geom = 0;
 		
 		for ( IVarAbstraction pn : ptsProvider.pointers ) {
+			// We don't consider those un-processed pointers because their points-to information is equivalent to SPARK
+			if ( !pn.willUpdate ) continue;
 			if ( ptsProvider.isLegalPointer(pn) == false ) continue;
 			pn = pn.getRepresentative();
 			Node var = pn.getWrappedNode();
@@ -393,7 +395,7 @@ public class GeomEvaluator {
 		final Set<Node> access_expr = new HashSet<Node>();
 		ArrayList<Node> al = new ArrayList<Node>();
 		Value[] values = new Value[2];
-		long cnt_all_interval = 0;
+		long cnt_all = 0;
 		long cnt_hs_alias = 0, cnt_hi_alias = 0;
 		
 		
@@ -425,22 +427,6 @@ public class GeomEvaluator {
 							LocalVarNode vn = ptsProvider.findLocalVarNode(l);
 							access_expr.add( vn );
 						}
-//						else if (v instanceof InstanceFieldRef) {
-//							InstanceFieldRef ifr = (InstanceFieldRef) v;
-//							final SootField field = ifr.getField();
-//							if ( !(field.getType() instanceof RefType) )
-//								continue;
-//							
-//							LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
-//							if ( vn == null ) 
-//								continue;
-//							
-//							pn = ptsProvider.makeInternalNode(vn);
-//							for ( AllocNode an : pn.get_all_points_to_objects() ) {
-//								AllocDotField adf = ptsProvider.findAllocDotField(an, field);
-//								access_expr.add( adf );
-//							}
-//						}
 						else if (v instanceof StaticFieldRef) {
 							StaticFieldRef sfr = (StaticFieldRef) v;
 							GlobalVarNode vn = ptsProvider.findGlobalVarNode( sfr.getField() );
@@ -449,12 +435,6 @@ public class GeomEvaluator {
 						else if (v instanceof ArrayRef) {
 							ArrayRef ar = (ArrayRef) v;
 							LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ar.getBase());
-//							pn = ptsProvider.getInternalNode(vn);
-//							for ( AllocNode an : pn.get_all_points_to_objects() ) {
-//								AllocDotField adf = ptsProvider.makeAllocDotField(an, ArrayElement.v() );
-//								access_expr.add( adf );
-//							}
-							
 							access_expr.add( vn );
 						}
 					}
@@ -478,11 +458,12 @@ public class GeomEvaluator {
 			
 			for ( int i = 0; i < al.size(); ++i ) {
 				Node n1 = al.get(i);
-				pn =  ptsProvider.makeInternalNode(n1);
+				pn =  ptsProvider.findInternalNode(n1);
 				pn = pn.getRepresentative();
+				
 				for ( int j = i + 1; j < al.size(); ++j ) {
 					Node n2 = al.get(j);
-					qn = ptsProvider.makeInternalNode(n2);
+					qn = ptsProvider.findInternalNode(n2);
 					qn = qn.getRepresentative();
 					
 					if ( pn.heap_sensitive_intersection( qn ) )
@@ -491,19 +472,19 @@ public class GeomEvaluator {
 					// We directly use the SPARK points-to sets
 					if ( n1.getP2Set().hasNonEmptyIntersection(n2.getP2Set()) )
 						cnt_hi_alias++;
-					
-					++cnt_all_interval;
 				}
+				
+				cnt_all += al.size() - 1 - i;
 			}
 		}
 		
 		ptsProvider.ps.println();
 		ptsProvider.ps.println( "--------> Alias Pairs Evaluation <---------" );
-		ptsProvider.ps.println("All pointer pairs (app code) : " + cnt_all_interval );
+		ptsProvider.ps.println("All pointer pairs (app code) : " + cnt_all );
 		ptsProvider.ps.println("Heap sensitive alias pairs (by Geom) : " + cnt_hs_alias
-				+ ", Percentage = " + (double) cnt_hs_alias / cnt_all_interval );
+				+ ", Percentage = " + (double) cnt_hs_alias / cnt_all );
 		ptsProvider.ps.println("Heap insensitive alias pairs (by SPARK) : " + cnt_hi_alias
-				+ ", Percentage = " + (double) cnt_hi_alias / cnt_all_interval );
+				+ ", Percentage = " + (double) cnt_hi_alias / cnt_all );
 		ptsProvider.ps.println();
 	}
 	
@@ -584,8 +565,9 @@ public class GeomEvaluator {
 	 */
 	public void estimateHeapDefuseGraph()
 	{
-		long ans = 0;
-		final Map<IVarAbstraction, int[]> defUseCounter = new HashMap<IVarAbstraction, int[]>();
+		long ans_geom = 0, ans_spark = 0;
+		final Map<IVarAbstraction, int[]> defUseCounterForGeom = new HashMap<IVarAbstraction, int[]>();
+		final Map<AllocDotField, int[]> defUseCounterForSpark = new HashMap<AllocDotField, int[]>();
 		
 		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
 //			if (sm.isJavaLibraryMethod())
@@ -606,8 +588,8 @@ public class GeomEvaluator {
 				if ( !(st instanceof AssignStmt) ) continue;
 				
 				AssignStmt a = (AssignStmt) st;
-				Value lValue = a.getLeftOp();
-				Value rValue = a.getRightOp();
+				final Value lValue = a.getLeftOp();
+				final Value rValue = a.getRightOp();
 				
 				InstanceFieldRef ifr = null;
 				
@@ -626,10 +608,33 @@ public class GeomEvaluator {
 					LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
 					if ( vn == null ) continue;
 					
+					// Spark
+					vn.getP2Set().forall(new P2SetVisitor() {
+						
+						@Override
+						public void visit(Node n) {
+							AllocDotField padf = ptsProvider.findAllocDotField( (AllocNode)n, field );
+							int[] defUseUnit = defUseCounterForSpark.get(padf);
+							if ( defUseUnit == null ) {
+								defUseUnit = new int[2];
+								defUseCounterForSpark.put(padf, defUseUnit);
+							}
+							
+							if (lValue instanceof InstanceFieldRef) {
+								defUseUnit[0]++;
+							}
+							else {
+								defUseUnit[1]++;
+							}
+						}
+					});
+					
+					// Geom
 					IVarAbstraction pn = ptsProvider.findInternalNode(vn);
 					if ( pn == null ) continue;
+					pn = pn.getRepresentative();
 					Set<AllocNode> objsSet = pn.get_all_points_to_objects();
-					ans += objsSet.size();
+					ans_geom += objsSet.size();
 					
 					for ( AllocNode obj : objsSet ) {
 						/*
@@ -638,10 +643,10 @@ public class GeomEvaluator {
 						 * But here, we concern all the fields read write including the primitive type fields.
 						 */
 						IVarAbstraction padf = ptsProvider.findAndInsertInstanceField(obj, field);
-						int[] defUseUnit = defUseCounter.get(padf);
+						int[] defUseUnit = defUseCounterForGeom.get(padf);
 						if ( defUseUnit == null ) {
 							defUseUnit = new int[2];
-							defUseCounter.put(padf, defUseUnit);
+							defUseCounterForGeom.put(padf, defUseUnit);
 						}
 						
 						if (lValue instanceof InstanceFieldRef) {
@@ -655,13 +660,17 @@ public class GeomEvaluator {
 			}
 		}
 		
-		for ( int[] defUseUnit : defUseCounter.values() ) {
-			ans += ((long)defUseUnit[0]) * defUseUnit[1];
+		for ( int[] defUseUnit : defUseCounterForSpark.values() ) {
+			ans_spark += ((long)defUseUnit[0]) * defUseUnit[1];
+		}
+		
+		for ( int[] defUseUnit : defUseCounterForGeom.values() ) {
+			ans_geom += ((long)defUseUnit[0]) * defUseUnit[1];
 		}
 		
 		ptsProvider.ps.println();
 		ptsProvider.ps.println( "-----------> Heap Def Use Graph Evaluation <------------" );
-		ptsProvider.ps.println("The edges in the heap def-use graph is: " + ans);
+		ptsProvider.ps.println("The edges in the heap def-use graph is: " + ans_geom + "(" + ans_spark + ")" );
 		ptsProvider.ps.println();
 	}
 }

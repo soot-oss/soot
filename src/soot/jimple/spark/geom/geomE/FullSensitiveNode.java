@@ -97,7 +97,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	}
 
 	@Override
-	public void discard()
+	public void keepPointsToOnly()
 	{
 		flowto = null;
 		new_pts = null;
@@ -634,6 +634,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	public void injectPts()
 	{
 		final GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
+		pt_objs = new HashMap<AllocNode, GeometricManager>();
 		
 		me.getP2Set().forall( new P2SetVisitor() {
 			@Override

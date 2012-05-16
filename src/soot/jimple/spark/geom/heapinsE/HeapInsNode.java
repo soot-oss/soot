@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import soot.RefType;
@@ -512,7 +511,7 @@ public class HeapInsNode extends IVarAbstraction
 	}
 
 	@Override
-	public void discard() 
+	public void keepPointsToOnly() 
 	{
 		flowto = null;
 		new_pts = null;
@@ -651,6 +650,7 @@ public class HeapInsNode extends IVarAbstraction
 	public void injectPts() 
 	{
 		final GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
+		pt_objs = new HashMap<AllocNode, HeapInsIntervalManager>();
 		
 		me.getP2Set().forall( new P2SetVisitor() {
 			@Override
