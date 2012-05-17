@@ -93,7 +93,7 @@ public class GeomEvaluator {
 			SootMethod caller, SootMethod callee_signature, Histogram ce_range) 
 	{	
 		long l, r;
-		IVarAbstraction pn = ptsProvider.makeInternalNode(vn);
+		IVarAbstraction pn = ptsProvider.makeInternalNode(vn).getRepresentative();
 		Set<SootMethod> tgts = new HashSet<SootMethod>();
 		Set<AllocNode> set = pn.get_all_points_to_objects();
 		
@@ -520,10 +520,11 @@ public class GeomEvaluator {
 						
 						Value v = ((CastExpr) rhs).getOp();
 						VarNode node = ptsProvider.findLocalVarNode(v);
-						if (node == null) continue;
-						total_casts++;
+						IVarAbstraction pn = ptsProvider.findInternalNode(node);
+						if ( pn == null ) continue;
 						
-						IVarAbstraction pn = ptsProvider.makeInternalNode(node).getRepresentative();
+						total_casts++;
+						pn = pn.getRepresentative();
 						final Type targetType = (RefLikeType) ((CastExpr) rhs).getCastType();
 						
 						// We first use the geometric points-to result to evaluate
