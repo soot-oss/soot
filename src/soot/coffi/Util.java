@@ -836,12 +836,8 @@ swtch:
         {
             if(activeOriginalIndex != -1)
             {
-
-	      // Feng asks: why this is necessary? it does wrong thing
-	      //            for searching local variable names.
-	      // It is going to be verified with plam.
-                if(isLocalStore)
-                    activeOriginalIndex++;
+                //indicies in the local variable table start at 1 while code starts at zero
+                activeOriginalIndex++;
                 if(isWideLocalStore)
                     activeOriginalIndex++;
 
