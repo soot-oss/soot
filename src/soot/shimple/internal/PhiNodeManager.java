@@ -144,6 +144,11 @@ public class PhiNodeManager
                     while(frontierNodes.hasNext()){
                         Block frontierBlock = (Block) ((DominatorNode) frontierNodes.next()).getGode();
                         int fBIndex = frontierBlock.getIndexInMethod();
+
+                        Iterator unitsIt = frontierBlock.iterator();
+                        if(!unitsIt.hasNext()){
+                          continue;
+                        }
                         
                         if(has_already.get(frontierBlock.getIndexInMethod()) < iterCount)
                         {
