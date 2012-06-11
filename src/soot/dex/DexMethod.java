@@ -20,13 +20,13 @@ package soot.dex;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.jf.dexlib.AnnotationDirectoryItem.MethodAnnotationIteratorDelegate;
 import org.jf.dexlib.AnnotationItem;
 import org.jf.dexlib.AnnotationSetItem;
 import org.jf.dexlib.ClassDataItem;
+import org.jf.dexlib.DebugInfoItem;
 import org.jf.dexlib.Item;
 import org.jf.dexlib.MethodIdItem;
 import org.jf.dexlib.TypeIdItem;
@@ -57,8 +57,6 @@ public class DexMethod {
     protected DexType returnType;
     protected List<DexType> parameterTypes;
     protected ClassDataItem.EncodedMethod method;
-
-    protected HashMap<String, DexType> localTypes;
 
     private DexBody dexBody;
 
@@ -139,15 +137,17 @@ public class DexMethod {
             return;
 
         // retrieve all local types of the method
-        localTypes = new HashMap<String, DexType>();
-        for(Item<?> item : method.codeItem.getDebugInfo().getReferencedItems()) {
-            if (item instanceof TypeIdItem) {
-                DexType type = new DexType((TypeIdItem) item);
-                localTypes.put(type.name, type);
-                dexClass.types.add(type);
-            }
-
+        DebugInfoItem debugInfo = method.codeItem.getDebugInfo();
+        if(debugInfo!=null) {
+			for(Item<?> item : debugInfo.getReferencedItems()) {
+	            if (item instanceof TypeIdItem) {
+	                DexType type = new DexType((TypeIdItem) item);
+	                dexClass.types.add(type);
+	            }
+	
+	        }
         }
+        
         //add the body of this code item
         dexBody = new DexBody(method.codeItem, (RefType) DexType.toSoot(dexClass.getType()));
 
