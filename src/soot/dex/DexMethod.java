@@ -56,12 +56,10 @@ public class DexMethod {
     protected List<String> thrownExceptions;
     protected DexType returnType;
     protected List<DexType> parameterTypes;
-    protected ClassDataItem.EncodedMethod method;
 
     private DexBody dexBody;
 
     public DexMethod(ClassDataItem.EncodedMethod method, DexClass dexClass) {
-        this.method = method;
         this.dexClass = dexClass;
         this.accessFlags = method.accessFlags;
         parameterTypes = new ArrayList<DexType>();
@@ -204,14 +202,6 @@ public class DexMethod {
      */
     public List<DexType> getParameterTypes() {
         return this.parameterTypes;
-    }
-
-    /**
-     *
-     * @return this encoded method as of dexlib
-     */
-    public ClassDataItem.EncodedMethod getMethod() {
-        return method;
     }
 
     /**
