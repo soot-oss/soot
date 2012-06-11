@@ -210,7 +210,7 @@ public class SourceLocator
 			    classes.add(entryName);
 			}
             // We are dealing with an apk file
-            if (entryName == "classes.dex")
+            if (entryName.equals("classes.dex"))
                 classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
 		    }
 		}
