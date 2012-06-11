@@ -19,6 +19,7 @@
 
 package soot.dex;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -74,8 +75,9 @@ public class DexClass {
         // retrieve methods, fields and annotations
         ClassDataItem classData = classDef.getClassData();
         if (classData == null) {
-            this.methods = new HashSet<DexMethod>(0);
-            this.fields = new HashSet<DexField>(0);
+            this.methods = Collections.emptySet();
+            this.fields = Collections.emptySet();
+            this.types = Collections.emptySet();
         } else {
             int numMethods = classData.getDirectMethods().length + classData.getVirtualMethods().length;
             int numFields = classData.getInstanceFields().length + classData.getStaticFields().length;
