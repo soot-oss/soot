@@ -77,6 +77,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     public Set<DexType> introducedTypes() {
         Set<DexType> types = new HashSet<DexType>();
         MethodIdItem method = (MethodIdItem) (((InstructionWithReference) instruction).getReferencedItem());
+        types.add(new DexType(method.getContainingClass()));
         ProtoIdItem prototype = method.getPrototype();
         types.add(new DexType(prototype.getReturnType()));
         List<TypeIdItem> paramTypes = TypeListItem.getTypes(prototype.getParameters());
