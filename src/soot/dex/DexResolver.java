@@ -20,13 +20,17 @@
 package soot.dex;
 
 import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
 
 import soot.SootClass;
 import soot.SootResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.dex.DexlibWrapper;
 
 public class DexResolver {
+	
+	static Map<File,DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
+	
     /**
      * Resolve the class contained in file into the passed soot class.
      *
@@ -36,7 +40,12 @@ public class DexResolver {
      * @return the dependencies of this class.
      */
     public static Dependencies resolveFromFile(File file, String className, SootClass sc) {
-        DexClass c = new DexlibWrapper(file).getClass(className);
+    	DexlibWrapper wrapper = cache.get(file);
+    	if(wrapper==null) {
+    		wrapper = new DexlibWrapper(file);
+    		cache.put(file, wrapper);
+    	}
+        DexClass c = wrapper.getClass(className);
         if (c == null)
             throw new RuntimeException("Class " + className + " not found at " + file.getPath());
 
