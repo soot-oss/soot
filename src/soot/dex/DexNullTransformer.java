@@ -58,6 +58,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.StringConstant;
+import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -95,20 +96,11 @@ public class DexNullTransformer extends BodyTransformer {
             usedAsObject = false;
             List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
             // check if no use
-            int check = 0;
             for (Unit u  : defs) {
               for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
-                check++;
                 System.out.println("[use in u]: "+ pair.getUnit());
               }
             }
-//            if (check == 0) {
-//              System.out.println("[removing local] "+ l);
-//              for (Unit u: defs) {
-//                body.getUnits().remove(u);
-//              }
-//              body.getLocals().remove(l);
-//            }
             // process normally
             boolean doBreak = false;
             for (Unit u  : defs) {
@@ -127,7 +119,7 @@ public class DexNullTransformer extends BodyTransformer {
                       if (r instanceof FieldRef)
                           usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
                       else if (r instanceof ArrayRef)
-                          usedAsObject = true;//((ArrayRef) r).getType() instanceof RefType;
+                          usedAsObject = isObject(((ArrayRef) r).getType());
                       else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr)
                           usedAsObject = true;
                       else if (r instanceof CastExpr)
@@ -185,7 +177,7 @@ public class DexNullTransformer extends BodyTransformer {
                                     if (r instanceof FieldRef)
                                         usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
                                     else if (r instanceof ArrayRef)
-                                        usedAsObject = true;//((ArrayRef) r).getType() instanceof RefType;
+                                        usedAsObject = isObject(((ArrayRef) r).getType());
                                     else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr)
                                         usedAsObject = true;
                                     else if (r instanceof CastExpr)
@@ -203,8 +195,8 @@ public class DexNullTransformer extends BodyTransformer {
                                         usedAsObject = true;
                                     else if (l instanceof InstanceFieldRef && isObject(((InstanceFieldRef) l).getFieldRef().type()))
                                         usedAsObject = true;
-                                    //TODO: else if (l instanceof Local)
-                                      
+                                    else if (l instanceof ArrayRef)
+                                        usedAsObject = isObject(((ArrayRef) l).getType());                                      
                                 }
 
                                 // is used as value (does not exlude assignment)
@@ -226,6 +218,9 @@ public class DexNullTransformer extends BodyTransformer {
                                 usedAsObject = stmt.getOp() == l && isObject(body.getMethod().getReturnType());
                                 System.out.println (" [return stmt] "+ stmt +" usedAsObject: "+ usedAsObject +", return type: "+ body.getMethod().getReturnType());
                                 System.out.println (" class: "+ body.getMethod().getReturnType().getClass());
+                            }
+                            public void caseThrowStmt(ThrowStmt stmt) {
+                                usedAsObject = stmt.getOp() == l;
                             }
                         });
                     
