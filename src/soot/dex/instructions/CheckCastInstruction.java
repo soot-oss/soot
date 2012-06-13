@@ -51,9 +51,10 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         Type checkCastType = DexType.toSoot((TypeIdItem) checkCastInstr.getReferencedItem());
 
         CastExpr castExpr =  Jimple.v().newCastExpr(castValue, checkCastType);
-        Local local = body.generateLocal(checkCastType);
 
-        AssignStmt assign = Jimple.v().newAssignStmt(local, castExpr);
+        //generate "x = (Type) x"
+        //splitter will take care of the rest
+        AssignStmt assign = Jimple.v().newAssignStmt(castValue, castExpr);
 
         defineBlock(assign);
         tagWithLineNumber(assign);
