@@ -27,10 +27,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
+import soot.RefLikeType;
 import soot.RefType;
 import soot.SootMethodRef;
 import soot.Type;
@@ -250,9 +250,7 @@ public class DexNullTransformer extends BodyTransformer {
     }
 
   private boolean isObject(Type t) {
-    if (t instanceof RefType || t instanceof ArrayType)
-      return true;
-    return false;
+    return t instanceof RefLikeType;
   }
 	
     /**
