@@ -180,6 +180,8 @@ public abstract class DexlibAbstractInstruction {
      * @param body the body containing the instruction
      */
     protected boolean willFloat(int register, DexBody body) {
+    	//FIXME This is not fully correct because it does not take jumps into account.
+    	
         List<DexlibAbstractInstruction> instructions = body.instructionsAfter(this);
         Set<Integer> usedRegisters = new HashSet<Integer>();
         usedRegisters.add(register);
