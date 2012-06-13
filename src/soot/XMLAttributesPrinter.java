@@ -63,33 +63,20 @@ public class XMLAttributesPrinter {
 	}
     
 	public void printAttrs(SootClass c, soot.xml.TagCollector tc) {
-	
-        tc.collectKeyTags(c);
-        Iterator fIt = c.getFields().iterator();
-        while (fIt.hasNext()){
-            SootField sf = (SootField)fIt.next();
-            tc.collectFieldTags(sf);
-        }
-        Iterator mIt = c.getMethods().iterator();
-        while (mIt.hasNext()){
-            SootMethod sm = (SootMethod)mIt.next();
-            tc.collectMethodTags(sm);
-        }
-        tc.printTags(writerOut);
-        tc.printKeys(writerOut);
-		finishFile();
+		printAttrs(c, tc, false);
 	}
     
 	public void printAttrs(SootClass c) {
-	
-        soot.xml.TagCollector tc = new soot.xml.TagCollector();
+		printAttrs(c, new soot.xml.TagCollector(), true);
+	}
+
+	private void printAttrs(SootClass c, soot.xml.TagCollector tc, boolean includeBodyTags) {
         tc.collectKeyTags(c);
-        tc.collectTags(c);
+		tc.collectTags(c, includeBodyTags);
         tc.printTags(writerOut);
         tc.printKeys(writerOut);
 		finishFile();
 	}
-
 	 
 	FileOutputStream streamOut = null;
 	PrintWriter writerOut = null;

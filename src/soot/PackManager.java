@@ -937,13 +937,17 @@ public class PackManager {
     }
 
     private void processXMLForClass(SootClass c, TagCollector tc){
-        final int format = Options.v().output_format();
+	    int ofmt = Options.v().output_format();
+        final int format = ofmt != Options.output_format_none ? ofmt : Options.output_format_jimple;
         String fileName = SourceLocator.v().getFileNameFor(c, format);
         XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName,
                SourceLocator.v().getOutputDir());
         xap.printAttrs(c, tc);
     }
     
+    /** assumption: only called when
+     * <code>Options.v().output_format() == Options.output_format_jimple</code> 
+     */
     private void processXMLForClass(SootClass c){
         final int format = Options.v().output_format();
         String fileName = SourceLocator.v().getFileNameFor(c, format);
