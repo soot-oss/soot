@@ -61,7 +61,6 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
         Local l = body.getRegisterLocal(dest);
-        l.setType(t);
         AssignStmt assign = Jimple.v().newAssignStmt(l, newArrayExpr);
 
         defineBlock(assign);
