@@ -74,7 +74,7 @@ public class LocalSplitter extends BodyTransformer
 
         // Go through the definitions, building the webs
         {
-            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
+            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,Scene.v().getDefaultThrowAnalysis(),true);
 
             LocalDefs localDefs;
             
@@ -106,7 +106,7 @@ public class LocalSplitter extends BodyTransformer
                 ValueBox loBox = (ValueBox)s.getDefBoxes().get(0);
                 Value lo = loBox.getValue();
 
-                if(lo instanceof Local && !markedBoxes.contains(loBox))
+                if(lo instanceof Local)
                 {
                     LinkedList<Unit> defsToVisit = new LinkedList<Unit>();
                     LinkedList<ValueBox> boxesToVisit = new LinkedList<ValueBox>();
