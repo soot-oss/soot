@@ -235,8 +235,12 @@ public class Attribute {
         return sb.toString();
     }
 
+	public boolean isEmpty() {
+		return colors == null && texts == null && links == null;
+	}
+
     public void print(PrintWriter writerOut){
-        if (colors == null && texts == null && links == null) {
+        if ( isEmpty() ) {
             //System.out.println("no data found for: ");
             //System.out.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
             //System.out.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");

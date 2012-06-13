@@ -937,7 +937,7 @@ public class PackManager {
     }
 
     private void processXMLForClass(SootClass c, TagCollector tc){
-	    int ofmt = Options.v().output_format();
+	int ofmt = Options.v().output_format();
         final int format = ofmt != Options.output_format_none ? ofmt : Options.output_format_jimple;
         String fileName = SourceLocator.v().getFileNameFor(c, format);
         XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName,

@@ -23,7 +23,6 @@ import soot.*;
 import soot.tagkit.*;
 import java.util.*;
 import java.io.*;
-import soot.jimple.spark.ondemand.genericutil.Predicate;
 
 public class TagCollector {
 
@@ -35,20 +34,9 @@ public class TagCollector {
         keys = new ArrayList<Key>();
     }
 
-    /** Convenience function for <code>collectTags(sc, true)</code>. */
-    public void collectTags(SootClass sc){ 
-		collectTags(sc, true); 
-	}
-
-	/** Collect tags from all fields and methods of <code>sc</code>.
-	 * If <code>includeBodies</code> is true, then tags are also collected 
-	 * from method bodies.
-	 * @param sc   The class from which to collect the tags.
-	 */
-    public void collectTags(SootClass sc, boolean includeBodies){	        
-		// tag the class
-		collectClassTags(sc);
-
+    public void collectTags(SootClass sc){
+	
+        
         // tag fields
         Iterator fit = sc.getFields().iterator();
 		while (fit.hasNext()){
@@ -62,7 +50,7 @@ public class TagCollector {
 			SootMethod sm = (SootMethod)it.next();
 			collectMethodTags(sm);
 		
-            if (!includeBodies || !sm.hasActiveBody()) continue;
+            if (!sm.hasActiveBody()) continue;
 			Body b = sm.getActiveBody();
             collectBodyTags(b);
         }
@@ -90,43 +78,32 @@ public class TagCollector {
     }
     
             
-    private void collectHostTags(Host h) {
-		Predicate<Tag> p = Predicate.truePred();
-		collectHostTags(h, p);
-	}
-
-    private void collectHostTags(Host h, Predicate<Tag> include){
-		if (!h.getTags().isEmpty()){
-			Iterator tags = h.getTags().iterator();
-            Attribute a = new Attribute();
-		    while (tags.hasNext()){
-			    Tag t = (Tag)tags.next();
-			    if (include.test(t))
-					a.addTag(t);
-			}
-            attributes.add(a);
-		}
+    public void collectFieldTags(SootField sf){
+        Iterator fTags = sf.getTags().iterator();
+        Attribute fa = new Attribute();
+        while (fTags.hasNext()){
+            Tag t = (Tag)fTags.next();
+            fa.addTag(t);
+            //System.out.println("field tag: "+t);
+        }
+        attributes.add(fa);
     }
 
-	public void collectClassTags(SootClass sc) {
-		// All classes are tagged with their source files which 
-		// is not worth outputing because it can be inferred from 
-		// other information (like the name of the XML file).
-		Predicate<Tag> noSFTags = new Predicate<Tag>() {
-				public boolean test (Tag t) {
-					return !(t instanceof SourceFileTag);
-				}
-		};
-		collectHostTags(sc, noSFTags);
-	}
-
-    public void collectFieldTags(SootField sf) {
-		collectHostTags(sf);
-	}
-
     public void collectMethodTags(SootMethod sm){
-	    if (sm.hasActiveBody())
-			collectHostTags(sm);			
+	    if (!sm.hasActiveBody()) {
+		    return;
+	    }
+		if (!sm.getTags().isEmpty()){
+			Iterator mTags = sm.getTags().iterator();
+            Attribute ma = new Attribute();
+		    while (mTags.hasNext()){
+			    Tag t = (Tag)mTags.next();
+			    ma.addTag(t);
+                //System.out.println("method tag: "+t);
+			}
+            attributes.add(ma);
+		}
+			
     }
     
     public void collectBodyTags(Body b){
