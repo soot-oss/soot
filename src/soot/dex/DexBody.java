@@ -21,10 +21,12 @@ package soot.dex;
 
 import static soot.dex.instructions.InstructionFactory.fromInstruction;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +43,9 @@ import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Debug.DebugInstructionIterator;
 
 import soot.Body;
+import soot.DoubleType;
 import soot.Local;
+import soot.LongType;
 import soot.Modifier;
 import soot.RefType;
 import soot.SootClass;
@@ -107,13 +111,15 @@ public class DexBody {
             parameterTypes = new ArrayList<Type>();
             for (TypeIdItem type : paramTypes)
                 parameterTypes.add(DexType.toSoot(type));
+        } else {
+        	parameterTypes = Collections.emptyList();
         }
 
         numRegisters = code.getRegisterCount();
         numParameters = parameterTypes == null ? 0 : parameterTypes.size();
         isStatic = Modifier.isStatic(code.getParent().accessFlags);
-        // if method is non-static the instance will be passed additionally
-        numLocals = numRegisters - code.getParent().method.getPrototype().getParameterRegisterCount();
+        // if method is non-static the instance will be passed additionally        
+        numLocals = numRegisters - numParameters;
         if (! isStatic) {
             numParameters++;
             numLocals--;
@@ -258,20 +264,22 @@ public class DexBody {
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();
 
-        parameters = new Local[numParameters];
+        List<Local> paramLocals = new LinkedList<Local>();       
         if (!isStatic) {
             Local thisLocal = generateLocal(declaringClassType);
             add(Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newThisRef(declaringClassType)));
-            parameters[0] = thisLocal;
+            paramLocals.add(thisLocal);
+        } 
+        {
+	        int i=0;
+	        for (Type t: parameterTypes) {
+	            Local gen = generateLocal(UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
+	            add(Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i)));
+	            paramLocals.add(gen);
+	        }
         }
-        int start = isStatic ? 0 : 1;
-        for (int i = start; i < parameters.length; i++) {
-            int paramNum = i - start;
-            Type t = parameterTypes.get(paramNum);
-            Local gen = generateLocal(t);
-            add(Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, paramNum)));
-            parameters[i] = gen;
-        }
+        parameters = paramLocals.toArray(new Local[paramLocals.size()]);
+        
         for (int i = 0; i < numLocals; i++)
             registerLocals[i] = generateLocal(UnknownType.v());
 
