@@ -184,7 +184,7 @@ Composite cgSpark_Output_OptionsChild = cgSpark_Output_OptionsCreate(getPageCont
 
 Composite cgContext_sensitive_refinementChild = cgContext_sensitive_refinementCreate(getPageContainer());
 
-Composite cgGeometricComposite = cgGeometric(getPageContainer());
+Composite cgGeometric_context_sensitive_analysis_from_ISSTA_2011Child = cgGeometric_context_sensitive_analysis_from_ISSTA_2011Create(getPageContainer());
 
 Composite cgPaddle_General_OptionsChild = cgPaddle_General_OptionsCreate(getPageContainer());
 
@@ -5587,9 +5587,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 			subSectParent.addChild(cg_Context_sensitive_refinement_branch);
 			
-			SootOption cg_Geometric_branch = new SootOption("Geometric, context-sensitive analysis (ISSTA 2011)", "cgGeometric");
+			SootOption cg_Geometric_context_sensitive_analysis_from_ISSTA_2011_branch = new SootOption("Geometric context-sensitive analysis from ISSTA 2011", "cgGeometric_context_sensitive_analysis_from_ISSTA_2011");
 
-			subSectParent.addChild(cg_Geometric_branch);
+			subSectParent.addChild(cg_Geometric_context_sensitive_analysis_from_ISSTA_2011_branch);
 			
 			SootOption cg_cg_paddle_branch = new SootOption("Paddle", "cgcg_paddle");
 			subParent.addChild(cg_cg_paddle_branch);
@@ -10197,6 +10197,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		false),
 		
+		new OptionData("APK File",
+		"apk",
+		"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, .java or \n.jimple files only when unable to find a class in .apk files. ",
+		
+		false),
+		
 		};
 		
 										
@@ -13554,24 +13560,24 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 
 
-	private Composite cgGeometric(Composite parent) {
+	private Composite cgGeometric_context_sensitive_analysis_from_ISSTA_2011Create(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupcgGeometric = new Group(parent, SWT.NONE);
+		Group editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011 = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupcgGeometric.setLayout(layout);
+		editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011.setLayout(layout);
 	
-	 	editGroupcgGeometric.setText("Geometric, context-sensitive analysis (ISSTA 2011)");
+	 	editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011.setText("Geometric context-sensitive analysis from ISSTA 2011");
 	 	
-		editGroupcgGeometric.setData("id", "cgGeometric");
+		editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011.setData("id", "cgGeometric_context_sensitive_analysis_from_ISSTA_2011");
 		
-		String desccgGeometric = "";	
-		if (desccgGeometric.length() > 0) {
-			Label descLabelcgGeometric = new Label(editGroupcgGeometric, SWT.WRAP);
-			descLabelcgGeometric.setText(desccgGeometric);
+		String desccgGeometric_context_sensitive_analysis_from_ISSTA_2011 = "";	
+		if (desccgGeometric_context_sensitive_analysis_from_ISSTA_2011.length() > 0) {
+			Label descLabelcgGeometric_context_sensitive_analysis_from_ISSTA_2011 = new Label(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.WRAP);
+			descLabelcgGeometric_context_sensitive_analysis_from_ISSTA_2011.setText(desccgGeometric_context_sensitive_analysis_from_ISSTA_2011);
 		}
 		OptionData [] data;	
 		
@@ -13590,7 +13596,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_pta_widget(new BooleanOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Geometric, context-sensitive points-to analysis", "p", "cg.spark","geom-pta", "\n						 This switch enables/disables the geometric analysis. \n						 ", defaultBool)));
+		setcgcg_sparkgeom_pta_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Geometric, context-sensitive points-to analysis", "p", "cg.spark","geom-pta", "\n						 This switch enables/disables the geometric analysis. \n						 ", defaultBool)));
 		
 		
 		
@@ -13606,7 +13612,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Transform to context-insensitive result", "p", "cg.spark","geom-trans", "\n						 If your work only concern the context insensitive \npoints-to information, you can use this option to transform the \ncontext sensitive result to insensitive result. Or, sometimes \nyour code wants to directly access to the points-to vector other \nthan using the standard querying interface, you can use this \noption to guarantee the correct behavior (because we clear the \nSPARK points-to result when running the geom solver). After the \ntransformation, the context sensitive points-to result is \ncleared in order to save memory space for your other jobs. \n						 ", defaultBool)));
+		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Transform to context-insensitive result", "p", "cg.spark","geom-trans", "\n						 If your work only concern the context insensitive \npoints-to information, you can use this option to transform the \ncontext sensitive result to insensitive result. Or, sometimes \nyour code wants to directly access to the points-to vector other \nthan using the standard querying interface, you can use this \noption to guarantee the correct behavior (because we clear the \nSPARK points-to result when running the geom solver). After the \ntransformation, the context sensitive points-to result is \ncleared in order to save memory space for your other jobs. \n						 ", defaultBool)));
 		
 		
 		
@@ -13622,7 +13628,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p", "cg.spark","geom-blocking", "\n						 When this option is on, we perform the blocking \nstrategy to the recursive calls. This strategy significantly \nimproves the precision. The details are presented in our paper. \n						 ", defaultBool)));
+		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p", "cg.spark","geom-blocking", "\n						 When this option is on, we perform the blocking \nstrategy to the recursive calls. This strategy significantly \nimproves the precision. The details are presented in our paper. \n						 ", defaultBool)));
 		
 		
 		
@@ -13649,7 +13655,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		};
 		
 										
-		setcgcg_sparkgeom_encoding_widget(new MultiOptionWidget(editGroupcgGeometric, SWT.NONE, data, new OptionData("Encoding methodology used", "p", "cg.spark","geom-encoding", "\n						 This switch specifies the encoding methodology used \nin the analysis. 						 All possible options are: Geom, \nHeapIns, PtIns. The efficiency order 						 is (from slow to \nfast) Geom - HeapIns - PtIns, but the precision order is 						 \nthe reverse. 						 ")));
+		setcgcg_sparkgeom_encoding_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Encoding methodology used", "p", "cg.spark","geom-encoding", "\n						 This switch specifies the encoding methodology used \nin the analysis. 						 All possible options are: Geom, \nHeapIns, PtIns. The efficiency order 						 is (from slow to \nfast) Geom - HeapIns - PtIns, but the precision order is 						 \nthe reverse. 						 ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-encoding";
 		defKey = defKey.trim();
@@ -13679,7 +13685,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		};
 		
 										
-		setcgcg_sparkgeom_worklist_widget(new MultiOptionWidget(editGroupcgGeometric, SWT.NONE, data, new OptionData("Worklist type", "p", "cg.spark","geom-worklist", "\n						 Specifies the worklist used for selecting the next \npropagation pointer. All possible options are: PQ, FIFO. They \nstand for the priority queue (sorted by the last fire time and \ntopology order) and FIFO queue. 						 ")));
+		setcgcg_sparkgeom_worklist_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Worklist type", "p", "cg.spark","geom-worklist", "\n						 Specifies the worklist used for selecting the next \npropagation pointer. All possible options are: PQ, FIFO. They \nstand for the priority queue (sorted by the last fire time and \ntopology order) and FIFO queue. 						 ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-worklist";
 		defKey = defKey.trim();
@@ -13704,7 +13710,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Verbose dump file",  "p", "cg.spark","geom-dump-verbose", "\n						 If you want to persist the detailed execution \ninformation for future analysis, please provide a file name. \n						 ", defaultString)));
+		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verbose dump file",  "p", "cg.spark","geom-dump-verbose", "\n						 If you want to persist the detailed execution \ninformation for future analysis, please provide a file name. \n						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-verify-name";
@@ -13719,7 +13725,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Verification file",  "p", "cg.spark","geom-verify-name", "\n						 If you want to compare the precision of the points-to \nresults with other solvers (e.g. Paddle), you can use the \n'verify-file' to specify the list of methods (soot method \nsignature format) that are reachable by that solver. Then, in \nthe internal evaluations (see the switch geom-eval), we only \nconsider the methods that are present to both solvers. 						 ", defaultString)));
+		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verification file",  "p", "cg.spark","geom-verify-name", "\n						 If you want to compare the precision of the points-to \nresults with other solvers (e.g. Paddle), you can use the \n'verify-file' to specify the list of methods (soot method \nsignature format) that are reachable by that solver. Then, in \nthe internal evaluations (see the switch geom-eval), we only \nconsider the methods that are present to both solvers. 						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-eval";
@@ -13734,7 +13740,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p", "cg.spark","geom-eval", "\n						 We internally provide some precision evaluation \nmethodologies, and classify the evaluation strength into three \nlevels. If level is 0, we do nothing. If level is 1, we report \nthe basic information about the points-to result. If level is 2, \nwe perform the virtual callsite resolution, static cast safety \nand all alias pairs evaluations. 						 ", defaultString)));
+		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p", "cg.spark","geom-eval", "\n						 We internally provide some precision evaluation \nmethodologies, and classify the evaluation strength into three \nlevels. If level is 0, we do nothing. If level is 1, we report \nthe basic information about the points-to result. If level is 2, \nwe perform the virtual callsite resolution, static cast safety \nand all alias pairs evaluations. 						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-frac-base";
@@ -13749,7 +13755,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Fractional parameter",  "p", "cg.spark","geom-frac-base", "\n						 This option specifies the fractional parameter, which \nis used to manually tune the precision and performance \ntrade-off. The smaller the value, the better the performance but \nthe worse the precision. 						 ", defaultString)));
+		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Fractional parameter",  "p", "cg.spark","geom-frac-base", "\n						 This option specifies the fractional parameter, which \nis used to manually tune the precision and performance \ntrade-off. The smaller the value, the better the performance but \nthe worse the precision. 						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-runs";
@@ -13764,11 +13770,11 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_runs_widget(new StringOptionWidget(editGroupcgGeometric, SWT.NONE, new OptionData("Iterations",  "p", "cg.spark","geom-runs", "\n						 We can run multiple times of the geometric analysis \nto continuously improve the analysis precision. 						 ", defaultString)));
+		setcgcg_sparkgeom_runs_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Iterations",  "p", "cg.spark","geom-runs", "\n						 We can run multiple times of the geometric analysis \nto continuously improve the analysis precision. 						 ", defaultString)));
 		
 
 		
-		return editGroupcgGeometric;
+		return editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011;
 	}
 
 
