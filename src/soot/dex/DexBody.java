@@ -21,7 +21,6 @@ package soot.dex;
 
 import static soot.dex.instructions.InstructionFactory.fromInstruction;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,9 +42,7 @@ import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Debug.DebugInstructionIterator;
 
 import soot.Body;
-import soot.DoubleType;
 import soot.Local;
-import soot.LongType;
 import soot.Modifier;
 import soot.RefType;
 import soot.SootClass;
@@ -266,7 +263,7 @@ public class DexBody {
 
         List<Local> paramLocals = new LinkedList<Local>();       
         if (!isStatic) {
-            Local thisLocal = generateLocal(declaringClassType);
+            Local thisLocal = generateLocal(UnknownType.v());
             add(Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newThisRef(declaringClassType)));
             paramLocals.add(thisLocal);
         } 
