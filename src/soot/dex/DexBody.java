@@ -94,6 +94,8 @@ public class DexBody {
     private TryItem[] tries;
 
     private RefType declaringClassType;
+    
+    private static LocalSplitter splitter; 
 
     /**
      * @param code the codeitem that is contained in this body
@@ -292,7 +294,7 @@ public class DexBody {
         }
         if (tries != null)
             addTraps();
-        LocalSplitter.v().transform(jBody);
+        splitLocals();
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
         DexNullTransformer.v().transform(jBody);
@@ -302,6 +304,12 @@ public class DexBody {
 
         return jBody;
     }
+
+	private void splitLocals() {
+		if(splitter==null)
+        	splitter = new LocalSplitter(new DalvikThrowAnalysis());
+        splitter.transform(jBody);
+	}
 
     /**
      * Set a dangling instruction for this body.
