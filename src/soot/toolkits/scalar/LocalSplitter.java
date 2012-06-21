@@ -106,7 +106,7 @@ public class LocalSplitter extends BodyTransformer
                 ValueBox loBox = (ValueBox)s.getDefBoxes().get(0);
                 Value lo = loBox.getValue();
 
-                if(lo instanceof Local)
+                if(lo instanceof Local && !markedBoxes.contains(loBox))
                 {
                     LinkedList<Unit> defsToVisit = new LinkedList<Unit>();
                     LinkedList<ValueBox> boxesToVisit = new LinkedList<ValueBox>();
