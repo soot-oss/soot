@@ -27,7 +27,7 @@ import soot.options.Options;
 import soot.dex.DexResolver;
 
 /**
- * Responsible for resolving a single class from a dex source format.
+ * Responsible for resolving a single class from a dex source format. 
  */
 public class DexClassSource extends ClassSource {
     protected File path;

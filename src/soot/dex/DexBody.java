@@ -72,7 +72,7 @@ import soot.toolkits.scalar.LocalSplitter;
  * @author Michael Markert
  * @author Frank Hartmann
  */
-public class DexBody {
+public class DexBody  {
     private List<DexlibAbstractInstruction> instructions;
     // keeps track about the jimple locals that are associated with the dex registers
     private Local[] registerLocals;
