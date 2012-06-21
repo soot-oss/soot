@@ -31,6 +31,8 @@ package soot.toolkits.scalar;
 import soot.options.*;
 
 import soot.*;
+import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
@@ -56,9 +58,18 @@ import java.util.*;
  */
 public class LocalSplitter extends BodyTransformer
 {
-    public LocalSplitter( Singletons.Global g ) {}
-    public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
+    private final ThrowAnalysis throwAnalysis;
 
+	public LocalSplitter( Singletons.Global g ) {
+		throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+	}
+	
+	public LocalSplitter(ThrowAnalysis throwAnalysis) {
+		this.throwAnalysis = throwAnalysis;
+	}
+	
+    public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
+    
     protected void internalTransform(Body body, String phaseName, Map options)
     {
         Chain units = body.getUnits();
@@ -74,7 +85,7 @@ public class LocalSplitter extends BodyTransformer
 
         // Go through the definitions, building the webs
         {
-            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,Scene.v().getDefaultThrowAnalysis(),true);
+            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,throwAnalysis,true);
 
             LocalDefs localDefs;
             

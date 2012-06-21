@@ -44,6 +44,8 @@ import soot.shimple.PhiExpr;
  */
 public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
+	protected final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
+	
     // Cache the response to mightThrowImplicitly():
     private final ThrowableSet implicitThrowExceptions 
 	= ThrowableSet.Manager.v().VM_ERRORS
@@ -71,13 +73,23 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
      */
     public static UnitThrowAnalysis v() { return G.v().soot_toolkits_exceptions_UnitThrowAnalysis(); }
 
+	protected ThrowableSet defaultResult() {
+		return mgr.VM_ERRORS;
+	}
 
-    public ThrowableSet mightThrow(Unit u) {
-	UnitSwitch sw = new UnitSwitch();
+	protected UnitSwitch unitSwitch() {
+		return new UnitSwitch();
+	}
+
+	protected ValueSwitch valueSwitch() {
+		return new ValueSwitch();
+	}
+
+	public ThrowableSet mightThrow(Unit u) {
+	UnitSwitch sw = unitSwitch();
 	u.apply(sw);
 	return sw.getResult();
     }
-
 
     public ThrowableSet mightThrowImplicitly(ThrowInst t) {
 	return implicitThrowExceptions;
@@ -90,11 +102,10 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	
     
     ThrowableSet mightThrow(Value v) {
-	ValueSwitch sw = new ValueSwitch();
+	ValueSwitch sw = valueSwitch();
 	v.apply(sw);
 	return sw.getResult();
     }
-
 
     /**
      * Returns the set of types that might be thrown as a result of
@@ -119,10 +130,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     protected class UnitSwitch implements InstSwitch, StmtSwitch {
 
-	private final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
-
 	// Asynchronous errors are always possible:
-	private ThrowableSet result = mgr.VM_ERRORS;
+	private ThrowableSet result = defaultResult();
 	
 	ThrowableSet getResult() {
 	    return result;
@@ -443,12 +452,12 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	}
 
 	public void caseReturnStmt(ReturnStmt s) {
-	    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
-	    result = result.add(mightThrow(s.getOp()));
+//	    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
+//	    result = result.add(mightThrow(s.getOp()));
 	}
 
 	public void caseReturnVoidStmt(ReturnVoidStmt s) {
-	    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
+//	    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
 	}
 
 	public void caseTableSwitchStmt(TableSwitchStmt s) {
@@ -467,12 +476,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     protected class ValueSwitch implements GrimpValueSwitch, ShimpleValueSwitch {
 
-	private final ThrowableSet.Manager mgr = 
-	    ThrowableSet.Manager.v();
-
 	// Asynchronous errors are always possible:
-	private ThrowableSet result = mgr.VM_ERRORS;
-	
+	private ThrowableSet result = defaultResult();
+
 	ThrowableSet getResult() {
 	    return result;
 	}
@@ -656,6 +662,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	    }
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void caseNewExpr(NewExpr expr) {
 	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	    for (Iterator i = expr.getUseBoxes().iterator(); i.hasNext(); ) {
@@ -709,6 +716,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	    caseStaticInvokeExpr(e);
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void casePhiExpr(PhiExpr e) {
 	    for (Iterator i = e.getUseBoxes().iterator(); i.hasNext(); ) {
 		ValueBox box = (ValueBox) i.next();
