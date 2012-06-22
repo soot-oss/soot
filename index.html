@@ -11,32 +11,33 @@
 <table border="0" cellpadding="0" cellspacing="3">
   <tbody>
     <tr>
-<!--LeftHandTable--> <td rowspace="1" align="left" valign="top"
- width="160">
-      <p><font face="helvetica,arial" size="+1"><b>Soot Home</b></font>
+<!--LeftHandTable--> <td rowspace="1" valign="top" width="160"
+ align="left">
+      <p><font size="+1" face="helvetica,arial"><b>Soot Home</b></font>
       </p>
-      <p><a href="#introduction"><font face="helvetica,arial" size="+0">Introduction</font></a><br>
-      <a href="#obtaining"><font face="helvetica,arial" size="+0">Obtaining
+      <p><a href="#introduction"><font size="+0" face="helvetica,arial">Introduction</font></a><br>
+      <a href="#obtaining"><font size="+0" face="helvetica,arial">Obtaining
 Soot</font></a><br>
-      <a href="#resources"><font face="helvetica,arial" size="+0">Resources</font></a><br>
-      <a href="#credits"><font face="helvetica,arial" size="+0">Credits</font></a><br>
-      <a href="#users"><font face="helvetica,arial" size="+0">Soot Users</font></a><br>
+      <a href="#resources"><font size="+0" face="helvetica,arial">Resources</font></a><br>
+      <a href="#credits"><font size="+0" face="helvetica,arial">Credits</font></a><br>
+      <a href="#users"><font size="+0" face="helvetica,arial">Soot Users</font></a><br>
       </p>
       <p><a href="http://www.sable.mcgill.ca">Sable Home</a> </p>
       </td>
-<!--ActualContents--> <td align="left" valign="top">
-      <center><a name="top"><b><font face="helvetica,arial" size="+2">Soot:
+<!--ActualContents--> <td valign="top" align="left">
+      <center><a name="top"><b><font size="+2" face="helvetica,arial">Soot:
 a
 Java
 Optimization
 Framework</font></b></a></center>
       <br>
-      <center> <a name="top"><b><font face="helvetica,arial" size="+1">Latest
+      <center> <a name="top"><b><font size="+1" face="helvetica,arial">Latest
 version:
 2.5.0
 (January
 22nd,
 2012)</font></b></a></center>
+      <br>
       <br>
       <br>
 Need help using Soot? See the Soot <a href="tutorial/index.html">
@@ -48,9 +49,9 @@ Or have a loot at Arni Einarsson's and Janus Dam Nielsen's marvelous <a
       <table width="100%">
         <tbody>
           <tr>
-            <td align="left" width="97%"><b><font face="helvetica,arial"
- size="+1">Introduction</font></b></td>
-            <td align="left" width="3%"><font size="-2"><a href="#top">top</a></font></td>
+            <td width="97%" align="left"><b><font size="+1"
+ face="helvetica,arial">Introduction</font></b></td>
+            <td width="3%" align="left"><font size="-2"><a href="#top">top</a></font></td>
           </tr>
         </tbody>
       </table>
@@ -95,6 +96,8 @@ We
 have
 a
 separate
+
+
         <a href="eclipse/index.html">web page with
 instructions for
 installing and using the plugin.</a> <br>
@@ -102,22 +105,16 @@ installing and using the plugin.</a> <br>
 environment. Instructions for setting up Soot within Eclipse can be
 found here: <a href="soot_in_eclipse_howto.html">Setting Up Soot in
 Eclipse</a>.</p>
-        <p> If you want to develop with Soot in Eclipse and use SVN
-here is another set of instructios <a
- href="howto_soot_in_eclipse_with_svn.htm">Setting Up Soot in
-Eclipse using SVN</a>.<br>
-        </p>
-        <p>This is the plugins's update site:<br>
-        </p>
+This is the plugins's update site:<br>
         <pre style="font-weight: bold;">http://www.sable.mcgill.ca/soot/eclipse/updates/</pre>
       </blockquote>
       <a name="obtaining"> </a>
       <table width="100%">
         <tbody>
           <tr>
-            <td align="left" width="97%"><b><font face="helvetica,arial"
- size="+1">Obtaining Soot</font></b></td>
-            <td align="left" width="3%"><font size="-2"><a href="#top">top</a></font></td>
+            <td width="97%" align="left"><b><font size="+1"
+ face="helvetica,arial">Obtaining Soot</font></b></td>
+            <td width="3%" align="left"><font size="-2"><a href="#top">top</a></font></td>
           </tr>
         </tbody>
       </table>
@@ -140,50 +137,36 @@ Soot now has virtually complete support for JDK 1.5.
       </blockquote>
       <blockquote>
         <h4>Repository Access:</h4>
-        <p>We are using <a href="http://subversion.tigris.org/">Subversion</a>
-for
-revision control.</p>
-        <p>With a Subversion client, you can obtain a copy of the
-development version of Soot, as well as any old versions. To obtain the
-latest development version of Soot, use one of the following commands:<br>
-        <tt>svn checkout https://svn.sable.mcgill.ca/soot/soot/trunk
-soot-dev</tt><br>
-        <tt>svn export https://svn.sable.mcgill.ca/soot/soot/trunk
-soot-dev</tt></p>
-        <p>The <tt>checkout</tt> version records additional
-information required
-to update your checked out version of Soot with the repository at a
-later time (with the <tt>svn update</tt> command). The <tt>export</tt>
-version provides a "clean" copy of only the Soot files themselves.</p>
-        <p>In order to compile Soot from source, you will also need a
+        <p>We are using Git on Github for version control.</p>
+        <a href="https://github.com/Sable/soot">Please check the
+instructions on Github to see how to check out Soot.</a><br>
+        <br>
+In order to compile Soot from source, you will also need a
 copy of
 the Jasmin and Polyglot classes, available from the <a
- href="soot_download.html">download page</a>.</p>
+ href="soot_download.html">download page</a>.
         <p>From time to time we update Jasmin. If something Jasmin
-related seems broken you may need to get the latest Jasmin from the
-subversion repository:<br>
-        <tt>svn checkout https://svn.sable.mcgill.ca/soot/jasmin/trunk
-jasmin-dev</tt><br>
-        <tt>svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk
-jasmin-dev</tt></p>
+related seems broken you may need to get the latest Jasmin from the <a
+ href="https://github.com/Sable/jasmin">Jasmin Github repository</a>.</p>
         <p>You can also browse our latest version of the Soot
-repository, as well as a ViewCVS history, using
-just a web browser. For further instructions, please see <a
- href="http://svn.sable.mcgill.ca/">http://svn.sable.mcgill.ca/</a>.</p>
+repository <a href="https://github.com/Sable/soot/commits/master">on
+Github as well</a>.</p>
       </blockquote>
       <blockquote>
         <h4>Nightly Builds:</h4>
-      <p>With release 2.2.1 we started to build Soot and Jasmin every
+        <p>With release 2.2.1 we started to build Soot and Jasmin every
 night. To get the latest nightly build see: <a
  href="http://vandyk.st.informatik.tu-darmstadt.de/abc/">Nightly Builds</a>.
-</blockquote>
+
+        </p>
+      </blockquote>
 <!--Documentation--> <a name="resources"> </a>
       <table width="100%">
         <tbody>
           <tr>
-            <td align="left" width="97%"><b><font face="helvetica,arial"
- size="+1">Resources</font></b></td>
-            <td align="left" width="3%"><font size="-2"><a href="#top">top</a></font></td>
+            <td width="97%" align="left"><b><font size="+1"
+ face="helvetica,arial">Resources</font></b></td>
+            <td width="3%" align="left"><font size="-2"><a href="#top">top</a></font></td>
           </tr>
         </tbody>
       </table>
@@ -233,9 +216,9 @@ Bugzilla</a>. We encourage you to add any Soot bugs there. </li>
       <table width="100%">
         <tbody>
           <tr>
-            <td align="left" width="97%"><b><font face="helvetica,arial"
- size="+1">Credits</font></b></td>
-            <td align="left" width="3%"><font size="-2"><a href="#top">top</a></font></td>
+            <td width="97%" align="left"><b><font size="+1"
+ face="helvetica,arial">Credits</font></b></td>
+            <td width="3%" align="left"><font size="-2"><a href="#top">top</a></font></td>
           </tr>
         </tbody>
       </table>
@@ -245,9 +228,9 @@ list of contributors and acknowledgements. </blockquote>
       <table width="100%">
         <tbody>
           <tr>
-            <td align="left" width="97%"><b><font face="helvetica,arial"
- size="+1">Soot Users</font></b></td>
-            <td align="left" width="3%"><font size="-2"><a href="#top">top</a></font></td>
+            <td width="97%" align="left"><b><font size="+1"
+ face="helvetica,arial">Soot Users</font></b></td>
+            <td width="3%" align="left"><font size="-2"><a href="#top">top</a></font></td>
           </tr>
         </tbody>
       </table>
