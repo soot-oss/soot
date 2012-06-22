@@ -185,6 +185,10 @@ public class AntTask extends MatchingTask {
             return process_dir.createPath();
         }
   
+        public void setoaat(boolean arg) {
+            if(arg) addArg("-oaat");
+        }
+  
         public void setast_metrics(boolean arg) {
             if(arg) addArg("-ast-metrics");
         }

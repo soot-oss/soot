@@ -2005,6 +2005,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsprepend_classpath_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsoaat_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsast_metrics_widget().getButton().getSelection();
 		
 		
@@ -6467,6 +6477,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsprepend_classpath_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsoaat_widget;
+	
+	private void setInput_Optionsoaat_widget(BooleanOptionWidget widget) {
+		Input_Optionsoaat_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsoaat_widget() {
+		return Input_Optionsoaat_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsast_metrics_widget;
 	
 	private void setInput_Optionsast_metrics_widget(BooleanOptionWidget widget) {
@@ -10072,6 +10092,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp", "\nInstead of replacing the default soot classpath with the \nclasspath given on the command line, prepent it with that \nclasspath. The default classpath holds whatever is set in the \nCLASSPATH environment variable, followed by rt.jar (resolved \nthrough the JAVA-UNDERSCORE-HOME environment variable). If \nwhole-program mode is enabled, jce.jar is also appended in the \nend. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"oaat";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption low. If \nenabled, the -process-dir option must be used as well. From the \nprocess-dir, Soot will process one class at a time. Only body \npacks are run, no whole-program packs. 			 ", defaultBool)));
 		
 		
 		

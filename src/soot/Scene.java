@@ -1069,12 +1069,18 @@ public class Scene  //extends AbstractHost
 
         loadDynamicClasses();
 
-        for( Iterator<String> pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
-
-            final String path = (String) pathIt.next();
-            for (String cl : SourceLocator.v().getClassesUnder(path)) {
-                loadClassAndSupport(cl).setApplicationClass();
-            }
+        if(Options.v().oaat()) {
+        	if(Options.v().process_dir().isEmpty()) {
+        		throw new IllegalArgumentException("If switch -oaat is used, then also -process-dir must be given.");
+        	}
+        } else {
+	        for( Iterator<String> pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
+	
+	            final String path = (String) pathIt.next();
+	            for (String cl : SourceLocator.v().getClassesUnder(path)) {
+	                loadClassAndSupport(cl).setApplicationClass();
+	            }
+	        }
         }
 
         prepareClasses();

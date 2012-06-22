@@ -310,6 +310,17 @@ instance, then Soot assumes <tt>MyClass</tt> is in package
 </long_desc>
 		</listopt>
 		<boolopt>
+			<name>One at a time</name>
+			<alias>oaat</alias>
+			<short_desc>From the process-dir, processes one class at a time.</short_desc>
+			<long_desc>
+This option is meant to keep memory consumption low. If enabled, the
+-process-dir option must be used as well. From the process-dir, Soot
+will process one class at a time. Only body packs are run,
+no whole-program packs. 			
+</long_desc>
+		</boolopt>
+		<boolopt>
 			<name>Compute AST Metrics</name>
 			<alias>ast-metrics</alias>
 			<short_desc>Compute AST Metrics if performing java to jimple</short_desc>

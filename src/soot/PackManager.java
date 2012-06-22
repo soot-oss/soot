@@ -328,7 +328,38 @@ public class PackManager {
     }
 
     public void runPacks() {
-        if (Options.v().src_prec() == Options.src_prec_class && Options.v().keep_line_number()){
+    	if(Options.v().oaat())
+    		runPacksForOneClassAtATime();
+    	else
+    		runPacksNormally();
+    }
+
+	private void runPacksForOneClassAtATime() {
+		if (Options.v().src_prec() == Options.src_prec_class && Options.v().keep_line_number()){
+            LineNumberAdder lineNumAdder = LineNumberAdder.v();
+            lineNumAdder.internalTransform("", null);
+        }
+        
+		setupJAR();
+        for( String path: (Collection<String>)Options.v().process_dir()) {
+            for (String cl : SourceLocator.v().getClassesUnder(path)) {            	
+                SootClass clazz = Scene.v().forceResolve(cl, SootClass.BODIES);
+				clazz.setApplicationClass();
+				//run packs
+				runBodyPacks(clazz);
+				//generate output
+				writeClass(clazz);
+				releaseBodies(clazz);
+				Scene.v().removeClass(clazz);
+            }
+        }
+        tearDownJAR();
+		
+        handleInnerClasses();
+    }
+
+	private void runPacksNormally() {
+		if (Options.v().src_prec() == Options.src_prec_class && Options.v().keep_line_number()){
             LineNumberAdder lineNumAdder = LineNumberAdder.v();
             lineNumAdder.internalTransform("", null);
         }
@@ -357,7 +388,7 @@ public class PackManager {
         
         runBodyPacks();
         handleInnerClasses();
-    }
+	}
     
     public void coffiMetrics() {
       int tV = 0, tE = 0, hM = 0;
@@ -383,7 +414,23 @@ public class PackManager {
 
     private ZipOutputStream jarFile = null;
     public void writeOutput() {
-        if( Options.v().output_jar() ) {
+        setupJAR();
+        if(Options.v().verbose())
+            PhaseDumper.v().dumpBefore("output");
+        if( Options.v().output_format() == Options.output_format_dava ) {
+            postProcessDAVA();
+        } else {
+            writeOutput( reachableClasses() );
+            tearDownJAR();
+        }
+        postProcessXML( reachableClasses() );
+        releaseBodies( reachableClasses() );
+        if(Options.v().verbose())
+            PhaseDumper.v().dumpAfter("output");
+    }
+
+	private void setupJAR() {
+		if( Options.v().output_jar() ) {
             String outFileName = SourceLocator.v().getOutputDir();
             try {
                 jarFile = new ZipOutputStream(new FileOutputStream(outFileName));
@@ -393,18 +440,7 @@ public class PackManager {
         } else {
             jarFile = null;
         }
-        if(Options.v().verbose())
-            PhaseDumper.v().dumpBefore("output");
-            if( Options.v().output_format() == Options.output_format_dava ) {
-                postProcessDAVA();
-            } else {
-                writeOutput( reachableClasses() );
-            }
-            postProcessXML( reachableClasses() );
-            releaseBodies( reachableClasses() );
-        if(Options.v().verbose())
-            PhaseDumper.v().dumpAfter("output");
-    }
+	}
 
     private void runWholeProgramPacks() {
         if (Options.v().whole_shimple()) {
@@ -475,12 +511,15 @@ public class PackManager {
             SootClass cl = (SootClass) classes.next();
             writeClass( cl );
         }
-        try {
+    }
+
+	private void tearDownJAR() {
+		try {
             if(jarFile != null) jarFile.close();
         } catch( IOException e ) {
             throw new CompilationDeathException( "Error closing output jar: "+e );
         }
-    }
+	}
 
     private void releaseBodies( Iterator classes ) {
         while( classes.hasNext() ) {

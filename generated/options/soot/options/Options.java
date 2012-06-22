@@ -210,6 +210,11 @@ public class Options extends OptionsBase {
             }
   
             else if( false 
+            || option.equals( "oaat" )
+            )
+                oaat = true;
+  
+            else if( false 
             || option.equals( "ast-metrics" )
             )
                 ast_metrics = true;
@@ -988,6 +993,10 @@ public class Options extends OptionsBase {
     }
     public void set_process_dir( List setting ) { process_dir = setting; }
     private List process_dir = null;
+    public boolean oaat() { return oaat; }
+    private boolean oaat = false;
+    public void set_oaat( boolean setting ) { oaat = setting; }
+  
     public boolean ast_metrics() { return ast_metrics; }
     private boolean ast_metrics = false;
     public void set_ast_metrics( boolean setting ) { ast_metrics = setting; }
@@ -1176,6 +1185,7 @@ public class Options extends OptionsBase {
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
 +padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
++padOpt(" -oaat", "From the process-dir, processes one class at a time." )
 +padOpt(" -ast-metrics", "Compute AST Metrics if performing java to jimple" )
 +padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )
 +padVal(" c class (default)", "Favour class files as Soot source" )
