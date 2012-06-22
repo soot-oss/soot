@@ -117,12 +117,7 @@ public class DexBody  {
         numRegisters = code.getRegisterCount();
         numParameters = parameterTypes == null ? 0 : parameterTypes.size();
         isStatic = Modifier.isStatic(code.getParent().accessFlags);
-        // if method is non-static the instance will be passed additionally        
-        numLocals = numRegisters - numParameters;
-        if (! isStatic) {
-            numParameters++;
-            numLocals--;
-        }
+        computeParameterAndLocalCounts(paramTypes);
 
         instructions = new ArrayList<DexlibAbstractInstruction>();
         instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
@@ -151,6 +146,25 @@ public class DexBody  {
                 });
         }
     }
+
+    /* numLocals will be the number of local variables
+     * numParameters will be the number of parameters, including "this", if applicable
+     */
+	private void computeParameterAndLocalCounts(List<TypeIdItem> paramTypes) {
+		numLocals = numRegisters - numParameters;
+        if (! isStatic) {
+            numParameters++;
+            numLocals--;
+        }
+        //for each wide parameter, this parameter takes up two registers;
+        //hence update local count accordingly
+        if(paramTypes!=null) {
+	        for(TypeIdItem t: paramTypes) {
+	        	if(DexType.isWide(t))
+	        		numLocals--;
+	        }
+        }
+	}
 
     /**
      * Return the types that are used in this body.
