@@ -153,7 +153,7 @@ public class FastHierarchy
 
     /** For an interface parent (MUST be an interface), returns set of all
      * implementers of it but NOT their subclasses. */
-    public Set getAllImplementersOfInterface( SootClass parent ) {
+    public Collection getAllImplementersOfInterface( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
         if( !interfaceToAllImplementers.containsKey( parent ) ) {
             for( Iterator subinterfaceIt = getAllSubinterfaces( parent ).iterator(); subinterfaceIt.hasNext(); ) {
@@ -170,7 +170,7 @@ public class FastHierarchy
 
     /** For an interface parent (MUST be an interface), returns set of all
      * subinterfaces. */
-    protected Set getAllSubinterfaces( SootClass parent ) {
+    protected Collection getAllSubinterfaces( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
         if( !interfaceToAllSubinterfaces.containsKey( parent ) ) {
             interfaceToAllSubinterfaces.put( parent, parent );
@@ -291,7 +291,7 @@ public class FastHierarchy
                 return getAllSubinterfaces( parent ).contains( child );
             }
         } else {
-            Set impl = getAllImplementersOfInterface( parent );
+        	Collection impl = getAllImplementersOfInterface( parent );
             for( Iterator it = impl.iterator(); it.hasNext(); ) {
                 parentInterval = classToInterval.get( it.next() );
                 if( parentInterval != null && parentInterval.isSubrange( childInterval ) ) {
