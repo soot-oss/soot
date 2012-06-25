@@ -89,6 +89,7 @@ public class DexBody  {
     private List<Type> parameterTypes;
     private Local[] parameters;
     private boolean isStatic;
+    private String methodString = "";
 
     private JimpleBody jBody;
     private TryItem[] tries;
@@ -104,6 +105,7 @@ public class DexBody  {
     public DexBody(CodeItem code, RefType declaringClassType) {
         this.declaringClassType = declaringClassType;
         tries = code.getTries();
+        methodString = code.getParent().method.toString();
         ProtoIdItem prototype = code.getParent().method.getPrototype();
         List<TypeIdItem> paramTypes = TypeListItem.getTypes(prototype.getParameters());
         if (paramTypes != null) {
@@ -261,8 +263,18 @@ public class DexBody  {
      */
     public DexlibAbstractInstruction instructionAtAddress(int address) {
         DexlibAbstractInstruction i = instructionAtAddress.get(address);
-        if (i == null)
-            throw new RuntimeException("Address " + address + "not part of method.");
+        if (i == null) {
+            // catch addresses can be in the middlde of last instruction. Ex. in com.letang.ldzja.en.apk:
+            //
+            //          042c46: 7020 2a15 0100                         |008f: invoke-direct {v1, v0}, Ljavax/mi...
+            //          042c4c: 2701                                   |0092: throw v1
+            //          catches       : 4                                                                                                                                                                        
+            //              <any> -> 0x0065 
+            //            0x0069 - 0x0093
+            if ((i = instructionAtAddress.get(address - 1)) == null) { // Alex: should also check for -2 -3 and -4 ?
+              throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1) not part of method '"+ this.methodString +"'");
+            }
+        }
         return i;
     }
 
