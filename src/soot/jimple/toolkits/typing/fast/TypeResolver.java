@@ -403,7 +403,6 @@ public class TypeResolver
 				
 				Type told = tg.get(v);
 				
-				boolean keep = false;
 				Collection<Type> eval = ef.eval(tg, rhs, stmt);
 				
 				for ( Type t_ : eval )
@@ -417,7 +416,6 @@ public class TypeResolver
 						if ( !(t_ instanceof RefType
 							|| t_ instanceof ArrayType) )
 						{
-							keep = true;
 							continue;
 						}
 							
@@ -427,9 +425,7 @@ public class TypeResolver
 					Collection<Type> lcas = h.lcas(told, t_);
 				
 					for ( Type t : lcas )
-						if ( typesEqual(t, told) )
-							keep = true;
-						else
+						if ( ! typesEqual(t, told) )
 						{
 							Typing tg_;
 							QueuedSet<DefinitionStmt> wl_;
@@ -437,7 +433,6 @@ public class TypeResolver
 							{
 								tg_ = tg;
 								wl_ = wl;
-								keep = true;
 							}
 							else
 							{
@@ -450,11 +445,6 @@ public class TypeResolver
 							wl_.addLast(this.depends.get(v));
 						}
 				}//end for
-				if ( !keep )
-				{
-					sigma.remove();
-					worklists.remove(tg);
-				}
 			}
 		}
 		
