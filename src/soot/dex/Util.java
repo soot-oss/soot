@@ -21,10 +21,18 @@ package soot.dex;
 
 import java.util.Arrays;
 
+import soot.ArrayType;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
 import soot.RefType;
+import soot.ShortType;
 import soot.Type;
+import soot.VoidType;
 
 public class Util {
     /**
@@ -35,11 +43,109 @@ public class Util {
      */
     public static String dottedClassName(String typeDescriptor) {
         int endpos = typeDescriptor.indexOf(';');
-        if (!isByteCodeClassName(typeDescriptor))
-            throw new IllegalArgumentException("typeDescriptor is not a class typedescriptor");
-
+        if (!isByteCodeClassName(typeDescriptor)) {
+          // typeDescriptor may not be a class but something like "[[[[[[[[J"
+          String t = typeDescriptor;
+          int idx = 0;
+          while (idx < t.length() && t.charAt(idx) == '[') {
+            idx++;
+          }
+          String c = t.substring(idx);
+          if (c.length() == 1 && (c.startsWith("I") ||
+              c.startsWith("B") ||
+              c.startsWith("C") ||
+              c.startsWith("S") ||
+              c.startsWith("J") ||
+              c.startsWith("D") ||
+              c.startsWith("F") || 
+              c.startsWith("Z")) ) {
+            return getType (t).toString();
+          }
+            throw new IllegalArgumentException("typeDescriptor is not a class typedescriptor: '"+ typeDescriptor +"'");
+        }
         String className = typeDescriptor.substring(typeDescriptor.indexOf('L') + 1, endpos);
         return className.replace('/', '.');
+    }
+    
+    public static Type getType(String type) {
+      int idx = 0;
+      int arraySize = 0;
+      Type returnType = null;
+      boolean notFound = true;
+      while( idx < type.length() && notFound) {
+        switch( type.charAt( idx ) ) {
+          case '[':
+            while (idx < type.length() && type.charAt(idx) == '[') {
+              arraySize++;
+              idx++;
+            }
+            continue;
+            //break;
+
+          case 'L':
+            String objectName = type.replaceAll("^[^L]*L", "").replaceAll(";$", "");
+            returnType = RefType.v (objectName.replace("/","."));
+            notFound = false;
+            break;
+
+          case 'J':
+            returnType = LongType.v();
+            notFound = false;
+            break;
+
+          case 'S':
+            returnType = ShortType.v();
+            notFound = false;
+            break;
+
+          case 'D':
+            returnType = DoubleType.v();
+            notFound = false;
+            break;
+
+          case 'I':
+            returnType = IntType.v();
+            notFound = false;
+            break;
+
+          case 'F':
+            returnType = FloatType.v();
+            notFound = false;
+            break;
+
+          case 'B':
+            returnType = ByteType.v();
+            notFound = false;
+            break;
+
+          case 'C':
+            returnType = CharType.v();
+            notFound = false;
+            break;
+
+          case 'V':
+            returnType = VoidType.v();
+            notFound = false;
+            break;
+
+          case 'Z':
+            returnType = BooleanType.v();
+            notFound = false;
+            break;
+
+          default:
+            System.out.println("unknown type: '"+ type +"'");
+            Thread.dumpStack();
+            System.exit(-1);
+            break;
+        }
+        idx++;
+      }
+      if (arraySize > 0) {
+        returnType = ArrayType.v(returnType, arraySize);
+      }
+      System.out.println("casttype i:"+ returnType);
+      return returnType;
     }
 
     /**
