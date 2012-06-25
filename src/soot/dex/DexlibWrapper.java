@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.jf.dexlib.DexFile;
 import org.jf.dexlib.ClassDefItem;
+import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 
 import soot.Scene;
@@ -74,8 +75,11 @@ public class DexlibWrapper {
 					Type st = dt.toSoot();
 					System.out.println("Type: "+ t +" soot type:"+ st);
 					if (!Scene.v().containsClass(st.toString())) {
-						SootResolver.v().resolveClass(st.toString(), SootClass.SIGNATURES); // useless?
+						SootResolver.v().makeClassRef(st.toString());
 					}
+				}
+				for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
+				  System.out.println("String: "+ i);
 				}
 
     }
