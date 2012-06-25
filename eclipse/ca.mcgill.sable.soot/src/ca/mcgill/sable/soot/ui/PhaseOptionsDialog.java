@@ -1866,6 +1866,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		String nextListToken;
 	
 		
+		boolRes = getGeneral_Optionsaf_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsaf_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		
 		
@@ -6335,6 +6345,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		
+	private BooleanOptionWidget General_Optionsaf_widget;
+	
+	private void setGeneral_Optionsaf_widget(BooleanOptionWidget widget) {
+		General_Optionsaf_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsaf_widget() {
+		return General_Optionsaf_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -9839,6 +9859,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		OptionData [] data;	
 		
+		
+		
+		
+		defKey = ""+" "+""+" "+"af";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsaf_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("asm-front", "", "","af", "\n", defaultBool)));
 		
 		
 		

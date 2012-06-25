@@ -102,6 +102,11 @@ packages in the Java runtime.</p>
 	<section>
 		<name>General Options</name>
 		<boolopt>
+		<name>asm-front</name>
+		<alias>af</alias>
+		<short_desc>Use the asm front end.</short_desc>
+		</boolopt>
+		<boolopt>
 			<name>Help</name>
 			<alias>h</alias>
 			<alias>help</alias>
