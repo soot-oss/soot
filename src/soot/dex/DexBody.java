@@ -62,6 +62,8 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 
@@ -244,12 +246,13 @@ public class DexBody  {
      * @param num the register number
      */
     public Local getRegisterLocal(int num) {
+      System.out.println ("[getRegisterLocal] target num : "+ num);
+      System.out.println ("[getRegisterLocal] numLocals  : "+ numLocals);
         if (num >= numLocals) {
             int parameterNumber = num - numLocals;
-
+            System.out.println ("[getRegisterLocal] parameters : "+ parameterNumber);
             if (parameterNumber < parameters.length)
                 return parameters[parameterNumber];
-
             throw new RuntimeException("This method has " + numParameters + " parameters but the code tried to access parameter " + parameterNumber);
         }
         return registerLocals[num];
@@ -271,8 +274,12 @@ public class DexBody  {
             //          catches       : 4                                                                                                                                                                        
             //              <any> -> 0x0065 
             //            0x0069 - 0x0093
-            if ((i = instructionAtAddress.get(address - 1)) == null) { // Alex: should also check for -2 -3 and -4 ?
-              throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1) not part of method '"+ this.methodString +"'");
+            if ((i = instructionAtAddress.get(address - 1)) == null) {
+              if ((i = instructionAtAddress.get(address - 2)) == null) {
+                if ((i = instructionAtAddress.get(address - 3)) == null) {
+                  throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1) not part of method '"+ this.methodString +"'");
+                }
+              }
             }
         }
         return i;
@@ -289,6 +296,8 @@ public class DexBody  {
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();
 
+        System.out.println("\n[jimplify] start for: "+ methodString);
+        
         List<Local> paramLocals = new LinkedList<Local>();       
         if (!isStatic) {
             Local thisLocal = generateLocal(UnknownType.v());
@@ -320,7 +329,13 @@ public class DexBody  {
         }
         if (tries != null)
             addTraps();
+        
+
+        
         splitLocals();
+        
+        System.out.println((Body)jBody);
+        
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
         DexNullTransformer.v().transform(jBody);
@@ -384,8 +399,17 @@ public class DexBody  {
     private void addTraps() {
         for (TryItem tryItem : tries) {
             int startAddress = tryItem.getStartCodeAddress();
+            System.out.println(" start : 0x"+ Integer.toHexString(startAddress));
+            int length = tryItem.getTryLength();
+            System.out.println(" length: 0x"+ Integer.toHexString(length));
+            System.out.println(" end   : 0x"+ Integer.toHexString(startAddress + length));
             Unit beginStmt = instructionAtAddress(startAddress).getBeginUnit();
-            Unit endStmt =  instructionAtAddress(startAddress + tryItem.getTryLength()).getEndUnit();
+            // (startAddress + length) typically points to the first byte of the first instruction after the try block
+            // except if there is no instruction after the try block in which case it points to the last byte of the last
+            // instruction of the try block. Removing 1 from (startAddress + length) always points to "somewhere" in
+            // the last instruction of the try block since the smallest instruction is on two bytes (nop = 0x0000).
+            Unit endStmt =  instructionAtAddress(startAddress + tryItem.getTryLength() - 1).getBeginUnit(); 
+
             EncodedCatchHandler h = tryItem.encodedCatchHandler;
 
             for (EncodedTypeAddrPair handler: h.handlers) {
