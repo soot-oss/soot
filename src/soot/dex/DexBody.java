@@ -36,6 +36,7 @@ import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
 import org.jf.dexlib.DebugInfoItem;
 import org.jf.dexlib.ProtoIdItem;
+import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
@@ -44,6 +45,7 @@ import org.jf.dexlib.Debug.DebugInstructionIterator;
 import soot.Body;
 import soot.Local;
 import soot.Modifier;
+import soot.PackManager;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
@@ -87,6 +89,7 @@ public class DexBody  {
 
     private int numRegisters;
     private int numParameters;
+    private int numParameterRegisters;
     private int numLocals;
     private List<Type> parameterTypes;
     private Local[] parameters;
@@ -105,6 +108,9 @@ public class DexBody  {
      * @param method the method that is associated with this body
      */
     public DexBody(CodeItem code, RefType declaringClassType) {
+        
+        
+        
         this.declaringClassType = declaringClassType;
         tries = code.getTries();
         methodString = code.getParent().method.toString();
@@ -120,6 +126,7 @@ public class DexBody  {
 
         numRegisters = code.getRegisterCount();
         numParameters = parameterTypes == null ? 0 : parameterTypes.size();
+        numParameterRegisters = prototype.getParameterRegisterCount();
         isStatic = Modifier.isStatic(code.getParent().accessFlags);
         computeParameterAndLocalCounts(paramTypes);
 
@@ -151,23 +158,15 @@ public class DexBody  {
         }
     }
 
-    /* numLocals will be the number of local variables
+    /* numLocals will be the number of local variables (= the number of registers)
      * numParameters will be the number of parameters, including "this", if applicable
      */
 	private void computeParameterAndLocalCounts(List<TypeIdItem> paramTypes) {
-		numLocals = numRegisters - numParameters;
+
         if (! isStatic) {
             numParameters++;
-            numLocals--;
         }
-        //for each wide parameter, this parameter takes up two registers;
-        //hence update local count accordingly
-        if(paramTypes!=null) {
-	        for(TypeIdItem t: paramTypes) {
-//	        	if(DexType.isWide(t))
-//	        		numLocals--;
-	        }
-        }
+        numLocals = numRegisters;
 	}
 
     /**
@@ -246,20 +245,12 @@ public class DexBody  {
      * @param num the register number
      */
     public Local getRegisterLocal(int num) {
-      System.out.println ("[getRegisterLocal] target num : "+ num);
-      System.out.println ("[getRegisterLocal] numLocals  : "+ numLocals);
-        if (num >= numLocals) {
-            int parameterNumber = num - numLocals;
-            if (parameterNumber < parameters.length)
-                return parameters[parameterNumber];
-            throw new RuntimeException("This method has " + numParameters + " parameters but the code tried to access parameter " + parameterNumber);
-        }
         return registerLocals[num];
     }
 
     /**
      * Return the instruction that is present at the byte code address.
-     *
+     * 
      * @param address the byte code address.
      * @throws RuntimeException if address is not part of this body.
      */
@@ -299,22 +290,38 @@ public class DexBody  {
         
         List<Local> paramLocals = new LinkedList<Local>();       
         if (!isStatic) {
-            Local thisLocal = generateLocal(UnknownType.v());
+            int thisRegister = numRegisters - numParameterRegisters - 1;
+            
+            Local thisLocal = Jimple.v().newLocal("$u"+ thisRegister, UnknownType.v()); //generateLocal(UnknownType.v());
+            jBody.getLocals().add(thisLocal);
+            
+            registerLocals[thisRegister] = thisLocal;
             add(Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newThisRef(declaringClassType)));
             paramLocals.add(thisLocal);
         } 
         {
-	        int i=0;
-	        for (Type t: parameterTypes) {
-	            Local gen = generateLocal(UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
-	            add(Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i)));
+	        int i = 0; // index of parameter type
+	        int parameterRegister = numRegisters - numParameterRegisters; // index of parameter register
+	        for (Type t: parameterTypes) {  
+	          
+	            Local gen = Jimple.v().newLocal("$u"+ parameterRegister, UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
+	            jBody.getLocals().add(gen);
+	            
+	            registerLocals[parameterRegister] = gen;
+	            add(Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i++)));
 	            paramLocals.add(gen);
+	            if (t.toString().equals("long") || t.toString().equals("double")) {
+	              parameterRegister++;
+	            }
+	            parameterRegister++;
 	        }
         }
         parameters = paramLocals.toArray(new Local[paramLocals.size()]);
         
-        for (int i = 0; i < numLocals; i++)
-            registerLocals[i] = generateLocal(UnknownType.v());
+        for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic?0:1)); i++) {
+            registerLocals[i] = Jimple.v().newLocal("$u"+ i, UnknownType.v());
+            jBody.getLocals().add(registerLocals[i]);
+        }
 
         for(DexlibAbstractInstruction instruction : instructions) {
             if (dangling != null) {
@@ -341,6 +348,8 @@ public class DexBody  {
         TypeAssigner.v().transform(jBody);
         LocalPacker.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
+        
+        PackManager.v().getPack("jb").apply(jBody);
 
         return jBody;
     }
