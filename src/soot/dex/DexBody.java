@@ -164,8 +164,8 @@ public class DexBody  {
         //hence update local count accordingly
         if(paramTypes!=null) {
 	        for(TypeIdItem t: paramTypes) {
-	        	if(DexType.isWide(t))
-	        		numLocals--;
+//	        	if(DexType.isWide(t))
+//	        		numLocals--;
 	        }
         }
 	}
@@ -250,7 +250,6 @@ public class DexBody  {
       System.out.println ("[getRegisterLocal] numLocals  : "+ numLocals);
         if (num >= numLocals) {
             int parameterNumber = num - numLocals;
-            System.out.println ("[getRegisterLocal] parameters : "+ parameterNumber);
             if (parameterNumber < parameters.length)
                 return parameters[parameterNumber];
             throw new RuntimeException("This method has " + numParameters + " parameters but the code tried to access parameter " + parameterNumber);
