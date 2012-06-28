@@ -39,18 +39,19 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
     }
 
     public void jimplify (DexBody body) {
-        if (local != null && expr != null)
-            throw new RuntimeException("Both local and expr are set to move.");
+//        if (local != null && expr != null)
+//            throw new RuntimeException("Both local and expr are set to move.");
 
         int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
         AssignStmt assign;
 
-        if (local != null)
-            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), local);
-        else if (expr != null)
-            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
-        else
-            throw new RuntimeException("Neither local and expr are set to move.");
+//        if (local != null)
+//            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), local);
+//        else if (expr != null)
+//            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+//        else
+//            throw new RuntimeException("Neither local and expr are set to move.");
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getStoreResultLocal());
         defineBlock(assign);
         tagWithLineNumber(assign);
         if (tag != null)
