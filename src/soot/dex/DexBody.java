@@ -77,6 +77,7 @@ public class DexBody  {
     private List<DexlibAbstractInstruction> instructions;
     // keeps track about the jimple locals that are associated with the dex registers
     private Local[] registerLocals;
+    private Local storeResultLocal;
     private Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
     private LocalGenerator localGenerator;
 
@@ -130,6 +131,7 @@ public class DexBody  {
             DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
             instructions.add(dexInstruction);
             instructionAtAddress.put(address, dexInstruction);
+            System.out.println(" put instruction '"+ dexInstruction +"' at 0x"+ Integer.toHexString(address));
             address += instruction.getSize(address);
         }
 
@@ -234,6 +236,10 @@ public class DexBody  {
     public Local getRegisterLocal(int num) {
         return registerLocals[num];
     }
+    
+    public Local getStoreResultLocal () {
+      return storeResultLocal;
+    }
 
     /**
      * Return the instruction that is present at the byte code address.
@@ -253,9 +259,7 @@ public class DexBody  {
             //            0x0069 - 0x0093
             if ((i = instructionAtAddress.get(address - 1)) == null) {
               if ((i = instructionAtAddress.get(address - 2)) == null) {
-                if ((i = instructionAtAddress.get(address - 3)) == null) {
-                  throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1) not part of method '"+ this.methodString +"'");
-                }
+                throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1) not part of method '"+ this.methodString +"'");
               }
             }
         }
@@ -275,6 +279,7 @@ public class DexBody  {
 
         System.out.println("\n[jimplify] start for: "+ methodString);
         
+        // process method parameters and generate Jimple locals from Dalvik registers
         List<Local> paramLocals = new LinkedList<Local>();       
         if (!isStatic) {
             int thisRegister = numRegisters - numParameterRegisters - 1;
@@ -308,7 +313,12 @@ public class DexBody  {
             registerLocals[i] = Jimple.v().newLocal("$u"+ i, UnknownType.v());
             jBody.getLocals().add(registerLocals[i]);
         }
-
+        
+        // add local to store intermediate results
+        storeResultLocal = Jimple.v().newLocal("$u-1", UnknownType.v());
+        jBody.getLocals().add (storeResultLocal);
+        
+        // process bytecode instructions
         for(DexlibAbstractInstruction instruction : instructions) {
             if (dangling != null) {
                 dangling.finalize(this, instruction);
@@ -322,10 +332,12 @@ public class DexBody  {
         if (tries != null)
             addTraps();
         
-
+        System.out.println("\nbefore spliting");
+        System.out.println((Body)jBody);
         
         splitLocals();
         
+        System.out.println("\nafter spliting");
         System.out.println((Body)jBody);
         
         for (RetypeableInstruction i : instructionsToRetype)
@@ -397,13 +409,20 @@ public class DexBody  {
             int length = tryItem.getTryLength();
             System.out.println(" length: 0x"+ Integer.toHexString(length));
             System.out.println(" end   : 0x"+ Integer.toHexString(startAddress + length));
+            int endAddress = startAddress + length - 1;
             Unit beginStmt = instructionAtAddress(startAddress).getBeginUnit();
             // (startAddress + length) typically points to the first byte of the first instruction after the try block
             // except if there is no instruction after the try block in which case it points to the last byte of the last
             // instruction of the try block. Removing 1 from (startAddress + length) always points to "somewhere" in
             // the last instruction of the try block since the smallest instruction is on two bytes (nop = 0x0000).
-            Unit endStmt =  instructionAtAddress(startAddress + tryItem.getTryLength() - 1).getBeginUnit(); 
-
+            Unit endStmt =  instructionAtAddress (endAddress).getBeginUnit(); 
+            System.out.println("begin instruction("+ startAddress +"): "+ instructionAtAddress(startAddress).getBeginUnit() +" --- "+ instructionAtAddress(startAddress).getEndUnit());
+            System.out.println("end instruction  ("+ endAddress   +"): "+ instructionAtAddress (endAddress).getBeginUnit()  +" --- "+ instructionAtAddress (endAddress).getEndUnit());
+            
+            for (int i=0x00; i<0x20; i++) {
+              System.out.println("dump  (0x"+ Integer.toHexString(i) +"): "+ instructionAtAddress (i).getBeginUnit()  +" --- "+ instructionAtAddress (i).getEndUnit());
+            }
+            
             EncodedCatchHandler h = tryItem.encodedCatchHandler;
 
             for (EncodedTypeAddrPair handler: h.handlers) {

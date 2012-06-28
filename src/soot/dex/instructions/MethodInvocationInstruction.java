@@ -45,6 +45,7 @@ import soot.SootResolver;
 import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;
+import soot.jimple.AssignStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -61,16 +62,24 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     public void finalize(DexBody body, DexlibAbstractInstruction successor) {
         // defer final jimplification to move result
         if (successor instanceof MoveResultInstruction) {
-            MoveResultInstruction i = (MoveResultInstruction)successor;
-            i.setExpr(invocation);
-            if (lineNumber != -1)
-                i.setTag(new SourceLineNumberTag(lineNumber));
+//            MoveResultInstruction i = (MoveResultInstruction)successor;
+//            i.setExpr(invocation);
+//            if (lineNumber != -1)
+//                i.setTag(new SourceLineNumberTag(lineNumber));
+          AssignStmt assign = Jimple.v().newAssignStmt(body.getStoreResultLocal(), invocation);
+          defineBlock(assign);
+          tagWithLineNumber(assign);
+          body.add(assign);
+          beginUnit = assign;
+          endUnit = assign;
         // this is a invoke statement (the MoveResult had to be the direct successor for an expression)
         } else {
             InvokeStmt invoke = Jimple.v().newInvokeStmt(invocation);
             defineBlock(invoke);
             tagWithLineNumber(invoke);
             body.add(invoke);
+            beginUnit = invoke;
+            endUnit = invoke;
         }
     }
 
@@ -208,17 +217,33 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         List<Local> parameters = new ArrayList<Local>();
         List<Integer> regs = getUsedRegistersNums();
 
+        System.out.println(" [methodIdItem]: "+ item);
+        System.out.println(" params types:");
+        if (paramTypes != null) {       
+          for (TypeIdItem t: paramTypes) {
+            System.out.println(" t: "+ t);
+          }
+        }
+        System.out.println(" used registers ("+ regs.size() +"): ");
+        for (int i: regs) {
+          System.out.println( " r: "+ i);
+        }
+        // i: index for register
+        // j: index for parameter type
         for (int i = 0, j = 0; i < regs.size(); i++, j++) {
-            parameters.add(body.getRegisterLocal(regs.get(i)));
+            parameters.add (body.getRegisterLocal (regs.get(i)));
             // if method is non-static the first parameter is the instance
-            // pointer and has no corresponding parameter
+            // pointer and has no corresponding parameter type
             if (!isStatic && i == 0) {
                 j--;
                 continue;
             }
-            // if current parameter is wide ignore the next register
-            if (paramTypes != null && DexType.isWide(paramTypes.get(j)))
+            // If current parameter is wide ignore the next register.
+            // No need to increment j as there is one parameter type
+            // for those two registers.
+            if (paramTypes != null && DexType.isWide(paramTypes.get(j))) {
                 i++;
+            }
 
         }
         return parameters;
