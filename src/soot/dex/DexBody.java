@@ -36,7 +36,6 @@ import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
 import org.jf.dexlib.DebugInfoItem;
 import org.jf.dexlib.ProtoIdItem;
-import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
@@ -64,8 +63,6 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.typing.TypeAssigner;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 
@@ -88,11 +85,9 @@ public class DexBody  {
     private DanglingInstruction dangling;
 
     private int numRegisters;
-    private int numParameters;
     private int numParameterRegisters;
     private int numLocals;
     private List<Type> parameterTypes;
-    private Local[] parameters;
     private boolean isStatic;
     private String methodString = "";
 
@@ -108,9 +103,6 @@ public class DexBody  {
      * @param method the method that is associated with this body
      */
     public DexBody(CodeItem code, RefType declaringClassType) {
-        
-        
-        
         this.declaringClassType = declaringClassType;
         tries = code.getTries();
         methodString = code.getParent().method.toString();
@@ -125,7 +117,6 @@ public class DexBody  {
         }
 
         numRegisters = code.getRegisterCount();
-        numParameters = parameterTypes == null ? 0 : parameterTypes.size();
         numParameterRegisters = prototype.getParameterRegisterCount();
         isStatic = Modifier.isStatic(code.getParent().accessFlags);
         computeParameterAndLocalCounts(paramTypes);
@@ -162,10 +153,6 @@ public class DexBody  {
      * numParameters will be the number of parameters, including "this", if applicable
      */
 	private void computeParameterAndLocalCounts(List<TypeIdItem> paramTypes) {
-
-        if (! isStatic) {
-            numParameters++;
-        }
         numLocals = numRegisters;
 	}
 
@@ -176,6 +163,15 @@ public class DexBody  {
         Set<DexType> types = new HashSet<DexType>();
         for (DexlibAbstractInstruction i : instructions)
             types.addAll(i.introducedTypes());
+        
+        if(tries!=null) {
+	        for (TryItem tryItem : tries) {
+	            EncodedCatchHandler h = tryItem.encodedCatchHandler;
+		        for (EncodedTypeAddrPair handler: h.handlers) {
+		            types.add(new DexType(handler.exceptionType));
+		        }
+	        }
+        }
 
         return types;
     }
@@ -316,7 +312,6 @@ public class DexBody  {
 	            parameterRegister++;
 	        }
         }
-        parameters = paramLocals.toArray(new Local[paramLocals.size()]);
         
         for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic?0:1)); i++) {
             registerLocals[i] = Jimple.v().newLocal("$u"+ i, UnknownType.v());
