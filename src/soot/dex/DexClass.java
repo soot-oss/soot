@@ -58,7 +58,10 @@ public class DexClass {
     public DexClass(ClassDefItem classDef) {
     	type = classDef.getClassType();
         this.name = classDef.getClassType().getTypeDescriptor();
-        this.superClassName = classDef.getSuperclass().getTypeDescriptor();
+        this.types = new HashSet<DexType>();
+        TypeIdItem superClass = classDef.getSuperclass();
+		this.superClassName = superClass.getTypeDescriptor();
+		this.types.add(new DexType(superClass));
         this.accessFlags = classDef.getAccessFlags();
 
         // Retrieve interface names
@@ -69,6 +72,7 @@ public class DexClass {
             int i = 0;
             for (TypeIdItem interfaceName : classDef.getInterfaces().getTypes()) {
                 this.interfaceNames[i++] = interfaceName.getTypeDescriptor();
+                this.types.add(new DexType(interfaceName));
             }
         }
 
@@ -77,15 +81,12 @@ public class DexClass {
         if (classData == null) {
             this.methods = Collections.emptySet();
             this.fields = Collections.emptySet();
-            this.types = Collections.emptySet();
         } else {
             int numMethods = classData.getDirectMethods().length + classData.getVirtualMethods().length;
             int numFields = classData.getInstanceFields().length + classData.getStaticFields().length;
 
             this.methods = new HashSet<DexMethod>(numMethods);
             this.fields = new HashSet<DexField>(numFields);
-            // types are filled within the DexFields but are also available here
-            this.types = new HashSet<DexType>();
             this.annotations = classDef.getAnnotations();
 
             // get the fields of the class
