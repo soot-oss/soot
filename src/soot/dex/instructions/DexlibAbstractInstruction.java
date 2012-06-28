@@ -20,6 +20,7 @@
 package soot.dex.instructions;
 
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -106,7 +107,7 @@ public abstract class DexlibAbstractInstruction {
      * Instructions that may introduce types should override this.
      */
     public Set<DexType> introducedTypes() {
-        return new HashSet<DexType>();
+        return Collections.emptySet();
     }
 
     /**
