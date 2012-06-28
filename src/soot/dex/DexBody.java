@@ -86,7 +86,6 @@ public class DexBody  {
 
     private int numRegisters;
     private int numParameterRegisters;
-    private int numLocals;
     private List<Type> parameterTypes;
     private boolean isStatic;
     private String methodString = "";
@@ -119,12 +118,11 @@ public class DexBody  {
         numRegisters = code.getRegisterCount();
         numParameterRegisters = prototype.getParameterRegisterCount();
         isStatic = Modifier.isStatic(code.getParent().accessFlags);
-        computeParameterAndLocalCounts(paramTypes);
 
         instructions = new ArrayList<DexlibAbstractInstruction>();
         instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
 
-        registerLocals = new Local[numLocals];
+        registerLocals = new Local[numRegisters];
 
         int address = 0;
 
@@ -148,13 +146,6 @@ public class DexBody  {
                 });
         }
     }
-
-    /* numLocals will be the number of local variables (= the number of registers)
-     * numParameters will be the number of parameters, including "this", if applicable
-     */
-	private void computeParameterAndLocalCounts(List<TypeIdItem> paramTypes) {
-        numLocals = numRegisters;
-	}
 
     /**
      * Return the types that are used in this body.
