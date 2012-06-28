@@ -76,6 +76,10 @@ public class DexlibWrapper {
 					System.out.println("Type: "+ t +" soot type:"+ st);
 					if (!Scene.v().containsClass(st.toString())) {
 						SootResolver.v().makeClassRef(st.toString());
+						if (st.toString().endsWith("Exception")) {
+						  SootResolver.v().resolveClass(st.toString(), SootClass.HIERARCHY); //.reResolveHierarchy(Scene.v().getSootClass(st.toString()));
+						  Scene.v().getSootClass(st.toString()).checkLevel(SootClass.HIERARCHY);
+						}
 					}
 				}
 				for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
