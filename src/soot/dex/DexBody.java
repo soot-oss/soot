@@ -248,6 +248,9 @@ public class DexBody  {
      * @throws RuntimeException if address is not part of this body.
      */
     public DexlibAbstractInstruction instructionAtAddress(int address) {
+//      for (int j=address - 10; j< address+10; j++ ){
+//        System.out.println(" dump2: 0x"+ Integer.toHexString(j) +" : "+instructionAtAddress.get (j) );
+//      }
         DexlibAbstractInstruction i = instructionAtAddress.get(address);
         if (i == null) {
             // catch addresses can be in the middlde of last instruction. Ex. in com.letang.ldzja.en.apk:
@@ -259,7 +262,7 @@ public class DexBody  {
             //            0x0069 - 0x0093
             if ((i = instructionAtAddress.get(address - 1)) == null) {
               if ((i = instructionAtAddress.get(address - 2)) == null) {
-                throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1) not part of method '"+ this.methodString +"'");
+                throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1 -2) not part of method '"+ this.methodString +"'");
               }
             }
         }
@@ -299,17 +302,29 @@ public class DexBody  {
 	            Local gen = Jimple.v().newLocal("$u"+ parameterRegister, UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
 	            jBody.getLocals().add(gen);
 	            
+	            System.out.println ("add local for parameter register number: "+ parameterRegister);
 	            registerLocals[parameterRegister] = gen;
 	            add(Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i++)));
 	            paramLocals.add(gen);
+	            
+	            // some parameters may be encoded on two registers.
+	            // in Jimple only the first Dalvik register name is used
+	            // as the corresponding Jimple Local name. However, we also add
+	            // the second register to the registerLocals array since it could be 
+	            // used later in the Dalvik bytecode
 	            if (t.toString().equals("long") || t.toString().equals("double")) {
 	              parameterRegister++;
+	              Local g = Jimple.v().newLocal("$u"+ parameterRegister, UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
+	              jBody.getLocals().add (g);
+	              registerLocals[parameterRegister] = g;
 	            }
+	            
 	            parameterRegister++;
 	        }
         }
         
         for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic?0:1)); i++) {
+            System.out.println ("add local for register number: "+ i);
             registerLocals[i] = Jimple.v().newLocal("$u"+ i, UnknownType.v());
             jBody.getLocals().add(registerLocals[i]);
         }
@@ -403,25 +418,25 @@ public class DexBody  {
      * Should only be called at the end jimplify.
      */
     private void addTraps() {
-        for (TryItem tryItem : tries) {
+      for (TryItem tryItem : tries) {
             int startAddress = tryItem.getStartCodeAddress();
             System.out.println(" start : 0x"+ Integer.toHexString(startAddress));
             int length = tryItem.getTryLength();
             System.out.println(" length: 0x"+ Integer.toHexString(length));
             System.out.println(" end   : 0x"+ Integer.toHexString(startAddress + length));
-            int endAddress = startAddress + length - 1;
-            Unit beginStmt = instructionAtAddress(startAddress).getBeginUnit();
+            int endAddress = startAddress + length;// - 1;
+            Unit beginStmt = instructionAtAddress(startAddress).getUnit();
             // (startAddress + length) typically points to the first byte of the first instruction after the try block
             // except if there is no instruction after the try block in which case it points to the last byte of the last
             // instruction of the try block. Removing 1 from (startAddress + length) always points to "somewhere" in
             // the last instruction of the try block since the smallest instruction is on two bytes (nop = 0x0000).
-            Unit endStmt =  instructionAtAddress (endAddress).getBeginUnit(); 
-            System.out.println("begin instruction("+ startAddress +"): "+ instructionAtAddress(startAddress).getBeginUnit() +" --- "+ instructionAtAddress(startAddress).getEndUnit());
-            System.out.println("end instruction  ("+ endAddress   +"): "+ instructionAtAddress (endAddress).getBeginUnit()  +" --- "+ instructionAtAddress (endAddress).getEndUnit());
+            Unit endStmt =  instructionAtAddress (endAddress).getUnit(); 
+            System.out.println("begin instruction (0x"+ Integer.toHexString(startAddress) +"): "+ instructionAtAddress(startAddress).getUnit() +" --- "+ instructionAtAddress(startAddress).getUnit());
+            System.out.println("end instruction   (0x"+ Integer.toHexString(endAddress)   +"): "+ instructionAtAddress (endAddress).getUnit()  +" --- "+ instructionAtAddress (endAddress).getUnit());
             
-            for (int i=0x00; i<0x20; i++) {
-              System.out.println("dump  (0x"+ Integer.toHexString(i) +"): "+ instructionAtAddress (i).getBeginUnit()  +" --- "+ instructionAtAddress (i).getEndUnit());
-            }
+//            for (int i=0x00; i<0x20; i++) {
+//              System.out.println("dump  (0x"+ Integer.toHexString(i) +"): "+ instructionAtAddress (i).getUnit()  +" --- "+ instructionAtAddress (i).getUnit());
+//            }
             
             EncodedCatchHandler h = tryItem.encodedCatchHandler;
 
@@ -435,14 +450,14 @@ public class DexBody  {
                         throw new RuntimeException("First instruction of trap handler unit not MoveException but " + instruction.getClass());
                     ((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
 
-                    Trap trap = Jimple.v().newTrap(exception, beginStmt, endStmt, instruction.getBeginUnit());
+                    Trap trap = Jimple.v().newTrap(exception, beginStmt, endStmt, instruction.getUnit());
                     jBody.getTraps().add(trap);
                 }
             }
             int catchAllHandlerAddress = h.getCatchAllHandlerAddress();
             if (catchAllHandlerAddress != -1) {
                 DexlibAbstractInstruction i = instructionAtAddress(catchAllHandlerAddress); 
-                Unit catchAllHandler = i.getBeginUnit();
+                Unit catchAllHandler = i.getUnit();
                 SootClass exc = SootResolver.v().makeClassRef("java.lang.Throwable");
                 Trap trap = Jimple.v().newTrap(exc, beginStmt, endStmt, catchAllHandler);
                 ((RetypeableInstruction) i).setRealType(this, exc.getType());
