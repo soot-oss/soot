@@ -33,7 +33,11 @@ public class MoveInstruction extends DexlibAbstractInstruction {
     }
 
     public void jimplify (DexBody body) {
+       
         TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
+        
+        System.out.println("moveInstruction: "+ i);
+        
         int dest = i.getRegisterA();
         int source = i.getRegisterB();
         AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getRegisterLocal(source));

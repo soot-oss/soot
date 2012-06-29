@@ -48,8 +48,8 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 
         Instruction3rc filledNewArrayInstr = (Instruction3rc)instruction;
 
-        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
-        body.add(nopStmtBeginning);
+//        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
+//        body.add(nopStmtBeginning);
 
         int usedRegister = filledNewArrayInstr.getRegCount();
         Type t = DexType.toSoot((TypeIdItem) filledNewArrayInstr.getReferencedItem());
@@ -57,8 +57,9 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         Type arrayType = ((ArrayType) t).getElementType();
 
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
-        arrayLocal = body.generateLocal(arrayType);
-        body.add(Jimple.v().newAssignStmt(arrayLocal, arrayExpr));
+        arrayLocal = body.getStoreResultLocal(); //body.generateLocal(arrayType);
+        AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
+        body.add (assignStmt);
 
         for (int i = 0; i < usedRegister; i++) {
             ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
@@ -67,12 +68,13 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
             tagWithLineNumber(assign);
             body.add(assign);
         }
-        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
-        body.add(nopStmtEnd);
+//        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
+//        body.add(nopStmtEnd);
 
-        defineBlock(nopStmtBeginning,nopStmtEnd);
+//        defineBlock(nopStmtBeginning,nopStmtEnd);
+        defineBlock (assignStmt);
 
-        body.setDanglingInstruction(this);
+//        body.setDanglingInstruction(this);
 
     }
 

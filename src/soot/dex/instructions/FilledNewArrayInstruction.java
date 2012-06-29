@@ -55,8 +55,8 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
                       filledNewArrayInstr.getRegisterA()
                      };
 
-        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
-        body.add(nopStmtBeginning);
+//        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
+//        body.add(nopStmtBeginning);
 
         int usedRegister = filledNewArrayInstr.getRegCount();
 
@@ -67,7 +67,8 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         // new local generated intentional, will be moved to real register by MoveResult
         arrayLocal = body.generateLocal(arrayType);
-        body.add(Jimple.v().newAssignStmt(arrayLocal, arrayExpr));
+        AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
+        body.add (assignStmt);
 
         for (int i = 0; i < usedRegister; i++) {
             ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
@@ -76,11 +77,12 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
             tagWithLineNumber(assign);
             body.add(assign);
         }
-        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
-        body.add(nopStmtEnd);
-        defineBlock(nopStmtBeginning, nopStmtEnd);
-
-        body.setDanglingInstruction(this);
+//        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
+//        body.add(nopStmtEnd);
+//        defineBlock(nopStmtBeginning, nopStmtEnd);
+        defineBlock (assignStmt);
+        
+//        body.setDanglingInstruction(this);
 
     }
 

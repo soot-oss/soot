@@ -43,26 +43,29 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction impleme
 
     public void jimplify(DexBody body) {
         // check if target instruction has been jimplified
-        if (getTargetInstruction(body).getBeginUnit() != null) {
+        if (getTargetInstruction(body).getUnit() != null) {
             IfStmt s = ifStatement(body);
             body.add(s);
             defineBlock(s);
-            return;
+        } else {
+          // set marker unit to swap real gotostmt with otherwise
+          body.addDeferredJimplification(this);
+          markerUnit = Jimple.v().newNopStmt();
+          unit = markerUnit;
+//          beginUnit = markerUnit;
+//          endUnit = markerUnit;
+//          beginUnit = markerUnit;
+          body.add(markerUnit);
+//          Unit end = Jimple.v().newNopStmt();
+//          body.add(end);
+//          endUnit = end;
         }
-        // set marker unit to swap real gotostmt with otherwise
-        body.addDeferredJimplification(this);
-        markerUnit = Jimple.v().newNopStmt();
-        beginUnit = markerUnit;
-        body.add(markerUnit);
-        Unit end = Jimple.v().newNopStmt();
-        body.add(end);
-        endUnit = end;
     }
 
     public void deferredJimplify(DexBody body) {
         IfStmt s = ifStatement(body);
-        body.getBody().getUnits().insertAfter(s, markerUnit);
-        endUnit = s;
+        body.getBody().getUnits().swapWith(markerUnit, s); //insertAfter(s, markerUnit);
+        unit = s;
     }
 
     /**

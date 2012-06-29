@@ -48,10 +48,10 @@ public class SparseSwitchInstruction extends SwitchInstruction {
 
         // the default target always follows the switch statement
         int defaultTargetAddress = codeAddress + instruction.getSize(codeAddress);
-        Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getBeginUnit();
+        Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
         List<Unit> targets = new ArrayList<Unit>();
         for(int address : targetAddresses)
-            targets.add(body.instructionAtAddress(codeAddress + address).getBeginUnit());
+            targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
 
         return Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
     }

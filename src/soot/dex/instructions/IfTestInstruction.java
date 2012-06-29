@@ -37,6 +37,6 @@ public class IfTestInstruction extends ConditionalJumpInstruction {
         Instruction22t i = (Instruction22t) instruction;
         Local one = body.getRegisterLocal(i.getRegisterA());
         Local other = body.getRegisterLocal(i.getRegisterB());
-        return Jimple.v().newIfStmt(getComparisonExpr(one, other), targetInstruction.getBeginUnit());
+        return Jimple.v().newIfStmt(getComparisonExpr(one, other), targetInstruction.getUnit());
     }
 }

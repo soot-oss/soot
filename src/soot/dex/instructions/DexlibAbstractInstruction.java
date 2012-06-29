@@ -43,9 +43,10 @@ public abstract class DexlibAbstractInstruction {
 
     protected Instruction instruction;
     protected int codeAddress;
-    protected Unit beginUnit;
-    protected Unit endUnit;
-
+//    protected Unit beginUnit;
+//    protected Unit endUnit;
+    protected Unit unit;
+    
     /**
      * Jimplify this instruction.
      *
@@ -137,20 +138,23 @@ public abstract class DexlibAbstractInstruction {
             host.addTag(new SourceLineNumberTag(lineNumber));
     }
 
-    /**
-     * Return the first of the jimple units that represent this instruction.
-     *
-     */
-    public Unit getBeginUnit() {
-        return beginUnit;
-    }
-
-    /**
-     * Return the last of the jimple units that represent this instruction.
-     *
-     */
-    public Unit getEndUnit() {
-        return endUnit;
+//    /**
+//     * Return the first of the jimple units that represent this instruction.
+//     *
+//     */
+//    public Unit getBeginUnit() {
+//        return beginUnit;
+//    }
+//
+//    /**
+//     * Return the last of the jimple units that represent this instruction.
+//     *
+//     */
+//    public Unit getEndUnit() {
+//        return endUnit;
+//    }
+    public Unit getUnit() {
+      return unit;
     }
 
     /**
@@ -159,20 +163,21 @@ public abstract class DexlibAbstractInstruction {
      * Does not override already set units.
      */
     protected void defineBlock(Unit stmt) {
-        defineBlock(stmt, stmt);
+      unit = stmt;
+//        defineBlock(stmt, stmt);
     }
 
-    /**
-     * Set the first and last Jimple Unit, that comprise this instruction.
-     *
-     * Does not override already set units.
-     */
-    protected void defineBlock(Unit begin, Unit end) {
-        if (beginUnit == null)
-            beginUnit = begin;
-        if (endUnit == null)
-            endUnit = end;
-    }
+//    /**
+//     * Set the first and last Jimple Unit, that comprise this instruction.
+//     *
+//     * Does not override already set units.
+//     */
+//    protected void defineBlock(Unit begin, Unit end) {
+//        if (beginUnit == null)
+//            beginUnit = begin;
+//        if (endUnit == null)
+//            endUnit = end;
+//    }
 
     /**
      * Determine if the value in register is used as a floating point number in future instructions.

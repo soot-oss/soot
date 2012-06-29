@@ -39,13 +39,13 @@ public abstract class FilledArrayInstruction extends DexlibAbstractInstruction i
     }
 
     public void finalize(DexBody body, DexlibAbstractInstruction successor) {
-        // defer final jimplification to move result
-        if (successor instanceof MoveResultInstruction) {
-            MoveResultInstruction i = (MoveResultInstruction)successor;
-            i.setLocalToMove(arrayLocal);
-            if (lineNumber != -1)
-                i.setTag(new SourceLineNumberTag(lineNumber));
-        }
+//        // defer final jimplification to move result
+//        if (successor instanceof MoveResultInstruction) {
+//            MoveResultInstruction i = (MoveResultInstruction)successor;
+//            i.setLocalToMove(arrayLocal);
+//            if (lineNumber != -1)
+//                i.setTag(new SourceLineNumberTag(lineNumber));
+//        }
     }
 
     @Override

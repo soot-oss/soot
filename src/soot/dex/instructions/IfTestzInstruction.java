@@ -35,6 +35,6 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
     protected IfStmt ifStatement(DexBody body) {
         Instruction21t i = (Instruction21t) instruction;
         return Jimple.v().newIfStmt(getComparisonExpr(body, i.getRegisterA()),
-                                    targetInstruction.getBeginUnit());
+                                    targetInstruction.getUnit());
     }
 }

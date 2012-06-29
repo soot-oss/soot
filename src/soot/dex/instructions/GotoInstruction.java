@@ -32,14 +32,14 @@ public class GotoInstruction extends JumpInstruction implements DeferableInstruc
 
     public void jimplify (DexBody body) {
         // check if target instruction has been jimplified
-        if (getTargetInstruction(body).getBeginUnit() != null) {
+        if (getTargetInstruction(body).getUnit() != null) {
             body.add(gotoStatement());
             return;
         }
         // set marker unit to swap real gotostmt with otherwise
         body.addDeferredJimplification(this);
         markerUnit = Jimple.v().newNopStmt();
-        beginUnit = markerUnit;
+        unit = markerUnit;
         body.add(markerUnit);
     }
 
@@ -48,7 +48,7 @@ public class GotoInstruction extends JumpInstruction implements DeferableInstruc
     }
 
     private GotoStmt gotoStatement() {
-        GotoStmt go = Jimple.v().newGotoStmt(targetInstruction.getBeginUnit());
+        GotoStmt go = Jimple.v().newGotoStmt(targetInstruction.getUnit());
         defineBlock(go);
         tagWithLineNumber(go);
         return go;

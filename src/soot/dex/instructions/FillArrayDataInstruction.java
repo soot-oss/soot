@@ -53,6 +53,7 @@ import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
 import soot.jimple.NopStmt;
 import soot.jimple.NumericConstant;
+import soot.jimple.Stmt;
 
 public class FillArrayDataInstruction extends DexlibAbstractInstruction {
 
@@ -78,24 +79,33 @@ public class FillArrayDataInstruction extends DexlibAbstractInstruction {
         ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
         int numElements = arrayTable.getElementCount();
 
-        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
-        body.add(nopStmtBeginning);
+//        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
+//        body.add(nopStmtBeginning);
 
         Local arrayReference = body.getRegisterLocal(destRegister);
 
         Iterator<ArrayElement> elements = arrayTable.getElements();
+        Stmt firstAssign = null;
         for (int i = 0; i < numElements; i++) {
             ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
             NumericConstant element = getArrayElement(elements.next(),body,destRegister);
             AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
             tagWithLineNumber(assign);
             body.add(assign);
+            if (i == 0) {
+              firstAssign = assign;
+            }
+        }
+        if (firstAssign == null) { // if numElements == 0. Is it possible?
+          firstAssign = Jimple.v().newNopStmt();
+          body.add (firstAssign);
         }
 
-        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
-        body.add(nopStmtEnd);
+//        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
+//        body.add(nopStmtEnd);
 
-        defineBlock(nopStmtBeginning, nopStmtEnd);
+//        defineBlock(nopStmtBeginning, nopStmtEnd);
+        defineBlock (firstAssign);
 
     }
 

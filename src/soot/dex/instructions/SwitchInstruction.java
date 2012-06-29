@@ -44,7 +44,7 @@ public abstract class SwitchInstruction extends DexlibAbstractInstruction implem
 
     public void jimplify(DexBody body) {
         markerUnit = Jimple.v().newNopStmt();
-        beginUnit = markerUnit;
+        unit = markerUnit;
         body.add(markerUnit);
         body.addDeferredJimplification(this);
     }
