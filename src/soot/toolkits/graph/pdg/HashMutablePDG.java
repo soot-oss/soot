@@ -772,11 +772,18 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public List<PDGNode> getDependents(PDGNode node)
 	{
-		return this.getSuccsOf(node);
-		//Or return node.getDependents();
+	       List<PDGNode> toReturn = new ArrayList<PDGNode>();
+	       for(Object succ:this.getSuccsOf(node))
+	       {
+	                       PDGNode succPDGN = (PDGNode)succ;
+	                       if(this.dependentOn(succPDGN, node))
+	                       {
+	                               toReturn.add(succPDGN);
+	                       }
+	       }
+	       return toReturn;
 	}
 	
 	/**
