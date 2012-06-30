@@ -39,12 +39,10 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
-import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeExpr;
-import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.geom.geomPA.CgEdge;
@@ -54,7 +52,6 @@ import soot.jimple.spark.geom.geomPA.Histogram;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
-import soot.jimple.spark.pag.GlobalVarNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.VarNode;
@@ -139,6 +136,7 @@ public class GeomEvaluator {
 	 */
 	public void reportBasicMetrics() 
 	{
+		int loc = 0;
 		int size;
 		int n_legal_var = 0, n_alloc_dot_fields = 0;
 		long total_geom_ins_pts = 0, total_geom_sen_pts = 0, total_spark_pts = 0;
@@ -155,13 +153,29 @@ public class GeomEvaluator {
 		total_geom_sen_pts = 0;
 		max_pts_geom = 0;
 		
+		// We first count the LOC
+		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
+			
+			if (!sm.isConcrete())
+				continue;
+			if (!sm.hasActiveBody()) {
+				sm.retrieveActiveBody();
+			}
+
+			loc += sm.getActiveBody().getUnits().size();
+		}
+		
 		for ( IVarAbstraction pn : ptsProvider.pointers ) {
 			// We don't consider those un-processed pointers because their points-to information is equivalent to SPARK
 			if ( !pn.willUpdate ) continue;
 			if ( ptsProvider.isLegalPointer(pn) == false ) continue;
-			pn = pn.getRepresentative();
 			Node var = pn.getWrappedNode();
-			if ( var instanceof AllocDotField ) ++n_alloc_dot_fields;
+			pn = pn.getRepresentative();
+			
+			if ( var instanceof AllocDotField ) { 
+				++n_alloc_dot_fields;
+//				continue;
+			}
 			++n_legal_var;
 			
 			// ...geom
@@ -225,10 +239,13 @@ public class GeomEvaluator {
 		outputer.println("");
 		outputer.println("--------------------Points-to Analysis Basic Information-------------------");
 		outputer.println("------>>>> Format:  Geometric Analysis (SPARK)" );
-		outputer.println("All Pointers : " + ptsProvider.n_var);
-		outputer.println("Reachable Methods : " + ptsProvider.n_reach_methods + " (" + (ptsProvider.n_func - 1) + ")" );
-		outputer.printf("Reachable User Methods : %d (%d)\n", ptsProvider.n_reach_user_methods, ptsProvider.n_reach_spark_user_methods );
-		outputer.println("Legal pointers (app code): " + n_legal_var + ", in which the #AllocDot Fields : " + n_alloc_dot_fields );
+		outputer.printf("Lines of code (jimple): %.1fK\n", (double)loc/1000 );
+		outputer.printf("Reachable Methods : %d (%d)\n", ptsProvider.getNumberOfReachableFunctions(),
+																ptsProvider.getNumberOfFunctions() );
+		outputer.printf("Reachable User Methods : %d (%d)\n", ptsProvider.n_reach_user_methods, 
+																		ptsProvider.n_reach_spark_user_methods );
+		outputer.println("#Pointers (all code): " + ptsProvider.getNumberOfPointers() );
+		outputer.println("#Pointers (app code): " + n_legal_var + ", in which #AllocDot Fields : " + n_alloc_dot_fields );
 		outputer.printf("Total/Average Projected Points-to Tuples (app code): %d (%d) / %.3f (%.3f) \n", 
 				total_geom_ins_pts, total_spark_pts, 
 				(double) total_geom_ins_pts / (n_legal_var), (double) total_spark_pts / n_legal_var );
@@ -411,7 +428,7 @@ public class GeomEvaluator {
 				continue;
 			
 			// We first gather all the memory access expressions
-			access_expr.clear();
+			//access_expr.clear();
 			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts
 					.hasNext();) {
 				Stmt st = (Stmt) stmts.next();
@@ -422,60 +439,56 @@ public class GeomEvaluator {
 					values[1] = a.getRightOp();
 					
 					for ( Value v : values ) {
-						if ( v instanceof Local ) {
-							Local l = (Local)v;
-							LocalVarNode vn = ptsProvider.findLocalVarNode(l);
-							access_expr.add( vn );
-						}
-						else if (v instanceof StaticFieldRef) {
-							StaticFieldRef sfr = (StaticFieldRef) v;
-							GlobalVarNode vn = ptsProvider.findGlobalVarNode( sfr.getField() );
-							access_expr.add( vn );
-						}
-						else if (v instanceof ArrayRef) {
-							ArrayRef ar = (ArrayRef) v;
-							LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ar.getBase());
+						// We only care those pointers p involving in the expression: p.f
+						if (v instanceof InstanceFieldRef) {
+							InstanceFieldRef ifr = (InstanceFieldRef) v;
+							final SootField field = ifr.getField();
+							if ( !(field.getType() instanceof RefType) )
+								continue;
+							
+							LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
+							if ( vn == null ) continue;
 							access_expr.add( vn );
 						}
 					}
 				}
 			}
-			
-			// Next, we pair up all the pointers
-			access_expr.remove(null);
-			al.clear();
-			
-			for ( Node v : access_expr ) {
-				if ( v.getType() instanceof RefType ) {
-					SootClass sc = ((RefType)v.getType()).getSootClass();
-					if ( !sc.isInterface() && Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
-							sc, GeomPointsTo.exeception_type.getSootClass()) ) {
-						continue;
-					}
+		}
+		
+		// Next, we pair up all the pointers
+		access_expr.remove(null);
+		al.clear();
+		
+		for ( Node v : access_expr ) {
+			if ( v.getType() instanceof RefType ) {
+				SootClass sc = ((RefType)v.getType()).getSootClass();
+				if ( !sc.isInterface() && Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
+						sc, GeomPointsTo.exeception_type.getSootClass()) ) {
+					continue;
 				}
-				al.add(v);
+			}
+			al.add(v);
+		}
+		
+		for ( int i = 0; i < al.size(); ++i ) {
+			Node n1 = al.get(i);
+			pn =  ptsProvider.findInternalNode(n1);
+			pn = pn.getRepresentative();
+			
+			for ( int j = i + 1; j < al.size(); ++j ) {
+				Node n2 = al.get(j);
+				qn = ptsProvider.findInternalNode(n2);
+				qn = qn.getRepresentative();
+				
+				if ( pn.heap_sensitive_intersection( qn ) )
+					cnt_hs_alias++;
+				
+				// We directly use the SPARK points-to sets
+				if ( n1.getP2Set().hasNonEmptyIntersection(n2.getP2Set()) )
+					cnt_hi_alias++;
 			}
 			
-			for ( int i = 0; i < al.size(); ++i ) {
-				Node n1 = al.get(i);
-				pn =  ptsProvider.findInternalNode(n1);
-				pn = pn.getRepresentative();
-				
-				for ( int j = i + 1; j < al.size(); ++j ) {
-					Node n2 = al.get(j);
-					qn = ptsProvider.findInternalNode(n2);
-					qn = qn.getRepresentative();
-					
-					if ( pn.heap_sensitive_intersection( qn ) )
-						cnt_hs_alias++;
-					
-					// We directly use the SPARK points-to sets
-					if ( n1.getP2Set().hasNonEmptyIntersection(n2.getP2Set()) )
-						cnt_hi_alias++;
-				}
-				
-				cnt_all += al.size() - 1 - i;
-			}
+			cnt_all += al.size() - 1 - i;
 		}
 		
 		ptsProvider.ps.println();
@@ -571,8 +584,8 @@ public class GeomEvaluator {
 		final Map<AllocDotField, int[]> defUseCounterForSpark = new HashMap<AllocDotField, int[]>();
 		
 		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
-//			if (sm.isJavaLibraryMethod())
-//				continue;
+			if (sm.isJavaLibraryMethod())
+				continue;
 			if (!sm.isConcrete())
 				continue;
 			if (!sm.hasActiveBody()) {
@@ -635,7 +648,6 @@ public class GeomEvaluator {
 					if ( pn == null ) continue;
 					pn = pn.getRepresentative();
 					Set<AllocNode> objsSet = pn.get_all_points_to_objects();
-					ans_geom += objsSet.size();
 					
 					for ( AllocNode obj : objsSet ) {
 						/*

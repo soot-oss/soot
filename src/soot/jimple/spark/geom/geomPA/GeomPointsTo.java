@@ -1066,16 +1066,7 @@ public class GeomPointsTo extends PAG
 		// Prepare for use in various of clients
 		postProcess();
 		
-		// We inject the SPARK points-to result into our unprocessed pointers
-		// Now we have full points-to information
-		if ( !opts.geom_trans() ) {
-			for ( IVarAbstraction pn : pointers ) {
-				if ( !pn.willUpdate )
-					pn.injectPts();
-			}
-		}
-		
-		// Do we perform some precision tests?
+		// We perform a set of tests to assess the quality of the points-to results for user's code
 		int evalLevel = opts.geom_eval();
 		if ( evalLevel > 0 ) {
 			GeomEvaluator ge = new GeomEvaluator(this, ps);
@@ -1089,8 +1080,18 @@ public class GeomPointsTo extends PAG
 			}
 		}
 		
-		// Do we need to obtain the context insensitive points-to result?
-		if ( opts.geom_trans() ) {
+		if ( !opts.geom_trans() ) {
+			// We inject the SPARK points-to result into our unprocessed pointers
+			// Now we have full points-to information
+			for ( IVarAbstraction pn : pointers ) {
+				if ( !pn.willUpdate )
+					pn.injectPts();
+				Node vn = pn.getWrappedNode();
+				vn.discardP2Set();
+			}
+		}
+		else {
+			// Do we need to obtain the context insensitive points-to result?
 			transformToCIResult();
 			hasTransformed = true;
 		}
