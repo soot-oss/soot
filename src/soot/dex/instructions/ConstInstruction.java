@@ -55,7 +55,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
      */
     private Constant getConstant(int dest, DexBody body) {
         long literal = ((LiteralInstruction) instruction).getLiteral();
-        boolean isFloatingPoint = willFloat(dest, body);
+        boolean isFloatingPoint = false; // this is done later in DexBody by calling DexNumtransformer
 
         switch (instruction.opcode) {
         case CONST:

@@ -179,46 +179,5 @@ public abstract class DexlibAbstractInstruction {
 //            endUnit = end;
 //    }
 
-    /**
-     * Determine if the value in register is used as a floating point number in future instructions.
-     *
-     * @param register the register number that may contain a integer or a floating point value
-     * @param body the body containing the instruction
-     */
-    protected boolean willFloat(int register, DexBody body) {
-    	//FIXME This is not fully correct because it does not take jumps into account.
-    	
-        List<DexlibAbstractInstruction> instructions = body.instructionsAfter(this);
-        Set<Integer> usedRegisters = new HashSet<Integer>();
-        usedRegisters.add(register);
 
-
-        for(DexlibAbstractInstruction i : instructions) {
-            if (usedRegisters.isEmpty())
-                break;
-
-            for (int reg : usedRegisters)
-                if (i.isUsedAsFloatingPoint(body, reg))
-                    return true;
-
-            // look for obsolete registers
-            for (int reg : usedRegisters) {
-                if (i.overridesRegister(reg)) {
-                    usedRegisters.remove(reg);
-                    break;      // there can't be more than one obsolete
-                }
-            }
-
-            // look for new registers
-            for (int reg : usedRegisters) {
-                int newRegister = i.movesRegister(reg);
-                if (newRegister != -1) {
-                    usedRegisters.add(newRegister);
-                    break;      // there can't be more than one new
-                }
-            }
-        }
-
-        return false;
-    }
 }

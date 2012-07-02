@@ -41,16 +41,19 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
+import soot.jimple.DoubleConstant;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
 import soot.jimple.FieldRef;
+import soot.jimple.FloatConstant;
 import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
+import soot.jimple.LongConstant;
 import soot.jimple.NeExpr;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
@@ -70,17 +73,55 @@ import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
- * BodyTransformer to find and change IntConstant(0) to NullConstant where
- * locals are used as objects.
+ * BodyTransformer to find and change initialization type of 
+ * Jimple variables. Dalvik bytecode does not provide enough 
+ * information regarding the type of initialized variables.
+ * For instance, using the dexdump disassembler on some Dalvik bytecode
+ * can produce the following (wrong) output:
+ * 
+ * 006c : const −wide v6 , #double 0.000000 // #0014404410000000
+ * 0071: and−long /2 addr v6 , v4
+ * 
+ * At 0x6c, the initialized register is not of type double, but of
+ * type long because it is used in a long and operation at 0x71. 
+ * Thus, one need to check how the register is used to deduce its type.
+ * By default, and since the dexdump disassembler does not perform such 
+ * analysis, it supposes the register is of type double.
+ * 
+ * Dalvik comes with the following instructions to initialize constants:
+ * 0x12 const/4 vx,lit4
+ * 0x13 const/16 vx,lit16
+ * 0x14 const vx, lit32
+ * 0x15 const/high16 v0, lit16
+ * 0x16 const-wide/16 vx, lit16
+ * 0x17 const-wide/32 vx, lit32
+ * 0x18 const-wide vx, lit64
+ * 0x19 const-wide/high16 vx,lit16
+ * 0x1A const-string vx,string id
+ * 0x1B const-string-jumbo vx,string
+ * 0x1C const-class vx,type id
  *
- * @author Michael Markert
+ * Instructions 0x12, 0x1A, 0x1B, 0x1C can not produce wrong initialized 
+ * registers.
+ * The other instructions are converted to the following Jimple statement:
+ * JAssignStmt ( Local, rightValue ).
+ * Since at the time of the statement creation the no analysis can be 
+ * performed, a default type is given to rightValue. This default type is
+ * "int" for registers whose size is less or equal to 32bits and "long" to registers
+ * whose size is 64bits.
+ * The problem is that 32bits registers could be either "int" or "float" and 64bits
+ * registers "long" or "double". 
+ * If the analysis concludes that an "int" has to be changed to a "float", rightValue
+ * has to change from IntConstant.v(literal) to Float.intBitsToFloat((int) literal).
+ * If the analysis concludes that an "long" has to be changed to a "double, rightValue
+ * has to change from LongConstant.v(literal) to DoubleConstant.v(Double.longBitsToDouble(literal)).
  */
-public class DexNullTransformer extends DexTransformer { 
+public class DexNumTransformer extends DexTransformer {
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
-	private boolean usedAsObject;
-    public static DexNullTransformer v() {
-        return new DexNullTransformer();
+	private boolean usedAsFloatingPoint;
+    public static DexNumTransformer v() {
+        return new DexNumTransformer();
     }
 
    Local l = null;
@@ -91,9 +132,9 @@ public class DexNullTransformer extends DexTransformer {
         SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
         SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
 
-        for (Local loc: getNullCandidates(body)) {
-            System.out.println("\n[null candidate] "+ loc);
-            usedAsObject = false;
+        for (Local loc: getNumCandidates(body)) {
+            System.out.println("\n[num candidate] "+ loc);
+            usedAsFloatingPoint = false;
             List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
             // check if no use
             for (Unit u  : defs) {
@@ -113,29 +154,27 @@ public class DexNullTransformer extends DexTransformer {
               }
               
               // check defs
-              u.apply(new AbstractStmtSwitch() {
+              u.apply(new AbstractStmtSwitch() {              
                 public void caseAssignStmt (AssignStmt stmt) {
                   Value r = stmt.getRightOp();
                       if (r instanceof FieldRef)
-                          usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
+                          usedAsFloatingPoint = isFloatingPointLike(((FieldRef) r).getFieldRef().type());
                       else if (r instanceof ArrayRef)
-                          usedAsObject = isObject(((ArrayRef) r).getType());
-                      else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr)
-                          usedAsObject = true;
+                          usedAsFloatingPoint = isFloatingPointLike(((ArrayRef) r).getType());
                       else if (r instanceof CastExpr)
-                          usedAsObject = isObject (((CastExpr)r).getCastType());
+                          usedAsFloatingPoint = isFloatingPointLike (((CastExpr)r).getCastType());
                       else if (r instanceof InvokeExpr)
-                          usedAsObject = isObject(((InvokeExpr) r).getType());
+                          usedAsFloatingPoint = isFloatingPointLike(((InvokeExpr) r).getType());
                       // introduces alias
                       else if (r instanceof Local) {}
 
                 }
                 public void caseIdentityStmt(IdentityStmt stmt) {
                   if (stmt.getLeftOp() == l)
-                      usedAsObject = isObject(stmt.getRightOp().getType());
+                      usedAsFloatingPoint = isFloatingPointLike(stmt.getRightOp().getType());
               }
               });
-              if (usedAsObject) {
+              if (usedAsFloatingPoint) {
                 doBreak = true;
                 break;
               }
@@ -149,41 +188,30 @@ public class DexNullTransformer extends DexTransformer {
                                 List<Type> argTypes = e.getMethod().getParameterTypes();
                                 assert args.size() == argTypes.size();
                                 for (int i = 0; i < args.size(); i++) {
-                                	if (args.get(i) == l && argTypes.get(i) instanceof RefType) {
+                                	if (args.get(i) == l && isFloatingPointLike (argTypes.get(i))) {
                                      return true;
                                 	}
-                                }
-                                // check for base
-                                SootMethodRef sm = e.getMethodRef();
-                                if (!sm.isStatic()) {
-                                  if (e instanceof AbstractInvokeExpr) {
-                                    AbstractInstanceInvokeExpr aiiexpr = (AbstractInstanceInvokeExpr)e;
-                                    Value b = aiiexpr.getBase();
-                                    if (b == l) {
-                                      return true;
-                                    }
-                                  }
                                 }
                                 return false;
                             }
                             public void caseInvokeStmt(InvokeStmt stmt) {
                                 InvokeExpr e = stmt.getInvokeExpr();
-                                usedAsObject = examineInvokeExpr(e);
+                                usedAsFloatingPoint = examineInvokeExpr(e);
                             }
                             public void caseAssignStmt(AssignStmt stmt) {
                                 // gets value assigned
                                 Value r = stmt.getRightOp();
-                                if (stmt.getLeftOp() == l) {
+                                if (stmt.getLeftOp() == l) { // Alex: why limiting this to l and not Local?
                                     if (r instanceof FieldRef)
-                                        usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
+                                        usedAsFloatingPoint = isFloatingPointLike(((FieldRef) r).getFieldRef().type());
                                     else if (r instanceof ArrayRef)
-                                        usedAsObject = isObject(((ArrayRef) r).getType());
+                                        usedAsFloatingPoint = isFloatingPointLike(((ArrayRef) r).getType());
                                     else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr)
-                                        usedAsObject = true;
+                                        usedAsFloatingPoint = true;
                                     else if (r instanceof CastExpr)
-                                        usedAsObject = isObject (((CastExpr)r).getCastType());
+                                        usedAsFloatingPoint = isFloatingPointLike (((CastExpr)r).getCastType());
                                     else if (r instanceof InvokeExpr)
-                                        usedAsObject = isObject(((InvokeExpr) r).getType());
+                                        usedAsFloatingPoint = isFloatingPointLike(((InvokeExpr) r).getType());
                                     // introduces alias
                                     else if (r instanceof Local) {}
 
@@ -191,41 +219,28 @@ public class DexNullTransformer extends DexTransformer {
                                 // used to assign
                                 if (stmt.getRightOp() == l) {
                                     Value l = stmt.getLeftOp();
-                                    if (l instanceof StaticFieldRef && isObject(((StaticFieldRef) l).getFieldRef().type()))
-                                        usedAsObject = true;
-                                    else if (l instanceof InstanceFieldRef && isObject(((InstanceFieldRef) l).getFieldRef().type()))
-                                        usedAsObject = true;
+                                    if (l instanceof StaticFieldRef && isFloatingPointLike(((StaticFieldRef) l).getFieldRef().type()))
+                                        usedAsFloatingPoint = true;
+                                    else if (l instanceof InstanceFieldRef && isFloatingPointLike(((InstanceFieldRef) l).getFieldRef().type()))
+                                        usedAsFloatingPoint = true;
                                     else if (l instanceof ArrayRef)
-                                        usedAsObject = isObject(((ArrayRef) l).getType());                                      
+                                        usedAsFloatingPoint = isFloatingPointLike(((ArrayRef) l).getType());                                      
                                 }
 
-                                // is used as value (does not exlude assignment)
+                                // is used as value (does not exclude assignment)
                                 if (r instanceof InvokeExpr)
-                                    usedAsObject = usedAsObject || examineInvokeExpr((InvokeExpr) stmt.getRightOp());
+                                    usedAsFloatingPoint = usedAsFloatingPoint || examineInvokeExpr((InvokeExpr) stmt.getRightOp());
                             }
 
-                            public void caseIdentityStmt(IdentityStmt stmt) {
-                                if (stmt.getLeftOp() == l)
-                                    usedAsObject = isObject(stmt.getRightOp().getType());
-                            }
-                            public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
-                                usedAsObject = stmt.getOp() == l;
-                            }
-                            public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
-                                usedAsObject = stmt.getOp() == l;
-                            }
                             public void caseReturnStmt(ReturnStmt stmt) {
-                                usedAsObject = stmt.getOp() == l && isObject(body.getMethod().getReturnType());
-                                System.out.println (" [return stmt] "+ stmt +" usedAsObject: "+ usedAsObject +", return type: "+ body.getMethod().getReturnType());
+                                usedAsFloatingPoint = stmt.getOp() == l && isFloatingPointLike(body.getMethod().getReturnType());
+                                System.out.println (" [return stmt] "+ stmt +" usedAsObject: "+ usedAsFloatingPoint +", return type: "+ body.getMethod().getReturnType());
                                 System.out.println (" class: "+ body.getMethod().getReturnType().getClass());
-                            }
-                            public void caseThrowStmt(ThrowStmt stmt) {
-                                usedAsObject = stmt.getOp() == l;
                             }
                         });
                     
                     
-                    if (usedAsObject) {
+                    if (usedAsFloatingPoint) {
                         doBreak = true;
                         break;
                     }
@@ -236,21 +251,21 @@ public class DexNullTransformer extends DexTransformer {
             } // for defs
             
             // change values
-            if (usedAsObject) {
+            if (usedAsFloatingPoint) {
               for (Unit u : defs) {
-                  replaceWithNull(u);
-                  for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
-                      Unit use = pair.getUnit();
-                      replaceWithNull(use);
-                  }
+                  replaceWithFloatingPoint (u);
               }
             } // end if
 
         }
     }
 
-  private boolean isObject(Type t) {
-    return t instanceof RefLikeType;
+  private boolean isFloatingPointLike (Type t) {
+    String ts = t.toString();
+    if (ts.equals("double") || ts.equals("float")) {
+      return true;
+    }
+    return false;
   }
 	
     /**
@@ -259,7 +274,7 @@ public class DexNullTransformer extends DexTransformer {
      *
      * @param body the body to analyze
      */
-    private Set<Local> getNullCandidates(Body body) {
+    private Set<Local> getNumCandidates(Body body) {
         Set<Local> candidates = new HashSet<Local>();
         Iterator<Unit> i = body.getUnits().iterator();
         while (i.hasNext()) {
@@ -275,14 +290,14 @@ public class DexNullTransformer extends DexTransformer {
                     System.out.println("[add null candidate: "+ u);
                 }
             }
-            else if (u instanceof IfStmt) {
-                ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
-                if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
-                    candidates.add((Local) expr.getOp1());
-                    System.out.println("[add null candidate if: "+ u);
-                }
-
-            }
+//            else if (u instanceof IfStmt) {
+//                ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
+//                if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
+//                    candidates.add((Local) expr.getOp1());
+//                    System.out.println("[add null candidate if: "+ u);
+//                }
+//
+//            }
         }
 
         return candidates;
@@ -293,37 +308,24 @@ public class DexNullTransformer extends DexTransformer {
      *
      * @param u the unit where 0 will be replaced with null.
      */
-    private void replaceWithNull(Unit u) {
+    private void replaceWithFloatingPoint (Unit u) {
       
-        if (u instanceof IfStmt) {
-            ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
-            if (isZeroComparison(expr)) {
-                expr.setOp2(NullConstant.v());
-                System.out.println("[null] replacing with null in "+ u);
-                System.out.println(" new u: "+ u);
-            }
-        } else if (u instanceof AssignStmt) {
+        if (u instanceof AssignStmt) {
         	AssignStmt s = (AssignStmt) u;
             Value v = s.getRightOp();
-            if ((v instanceof IntConstant) && ((IntConstant) v).value == 0) {
-                s.setRightOp(NullConstant.v());
-                System.out.println("[null] replacing with null in "+ u);
-                System.out.println(" new u: "+ u);
+            if ((v instanceof IntConstant)) {
+                int vVal = ((IntConstant)v).value;
+                s.setRightOp (FloatConstant.v (Float.intBitsToFloat ((int)vVal)));
+                System.out.println("[floatingpoint] replacing with float in "+ u);
+            } else if (v instanceof LongConstant) {
+              long vVal = ((LongConstant)v).value;
+              s.setRightOp (DoubleConstant.v (Double.longBitsToDouble ((long)vVal)));
+              System.out.println("[floatingpoint] replacing with double in "+ u);
             }
         }
 
     }
 
-    /**
-     * Examine expr if it is a comparison with 0.
-     *
-     * @param expr the ConditionExpr to examine
-     */
-    private boolean isZeroComparison(ConditionExpr expr) {
-        return (expr.getOp2() instanceof IntConstant)
-            && ((IntConstant) expr.getOp2()).value == 0
-            && ((expr instanceof EqExpr) || (expr instanceof NeExpr));
-    }
 
 
 }
