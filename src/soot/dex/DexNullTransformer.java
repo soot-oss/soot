@@ -21,14 +21,11 @@ package soot.dex;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Local;
 import soot.RefLikeType;
 import soot.RefType;
@@ -62,8 +59,6 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
