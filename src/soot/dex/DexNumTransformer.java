@@ -214,41 +214,36 @@ public class DexNumTransformer extends DexTransformer {
                                 usedAsFloatingPoint = examineInvokeExpr(e);
                             }
                             public void caseAssignStmt(AssignStmt stmt) {
-                                // gets value assigned
-                                Value r = stmt.getRightOp();
-                                if (stmt.getLeftOp() == l) { // Alex: why limiting this to l and not Local?
-                                    if (r instanceof FieldRef)
-                                        usedAsFloatingPoint = isFloatingPointLike(((FieldRef) r).getFieldRef().type());
-                                    else if (r instanceof ArrayRef)
-                                        usedAsFloatingPoint = isFloatingPointLike(((ArrayRef) r).getType());
-                                    else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr)
-                                        usedAsFloatingPoint = true;
-                                    else if (r instanceof CastExpr)
-                                        usedAsFloatingPoint = isFloatingPointLike (((CastExpr)r).getCastType());
-                                    else if (r instanceof InvokeExpr)
-                                        usedAsFloatingPoint = isFloatingPointLike(((InvokeExpr) r).getType());
-                                    // introduces alias
-                                    else if (r instanceof Local) {}
-
+                                // only case where 'l' could be on the left side is arrayRef with 'l' as the index
+                                Value left = stmt.getLeftOp();
+                                if (left instanceof ArrayRef) {
+                                  ArrayRef ar = (ArrayRef)left;
+                                  if (ar.getIndex() == l) {
+                                    doBreak = true;
+                                    return;
+                                  }                                 
                                 }
-                                // used to assign
-                                if (stmt.getRightOp() == l) {
-                                    Value l = stmt.getLeftOp();
-                                    if (l instanceof StaticFieldRef && isFloatingPointLike(((StaticFieldRef) l).getFieldRef().type()))
-                                        usedAsFloatingPoint = true;
-                                    else if (l instanceof InstanceFieldRef && isFloatingPointLike(((InstanceFieldRef) l).getFieldRef().type()))
-                                        usedAsFloatingPoint = true;
-                                    else if (l instanceof ArrayRef)
-                                        usedAsFloatingPoint = isFloatingPointLike(((ArrayRef) l).getType());                                      
-                                }
-
-                                // is used as value (does not exclude assignment)
-                                if (r instanceof InvokeExpr)
+                                
+                                // from this point, we only check the right hand side of the assignment
+                                Value r = stmt.getRightOp();                                
+                                if (r instanceof ArrayRef) {
+                                  if (((ArrayRef)r).getIndex() == l) {
+                                    doBreak = true;
+                                    return;
+                                  }
+                                 } else if (r instanceof InvokeExpr) {
                                   usedAsFloatingPoint = usedAsFloatingPoint || examineInvokeExpr((InvokeExpr) stmt.getRightOp());
-                                else if (r instanceof BinopExpr)
+                                  doBreak = true;
+                                  return;
+                                 } else if (r instanceof BinopExpr) {
                                   usedAsFloatingPoint = examineBinopExpr ((Unit)stmt);
-                                else if (r instanceof CastExpr)
+                                  doBreak = true;
+                                  return;
+                                 } else if (r instanceof CastExpr) {
                                   usedAsFloatingPoint = stmt.hasTag("FloatOpTag") || stmt.hasTag("DoubleOpTag");
+                                  doBreak = true;
+                                  return;
+                                 }
                                   
                             }
 
