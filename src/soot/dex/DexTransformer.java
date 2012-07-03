@@ -9,11 +9,22 @@ import java.util.Stack;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.FieldRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.Stmt;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 public abstract class DexTransformer extends BodyTransformer {
@@ -81,4 +92,74 @@ public abstract class DexTransformer extends BodyTransformer {
       }
       return defs;
   }
+  
+  protected Type findArrayType(ExceptionalUnitGraph g,
+      SmartLocalDefs localDefs, SimpleLocalUses localUses, Stmt arrayStmt) {
+    ArrayRef aRef = null;
+    if (arrayStmt.containsArrayRef()) {
+      aRef = arrayStmt.getArrayRef();
+    }
+    Local aBase = null;
+    
+    if (null == aRef) {
+      if (arrayStmt instanceof AssignStmt) {
+        AssignStmt stmt = (AssignStmt)arrayStmt;
+        aBase = (Local)stmt.getRightOp();
+      } else {
+        System.out.println("ERROR: not an assign statement: "+ arrayStmt);
+        System.exit(-1);
+      }
+    } else {    
+      aBase = (Local)aRef.getBase();
+    }
+    
+    List<Unit> defsOfaBaseList = localDefs.getDefsOfAt(aBase, arrayStmt);
+    if (defsOfaBaseList == null || defsOfaBaseList.size() == 0) {
+      System.out.println("ERROR: no def statement found for array base local "+ arrayStmt);
+      System.exit(-1);
+    }
+    
+    // We should find an answer only by processing the first item of the list
+    Unit baseDef = defsOfaBaseList.get(0);
+    
+    // baseDef is either an assignment statement or an identity statement
+    if (baseDef instanceof AssignStmt) {
+      AssignStmt stmt = (AssignStmt) baseDef;
+      Value r = stmt.getRightOp();
+      if (r instanceof FieldRef) {
+        return ((FieldRef) r).getFieldRef().type();
+      } else if (r instanceof ArrayRef) {
+        ArrayRef ar = (ArrayRef)r;
+        if (ar.getType().equals(".unknown")) {
+          return findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned?
+        } else {
+          return ar.getType();                         
+        }
+      } else if (r instanceof NewArrayExpr) {
+        NewArrayExpr expr = (NewArrayExpr)r;
+        return expr.getBaseType();
+      } else if (r instanceof CastExpr) {
+        return (((CastExpr)r).getCastType());
+      } else if (r instanceof InvokeExpr) {
+        return ((InvokeExpr) r).getMethodRef().returnType();
+        // introduces alias
+      } else if (r instanceof Local) {
+        return findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned?
+      } else {
+        System.out.println("ERROR: def statement not possible! "+ stmt);
+        System.exit(-1);
+      }
+
+    } else if (baseDef instanceof IdentityStmt) {
+      IdentityStmt stmt = (IdentityStmt)baseDef;
+      return stmt.getRightOp().getType();
+    } else {
+      System.out.println("ERROR: base local def must be AssignStmt or IdentityStmt! "+ baseDef);
+      System.exit(-1);
+    }
+
+    
+    return null;
+  }
+  
 }

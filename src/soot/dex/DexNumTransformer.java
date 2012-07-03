@@ -36,6 +36,7 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.UnknownType;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -55,6 +56,7 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
+import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NeExpr;
 import soot.jimple.NewArrayExpr;
@@ -135,9 +137,9 @@ public class DexNumTransformer extends DexTransformer {
     
 	@SuppressWarnings("unchecked")
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
-        ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-        SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-        SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
+        final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
+        final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+        final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
 
         for (Local loc: getNumCandidates(body)) {
             System.out.println("\n[num candidate] "+ loc);
@@ -170,7 +172,13 @@ public class DexNumTransformer extends DexTransformer {
                           usedAsFloatingPoint = isFloatingPointLike(((FieldRef) r).getFieldRef().type());
                           doBreak = true;
                       } else if (r instanceof ArrayRef) {
-                          usedAsFloatingPoint = isFloatingPointLike(((ArrayRef) r).getType());
+                        ArrayRef ar = (ArrayRef)r;
+                        Type arType = ar.getType();
+                        if (arType instanceof UnknownType) {
+                          usedAsFloatingPoint = isFloatingPointLike (findArrayType (g, localDefs, localUses, stmt)); // TODO: check where else to update if(ArrayRef...
+                        } else {
+                          usedAsFloatingPoint = isFloatingPointLike(ar.getType());
+                        }
                           doBreak = true;
                       } else if (r instanceof CastExpr) {
                           usedAsFloatingPoint = isFloatingPointLike (((CastExpr)r).getCastType());
@@ -178,6 +186,9 @@ public class DexNumTransformer extends DexTransformer {
                       } else if (r instanceof InvokeExpr) {
                           usedAsFloatingPoint = isFloatingPointLike(((InvokeExpr) r).getType());
                           doBreak = true;
+                      } else if (r instanceof LengthExpr) {
+                        usedAsFloatingPoint = false;
+                        doBreak = true;
                       }
                       // introduces alias
                       else if (r instanceof Local) {}

@@ -358,13 +358,18 @@ public class DexBody  {
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
         
-        DexNumTransformer.v().transform (jBody);
-        
+        DexNumTransformer.v().transform (jBody);      
         DexNullTransformer.v().transform(jBody);
+        
+        System.out.println("\nafter Num and Null transformers");
+        System.out.println((Body)jBody);
         
         TypeAssigner.v().transform(jBody);
         LocalPacker.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
+        
+        System.out.println("\nafter type assigner localpacker and name standardizer");
+        System.out.println((Body)jBody);
         
         PackManager.v().getPack("jb").apply(jBody);
 
