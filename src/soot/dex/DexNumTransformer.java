@@ -21,34 +21,54 @@ package soot.dex;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import soot.Body;
+import soot.BodyTransformer;
 import soot.Local;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
+import soot.jimple.CmpExpr;
+import soot.jimple.ConditionExpr;
 import soot.jimple.DoubleConstant;
+import soot.jimple.EnterMonitorStmt;
+import soot.jimple.EqExpr;
+import soot.jimple.ExitMonitorStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.LongConstant;
+import soot.jimple.NeExpr;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
+import soot.jimple.NullConstant;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.StringConstant;
+import soot.jimple.ThrowStmt;
+import soot.jimple.internal.AbstractInstanceInvokeExpr;
+import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
@@ -101,7 +121,12 @@ import soot.toolkits.scalar.UnitValueBoxPair;
 public class DexNumTransformer extends DexTransformer {
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
+  
+  
 	private boolean usedAsFloatingPoint;
+  boolean doBreak = false;
+	
+	
     public static DexNumTransformer v() {
         return new DexNumTransformer();
     }
@@ -125,7 +150,6 @@ public class DexNumTransformer extends DexTransformer {
               }
             }
             // process normally
-            boolean doBreak = false;
             for (Unit u  : defs) {
               
               // put correct local in l
@@ -139,25 +163,34 @@ public class DexNumTransformer extends DexTransformer {
               u.apply(new AbstractStmtSwitch() {              
                 public void caseAssignStmt (AssignStmt stmt) {
                   Value r = stmt.getRightOp();
-                      if (r instanceof FieldRef)
+                      if (r instanceof BinopExpr && !(r instanceof CmpExpr)) {
+                        usedAsFloatingPoint = examineBinopExpr ((Unit)stmt);
+                        doBreak = true;
+                      } else if (r instanceof FieldRef) {
                           usedAsFloatingPoint = isFloatingPointLike(((FieldRef) r).getFieldRef().type());
-                      else if (r instanceof ArrayRef)
+                          doBreak = true;
+                      } else if (r instanceof ArrayRef) {
                           usedAsFloatingPoint = isFloatingPointLike(((ArrayRef) r).getType());
-                      else if (r instanceof CastExpr)
+                          doBreak = true;
+                      } else if (r instanceof CastExpr) {
                           usedAsFloatingPoint = isFloatingPointLike (((CastExpr)r).getCastType());
-                      else if (r instanceof InvokeExpr)
+                          doBreak = true;
+                      } else if (r instanceof InvokeExpr) {
                           usedAsFloatingPoint = isFloatingPointLike(((InvokeExpr) r).getType());
+                          doBreak = true;
+                      }
                       // introduces alias
                       else if (r instanceof Local) {}
 
                 }
                 public void caseIdentityStmt(IdentityStmt stmt) {
-                  if (stmt.getLeftOp() == l)
+                  if (stmt.getLeftOp() == l) {
                       usedAsFloatingPoint = isFloatingPointLike(stmt.getRightOp().getType());
+                      doBreak = true;
+                  }
               }
               });
-              if (usedAsFloatingPoint) {
-                doBreak = true;
+              if (doBreak) {
                 break;
               }
               
@@ -211,7 +244,12 @@ public class DexNumTransformer extends DexTransformer {
 
                                 // is used as value (does not exclude assignment)
                                 if (r instanceof InvokeExpr)
-                                    usedAsFloatingPoint = usedAsFloatingPoint || examineInvokeExpr((InvokeExpr) stmt.getRightOp());
+                                  usedAsFloatingPoint = usedAsFloatingPoint || examineInvokeExpr((InvokeExpr) stmt.getRightOp());
+                                else if (r instanceof BinopExpr)
+                                  usedAsFloatingPoint = examineBinopExpr ((Unit)stmt);
+                                else if (r instanceof CastExpr)
+                                  usedAsFloatingPoint = stmt.hasTag("FloatOpTag") || stmt.hasTag("DoubleOpTag");
+                                  
                             }
 
                             public void caseReturnStmt(ReturnStmt stmt) {
@@ -222,10 +260,8 @@ public class DexNumTransformer extends DexTransformer {
                         });
                     
                     
-                    if (usedAsFloatingPoint) {
-                        doBreak = true;
+                    if (doBreak)
                         break;
-                    }
 
                 } // for uses
                 if (doBreak)
@@ -241,6 +277,13 @@ public class DexNumTransformer extends DexTransformer {
 
         }
     }
+
+  protected boolean examineBinopExpr (Unit u) {
+    if (u.hasTag("FloatOpTag") || u.hasTag("DoubleOpTag")) {
+      return true;
+    }
+    return false;
+  }
 
   private boolean isFloatingPointLike (Type t) {
     String ts = t.toString();
@@ -290,8 +333,7 @@ public class DexNumTransformer extends DexTransformer {
      *
      * @param u the unit where 0 will be replaced with null.
      */
-    private void replaceWithFloatingPoint (Unit u) {
-      
+    private void replaceWithFloatingPoint (Unit u) {      
         if (u instanceof AssignStmt) {
         	AssignStmt s = (AssignStmt) u;
             Value v = s.getRightOp();

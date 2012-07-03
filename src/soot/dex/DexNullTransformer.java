@@ -108,7 +108,7 @@ public class DexNullTransformer extends DexTransformer {
               }
               
               // check defs
-              u.apply(new AbstractStmtSwitch() {
+              u.apply(new AbstractStmtSwitch() { // Alex: should also end as soon as detected as not used as an object
                 public void caseAssignStmt (AssignStmt stmt) {
                   Value r = stmt.getRightOp();
                       if (r instanceof FieldRef)

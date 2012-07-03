@@ -25,11 +25,14 @@ import org.jf.dexlib.Code.Format.Instruction23x;
 
 import soot.Local;
 import soot.dex.DexBody;
+import soot.dex.tags.DoubleOpTag;
+import soot.dex.tags.FloatOpTag;
+import soot.dex.tags.LongOpTag;
 import soot.jimple.AssignStmt;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
 
-public class CmpInstruction extends DexlibAbstractInstruction {
+public class CmpInstruction extends TaggedInstruction {
 
     public CmpInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -48,18 +51,33 @@ public class CmpInstruction extends DexlibAbstractInstruction {
         Expr cmpExpr;
         switch (instruction.opcode) {
         case CMPL_DOUBLE:
+          setTag (new DoubleOpTag());
+          cmpExpr = Jimple.v().newCmplExpr(first, second);
+          break;
         case CMPL_FLOAT:
+          setTag (new FloatOpTag());
             cmpExpr = Jimple.v().newCmplExpr(first, second);
             break;
         case CMPG_DOUBLE:
+          setTag (new DoubleOpTag());
+          cmpExpr = Jimple.v().newCmpgExpr(first, second);
+          break;
         case CMPG_FLOAT:
+          setTag (new FloatOpTag());
             cmpExpr = Jimple.v().newCmpgExpr(first, second);
             break;
+        case CMP_LONG:
+          setTag (new LongOpTag());
+          cmpExpr = Jimple.v().newCmpgExpr(first, second);
+          break;
         default:
+            System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(instruction.opcode.value));
+            System.exit(-1);
             cmpExpr = Jimple.v().newCmpExpr(first, second);
         }
 
         AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cmpExpr);
+        assign.addTag(getTag());
 
         defineBlock(assign);
         tagWithLineNumber(assign);
@@ -73,19 +91,4 @@ public class CmpInstruction extends DexlibAbstractInstruction {
         return register == dest;
     }
 
-    @Override
-    boolean isUsedAsFloatingPoint(DexBody body, int register) {
-        ThreeRegisterInstruction i = (ThreeRegisterInstruction) instruction;
-        if (i.getRegisterB() == register || i.getRegisterC() == register)
-            switch (instruction.opcode) {
-            case CMPL_FLOAT:
-            case CMPG_FLOAT:
-            case CMPL_DOUBLE:
-            case CMPG_DOUBLE:
-                return true;
-            default:
-                return false;
-            }
-        return false;
-    }
 }

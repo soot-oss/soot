@@ -260,7 +260,7 @@ public class InstructionFactory {
         case INT_TO_BYTE:
         case INT_TO_CHAR:
         case INT_TO_SHORT:
-            return new ConversionInstruction(instruction, codeAddress);
+            return new CastInstruction(instruction, codeAddress);
 
         case ADD_INT:
         case SUB_INT:
