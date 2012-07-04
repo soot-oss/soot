@@ -33,6 +33,7 @@ import org.jf.dexlib.Code.Format.Instruction31t;
 import org.jf.dexlib.Util.ByteArray;
 
 import soot.ArrayType;
+import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
@@ -156,26 +157,27 @@ public class FillArrayDataInstruction extends DexlibAbstractInstruction {
     	
         NumericConstant value;
         ByteArray byteArr = new ByteArray(element.buffer);
-        if(elementType instanceof ByteType) {
+        if (elementType instanceof BooleanType) {
+          value = IntConstant.v(byteArr.getByte(element.bufferIndex));
+          IntConstant ic = (IntConstant)value;
+          if (!(ic.value == 0 || ic.value == 1)) {
+            System.out.println("ERROR: Invalid value for boolean: "+ value);
+            System.exit(-1);
+          }
+        } else if(elementType instanceof ByteType) {
         	value = IntConstant.v(byteArr.getByte(element.bufferIndex));
-        }
-        else if(elementType instanceof CharType || elementType instanceof ShortType) {
+        } else if(elementType instanceof CharType || elementType instanceof ShortType) {
         	value = IntConstant.v(byteArr.getShort(element.bufferIndex));
-        }
-        else if(elementType instanceof DoubleType) {
+        } else if(elementType instanceof DoubleType) {
         	value = DoubleConstant.v(byteArr.getLong(element.bufferIndex));
-        }
-        else if(elementType instanceof FloatType) {
+        } else if(elementType instanceof FloatType) {
         	value = FloatConstant.v(byteArr.getInt(element.bufferIndex));
-        }
-        else if(elementType instanceof IntType) {
+        } else if(elementType instanceof IntType) {
         	value = IntConstant.v(byteArr.getInt(element.bufferIndex));
-        }
-        else if(elementType instanceof LongType) {
+        } else if(elementType instanceof LongType) {
         	value = LongConstant.v(byteArr.getLong(element.bufferIndex));
-        }
-        else {
-        	throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction");
+        } else {
+        	throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
         }
         return value;
 
