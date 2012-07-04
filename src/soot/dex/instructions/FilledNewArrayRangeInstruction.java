@@ -57,7 +57,7 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         Type arrayType = ((ArrayType) t).getElementType();
 
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
-        arrayLocal = body.getStoreResultLocal(); //body.generateLocal(arrayType);
+        arrayLocal = body.getStoreResultLocal();
         AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
         body.add (assignStmt);
 

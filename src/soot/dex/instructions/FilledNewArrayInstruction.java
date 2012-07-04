@@ -66,7 +66,7 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         // new local generated intentional, will be moved to real register by MoveResult
-        arrayLocal = body.generateLocal(arrayType);
+        arrayLocal = body.getStoreResultLocal();
         AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
         body.add (assignStmt);
 
