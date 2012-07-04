@@ -20,6 +20,7 @@
 package soot.dex.instructions;
 
 import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib.Code.Opcode;
 import org.jf.dexlib.Code.Format.Instruction23x;
 
 import soot.ArrayType;
@@ -27,6 +28,7 @@ import soot.Local;
 import soot.Type;
 import soot.UnknownType;
 import soot.dex.DexBody;
+import soot.dex.tags.ObjectOpTag;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -50,7 +52,9 @@ public class AputInstruction extends FieldInstruction {
 
         Local sourceValue = body.getRegisterLocal(source);
         AssignStmt assign = getAssignStmt(body, sourceValue, arrayRef);
-
+        if (aPutInstr.opcode.value == Opcode.APUT_OBJECT.value)
+          assign.addTag(new ObjectOpTag());
+        
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);

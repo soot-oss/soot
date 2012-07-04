@@ -152,6 +152,7 @@ public class DexNumTransformer extends DexTransformer {
               }
             }
             // process normally
+            doBreak = false;
             for (Unit u  : defs) {
               
               // put correct local in l
@@ -160,6 +161,9 @@ public class DexNumTransformer extends DexTransformer {
               } else if (u instanceof IdentityStmt) {
                 l = (Local)((IdentityStmt)u).getLeftOp();
               }
+              
+              System.out.println ("    def  : "+ u);
+              System.out.println ("    local: "+ l);
               
               // check defs
               u.apply(new AbstractStmtSwitch() {              
@@ -191,16 +195,20 @@ public class DexNumTransformer extends DexTransformer {
                         doBreak = true;
                       }
                       // introduces alias
-                      else if (r instanceof Local) {}
+                      else if (r instanceof Local) {
+                      }
 
                 }
                 public void caseIdentityStmt(IdentityStmt stmt) {
+                  System.out.println("h");
                   if (stmt.getLeftOp() == l) {
                       usedAsFloatingPoint = isFloatingPointLike(stmt.getRightOp().getType());
                       doBreak = true;
                   }
               }
               });
+              
+              
               if (doBreak) {
                 break;
               }
@@ -208,6 +216,9 @@ public class DexNumTransformer extends DexTransformer {
               // check uses
                 for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
+                    
+                    System.out.println("    use: "+ use);
+                    
                     use.apply( new AbstractStmtSwitch() {
                             private boolean examineInvokeExpr(InvokeExpr e) {
                                 List<Value> args = e.getArgs();
@@ -243,7 +254,7 @@ public class DexNumTransformer extends DexTransformer {
                                     return;
                                   }
                                  } else if (r instanceof InvokeExpr) {
-                                  usedAsFloatingPoint = usedAsFloatingPoint || examineInvokeExpr((InvokeExpr) stmt.getRightOp());
+                                  usedAsFloatingPoint = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
                                   doBreak = true;
                                   return;
                                  } else if (r instanceof BinopExpr) {
@@ -316,7 +327,7 @@ public class DexNumTransformer extends DexTransformer {
                     continue;
                 Local l = (Local) a.getLeftOp();
                 Value r = a.getRightOp();
-                if ((r instanceof IntConstant && ((IntConstant) r).value == 0)) {
+                if ((r instanceof IntConstant || r instanceof LongConstant )) { //&& ((IntConstant) r).value == 0)) {
                     candidates.add(l);
                     System.out.println("[add null candidate: "+ u);
                 }
@@ -351,7 +362,7 @@ public class DexNumTransformer extends DexTransformer {
               long vVal = ((LongConstant)v).value;
               s.setRightOp (DoubleConstant.v (Double.longBitsToDouble ((long)vVal)));
               System.out.println("[floatingpoint] replacing with double in "+ u);
-            }
+            } 
         }
 
     }

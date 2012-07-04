@@ -146,7 +146,7 @@ public class DexNullTransformer extends DexTransformer {
                       } else if (r instanceof ArrayRef) {
                           ArrayRef ar = (ArrayRef)r;
                           if (ar.getType() instanceof UnknownType) {
-                            usedAsObject = isObject (findArrayType (g, localDefs, localUses, stmt));
+                            usedAsObject = stmt.hasTag("ObjectOpTag"); //isObject (findArrayType (g, localDefs, localUses, stmt));
                           } else {
                             usedAsObject = isObject(ar.getType());                         
                           }
@@ -165,7 +165,7 @@ public class DexNullTransformer extends DexTransformer {
                           doBreak = true;
                           return;
                       } else if (r instanceof LengthExpr) {
-                        usedAsObject = true;
+                        usedAsObject = false;
                         doBreak = true;
                         return;
                       // introduces alias
@@ -258,7 +258,7 @@ public class DexNullTransformer extends DexTransformer {
                                     } else if (l instanceof ArrayRef) {
                                       Type aType = ((ArrayRef) l).getType();
                                       if (aType instanceof UnknownType) {
-                                        usedAsObject = isObject( findArrayType(g, localDefs, localUses, stmt));
+                                        usedAsObject = stmt.hasTag("ObjectOpTag"); //isObject( findArrayType(g, localDefs, localUses, stmt));
                                       } else {
                                         usedAsObject = isObject(aType); 
                                       }

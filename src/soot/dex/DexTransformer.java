@@ -131,7 +131,7 @@ public abstract class DexTransformer extends BodyTransformer {
       } else if (r instanceof ArrayRef) {
         ArrayRef ar = (ArrayRef)r;
         if (ar.getType().equals(".unknown")) {
-          return findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned?
+          return findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned? //TODO: /!\ loops
         } else {
           return ar.getType();                         
         }
@@ -144,7 +144,7 @@ public abstract class DexTransformer extends BodyTransformer {
         return ((InvokeExpr) r).getMethodRef().returnType();
         // introduces alias
       } else if (r instanceof Local) {
-        return findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned?
+        return findArrayType (g, localDefs, localUses, stmt);
       } else {
         System.out.println("ERROR: def statement not possible! "+ stmt);
         System.exit(-1);
