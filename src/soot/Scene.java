@@ -966,8 +966,6 @@ public class Scene  //extends AbstractHost
 
 	addBasicClass("java.lang.ref.Finalizer");
 	
-	addBasicClass("java.dyn.InvokeDynamic");
-
     }
 
     public void addBasicClass(String name) {
