@@ -347,12 +347,12 @@ public class DexBody  {
         if (tries != null)
             addTraps();
         
-        System.out.println("\nbefore spliting");
+        System.out.println("\nbefore splitting");
         System.out.println((Body)jBody);
         
         splitLocals();
         
-        System.out.println("\nafter spliting");
+        System.out.println("\nafter splitting");
         System.out.println((Body)jBody);
         
         for (RetypeableInstruction i : instructionsToRetype)
