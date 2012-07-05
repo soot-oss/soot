@@ -58,128 +58,128 @@ import soot.jimple.Stmt;
 
 public class FillArrayDataInstruction extends DexlibAbstractInstruction {
 
-    public FillArrayDataInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
+  public FillArrayDataInstruction (Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
+
+  public void jimplify (DexBody body) {
+    if(!(instruction instanceof Instruction31t))
+      throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
+
+    Instruction31t fillArrayInstr = (Instruction31t)instruction;
+    int destRegister = fillArrayInstr.getRegisterA();
+    int offset = fillArrayInstr.getTargetAddressOffset();
+    int targetAddress = codeAddress + offset;
+
+    Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
+
+    if(!(referenceTable instanceof ArrayDataPseudoInstruction)) {
+      throw new RuntimeException("Address " + targetAddress + "refers to an invalid PseudoInstruction.");
     }
 
-    public void jimplify (DexBody body) {
-        if(!(instruction instanceof Instruction31t))
-            throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
+    ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
+    int numElements = arrayTable.getElementCount();
 
-        Instruction31t fillArrayInstr = (Instruction31t)instruction;
-        int destRegister = fillArrayInstr.getRegisterA();
-        int offset = fillArrayInstr.getTargetAddressOffset();
-        int targetAddress = codeAddress + offset;
+    //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
+    //        body.add(nopStmtBeginning);
 
-        Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
+    Local arrayReference = body.getRegisterLocal(destRegister);
 
-        if(!(referenceTable instanceof ArrayDataPseudoInstruction)) {
-            throw new RuntimeException("Address " + targetAddress + "refers to an invalid PseudoInstruction.");
-        }
-
-        ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
-        int numElements = arrayTable.getElementCount();
-
-//        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
-//        body.add(nopStmtBeginning);
-
-        Local arrayReference = body.getRegisterLocal(destRegister);
-
-        Iterator<ArrayElement> elements = arrayTable.getElements();
-        Stmt firstAssign = null;
-        for (int i = 0; i < numElements; i++) {
-            ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
-            NumericConstant element = getArrayElement(elements.next(),body,destRegister);
-            AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
-            tagWithLineNumber(assign);
-            body.add(assign);
-            if (i == 0) {
-              firstAssign = assign;
-            }
-        }
-        if (firstAssign == null) { // if numElements == 0. Is it possible?
-          firstAssign = Jimple.v().newNopStmt();
-          body.add (firstAssign);
-        }
-
-//        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
-//        body.add(nopStmtEnd);
-
-//        defineBlock(nopStmtBeginning, nopStmtEnd);
-        defineBlock (firstAssign);
-
+    Iterator<ArrayElement> elements = arrayTable.getElements();
+    Stmt firstAssign = null;
+    for (int i = 0; i < numElements; i++) {
+      ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
+      NumericConstant element = getArrayElement(elements.next(),body,destRegister);
+      AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
+      tagWithLineNumber(assign);
+      body.add(assign);
+      if (i == 0) {
+        firstAssign = assign;
+      }
+    }
+    if (firstAssign == null) { // if numElements == 0. Is it possible?
+        firstAssign = Jimple.v().newNopStmt();
+        body.add (firstAssign);
     }
 
-    private NumericConstant getArrayElement(ArrayElement element, DexBody body, int arrayRegister) {
-    	
-        List<DexlibAbstractInstruction> instructions = body.instructionsBefore(this);
-        Set<Integer> usedRegisters = new HashSet<Integer>();
-        usedRegisters.add(arrayRegister);
+    //        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
+    //        body.add(nopStmtEnd);
 
-        Type elementType = null;
-        Outer:
-        for(DexlibAbstractInstruction i : instructions) {
-            if (usedRegisters.isEmpty())
-                break;
+    //        defineBlock(nopStmtBeginning, nopStmtEnd);
+    defineBlock (firstAssign);
 
-            for (int reg : usedRegisters)
-                if (i instanceof NewArrayInstruction) {
-					NewArrayInstruction newArrayInstruction = (NewArrayInstruction) i;
-					Instruction22c instruction22c = (Instruction22c)newArrayInstruction.instruction;
-					if(instruction22c.getRegisterA()==reg) {
-						ArrayType arrayType = (ArrayType) DexType.toSoot((TypeIdItem) instruction22c.getReferencedItem());
-						elementType = arrayType.getElementType();
-						break Outer;
-					}
-				}
+  }
 
-            // look for obsolete registers
-            for (int reg : usedRegisters) {
-                if (i.overridesRegister(reg)) {
-                    usedRegisters.remove(reg);
-                    break;      // there can't be more than one obsolete
-                }
+  private NumericConstant getArrayElement(ArrayElement element, DexBody body, int arrayRegister) {
+
+    List<DexlibAbstractInstruction> instructions = body.instructionsBefore(this);
+    Set<Integer> usedRegisters = new HashSet<Integer>();
+    usedRegisters.add(arrayRegister);
+
+    Type elementType = null;
+    Outer:
+      for(DexlibAbstractInstruction i : instructions) {
+        if (usedRegisters.isEmpty())
+          break;
+
+        for (int reg : usedRegisters)
+          if (i instanceof NewArrayInstruction) {
+            NewArrayInstruction newArrayInstruction = (NewArrayInstruction) i;
+            Instruction22c instruction22c = (Instruction22c)newArrayInstruction.instruction;
+            if (instruction22c.getRegisterA()==reg) {
+              ArrayType arrayType = (ArrayType) DexType.toSoot((TypeIdItem) instruction22c.getReferencedItem());
+              elementType = arrayType.getElementType();
+              break Outer;
             }
-
-            // look for new registers
-            for (int reg : usedRegisters) {
-                int newRegister = i.movesToRegister(reg);
-                if (newRegister != -1) {
-                    usedRegisters.add(newRegister);
-                    break;      // there can't be more than one new
-                }
-            }
-        }
-        
-        if(elementType==null) {
-        	throw new InternalError("Unable to find array type to type array elements!");
-        }
-    	
-        NumericConstant value;
-        ByteArray byteArr = new ByteArray(element.buffer);
-        if (elementType instanceof BooleanType) {
-          value = IntConstant.v(byteArr.getByte(element.bufferIndex));
-          IntConstant ic = (IntConstant)value;
-          if (!(ic.value == 0 || ic.value == 1)) {
-            System.out.println("ERROR: Invalid value for boolean: "+ value);
-            System.exit(-1);
           }
-        } else if(elementType instanceof ByteType) {
-        	value = IntConstant.v(byteArr.getByte(element.bufferIndex));
-        } else if(elementType instanceof CharType || elementType instanceof ShortType) {
-        	value = IntConstant.v(byteArr.getShort(element.bufferIndex));
-        } else if(elementType instanceof DoubleType) {
-        	value = DoubleConstant.v(byteArr.getLong(element.bufferIndex));
-        } else if(elementType instanceof FloatType) {
-        	value = FloatConstant.v(byteArr.getInt(element.bufferIndex));
-        } else if(elementType instanceof IntType) {
-        	value = IntConstant.v(byteArr.getInt(element.bufferIndex));
-        } else if(elementType instanceof LongType) {
-        	value = LongConstant.v(byteArr.getLong(element.bufferIndex));
-        } else {
-        	throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
-        }
-        return value;
 
+//        // look for obsolete registers
+//        for (int reg : usedRegisters) {
+//          if (i.overridesRegister(reg)) {
+//            usedRegisters.remove(reg);            
+//            break;      // there can't be more than one obsolete
+//          }
+//        }
+
+        // look for new registers
+        for (int reg : usedRegisters) {
+          int newRegister = i.movesToRegister(reg);
+          if (newRegister != -1) {
+            usedRegisters.add(newRegister);
+            usedRegisters.remove(reg);
+            break;      // there can't be more than one new
+          }
+        }
+      }
+
+    if(elementType==null) {
+      throw new InternalError("Unable to find array type to type array elements!");
     }
+
+    NumericConstant value;
+    ByteArray byteArr = new ByteArray(element.buffer);
+    if (elementType instanceof BooleanType) {
+      value = IntConstant.v(byteArr.getByte(element.bufferIndex));
+      IntConstant ic = (IntConstant)value;
+      if (!(ic.value == 0 || ic.value == 1)) {
+        throw new RuntimeException("ERROR: Invalid value for boolean: "+ value);
+      }
+    } else if(elementType instanceof ByteType) {
+      value = IntConstant.v(byteArr.getByte(element.bufferIndex));
+    } else if(elementType instanceof CharType || elementType instanceof ShortType) {
+      value = IntConstant.v(byteArr.getShort(element.bufferIndex));
+    } else if(elementType instanceof DoubleType) {
+      value = DoubleConstant.v(byteArr.getLong(element.bufferIndex));
+    } else if(elementType instanceof FloatType) {
+      value = FloatConstant.v(byteArr.getInt(element.bufferIndex));
+    } else if(elementType instanceof IntType) {
+      value = IntConstant.v(byteArr.getInt(element.bufferIndex));
+    } else if(elementType instanceof LongType) {
+      value = LongConstant.v(byteArr.getLong(element.bufferIndex));
+    } else {
+      throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
+    }
+    return value;
+
+  }
 }

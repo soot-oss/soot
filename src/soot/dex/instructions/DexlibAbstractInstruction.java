@@ -56,6 +56,9 @@ public abstract class DexlibAbstractInstruction {
 
     /**
      * Return the target register that is a copy of the given register.
+     * For instruction such as v0 = v3 (v0 gets the content of v3), 
+     * movesRegister(3) returns 0
+     * movesRegister(0) returns -1
      *
      * Instructions should override this if they copy register content.
      *
@@ -68,6 +71,9 @@ public abstract class DexlibAbstractInstruction {
 
     /**
      * Return the source register that is moved to the given register.
+     * For instruction such as v0 = v3 (v0 gets the content of v3), 
+     * movesToRegister(3) returns -1
+     * movesToRegister(0) returns 3
      *
      * Instructions should override this if they copy register content.
      *
