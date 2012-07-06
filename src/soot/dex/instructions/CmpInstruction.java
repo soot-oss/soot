@@ -68,7 +68,7 @@ public class CmpInstruction extends TaggedInstruction {
             break;
         case CMP_LONG:
           setTag (new LongOpTag());
-          cmpExpr = Jimple.v().newCmpgExpr(first, second);
+          cmpExpr = Jimple.v().newCmpExpr(first, second);
           break;
         default:
             System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(instruction.opcode.value));
