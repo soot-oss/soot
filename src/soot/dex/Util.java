@@ -42,7 +42,6 @@ public class Util {
      * @return the dotted name.
      */
     public static String dottedClassName(String typeDescriptor) {
-        int endpos = typeDescriptor.indexOf(';');
         if (!isByteCodeClassName(typeDescriptor)) {
           // typeDescriptor may not be a class but something like "[[[[[[[[J"
           String t = typeDescriptor;
@@ -63,8 +62,21 @@ public class Util {
           }
             throw new IllegalArgumentException("typeDescriptor is not a class typedescriptor: '"+ typeDescriptor +"'");
         }
-        String className = typeDescriptor.substring(typeDescriptor.indexOf('L') + 1, endpos);
-        return className.replace('/', '.');
+        String t = typeDescriptor;
+        int idx = 0;
+        while (idx < t.length() && t.charAt(idx) == '[') {
+          idx++;
+        }
+        System.out.println("t "+ t +" idx "+ idx);
+        String className = typeDescriptor.substring(idx);
+
+        className = className.substring(className.indexOf('L') + 1, className.indexOf(';'));
+        
+        className = className.replace('/', '.');
+//        for (int i = 0; i<idx; i++) {
+//          className += "[]";
+//        }
+        return className;
     }
     
     public static Type getType(String type) {
@@ -156,7 +168,7 @@ public class Util {
     public static boolean isByteCodeClassName(String className) {
         return ((className.startsWith("L") || className.startsWith("["))
                 && className.endsWith(";")
-                && (className.indexOf('/') != -1 || className.indexOf('.') == -1));
+                && ((className.indexOf('/') != -1 || className.indexOf('.') == -1)));
     }
 
     /**

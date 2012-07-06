@@ -182,26 +182,21 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      * @param isStatic for a static method ref
      */
     private SootMethodRef getSootMethodRef(boolean isStatic) {
-        MethodIdItem item = (MethodIdItem) ((InstructionWithReference) instruction).getReferencedItem();
-        String className = dottedClassName(((TypeIdItem) item.getContainingClass()).getTypeDescriptor());
-        if (className.startsWith("int")||
-            className.startsWith("long")||
-            className.startsWith("short")||
-            className.startsWith("double")||
-            className.startsWith("float")||
-            className.startsWith("byte")||
-            className.startsWith("char")||
-            className.startsWith("boolean")) {
-          if (className.endsWith("[]")) {
+        MethodIdItem mItem = (MethodIdItem) ((InstructionWithReference) instruction).getReferencedItem();
+        String tItem = mItem.getContainingClass().getTypeDescriptor();
+ 
+        String className = tItem;
+        System.out.println("tItem: "+ tItem +" class name: "+ className);
+          if (className.startsWith("[")) {
             className = "java.lang.Object";
           } else {
-            throw new RuntimeException ("ERROR: wrong base class type: "+ className);
+            className = dottedClassName (tItem);
           }
-        }
+        
         SootClass sc = SootResolver.v().makeClassRef(className);
-        String methodName = item.getMethodName().getStringValue();
+        String methodName = mItem.getMethodName().getStringValue();
 
-        ProtoIdItem prototype = item.getPrototype();
+        ProtoIdItem prototype = mItem.getPrototype();
         Type returnType = DexType.toSoot(prototype.getReturnType());
         List<Type> parameterTypes = new ArrayList<Type>();
         List<TypeIdItem> paramTypes = TypeListItem.getTypes(prototype.getParameters());
@@ -210,7 +205,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
                 parameterTypes.add(DexType.toSoot(type));
 
         System.out.println("sc: "+ sc);
-        System.out.println("methodName: "+ sc);
+        System.out.println("methodName: "+ methodName);
         System.out.println("parameterTypes: ");
         for (Type t: parameterTypes)
           System.out.println(" t: "+ t);
