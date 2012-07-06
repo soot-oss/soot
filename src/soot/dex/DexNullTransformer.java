@@ -221,11 +221,13 @@ public class DexNullTransformer extends DexTransformer {
                               Value left = stmt.getLeftOp();
                                 Value r = stmt.getRightOp();
                                 
-                                if (left instanceof ArrayRef)
+                                if (left instanceof ArrayRef) {
                                   if (((ArrayRef)left).getIndex() == l) {
                                     doBreak = true;
                                     return;
                                   }
+                                }
+                                
 
 // IMPOSSIBLE! WOULD BE DEF!
 //                            // gets value assigned
@@ -273,7 +275,12 @@ public class DexNullTransformer extends DexTransformer {
                                 doBreak = true;
                                 return;
                               } else if (r instanceof ArrayRef) {
-                                usedAsObject = false; //isObject(((ArrayRef) r).getType());
+                                ArrayRef ar = (ArrayRef)r;
+                                if (ar.getBase() == l) {
+                                  usedAsObject = true;
+                                } else { // used as index
+                                  usedAsObject = false;
+                                }
                                 doBreak = true;
                                 return;
                               } else if (r instanceof StringConstant || r instanceof NewExpr) { 
