@@ -184,6 +184,20 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     private SootMethodRef getSootMethodRef(boolean isStatic) {
         MethodIdItem item = (MethodIdItem) ((InstructionWithReference) instruction).getReferencedItem();
         String className = dottedClassName(((TypeIdItem) item.getContainingClass()).getTypeDescriptor());
+        if (className.startsWith("int")||
+            className.startsWith("long")||
+            className.startsWith("short")||
+            className.startsWith("double")||
+            className.startsWith("float")||
+            className.startsWith("byte")||
+            className.startsWith("char")||
+            className.startsWith("boolean")) {
+          if (className.endsWith("[]")) {
+            className = "java.lang.Object";
+          } else {
+            throw new RuntimeException ("ERROR: wrong base class type: "+ className);
+          }
+        }
         SootClass sc = SootResolver.v().makeClassRef(className);
         String methodName = item.getMethodName().getStringValue();
 
@@ -195,6 +209,13 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             for (TypeIdItem type : paramTypes)
                 parameterTypes.add(DexType.toSoot(type));
 
+        System.out.println("sc: "+ sc);
+        System.out.println("methodName: "+ sc);
+        System.out.println("parameterTypes: ");
+        for (Type t: parameterTypes)
+          System.out.println(" t: "+ t);
+        System.out.println("returnType: "+ returnType);
+        System.out.println("isStatic: "+ isStatic);
         return Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType, isStatic);
     }
 
