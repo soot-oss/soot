@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
@@ -152,7 +153,8 @@ public abstract class DexTransformer extends BodyTransformer {
 
     } else if (baseDef instanceof IdentityStmt) {
       IdentityStmt stmt = (IdentityStmt)baseDef;
-      return stmt.getRightOp().getType();
+      ArrayType at = (ArrayType) stmt.getRightOp().getType();
+      return at.getArrayElementType();
     } else {
       System.out.println("ERROR: base local def must be AssignStmt or IdentityStmt! "+ baseDef);
       System.exit(-1);
