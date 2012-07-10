@@ -92,7 +92,7 @@ public class JimpleConstructorFolder extends BodyTransformer
         public Stmt get(Local l) {
             return varToStmt.get(l);
         }
-        public Set get(Stmt s) {
+        public Collection get(Stmt s) {
             return stmtToVar.get(s);
         }
         public void removeAll(Stmt s) {

@@ -260,7 +260,7 @@ public class PhiNodeManager
             // although the champs list constantly shrinks, guaranteeing
             // termination, the challengers list never does.  This could
             // be optimised.
-            Set pairsSet = valueToPairs.get(value);
+            Collection pairsSet = valueToPairs.get(value);
             List champs = new ArrayList(pairsSet);
             List challengers = new ArrayList(pairsSet);
             

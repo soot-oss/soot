@@ -306,7 +306,7 @@ public class SPatchingChain extends PatchingChain<Unit>
             }
 
             // we found one of the Phi nodes pointing to a Unit
-            Set boxes = trackedPhiToBoxes.get(u);
+            Collection boxes = trackedPhiToBoxes.get(u);
             if(boxes != null){
                 Iterator<UnitBox> boxesIt = boxes.iterator();
                 while(boxesIt.hasNext()){

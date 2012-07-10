@@ -88,6 +88,11 @@ public class Options extends OptionsBase {
             if( false );
 
             else if( false 
+            || option.equals( "af" )
+            )
+                af = true;
+  
+            else if( false 
             || option.equals( "h" )
             || option.equals( "help" )
             )
@@ -922,6 +927,10 @@ public class Options extends OptionsBase {
     }
 
 
+    public boolean af() { return af; }
+    private boolean af = false;
+    public void set_af( boolean setting ) { af = setting; }
+  
     public boolean help() { return help; }
     private boolean help = false;
     public void set_help( boolean setting ) { help = setting; }
@@ -1167,6 +1176,7 @@ public class Options extends OptionsBase {
 
 +"\nGeneral Options:\n"
       
++padOpt(" -af", "Use the asm front end." )
 +padOpt(" -h -help", "Display help and exit" )
 +padOpt(" -pl -phase-list", "Print list of available phases" )
 +padOpt(" -ph PHASE -phase-help PHASE", "Print help for specified PHASE" )

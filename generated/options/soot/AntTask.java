@@ -104,6 +104,10 @@ public class AntTask extends MatchingTask {
 
 
 
+        public void setaf(boolean arg) {
+            if(arg) addArg("-af");
+        }
+  
         public void sethelp(boolean arg) {
             if(arg) addArg("-help");
         }

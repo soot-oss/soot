@@ -119,8 +119,8 @@ public class DirectedCallGraph implements DirectedGraph {
 	Iterator it = this.nodes.iterator();
 	while (it.hasNext()) {
 	    Object x = it.next();
-	    Set ss   = s.get(x);
-	    Set pp   = p.get(x);
+	    Collection ss   = s.get(x);
+	    Collection pp   = p.get(x);
 	    this.succ.put(x, new LinkedList(ss));
 	    this.pred.put(x, new LinkedList(pp));
 	    if (ss.isEmpty()) this.tails.add(x);

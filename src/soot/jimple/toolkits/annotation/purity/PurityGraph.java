@@ -361,7 +361,7 @@ public class PurityGraph
     // ESCAPE INFORMATION //
     ////////////////////////
 
-    protected void internalPassEdges(Set toColor, Set<PurityNode> dest, 
+    protected void internalPassEdges(Collection toColor, Set<PurityNode> dest, 
 				     boolean consider_inside)
     {
 	Iterator it = toColor.iterator();
@@ -533,7 +533,7 @@ public class PurityGraph
 	return locals.put(local,node);
     }
 
-    protected final boolean localsPutAll(Local local, Set nodes)
+    protected final boolean localsPutAll(Local local, Collection nodes)
     {
 	Iterator it = nodes.iterator();
 	while (it.hasNext()) {
@@ -608,7 +608,7 @@ public class PurityGraph
 	    backLocals.put(dst, l);
 	}
 	{
-	    Set m = mutated.get(src);
+		Collection m = mutated.get(src);
 	    mutated.remove(src);
 	    mutated.putAll(dst,m);
 	}

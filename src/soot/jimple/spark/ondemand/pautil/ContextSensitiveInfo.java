@@ -21,6 +21,7 @@ package soot.jimple.spark.ondemand.pautil;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -197,7 +198,7 @@ public class ContextSensitiveInfo {
                 virtCallSiteToReceiver.put(callSite, receiver);
                 receiverToVirtCallSites.put(receiver, callSite);
             }
-            Set curEdges = callAssigns.get(ie);
+            Collection curEdges = callAssigns.get(ie);
             for (Iterator iterator = curEdges.iterator(); iterator.hasNext();) {
                 Pair callAssign = (Pair) iterator.next();
                 //for reflective calls, the "O1" value can actually be a FieldRefNode
