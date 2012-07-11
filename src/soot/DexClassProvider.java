@@ -79,7 +79,7 @@ public class DexClassProvider implements IDexClassProvider {
 			File dir = new File(path);
             File[] dexs = dir.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String filename) {
-                    return filename.endsWith(".dex") || filename.endsWith(".apk");
+                    return filename.endsWith(".dex");
                 }
             });
             if (dexs != null)
