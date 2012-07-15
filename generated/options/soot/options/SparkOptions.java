@@ -536,7 +536,7 @@ public class SparkOptions
     
      * 						 If you want to compare the precision of the points-to 
      * results with other solvers (e.g. Paddle), you can use the 
-     * "verify-file" to specify the list of methods (soot method 
+     * 'verify-file' to specify the list of methods (soot method 
      * signature format) that are reachable by that solver. Then, in 
      * the internal evaluations (see the switch geom-eval), we only 
      * consider the methods that are present to both solvers. 						 
