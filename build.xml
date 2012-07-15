@@ -30,6 +30,7 @@
         		<pathelement location="classes"/>
         		<pathelement location="${polyglot.jar}"/>
            		<pathelement location="${jasmin.jar}"/>
+           		<pathelement location="${axmlprinter2.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
