@@ -32,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Collection;
 import java.util.HashMap;
@@ -236,98 +237,99 @@ public class Scene  //extends AbstractHost
         return sootClassPath;
     }
 
-	public String getAndroidJarPath (String jars, String apk) {
-		File jarsF = new File (jars);
-		File apkF = new File (apk);
+	public String getAndroidJarPath(String jars, String apk) {
+		File jarsF = new File(jars);
+		File apkF = new File(apk);
 
 		int APIVersion = -1;
 		String jarPath = "";
 
 		if (!jarsF.exists())
-			throw  new RuntimeException("file '"+ jars +"' does not exist!");
+			throw new RuntimeException("file '" + jars + "' does not exist!");
 
 		if (!apkF.exists())
-			throw  new RuntimeException("file '"+ apk +"' does not exist!");
+			throw new RuntimeException("file '" + apk + "' does not exist!");
 
 		// get AndroidManifest
 		InputStream manifestIS = null;
-    try {
-			ZipFile archive = new ZipFile (apkF);
-			for (Enumeration entries = archive.entries(); entries.hasMoreElements(); ) {
-        ZipEntry entry = (ZipEntry) entries.nextElement();
-        String entryName = entry.getName();
-        // We are dealing with the Android manifest
-        if (entryName.equals("AndroidManifest.xml")) {
-					manifestIS = archive.getInputStream (entry);
+		try {
+			ZipFile archive = new ZipFile(apkF);
+			for (Enumeration entries = archive.entries(); entries.hasMoreElements();) {
+				ZipEntry entry = (ZipEntry) entries.nextElement();
+				String entryName = entry.getName();
+				// We are dealing with the Android manifest
+				if (entryName.equals("AndroidManifest.xml")) {
+					manifestIS = archive.getInputStream(entry);
 					break;
 				}
-      }
-    } catch(Exception e) {
-			throw new RuntimeException ("Error when looking for manifest in apk: "+ e);
-    }
-		if (manifestIS == null)
-			throw new RuntimeException ("Android manifest not found in apk ("+ apkF +")");
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error when looking for manifest in apk: " + e);
+		}
+		final int defaultSdkVersion = 15;
+		if (manifestIS == null) {
+			G.v().out.println("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
+			APIVersion = defaultSdkVersion;
+		} else {
 
-
-		// process AndroidManifest.xml
-		int sdkTargetVersion = -1;
-		int minSdkVersion = -1;
-		int defaultSdkVersion = 15;
-	    try {
-      AXmlResourceParser parser=new AXmlResourceParser();
-      parser.open(manifestIS);
-      StringBuilder indent=new StringBuilder(10);
-      final String indentStep=" ";
-			int depth = 0;
-      while (true) {
-        int type=parser.next();
-        if (type==XmlPullParser.END_DOCUMENT) {
-					//throw new RuntimeException ("target sdk version not found in Android manifest ("+ apkF +")");
-					break;
-        }
-        switch (type) {
-          case XmlPullParser.START_DOCUMENT:
-          {
-            break;
-          }
-          case XmlPullParser.START_TAG:
-          {
+			// process AndroidManifest.xml
+			int sdkTargetVersion = -1;
+			int minSdkVersion = -1;
+			try {
+				AXmlResourceParser parser = new AXmlResourceParser();
+				parser.open(manifestIS);
+				StringBuilder indent = new StringBuilder(10);
+				final String indentStep = " ";
+				int depth = 0;
+				while (true) {
+					int type = parser.next();
+					if (type == XmlPullParser.END_DOCUMENT) {
+						// throw new RuntimeException
+						// ("target sdk version not found in Android manifest ("+
+						// apkF +")");
+						break;
+					}
+					switch (type) {
+					case XmlPullParser.START_DOCUMENT: {
+						break;
+					}
+					case XmlPullParser.START_TAG: {
 						depth++;
 						String tagName = parser.getName();
 						if (depth == 2 && tagName.equals("uses-sdk")) {
-							for (int i=0;i!=parser.getAttributeCount();++i) {
-								String attributeName = parser.getAttributeName (i);
-								String attributeValue = AXMLPrinter.getAttributeValue(parser,i);
+							for (int i = 0; i != parser.getAttributeCount(); ++i) {
+								String attributeName = parser.getAttributeName(i);
+								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
 								if (attributeName.equals("targetSdkVersion")) {
-									sdkTargetVersion = Integer.parseInt (attributeValue);
+									sdkTargetVersion = Integer.parseInt(attributeValue);
 								} else if (attributeName.equals("minSdkVersion")) {
-									minSdkVersion = Integer.parseInt (attributeValue);
+									minSdkVersion = Integer.parseInt(attributeValue);
 								}
 							}
 						}
-            break;
-          }
-          case XmlPullParser.END_TAG:
+						break;
+					}
+					case XmlPullParser.END_TAG:
 						depth--;
-            break;
-          case XmlPullParser.TEXT:
-            break;
-        }
-      }
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-
-		if (sdkTargetVersion != -1) {
-			APIVersion = sdkTargetVersion;
-		} else if (minSdkVersion != -1) {
-			if (minSdkVersion <= 2)
-				minSdkVersion = 3;
-			APIVersion = minSdkVersion;
-		} else {
-			G.v().out.println ("Could not find sdk version in Android manifest! Using default.");
-			APIVersion = defaultSdkVersion;
+						break;
+					case XmlPullParser.TEXT:
+						break;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			if (sdkTargetVersion != -1) {
+				APIVersion = sdkTargetVersion;
+			} else if (minSdkVersion != -1) {
+				if (minSdkVersion <= 2)
+					minSdkVersion = 3;
+				APIVersion = minSdkVersion;
+			} else {
+				G.v().out.println("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
+				APIVersion = defaultSdkVersion;
+			}
 		}
 
 		// get path to appropriate android.jar
@@ -392,7 +394,12 @@ public class Scene  //extends AbstractHost
 				if (!forceAndroidJar.equals("")) {
 					jarPath = forceAndroidJar;
 				} else if (!androidJars.equals("")) {
-					Collection<String> targetApks = Options.v().process_dir();
+					String[] classPathEntries = Options.v().soot_classpath().split(File.pathSeparator);
+					List<String> targetApks = new LinkedList<String>();
+					for (String entry : classPathEntries) {
+						if(entry.endsWith(".apk"))
+							targetApks.add(entry);
+					}					
 					if (targetApks.size() == 0 || targetApks.size() > 1)
 						throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
 					jarPath = getAndroidJarPath (androidJars, (String)targetApks.toArray()[0]);
