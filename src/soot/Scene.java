@@ -407,12 +407,14 @@ public class Scene  //extends AbstractHost
 				} else if (!androidJars.equals("")) {
 					List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
 					classPathEntries.addAll(Options.v().process_dir());
-					List<String> targetApks = new LinkedList<String>();
+					Set<String> targetApks = new HashSet<String>();
 					for (String entry : classPathEntries) {
 						if(entry.endsWith(".apk"))
 							targetApks.add(entry);
 					}					
-					if (targetApks.size() == 0 || targetApks.size() > 1)
+					if (targetApks.size() == 0)
+						throw new RuntimeException("no apk file given");
+					else if (targetApks.size() > 1)
 						throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
 					jarPath = getAndroidJarPath (androidJars, (String)targetApks.toArray()[0]);
 				}
