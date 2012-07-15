@@ -214,6 +214,40 @@ public class Options extends OptionsBase {
             )
                 oaat = true;
   
+            else if( false
+            || option.equals( "android-jars" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( android_jars.length() == 0 )
+                    android_jars = value;
+                else {
+                    G.v().out.println( "Duplicate values "+android_jars+" and "+value+" for option -"+option );
+                    return false;
+                }
+            }
+  
+            else if( false
+            || option.equals( "force-android-jar" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( force_android_jar.length() == 0 )
+                    force_android_jar = value;
+                else {
+                    G.v().out.println( "Duplicate values "+force_android_jar+" and "+value+" for option -"+option );
+                    return false;
+                }
+            }
+  
             else if( false 
             || option.equals( "ast-metrics" )
             )
@@ -997,6 +1031,12 @@ public class Options extends OptionsBase {
     private boolean oaat = false;
     public void set_oaat( boolean setting ) { oaat = setting; }
   
+    public String android_jars() { return android_jars; }
+    public void set_android_jars( String setting ) { android_jars = setting; }
+    private String android_jars = "";
+    public String force_android_jar() { return force_android_jar; }
+    public void set_force_android_jar( String setting ) { force_android_jar = setting; }
+    private String force_android_jar = "";
     public boolean ast_metrics() { return ast_metrics; }
     private boolean ast_metrics = false;
     public void set_ast_metrics( boolean setting ) { ast_metrics = setting; }
@@ -1186,6 +1226,8 @@ public class Options extends OptionsBase {
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
 +padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -oaat", "From the process-dir, processes one class at a time." )
++padOpt(" -android-jars PATH", "Use PATH as the path for finding the android.jar file" )
++padOpt(" -force-android-jar PATH", "Force Soot to use PATH as the path for the android.jar file." )
 +padOpt(" -ast-metrics", "Compute AST Metrics if performing java to jimple" )
 +padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )
 +padVal(" c class (default)", "Favour class files as Soot source" )

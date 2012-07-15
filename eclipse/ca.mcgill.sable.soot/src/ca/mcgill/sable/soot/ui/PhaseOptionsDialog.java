@@ -2093,6 +2093,24 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsprocess_dir_widget().getAlias(), stringRes);
 		}
 		
+		stringRes = getInput_Optionsandroid_jars_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsandroid_jars_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getInput_Optionsforce_android_jar_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsforce_android_jar_widget().getAlias(), stringRes);
+		}
+		
 		stringRes = getInput_Optionsmain_class_widget().getText().getText();
 		
 		defStringRes = "";
@@ -6572,6 +6590,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	
 	
+	private StringOptionWidget Input_Optionsandroid_jars_widget;
+	
+	private void setInput_Optionsandroid_jars_widget(StringOptionWidget widget) {
+		Input_Optionsandroid_jars_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsandroid_jars_widget() {
+		return Input_Optionsandroid_jars_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionsforce_android_jar_widget;
+	
+	private void setInput_Optionsforce_android_jar_widget(StringOptionWidget widget) {
+		Input_Optionsforce_android_jar_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsforce_android_jar_widget() {
+		return Input_Optionsforce_android_jar_widget;
+	}
+	
+	
+	
 	private StringOptionWidget Input_Optionsmain_class_widget;
 	
 	private void setInput_Optionsmain_class_widget(StringOptionWidget widget) {
@@ -10283,6 +10325,36 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
+		
+		
+		defKey = ""+" "+""+" "+"android-jars";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionsandroid_jars_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Path to Android jar files",  "", "","android-jars", "\nUse PATH as the directory in which Soot should search for the \nappropriate android.jar file to use. The directory must contain \nsubdirectories named after the Android SDK version. Those \nsubdirectories must each contain one android.jar file. For \ninstance if the target directory is \n/home/user/androidSDK/platforms/ subdirectories containing \nandroid.jar for Android SDK 8 and 13 must be named android-8/ \nand android-13/ respectively. Note, that this options requires \nthat only one Android application is analyzed at a time. The \nAndroid application must contain the AndroidManifest.xml file. \n			", defaultString)));
+		
+		
+		defKey = ""+" "+""+" "+"force-android-jar";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the path to the android.jar file Soot should use. \nThis option overrides the "android-jars" option. 			", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"main-class";

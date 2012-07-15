@@ -33,3 +33,5 @@ release.loc=lib
 ## javadoc comments.
 javaapi.url=http://java.sun.com/j2se/1.5.0/docs/api/
 
+# AXMLPrinter2.jar
+axmlprinter2.jar=./libs/AXMLPrinter2.jar

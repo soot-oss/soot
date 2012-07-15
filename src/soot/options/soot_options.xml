@@ -320,6 +320,35 @@ will process one class at a time. Only body packs are run,
 no whole-program packs. 			
 </long_desc>
 		</boolopt>
+		<stropt>
+			<name>Path to Android jar files</name>
+			<alias>android-jars</alias>
+			<set_arg_label>path</set_arg_label>
+			<short_desc>Use <use_arg_label/> as the path for finding the android.jar file</short_desc>
+			<long_desc>
+Use <use_arg_label/> as the directory in which Soot should search for the appropriate 
+android.jar file to use.
+The directory must contain subdirectories named after the Android SDK version. Those
+subdirectories must each contain one android.jar file.
+For instance if the target directory is /home/user/androidSDK/platforms/ subdirectories 
+containing android.jar for Android SDK 8 and 13 must be named android-8/ and android-13/ 
+respectively.
+
+Note, that this options requires that only one Android application is analyzed at a time.
+The Android application must contain the AndroidManifest.xml file.
+			</long_desc>
+		</stropt>
+		<stropt>
+			<name>Force specific Android jar file</name>
+			<alias>force-android-jar</alias>
+			<set_arg_label>path</set_arg_label>
+			<short_desc>Force Soot to use <use_arg_label/> as the path for the android.jar file.</short_desc>
+			<long_desc>
+Use <use_arg_label/> as the path to the android.jar file Soot should use.
+This option overrides the "android-jars" option.
+			</long_desc>
+		</stropt>
+
 		<boolopt>
 			<name>Compute AST Metrics</name>
 			<alias>ast-metrics</alias>
