@@ -229,7 +229,18 @@ public class Scene  //extends AbstractHost
 	            	sootClassPath += File.pathSeparator + defaultSootClassPath;
 	            } 
 	            //else, leave it as it is
-	        }        
+	        }   
+	        
+	        //add process-dirs
+	        List<String> process_dir = Options.v().process_dir();
+	        StringBuffer pds = new StringBuffer();
+	        for (String path : process_dir) {
+	        	if(!sootClassPath.contains(path)) {
+		        	pds.append(path);
+		        	pds.append(File.pathSeparator);
+	        	}
+			}
+	        sootClassPath = pds + sootClassPath;
         }
 
 
@@ -394,7 +405,8 @@ public class Scene  //extends AbstractHost
 				if (!forceAndroidJar.equals("")) {
 					jarPath = forceAndroidJar;
 				} else if (!androidJars.equals("")) {
-					String[] classPathEntries = Options.v().soot_classpath().split(File.pathSeparator);
+					List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
+					classPathEntries.addAll(Options.v().process_dir());
 					List<String> targetApks = new LinkedList<String>();
 					for (String entry : classPathEntries) {
 						if(entry.endsWith(".apk"))
