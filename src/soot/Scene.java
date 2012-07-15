@@ -363,14 +363,14 @@ public class Scene  //extends AbstractHost
 	        sb.append("ui.jar");
 
 
-        } else {
-            sb.append(File.pathSeparator);
-            sb.append(System.getProperty("java.home"));
-            sb.append(File.separator);
-            sb.append("lib");
-            sb.append(File.separator);
-            sb.append("rt.jar");
         }
+        
+        sb.append(File.pathSeparator);
+        sb.append(System.getProperty("java.home"));
+        sb.append(File.separator);
+        sb.append("lib");
+        sb.append(File.separator);
+        sb.append("rt.jar");
         
 		if(Options.v().whole_program() || Options.v().output_format()==Options.output_format_dava) {
 			//add jce.jar, which is necessary for whole program mode
