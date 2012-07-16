@@ -67,7 +67,7 @@ public class Util {
         while (idx < t.length() && t.charAt(idx) == '[') {
           idx++;
         }
-        System.out.println("t "+ t +" idx "+ idx);
+        Debug.printDbg("t "+ t +" idx "+ idx);
         String className = typeDescriptor.substring(idx);
 
         className = className.substring(className.indexOf('L') + 1, className.indexOf(';'));
@@ -146,7 +146,7 @@ public class Util {
             break;
 
           default:
-            System.out.println("unknown type: '"+ type +"'");
+            Debug.printDbg("unknown type: '"+ type +"'");
             Thread.dumpStack();
             System.exit(-1);
             break;
@@ -156,7 +156,7 @@ public class Util {
       if (arraySize > 0) {
         returnType = ArrayType.v(returnType, arraySize);
       }
-      System.out.println("casttype i:"+ returnType);
+      Debug.printDbg("casttype i:"+ returnType);
       return returnType;
     }
 

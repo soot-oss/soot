@@ -22,6 +22,7 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.TwoRegisterInstruction;
 
+import soot.dex.Debug;
 import soot.dex.DexBody;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -36,7 +37,7 @@ public class MoveInstruction extends DexlibAbstractInstruction {
        
         TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
         
-        System.out.println("moveInstruction: "+ i);
+        Debug.printDbg("moveInstruction: "+ i);
         
         int dest = i.getRegisterA();
         int source = i.getRegisterB();

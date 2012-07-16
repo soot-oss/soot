@@ -73,7 +73,7 @@ public class DexlibWrapper {
 				for (TypeIdItem t: this.dexFile.TypeIdsSection.getItems()) {
 					DexType dt = new DexType (t);
 					Type st = dt.toSoot();
-					System.out.println("Type: "+ t +" soot type:"+ st);
+					Debug.printDbg("Type: "+ t +" soot type:"+ st);
 					if (!Scene.v().containsClass(st.toString())) {
 						SootResolver.v().makeClassRef(st.toString());
 						if (st.toString().endsWith("Exception")) {
@@ -83,7 +83,7 @@ public class DexlibWrapper {
 					}
 				}
 				for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
-				  System.out.println("String: "+ i);
+				  Debug.printDbg("String: "+ i);
 				}
 
     }

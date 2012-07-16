@@ -95,13 +95,13 @@ public class DexNullTransformer extends DexTransformer {
         final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
 
         for (Local loc: getNullCandidates(body)) {
-            System.out.println("\n[null candidate] "+ loc);
+            Debug.printDbg("\n[null candidate] "+ loc);
             usedAsObject = false;
             List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
             // check if no use
             for (Unit u  : defs) {
               for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
-                System.out.println("[use in u]: "+ pair.getUnit());
+                Debug.printDbg("[use in u]: "+ pair.getUnit());
               }
             }
             // process normally
@@ -117,7 +117,7 @@ public class DexNullTransformer extends DexTransformer {
                 IfStmt ifstmt = (IfStmt)u;
                 Value v = ifstmt.getCondition();
                 if (!(v instanceof CmpExpr)) {
-                  System.out.println("ERROR: the if statement must contain a cmp expr "+ u);
+                  Debug.printDbg("ERROR: the if statement must contain a cmp expr "+ u);
                   System.exit(-1);
                 }
                 CmpExpr cmp = (CmpExpr)v;
@@ -128,12 +128,12 @@ public class DexNullTransformer extends DexTransformer {
                 } else if (op2 instanceof Local && !(op1 instanceof Local)) {
                   l = (Local)op2;
                 } else {
-                  System.out.println("ERROR: the if statement must contain only one local (and the other should be 0) "+ u);
+                  Debug.printDbg("ERROR: the if statement must contain only one local (and the other should be 0) "+ u);
                   System.exit(-1);
                 }
               }
               
-              System.out.println("    target local: "+ l +" (Unit: "+u +" )");
+              Debug.printDbg("    target local: "+ l +" (Unit: "+u +" )");
               
               // check defs
               u.apply(new AbstractStmtSwitch() { // Alex: should also end as soon as detected as not used as an object
@@ -186,7 +186,7 @@ public class DexNullTransformer extends DexTransformer {
               // check uses
                 for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
-                    System.out.println("    use: "+ use);
+                    Debug.printDbg("    use: "+ use);
                     use.apply( new AbstractStmtSwitch() {
                             private boolean examineInvokeExpr(InvokeExpr e) {
                                 List<Value> args = e.getArgs();
@@ -213,7 +213,7 @@ public class DexNullTransformer extends DexTransformer {
                             public void caseInvokeStmt(InvokeStmt stmt) {
                                 InvokeExpr e = stmt.getInvokeExpr();
                                 usedAsObject = examineInvokeExpr(e);
-                                System.out.println("use as object = "+ usedAsObject);
+                                Debug.printDbg("use as object = "+ usedAsObject);
                                 doBreak = true;
                                 return;
                             }
@@ -284,7 +284,7 @@ public class DexNullTransformer extends DexTransformer {
                                 doBreak = true;
                                 return;
                               } else if (r instanceof StringConstant || r instanceof NewExpr) { 
-                                System.out.println("NOT POSSIBLE StringConstant or NewExpr! "+ stmt);
+                                Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! "+ stmt);
                                 System.exit(-1);
                                 usedAsObject = true;
                                 doBreak = true;
@@ -299,7 +299,7 @@ public class DexNullTransformer extends DexTransformer {
                                 return;
                               } else if (r instanceof InvokeExpr) {
                                 usedAsObject = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
-                                System.out.println("use as object 2 = "+ usedAsObject);
+                                Debug.printDbg("use as object 2 = "+ usedAsObject);
                                 doBreak = true;
                                 return;
                               } else if (r instanceof LengthExpr) {
@@ -315,7 +315,7 @@ public class DexNullTransformer extends DexTransformer {
 
                             public void caseIdentityStmt(IdentityStmt stmt) {
                                 if (stmt.getLeftOp() == l) {
-                                  System.out.println("IMPOSSIBLE 0");
+                                  Debug.printDbg("IMPOSSIBLE 0");
                                   System.exit(-1);
                                     usedAsObject = isObject(stmt.getRightOp().getType());
                                 }
@@ -332,8 +332,8 @@ public class DexNullTransformer extends DexTransformer {
                             }
                             public void caseReturnStmt(ReturnStmt stmt) {
                                 usedAsObject = stmt.getOp() == l && isObject(body.getMethod().getReturnType());
-                                System.out.println (" [return stmt] "+ stmt +" usedAsObject: "+ usedAsObject +", return type: "+ body.getMethod().getReturnType());
-                                System.out.println (" class: "+ body.getMethod().getReturnType().getClass());
+                                Debug.printDbg (" [return stmt] "+ stmt +" usedAsObject: "+ usedAsObject +", return type: "+ body.getMethod().getReturnType());
+                                Debug.printDbg (" class: "+ body.getMethod().getReturnType().getClass());
                                 doBreak = true;
                                 return;
                             }
@@ -391,14 +391,14 @@ public class DexNullTransformer extends DexTransformer {
                 Value r = a.getRightOp();
                 if ((r instanceof IntConstant && ((IntConstant) r).value == 0)) {
                     candidates.add(l);
-                    System.out.println("[add null candidate: "+ u);
+                    Debug.printDbg("[add null candidate: "+ u);
                 }
             }
             else if (u instanceof IfStmt) {
                 ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
                 if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
                     candidates.add((Local) expr.getOp1());
-                    System.out.println("[add null candidate if: "+ u);
+                    Debug.printDbg("[add null candidate if: "+ u);
                 }
 
             }
@@ -418,16 +418,16 @@ public class DexNullTransformer extends DexTransformer {
             ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
             if (isZeroComparison(expr)) {
                 expr.setOp2(NullConstant.v());
-                System.out.println("[null] replacing with null in "+ u);
-                System.out.println(" new u: "+ u);
+                Debug.printDbg("[null] replacing with null in "+ u);
+                Debug.printDbg(" new u: "+ u);
             }
         } else if (u instanceof AssignStmt) {
         	AssignStmt s = (AssignStmt) u;
             Value v = s.getRightOp();
             if ((v instanceof IntConstant) && ((IntConstant) v).value == 0) {
                 s.setRightOp(NullConstant.v());
-                System.out.println("[null] replacing with null in "+ u);
-                System.out.println(" new u: "+ u);
+                Debug.printDbg("[null] replacing with null in "+ u);
+                Debug.printDbg(" new u: "+ u);
             }
         }
 

@@ -47,7 +47,7 @@ public abstract class DexTransformer extends BodyTransformer {
 
       while (!newLocals.empty()) {
           Local local = newLocals.pop();
-          System.out.println("[null local] "+ local);
+          Debug.printDbg("[null local] "+ local);
           if (seenLocals.contains(local))
               continue;
           for (Unit u : collectDefinitions(local, localDefs, body)) {
@@ -89,7 +89,7 @@ public abstract class DexTransformer extends BodyTransformer {
               defs.addAll(defsOf);
       }
       for (Unit u: defs) {
-        System.out.println("[add def] "+ u);
+        Debug.printDbg("[add def] "+ u);
       }
       return defs;
   }
@@ -145,6 +145,7 @@ public abstract class DexTransformer extends BodyTransformer {
         return ((InvokeExpr) r).getMethodRef().returnType();
         // introduces alias
       } else if (r instanceof Local) {
+        Debug.printDbg("method: "+ g.getBody().getMethod());
         return findArrayType (g, localDefs, localUses, stmt);
       } else {
         System.out.println("ERROR: def statement not possible! "+ stmt);

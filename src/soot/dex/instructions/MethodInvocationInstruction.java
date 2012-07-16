@@ -43,6 +43,7 @@ import soot.SootClass;
 import soot.SootMethodRef;
 import soot.SootResolver;
 import soot.Type;
+import soot.dex.Debug;
 import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.jimple.AssignStmt;
@@ -186,7 +187,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         String tItem = mItem.getContainingClass().getTypeDescriptor();
  
         String className = tItem;
-        System.out.println("tItem: "+ tItem +" class name: "+ className);
+        Debug.printDbg("tItem: "+ tItem +" class name: "+ className);
           if (className.startsWith("[")) {
             className = "java.lang.Object";
           } else {
@@ -204,13 +205,13 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             for (TypeIdItem type : paramTypes)
                 parameterTypes.add(DexType.toSoot(type));
 
-        System.out.println("sc: "+ sc);
-        System.out.println("methodName: "+ methodName);
-        System.out.println("parameterTypes: ");
+        Debug.printDbg("sc: "+ sc);
+        Debug.printDbg("methodName: "+ methodName);
+        Debug.printDbg("parameterTypes: ");
         for (Type t: parameterTypes)
-          System.out.println(" t: "+ t);
-        System.out.println("returnType: "+ returnType);
-        System.out.println("isStatic: "+ isStatic);
+          Debug.printDbg(" t: "+ t);
+        Debug.printDbg("returnType: "+ returnType);
+        Debug.printDbg("isStatic: "+ isStatic);
         return Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType, isStatic);
     }
 
@@ -231,16 +232,16 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         List<Local> parameters = new ArrayList<Local>();
         List<Integer> regs = getUsedRegistersNums();
 
-        System.out.println(" [methodIdItem]: "+ item);
-        System.out.println(" params types:");
+        Debug.printDbg(" [methodIdItem]: "+ item);
+        Debug.printDbg(" params types:");
         if (paramTypes != null) {       
           for (TypeIdItem t: paramTypes) {
-            System.out.println(" t: "+ t);
+            Debug.printDbg(" t: "+ t);
           }
         }
-        System.out.println(" used registers ("+ regs.size() +"): ");
+        Debug.printDbg(" used registers ("+ regs.size() +"): ");
         for (int i: regs) {
-          System.out.println( " r: "+ i);
+          Debug.printDbg( " r: "+ i);
         }
         // i: index for register
         // j: index for parameter type

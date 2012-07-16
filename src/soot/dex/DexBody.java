@@ -132,7 +132,7 @@ public class DexBody  {
             DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
             instructions.add(dexInstruction);
             instructionAtAddress.put(address, dexInstruction);
-            System.out.println(" put instruction '"+ dexInstruction +"' at 0x"+ Integer.toHexString(address));
+            Debug.printDbg(" put instruction '"+ dexInstruction +"' at 0x"+ Integer.toHexString(address));
             address += instruction.getSize(address);
         }
 
@@ -250,7 +250,7 @@ public class DexBody  {
      */
     public DexlibAbstractInstruction instructionAtAddress(int address) {
 //      for (int j=address - 10; j< address+10; j++ ){
-//        System.out.println(" dump2: 0x"+ Integer.toHexString(j) +" : "+instructionAtAddress.get (j) );
+//        Debug.printDbg(" dump2: 0x"+ Integer.toHexString(j) +" : "+instructionAtAddress.get (j) );
 //      }
         DexlibAbstractInstruction i = instructionAtAddress.get(address);
         if (i == null) {
@@ -281,7 +281,7 @@ public class DexBody  {
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();
 
-        System.out.println("\n[jimplify] start for: "+ methodString);
+        Debug.printDbg("\n[jimplify] start for: "+ methodString);
         
         // process method parameters and generate Jimple locals from Dalvik registers
         List<Local> paramLocals = new LinkedList<Local>();       
@@ -303,7 +303,7 @@ public class DexBody  {
 	            Local gen = Jimple.v().newLocal("$u"+ parameterRegister, UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
 	            jBody.getLocals().add(gen);
 	            
-	            System.out.println ("add local for parameter register number: "+ parameterRegister);
+	            Debug.printDbg ("add local for parameter register number: "+ parameterRegister);
 	            registerLocals[parameterRegister] = gen;
 	            add(Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i++)));
 	            paramLocals.add(gen);
@@ -325,7 +325,7 @@ public class DexBody  {
         }
         
         for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic?0:1)); i++) {
-            System.out.println ("add local for register number: "+ i);
+            Debug.printDbg ("add local for register number: "+ i);
             registerLocals[i] = Jimple.v().newLocal("$u"+ i, UnknownType.v());
             jBody.getLocals().add(registerLocals[i]);
         }
@@ -366,13 +366,13 @@ public class DexBody  {
          */
 		UnreachableCodeEliminator.v().transform(jBody);
         
-        System.out.println("\nbefore splitting");
-        System.out.println((Body)jBody);
+        Debug.printDbg("\nbefore splitting");
+        Debug.printDbg(""+(Body)jBody);
         
         splitLocals();
         
-        System.out.println("\nafter splitting");
-        System.out.println((Body)jBody);
+        Debug.printDbg("\nafter splitting");
+        Debug.printDbg(""+(Body)jBody);
         
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
@@ -380,15 +380,15 @@ public class DexBody  {
         DexNumTransformer.v().transform (jBody);      
         DexNullTransformer.v().transform(jBody);
         
-        System.out.println("\nafter Num and Null transformers");
-        System.out.println((Body)jBody);
+        Debug.printDbg("\nafter Num and Null transformers");
+        Debug.printDbg(""+(Body)jBody);
         
         TypeAssigner.v().transform(jBody);
         LocalPacker.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
         
-        System.out.println("\nafter type assigner localpacker and name standardizer");
-        System.out.println((Body)jBody);
+        Debug.printDbg("\nafter type assigner localpacker and name standardizer");
+        Debug.printDbg(""+(Body)jBody);
         
         PackManager.v().getPack("jb").apply(jBody);
 
@@ -448,10 +448,10 @@ public class DexBody  {
     private void addTraps() {
       for (TryItem tryItem : tries) {
             int startAddress = tryItem.getStartCodeAddress();
-            System.out.println(" start : 0x"+ Integer.toHexString(startAddress));
+            Debug.printDbg(" start : 0x"+ Integer.toHexString(startAddress));
             int length = tryItem.getTryLength();
-            System.out.println(" length: 0x"+ Integer.toHexString(length));
-            System.out.println(" end   : 0x"+ Integer.toHexString(startAddress + length));
+            Debug.printDbg(" length: 0x"+ Integer.toHexString(length));
+            Debug.printDbg(" end   : 0x"+ Integer.toHexString(startAddress + length));
             int endAddress = startAddress + length;// - 1;
             Unit beginStmt = instructionAtAddress(startAddress).getUnit();
             // (startAddress + length) typically points to the first byte of the first instruction after the try block
@@ -459,11 +459,11 @@ public class DexBody  {
             // instruction of the try block. Removing 1 from (startAddress + length) always points to "somewhere" in
             // the last instruction of the try block since the smallest instruction is on two bytes (nop = 0x0000).
             Unit endStmt =  instructionAtAddress (endAddress).getUnit(); 
-            System.out.println("begin instruction (0x"+ Integer.toHexString(startAddress) +"): "+ instructionAtAddress(startAddress).getUnit() +" --- "+ instructionAtAddress(startAddress).getUnit());
-            System.out.println("end instruction   (0x"+ Integer.toHexString(endAddress)   +"): "+ instructionAtAddress (endAddress).getUnit()  +" --- "+ instructionAtAddress (endAddress).getUnit());
+            Debug.printDbg("begin instruction (0x"+ Integer.toHexString(startAddress) +"): "+ instructionAtAddress(startAddress).getUnit() +" --- "+ instructionAtAddress(startAddress).getUnit());
+            Debug.printDbg("end instruction   (0x"+ Integer.toHexString(endAddress)   +"): "+ instructionAtAddress (endAddress).getUnit()  +" --- "+ instructionAtAddress (endAddress).getUnit());
             
 //            for (int i=0x00; i<0x20; i++) {
-//              System.out.println("dump  (0x"+ Integer.toHexString(i) +"): "+ instructionAtAddress (i).getUnit()  +" --- "+ instructionAtAddress (i).getUnit());
+//              Debug.printDbg("dump  (0x"+ Integer.toHexString(i) +"): "+ instructionAtAddress (i).getUnit()  +" --- "+ instructionAtAddress (i).getUnit());
 //            }
             
             EncodedCatchHandler h = tryItem.encodedCatchHandler;
