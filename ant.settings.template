@@ -12,6 +12,8 @@
 # 
 #jastaddfrontend.loc=../JastAddExtensions/SootJastAddJ
 
+xmlprinter.jar=libs/AXMLPrinter2.jar
+
 ## Location of Polyglot classes jar file to link Soot against
 polyglot.jar=${user.home}/polyglotclasses.jar
 
