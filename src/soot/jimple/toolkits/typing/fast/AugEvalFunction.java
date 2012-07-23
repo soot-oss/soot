@@ -192,7 +192,7 @@ public class AugEvalFunction implements IEvalFunction
 		else if ( expr instanceof NewExpr )
 			return ((NewExpr)expr).getBaseType();
 		else if ( expr instanceof FieldRef )
-			return ((FieldRef)expr).getField().getType();
+			return ((FieldRef)expr).getType();
 		else if ( expr instanceof DoubleConstant )
 			return DoubleType.v();
 		else if ( expr instanceof FloatConstant )

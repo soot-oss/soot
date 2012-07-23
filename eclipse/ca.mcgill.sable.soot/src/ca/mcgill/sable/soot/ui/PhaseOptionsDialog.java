@@ -2296,6 +2296,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionstrim_cfgs_widget().getAlias(), new Boolean(boolRes));
 		}
+		
+		boolRes = getProcessing_Optionsignore_resolution_errors_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getProcessing_Optionsignore_resolution_errors_widget().getAlias(), new Boolean(boolRes));
+		}
 		 
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
 
@@ -6815,6 +6825,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Processing_Optionstrim_cfgs_widget;
 	}	
 	
+	private BooleanOptionWidget Processing_Optionsignore_resolution_errors_widget;
+	
+	private void setProcessing_Optionsignore_resolution_errors_widget(BooleanOptionWidget widget) {
+		Processing_Optionsignore_resolution_errors_widget = widget;
+	}
+	
+	public BooleanOptionWidget getProcessing_Optionsignore_resolution_errors_widget() {
+		return Processing_Optionsignore_resolution_errors_widget;
+	}	
+	
 	
 	private MultiOptionWidget Processing_Optionsthrow_analysis_widget;
 	
@@ -10784,6 +10804,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include exceptional edges, \nminimize the number of edges leading to exception handlers by \nanalyzing which instructions might actually be executed before \nan exception is thrown, instead of assuming that every \ninstruction protected by a handler has the potential to throw an \nexception the handler catches. -trim-cfgs is shorthand for \n-throw-analysis unit -omit-excepting-unit-edges -p jb.tt \nenabled:true.", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"ire";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit. ", defaultBool)));
 		
 		
 		

@@ -377,6 +377,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-trim-cfgs");
         }
   
+        public void setignore_resolution_errors(boolean arg) {
+            if(arg) addArg("-ignore-resolution-errors");
+        }
+  
         public void setinclude(Path arg) {
             if(include == null )
                 include = new Path(getProject());

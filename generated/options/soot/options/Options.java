@@ -763,6 +763,12 @@ public class Options extends OptionsBase {
                 pushOptions( "-throw-analysis" );
             }
   
+            else if( false 
+            || option.equals( "ire" )
+            || option.equals( "ignore-resolution-errors" )
+            )
+                ignore_resolution_errors = true;
+  
             else if( false
             || option.equals( "i" )
             || option.equals( "include" )
@@ -1141,6 +1147,10 @@ public class Options extends OptionsBase {
     private boolean omit_excepting_unit_edges = false;
     public void set_omit_excepting_unit_edges( boolean setting ) { omit_excepting_unit_edges = setting; }
   
+    public boolean ignore_resolution_errors() { return ignore_resolution_errors; }
+    private boolean ignore_resolution_errors = false;
+    public void set_ignore_resolution_errors( boolean setting ) { ignore_resolution_errors = setting; }
+  
     public List include() { 
         if( include == null )
             return java.util.Collections.EMPTY_LIST;
@@ -1280,6 +1290,7 @@ public class Options extends OptionsBase {
 +padVal(" unit", "Unit Throw Analysis" )
 +padOpt(" -omit-excepting-unit-edges", "Omit CFG edges to handlers from excepting units which lack side effects" )
 +padOpt(" -trim-cfgs", "Trim unrealizable exceptional edges from CFGs" )
++padOpt(" -ire -ignore-resolution-errors", "Does not throw an exception when a program references an undeclared field or method." )
 +"\nApplication Mode Options:\n"
       
 +padOpt(" -i PKG -include PKG", "Include classes in PKG as application classes" )

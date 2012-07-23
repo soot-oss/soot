@@ -5758,7 +5758,21 @@ catches.
 unit -omit-excepting-unit-edges -p jb.tt enabled:true</code>.</p>
 </long_desc>
 		</macroopt>
-	</section>
+		<boolopt>
+			<name>Ignore reolution errors</name>
+			<alias>ire</alias>
+			<alias>ignore-resolution-errors</alias>
+			<default>false</default>
+									<short_desc>Does not throw an exception when a program references an undeclared field or method.</short_desc>
+			<long_desc>
+<p>
+Some programs may contain dead code that references fields or methods that do not exist.
+By default, Soot exists with an exception when this happens. If this option is enabled,
+Soot only prints a warning but does not exit. 
+</p>
+</long_desc>
+		</boolopt>
+			</section>
 	<section>
 		<name>Application Mode Options</name>
 		<listopt>

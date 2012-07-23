@@ -28,7 +28,6 @@ import soot.jimple.JimpleBody;
 import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StringConstant;
-import soot.jimple.VirtualInvokeExpr;
 import soot.options.Options;
 import soot.util.*;
 
@@ -177,7 +176,12 @@ class SootMethodRefImpl implements SootMethodRef {
 			declaringClass.addMethod(m);
 			return m; 
         } else if( trace == null ) {
-        	throw new ClassResolutionFailedException();
+        	ClassResolutionFailedException e = new ClassResolutionFailedException();
+        	if(Options.v().ignore_resolution_errors())
+        		G.v().out.println(e.getMessage());
+        	else
+        		throw e;
+
         }
         return null;
     }
