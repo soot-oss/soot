@@ -27,6 +27,11 @@ import java.util.Set;
 
 import org.jf.dexlib.Code.Instruction;
 
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.Type;
 import soot.Unit;
 import soot.dex.DexBody;
 import soot.dex.DexType;
@@ -46,6 +51,10 @@ public abstract class DexlibAbstractInstruction {
 //    protected Unit beginUnit;
 //    protected Unit endUnit;
     protected Unit unit;
+    
+    public Instruction getInstruction() {
+      return instruction;
+    }
     
     /**
      * Jimplify this instruction.
@@ -185,5 +194,158 @@ public abstract class DexlibAbstractInstruction {
 //            endUnit = end;
 //    }
 
+    //FT
+    protected Type [] opUnType = {
+        IntType.v(),    // 0x7B neg-int vx, vy
+        IntType.v(),    // 0x7C
+        LongType.v(),   // 0x7D
+        LongType.v(),   // 0x7E
+        FloatType.v(),  // 0x7F
+        DoubleType.v(), // 0x80
+        IntType.v(), 
+        IntType.v(), 
+        IntType.v(),
+        LongType.v(), 
+        LongType.v(), 
+        LongType.v(),
+        FloatType.v(),
+        FloatType.v(),
+        FloatType.v(),
+        DoubleType.v(),
+        DoubleType.v(),
+        DoubleType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v()     // 0x8F int-to-short vx, vy
+      };
+      
+      protected Type [] resUnType = {
+          IntType.v(),  // 0x7B
+          IntType.v(), 
+          LongType.v(), 
+          LongType.v(), 
+          FloatType.v(),
+          DoubleType.v(),
+          LongType.v(),
+          FloatType.v(),
+          DoubleType.v(),
+          IntType.v(),
+          FloatType.v(),
+          DoubleType.v(),
+          IntType.v(),
+          LongType.v(),
+          DoubleType.v(),
+          IntType.v(),
+          LongType.v(),
+          FloatType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v()     // 0x8F
+      };
+      
+      protected Type []  resBinType = {
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          DoubleType.v(),
+          DoubleType.v(),
+          DoubleType.v(),
+          DoubleType.v(),
+          DoubleType.v()
+        };
+
+      protected Type []  op1BinType = {
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        IntType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        LongType.v(),
+        FloatType.v(),
+        FloatType.v(),
+        FloatType.v(),
+        FloatType.v(),
+        FloatType.v(),
+        DoubleType.v(),
+        DoubleType.v(),
+        DoubleType.v(),
+        DoubleType.v(),
+        DoubleType.v()
+      };
+      
+      protected Type []  op2BinType = {
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          LongType.v(),
+          IntType.v(),
+          IntType.v(),
+          IntType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          FloatType.v(),
+          DoubleType.v(),
+          DoubleType.v(),
+          DoubleType.v(),
+          DoubleType.v(),
+          DoubleType.v()
+        };
 
 }

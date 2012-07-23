@@ -29,12 +29,14 @@ import soot.ArrayType;
 import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;
+import soot.dex.DvkTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NopStmt;
+import soot.jimple.internal.JAssignStmt;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
@@ -69,6 +71,10 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
         arrayLocal = body.getStoreResultLocal();
         AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
         body.add (assignStmt);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          body.captureAssign((JAssignStmt)assignStmt, op); // TODO: ref. type may be null!
+        }
 
         for (int i = 0; i < usedRegister; i++) {
             ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));

@@ -24,9 +24,12 @@ import org.jf.dexlib.Code.SingleRegisterInstruction;
 
 import soot.Local;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 import soot.tagkit.Tag;
 
 public class MoveResultInstruction extends DexlibAbstractInstruction {
@@ -57,6 +60,11 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
         if (tag != null)
             assign.addTag(tag);
         body.add(assign);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          JAssignStmt jassign = (JAssignStmt)assign;
+          body.captureAssign(jassign, op);
+        }
     }
 
     public void setLocalToMove(Local l) {

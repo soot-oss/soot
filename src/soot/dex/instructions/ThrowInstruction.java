@@ -23,8 +23,10 @@ import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.Instruction11x;
 
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
+import soot.jimple.internal.JAssignStmt;
 
 public class ThrowInstruction extends DexlibAbstractInstruction {
 
@@ -38,5 +40,8 @@ public class ThrowInstruction extends DexlibAbstractInstruction {
         defineBlock(throwStmt);
         tagWithLineNumber(throwStmt);
         body.add(throwStmt);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          body.dvkTyper.setObjectType(throwStmt.getOpBox());
+        }
     }
 }

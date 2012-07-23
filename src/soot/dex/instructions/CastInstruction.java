@@ -31,6 +31,7 @@ import soot.LongType;
 import soot.ShortType;
 import soot.Type;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.IntOpTag;
@@ -38,6 +39,7 @@ import soot.dex.tags.LongOpTag;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 
 public class CastInstruction extends TaggedInstruction {
 
@@ -56,6 +58,10 @@ public class CastInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          body.dvkTyper.setType(cast.getOpBox(), opUnType[op - 0x7b]);
+        }
     }
 
     /**

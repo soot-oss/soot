@@ -26,10 +26,14 @@ import org.jf.dexlib.Code.Format.Instruction23x;
 
 import soot.Local;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.dex.tags.ObjectOpTag;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
+import soot.jimple.UnopExpr;
+import soot.jimple.internal.JAssignStmt;
+import soot.jimple.internal.JCastExpr;
 
 public class AgetInstruction extends DexlibAbstractInstruction {
 
@@ -56,6 +60,10 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          body.captureAssign((JAssignStmt)assign, op);
+        }
     }
 
     @Override

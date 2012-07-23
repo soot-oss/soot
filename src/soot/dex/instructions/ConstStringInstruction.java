@@ -26,9 +26,11 @@ import org.jf.dexlib.Code.Format.Instruction21c;
 import org.jf.dexlib.Code.Format.Instruction31c;
 
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
+import soot.jimple.internal.JAssignStmt;
 
 public class ConstStringInstruction extends DexlibAbstractInstruction {
 
@@ -52,6 +54,10 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          body.captureAssign((JAssignStmt)assign, op);
+        }
     }
 
     @Override

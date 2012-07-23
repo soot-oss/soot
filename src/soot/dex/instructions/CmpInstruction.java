@@ -23,14 +23,21 @@ import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.ThreeRegisterInstruction;
 import org.jf.dexlib.Code.Format.Instruction23x;
 
+import soot.DoubleType;
+import soot.FloatType;
 import soot.Local;
+import soot.LongType;
+import soot.Type;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.LongOpTag;
 import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
 
@@ -49,25 +56,31 @@ public class CmpInstruction extends TaggedInstruction {
         Local second = body.getRegisterLocal(cmpInstr.getRegisterC());
 
         Expr cmpExpr;
+        Type type = null;
         switch (instruction.opcode) {
         case CMPL_DOUBLE:
           setTag (new DoubleOpTag());
+          type = DoubleType.v();
           cmpExpr = Jimple.v().newCmplExpr(first, second);
           break;
         case CMPL_FLOAT:
           setTag (new FloatOpTag());
+          type = FloatType.v();
             cmpExpr = Jimple.v().newCmplExpr(first, second);
             break;
         case CMPG_DOUBLE:
           setTag (new DoubleOpTag());
+          type = DoubleType.v();
           cmpExpr = Jimple.v().newCmpgExpr(first, second);
           break;
         case CMPG_FLOAT:
           setTag (new FloatOpTag());
+          type = FloatType.v();
             cmpExpr = Jimple.v().newCmpgExpr(first, second);
             break;
         case CMP_LONG:
           setTag (new LongOpTag());
+          type = LongType.v();
           cmpExpr = Jimple.v().newCmpExpr(first, second);
           break;
         default:
@@ -82,6 +95,12 @@ public class CmpInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          getTag().getName();
+          BinopExpr bexpr = (BinopExpr)cmpExpr;
+          body.dvkTyper.setType(bexpr.getOp1Box(), type);
+          body.dvkTyper.setType(bexpr.getOp2Box(), type);
+        }
     }
 
     @Override

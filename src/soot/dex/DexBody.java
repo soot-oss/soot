@@ -41,11 +41,15 @@ import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Debug.DebugInstructionIterator;
 
+
 import soot.Body;
+import soot.BooleanType;
+import soot.IntType;
 import soot.Local;
 import soot.Modifier;
 import soot.PackManager;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
@@ -53,6 +57,8 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
+import soot.Value;
+import soot.ValueBox;
 import soot.dex.instructions.DanglingInstruction;
 import soot.dex.instructions.DeferableInstruction;
 import soot.dex.instructions.DexlibAbstractInstruction;
@@ -61,6 +67,13 @@ import soot.dex.instructions.RetypeableInstruction;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JArrayRef;
+import soot.jimple.internal.JAssignStmt;
+import soot.jimple.internal.JCastExpr;
+import soot.jimple.internal.JIdentityStmt;
+import soot.jimple.internal.JInstanceFieldRef;
+import soot.jimple.internal.JInstanceOfExpr;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
@@ -270,6 +283,7 @@ public class DexBody  {
         return i;
     }
 
+    public DvkTyper dvkTyper = null;
     /**
      * Return the jimple equivalent of this body.
      *
@@ -280,6 +294,10 @@ public class DexBody  {
         localGenerator = new LocalGenerator(jBody);
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();
+        
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          dvkTyper = new DvkTyper();
+        }
 
         Debug.printDbg("\n[jimplify] start for: "+ methodString);
         
@@ -292,8 +310,13 @@ public class DexBody  {
             jBody.getLocals().add(thisLocal);
             
             registerLocals[thisRegister] = thisLocal;
-            add(Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newThisRef(declaringClassType)));
+            JIdentityStmt idStmt = (JIdentityStmt) Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newThisRef(declaringClassType));
+            add(idStmt);
             paramLocals.add(thisLocal);
+            if (DvkTyper.ENABLE_DVKTYPER) {
+              this.dvkTyper.setType(idStmt.leftBox, jBody.getMethod().getDeclaringClass().getType());
+            }
+
         } 
         {
 	        int i = 0; // index of parameter type
@@ -305,8 +328,12 @@ public class DexBody  {
 	            
 	            Debug.printDbg ("add local for parameter register number: "+ parameterRegister);
 	            registerLocals[parameterRegister] = gen;
-	            add(Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i++)));
+	            JIdentityStmt idStmt = (JIdentityStmt) Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i++));
+	            add(idStmt);
 	            paramLocals.add(gen);
+	            if (DvkTyper.ENABLE_DVKTYPER) {
+	              this.dvkTyper.setType(idStmt.leftBox, t);
+	            }
 	            
 	            // some parameters may be encoded on two registers.
 	            // in Jimple only the first Dalvik register name is used
@@ -340,6 +367,7 @@ public class DexBody  {
                 dangling.finalize(this, instruction);
                 dangling = null;
             }
+            System.out.println(" current op: 0x"+ Integer.toHexString(instruction.getInstruction().opcode.value));
             instruction.jimplify(this);
         }
         for(DeferableInstruction instruction : deferredInstructions) {
@@ -377,8 +405,12 @@ public class DexBody  {
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
         
-        DexNumTransformer.v().transform (jBody);      
-        DexNullTransformer.v().transform(jBody);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          dvkTyper.assignType();
+        } else {
+          DexNumTransformer.v().transform (jBody);      
+          DexNullTransformer.v().transform(jBody);
+        }
         
         Debug.printDbg("\nafter Num and Null transformers");
         Debug.printDbg(""+(Body)jBody);
@@ -493,4 +525,200 @@ public class DexBody  {
             }
         }
     }
+    
+    
+    //from FT
+    public Stmt captureAssign(JAssignStmt stmt, int current) {
+      ValueBox left = stmt.leftBox;
+      ValueBox right = stmt.rightBox;
+      System.out.println("current captureAssign: 0x"+ Integer.toHexString(current));
+      switch(current) {
+      case 0x01:
+      case 0x02:
+      case 0x03:
+        dvkTyper.setConstraint(left, right);
+        break;
+      case 0x04:
+      case 0x05:
+      case 0x06:
+        dvkTyper.setConstraint(left, right);
+        break;
+      case 0x07:
+      case 0x08:
+      case 0x09:
+        dvkTyper.setObjectType(right);
+        dvkTyper.setConstraint(left, right);
+        break;
+      case 0xa:
+      case 0xb:
+        dvkTyper.setConstraint(left, right);
+        //dvkTyper.setType(left, right.getValue().getType());
+        break;
+      case 0xc:
+        dvkTyper.setObjectType(right);
+        dvkTyper.setConstraint(left, right);
+        // 0xc move result object
+        // 0xd move exception
+        // 0xe return void
+        // 0xf return vx
+        // 0x10 return vx
+        // 0x11 return object vx
+      case 0x12:
+      case 0x13:
+      case 0x14:
+        dvkTyper.setConstraint(left,right);
+        break;
+      case 0x15:
+      case 0x16:
+      case 0x17:
+      case 0x18:
+      case 0x19:
+        dvkTyper.setConstraint(left,right);
+        break;
+      case 0x1a:
+      case 0x1b:
+        dvkTyper.setType(left, Scene.v().getRefType("java.lang.String"));
+        break;
+      case 0x1c:
+        dvkTyper.setType(left, Scene.v().getRefType("java.lang.Class"));
+        break;
+        // 0x1d monitor-enter vx
+        // 0x1e monitor-exit vx
+      case 0x1f:
+        dvkTyper.setType(left, right.getValue().getType());
+        dvkTyper.setType(((JCastExpr) right.getValue()).getOpBox(), right.getValue().getType()); 
+        break;
+      case 0x20:
+        dvkTyper.setType(left, BooleanType.v());
+        dvkTyper.setObjectType(((JInstanceOfExpr) right.getValue()).getOpBox());
+        break;
+      case 0x21:
+        dvkTyper.setType(left, IntType.v());
+        break;
+      case 0x22:
+      case 0x23:
+      case 0x24:
+      case 0x25:
+        dvkTyper.setType(left, right.getValue().getType());
+        break;
+        // 0x25 filled-new-array-range {vx..vy},type_id
+        // 0x26 fill-array-data vx,array_data_offset
+        // 0x27 throw vx
+        // 0x28 goto
+        // 0x29 goto
+        // 0x2a goto
+        // 0x2b switch
+        // 0x2c switch
+        // 0x2d cmp
+        // 0x2e cmp
+        // 0x2f cmp
+        // 0x30 cmp
+        // 0x31 cmp
+        // 0x32 if
+        // 0x33 if
+        // 0x34 if
+        // 0x35 if
+        // 0x36 if
+        // 0x37 if
+        // 0x38 if
+        // 0x39 if
+        // 0x3a if
+        // 0x3b if
+        // 0x3c if
+        // 0x3d if
+        // 0x3e -
+        // 0x3f -
+        // 0x40 -
+        // 0x41 -
+        // 0x42 -
+        // 0x43 -
+      case 0x44:
+      case 0x45:
+      case 0x46:
+      case 0x47:
+      case 0x48:
+      case 0x49:
+      case 0x4a:
+        Value arrayGetValue = right.getValue();
+        if (arrayGetValue instanceof JArrayRef) {
+          dvkTyper.setObjectType(((JArrayRef) arrayGetValue).getBaseBox());
+        }
+        dvkTyper.setConstraint(right,left);
+        break;
+      case 0x4b:
+      case 0x4c:
+      case 0x4d:
+      case 0x4e:
+      case 0x4f:
+      case 0x50:
+      case 0x51:
+        dvkTyper.setConstraint(left, right);
+        break;
+      case 0x52:
+      case 0x53:
+      case 0x54:
+      case 0x55:
+      case 0x56:
+      case 0x57:
+      case 0x58:
+        Value fieldGetValue = right.getValue();
+        if (fieldGetValue instanceof JInstanceFieldRef) {
+          dvkTyper.setObjectType(((JInstanceFieldRef) fieldGetValue).getBaseBox());
+        }
+        dvkTyper.setType(left, right.getValue().getType());
+        break;
+        // 0x59 iput see below
+        // 0x5a iput see below
+        // 0x5b iput see below
+        // 0x5c iput see below
+        // 0x5d iput see below
+        // 0x5e iput see below
+        // 0x5f iput see below
+      case 0x60:
+      case 0x61:
+      case 0x62:
+      case 0x63:
+      case 0x64:
+      case 0x65:
+      case 0x66:
+        dvkTyper.setType(left, right.getValue().getType());
+        break;
+      case 0x59:
+      case 0x5a:
+      case 0x5b:
+      case 0x5c:
+      case 0x5d:
+      case 0x5e:
+      case 0x5f:
+      case 0x67:
+      case 0x68:
+      case 0x69:
+      case 0x6a:
+      case 0x6b:
+      case 0x6c:
+      case 0x6d:
+        dvkTyper.setType(right, left.getValue().getType());
+        break;
+        // 0x6e invoke method
+        // 0x6f invoke method
+        // 0x70 invoke method
+        // 0x71 invoke method
+        // 0x72 invoke method
+        // 0x73 -
+        // 0x74 invoke method
+        // 0x75 invoke method
+        // 0x76 invoke method
+        // 0x77 invoke method
+        // 0x78 invoke method
+        // 0x79 to 0xED unused or arithmetic operations
+        // 0xEE to 0xFF unused or odex instructions
+      default:
+        System.out.println("warning: No constraint registered for opcode 0x" +  Integer.toHexString(current));
+      }
+      return stmt;
+      
+        
+    }
+    
+    
 }

@@ -28,10 +28,12 @@ import soot.Local;
 import soot.Type;
 import soot.UnknownType;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.dex.tags.ObjectOpTag;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 
 public class AputInstruction extends FieldInstruction {
 
@@ -58,6 +60,10 @@ public class AputInstruction extends FieldInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          body.captureAssign((JAssignStmt)assign, op);
+        }
     }
 
     @Override

@@ -26,12 +26,15 @@ import org.jf.dexlib.Code.Format.Instruction23x;
 import soot.Local;
 import soot.Value;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.IntOpTag;
 import soot.dex.tags.LongOpTag;
 import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 
 public class BinopInstruction extends TaggedInstruction {
 
@@ -57,6 +60,17 @@ public class BinopInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          if (!(op >= 0x90 && op <= 0xaf)) {
+            throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0x90 and 0xaf.");
+          }
+          BinopExpr bexpr = (BinopExpr)expr;
+          JAssignStmt jassign = (JAssignStmt)assign;
+          body.dvkTyper.setType(bexpr.getOp1Box(), op1BinType[op-0x90]);
+          body.dvkTyper.setType(bexpr.getOp2Box(), op2BinType[op-0x90]);
+          body.dvkTyper.setType(jassign.leftBox, resBinType[op-0x90]);
+        }
     }
 
     private Value getExpression(Local source1, Local source2) {

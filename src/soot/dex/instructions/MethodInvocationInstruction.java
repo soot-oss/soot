@@ -46,10 +46,14 @@ import soot.Type;
 import soot.dex.Debug;
 import soot.dex.DexBody;
 import soot.dex.DexType;
+import soot.dex.DvkTyper;
 import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 import soot.tagkit.SourceLineNumberTag;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
@@ -79,6 +83,16 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             tagWithLineNumber(invoke);
             body.add(invoke);
             unit = invoke;
+        }
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          if (invocation instanceof InstanceInvokeExpr) {
+            Type t = invocation.getMethodRef().declaringClass().getType();
+            body.dvkTyper.setType(((InstanceInvokeExpr) invocation).getBaseBox(), t);
+          }
+          int i = 0;
+          for (Object pt: invocation.getMethodRef().parameterTypes()) {
+            body.dvkTyper.setType(invocation.getArgBox(i++), (Type)pt);
+          }
         }
     }
 

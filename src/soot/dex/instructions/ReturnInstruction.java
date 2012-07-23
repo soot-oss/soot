@@ -23,7 +23,9 @@ import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.Instruction11x;
 
 import soot.Local;
+import soot.ValueBox;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
 import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
 
@@ -40,5 +42,9 @@ public class ReturnInstruction extends DexlibAbstractInstruction {
         defineBlock(returnStmt);
         tagWithLineNumber(returnStmt);
         body.add(returnStmt);
+        ValueBox box = returnStmt.getOpBox();
+        if (DvkTyper.ENABLE_DVKTYPER) {
+          body.dvkTyper.setType(box, body.getBody().getMethod().getReturnType());
+        }
     }
 }

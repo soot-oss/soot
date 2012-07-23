@@ -22,9 +22,15 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.Instruction21t;
 
+import soot.DoubleType;
+import soot.IntType;
 import soot.dex.DexBody;
+import soot.dex.DvkTyper;
+import soot.jimple.BinopExpr;
+import soot.jimple.ConditionExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JIfStmt;
 
 public class IfTestzInstruction extends ConditionalJumpInstruction {
 
@@ -34,7 +40,27 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
 
     protected IfStmt ifStatement(DexBody body) {
         Instruction21t i = (Instruction21t) instruction;
-        return Jimple.v().newIfStmt(getComparisonExpr(body, i.getRegisterA()),
+        BinopExpr condition = getComparisonExpr(body, i.getRegisterA());
+        JIfStmt jif = (JIfStmt) Jimple.v().newIfStmt(condition,
                                     targetInstruction.getUnit());
+        
+        if (DvkTyper.ENABLE_DVKTYPER) {
+           int op = instruction.opcode.value;
+           switch (op) {
+           case 0x38:
+           case 0x39:
+             body.dvkTyper.setConstraint(condition.getOp1Box(), condition.getOp2Box());
+             break;
+           case 0x3a:
+           case 0x3b:
+           case 0x3c:
+           case 0x3d:
+             body.dvkTyper.setType(condition.getOp1Box(), IntType.v());
+             break;
+           default:
+             throw new RuntimeException("error: unknown op: 0x"+ Integer.toHexString(op));
+           }
+        }
+        return jif;
     }
 }
