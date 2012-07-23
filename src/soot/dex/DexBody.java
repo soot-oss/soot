@@ -410,6 +410,7 @@ public class DexBody  {
         } else {
           DexNumTransformer.v().transform (jBody);      
           DexNullTransformer.v().transform(jBody);
+          DexIfTransformer.v().transform(jBody);
         }
         
         Debug.printDbg("\nafter Num and Null transformers");

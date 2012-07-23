@@ -19,6 +19,7 @@
 
 package soot.dex;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -70,20 +71,23 @@ import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
- * BodyTransformer to find and change IntConstant(0) to NullConstant where
- * locals are used as objects.
- *
- * @author Michael Markert
+ * BodyTransformer to find and change definition of locals used
+ * within an if which contains a condition involving two locals (
+ * and not only one local as in DexNullTransformer).
+ * 
+ * It this case, if any of the two locals leads to an object being
+ * def or used, all the appropriate defs of the two locals are updated
+ * to reflect the use of objects (i.e: 0s are replaced by nulls).
  */
-public class DexNullTransformer extends DexTransformer { 
+public class DexIfTransformer extends DexTransformer { 
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
   
 	private boolean usedAsObject;
 	private boolean doBreak = false;
 	
-    public static DexNullTransformer v() {
-        return new DexNullTransformer();
+    public static DexIfTransformer v() {
+        return new DexIfTransformer();
     }
 
    Local l = null;
@@ -94,9 +98,16 @@ public class DexNullTransformer extends DexTransformer {
         final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
         final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
 
-        for (Local loc: getNullCandidates(body)) {
-            Debug.printDbg("\n[null candidate] "+ loc);
-            usedAsObject = false;
+        for (IfStmt ifs: getNullIfCandidates(body)) {
+          List<Local> twoIfLocals = new ArrayList<Local>();
+          ConditionExpr ifCondition = (ConditionExpr)ifs.getCondition();
+          Local lOp1 = (Local)ifCondition.getOp1();
+          Local lOp2 = (Local)ifCondition.getOp2();
+          twoIfLocals.add(lOp1);
+          twoIfLocals.add(lOp2);
+          usedAsObject = false;
+          for (Local loc: twoIfLocals) {
+            Debug.printDbg("\n[null if with two local candidate] "+ loc);
             List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
             // check if no use
             for (Unit u  : defs) {
@@ -114,24 +125,7 @@ public class DexNullTransformer extends DexTransformer {
               } else if (u instanceof IdentityStmt) {
                 l = (Local)((IdentityStmt)u).getLeftOp();
               } else if (u instanceof IfStmt) {
-                throw new RuntimeException ("ERROR: def can not be something else than Assign or Identity statement! (def: "+ u +" class: "+ u.getClass() +"");               
-//                IfStmt ifstmt = (IfStmt)u;
-//                Value v = ifstmt.getCondition();
-//                if (!(v instanceof CmpExpr)) {
-//                  Debug.printDbg("ERROR: the if statement must contain a cmp expr "+ u);
-//                  System.exit(-1);
-//                }
-//                CmpExpr cmp = (CmpExpr)v;
-//                Value op1 = cmp.getOp1();
-//                Value op2 = cmp.getOp2();
-//                if (op1 instanceof Local && !(op2 instanceof Local)) {
-//                  l = (Local)op1;
-//                } else if (op2 instanceof Local && !(op1 instanceof Local)) {
-//                  l = (Local)op2;
-//                } else {
-//                  Debug.printDbg("ERROR: the if statement must contain only one local (and the other should be 0) "+ u);
-//                  System.exit(-1);
-//                }
+                throw new RuntimeException ("ERROR: def can not be something else than Assign or Identity statement! (def: "+ u +" class: "+ u.getClass() +"");  
               }
               
               Debug.printDbg("    target local: "+ l +" (Unit: "+u +" )");
@@ -142,7 +136,8 @@ public class DexNullTransformer extends DexTransformer {
                   Value r = stmt.getRightOp();
                       if (r instanceof FieldRef) {
                           usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
-                          doBreak = true;
+                          if (usedAsObject)
+                            doBreak = true;
                           return;
                       } else if (r instanceof ArrayRef) {
                           ArrayRef ar = (ArrayRef)r;
@@ -151,23 +146,28 @@ public class DexNullTransformer extends DexTransformer {
                           } else {
                             usedAsObject = isObject(ar.getType());                         
                           }
-                          doBreak = true;
+                          if (usedAsObject)
+                            doBreak = true;
                           return;
                       } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr) {
                           usedAsObject = true;
-                          doBreak = true;
+                          if (usedAsObject)
+                            doBreak = true;
                           return;
                       } else if (r instanceof CastExpr) {
                           usedAsObject = isObject (((CastExpr)r).getCastType());
-                          doBreak = true;
+                          if (usedAsObject)
+                            doBreak = true;
                           return;
                       } else if (r instanceof InvokeExpr) {
                           usedAsObject = isObject(((InvokeExpr) r).getType());
-                          doBreak = true;
+                          if (usedAsObject)
+                            doBreak = true;
                           return;
                       } else if (r instanceof LengthExpr) {
                         usedAsObject = false;
-                        doBreak = true;
+                        if (usedAsObject)
+                          doBreak = true;
                         return;
                       // introduces alias
                       } else if (r instanceof Local) {}
@@ -176,7 +176,8 @@ public class DexNullTransformer extends DexTransformer {
                 public void caseIdentityStmt(IdentityStmt stmt) {
                   if (stmt.getLeftOp() == l) {
                       usedAsObject = isObject(stmt.getRightOp().getType());
-                      doBreak = true;
+                      if (usedAsObject)
+                        doBreak = true;
                       return;
                   }
               }
@@ -215,7 +216,8 @@ public class DexNullTransformer extends DexTransformer {
                                 InvokeExpr e = stmt.getInvokeExpr();
                                 usedAsObject = examineInvokeExpr(e);
                                 Debug.printDbg("use as object = "+ usedAsObject);
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                             }
                             public void caseAssignStmt(AssignStmt stmt) {
@@ -224,7 +226,7 @@ public class DexNullTransformer extends DexTransformer {
                                 
                                 if (left instanceof ArrayRef) {
                                   if (((ArrayRef)left).getIndex() == l) {
-                                    doBreak = true;
+                                    //doBreak = true;
                                     return;
                                   }
                                 }
@@ -252,11 +254,13 @@ public class DexNullTransformer extends DexTransformer {
                                     Value l = stmt.getLeftOp();
                                     if (l instanceof StaticFieldRef && isObject(((StaticFieldRef) l).getFieldRef().type())) {
                                         usedAsObject = true;
-                                        doBreak = true;
+                                        if (usedAsObject)
+                                          doBreak = true;
                                         return;
                                     } else if (l instanceof InstanceFieldRef && isObject(((InstanceFieldRef) l).getFieldRef().type())) {
                                         usedAsObject = true;
-                                        doBreak = true;
+                                        if (usedAsObject)
+                                          doBreak = true;
                                         return;
                                     } else if (l instanceof ArrayRef) {
                                       Type aType = ((ArrayRef) l).getType();
@@ -265,7 +269,8 @@ public class DexNullTransformer extends DexTransformer {
                                       } else {
                                         usedAsObject = isObject(aType); 
                                       }
-                                        doBreak = true;
+                                        if (usedAsObject)
+                                          doBreak = true;
                                         return;
                                     }
                                 }
@@ -273,7 +278,8 @@ public class DexNullTransformer extends DexTransformer {
                                 // is used as value (does not exclude assignment)
                               if (r instanceof FieldRef) {
                                 usedAsObject = true; //isObject(((FieldRef) r).getFieldRef().type());
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               } else if (r instanceof ArrayRef) {
                                 ArrayRef ar = (ArrayRef)r;
@@ -282,34 +288,41 @@ public class DexNullTransformer extends DexTransformer {
                                 } else { // used as index
                                   usedAsObject = false;
                                 }
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               } else if (r instanceof StringConstant || r instanceof NewExpr) { 
                                 Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! "+ stmt);
                                 System.exit(-1);
                                 usedAsObject = true;
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               } else if (r instanceof NewArrayExpr) {
                                 usedAsObject = false;
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               } else if (r instanceof CastExpr) {
                                 usedAsObject = isObject (((CastExpr)r).getCastType());
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               } else if (r instanceof InvokeExpr) {
                                 usedAsObject = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
                                 Debug.printDbg("use as object 2 = "+ usedAsObject);
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               } else if (r instanceof LengthExpr) {
                                 usedAsObject = true;
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               } else if (r instanceof BinopExpr) {
                                 usedAsObject = false;
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                               }
                             }
@@ -323,24 +336,28 @@ public class DexNullTransformer extends DexTransformer {
                             }
                             public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
                                 usedAsObject = stmt.getOp() == l;
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                             }
                             public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
                                 usedAsObject = stmt.getOp() == l;
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                             }
                             public void caseReturnStmt(ReturnStmt stmt) {
                                 usedAsObject = stmt.getOp() == l && isObject(body.getMethod().getReturnType());
                                 Debug.printDbg (" [return stmt] "+ stmt +" usedAsObject: "+ usedAsObject +", return type: "+ body.getMethod().getReturnType());
                                 Debug.printDbg (" class: "+ body.getMethod().getReturnType().getClass());
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                             }
                             public void caseThrowStmt(ThrowStmt stmt) {
                                 usedAsObject = stmt.getOp() == l;
-                                doBreak = true;
+                                if (usedAsObject)
+                                  doBreak = true;
                                 return;
                             }
                         });
@@ -354,18 +371,26 @@ public class DexNullTransformer extends DexTransformer {
                   break;
             } // for defs
             
-            // change values
-            if (usedAsObject) {
-              for (Unit u : defs) {
-                  replaceWithNull(u);
-                  for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
-                      Unit use = pair.getUnit();
-                      replaceWithNull(use);
-                  }
-              }
-            } // end if
+            if (doBreak) // as soon as one def or use refers to an object all defs from the two locals in the if must be updated
+              break;
 
-        }
+         } // for two locals in if
+          
+          // change values
+          if (usedAsObject) {
+            List<Unit> defsOp1 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
+            List<Unit> defsOp2 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
+            defsOp1.addAll(defsOp2);
+            for (Unit u : defsOp1) {
+                replaceWithNull(u);
+                for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
+                    Unit use = pair.getUnit();
+                    replaceWithNull(use);
+                }
+            }
+          } // end if
+          
+        } // for if statements
     }
 
 
@@ -374,32 +399,27 @@ public class DexNullTransformer extends DexTransformer {
   }
 	
     /**
-     * Collect all the locals which are assigned a IntConstant(0) or are used
-     * within a zero comparison.
+     * Collect all the if statements comparing two locals with 
+     * an Eq or Ne expression
      *
      * @param body the body to analyze
      */
-    private Set<Local> getNullCandidates(Body body) {
-        Set<Local> candidates = new HashSet<Local>();
+    private Set<IfStmt> getNullIfCandidates(Body body) {
+        Set<IfStmt> candidates = new HashSet<IfStmt>();
         Iterator<Unit> i = body.getUnits().iterator();
         while (i.hasNext()) {
             Unit u = i.next();
-            if (u instanceof AssignStmt) {
-                AssignStmt a = (AssignStmt) u;
-                if (! (a.getLeftOp() instanceof Local))
-                    continue;
-                Local l = (Local) a.getLeftOp();
-                Value r = a.getRightOp();
-                if ((r instanceof IntConstant && ((IntConstant) r).value == 0)) {
-                    candidates.add(l);
-                    Debug.printDbg("[add null candidate: "+ u);
-                }
-            }
-            else if (u instanceof IfStmt) {
+            if (u instanceof IfStmt) {
                 ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
-                if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
-                    candidates.add((Local) expr.getOp1());
-                    Debug.printDbg("[add null candidate if: "+ u);
+                boolean isTargetIf = false;
+                if (((expr instanceof EqExpr) || (expr instanceof NeExpr))) {
+                  if (expr.getOp1() instanceof Local && expr.getOp2() instanceof Local) {
+                    isTargetIf = true;
+                  }
+                }
+                if (isTargetIf) {
+                    candidates.add((IfStmt)u);
+                    Debug.printDbg("[add if candidate: "+ u);
                 }
 
             }
@@ -415,14 +435,21 @@ public class DexNullTransformer extends DexTransformer {
      */
     private void replaceWithNull(Unit u) {
       
-        if (u instanceof IfStmt) {
-            ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
-            if (isZeroComparison(expr)) {
-                expr.setOp2(NullConstant.v());
-                Debug.printDbg("[null] replacing with null in "+ u);
-                Debug.printDbg(" new u: "+ u);
-            }
-        } else if (u instanceof AssignStmt) {
+//        if (u instanceof IfStmt) {
+//            ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
+//            if (expr.getOp1() instanceof IntConstant && ((IntConstant)expr.getOp1()).value == 0 ) {
+//                expr.setOp1(NullConstant.v());
+//                Debug.printDbg("[null] replacing with null in "+ u);
+//                Debug.printDbg(" new u: "+ u);
+//            } else if (expr.getOp2() instanceof IntConstant && ((IntConstant)expr.getOp2()).value == 0 ) {
+//              expr.setOp2(NullConstant.v());
+//              Debug.printDbg("[null] replacing with null in "+ u);
+//              Debug.printDbg(" new u: "+ u);
+//          } else {
+//            throw new RuntimeException ("ERROR: if has no IntConstant to replace by NullConstant! ("+ u +")");
+//          }
+//        } else 
+      if (u instanceof AssignStmt) {
         	AssignStmt s = (AssignStmt) u;
             Value v = s.getRightOp();
             if ((v instanceof IntConstant) && ((IntConstant) v).value == 0) {
@@ -434,16 +461,7 @@ public class DexNullTransformer extends DexTransformer {
 
     }
 
-    /**
-     * Examine expr if it is a comparison with 0.
-     *
-     * @param expr the ConditionExpr to examine
-     */
-    private boolean isZeroComparison(ConditionExpr expr) {
-        return (expr.getOp2() instanceof IntConstant)
-            && ((IntConstant) expr.getOp2()).value == 0
-            && ((expr instanceof EqExpr) || (expr instanceof NeExpr));
-    }
+
 
 
 }
