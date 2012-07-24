@@ -179,7 +179,9 @@ public class DexNumTransformer extends DexTransformer {
                         ArrayRef ar = (ArrayRef)r;
                         Type arType = ar.getType();
                         if (arType instanceof UnknownType) {
-                          usedAsFloatingPoint = isFloatingPointLike (findArrayType (g, localDefs, localUses, stmt)); // TODO: check where else to update if(ArrayRef...
+                          Type t = findArrayType (g, localDefs, localUses, stmt); // TODO: check where else to update if(ArrayRef...
+                          Debug.printDbg(" array type:"+ t);
+                          usedAsFloatingPoint = isFloatingPointLike (t);
                         } else {
                           usedAsFloatingPoint = isFloatingPointLike(ar.getType());
                         }

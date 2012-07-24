@@ -128,24 +128,45 @@ public abstract class DexTransformer extends BodyTransformer {
       AssignStmt stmt = (AssignStmt) baseDef;
       Value r = stmt.getRightOp();
       if (r instanceof FieldRef) {
-        return ((FieldRef) r).getFieldRef().type();
+        Type t = ((FieldRef) r).getFieldRef().type();
+        if (t instanceof ArrayType) {
+          ArrayType at = (ArrayType)t;
+          t = at.getArrayElementType();
+        }
+        Debug.printDbg("atype fieldref: "+ t);
+        return t;
       } else if (r instanceof ArrayRef) {
         ArrayRef ar = (ArrayRef)r;
-        if (ar.getType().equals(".unknown")) {
-          return findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned? //TODO: /!\ loops
+        if (ar.getType().equals(".unknown") || ar.getType().toString().equals("unknown")) { // || ar.getType()) {
+          System.out.println("second round from stmt: "+ stmt);
+          Type t = findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned? //TODO: /!\ loops
+          if (t instanceof ArrayType) {
+            ArrayType at = (ArrayType)t;
+            t = at.getArrayElementType();
+          }
+          return t;
         } else {
-          return ar.getType();                         
+          Debug.printDbg("atype arrayref: "+ ar.getType().toString());
+          ArrayType at = (ArrayType) stmt.getRightOp().getType();
+          return at.getArrayElementType();
+          //return ar.getType();                         
         }
       } else if (r instanceof NewArrayExpr) {
         NewArrayExpr expr = (NewArrayExpr)r;
-        return expr.getBaseType();
+        Type t = expr.getBaseType();
+        Debug.printDbg("atype newarrayexpr: "+ t);
+        return t;
       } else if (r instanceof CastExpr) {
-        return (((CastExpr)r).getCastType());
+        Type t = (((CastExpr)r).getCastType());
+        Debug.printDbg("atype cast: "+ t);
+        return t;
       } else if (r instanceof InvokeExpr) {
-        return ((InvokeExpr) r).getMethodRef().returnType();
+        Type t = ((InvokeExpr) r).getMethodRef().returnType();
+        Debug.printDbg("atype invoke: "+ t);
+        return t;
         // introduces alias
       } else if (r instanceof Local) {
-        Debug.printDbg("method: "+ g.getBody().getMethod());
+        Debug.printDbg("atype alias: "+ stmt);
         return findArrayType (g, localDefs, localUses, stmt);
       } else {
         System.out.println("ERROR: def statement not possible! "+ stmt);
