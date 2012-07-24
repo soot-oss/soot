@@ -367,7 +367,7 @@ public class DexBody  {
                 dangling.finalize(this, instruction);
                 dangling = null;
             }
-            System.out.println(" current op: 0x"+ Integer.toHexString(instruction.getInstruction().opcode.value));
+            Debug.printDbg(" current op: 0x"+ Integer.toHexString(instruction.getInstruction().opcode.value));
             instruction.jimplify(this);
         }
         for(DeferableInstruction instruction : deferredInstructions) {
@@ -532,7 +532,7 @@ public class DexBody  {
     public Stmt captureAssign(JAssignStmt stmt, int current) {
       ValueBox left = stmt.leftBox;
       ValueBox right = stmt.rightBox;
-      System.out.println("current captureAssign: 0x"+ Integer.toHexString(current));
+      Debug.printDbg("current captureAssign: 0x"+ Integer.toHexString(current));
       switch(current) {
       case 0x01:
       case 0x02:
@@ -714,7 +714,7 @@ public class DexBody  {
         // 0x79 to 0xED unused or arithmetic operations
         // 0xEE to 0xFF unused or odex instructions
       default:
-        System.out.println("warning: No constraint registered for opcode 0x" +  Integer.toHexString(current));
+        Debug.printDbg("[D2J] warning: No constraint registered for opcode 0x" +  Integer.toHexString(current));
       }
       return stmt;
       
