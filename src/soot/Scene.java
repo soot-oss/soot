@@ -334,13 +334,14 @@ public class Scene  //extends AbstractHost
 			if (sdkTargetVersion != -1) {
 				APIVersion = sdkTargetVersion;
 			} else if (minSdkVersion != -1) {
-				if (minSdkVersion <= 2)
-					minSdkVersion = 3;
 				APIVersion = minSdkVersion;
 			} else {
 				G.v().out.println("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
 				APIVersion = defaultSdkVersion;
 			}
+			
+			if (APIVersion <= 2)
+					APIVersion = 3;
 		}
 
 		// get path to appropriate android.jar
