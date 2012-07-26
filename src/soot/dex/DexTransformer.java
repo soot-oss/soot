@@ -16,6 +16,7 @@ import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.Constant;
 import soot.jimple.FieldRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.InvokeExpr;
@@ -40,38 +41,38 @@ public abstract class DexTransformer extends BodyTransformer {
    * @param body the body that contains the local
    */
   protected List<Unit> collectDefinitionsWithAliases(Local l, LocalDefs localDefs, LocalUses localUses, Body body) {
-      Set<Local> seenLocals = new HashSet<Local>();
-      Stack<Local> newLocals = new Stack<Local>();
-      List<Unit> defs = new LinkedList<Unit>();
-      newLocals.push(l);
+    Set<Local> seenLocals = new HashSet<Local>();
+    Stack<Local> newLocals = new Stack<Local>();
+    List<Unit> defs = new LinkedList<Unit>();
+    newLocals.push(l);
 
-      while (!newLocals.empty()) {
-          Local local = newLocals.pop();
-          Debug.printDbg("[null local] "+ local);
-          if (seenLocals.contains(local))
-              continue;
-          for (Unit u : collectDefinitions(local, localDefs, body)) {
-              if (u instanceof AssignStmt) {
-                  Value r = ((AssignStmt) u).getRightOp();
-                  if (r instanceof Local && ! seenLocals.contains((Local) r))
-                      newLocals.push((Local) r);
-              }
-              defs.add(u);
-              //
-              for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
-                Unit unit = pair.getUnit();
-                if (unit instanceof AssignStmt) {
-                  Value right = ((AssignStmt) unit).getRightOp();
-                  Value left = ((AssignStmt) unit).getLeftOp();
-                  if (right == local  && left instanceof Local && ! seenLocals.contains((Local) left))
-                      newLocals.push((Local) left);
-                }
-              }
-              //
+    while (!newLocals.empty()) {
+      Local local = newLocals.pop();
+      Debug.printDbg("[null local] "+ local);
+      if (seenLocals.contains(local))
+        continue;
+      for (Unit u : collectDefinitions(local, localDefs, body)) {
+        if (u instanceof AssignStmt) {
+          Value r = ((AssignStmt) u).getRightOp();
+          if (r instanceof Local && ! seenLocals.contains((Local) r))
+            newLocals.push((Local) r);
+        }
+        defs.add(u);
+        //
+        for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
+          Unit unit = pair.getUnit();
+          if (unit instanceof AssignStmt) {
+            Value right = ((AssignStmt) unit).getRightOp();
+            Value left = ((AssignStmt) unit).getLeftOp();
+            if (right == local  && left instanceof Local && ! seenLocals.contains((Local) left))
+              newLocals.push((Local) left);
           }
-          seenLocals.add(local);
+        }
+        //
       }
-      return defs;
+      seenLocals.add(local);
+    }
+    return defs;
   }
 
   /**
@@ -82,18 +83,18 @@ public abstract class DexTransformer extends BodyTransformer {
    * @param body the body that contains the local
    */
   private List<Unit> collectDefinitions(Local l, LocalDefs localDefs, Body body) {
-      List <Unit> defs = new LinkedList<Unit>();
-      for (Unit u : body.getUnits()) {
-          List<Unit> defsOf = localDefs.getDefsOfAt(l, u);
-          if (defsOf != null)
-              defs.addAll(defsOf);
-      }
-      for (Unit u: defs) {
-        Debug.printDbg("[add def] "+ u);
-      }
-      return defs;
+    List <Unit> defs = new LinkedList<Unit>();
+    for (Unit u : body.getUnits()) {
+      List<Unit> defsOf = localDefs.getDefsOfAt(l, u);
+      if (defsOf != null)
+        defs.addAll(defsOf);
+    }
+    for (Unit u: defs) {
+      Debug.printDbg("[add def] "+ u);
+    }
+    return defs;
   }
-  
+
   protected Type findArrayType(ExceptionalUnitGraph g,
       SmartLocalDefs localDefs, SimpleLocalUses localUses, Stmt arrayStmt) {
     ArrayRef aRef = null;
@@ -101,7 +102,7 @@ public abstract class DexTransformer extends BodyTransformer {
       aRef = arrayStmt.getArrayRef();
     }
     Local aBase = null;
-    
+
     if (null == aRef) {
       if (arrayStmt instanceof AssignStmt) {
         AssignStmt stmt = (AssignStmt)arrayStmt;
@@ -113,77 +114,78 @@ public abstract class DexTransformer extends BodyTransformer {
     } else {    
       aBase = (Local)aRef.getBase();
     }
-    
+
     List<Unit> defsOfaBaseList = localDefs.getDefsOfAt(aBase, arrayStmt);
     if (defsOfaBaseList == null || defsOfaBaseList.size() == 0) {
       System.out.println("ERROR: no def statement found for array base local "+ arrayStmt);
       System.exit(-1);
     }
-    
+
     // We should find an answer only by processing the first item of the list
-    Unit baseDef = defsOfaBaseList.get(0);
-    
-    // baseDef is either an assignment statement or an identity statement
-    if (baseDef instanceof AssignStmt) {
-      AssignStmt stmt = (AssignStmt) baseDef;
-      Value r = stmt.getRightOp();
-      if (r instanceof FieldRef) {
-        Type t = ((FieldRef) r).getFieldRef().type();
-        if (t instanceof ArrayType) {
-          ArrayType at = (ArrayType)t;
-          t = at.getArrayElementType();
-        }
-        Debug.printDbg("atype fieldref: "+ t);
-        return t;
-      } else if (r instanceof ArrayRef) {
-        ArrayRef ar = (ArrayRef)r;
-        if (ar.getType().equals(".unknown") || ar.getType().toString().equals("unknown")) { // || ar.getType()) {
-          System.out.println("second round from stmt: "+ stmt);
-          Type t = findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned? //TODO: /!\ loops
+    for (Unit baseDef: defsOfaBaseList) {
+
+      // baseDef is either an assignment statement or an identity statement
+      if (baseDef instanceof AssignStmt) {
+        AssignStmt stmt = (AssignStmt) baseDef;
+        Value r = stmt.getRightOp();
+        if (r instanceof FieldRef) {
+          Type t = ((FieldRef) r).getFieldRef().type();
           if (t instanceof ArrayType) {
             ArrayType at = (ArrayType)t;
             t = at.getArrayElementType();
           }
+          Debug.printDbg("atype fieldref: "+ t);
           return t;
+        } else if (r instanceof ArrayRef) {
+          ArrayRef ar = (ArrayRef)r;
+          if (ar.getType().equals(".unknown") || ar.getType().toString().equals("unknown")) { // || ar.getType()) {
+            System.out.println("second round from stmt: "+ stmt);
+            Type t = findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned? //TODO: /!\ loops
+            if (t instanceof ArrayType) {
+              ArrayType at = (ArrayType)t;
+              t = at.getArrayElementType();
+            }
+            return t;
+          } else {
+            Debug.printDbg("atype arrayref: "+ ar.getType().toString());
+            ArrayType at = (ArrayType) stmt.getRightOp().getType();
+            return at.getArrayElementType();
+            //return ar.getType();                         
+          }
+        } else if (r instanceof NewArrayExpr) {
+          NewArrayExpr expr = (NewArrayExpr)r;
+          Type t = expr.getBaseType();
+          Debug.printDbg("atype newarrayexpr: "+ t);
+          return t;
+        } else if (r instanceof CastExpr) {
+          Type t = (((CastExpr)r).getCastType());
+          Debug.printDbg("atype cast: "+ t);
+          return t;
+        } else if (r instanceof InvokeExpr) {
+          Type t = ((InvokeExpr) r).getMethodRef().returnType();
+          Debug.printDbg("atype invoke: "+ t);
+          return t;
+          // introduces alias
+        } else if (r instanceof Local) {
+          Debug.printDbg("atype alias: "+ stmt);
+          return findArrayType (g, localDefs, localUses, stmt);
+        } else if (r instanceof Constant) {
+          return null;
         } else {
-          Debug.printDbg("atype arrayref: "+ ar.getType().toString());
-          ArrayType at = (ArrayType) stmt.getRightOp().getType();
-          return at.getArrayElementType();
-          //return ar.getType();                         
+          throw new RuntimeException("ERROR: def statement not possible! "+ stmt);
         }
-      } else if (r instanceof NewArrayExpr) {
-        NewArrayExpr expr = (NewArrayExpr)r;
-        Type t = expr.getBaseType();
-        Debug.printDbg("atype newarrayexpr: "+ t);
-        return t;
-      } else if (r instanceof CastExpr) {
-        Type t = (((CastExpr)r).getCastType());
-        Debug.printDbg("atype cast: "+ t);
-        return t;
-      } else if (r instanceof InvokeExpr) {
-        Type t = ((InvokeExpr) r).getMethodRef().returnType();
-        Debug.printDbg("atype invoke: "+ t);
-        return t;
-        // introduces alias
-      } else if (r instanceof Local) {
-        Debug.printDbg("atype alias: "+ stmt);
-        return findArrayType (g, localDefs, localUses, stmt);
+
+      } else if (baseDef instanceof IdentityStmt) {
+        IdentityStmt stmt = (IdentityStmt)baseDef;
+        ArrayType at = (ArrayType) stmt.getRightOp().getType();
+        return at.getArrayElementType();
       } else {
-        System.out.println("ERROR: def statement not possible! "+ stmt);
-        System.exit(-1);
+        throw new RuntimeException("ERROR: base local def must be AssignStmt or IdentityStmt! "+ baseDef);
       }
 
-    } else if (baseDef instanceof IdentityStmt) {
-      IdentityStmt stmt = (IdentityStmt)baseDef;
-      ArrayType at = (ArrayType) stmt.getRightOp().getType();
-      return at.getArrayElementType();
-    } else {
-      System.out.println("ERROR: base local def must be AssignStmt or IdentityStmt! "+ baseDef);
-      System.exit(-1);
-    }
+    } // loop 
+    throw new RuntimeException("ERROR: could not find type of array from statement '"+ arrayStmt +"'");
 
-    
-    return null;
   }
-  
+
 }
