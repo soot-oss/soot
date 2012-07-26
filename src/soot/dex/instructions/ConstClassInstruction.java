@@ -30,6 +30,7 @@ import org.jf.dexlib.Code.InstructionWithReference;
 import org.jf.dexlib.Code.SingleRegisterInstruction;
 import org.jf.dexlib.Code.Format.Instruction21c;
 
+import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.dex.DvkTyper;
@@ -49,14 +50,15 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
             throw new IllegalArgumentException("Expected Instruction21c but got: "+instruction.getClass());
 
         InstructionWithReference constClass = (InstructionWithReference) this.instruction;
-        String referencedClass = dottedClassName(((TypeIdItem)(constClass.getReferencedItem())).getTypeDescriptor());
-
-        // yes ClassConstant really does want neither byte code names nor dotted names, but dots replaced with slashes
-        ClassConstant cc = ClassConstant.v(referencedClass.replace('.', '/'));
+        
+        TypeIdItem tidi = (TypeIdItem)(constClass.getReferencedItem());
+        Type t = DexType.toSoot(tidi);
+        String type = tidi.toString().split(" ")[1];
+        if (type.startsWith("L") && type.endsWith(";"))
+          type = type.replaceAll("^L", "").replaceAll(";$", "");
 
         int dest = ((SingleRegisterInstruction) instruction).getRegisterA();
-
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cc);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), ClassConstant.v(type));
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
