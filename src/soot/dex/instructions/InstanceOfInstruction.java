@@ -31,6 +31,7 @@ import org.jf.dexlib.Code.TwoRegisterInstruction;
 import org.jf.dexlib.Code.Format.Instruction22c;
 
 import soot.RefType;
+import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.dex.DvkTyper;
@@ -49,8 +50,10 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
         Instruction22c i = (Instruction22c)instruction;
         int dest = i.getRegisterA();
         int source = i.getRegisterB();
-        String className = dottedClassName(((TypeIdItem)(i.getReferencedItem())).getTypeDescriptor());
-        InstanceOfExpr e = Jimple.v().newInstanceOfExpr(body.getRegisterLocal(source), RefType.v(className));
+        
+        Type t = DexType.toSoot((TypeIdItem)(i.getReferencedItem()));
+
+        InstanceOfExpr e = Jimple.v().newInstanceOfExpr(body.getRegisterLocal(source), t);
         AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), e);
         defineBlock(assign);
         tagWithLineNumber(assign);
