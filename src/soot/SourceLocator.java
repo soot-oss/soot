@@ -197,6 +197,19 @@ public class SourceLocator
 
 	    try {
 		ZipFile archive = new ZipFile(aPath);
+		
+		boolean hasClassesDotDex = false;
+    for (Enumeration entries = archive.entries(); 
+    entries.hasMoreElements(); ) {
+      ZipEntry entry = (ZipEntry) entries.nextElement();
+      String entryName = entry.getName();
+      // We are dealing with an apk file
+      if (entryName.equals("classes.dex")) {
+        hasClassesDotDex = true;
+      }
+          classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
+    }
+    
 		for (Enumeration entries = archive.entries(); 
 		     entries.hasMoreElements(); ) {
 		    ZipEntry entry = (ZipEntry) entries.nextElement();
@@ -207,11 +220,12 @@ public class SourceLocator
 			if (inputExtensions.contains(entryExtension)) {
 			    entryName = entryName.substring(0, extensionIndex);
 			    entryName = entryName.replace('/', '.');
-			    classes.add(entryName);
+			    if (!hasClassesDotDex) {
+			      classes.add(entryName);
+			    } else {
+			      G.v().out.println("Warning: Since archive contains 'classes.dex', the following entry is not loaded: "+ entry.getName());
+			    }
 			}
-            // We are dealing with an apk file
-            if (entryName.equals("classes.dex"))
-                classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
 		    }
 		}
 	    } catch(IOException e) {
