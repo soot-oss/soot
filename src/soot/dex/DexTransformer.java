@@ -170,7 +170,6 @@ public abstract class DexTransformer extends BodyTransformer {
           Debug.printDbg("atype alias: "+ stmt);
           return findArrayType (g, localDefs, localUses, stmt);
         } else if (r instanceof Constant) {
-          return null;
         } else {
           throw new RuntimeException("ERROR: def statement not possible! "+ stmt);
         }
