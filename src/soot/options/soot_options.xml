@@ -5680,7 +5680,6 @@ may throw when constructing exceptional CFGs.
 							<value>
 								<name>Pedantic</name>
 								<alias>pedantic</alias>
-								<default/>
 								<short_desc>Pedantically conservative throw analysis</short_desc>
 								<long_desc>
 Says that any instruction may throw any
@@ -5695,6 +5694,7 @@ to occur at arbitrary points in the execution of a victim thread.
 								<name>Unit</name>
 								<alias>unit</alias>
 								<short_desc>Unit Throw Analysis</short_desc>
+								<default/>																
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding

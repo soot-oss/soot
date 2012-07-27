@@ -1,3 +1,14 @@
+Improvements and API changes in HEAD
+
+1. Added support for Android. TODO Further comments...
+
+2. Changed default throw analysis from "pedantic" to "unit based". This
+   changes the default the assumptions that Soot makes about which
+   statements can throw what kinds of exceptions. "unit based" is more
+   optimistic than "pedantic" but should also be more realistic in
+   most settings. (see the documentation on command line options
+   for details)  
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass

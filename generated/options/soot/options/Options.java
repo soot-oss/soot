@@ -1138,7 +1138,7 @@ public class Options extends OptionsBase {
     public void set_via_shimple( boolean setting ) { via_shimple = setting; }
   
     public int throw_analysis() {
-        if( throw_analysis == 0 ) return throw_analysis_pedantic;
+        if( throw_analysis == 0 ) return throw_analysis_unit;
         return throw_analysis; 
     }
     public void set_throw_analysis( int setting ) { throw_analysis = setting; }
@@ -1286,8 +1286,8 @@ public class Options extends OptionsBase {
 +padOpt(" -via-grimp", "Convert to bytecode via Grimp instead of via Baf" )
 +padOpt(" -via-shimple", "Enable Shimple SSA representation" )
 +padOpt(" -throw-analysis ARG", "" )
-+padVal(" pedantic (default)", "Pedantically conservative throw analysis" )
-+padVal(" unit", "Unit Throw Analysis" )
++padVal(" pedantic", "Pedantically conservative throw analysis" )
++padVal(" unit (default)", "Unit Throw Analysis" )
 +padOpt(" -omit-excepting-unit-edges", "Omit CFG edges to handlers from excepting units which lack side effects" )
 +padOpt(" -trim-cfgs", "Trim unrealizable exceptional edges from CFGs" )
 +padOpt(" -ire -ignore-resolution-errors", "Does not throw an exception when a program references an undeclared field or method." )

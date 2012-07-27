@@ -2310,7 +2310,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
 
 		
-		defStringRes = "pedantic";
+		defStringRes = "unit";
 		
 
 		if (!stringRes.equals(defStringRes)) {
@@ -10829,13 +10829,13 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		"pedantic",
 		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
 		
-		true),
+		false),
 		
 		new OptionData("Unit",
 		"unit",
 		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
 		
-		false),
+		true),
 		
 		};
 		
