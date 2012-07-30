@@ -74,7 +74,7 @@ public class DexlibWrapper {
 		for (TypeIdItem t: this.dexFile.TypeIdsSection.getItems()) {
 			DexType dt = new DexType (t);
 			Type st = dt.toSoot();
-			Debug.printDbg("Type: "+ t +" soot type:"+ st);
+			//Debug.printDbg("Type: "+ t +" soot type:"+ st);
 			if (!Scene.v().containsClass(st.toString())) {
 				if (st instanceof PrimType) {
 					continue;
