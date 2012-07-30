@@ -67,7 +67,7 @@ public class Util {
         while (idx < t.length() && t.charAt(idx) == '[') {
           idx++;
         }
-        Debug.printDbg("t "+ t +" idx "+ idx);
+        //Debug.printDbg("t "+ t +" idx "+ idx);
         String className = typeDescriptor.substring(idx);
 
         className = className.substring(className.indexOf('L') + 1, className.indexOf(';'));
