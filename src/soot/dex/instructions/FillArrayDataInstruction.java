@@ -229,12 +229,8 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     
     ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
     arrayTable.write(out, targetAddress);
-
-    byte[] outa = out.getArray();
-    byte[] data = new byte[outa.length-6];
-    for (int i=6; i<outa.length; i++) {
-      data[i-6] = outa[i];
-    }
+    
+    // include all bytes as data since dexlib needs this
     setData (data);
   }
 }
