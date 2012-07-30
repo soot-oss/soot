@@ -28,6 +28,7 @@ import org.jf.dexlib.DexFile;
 import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 
+import soot.PrimType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootResolver;
@@ -70,21 +71,24 @@ public class DexlibWrapper {
             this.dexClasses.put(Util.dottedClassName(defItem.getClassType().getTypeDescriptor()), defItem);
         }
 
-				for (TypeIdItem t: this.dexFile.TypeIdsSection.getItems()) {
-					DexType dt = new DexType (t);
-					Type st = dt.toSoot();
-					Debug.printDbg("Type: "+ t +" soot type:"+ st);
-					if (!Scene.v().containsClass(st.toString())) {
-						SootResolver.v().makeClassRef(st.toString());
-						if (st.toString().endsWith("Exception")) {
-						  SootResolver.v().resolveClass(st.toString(), SootClass.HIERARCHY); //.reResolveHierarchy(Scene.v().getSootClass(st.toString()));
-						  Scene.v().getSootClass(st.toString()).checkLevel(SootClass.HIERARCHY);
-						}
-					}
+		for (TypeIdItem t: this.dexFile.TypeIdsSection.getItems()) {
+			DexType dt = new DexType (t);
+			Type st = dt.toSoot();
+			Debug.printDbg("Type: "+ t +" soot type:"+ st);
+			if (!Scene.v().containsClass(st.toString())) {
+				if (st instanceof PrimType) {
+					continue;
 				}
-				for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
-				  Debug.printDbg("String: "+ i);
+				SootResolver.v().makeClassRef(st.toString());
+				if (st.toString().endsWith("Exception")) {
+					SootResolver.v().resolveClass(st.toString(), SootClass.HIERARCHY); //.reResolveHierarchy(Scene.v().getSootClass(st.toString()));
+					Scene.v().getSootClass(st.toString()).checkLevel(SootClass.HIERARCHY);
 				}
+			}
+		}
+		for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
+			Debug.printDbg("String: "+ i);
+		}
 
     }
 
