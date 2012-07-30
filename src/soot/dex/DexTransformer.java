@@ -98,7 +98,7 @@ public abstract class DexTransformer extends BodyTransformer {
   }
 
   protected Type findArrayType(ExceptionalUnitGraph g,
-      SmartLocalDefs localDefs, SimpleLocalUses localUses, Stmt arrayStmt) {
+      SmartLocalDefs localDefs, SimpleLocalUses localUses, Stmt arrayStmt, int depth) {
     ArrayRef aRef = null;
     if (arrayStmt.containsArrayRef()) {
       aRef = arrayStmt.getArrayRef();
@@ -142,7 +142,7 @@ public abstract class DexTransformer extends BodyTransformer {
           ArrayRef ar = (ArrayRef)r;
           if (ar.getType().equals(".unknown") || ar.getType().toString().equals("unknown")) { // || ar.getType()) {
             System.out.println("second round from stmt: "+ stmt);
-            Type t = findArrayType (g, localDefs, localUses, stmt); //TODO: which type should be returned? //TODO: /!\ loops
+            Type t = findArrayType (g, localDefs, localUses, stmt, ++depth); //TODO: which type should be returned? //TODO: /!\ loops
             if (t instanceof ArrayType) {
               ArrayType at = (ArrayType)t;
               t = at.getArrayElementType();
@@ -170,7 +170,7 @@ public abstract class DexTransformer extends BodyTransformer {
           // introduces alias
         } else if (r instanceof Local) {
           Debug.printDbg("atype alias: "+ stmt);
-          return findArrayType (g, localDefs, localUses, stmt);
+          return findArrayType (g, localDefs, localUses, stmt, ++depth);
         } else if (r instanceof Constant) {
         } else {
           throw new RuntimeException("ERROR: def statement not possible! "+ stmt);
@@ -185,8 +185,11 @@ public abstract class DexTransformer extends BodyTransformer {
       }
 
     } // loop 
-    throw new RuntimeException("ERROR: could not find type of array from statement '"+ arrayStmt +"'");
-
+    
+    if (depth == 0)
+      throw new RuntimeException("ERROR: could not find type of array from statement '"+ arrayStmt +"'");
+    else
+      return null;
   }
 
 }
