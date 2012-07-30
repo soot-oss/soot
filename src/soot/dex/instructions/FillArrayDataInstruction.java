@@ -19,6 +19,7 @@
 
 package soot.dex.instructions;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction.ArrayElement;
 import org.jf.dexlib.Code.Format.Instruction22c;
 import org.jf.dexlib.Code.Format.Instruction31t;
 import org.jf.dexlib.Util.ByteArray;
+import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -38,11 +40,13 @@ import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.ShortType;
 import soot.Type;
+import soot.dex.Debug;
 import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.jimple.ArrayRef;
@@ -55,7 +59,7 @@ import soot.jimple.LongConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.Stmt;
 
-public class FillArrayDataInstruction extends DexlibAbstractInstruction {
+public class FillArrayDataInstruction extends PseudoInstruction {
 
   public FillArrayDataInstruction (Instruction instruction, int codeAdress) {
     super(instruction, codeAdress);
@@ -89,6 +93,8 @@ public class FillArrayDataInstruction extends DexlibAbstractInstruction {
     for (int i = 0; i < numElements; i++) {
       ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
       NumericConstant element = getArrayElement(elements.next(),body,destRegister);
+      if (element == null) //array was not defined -> element type can not be found (obfuscated bytecode?)
+        break;
       AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
       tagWithLineNumber(assign);
       body.add(assign);
@@ -152,7 +158,9 @@ public class FillArrayDataInstruction extends DexlibAbstractInstruction {
       }
 
     if(elementType==null) {
-      throw new InternalError("Unable to find array type to type array elements!");
+      //throw new InternalError("Unable to find array type to type array elements!");
+      G.v().out.println("Warning: Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
+      return null;
     }
 
     NumericConstant value;
@@ -180,5 +188,53 @@ public class FillArrayDataInstruction extends DexlibAbstractInstruction {
     }
     return value;
 
+  }
+
+  @Override
+  public void computeDataOffsets(DexBody body) {
+    System.out.println("compute data offset");
+    if(!(instruction instanceof Instruction31t))
+      throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
+
+    Instruction31t fillArrayInstr = (Instruction31t)instruction;
+    int destRegister = fillArrayInstr.getRegisterA();
+    int offset = fillArrayInstr.getTargetAddressOffset();
+    int targetAddress = codeAddress + offset;
+
+    Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
+
+    if(!(referenceTable instanceof ArrayDataPseudoInstruction)) {
+      throw new RuntimeException("Address " + targetAddress + "refers to an invalid PseudoInstruction.");
+    }
+
+    ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
+    int numElements = arrayTable.getElementCount();
+    int widthElement = arrayTable.getElementWidth();
+    int size = widthElement * numElements;
+  
+    // From org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction we learn
+    // that there are 6 bytes after the magic number that we have to jump.
+    // 6 bytes to jump = address + 3
+    //
+    //    out.writeByte(0x00); // magic
+    //    out.writeByte(0x03); // number
+    //    out.writeShort(elementWidth); // 2 bytes
+    //    out.writeInt(elementCount); // 4 bytes
+    //    out.write(encodedValues);
+    //
+    
+    setDataFirstByte (targetAddress + 3); // address for 16 bits elements not 8 bits
+    setDataLastByte (targetAddress + 3 + size - 1);
+    setDataSize (size);
+    
+    ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
+    arrayTable.write(out, targetAddress);
+
+    byte[] outa = out.getArray();
+    byte[] data = new byte[outa.length-6];
+    for (int i=6; i<outa.length; i++) {
+      data[i-6] = outa[i];
+    }
+    setData (data);
   }
 }

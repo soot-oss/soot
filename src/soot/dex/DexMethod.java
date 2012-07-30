@@ -27,6 +27,7 @@ import org.jf.dexlib.AnnotationItem;
 import org.jf.dexlib.AnnotationSetItem;
 import org.jf.dexlib.ClassDataItem;
 import org.jf.dexlib.DebugInfoItem;
+import org.jf.dexlib.DexFile;
 import org.jf.dexlib.Item;
 import org.jf.dexlib.MethodIdItem;
 import org.jf.dexlib.TypeIdItem;
@@ -58,13 +59,16 @@ public class DexMethod {
     protected List<DexType> parameterTypes;
 
     private DexBody dexBody;
+    private DexFile dexFile;
 
-    public DexMethod(ClassDataItem.EncodedMethod method, DexClass dexClass) {
+    public DexMethod(DexFile dexFile, ClassDataItem.EncodedMethod method, DexClass dexClass) {
+      this.dexFile = dexFile;
         this.dexClass = dexClass;
         this.accessFlags = method.accessFlags;
         parameterTypes = new ArrayList<DexType>();
         // get the name of the method
         this.name = method.method.getMethodName().getStringValue();
+        Debug.printDbg("processing method '"+ name +"'");
 
         // this delegator processes the set of annotations acording to the dexlib interface
         class myMethodDelegator implements MethodAnnotationIteratorDelegate {
@@ -147,7 +151,7 @@ public class DexMethod {
         }
         
         //add the body of this code item
-        dexBody = new DexBody(method.codeItem, (RefType) DexType.toSoot(dexClass.getType()));
+        dexBody = new DexBody(dexFile, method.codeItem, (RefType) DexType.toSoot(dexClass.getType()));
 
         for (DexType t : dexBody.usedTypes())
             dexClass.types.add(t);

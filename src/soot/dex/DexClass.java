@@ -96,7 +96,7 @@ public class DexClass {
             ClassDataItem.EncodedMethod[] methods = Util.concat(classData.getDirectMethods(), classData.getVirtualMethods());
             // get the methods of the class
             for (ClassDataItem.EncodedMethod method : methods) {
-                DexMethod dexMethod = new DexMethod(method, this);
+                DexMethod dexMethod = new DexMethod(classDef.getDexFile(), method, this);
                 this.methods.add(dexMethod);
             }
         }

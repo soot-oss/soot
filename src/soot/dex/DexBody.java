@@ -35,10 +35,12 @@ import org.jf.dexlib.CodeItem.EncodedCatchHandler;
 import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
 import org.jf.dexlib.DebugInfoItem;
+import org.jf.dexlib.DexFile;
 import org.jf.dexlib.ProtoIdItem;
 import org.jf.dexlib.TypeIdItem;
 import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib.Code.InstructionIterator;
 import org.jf.dexlib.Debug.DebugInstructionIterator;
 
 import soot.Body;
@@ -62,6 +64,7 @@ import soot.dex.instructions.DanglingInstruction;
 import soot.dex.instructions.DeferableInstruction;
 import soot.dex.instructions.DexlibAbstractInstruction;
 import soot.dex.instructions.MoveExceptionInstruction;
+import soot.dex.instructions.PseudoInstruction;
 import soot.dex.instructions.RetypeableInstruction;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.Jimple;
@@ -110,12 +113,29 @@ public class DexBody  {
     private RefType declaringClassType;
     
     private static LocalSplitter splitter; 
+    
+    // detect array/instructions overlapping obfuscation
+    private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
+    private DexFile dexFile = null;
+    //private HashMap<Integer, DexlibAbstractInstruction> arrays = new HashMap<Integer, DexlibAbstractInstruction>();
 
+    PseudoInstruction isAddressInData (int a) {
+      for (PseudoInstruction pi: pseudoInstructionData) {
+        int fb = pi.getDataFirstByte();
+        int lb = pi.getDataLastByte();
+        System.out.println("fb a lb "+ fb +" "+a +" "+ lb);
+        if (fb <= a && a <= lb)
+          return pi;
+      }
+      return null;
+    }
+    
     /**
      * @param code the codeitem that is contained in this body
      * @param method the method that is associated with this body
      */
-    public DexBody(CodeItem code, RefType declaringClassType) {
+    public DexBody(DexFile dexFile, CodeItem code, RefType declaringClassType) {
+      this.dexFile = dexFile;
         this.declaringClassType = declaringClassType;
         tries = code.getTries();
         methodString = code.getParent().method.toString();
@@ -147,16 +167,27 @@ public class DexBody  {
             Debug.printDbg(" put instruction '"+ dexInstruction +"' at 0x"+ Integer.toHexString(address));
             address += instruction.getSize(address);
         }
+        
+        // get addresses of pseudo-instruction data blocks
+        for(DexlibAbstractInstruction instruction : instructions) {
+          if (instruction instanceof PseudoInstruction) {
+            PseudoInstruction pi = (PseudoInstruction)instruction;
+            pi.computeDataOffsets (this);
+            pseudoInstructionData.add (pi);
+            //instructions.add(arg0)
+          }
+        }
+        for (PseudoInstruction pi: pseudoInstructionData) {
+          instructions.addAll(decodeInstructions(pi));
+        }
 
         DebugInfoItem debugInfoItem = code.getDebugInfo();
         if(debugInfoItem!=null) {
-
-
             DebugInstructionIterator.DecodeInstructions(debugInfoItem, numRegisters,
                 new DebugInstructionIterator.ProcessDecodedDebugInstructionDelegate() {
                     @Override
                     public void ProcessLineEmit(int codeAddress, final int line) {
-                        instructionAtAddress(codeAddress).setLineNumber(line);
+                        //instructionAtAddress(codeAddress).setLineNumber(line);
                     }
                 });
         }
@@ -264,6 +295,18 @@ public class DexBody  {
 //      for (int j=address - 10; j< address+10; j++ ){
 //        Debug.printDbg(" dump2: 0x"+ Integer.toHexString(j) +" : "+instructionAtAddress.get (j) );
 //      }
+      // make sure it is not a jump to pseudo-instructions data (=obfuscation)
+      PseudoInstruction pi = isAddressInData(address);
+      if (pi != null && !pi.isLoaded()) {
+        System.out.println("warning: attempting to jump to pseudo-instruction data at address 0x"+ Integer.toHexString(address));
+        System.out.println("pseudo instruction: "+ pi);
+        //instructions.addAll(decodeInstructions(pi)); //.getDataFirstByte(), pi.getDataLastByte());
+        // TODO: should add a throw instruction here just to be sure...
+        //instructions.add(new Instruction11x());
+        //System.exit(-1);
+        pi.setLoaded(true);
+      }
+      
         DexlibAbstractInstruction i = instructionAtAddress.get(address);
         if (i == null) {
             // catch addresses can be in the middlde of last instruction. Ex. in com.letang.ldzja.en.apk:
@@ -280,6 +323,32 @@ public class DexBody  {
             }
         }
         return i;
+    }
+
+    private ArrayList<DexlibAbstractInstruction> decodeInstructions(PseudoInstruction pi) { //int dataFirstByte, int dataLastByte) {
+      final ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
+      ArrayList<DexlibAbstractInstruction> dexInstructions = new ArrayList<DexlibAbstractInstruction>();
+     
+      byte[] encodedInstructions = pi.getData(); //gin.readBytes(dataLastByte - dataFirstByte + 1);
+      InstructionIterator.IterateInstructions(this.dexFile, encodedInstructions,
+              new InstructionIterator.ProcessInstructionDelegate() {
+                  public void ProcessInstruction(int codeAddress, Instruction instruction) {
+                      instructionList.add(instruction);
+                  }
+              });
+
+      Instruction[] instructions = new Instruction[instructionList.size()];
+      instructionList.toArray(instructions);
+      System.out.println("instructionList: ");
+      int address = pi.getDataFirstByte();
+      for (Instruction i: instructions) {
+        DexlibAbstractInstruction dexInstruction = fromInstruction(i, address);
+        instructionAtAddress.put(address, dexInstruction);
+        dexInstructions.add(dexInstruction);
+        System.out.println("i = "+ dexInstruction +" @ 0x"+ Integer.toHexString(address));
+        address += i.getSize(address);
+      }
+      return dexInstructions;
     }
 
     public DvkTyper dvkTyper = null;
@@ -360,14 +429,16 @@ public class DexBody  {
         storeResultLocal = Jimple.v().newLocal("$u-1", UnknownType.v());
         jBody.getLocals().add (storeResultLocal);
         
+        
         // process bytecode instructions
         for(DexlibAbstractInstruction instruction : instructions) {
             if (dangling != null) {
                 dangling.finalize(this, instruction);
                 dangling = null;
             }
-            Debug.printDbg(" current op: 0x"+ Integer.toHexString(instruction.getInstruction().opcode.value));
+            //Debug.printDbg(" current op to jimplify: 0x"+ Integer.toHexString(instruction.getInstruction().opcode.value) +" instruction: "+ instruction );
             instruction.jimplify(this);
+            System.out.println("jimple: "+ jBody.getUnits().getLast());
         }
         for(DeferableInstruction instruction : deferredInstructions) {
             instruction.deferredJimplify(this);
@@ -501,6 +572,8 @@ public class DexBody  {
             EncodedCatchHandler h = tryItem.encodedCatchHandler;
 
             for (EncodedTypeAddrPair handler: h.handlers) {
+              int handlerAddress = handler.getHandlerAddress();
+              Debug.printDbg("handler   (0x"+ Integer.toHexString(handlerAddress)   +"): "+ instructionAtAddress (handlerAddress).getUnit()  +" --- "+ instructionAtAddress (handlerAddress-1).getUnit());
                 Type t = DexType.toSoot(handler.exceptionType);
                 // exceptions can only be of RefType
                 if (t instanceof RefType) {

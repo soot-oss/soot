@@ -23,7 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib.Code.OffsetInstruction;
+import org.jf.dexlib.Code.SingleRegisterInstruction;
 import org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction;
+import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
 
 import soot.Local;
 import soot.Unit;
@@ -50,5 +53,39 @@ public class PackedSwitchInstruction extends SwitchInstruction {
             targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
 
         return Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
+    }
+
+    @Override
+    public void computeDataOffsets(DexBody body) {
+      int offset = ((OffsetInstruction) instruction).getTargetAddressOffset();
+      int targetAddress = codeAddress + offset;
+      Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
+      PackedSwitchDataPseudoInstruction psInst = (PackedSwitchDataPseudoInstruction) targetData;
+      int[] targetAddresses = psInst.getTargets();
+      int size = targetAddresses.length;
+      
+      // From org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction we learn
+      // that there are 2 bytes after the magic number that we have to jump.
+      // 2 bytes to jump = address + 1
+      //
+      //      out.writeByte(0x00); // magic
+      //      out.writeByte(0x01); // number
+      //      out.writeShort(targets.length); // 2 bytes
+      //      out.writeInt(firstKey);
+      
+      setDataFirstByte (targetAddress + 1);
+      setDataLastByte (targetAddress + 1 + size - 1);
+      setDataSize (size);
+      
+      ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
+      psInst.write(out, targetAddress);
+
+      byte[] outa = out.getArray();
+      byte[] data = new byte[outa.length-2];
+      for (int i=2; i<outa.length; i++) {
+        data[i-2] = outa[i];
+      }
+      setData (data);
+      
     }
 }

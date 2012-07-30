@@ -29,7 +29,7 @@ import soot.dex.DexBody;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
-public abstract class SwitchInstruction extends DexlibAbstractInstruction implements DeferableInstruction {
+public abstract class SwitchInstruction extends PseudoInstruction implements DeferableInstruction {
     protected Unit markerUnit;
 
     public SwitchInstruction (Instruction instruction, int codeAdress) {
