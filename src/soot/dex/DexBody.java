@@ -41,7 +41,6 @@ import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Debug.DebugInstructionIterator;
 
-
 import soot.Body;
 import soot.BooleanType;
 import soot.IntType;

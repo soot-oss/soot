@@ -29,7 +29,6 @@ import org.jf.dexlib.Code.InstructionWithReference;
 import soot.Local;
 import soot.dex.DexBody;
 import soot.dex.DexType;
-import soot.tagkit.SourceLineNumberTag;
 
 public abstract class FilledArrayInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
     protected Local arrayLocal;

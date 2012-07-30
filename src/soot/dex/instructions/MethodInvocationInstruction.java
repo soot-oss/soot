@@ -48,13 +48,10 @@ import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.dex.DvkTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
-import soot.tagkit.SourceLineNumberTag;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
     // stores the dangling InvokeExpr

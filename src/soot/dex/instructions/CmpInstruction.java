@@ -37,7 +37,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
 

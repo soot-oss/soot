@@ -21,8 +21,6 @@ package soot.dex.instructions;
 
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.jf.dexlib.Code.Instruction;

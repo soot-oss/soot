@@ -1,9 +1,4 @@
 package soot.dex.instructions;
-import soot.dex.tags.DoubleOpTag;
-import soot.dex.tags.FloatOpTag;
-import soot.dex.tags.IntOpTag;
-import soot.dex.tags.LongOpTag;
-
 import org.jf.dexlib.Code.Instruction;
 
 import soot.tagkit.Tag;

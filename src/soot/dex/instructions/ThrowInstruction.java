@@ -26,7 +26,6 @@ import soot.dex.DexBody;
 import soot.dex.DvkTyper;
 import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
-import soot.jimple.internal.JAssignStmt;
 
 public class ThrowInstruction extends DexlibAbstractInstruction {
 

@@ -34,7 +34,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class BinopLitInstruction extends TaggedInstruction {
 

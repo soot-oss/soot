@@ -19,8 +19,6 @@
 
 package soot.dex.instructions;
 
-import static soot.dex.Util.dottedClassName;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +28,6 @@ import org.jf.dexlib.Code.InstructionWithReference;
 import org.jf.dexlib.Code.SingleRegisterInstruction;
 import org.jf.dexlib.Code.Format.Instruction21c;
 
-import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.dex.DvkTyper;
@@ -52,7 +49,6 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
         InstructionWithReference constClass = (InstructionWithReference) this.instruction;
         
         TypeIdItem tidi = (TypeIdItem)(constClass.getReferencedItem());
-        Type t = DexType.toSoot(tidi);
         String type = tidi.toString().split(" ")[1];
         if (type.startsWith("L") && type.endsWith(";"))
           type = type.replaceAll("^L", "").replaceAll(";$", "");

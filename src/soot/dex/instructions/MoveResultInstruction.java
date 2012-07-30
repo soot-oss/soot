@@ -26,7 +26,6 @@ import soot.Local;
 import soot.dex.DexBody;
 import soot.dex.DvkTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;

@@ -23,7 +23,6 @@ import org.jf.dexlib.Code.Instruction;
 
 import soot.Immediate;
 import soot.Local;
-import soot.Unit;
 import soot.dex.DexBody;
 import soot.jimple.ConditionExpr;
 import soot.jimple.IfStmt;

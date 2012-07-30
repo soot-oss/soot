@@ -19,8 +19,6 @@
 
 package soot.dex.instructions;
 
-import static soot.dex.Util.dottedClassName;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +28,6 @@ import org.jf.dexlib.Code.InstructionWithReference;
 import org.jf.dexlib.Code.TwoRegisterInstruction;
 import org.jf.dexlib.Code.Format.Instruction22c;
 
-import soot.RefType;
 import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;

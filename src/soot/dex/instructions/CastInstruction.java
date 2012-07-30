@@ -39,7 +39,6 @@ import soot.dex.tags.LongOpTag;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class CastInstruction extends TaggedInstruction {
 

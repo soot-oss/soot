@@ -20,10 +20,8 @@
 package soot.dex;
 
 import java.util.Collections;
-import java.util.Set;
 import java.util.HashSet;
-
-import soot.dex.Util;
+import java.util.Set;
 
 import org.jf.dexlib.AnnotationDirectoryItem;
 import org.jf.dexlib.ClassDataItem;

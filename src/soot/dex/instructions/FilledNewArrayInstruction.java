@@ -35,7 +35,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
-import soot.jimple.NopStmt;
 import soot.jimple.internal.JAssignStmt;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {

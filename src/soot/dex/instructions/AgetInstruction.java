@@ -31,9 +31,7 @@ import soot.dex.tags.ObjectOpTag;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
-import soot.jimple.UnopExpr;
 import soot.jimple.internal.JAssignStmt;
-import soot.jimple.internal.JCastExpr;
 
 public class AgetInstruction extends DexlibAbstractInstruction {
 

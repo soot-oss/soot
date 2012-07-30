@@ -22,12 +22,10 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.Instruction21t;
 
-import soot.DoubleType;
 import soot.IntType;
 import soot.dex.DexBody;
 import soot.dex.DvkTyper;
 import soot.jimple.BinopExpr;
-import soot.jimple.ConditionExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JIfStmt;

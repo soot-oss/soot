@@ -27,8 +27,8 @@ import java.util.Set;
 import org.jf.dexlib.TypeIdItem;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction;
-import org.jf.dexlib.Code.Format.Instruction22c;
 import org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction.ArrayElement;
+import org.jf.dexlib.Code.Format.Instruction22c;
 import org.jf.dexlib.Code.Format.Instruction31t;
 import org.jf.dexlib.Util.ByteArray;
 
@@ -52,7 +52,6 @@ import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
-import soot.jimple.NopStmt;
 import soot.jimple.NumericConstant;
 import soot.jimple.Stmt;
 

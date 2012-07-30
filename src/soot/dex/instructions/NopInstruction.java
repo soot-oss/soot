@@ -21,9 +21,9 @@ package soot.dex.instructions;
 
 import org.jf.dexlib.Code.Instruction;
 
+import soot.dex.DexBody;
 import soot.jimple.Jimple;
 import soot.jimple.NopStmt;
-import soot.dex.DexBody;
 
 public class NopInstruction extends DexlibAbstractInstruction {
 

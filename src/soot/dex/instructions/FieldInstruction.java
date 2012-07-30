@@ -34,7 +34,6 @@ import org.jf.dexlib.Code.Format.Instruction22c;
 import org.jf.dexlib.Code.Format.Instruction23x;
 
 import soot.Local;
-import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootFieldRef;
@@ -44,7 +43,6 @@ import soot.UnknownType;
 import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.jimple.AssignStmt;
-import soot.jimple.CastExpr;
 import soot.jimple.ConcreteRef;
 import soot.jimple.Jimple;
 

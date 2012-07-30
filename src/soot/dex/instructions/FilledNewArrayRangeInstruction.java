@@ -34,7 +34,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
-import soot.jimple.NopStmt;
 
 public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 

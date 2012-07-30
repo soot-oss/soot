@@ -23,15 +23,15 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jf.dexlib.DexFile;
 import org.jf.dexlib.ClassDefItem;
+import org.jf.dexlib.DexFile;
 import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 
 import soot.Scene;
-import soot.Type;
 import soot.SootClass;
 import soot.SootResolver;
+import soot.Type;
 
 
 /**
