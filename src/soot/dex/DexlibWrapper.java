@@ -20,19 +20,24 @@
 package soot.dex;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jf.dexlib.ClassDefItem;
 import org.jf.dexlib.DexFile;
 import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 
+import soot.ArrayType;
 import soot.PrimType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootResolver;
 import soot.Type;
+import soot.VoidType;
 
 
 /**
@@ -42,12 +47,27 @@ import soot.Type;
  *
  */
 public class DexlibWrapper {
+	
+	static {
+		Set<String> systemAnnotationNamesModifiable = new HashSet<String>();
+		// names as defined in the ".dex - Dalvik Executable Format" document
+		systemAnnotationNamesModifiable.add("dalvik.annotation.AnnotationDefault");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.EnclosingClass");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.EnclosingMethod");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.InnerClass");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.MemberClasses");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.Signature");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.Throws");
+        systemAnnotationNames = Collections.unmodifiableSet(systemAnnotationNamesModifiable);
+	}
 
     private DexFile dexFile;
 
     private Map<String, ClassDefItem> dexClasses;
 
     private Map<String, DexClass> classesByName;
+    
+    private final static Set<String> systemAnnotationNames;
 
     /**
      * Construct a DexlibWrapper from a dex file and stores its classes referenced by their name.
@@ -74,15 +94,25 @@ public class DexlibWrapper {
 		for (TypeIdItem t: this.dexFile.TypeIdsSection.getItems()) {
 			DexType dt = new DexType (t);
 			Type st = dt.toSoot();
+			if (st instanceof ArrayType) {
+				st = ((ArrayType) st).baseType;
+			}
 			//Debug.printDbg("Type: "+ t +" soot type:"+ st);
-			if (!Scene.v().containsClass(st.toString())) {
-				if (st instanceof PrimType) {
+			String sootTypeName = st.toString();
+			if (!Scene.v().containsClass(sootTypeName)) {
+				if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
+					// dex files contain references to the Type IDs of void / primitive types - we obviously do not want them to be resolved
+					/* 
+					 * dex files contain references to the Type IDs of the system annotations.
+					 * They are only visible to the Dalvik VM (for reflection, see vm/reflect/Annotations.cpp), and not to
+					 * the user - so we do not want them to be resolved.
+					 */
 					continue;
 				}
-				SootResolver.v().makeClassRef(st.toString());
-				if (st.toString().endsWith("Exception")) {
-					SootResolver.v().resolveClass(st.toString(), SootClass.HIERARCHY); //.reResolveHierarchy(Scene.v().getSootClass(st.toString()));
-					Scene.v().getSootClass(st.toString()).checkLevel(SootClass.HIERARCHY);
+				SootResolver.v().makeClassRef(sootTypeName);
+				if (sootTypeName.endsWith("Exception")) {
+					SootResolver.v().resolveClass(sootTypeName, SootClass.HIERARCHY); //.reResolveHierarchy(Scene.v().getSootClass(st.toString()));
+					Scene.v().getSootClass(sootTypeName).checkLevel(SootClass.HIERARCHY);
 				}
 			}
 		}
@@ -92,7 +122,7 @@ public class DexlibWrapper {
 
     }
 
-    /**
+	/**
      * Returns and processes the dex class by its fully classified name.
      * All subsequent elements of that class are retrieved.
      *
