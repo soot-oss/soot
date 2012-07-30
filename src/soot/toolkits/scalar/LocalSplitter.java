@@ -58,13 +58,13 @@ import java.util.*;
  */
 public class LocalSplitter extends BodyTransformer
 {
-    private final ThrowAnalysis throwAnalysis;
+    private ThrowAnalysis throwAnalysis;
 
 	public LocalSplitter( Singletons.Global g ) {
-		throwAnalysis = Scene.v().getDefaultThrowAnalysis();
 	}
 	
 	public LocalSplitter(ThrowAnalysis throwAnalysis) {
+		if(throwAnalysis==null) throw new NullPointerException();
 		this.throwAnalysis = throwAnalysis;
 	}
 	
@@ -72,6 +72,9 @@ public class LocalSplitter extends BodyTransformer
     
     protected void internalTransform(Body body, String phaseName, Map options)
     {
+    	if(throwAnalysis==null)
+    		throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    	
         Chain units = body.getUnits();
         List<List> webs = new ArrayList<List>();
 
