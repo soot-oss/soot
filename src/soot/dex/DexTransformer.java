@@ -124,6 +124,7 @@ public abstract class DexTransformer extends BodyTransformer {
     }
 
     // We should find an answer only by processing the first item of the list
+    Type aType = null;
     for (Unit baseDef: defsOfaBaseList) {
 
       // baseDef is either an assignment statement or an identity statement
@@ -137,7 +138,12 @@ public abstract class DexTransformer extends BodyTransformer {
             t = at.getArrayElementType();
           }
           Debug.printDbg("atype fieldref: "+ t);
-          return t;
+          if (depth ==0) {
+            aType = t;
+            break;
+          } else {
+            return t;
+          }
         } else if (r instanceof ArrayRef) {
           ArrayRef ar = (ArrayRef)r;
           if (ar.getType().equals(".unknown") || ar.getType().toString().equals("unknown")) { // || ar.getType()) {
@@ -147,30 +153,61 @@ public abstract class DexTransformer extends BodyTransformer {
               ArrayType at = (ArrayType)t;
               t = at.getArrayElementType();
             }
-            return t;
+            if (depth ==0) {
+              aType = t;
+              break;
+            } else {
+              return t;
+            }
           } else {
             Debug.printDbg("atype arrayref: "+ ar.getType().toString());
             ArrayType at = (ArrayType) stmt.getRightOp().getType();
-            return at.getArrayElementType();
-            //return ar.getType();                         
+            Type t = at.getArrayElementType(); 
+            if (depth ==0) {
+              aType = t;
+              break;
+            } else {
+              return t;
+            }
           }
         } else if (r instanceof NewArrayExpr) {
           NewArrayExpr expr = (NewArrayExpr)r;
           Type t = expr.getBaseType();
           Debug.printDbg("atype newarrayexpr: "+ t);
-          return t;
+          if (depth ==0) {
+            aType = t;
+            break;
+          } else {
+            return t;
+          }
         } else if (r instanceof CastExpr) {
           Type t = (((CastExpr)r).getCastType());
           Debug.printDbg("atype cast: "+ t);
-          return t;
+          if (depth ==0) {
+            aType = t;
+            break;
+          } else {
+            return t;
+          }
         } else if (r instanceof InvokeExpr) {
           Type t = ((InvokeExpr) r).getMethodRef().returnType();
           Debug.printDbg("atype invoke: "+ t);
-          return t;
+          if (depth ==0) {
+            aType = t;
+            break;
+          } else {
+            return t;
+          }
           // introduces alias
         } else if (r instanceof Local) {
           Debug.printDbg("atype alias: "+ stmt);
-          return findArrayType (g, localDefs, localUses, stmt, ++depth);
+          Type t = findArrayType (g, localDefs, localUses, stmt, ++depth);
+          if (depth ==0) {
+            aType = t;
+            break;
+          } else {
+            return t;
+          }
         } else if (r instanceof Constant) {
         } else {
           throw new RuntimeException("ERROR: def statement not possible! "+ stmt);
@@ -179,17 +216,23 @@ public abstract class DexTransformer extends BodyTransformer {
       } else if (baseDef instanceof IdentityStmt) {
         IdentityStmt stmt = (IdentityStmt)baseDef;
         ArrayType at = (ArrayType) stmt.getRightOp().getType();
-        return at.getArrayElementType();
+        Type t = at.getArrayElementType();
+        if (depth ==0) {
+          aType = t;
+          break;
+        } else {
+          return t;
+        }
       } else {
         throw new RuntimeException("ERROR: base local def must be AssignStmt or IdentityStmt! "+ baseDef);
       }
 
     } // loop 
     
-    if (depth == 0)
+    if (depth == 0 && aType == null)
       throw new RuntimeException("ERROR: could not find type of array from statement '"+ arrayStmt +"'");
     else
-      return null;
+      return aType;
   }
 
 }
