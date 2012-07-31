@@ -99,7 +99,7 @@ public class CastInstruction extends TaggedInstruction {
           setTag (new DoubleOpTag());
           return LongType.v();
         case FLOAT_TO_LONG:
-          setTag (new LongOpTag());
+          setTag (new FloatOpTag());
             return LongType.v();
             
         case LONG_TO_FLOAT:
@@ -119,7 +119,7 @@ public class CastInstruction extends TaggedInstruction {
           setTag (new FloatOpTag());
           return DoubleType.v();
         case LONG_TO_DOUBLE:
-          setTag (new DoubleOpTag());
+          setTag (new LongOpTag());
             return DoubleType.v();
 
         default:
