@@ -204,7 +204,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
 
     if(!(referenceTable instanceof ArrayDataPseudoInstruction)) {
-      throw new RuntimeException("Address " + targetAddress + "refers to an invalid PseudoInstruction.");
+      throw new RuntimeException("Address 0x" + Integer.toHexString(targetAddress) + " refers to an invalid PseudoInstruction ("+ referenceTable.getClass() +").");
     }
 
     ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
@@ -230,7 +230,11 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
     arrayTable.write(out, targetAddress);
     
-    // include all bytes as data since dexlib needs this
+    byte[] outa = out.getArray();
+    byte[] data = new byte[outa.length-6];
+    for (int i=6; i<outa.length; i++) {
+      data[i-6] = outa[i];
+    }
     setData (data);
   }
 }

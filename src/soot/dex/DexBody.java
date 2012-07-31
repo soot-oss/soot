@@ -117,7 +117,6 @@ public class DexBody  {
     // detect array/instructions overlapping obfuscation
     private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
     private DexFile dexFile = null;
-    //private HashMap<Integer, DexlibAbstractInstruction> arrays = new HashMap<Integer, DexlibAbstractInstruction>();
 
     PseudoInstruction isAddressInData (int a) {
       for (PseudoInstruction pi: pseudoInstructionData) {
@@ -172,14 +171,13 @@ public class DexBody  {
         for(DexlibAbstractInstruction instruction : instructions) {
           if (instruction instanceof PseudoInstruction) {
             PseudoInstruction pi = (PseudoInstruction)instruction;
-            pi.computeDataOffsets (this);
             pseudoInstructionData.add (pi);
             //instructions.add(arg0)
           }
         }
-        for (PseudoInstruction pi: pseudoInstructionData) {
-          instructions.addAll(decodeInstructions(pi));
-        }
+//        for (PseudoInstruction pi: pseudoInstructionData) {
+//          instructions.addAll(decodeInstructions(pi));
+//        }
 
         DebugInfoItem debugInfoItem = code.getDebugInfo();
         if(debugInfoItem!=null) {
@@ -187,7 +185,7 @@ public class DexBody  {
                 new DebugInstructionIterator.ProcessDecodedDebugInstructionDelegate() {
                     @Override
                     public void ProcessLineEmit(int codeAddress, final int line) {
-                        //instructionAtAddress(codeAddress).setLineNumber(line);
+                        instructionAtAddress(codeAddress).setLineNumber(line);
                     }
                 });
         }
@@ -295,16 +293,16 @@ public class DexBody  {
 //      for (int j=address - 10; j< address+10; j++ ){
 //        Debug.printDbg(" dump2: 0x"+ Integer.toHexString(j) +" : "+instructionAtAddress.get (j) );
 //      }
-      // make sure it is not a jump to pseudo-instructions data (=obfuscation)
+      
+      // check if it is a jump to pseudo-instructions data (=obfuscation)
       PseudoInstruction pi = isAddressInData(address);
       if (pi != null && !pi.isLoaded()) {
         System.out.println("warning: attempting to jump to pseudo-instruction data at address 0x"+ Integer.toHexString(address));
         System.out.println("pseudo instruction: "+ pi);
-        //instructions.addAll(decodeInstructions(pi)); //.getDataFirstByte(), pi.getDataLastByte());
-        // TODO: should add a throw instruction here just to be sure...
-        //instructions.add(new Instruction11x());
-        //System.exit(-1);
+
         pi.setLoaded(true);
+        pi.computeDataOffsets (this);
+        instructions.addAll(decodeInstructions(pi)); // TODO: should add a throw instruction here just to be sure...
       }
       
         DexlibAbstractInstruction i = instructionAtAddress.get(address);
@@ -438,7 +436,7 @@ public class DexBody  {
             }
             //Debug.printDbg(" current op to jimplify: 0x"+ Integer.toHexString(instruction.getInstruction().opcode.value) +" instruction: "+ instruction );
             instruction.jimplify(this);
-            System.out.println("jimple: "+ jBody.getUnits().getLast());
+            //System.out.println("jimple: "+ jBody.getUnits().getLast());
         }
         for(DeferableInstruction instruction : deferredInstructions) {
             instruction.deferredJimplify(this);

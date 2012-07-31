@@ -80,9 +80,12 @@ public class PackedSwitchInstruction extends SwitchInstruction {
       ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
       psInst.write(out, targetAddress);
 
-      // include all bytes as data since dexlib needs this
       byte[] outa = out.getArray();
-      setData (outa);
+      byte[] data = new byte[outa.length-2];
+      for (int i=2; i<outa.length; i++) {
+        data[i-2] = outa[i];
+      }
+      setData (data);
       
     }
 }
