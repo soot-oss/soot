@@ -186,6 +186,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     } else {
       throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
     }
+    Debug.printDbg("array element: "+ value);
     return value;
 
   }
