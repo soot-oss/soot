@@ -28,8 +28,6 @@ import org.jf.dexlib.ClassDataItem;
 import org.jf.dexlib.ClassDefItem;
 import org.jf.dexlib.TypeIdItem;
 
-import soot.G;
-
 /**
  * DexClass is a container for all relevant information of that class
  * the name of the superclass, interfaces and its annotations, and modifier are stored, as well as all fields, methods, and types that are referenced throughout the class are available here.

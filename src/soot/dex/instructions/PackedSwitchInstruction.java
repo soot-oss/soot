@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.OffsetInstruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
 import org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction;
 import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
 
