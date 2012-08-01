@@ -171,7 +171,11 @@ public class DexBody  {
         for(DexlibAbstractInstruction instruction : instructions) {
           if (instruction instanceof PseudoInstruction) {
             PseudoInstruction pi = (PseudoInstruction)instruction;
-            pi.computeDataOffsets (this);
+            try {
+				pi.computeDataOffsets(this);
+			} catch (Exception e) {
+				throw new RuntimeException("exception while computing data offsets: ", e);
+			}
             pseudoInstructionData.add (pi);
             Debug.printDbg("add pseudo instruction: "+ pi.getDataFirstByte() +" - "+ pi.getDataLastByte() +" : "+ pi.getDataSize());
           }
