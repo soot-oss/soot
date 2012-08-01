@@ -81,6 +81,7 @@ import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
  * A DexBody contains the code of a DexMethod and is used as a wrapper around
@@ -487,6 +488,7 @@ public class DexBody  {
         
         TypeAssigner.v().transform(jBody);
         LocalPacker.v().transform(jBody);
+        UnusedLocalEliminator.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
         
         Debug.printDbg("\nafter type assigner localpacker and name standardizer");
