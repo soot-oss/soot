@@ -171,13 +171,11 @@ public class DexBody  {
         for(DexlibAbstractInstruction instruction : instructions) {
           if (instruction instanceof PseudoInstruction) {
             PseudoInstruction pi = (PseudoInstruction)instruction;
+            pi.computeDataOffsets (this);
             pseudoInstructionData.add (pi);
-            //instructions.add(arg0)
+            Debug.printDbg("add pseudo instruction: "+ pi.getDataFirstByte() +" - "+ pi.getDataLastByte() +" : "+ pi.getDataSize());
           }
         }
-//        for (PseudoInstruction pi: pseudoInstructionData) {
-//          instructions.addAll(decodeInstructions(pi));
-//        }
 
         DebugInfoItem debugInfoItem = code.getDebugInfo();
         if(debugInfoItem!=null) {
@@ -301,7 +299,6 @@ public class DexBody  {
         System.out.println("pseudo instruction: "+ pi);
 
         pi.setLoaded(true);
-        pi.computeDataOffsets (this);
         instructions.addAll(decodeInstructions(pi)); // TODO: should add a throw instruction here just to be sure...
       }
       
@@ -323,11 +320,11 @@ public class DexBody  {
         return i;
     }
 
-    private ArrayList<DexlibAbstractInstruction> decodeInstructions(PseudoInstruction pi) { //int dataFirstByte, int dataLastByte) {
+    private ArrayList<DexlibAbstractInstruction> decodeInstructions(PseudoInstruction pi) { 
       final ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
       ArrayList<DexlibAbstractInstruction> dexInstructions = new ArrayList<DexlibAbstractInstruction>();
      
-      byte[] encodedInstructions = pi.getData(); //gin.readBytes(dataLastByte - dataFirstByte + 1);
+      byte[] encodedInstructions = pi.getData();
       InstructionIterator.IterateInstructions(this.dexFile, encodedInstructions,
               new InstructionIterator.ProcessInstructionDelegate() {
                   public void ProcessInstruction(int codeAddress, Instruction instruction) {
