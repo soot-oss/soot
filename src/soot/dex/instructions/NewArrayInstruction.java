@@ -32,6 +32,7 @@ import soot.ArrayType;
 import soot.Local;
 import soot.Type;
 import soot.Value;
+import soot.dex.Debug;
 import soot.dex.DexBody;
 import soot.dex.DexType;
 import soot.dex.DvkTyper;
@@ -59,6 +60,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         Type t = DexType.toSoot((TypeIdItem) newArray.getReferencedItem());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
+        Debug.printDbg("array element type: "+ arrayType);
 
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
