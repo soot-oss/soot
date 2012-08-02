@@ -364,7 +364,7 @@ public class DexBody  {
         instructionsToRetype = new HashSet<RetypeableInstruction>();
         
         if (DvkTyperBase.ENABLE_DVKTYPER) {
-          dvkTyper = new DvkTyper();
+          dvkTyper = null; //new DvkTyper();
         }
 
         Debug.printDbg("\n[jimplify] start for: "+ methodString);
