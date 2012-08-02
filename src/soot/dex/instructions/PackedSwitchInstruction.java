@@ -61,7 +61,7 @@ public class PackedSwitchInstruction extends SwitchInstruction {
       Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
       PackedSwitchDataPseudoInstruction psInst = (PackedSwitchDataPseudoInstruction) targetData;
       int[] targetAddresses = psInst.getTargets();
-      int size = targetAddresses.length;
+      int size = targetAddresses.length * 2; // @ are on 32bits
       
       // From org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction we learn
       // that there are 2 bytes after the magic number that we have to jump.

@@ -192,7 +192,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 
   @Override
   public void computeDataOffsets(DexBody body) {
-    System.out.println("compute data offset");
+    Debug.printDbg("compute data offset");
     if(!(instruction instanceof Instruction31t))
       throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
 
@@ -210,7 +210,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
     int numElements = arrayTable.getElementCount();
     int widthElement = arrayTable.getElementWidth();
-    int size = widthElement * numElements;
+    int size = (widthElement * numElements) / 2; // addresses are on 16bits
   
     // From org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction we learn
     // that there are 6 bytes after the magic number that we have to jump.
@@ -224,7 +224,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     //
     
     setDataFirstByte (targetAddress + 3); // address for 16 bits elements not 8 bits
-    setDataLastByte (targetAddress + 3 + size - 1);
+    setDataLastByte (targetAddress + 3 + size);// - 1);
     setDataSize (size);
     
     ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();

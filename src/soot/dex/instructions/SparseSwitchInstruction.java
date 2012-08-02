@@ -65,7 +65,7 @@ public class SparseSwitchInstruction extends SwitchInstruction {
       Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
       SparseSwitchDataPseudoInstruction ssInst = (SparseSwitchDataPseudoInstruction) targetData;
       int[] targetAddresses = ssInst.getTargets();
-      int size = targetAddresses.length;
+      int size = targetAddresses.length * 2; // @ are on 32bits
       
       // From org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction we learn
       // that there are 2 bytes after the magic number that we have to jump.
