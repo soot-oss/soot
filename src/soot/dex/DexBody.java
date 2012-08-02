@@ -123,7 +123,6 @@ public class DexBody  {
       for (PseudoInstruction pi: pseudoInstructionData) {
         int fb = pi.getDataFirstByte();
         int lb = pi.getDataLastByte();
-        System.out.println("fb a lb "+ fb +" "+a +" "+ lb);
         if (fb <= a && a <= lb)
           return pi;
       }
@@ -178,7 +177,7 @@ public class DexBody  {
 				throw new RuntimeException("exception while computing data offsets: ", e);
 			}
             pseudoInstructionData.add (pi);
-            Debug.printDbg("add pseudo instruction: "+ pi.getDataFirstByte() +" - "+ pi.getDataLastByte() +" : "+ pi.getDataSize());
+            Debug.printDbg("add pseudo instruction: 0x"+ Integer.toHexString(pi.getDataFirstByte()) +" - 0x"+ Integer.toHexString(pi.getDataLastByte()) +" : "+ pi.getDataSize());
           }
         }
 
@@ -302,9 +301,11 @@ public class DexBody  {
       if (pi != null && !pi.isLoaded()) {
         System.out.println("warning: attempting to jump to pseudo-instruction data at address 0x"+ Integer.toHexString(address));
         System.out.println("pseudo instruction: "+ pi);
-
         pi.setLoaded(true);
         instructions.addAll(decodeInstructions(pi)); // TODO: should add a throw instruction here just to be sure...
+        Exception e = new Exception();
+          e.printStackTrace();
+        System.out.println();
       }
       
         DexlibAbstractInstruction i = instructionAtAddress.get(address);
@@ -481,7 +482,7 @@ public class DexBody  {
           DexNumTransformer.v().transform (jBody);      
           DexNullTransformer.v().transform(jBody);
           DexIfTransformer.v().transform(jBody);
-          DexNullArrayRefTransformer.v().transform(jBody);
+          //DexNullArrayRefTransformer.v().transform(jBody);
         }
         
         Debug.printDbg("\nafter Num and Null transformers");
