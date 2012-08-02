@@ -63,7 +63,7 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
     this.dataSize = dataSize;
   }
 
-  public abstract void computeDataOffsets(DexBody body) throws Exception;
+  public abstract void computeDataOffsets(DexBody body);
 
   
   

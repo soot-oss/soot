@@ -26,7 +26,7 @@ import org.jf.dexlib.Code.Format.Instruction12x;
 import soot.Local;
 import soot.Value;
 import soot.dex.DexBody;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
@@ -56,7 +56,7 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           //body.captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;

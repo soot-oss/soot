@@ -24,7 +24,7 @@ import org.jf.dexlib.Code.Format.Instruction21t;
 
 import soot.IntType;
 import soot.dex.DexBody;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.jimple.BinopExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
@@ -42,7 +42,7 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
         JIfStmt jif = (JIfStmt) Jimple.v().newIfStmt(condition,
                                     targetInstruction.getUnit());
         
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
            int op = instruction.opcode.value;
            switch (op) {
            case 0x38:

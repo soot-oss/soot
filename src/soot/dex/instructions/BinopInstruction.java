@@ -26,7 +26,7 @@ import org.jf.dexlib.Code.Format.Instruction23x;
 import soot.Local;
 import soot.Value;
 import soot.dex.DexBody;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.IntOpTag;
@@ -60,7 +60,7 @@ public class BinopInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           if (!(op >= 0x90 && op <= 0xaf)) {
             throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0x90 and 0xaf.");

@@ -29,7 +29,7 @@ import soot.Local;
 import soot.LongType;
 import soot.Type;
 import soot.dex.DexBody;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.LongOpTag;
@@ -94,7 +94,7 @@ public class CmpInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           getTag().getName();
           BinopExpr bexpr = (BinopExpr)cmpExpr;
           body.dvkTyper.setType(bexpr.getOp1Box(), type);

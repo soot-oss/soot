@@ -351,7 +351,7 @@ public class DexBody  {
       return dexInstructions;
     }
 
-    public DvkTyper dvkTyper = null;
+    public DvkTyperBase dvkTyper = null;
     /**
      * Return the jimple equivalent of this body.
      *
@@ -363,7 +363,7 @@ public class DexBody  {
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();
         
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           dvkTyper = new DvkTyper();
         }
 
@@ -381,7 +381,7 @@ public class DexBody  {
             JIdentityStmt idStmt = (JIdentityStmt) Jimple.v().newIdentityStmt(thisLocal, Jimple.v().newThisRef(declaringClassType));
             add(idStmt);
             paramLocals.add(thisLocal);
-            if (DvkTyper.ENABLE_DVKTYPER) {
+            if (DvkTyperBase.ENABLE_DVKTYPER) {
               this.dvkTyper.setType(idStmt.leftBox, jBody.getMethod().getDeclaringClass().getType());
             }
 
@@ -399,7 +399,7 @@ public class DexBody  {
 	            JIdentityStmt idStmt = (JIdentityStmt) Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i++));
 	            add(idStmt);
 	            paramLocals.add(gen);
-	            if (DvkTyper.ENABLE_DVKTYPER) {
+	            if (DvkTyperBase.ENABLE_DVKTYPER) {
 	              this.dvkTyper.setType(idStmt.leftBox, t);
 	            }
 	            
@@ -475,12 +475,13 @@ public class DexBody  {
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
         
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           dvkTyper.assignType();
         } else {
           DexNumTransformer.v().transform (jBody);      
           DexNullTransformer.v().transform(jBody);
           DexIfTransformer.v().transform(jBody);
+          DexNullArrayRefTransformer.v().transform(jBody);
         }
         
         Debug.printDbg("\nafter Num and Null transformers");

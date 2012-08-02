@@ -28,7 +28,7 @@ import soot.Local;
 import soot.Type;
 import soot.UnknownType;
 import soot.dex.DexBody;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.dex.tags.ObjectOpTag;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -60,7 +60,7 @@ public class AputInstruction extends FieldInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           body.captureAssign((JAssignStmt)assign, op);
         }

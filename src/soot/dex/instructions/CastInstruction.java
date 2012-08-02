@@ -31,7 +31,7 @@ import soot.LongType;
 import soot.ShortType;
 import soot.Type;
 import soot.dex.DexBody;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.IntOpTag;
@@ -57,7 +57,7 @@ public class CastInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           body.dvkTyper.setType(cast.getOpBox(), opUnType[op - 0x7b]);
         }

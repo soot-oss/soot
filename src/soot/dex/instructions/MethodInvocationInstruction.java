@@ -46,7 +46,7 @@ import soot.Type;
 import soot.dex.Debug;
 import soot.dex.DexBody;
 import soot.dex.DexType;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
@@ -81,7 +81,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             body.add(invoke);
             unit = invoke;
         }
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           if (invocation instanceof InstanceInvokeExpr) {
             Type t = invocation.getMethodRef().declaringClass().getType();
             body.dvkTyper.setType(((InstanceInvokeExpr) invocation).getBaseBox(), t);

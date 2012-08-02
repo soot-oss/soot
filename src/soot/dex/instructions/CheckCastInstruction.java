@@ -31,7 +31,7 @@ import soot.Local;
 import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;
-import soot.dex.DvkTyper;
+import soot.dex.DvkTyperBase;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
@@ -61,7 +61,7 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyper.ENABLE_DVKTYPER) {
+        if (DvkTyperBase.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           body.captureAssign((JAssignStmt)assign, op); // TODO: type could be null!
         }
