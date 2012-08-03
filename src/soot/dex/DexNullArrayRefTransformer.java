@@ -1,42 +1,21 @@
 package soot.dex;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
-import soot.G;
 import soot.Immediate;
-import soot.PhaseOptions;
-import soot.Scene;
-import soot.Singletons;
-import soot.SootClass;
-import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
-import soot.jimple.InstanceFieldRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LengthExpr;
-import soot.jimple.MonitorStmt;
 import soot.jimple.Stmt;
-import soot.jimple.ThrowStmt;
-import soot.jimple.toolkits.annotation.nullcheck.BranchedRefVarsAnalysis;
-import soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker;
 import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
-import soot.jimple.toolkits.annotation.tags.NullCheckTag;
-import soot.options.Options;
-import soot.tagkit.Tag;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.FlowSet;
-import soot.util.Chain;
 
 /**
  * If Dalvik bytecode contains statements using a base array which is always
@@ -55,7 +34,6 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
     return new DexNullArrayRefTransformer();
 }
 
-  @SuppressWarnings("unchecked")
   protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
 
     final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);

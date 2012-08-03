@@ -1,6 +1,5 @@
 package soot.dex;
 
-import soot.Local;
 import soot.Type;
 import soot.ValueBox;
 
