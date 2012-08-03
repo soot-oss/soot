@@ -8,6 +8,9 @@ Improvements and API changes in HEAD
    optimistic than "pedantic" but should also be more realistic in
    most settings. (see the documentation on command line options
    for details)  
+   
+3. Added option -ire to ignore field and method resolution errors.
+   Missing methods and fields will unsoundly be ignored. 
 
 Improvements and API changes in version 2.5.0
 
