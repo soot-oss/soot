@@ -54,11 +54,14 @@ public class Util
     boolean useFaithfulNaming = false;
     boolean isLocalStore = false;  // global variable used 
     boolean isWideLocalStore = false;
+    
+    
+    
     public void setFaithfulNaming(boolean v)
     {
         useFaithfulNaming = v;
     }    
-
+    
     public void resolveFromClassFile(SootClass aClass, InputStream is, List references)
     {
         SootClass bclass = aClass;                
@@ -841,7 +844,7 @@ swtch:
                 if(isWideLocalStore)
                     activeOriginalIndex++;
 
-                name = activeVariableTable.getLocalVariableName(activeConstantPool, index, activeOriginalIndex);
+                name = activeVariableTable.getLocalVariableName(index, activeOriginalIndex);
                 if (activeVariableTypeTable != null){
                debug_type = activeVariableTypeTable.getLocalVariableType(activeConstantPool, index, activeOriginalIndex);
                if (debug_type != null){

@@ -875,6 +875,9 @@ public class CFG {
             Code_attribute ca = method.locate_code_attribute();
             LocalVariableTable_attribute la = ca.findLocalVariableTable();
             LocalVariableTypeTable_attribute lt = ca.findLocalVariableTypeTable();
+            
+            if(la != null)
+              la.processNames(constant_pool);
 
             Util.v().activeVariableTable = la;
             Util.v().activeVariableTypeTable = lt;
@@ -896,7 +899,7 @@ public class CFG {
                         name = "l0";
                     else
 		    {
-                        name = la.getLocalVariableName(constant_pool, currentLocalIndex);
+                        name = la.getLocalVariableName(currentLocalIndex);
 			if (!Util.v().isValidJimpleName(name))
 			    name = "l0";
 		    }
@@ -925,7 +928,7 @@ public class CFG {
                         name = "l" + currentLocalIndex;
                     else
 		    {
-                        name = la.getLocalVariableName(constant_pool, currentLocalIndex);
+                        name = la.getLocalVariableName(currentLocalIndex);
 			if (!Util.v().isValidJimpleName(name))
 			    name = "l" + currentLocalIndex;
 		    }

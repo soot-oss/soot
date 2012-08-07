@@ -31,6 +31,8 @@
 
 package soot.coffi;
 
+import java.util.*;
+
 /** A debugging attribute, this gives the names of local variables
  * within blocks of bytecode.
  * @see attribute_info
@@ -41,6 +43,65 @@ class LocalVariableTable_attribute extends attribute_info {
    public int local_variable_table_length;
    /** Actual table of local variables. */
    public local_variable_table_entry local_variable_table[];
+   
+   private List<ProcessedLocalName> m_processedNames;
+   
+   public void processNames(cp_info[] constant_pool){
+     if(m_processedNames != null){
+       return; 
+     }
+     m_processedNames = new ArrayList<ProcessedLocalName>();
+     Map<String, List<Integer>> type_map = new HashMap<String, List<Integer>>();
+     
+     for(int i=0; i < local_variable_table_length; i++) {
+       local_variable_table_entry e = local_variable_table[i];
+    
+       if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info) {
+	       String name = ((CONSTANT_Utf8_info)(constant_pool[e.name_index])).convert();
+	       if(type_map.containsKey(name)){
+	         List<Integer> types = type_map.get(name);
+	         int type = e.descriptor_index;
+	         if(types.contains(type) == false){
+	           types.add(type);
+	         }
+	       } else {
+	         List<Integer> types = new ArrayList<Integer>();
+	         types.add(e.descriptor_index);
+	         type_map.put(name, types);
+	       }   
+	     }
+	   }
+     
+     for(int i=0; i < local_variable_table_length; i++) {
+       local_variable_table_entry e = local_variable_table[i];
+    
+       if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info) {
+	       String name = ((CONSTANT_Utf8_info)(constant_pool[e.name_index])).convert();
+	       String processed_name = name;
+	       if(type_map.containsKey(name)){
+	         List<Integer> types = type_map.get(name);
+	         if(types.size() > 1){
+	           int type = e.descriptor_index;
+	           int index = types.indexOf(type);
+	           processed_name += index;
+	         }
+	       }
+	       ProcessedLocalName curr = new ProcessedLocalName();
+	       curr.index = e.index;
+	       curr.start_pc = e.start_pc;
+	       curr.end_pc = e.start_pc+e.length;
+	       curr.name = processed_name;
+	       m_processedNames.add(curr);
+	     }
+	   }
+   }
+   
+   private class ProcessedLocalName {
+     int index;
+     int start_pc;
+     int end_pc;
+     String name;
+   }
 
    /** Locates the first name found for a given local variable.
     * @param constant_pool constant pool for the associated class.
@@ -48,8 +109,8 @@ class LocalVariableTable_attribute extends attribute_info {
     * @return name of the local variable, or <i>null</i> if not found.
     * @see LocalVariableTable_attribute#getLocalVariableName(cp_info[], int, int)
     */
-   public String getLocalVariableName(cp_info constant_pool[],int idx) {
-      return getLocalVariableName(constant_pool,idx,-1);
+   public String getLocalVariableName(int idx) {
+      return getLocalVariableName(idx,-1);
    }
    /** Locates the name of the given local variable for the specified code offset.
     * @param constant_pool constant pool for the associated class.
@@ -59,35 +120,16 @@ class LocalVariableTable_attribute extends attribute_info {
     * @return name of the local variable, or <i>null</i> if not found.
     * @see LocalVariableTable_attribute#getLocalVariableName(cp_info[], int)
     */
-   public String getLocalVariableName(cp_info constant_pool[],int idx,int code) {
-      local_variable_table_entry e;
-      int i;
-
-      // G.v().out.println("searching for name of local: " + idx + "at: " + code);
-      // now to find that variable
-      for (i=0;i<local_variable_table_length;i++) {
-         e = local_variable_table[i];
-         if (e.index==idx &&
-             (code==-1 ||
-	      (code>=e.start_pc && code<e.start_pc+e.length))){
-	      //  (code>=e.start_pc && code<e.start_pc+e.length))) {
-            // found the variable, now find its name.
-            
-            //G.v().out.println("found entry: " + i);
-
-            if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info)
-	    {
-	       String n = ((CONSTANT_Utf8_info)(constant_pool[e.name_index])).convert();
-	       if (Util.v().isValidJimpleName(n))
-		   return n;
-	       else
-		   return null;
-	    }
-            else {
-               throw new RuntimeException( "What? A local variable table "
-                       +"name_index isn't a UTF8 entry?");
-            }
-         }
+   public String getLocalVariableName(int idx,int code) {
+   
+      for(ProcessedLocalName curr : m_processedNames){
+        if(curr.index == idx && (code == -1 || (code >= curr.start_pc && code < curr.end_pc))){
+          String n = curr.name;
+          if (Util.v().isValidJimpleName(n))
+		        return n;
+	        else
+		        return null;
+        }
       }
       return null;
    }
