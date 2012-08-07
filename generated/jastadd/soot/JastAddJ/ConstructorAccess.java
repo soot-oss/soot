@@ -113,7 +113,7 @@ public class ConstructorAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:112
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:117
    */
   public void nameCheck() {
     super.nameCheck();
@@ -575,7 +575,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:124
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:129
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean validArgs() {

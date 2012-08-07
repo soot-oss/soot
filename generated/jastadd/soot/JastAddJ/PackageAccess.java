@@ -76,7 +76,7 @@ public class PackageAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:45
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:50
    */
   public void nameCheck() {
     if(!hasPackage(packageName())) {
@@ -349,7 +349,7 @@ public class PackageAccess extends Access implements Cloneable {
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:238
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:243
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean hasPackage(String packageName) {

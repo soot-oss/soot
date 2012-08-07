@@ -96,7 +96,7 @@ public class MethodAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:205
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:215
    */
   protected void collectExceptions(Collection c, ASTNode target) {
     super.collectExceptions(c, target);
@@ -1104,19 +1104,16 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     if(!qualifier().type().accessibleFrom(hostType()))
       return false;
     // 6.6.2.1 -  include qualifier type for protected access
-    if(m.isProtected() && !m.hostPackage().equals(hostPackage()) && !m.isStatic() && !qualifier().isSuperAccess()) {
-      TypeDecl C = m.hostType();
-      TypeDecl S = hostType().subclassWithinBody(C);
-      TypeDecl Q = qualifier().type();
-      if(S == null || !Q.instanceOf(S))
-        return false;
+    if(m.isProtected() && !m.hostPackage().equals(hostPackage())
+        && !m.isStatic() && !qualifier().isSuperAccess()) {
+      return hostType().mayAccess(this, m);
     }
     return true;
   }
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:60
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:65
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean validArgs() {

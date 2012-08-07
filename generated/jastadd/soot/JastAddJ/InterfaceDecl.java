@@ -225,7 +225,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:191
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:193
    */
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     if(s.hasFormalTypeParameters()) {
@@ -252,9 +252,9 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1099
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1230
    */
-  public InterfaceDecl p(Parameterization parTypeDecl) {
+  public InterfaceDecl substitutedInterfaceDecl(Parameterization parTypeDecl) {
     InterfaceDecl c = new InterfaceDeclSubstituted(
       (Modifiers)getModifiers().fullCopy(),
       getID(),
@@ -318,7 +318,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     sc.setModifiers(sootTypeModifiers());
     sc.setApplicationClass();
     SourceFileTag st = new soot.tagkit.SourceFileTag(sourceNameWithoutPath());
-    st.setAbsolutePath(new File(sourceFile()).getAbsolutePath());
+    st.setAbsolutePath(compilationUnit().pathName());
     sc.addTag(st);
     sc.setSuperclass(typeObject().getSootClassDecl());
     for(Iterator iter = superinterfacesIterator(); iter.hasNext(); ) {
@@ -707,7 +707,7 @@ if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = t
   /**
    * @attribute syn
    * @aspect AncestorMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:403
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:414
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet ancestorMethods(String signature) {
@@ -791,7 +791,7 @@ if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_p
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:293
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:302
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap memberFieldsMap() {
@@ -825,7 +825,7 @@ if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:347
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:356
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet memberFields(String name) {
@@ -1149,7 +1149,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:382
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:384
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashSet implementedInterfaces() {

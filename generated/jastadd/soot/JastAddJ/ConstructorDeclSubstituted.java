@@ -507,7 +507,7 @@ public class ConstructorDeclSubstituted extends ConstructorDecl implements Clone
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1280
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1411
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl sourceConstructorDecl() {

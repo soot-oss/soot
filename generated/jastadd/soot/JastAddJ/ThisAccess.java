@@ -235,7 +235,7 @@ public class ThisAccess extends Access implements Cloneable {
   /**
    * @attribute syn
    * @aspect GenericsTypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:291
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:293
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl decl() {

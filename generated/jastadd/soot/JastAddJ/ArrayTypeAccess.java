@@ -88,7 +88,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:150
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:155
    */
   public void nameCheck() {
     if(decl().elementType().isUnknown())

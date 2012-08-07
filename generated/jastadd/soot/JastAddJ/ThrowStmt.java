@@ -96,7 +96,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
   /**
    * @ast method 
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:197
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:207
    */
   protected void collectExceptions(Collection c, ASTNode target) {
     super.collectExceptions(c, target);

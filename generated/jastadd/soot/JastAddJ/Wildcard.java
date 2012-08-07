@@ -121,7 +121,7 @@ public class Wildcard extends AbstractWildcard implements Cloneable {
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1132
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1263
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
@@ -142,7 +142,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1137
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1268
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeWildcard() {

@@ -163,7 +163,7 @@ public class Annotation extends Modifier implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:578
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:582
    */
   public void toString(StringBuffer s) {
     s.append("@");
@@ -440,7 +440,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:510
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:514
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
@@ -462,7 +462,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   Comment: no problems with reference attributes.
   * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:539
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:543
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isMetaAnnotation() {
@@ -563,7 +563,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:540
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:544
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl hostType() {
@@ -572,7 +572,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     return hostType_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:460
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:462
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
@@ -583,7 +583,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:545
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:549
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {

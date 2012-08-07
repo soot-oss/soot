@@ -169,7 +169,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:68
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:73
    */
   public void nameCheck() {
     super.nameCheck();
@@ -275,9 +275,9 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1046
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1177
    */
-  public BodyDecl p(Parameterization parTypeDecl) {
+  public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
     ConstructorDecl c = new ConstructorDeclSubstituted(
       (Modifiers)getModifiers().fullCopy(),
       getID(),
@@ -1381,21 +1381,67 @@ if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_valu
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:83
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:88
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean circularThisInvocation(ConstructorDecl decl) {
     Object _parameters = decl;
     if(circularThisInvocation_ConstructorDecl_values == null) circularThisInvocation_ConstructorDecl_values = new java.util.HashMap(4);
+    ASTNode$State.CircularValue _value;
     if(circularThisInvocation_ConstructorDecl_values.containsKey(_parameters)) {
-      return ((Boolean)circularThisInvocation_ConstructorDecl_values.get(_parameters)).booleanValue();
+      Object _o = circularThisInvocation_ConstructorDecl_values.get(_parameters);
+      if(!(_o instanceof ASTNode$State.CircularValue)) {
+        return ((Boolean)_o).booleanValue();
+      }
+      else
+        _value = (ASTNode$State.CircularValue)_o;
     }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    boolean circularThisInvocation_ConstructorDecl_value = circularThisInvocation_compute(decl);
-if(isFinal && num == state().boundariesCrossed) circularThisInvocation_ConstructorDecl_values.put(_parameters, Boolean.valueOf(circularThisInvocation_ConstructorDecl_value));
-    return circularThisInvocation_ConstructorDecl_value;
+    else {
+      _value = new ASTNode$State.CircularValue();
+      circularThisInvocation_ConstructorDecl_values.put(_parameters, _value);
+      _value.value = Boolean.valueOf(true);
+    }
+    ASTNode$State state = state();
+    if (!state.IN_CIRCLE) {
+      state.IN_CIRCLE = true;
+      int num = state.boundariesCrossed;
+      boolean isFinal = this.is$Final();
+      boolean new_circularThisInvocation_ConstructorDecl_value;
+      do {
+        _value.visited = new Integer(state.CIRCLE_INDEX);
+        state.CHANGE = false;
+        new_circularThisInvocation_ConstructorDecl_value = circularThisInvocation_compute(decl);
+        if (new_circularThisInvocation_ConstructorDecl_value!=((Boolean)_value.value).booleanValue()) {
+          state.CHANGE = true;
+          _value.value = Boolean.valueOf(new_circularThisInvocation_ConstructorDecl_value);
+        }
+        state.CIRCLE_INDEX++;
+      } while (state.CHANGE);
+      if(isFinal && num == state().boundariesCrossed) {
+        circularThisInvocation_ConstructorDecl_values.put(_parameters, new_circularThisInvocation_ConstructorDecl_value);
+      }
+      else {
+        circularThisInvocation_ConstructorDecl_values.remove(_parameters);
+      state.RESET_CYCLE = true;
+      circularThisInvocation_compute(decl);
+      state.RESET_CYCLE = false;
+      }
+      state.IN_CIRCLE = false; 
+      return new_circularThisInvocation_ConstructorDecl_value;
+    }
+    if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+      _value.visited = new Integer(state.CIRCLE_INDEX);
+      boolean new_circularThisInvocation_ConstructorDecl_value = circularThisInvocation_compute(decl);
+      if (state.RESET_CYCLE) {
+        circularThisInvocation_ConstructorDecl_values.remove(_parameters);
+      }
+      else if (new_circularThisInvocation_ConstructorDecl_value!=((Boolean)_value.value).booleanValue()) {
+        state.CHANGE = true;
+        _value.value = new_circularThisInvocation_ConstructorDecl_value;
+      }
+      return new_circularThisInvocation_ConstructorDecl_value;
+    }
+    return ((Boolean)_value.value).booleanValue();
   }
   /**
    * @apilevel internal
@@ -1483,7 +1529,7 @@ if(isFinal && num == state().boundariesCrossed) circularThisInvocation_Construct
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1278
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1409
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl sourceConstructorDecl() {
@@ -2030,7 +2076,7 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     return getParent().Define_boolean_mayBePrivate(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:242
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:247
    * @apilevel internal
    */
   public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {

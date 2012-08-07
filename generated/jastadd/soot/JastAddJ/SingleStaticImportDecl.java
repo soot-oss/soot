@@ -20,8 +20,12 @@ import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
 /**
+ * 7.5.3 A single-static-import declaration imports all accessible (\u00ac\u00df6.6) static members
+ * with a given simple name from a type. This makes these static members available
+ * under their simple name in the class and interface declarations of the
+ * compilation unit in which the single-static import declaration appears.
  * @ast node
- * @declaredat StaticImports.ast:3
+ * @declaredat StaticImports.ast:12
  */
 public class SingleStaticImportDecl extends StaticImportDecl implements Cloneable {
   /**

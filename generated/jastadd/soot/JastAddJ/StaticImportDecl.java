@@ -19,10 +19,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * 7.5 Import Declarations
  * @ast node
- * @declaredat StaticImports.ast:2
+ * @declaredat StaticImports.ast:4
  */
 public abstract class StaticImportDecl extends ImportDecl implements Cloneable {
   /**

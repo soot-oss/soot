@@ -197,11 +197,11 @@ public class VarAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:177
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:182
    */
   public void nameCheck() {
     if(decls().isEmpty() && (!isQualified() || !qualifier().type().isUnknown() || qualifier().isPackageAccess()))
-      error("no field named " + name());
+      error("no field named " + name() + " is accessible");
     if(decls().size() > 1) {
       StringBuffer s = new StringBuffer();
       s.append("several fields named " + name());
@@ -234,7 +234,7 @@ public class VarAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:211
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:216
    */
   public BodyDecl closestBodyDecl(TypeDecl t) {
     ASTNode node = this;
@@ -818,7 +818,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect VariableScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:232
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:241
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet decls() {
@@ -861,7 +861,7 @@ if(isFinal && num == state().boundariesCrossed) decls_computed = true;
   /**
    * @attribute syn
    * @aspect VariableScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:247
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:256
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable decl() {
@@ -887,7 +887,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:221
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:226
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean inSameInitializer() {
@@ -912,7 +912,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:233
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:238
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean simpleAssignment() {
@@ -927,7 +927,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:235
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:240
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean inDeclaringClass() {

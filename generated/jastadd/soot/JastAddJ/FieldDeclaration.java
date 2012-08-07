@@ -244,7 +244,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:277
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:282
    */
   public void nameCheck() {
     super.nameCheck();
@@ -330,9 +330,9 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1058
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1189
    */
-  public BodyDecl p(Parameterization parTypeDecl) {
+  public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
     FieldDeclaration f = new FieldDeclarationSubstituted(
       (Modifiers)getModifiers().fullCopy(),
       getTypeAccess().type().substituteReturnType(parTypeDecl),
@@ -738,7 +738,7 @@ if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.p
   /**
    * @attribute syn
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:168
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:178
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection exceptions() {
@@ -1253,7 +1253,7 @@ if(isFinal && num == state().boundariesCrossed) constant_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:910
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1026
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
@@ -1282,7 +1282,7 @@ if(isFinal && num == state().boundariesCrossed) usesTypeVariable_computed = true
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1284
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1415
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl() {
@@ -1303,7 +1303,7 @@ if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = tr
   /**
    * @attribute syn
    * @aspect GenericsParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:66
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:69
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean visibleTypeParameters() {

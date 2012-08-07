@@ -139,7 +139,7 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:328
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:333
    */
   public void nameCheck() {
     SimpleSet decls = outerScope().lookupVariable(name());
@@ -147,12 +147,12 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
       Variable var = (Variable)iter.next();
       if(var instanceof VariableDeclaration) {
         VariableDeclaration decl = (VariableDeclaration)var;
-	      if(decl.enclosingBodyDecl() == enclosingBodyDecl())
-  	      error("duplicate declaration of local variable " + name());
+        if(decl.enclosingBodyDecl() == enclosingBodyDecl())
+          error("duplicate declaration of local variable " + name());
       }
       else if(var instanceof ParameterDeclaration) {
         ParameterDeclaration decl = (ParameterDeclaration)var;
-	      if(decl.enclosingBodyDecl() == enclosingBodyDecl())
+        if(decl.enclosingBodyDecl() == enclosingBodyDecl())
           error("duplicate declaration of local variable " + name());
       }
     }
@@ -641,7 +641,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1286
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1417
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl() {
@@ -688,7 +688,7 @@ if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = tr
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:288
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:293
    */
   @SuppressWarnings({"unchecked", "cast"})
   public VariableScope outerScope() {
@@ -699,7 +699,7 @@ if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = tr
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:349
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:354
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl enclosingBodyDecl() {

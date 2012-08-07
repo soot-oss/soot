@@ -98,7 +98,7 @@ public interface Variable {
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1282
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1413
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl();

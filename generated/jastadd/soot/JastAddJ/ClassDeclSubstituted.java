@@ -471,7 +471,7 @@ public class ClassDeclSubstituted extends ClassDecl implements Cloneable, Member
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1070
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1201
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl original() {
@@ -494,7 +494,7 @@ public class ClassDeclSubstituted extends ClassDecl implements Cloneable, Member
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1269
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1400
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl sourceTypeDecl() {
@@ -647,7 +647,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:929
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1045
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap localMethodsSignatureMap() {
@@ -669,10 +669,13 @@ if(true) localMethodsSignatureMap_computed = true;
     for(Iterator iter = original().localMethodsIterator(); iter.hasNext(); ) {
       MethodDecl decl = (MethodDecl)iter.next();
       if(!decl.isStatic() && (decl.usesTypeVariable() || isRawType())) {
-        BodyDecl b = decl.p(this);
-        b.is$Final = true;
+        BodyDecl b = decl.substitutedBodyDecl(this);
         addBodyDecl(b);
-        decl = (MethodDecl)b;
+      	// Here we should access b through an ordinary
+      	// child accessor instead of setting is$Final directly,
+      	// however doing so appears to cause unexpected behaviour!
+        b.is$Final = true;
+        decl = (MethodDecl) b;
       }
       map.put(decl.signature(), decl);
     }
@@ -682,7 +685,7 @@ if(true) localMethodsSignatureMap_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:944
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1063
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localFields(String name) {
@@ -706,10 +709,13 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
     for(Iterator iter = original().localFields(name).iterator(); iter.hasNext(); ) {
       FieldDeclaration f = (FieldDeclaration)iter.next();
       if(!f.isStatic() && (f.usesTypeVariable() || isRawType())) {
-        BodyDecl b = f.p(this);
-        b.is$Final = true;
+        BodyDecl b = f.substitutedBodyDecl(this);
         addBodyDecl(b);
-        f = (FieldDeclaration)b;
+      	// Here we should access b through an ordinary
+      	// child accessor instead of setting is$Final directly,
+      	// however doing so appears to cause unexpected behaviour!
+        b.is$Final = true;
+        f = (FieldDeclaration) b;
       }
       set = set.add(f);
     }
@@ -719,7 +725,7 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:959
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1081
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localTypeDecls(String name) {
@@ -749,18 +755,24 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
         TypeDecl typeDecl;
         if(t instanceof ClassDecl) {
           ClassDecl classDecl = (ClassDecl)t;
-          typeDecl = classDecl.p(this);
+          typeDecl = classDecl.substitutedClassDecl(this);
           b = new MemberClassDecl((ClassDecl)typeDecl);
-          b.is$Final = true;
           addBodyDecl(b);
+      	  // Here we should access b through an ordinary
+      	  // child accessor instead of setting is$Final directly,
+      	  // however doing so appears to cause unexpected behaviour!
+	  b.is$Final = true;
           set = set.add(typeDecl);
         }
         else if(t instanceof InterfaceDecl) {
           InterfaceDecl interfaceDecl = (InterfaceDecl)t;
-          typeDecl = interfaceDecl.p(this);
+          typeDecl = interfaceDecl.substitutedInterfaceDecl(this);
           b = new MemberInterfaceDecl((InterfaceDecl)typeDecl);
-          b.is$Final = true;
           addBodyDecl(b);
+      	  // Here we should access b through an ordinary
+      	  // child accessor instead of setting is$Final directly,
+      	  // however doing so appears to cause unexpected behaviour!
+	  b.is$Final = true;
           set = set.add(typeDecl);
         }
       }
@@ -778,7 +790,7 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:989
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1117
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection constructors() {
@@ -799,9 +811,12 @@ if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
     Collection set = new ArrayList();
     for(Iterator iter = original().constructors().iterator(); iter.hasNext(); ) {
       ConstructorDecl c = (ConstructorDecl)iter.next();
-      BodyDecl b = c.p(this);
-      b.is$Final = true;
+      BodyDecl b = c.substitutedBodyDecl(this);
       addBodyDecl(b);
+      // Here we should access b through an ordinary
+      // child accessor instead of setting is$Final directly,
+      // however doing so appears to cause unexpected behaviour!
+      b.is$Final = true;
       set.add(b);
     }
     return set;

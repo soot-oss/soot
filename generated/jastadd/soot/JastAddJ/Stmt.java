@@ -164,7 +164,7 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:396
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:401
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean continueLabel() {

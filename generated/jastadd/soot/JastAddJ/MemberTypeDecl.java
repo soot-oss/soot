@@ -172,7 +172,7 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect GenericsParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:68
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:71
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean visibleTypeParameters() {

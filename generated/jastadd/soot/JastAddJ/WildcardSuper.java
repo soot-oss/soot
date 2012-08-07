@@ -155,7 +155,7 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1134
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1265
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
@@ -176,7 +176,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1135
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1266
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {

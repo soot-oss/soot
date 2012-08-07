@@ -21,7 +21,7 @@ import soot.coffi.CoffiMethodSource;
 
 /**
  * @ast node
- * @declaredat GenericMethods.ast:8
+ * @declaredat GenericMethods.ast:11
  */
 public class RawConstructorDecl extends ParConstructorDecl implements Cloneable {
   /**

@@ -82,7 +82,7 @@ public class GLBType extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1245
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1376
    */
   public HashSet implementedInterfaces(){
     HashSet ret = new HashSet();
@@ -386,7 +386,7 @@ public class GLBType extends ReferenceType implements Cloneable {
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1235
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1366
    */
   @SuppressWarnings({"unchecked", "cast"})
   public String typeName() {

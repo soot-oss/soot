@@ -714,7 +714,7 @@ if(isFinal && num == state().boundariesCrossed) typeLong_computed = true;
     return getParent().Define_boolean_isDUbefore(this, caller, v);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:372
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:377
    * @apilevel internal
    */
   public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
@@ -724,7 +724,7 @@ if(isFinal && num == state().boundariesCrossed) typeLong_computed = true;
     return getParent().Define_boolean_insideSwitch(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:413
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:418
    * @apilevel internal
    */
   public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {

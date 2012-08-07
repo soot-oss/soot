@@ -94,7 +94,7 @@ public abstract class Case extends Stmt implements Cloneable {
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:426
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:431
    */
   @SuppressWarnings({"unchecked", "cast"})
   public abstract boolean constValue(Case c);
@@ -235,7 +235,7 @@ if(isFinal && num == state().boundariesCrossed) label_computed = true;
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:412
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:417
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Case bind(Case c) {

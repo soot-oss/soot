@@ -188,8 +188,13 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
     for(int i = 0; i < getNumImportDecl(); i++) {
       ImportDecl decl = getImportDecl(i);
       if(decl instanceof SingleTypeImportDecl) {
-        if(localLookupType(decl.getAccess().type().name()).contains(decl.getAccess().type()))
-          error("" + decl + " is conflicting with visible type");
+        TypeDecl importedType = decl.getAccess().type();
+        Iterator iter = localLookupType(importedType.name()).iterator();
+        while (iter.hasNext()) {
+          TypeDecl local = (TypeDecl) iter.next();
+          if (local != importedType)
+            error("imported type " + decl + " is conflicting with visible type");
+        }
       }
     }
   }

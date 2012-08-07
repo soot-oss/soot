@@ -19,9 +19,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
+
 /**
  * @ast node
- * @declaredat GenericMethods.ast:2
+ * @declaredat GenericMethods.ast:4
  */
 public class GenericConstructorDecl extends ConstructorDecl implements Cloneable {
   /**
@@ -29,8 +30,6 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
    */
   public void flushCache() {
     super.flushCache();
-    getParConstructorDeclList_computed = false;
-    getParConstructorDeclList_value = null;
   }
   /**
    * @apilevel internal
@@ -44,8 +43,6 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   @SuppressWarnings({"unchecked", "cast"})
   public GenericConstructorDecl clone() throws CloneNotSupportedException {
     GenericConstructorDecl node = (GenericConstructorDecl)super.clone();
-    node.getParConstructorDeclList_computed = false;
-    node.getParConstructorDeclList_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -80,7 +77,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @ast method 
    * @aspect GenericMethodsPrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:212
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:258
    */
   public void toString(StringBuffer s) {
     s.append(indent());
@@ -126,7 +123,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1043
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1174
    */
   
   public GenericConstructorDecl original;
@@ -141,12 +138,11 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     setChild(new List(), 2);
     setChild(new Opt(), 3);
     setChild(new List(), 5);
-    setChild(new List(), 6);
 
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:12
+   * @declaredat GenericMethods.ast:11
    */
   public GenericConstructorDecl(Modifiers p0, String p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5, List<TypeVariable> p6) {
     setChild(p0, 0);
@@ -156,11 +152,10 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     setChild(p4, 3);
     setChild(p5, 4);
     setChild(p6, 5);
-    setChild(new List(), 6);
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:22
+   * @declaredat GenericMethods.ast:20
    */
   public GenericConstructorDecl(Modifiers p0, beaver.Symbol p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5, List<TypeVariable> p6) {
     setChild(p0, 0);
@@ -170,12 +165,11 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     setChild(p4, 3);
     setChild(p5, 4);
     setChild(p6, 5);
-    setChild(new List(), 6);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:35
+   * @declaredat GenericMethods.ast:32
    */
   protected int numChildren() {
     return 6;
@@ -183,7 +177,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat GenericMethods.ast:41
+   * @declaredat GenericMethods.ast:38
    */
   public boolean mayHaveRewrite() {
     return true;
@@ -610,129 +604,9 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     return (List<TypeVariable>)getChildNoTransform(5);
   }
   /**
-   * Setter for ParConstructorDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:5
-   */
-  public void setParConstructorDeclList(List<ParConstructorDecl> list) {
-    setChild(list, 6);
-  }
-  /**
-   * @return number of children in ParConstructorDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:12
-   */
-  public int getNumParConstructorDecl() {
-    return getParConstructorDeclList().getNumChild();
-  }
-  /**
-   * Getter for child in list ParConstructorDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:19
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public ParConstructorDecl getParConstructorDecl(int i) {
-    return (ParConstructorDecl)getParConstructorDeclList().getChild(i);
-  }
-  /**
-   * Add element to list ParConstructorDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:27
-   */
-  public void addParConstructorDecl(ParConstructorDecl node) {
-    List<ParConstructorDecl> list = (parent == null || state == null) ? getParConstructorDeclListNoTransform() : getParConstructorDeclList();
-    list.addChild(node);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:34
-   */
-  public void addParConstructorDeclNoTransform(ParConstructorDecl node) {
-    List<ParConstructorDecl> list = getParConstructorDeclListNoTransform();
-    list.addChild(node);
-  }
-  /**
-   * Setter for child in list ParConstructorDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:42
-   */
-  public void setParConstructorDecl(ParConstructorDecl node, int i) {
-    List<ParConstructorDecl> list = getParConstructorDeclList();
-    list.setChild(node, i);
-  }
-  /**
-   * Getter for ParConstructorDecl list.
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:50
-   */
-  public List<ParConstructorDecl> getParConstructorDecls() {
-    return getParConstructorDeclList();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:56
-   */
-  public List<ParConstructorDecl> getParConstructorDeclsNoTransform() {
-    return getParConstructorDeclListNoTransform();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:62
-   */
-  public List<ParConstructorDecl> getParConstructorDeclListNoTransform() {
-    return (List<ParConstructorDecl>)getChildNoTransform(6);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:68
-   */
-  protected int getParConstructorDeclListChildPosition() {
-    return 6;
-  }
-  /**
-   * @apilevel internal
-   */
-  protected boolean getParConstructorDeclList_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected List getParConstructorDeclList_value;
-  /**
-   * @attribute syn nta
-   * @aspect GenericMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:27
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List getParConstructorDeclList() {
-    if(getParConstructorDeclList_computed) {
-      return (List)ASTNode.getChild(this, getParConstructorDeclListChildPosition());
-    }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    getParConstructorDeclList_value = getParConstructorDeclList_compute();
-    setParConstructorDeclList(getParConstructorDeclList_value);
-if(true) getParConstructorDeclList_computed = true;
-    return (List)ASTNode.getChild(this, getParConstructorDeclListChildPosition());
-  }
-  /**
-   * @apilevel internal
-   */
-  private List getParConstructorDeclList_compute() {  return new List();  }
-  /**
    * @attribute syn
    * @aspect GenericMethodsNameAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:117
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:163
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localLookupType(String name) {
@@ -753,7 +627,7 @@ if(true) getParConstructorDeclList_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1042
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1173
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericConstructorDecl original() {
@@ -768,7 +642,7 @@ if(true) getParConstructorDeclList_computed = true;
   /**
    * @attribute inh
    * @aspect GenericMethodsNameAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:116
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:162
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet lookupType(String name) {
@@ -777,7 +651,7 @@ if(true) getParConstructorDeclList_computed = true;
     return lookupType_String_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:114
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:160
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
@@ -788,7 +662,7 @@ if(true) getParConstructorDeclList_computed = true;
     return super.Define_NameType_nameType(caller, child);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:124
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:170
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {

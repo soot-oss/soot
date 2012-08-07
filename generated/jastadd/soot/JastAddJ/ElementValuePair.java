@@ -80,16 +80,18 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:502
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:504
    */
   public void typeCheck() {
     if(!type().commensurateWith(getElementValue()))
-      error(type().typeName() + " is not commensurate with " + getElementValue().type().typeName());
+      error("can not construct annotation with " + getName() +
+          " = " + getElementValue().toString() + "; " + type().typeName() +
+          " is not commensurate with " + getElementValue().type().typeName());
   }
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:589
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:593
    */
   public void toString(StringBuffer s) {
     s.append(getName() + " = ");
@@ -220,7 +222,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   point where the annotation is used, or a compile-time error occurs.
   Comment: This is done by the access control framework* @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:448
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:450
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
@@ -238,17 +240,17 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    * @apilevel internal
    */
   private TypeDecl type_compute() {
-    Iterator iter = enclosingAnnotationDecl().memberMethods(getName()).iterator();
-    if(iter.hasNext()) {
-      MethodDecl m = (MethodDecl)iter.next();
-      return m.type();
-    }
-    return unknownType();
+    Map methodMap = enclosingAnnotationDecl().localMethodsSignatureMap();
+    MethodDecl method = (MethodDecl) methodMap.get(getName()+"()");
+    if (method != null)
+      return method.type();
+    else
+      return unknownType();
   }
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:456
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:458
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unknownType() {
@@ -259,7 +261,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:458
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:460
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosingAnnotationDecl() {
@@ -271,7 +273,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    * @apilevel internal
    */
   public ASTNode rewriteTo() {
-    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag at line 523
+    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag at line 527
     if(type().isArrayDecl() && getElementValue() instanceof ElementConstantValue) {
       state().duringAnnotations++;
       ASTNode result = rewriteRule0();
@@ -282,7 +284,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return super.rewriteTo();
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:523
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:527
    * @apilevel internal
    */  private ElementValuePair rewriteRule0() {
 {

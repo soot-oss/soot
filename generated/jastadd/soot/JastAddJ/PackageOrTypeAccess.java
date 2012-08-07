@@ -76,7 +76,7 @@ public class PackageOrTypeAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:55
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:60
    */
   public void nameCheck() {
     error("packageortype name " + name());

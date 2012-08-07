@@ -87,7 +87,7 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:553
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:557
    */
   public void toString(StringBuffer s) {
       getModifiers().toString(s);
@@ -410,7 +410,7 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
     return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:548
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:552
    * @apilevel internal
    */
   public String Define_String_hostPackage(ASTNode caller, ASTNode child) {

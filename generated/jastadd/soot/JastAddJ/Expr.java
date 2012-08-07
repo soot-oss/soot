@@ -70,9 +70,11 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     return newSet;
   }
   /**
+   * Remove fields that are not accessible when using this Expr as qualifier
+   * @return a set containing the accessible fields
    * @ast method 
    * @aspect VariableScope
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:166
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:169
    */
   public SimpleSet keepAccessibleFields(SimpleSet oldSet) {
     SimpleSet newSet = SimpleSet.emptySet;
@@ -87,29 +89,24 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     return newSet;
   }
   /**
+   * @see "JLS $6.6.2.1"
+   * @return true if the expression may access the given field
    * @ast method 
    * @aspect VariableScope
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:189
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:196
    */
   public boolean mayAccess(FieldDeclaration f) {
-    if(f.isPublic()) 
+    if(f.isPublic()) {
       return true;
-    else if(f.isProtected()) {
+    } else if(f.isProtected()) {
       if(f.hostPackage().equals(hostPackage()))
         return true;
-      TypeDecl C = f.hostType();
-      TypeDecl S = hostType().subclassWithinBody(C);
-      TypeDecl Q = type();
-      if(S == null)
-        return false;
-      if(f.isInstanceVariable() && !isSuperAccess())
-        return Q.instanceOf(S);
-      return true;
-    }
-    else if(f.isPrivate())
+      return hostType().mayAccess(this, f);
+    } else if(f.isPrivate()) {
       return f.hostType().topLevelType() == hostType().topLevelType();
-    else
+    } else {
       return f.hostPackage().equals(hostType().hostPackage());
+    }
   }
   /**
    * @ast method 

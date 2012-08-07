@@ -76,7 +76,7 @@ public class ConstCase extends Case implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:401
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:406
    */
   public void nameCheck() {
     if(getValue().isConstant() && bind(this) != this) {
@@ -186,7 +186,7 @@ public class ConstCase extends Case implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:427
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:432
    */
   private boolean refined_NameCheck_ConstCase_constValue_Case(Case c)
 {

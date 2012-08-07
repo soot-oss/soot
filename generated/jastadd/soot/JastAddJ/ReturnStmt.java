@@ -494,7 +494,7 @@ if(isFinal && num == state().boundariesCrossed) inSynchronizedBlock_computed = t
   /**
    * @attribute inh
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:443
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:458
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList exceptionRanges() {

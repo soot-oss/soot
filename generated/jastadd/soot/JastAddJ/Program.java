@@ -345,8 +345,8 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       String[] userClasses = null;
       if(options().hasValueForOption("-classpath"))
         userClasses = options().getValueForOption("-classpath").split(File.pathSeparator);
-     else if(options().hasValueForOption("-cp"))
-       userClasses = options().getValueForOption("-cp").split(File.pathSeparator);
+      else if(options().hasValueForOption("-cp"))
+        userClasses = options().getValueForOption("-cp").split(File.pathSeparator);
       else {
         String s = System.getProperty("java.class.path");
         if(s != null && s.length() > 0) {
@@ -1518,7 +1518,7 @@ if(isFinal && num == state().boundariesCrossed) unknownConstructor_computed = tr
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1121
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1252
    */
   @SuppressWarnings({"unchecked", "cast"})
   public WildcardsCompilationUnit wildcards() {
@@ -2086,7 +2086,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_boolean_mayBeNative(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:244
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:249
    * @apilevel internal
    */
   public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
@@ -2097,7 +2097,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_ASTNode_enclosingBlock(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:295
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:300
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
@@ -2110,7 +2110,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_VariableScope_outerScope(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:363
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:368
    * @apilevel internal
    */
   public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
@@ -2121,7 +2121,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_boolean_insideLoop(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:370
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:375
    * @apilevel internal
    */
   public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
@@ -2132,7 +2132,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_boolean_insideSwitch(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:420
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:425
    * @apilevel internal
    */
   public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
@@ -2426,7 +2426,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:461
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:463
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
@@ -2448,7 +2448,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_TypeDecl_assignConvertedType(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1148
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1279
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
@@ -2459,7 +2459,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_TypeDecl_typeWildcard(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1159
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1290
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
@@ -2470,7 +2470,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1172
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1303
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
@@ -2481,7 +2481,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_TypeDecl_lookupWildcardSuper(this, caller, typeDecl);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1194
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1325
    * @apilevel internal
    */
   public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
@@ -2492,7 +2492,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_LUBType_lookupLUBType(this, caller, bounds);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1232
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1363
    * @apilevel internal
    */
   public GLBType Define_GLBType_lookupGLBType(ASTNode caller, ASTNode child, ArrayList bounds) {
@@ -2584,7 +2584,7 @@ if(true) wildcards_computed = true;
     return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:450
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:465
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {

@@ -312,7 +312,7 @@ public class LUBType extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1207
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1338
    */
   public HashSet implementedInterfaces(){
        HashSet ret = new HashSet();
@@ -658,7 +658,7 @@ if(isFinal && num == state().boundariesCrossed) lub_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1197
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1328
    */
   @SuppressWarnings({"unchecked", "cast"})
   public String typeName() {

@@ -380,7 +380,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute inh
    * @aspect VariableScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:230
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:239
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable unknownField() {

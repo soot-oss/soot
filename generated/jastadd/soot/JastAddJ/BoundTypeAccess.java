@@ -80,7 +80,7 @@ public class BoundTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @ast method 
    * @aspect GenericsTypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:304
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:306
    */
   public boolean isRaw() {
     return getTypeDecl().isRawType();

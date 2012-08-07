@@ -586,7 +586,7 @@ public abstract class IntegralType extends NumericType implements Cloneable {
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:423
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:428
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean assignableToInt() {

@@ -96,7 +96,7 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:351
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:356
    */
   public void nameCheck() {
     LabeledStmt stmt = lookupLabel(getLabel());

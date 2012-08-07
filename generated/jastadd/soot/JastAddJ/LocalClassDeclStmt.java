@@ -90,7 +90,7 @@ public class LocalClassDeclStmt extends Stmt implements Cloneable {
   /**
    * @ast method 
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:519
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:534
    */
   public void jimplify2(Body b) {
   }

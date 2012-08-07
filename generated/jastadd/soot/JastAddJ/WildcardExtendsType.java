@@ -96,7 +96,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:759
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:875
    */
   public Access substitute(Parameterization parTypeDecl) {
     if(!usesTypeVariable())
@@ -405,7 +405,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:572
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:574
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean sameSignature(Access a) {
@@ -440,7 +440,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:925
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1041
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
@@ -501,7 +501,7 @@ public class WildcardExtendsType extends AbstractWildcardType implements Cloneab
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1129
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1260
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl extendsType() {

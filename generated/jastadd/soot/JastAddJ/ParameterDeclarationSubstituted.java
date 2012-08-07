@@ -237,7 +237,7 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1287
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1418
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl() {

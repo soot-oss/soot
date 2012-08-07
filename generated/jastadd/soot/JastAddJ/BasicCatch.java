@@ -103,7 +103,7 @@ public class BasicCatch extends CatchClause implements Cloneable {
   /**
    * @ast method 
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:455
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:470
    */
   public void jimplify2(Body b) {
     b.addLabel(label());
@@ -249,7 +249,7 @@ if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_valu
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:454
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:469
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label() {
@@ -278,7 +278,7 @@ if(isFinal && num == state().boundariesCrossed) label_computed = true;
     return super.Define_SimpleSet_lookupVariable(caller, child, name);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:290
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:295
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {

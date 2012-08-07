@@ -86,7 +86,7 @@ public class AnnotationMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:567
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:571
    */
   public void toString(StringBuffer s) {
     s.append(indent());

@@ -71,10 +71,10 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1001
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1132
    */
-  public BodyDecl p(Parameterization parTypeDecl) {
-    throw new Error("Operation p not supported for " + getClass().getName());
+  public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
+    throw new Error("Operation substitutedBodyDecl not supported for " + getClass().getName());
   }
   /**
    * @ast method 
@@ -271,7 +271,7 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect GenericsParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:64
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:67
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean visibleTypeParameters() {
@@ -472,7 +472,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
     return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:449
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:464
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {

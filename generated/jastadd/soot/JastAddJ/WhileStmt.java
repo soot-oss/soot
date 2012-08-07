@@ -427,7 +427,7 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:398
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:403
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean continueLabel() {
@@ -627,7 +627,7 @@ if(isFinal && num == state().boundariesCrossed) stmt_label_computed = true;
     return getParent().Define_boolean_isDUbefore(this, caller, v);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:366
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:371
    * @apilevel internal
    */
   public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {

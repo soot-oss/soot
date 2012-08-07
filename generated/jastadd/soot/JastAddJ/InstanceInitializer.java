@@ -171,7 +171,7 @@ public class InstanceInitializer extends BodyDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:181
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:191
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection exceptions() {
@@ -296,7 +296,7 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     return getParent().Define_boolean_handlesException(this, caller, exceptionType);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:243
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:248
    * @apilevel internal
    */
   public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {

@@ -19,6 +19,7 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
+
 /**
  * @ast node
  * @declaredat Generics.ast:3
@@ -31,15 +32,13 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     super.flushCache();
     rawType_computed = false;
     rawType_value = null;
-    getParTypeDeclList_computed = false;
-    getParTypeDeclList_value = null;
-    lookupParTypeDecl_ParTypeAccess_values = null;
     lookupParTypeDecl_ArrayList_values = null;
     usesTypeVariable_visited = -1;
     usesTypeVariable_computed = false;
     usesTypeVariable_initialized = false;
     subtype_TypeDecl_values = null;
     instanceOf_TypeDecl_values = null;
+    lookupParTypeDecl_ParTypeAccess_values = null;
   }
   /**
    * @apilevel internal
@@ -55,15 +54,13 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     GenericInterfaceDecl node = (GenericInterfaceDecl)super.clone();
     node.rawType_computed = false;
     node.rawType_value = null;
-    node.getParTypeDeclList_computed = false;
-    node.getParTypeDeclList_value = null;
-    node.lookupParTypeDecl_ParTypeAccess_values = null;
     node.lookupParTypeDecl_ArrayList_values = null;
     node.usesTypeVariable_visited = -1;
     node.usesTypeVariable_computed = false;
     node.usesTypeVariable_initialized = false;
     node.subtype_TypeDecl_values = null;
     node.instanceOf_TypeDecl_values = null;
+    node.lookupParTypeDecl_ParTypeAccess_values = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -98,7 +95,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @ast method 
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:401
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:403
    */
   public void typeCheck() {
     super.typeCheck();
@@ -108,9 +105,9 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1109
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1240
    */
-  public InterfaceDecl p(Parameterization parTypeDecl) {
+  public InterfaceDecl substitutedInterfaceDecl(Parameterization parTypeDecl) {
     GenericInterfaceDecl c = new GenericInterfaceDeclSubstituted(
       (Modifiers)getModifiers().fullCopy(),
       getID(),
@@ -181,12 +178,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     setChild(new List(), 1);
     setChild(new List(), 2);
     setChild(new List(), 3);
-    setChild(new List(), 4);
 
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:11
+   * @declaredat Generics.ast:10
    */
   public GenericInterfaceDecl(Modifiers p0, String p1, List<Access> p2, List<BodyDecl> p3, List<TypeVariable> p4) {
     setChild(p0, 0);
@@ -194,11 +190,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     setChild(p2, 1);
     setChild(p3, 2);
     setChild(p4, 3);
-    setChild(new List(), 4);
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:19
+   * @declaredat Generics.ast:17
    */
   public GenericInterfaceDecl(Modifiers p0, beaver.Symbol p1, List<Access> p2, List<BodyDecl> p3, List<TypeVariable> p4) {
     setChild(p0, 0);
@@ -206,12 +201,11 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     setChild(p2, 1);
     setChild(p3, 2);
     setChild(p4, 3);
-    setChild(new List(), 4);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:30
+   * @declaredat Generics.ast:27
    */
   protected int numChildren() {
     return 4;
@@ -219,7 +213,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:36
+   * @declaredat Generics.ast:33
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -565,99 +559,9 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     return (List<TypeVariable>)getChildNoTransform(3);
   }
   /**
-   * Setter for ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:5
-   */
-  public void setParTypeDeclList(List<ParInterfaceDecl> list) {
-    setChild(list, 4);
-  }
-  /**
-   * @return number of children in ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:12
-   */
-  public int getNumParTypeDecl() {
-    return getParTypeDeclList().getNumChild();
-  }
-  /**
-   * Getter for child in list ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:19
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public ParInterfaceDecl getParTypeDecl(int i) {
-    return (ParInterfaceDecl)getParTypeDeclList().getChild(i);
-  }
-  /**
-   * Add element to list ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:27
-   */
-  public void addParTypeDecl(ParInterfaceDecl node) {
-    List<ParInterfaceDecl> list = (parent == null || state == null) ? getParTypeDeclListNoTransform() : getParTypeDeclList();
-    list.addChild(node);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:34
-   */
-  public void addParTypeDeclNoTransform(ParInterfaceDecl node) {
-    List<ParInterfaceDecl> list = getParTypeDeclListNoTransform();
-    list.addChild(node);
-  }
-  /**
-   * Setter for child in list ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:42
-   */
-  public void setParTypeDecl(ParInterfaceDecl node, int i) {
-    List<ParInterfaceDecl> list = getParTypeDeclList();
-    list.setChild(node, i);
-  }
-  /**
-   * Getter for ParTypeDecl list.
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:50
-   */
-  public List<ParInterfaceDecl> getParTypeDecls() {
-    return getParTypeDeclList();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:56
-   */
-  public List<ParInterfaceDecl> getParTypeDeclsNoTransform() {
-    return getParTypeDeclListNoTransform();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:62
-   */
-  public List<ParInterfaceDecl> getParTypeDeclListNoTransform() {
-    return (List<ParInterfaceDecl>)getChildNoTransform(4);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:68
-   */
-  protected int getParTypeDeclListChildPosition() {
-    return 4;
-  }
-  /**
    * @ast method 
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:213
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:215
    */
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     return (TypeDecl)this;
@@ -665,7 +569,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @ast method 
    * @aspect GenericsNameBinding
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:460
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:462
    */
   public SimpleSet addTypeVariables(SimpleSet c, String name) {
     GenericTypeDecl original = (GenericTypeDecl)original();
@@ -679,15 +583,19 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:661
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:772
    */
   public List createArgumentList(ArrayList params) {
     GenericTypeDecl original = (GenericTypeDecl)original();
     List list = new List();
-    if(params.isEmpty())
+    if(params.isEmpty()) {
+      // Change: Don't add any thing to the list. 
+      // Concern: The previous version seem to add the erasure of the type variable for some reason,  
+      // maybe this is how the raw type is represented (?), but this doesn't really comply with the 
+      // claim that raw types don't have any type variables...?
       for(int i = 0; i < original.getNumTypeParameter(); i++)
         list.add(original.getTypeParameter(i).erasure().createBoundAccess());
-    else
+    } else
       for(Iterator iter = params.iterator(); iter.hasNext(); )
         list.add(((TypeDecl)iter.next()).createBoundAccess());
     return list;
@@ -703,7 +611,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:155
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:157
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl rawType() {
@@ -724,78 +632,12 @@ if(isFinal && num == state().boundariesCrossed) rawType_computed = true;
   /**
    * @apilevel internal
    */
-  protected boolean getParTypeDeclList_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected List getParTypeDeclList_value;
-  /**
-   * @attribute syn nta
-   * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:593
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List getParTypeDeclList() {
-    if(getParTypeDeclList_computed) {
-      return (List)ASTNode.getChild(this, getParTypeDeclListChildPosition());
-    }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    getParTypeDeclList_value = getParTypeDeclList_compute();
-    setParTypeDeclList(getParTypeDeclList_value);
-if(true) getParTypeDeclList_computed = true;
-    return (List)ASTNode.getChild(this, getParTypeDeclListChildPosition());
-  }
-  /**
-   * @apilevel internal
-   */
-  private List getParTypeDeclList_compute() {  return new List();  }
-  protected java.util.Map lookupParTypeDecl_ParTypeAccess_values;
-  /**
-   * @attribute syn
-   * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:613
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl lookupParTypeDecl(ParTypeAccess p) {
-    Object _parameters = p;
-    if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAccess_values = new java.util.HashMap(4);
-    if(lookupParTypeDecl_ParTypeAccess_values.containsKey(_parameters)) {
-      return (TypeDecl)lookupParTypeDecl_ParTypeAccess_values.get(_parameters);
-    }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    TypeDecl lookupParTypeDecl_ParTypeAccess_value = lookupParTypeDecl_compute(p);
-if(isFinal && num == state().boundariesCrossed) lookupParTypeDecl_ParTypeAccess_values.put(_parameters, lookupParTypeDecl_ParTypeAccess_value);
-    return lookupParTypeDecl_ParTypeAccess_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl lookupParTypeDecl_compute(ParTypeAccess p) {
-    for(int i = 0; i < getNumParTypeDecl(); i++) {
-      ParTypeDecl decl = (ParTypeDecl)getParTypeDecl(i);
-      if(!decl.isRawType() && decl.sameSignature(p))
-        return (TypeDecl)decl;
-    }
-    ParInterfaceDecl typeDecl = new ParInterfaceDecl();
-    typeDecl.setModifiers((Modifiers)getModifiers().fullCopy());
-    typeDecl.setID(getID());
-    addParTypeDecl(typeDecl);
-    List list = new List();
-    for(int i = 0; i < p.getNumTypeArgument(); i++)
-      list.add(p.getTypeArgument(i).type().createBoundAccess());
-    typeDecl.setArgumentList(list);
-    typeDecl.is$Final = true;
-    return typeDecl;
-  }
   protected java.util.Map lookupParTypeDecl_ArrayList_values;
+  protected List lookupParTypeDecl_ArrayList_list;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:647
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:707
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupParTypeDecl(ArrayList list) {
@@ -808,6 +650,13 @@ if(isFinal && num == state().boundariesCrossed) lookupParTypeDecl_ParTypeAccess_
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     TypeDecl lookupParTypeDecl_ArrayList_value = lookupParTypeDecl_compute(list);
+    if(lookupParTypeDecl_ArrayList_list == null) {
+      lookupParTypeDecl_ArrayList_list = new List();
+      lookupParTypeDecl_ArrayList_list.is$Final = true;
+      lookupParTypeDecl_ArrayList_list.setParent(this);
+    }
+    lookupParTypeDecl_ArrayList_list.add(lookupParTypeDecl_ArrayList_value);
+    lookupParTypeDecl_ArrayList_value.is$Final = true;
 if(true) lookupParTypeDecl_ArrayList_values.put(_parameters, lookupParTypeDecl_ArrayList_value);
     return lookupParTypeDecl_ArrayList_value;
   }
@@ -815,18 +664,23 @@ if(true) lookupParTypeDecl_ArrayList_values.put(_parameters, lookupParTypeDecl_A
    * @apilevel internal
    */
   private TypeDecl lookupParTypeDecl_compute(ArrayList list) {
-    for(int i = 0; i < getNumParTypeDecl(); i++) {
-      ParTypeDecl decl = (ParTypeDecl)getParTypeDecl(i);
-      if(decl.isRawType() ? list.isEmpty() : (!list.isEmpty() && decl.sameSignature(list)))
-        return (TypeDecl)decl;
+    /*
+    int size = createParTypeDeclStub_ArrayList_list != null ? createParTypeDeclStub_ArrayList_list.numChildren : 0;
+    ParInterfaceDecl typeDecl = (ParInterfaceDecl)createParTypeDeclStub(list);
+    if (size < createParTypeDeclStub_ArrayList_list.numChildren) {
+      createParTypeDeclBody(list, typeDecl);
     }
+    return typeDecl;
+    */
+    
     ParInterfaceDecl typeDecl = list.size() == 0 ? new RawInterfaceDecl() : new ParInterfaceDecl();
     typeDecl.setModifiers((Modifiers)getModifiers().fullCopy());
     typeDecl.setID(getID());
-    addParTypeDecl(typeDecl);
-    typeDecl.setArgumentList(createArgumentList(list));
-    typeDecl.is$Final = true;
+    // ES: trying to only so this for ParInterfaceDecl and then later for RawInterfaceDecl
+    if (!(typeDecl instanceof RawInterfaceDecl)) 
+      typeDecl.setArgumentList(createArgumentList(list));
     return typeDecl;
+    
   }
   /**
    * @apilevel internal
@@ -847,7 +701,7 @@ if(true) lookupParTypeDecl_ArrayList_values.put(_parameters, lookupParTypeDecl_A
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:923
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1039
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
@@ -1032,7 +886,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:158
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:160
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isGenericType() {
@@ -1044,10 +898,39 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
    * @apilevel internal
    */
   private boolean isGenericType_compute() {  return true;  }
+  protected java.util.Map lookupParTypeDecl_ParTypeAccess_values;
+  /**
+   * @attribute syn
+   * @aspect LookupParTypeDecl
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:681
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public TypeDecl lookupParTypeDecl(ParTypeAccess p) {
+    Object _parameters = p;
+    if(lookupParTypeDecl_ParTypeAccess_values == null) lookupParTypeDecl_ParTypeAccess_values = new java.util.HashMap(4);
+    if(lookupParTypeDecl_ParTypeAccess_values.containsKey(_parameters)) {
+      return (TypeDecl)lookupParTypeDecl_ParTypeAccess_values.get(_parameters);
+    }
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    TypeDecl lookupParTypeDecl_ParTypeAccess_value = lookupParTypeDecl_compute(p);
+if(isFinal && num == state().boundariesCrossed) lookupParTypeDecl_ParTypeAccess_values.put(_parameters, lookupParTypeDecl_ParTypeAccess_value);
+    return lookupParTypeDecl_ParTypeAccess_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private TypeDecl lookupParTypeDecl_compute(ParTypeAccess p) {
+    ArrayList typeArguments = new ArrayList();
+    for(int i = 0; i < p.getNumTypeArgument(); i++)
+      typeArguments.add(p.getTypeArgument(i).type());
+    return lookupParTypeDecl(typeArguments);
+  }
   /**
    * @attribute inh
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:407
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:409
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeThrowable() {
@@ -1056,7 +939,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
     return typeThrowable_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:457
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:459
    * @apilevel internal
    */
   public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
@@ -1067,7 +950,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
     return super.Define_boolean_isNestedType(caller, child);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:458
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:460
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
@@ -1078,7 +961,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
     return super.Define_TypeDecl_enclosingType(caller, child);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:502
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:504
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
@@ -1139,12 +1022,12 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
     return super.Define_SimpleSet_lookupType(caller, child, name);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:48
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:51
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
-    if(caller == getParTypeDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
+    if(true) {
+      int childIndex = this.getIndexOfChild(caller);
       return this;
     }
     return getParent().Define_TypeDecl_genericDecl(this, caller);

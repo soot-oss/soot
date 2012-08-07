@@ -833,7 +833,7 @@ if(isFinal && num == state().boundariesCrossed) localVariableDeclaration_String_
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:397
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:402
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean continueLabel() {
@@ -1148,7 +1148,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
     return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:294
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:299
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
@@ -1162,7 +1162,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
     return getParent().Define_VariableScope_outerScope(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:365
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:370
    * @apilevel internal
    */
   public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {

@@ -19,9 +19,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
+
 /**
  * @ast node
- * @declaredat GenericMethods.ast:1
+ * @declaredat GenericMethods.ast:2
  */
 public class GenericMethodDecl extends MethodDecl implements Cloneable {
   /**
@@ -29,8 +30,6 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
    */
   public void flushCache() {
     super.flushCache();
-    getParMethodDeclList_computed = false;
-    getParMethodDeclList_value = null;
     rawMethodDecl_computed = false;
     rawMethodDecl_value = null;
     lookupParMethodDecl_java_util_List_values = null;
@@ -47,8 +46,6 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public GenericMethodDecl clone() throws CloneNotSupportedException {
     GenericMethodDecl node = (GenericMethodDecl)super.clone();
-    node.getParMethodDeclList_computed = false;
-    node.getParMethodDeclList_value = null;
     node.rawMethodDecl_computed = false;
     node.rawMethodDecl_value = null;
     node.lookupParMethodDecl_java_util_List_values = null;
@@ -86,11 +83,13 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect GenericMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:60
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:103
    */
-  public ParMethodDecl p(java.util.List typeArguments) {
+  public ParMethodDecl newParMethodDecl(java.util.List typeArguments) {
     ParMethodDecl methodDecl = typeArguments.isEmpty() ? new RawMethodDecl() : new ParMethodDecl();
-    addParMethodDecl(methodDecl);
+    // adding a link to GenericMethodDecl to be used during substitution 
+    // instead of the not yet existing parent link
+    methodDecl.setGenericMethodDecl(this); 
     List list = new List();
     if(typeArguments.isEmpty()) {
       GenericMethodDecl original = original();
@@ -112,7 +111,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect GenericMethodsPrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:170
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:216
    */
   private void ppTypeParameters(StringBuffer s) {
     s.append(" <");
@@ -125,7 +124,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect GenericMethodsPrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:179
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:225
    */
   public void toString(StringBuffer s) {
     s.append(indent());
@@ -163,9 +162,9 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1024
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1155
    */
-  public BodyDecl p(Parameterization parTypeDecl) {
+  public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
     //System.out.println("Begin substituting generic " + signature() + " in " + hostType().typeName() + " with " + parTypeDecl.typeSignature());
     GenericMethodDecl m = new GenericMethodDecl(
       (Modifiers)getModifiers().fullCopy(),
@@ -183,7 +182,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1040
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1171
    */
   
   public GenericMethodDecl original;
@@ -198,12 +197,11 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     setChild(new List(), 3);
     setChild(new Opt(), 4);
     setChild(new List(), 5);
-    setChild(new List(), 6);
 
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:12
+   * @declaredat GenericMethods.ast:11
    */
   public GenericMethodDecl(Modifiers p0, Access p1, String p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<TypeVariable> p6) {
     setChild(p0, 0);
@@ -213,11 +211,10 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     setChild(p4, 3);
     setChild(p5, 4);
     setChild(p6, 5);
-    setChild(new List(), 6);
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:22
+   * @declaredat GenericMethods.ast:20
    */
   public GenericMethodDecl(Modifiers p0, Access p1, beaver.Symbol p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<TypeVariable> p6) {
     setChild(p0, 0);
@@ -227,12 +224,11 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     setChild(p4, 3);
     setChild(p5, 4);
     setChild(p6, 5);
-    setChild(new List(), 6);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:35
+   * @declaredat GenericMethods.ast:32
    */
   protected int numChildren() {
     return 6;
@@ -240,7 +236,7 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat GenericMethods.ast:41
+   * @declaredat GenericMethods.ast:38
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -667,126 +663,6 @@ public class GenericMethodDecl extends MethodDecl implements Cloneable {
     return (List<TypeVariable>)getChildNoTransform(5);
   }
   /**
-   * Setter for ParMethodDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:5
-   */
-  public void setParMethodDeclList(List<ParMethodDecl> list) {
-    setChild(list, 6);
-  }
-  /**
-   * @return number of children in ParMethodDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:12
-   */
-  public int getNumParMethodDecl() {
-    return getParMethodDeclList().getNumChild();
-  }
-  /**
-   * Getter for child in list ParMethodDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:19
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public ParMethodDecl getParMethodDecl(int i) {
-    return (ParMethodDecl)getParMethodDeclList().getChild(i);
-  }
-  /**
-   * Add element to list ParMethodDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:27
-   */
-  public void addParMethodDecl(ParMethodDecl node) {
-    List<ParMethodDecl> list = (parent == null || state == null) ? getParMethodDeclListNoTransform() : getParMethodDeclList();
-    list.addChild(node);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:34
-   */
-  public void addParMethodDeclNoTransform(ParMethodDecl node) {
-    List<ParMethodDecl> list = getParMethodDeclListNoTransform();
-    list.addChild(node);
-  }
-  /**
-   * Setter for child in list ParMethodDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:42
-   */
-  public void setParMethodDecl(ParMethodDecl node, int i) {
-    List<ParMethodDecl> list = getParMethodDeclList();
-    list.setChild(node, i);
-  }
-  /**
-   * Getter for ParMethodDecl list.
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:50
-   */
-  public List<ParMethodDecl> getParMethodDecls() {
-    return getParMethodDeclList();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:56
-   */
-  public List<ParMethodDecl> getParMethodDeclsNoTransform() {
-    return getParMethodDeclListNoTransform();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:62
-   */
-  public List<ParMethodDecl> getParMethodDeclListNoTransform() {
-    return (List<ParMethodDecl>)getChildNoTransform(6);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat GenericMethods.ast:68
-   */
-  protected int getParMethodDeclListChildPosition() {
-    return 6;
-  }
-  /**
-   * @apilevel internal
-   */
-  protected boolean getParMethodDeclList_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected List getParMethodDeclList_value;
-  /**
-   * @attribute syn nta
-   * @aspect GenericMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:26
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List getParMethodDeclList() {
-    if(getParMethodDeclList_computed) {
-      return (List)ASTNode.getChild(this, getParMethodDeclListChildPosition());
-    }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    getParMethodDeclList_value = getParMethodDeclList_compute();
-    setParMethodDeclList(getParMethodDeclList_value);
-if(true) getParMethodDeclList_computed = true;
-    return (List)ASTNode.getChild(this, getParMethodDeclListChildPosition());
-  }
-  /**
-   * @apilevel internal
-   */
-  private List getParMethodDeclList_compute() {  return new List();  }
-  /**
    * @apilevel internal
    */
   protected boolean rawMethodDecl_computed = false;
@@ -797,7 +673,7 @@ if(true) getParMethodDeclList_computed = true;
   /**
    * @attribute syn
    * @aspect GenericMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:28
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:34
    */
   @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl rawMethodDecl() {
@@ -815,30 +691,13 @@ if(true) rawMethodDecl_computed = true;
    * @apilevel internal
    */
   private MethodDecl rawMethodDecl_compute() {  return lookupParMethodDecl(new ArrayList());  }
-  protected java.util.Map lookupParMethodDecl_java_util_List_values;
-  /**
-   * @attribute syn
-   * @aspect GenericMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:43
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public MethodDecl lookupParMethodDecl(java.util.List typeArguments) {
-    Object _parameters = typeArguments;
-    if(lookupParMethodDecl_java_util_List_values == null) lookupParMethodDecl_java_util_List_values = new java.util.HashMap(4);
-    if(lookupParMethodDecl_java_util_List_values.containsKey(_parameters)) {
-      return (MethodDecl)lookupParMethodDecl_java_util_List_values.get(_parameters);
-    }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    MethodDecl lookupParMethodDecl_java_util_List_value = lookupParMethodDecl_compute(typeArguments);
-if(isFinal && num == state().boundariesCrossed) lookupParMethodDecl_java_util_List_values.put(_parameters, lookupParMethodDecl_java_util_List_value);
-    return lookupParMethodDecl_java_util_List_value;
-  }
   /**
    * @apilevel internal
    */
-  private MethodDecl lookupParMethodDecl_compute(java.util.List typeArguments) {
+  protected java.util.Map lookupParMethodDecl_java_util_List_values;
+  protected List lookupParMethodDecl_java_util_List_list;
+  /* ES: replacing this:
+  syn lazy MethodDecl GenericMethodDecl.lookupParMethodDecl(java.util.List typeArguments) {
     l: for(int i = 0; i < getNumParMethodDecl(); i++) {
       ParMethodDecl decl = getParMethodDecl(i);
       if(decl instanceof RawMethodDecl) {
@@ -852,12 +711,44 @@ if(isFinal && num == state().boundariesCrossed) lookupParMethodDecl_java_util_Li
         return decl;
       }
     }
-    return p(typeArguments);
+    return newParMethodDecl(typeArguments);
+  }
+  with:
+* @attribute syn
+   * @aspect GenericMethods
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:74
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public MethodDecl lookupParMethodDecl(java.util.List typeArguments) {
+    Object _parameters = typeArguments;
+    if(lookupParMethodDecl_java_util_List_values == null) lookupParMethodDecl_java_util_List_values = new java.util.HashMap(4);
+    if(lookupParMethodDecl_java_util_List_values.containsKey(_parameters)) {
+      return (MethodDecl)lookupParMethodDecl_java_util_List_values.get(_parameters);
+    }
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    MethodDecl lookupParMethodDecl_java_util_List_value = lookupParMethodDecl_compute(typeArguments);
+    if(lookupParMethodDecl_java_util_List_list == null) {
+      lookupParMethodDecl_java_util_List_list = new List();
+      lookupParMethodDecl_java_util_List_list.is$Final = true;
+      lookupParMethodDecl_java_util_List_list.setParent(this);
+    }
+    lookupParMethodDecl_java_util_List_list.add(lookupParMethodDecl_java_util_List_value);
+    lookupParMethodDecl_java_util_List_value.is$Final = true;
+if(true) lookupParMethodDecl_java_util_List_values.put(_parameters, lookupParMethodDecl_java_util_List_value);
+    return lookupParMethodDecl_java_util_List_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private MethodDecl lookupParMethodDecl_compute(java.util.List typeArguments) {
+    return newParMethodDecl(typeArguments);
   }
   /**
    * @attribute syn
    * @aspect GenericMethodsNameAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:101
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:147
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localLookupType(String name) {
@@ -878,7 +769,7 @@ if(isFinal && num == state().boundariesCrossed) lookupParMethodDecl_java_util_Li
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1039
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1170
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericMethodDecl original() {
@@ -893,7 +784,7 @@ if(isFinal && num == state().boundariesCrossed) lookupParMethodDecl_java_util_Li
   /**
    * @attribute inh
    * @aspect GenericMethodsNameAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:100
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:146
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet lookupType(String name) {
@@ -902,7 +793,7 @@ if(isFinal && num == state().boundariesCrossed) lookupParMethodDecl_java_util_Li
     return lookupType_String_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:98
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:144
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
@@ -913,7 +804,7 @@ if(isFinal && num == state().boundariesCrossed) lookupParMethodDecl_java_util_Li
     return super.Define_NameType_nameType(caller, child);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:108
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:154
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {

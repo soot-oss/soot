@@ -497,7 +497,7 @@ public class MethodDeclSubstituted extends MethodDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1276
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1407
    */
   @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl sourceMethodDecl() {

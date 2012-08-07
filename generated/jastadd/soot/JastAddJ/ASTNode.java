@@ -84,7 +84,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @ast method 
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:192
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:202
    */
   protected void collectExceptions(Collection c, ASTNode target) {
     for(int i = 0; i < getNumChild(); i++)
@@ -341,7 +341,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @ast method 
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:348
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:359
    */
   protected static void putSimpleSetElement(HashMap map, Object key, Object value) {
     SimpleSet set = (SimpleSet)map.get(key);
@@ -351,7 +351,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @ast method 
    * @aspect VariableScope
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:179
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:182
    */
   public SimpleSet removeInstanceVariables(SimpleSet oldSet) {
     SimpleSet newSet = SimpleSet.emptySet;
@@ -1324,7 +1324,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:901
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1017
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {

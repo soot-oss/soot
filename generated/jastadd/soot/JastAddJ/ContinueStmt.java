@@ -106,7 +106,7 @@ public class ContinueStmt extends Stmt implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:384
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:389
    */
   public void nameCheck() {
     if(!insideLoop())
@@ -509,7 +509,7 @@ if(isFinal && num == state().boundariesCrossed) lookupLabel_String_values.put(_p
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:361
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:366
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean insideLoop() {
@@ -520,7 +520,7 @@ if(isFinal && num == state().boundariesCrossed) lookupLabel_String_values.put(_p
   /**
    * @attribute inh
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:444
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:459
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList exceptionRanges() {

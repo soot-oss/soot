@@ -268,7 +268,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:28
    */
   
-  
+
   public int anonymousIndex = 0;
   /**
    * @ast method 
@@ -422,9 +422,25 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return null;
   }
   /**
+   * @return true if the method access may access the method
+   * @ast method 
+   * @aspect MethodDecl
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:189
+   */
+  public boolean mayAccess(MethodAccess access, MethodDecl method) {
+    if (instanceOf(method.hostType())
+        && access.qualifier().type().instanceOf(this))
+        return true;
+
+    if (isNestedType())
+      return enclosingType().mayAccess(access, method);
+    else
+      return false;
+  }
+  /**
    * @ast method 
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:220
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:231
    */
   public Iterator localMethodsIterator() {
     return new Iterator() {
@@ -445,7 +461,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:288
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:299
    */
   public Iterator methodsIterator() {
     return new Iterator() {
@@ -465,7 +481,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:353
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:364
    */
   protected boolean allMethodsAbstract(SimpleSet set) {
     if(set == null) return true;
@@ -477,22 +493,29 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return true;
   }
   /**
+   * @return true if the expression may access the field
    * @ast method 
    * @aspect VariableScope
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:210
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:213
    */
-  public TypeDecl subclassWithinBody(TypeDecl typeDecl) {
-    if(instanceOf(typeDecl))
-      return this;
-    if(isNestedType()) {
-      return enclosingType().subclassWithinBody(typeDecl);
+  public boolean mayAccess(Expr expr, FieldDeclaration field) {
+    if (instanceOf(field.hostType())) {
+      if (!field.isInstanceVariable()
+          || expr.isSuperAccess()
+          || expr.type().instanceOf(this))
+        return true;
     }
-    return null;
+
+    if (isNestedType()) {
+      return enclosingType().mayAccess(expr, field);
+    } else {
+      return false;
+    }
   }
   /**
    * @ast method 
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:306
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:315
    */
   public Iterator fieldsIterator() {
     return new Iterator() {
@@ -544,7 +567,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:246
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:251
    */
   public void nameCheck() {
     if(isTopLevelType() && lookupType(packageName(), name()) != this)
@@ -691,7 +714,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:162
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:164
    */
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     return this;
@@ -699,7 +722,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:692
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:808
    */
   public TypeDecl substitute(TypeVariable typeVariable) {
     if(isTopLevelType())
@@ -709,7 +732,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:730
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:846
    */
   public Access substitute(Parameterization parTypeDecl) {
     if(parTypeDecl instanceof ParTypeDecl && ((ParTypeDecl)parTypeDecl).genericDecl() == this)
@@ -721,7 +744,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:770
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:886
    */
   public Access substituteReturnType(Parameterization parTypeDecl) {
     return substitute(parTypeDecl);
@@ -729,7 +752,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:814
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:930
    */
   public Access substituteParameterType(Parameterization parTypeDecl) {
     return substitute(parTypeDecl);
@@ -1482,7 +1505,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:330
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:332
    */
     public void typeCheck() {
     refined_TypeHierarchyCheck_TypeDecl_typeCheck();
@@ -2433,7 +2456,7 @@ if(isFinal && num == state().boundariesCrossed) unqualifiedLookupMethod_String_v
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:199
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:210
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection memberMethods(String name) {
@@ -2460,7 +2483,7 @@ if(isFinal && num == state().boundariesCrossed) unqualifiedLookupMethod_String_v
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:205
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:216
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap methodsNameMap() {
@@ -2493,7 +2516,7 @@ if(isFinal && num == state().boundariesCrossed) methodsNameMap_computed = true;
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:236
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:247
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localMethodsSignature(String signature) {
@@ -2520,7 +2543,7 @@ if(isFinal && num == state().boundariesCrossed) methodsNameMap_computed = true;
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:242
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:253
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap localMethodsSignatureMap() {
@@ -2550,7 +2573,7 @@ if(isFinal && num == state().boundariesCrossed) localMethodsSignatureMap_compute
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:304
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:315
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet methodsSignature(String signature) {
@@ -2577,7 +2600,7 @@ if(isFinal && num == state().boundariesCrossed) localMethodsSignatureMap_compute
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:310
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:321
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap methodsSignatureMap() {
@@ -2599,7 +2622,7 @@ if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = t
   /**
    * @attribute syn
    * @aspect AncestorMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:367
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:378
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet ancestorMethods(String signature) {
@@ -2692,7 +2715,7 @@ if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_p
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:257
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:266
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localFields(String name) {
@@ -2723,7 +2746,7 @@ if(isFinal && num == state().boundariesCrossed) localFields_String_values.put(_p
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:260
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:269
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap localFieldsMap() {
@@ -2764,7 +2787,7 @@ if(isFinal && num == state().boundariesCrossed) localFieldsMap_computed = true;
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:273
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:282
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap memberFieldsMap() {
@@ -2786,7 +2809,7 @@ if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:322
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:331
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet memberFields(String name) {
@@ -3015,7 +3038,7 @@ if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:269
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:274
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean hasEnclosingTypeDecl(String name) {
@@ -3036,7 +3059,7 @@ if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:422
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:427
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean assignableToInt() {
@@ -4134,7 +4157,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
           o if T is Class, or an invocation of Class, and V is a class literal (\u00df15.8.2).
           o If T is an enum type, and V is an enum constant. * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:472
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:474
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWith(ElementValue value) {
@@ -4149,7 +4172,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:541
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:545
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isAnnotationDecl() {
@@ -4402,7 +4425,7 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:157
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:159
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isGenericType() {
@@ -4417,7 +4440,7 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:231
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:233
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isParameterizedType() {
@@ -4432,7 +4455,7 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:234
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:236
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isRawType() {
@@ -4455,7 +4478,7 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
   /**
    * @attribute syn
    * @aspect GenericsErasure
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:314
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:316
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl erasure() {
@@ -4490,7 +4513,7 @@ if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
   /**
    * @attribute syn
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:370
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:372
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashSet implementedInterfaces() {
@@ -4511,7 +4534,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:542
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:544
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean sameSignature(Access a) {
@@ -4546,7 +4569,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:913
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1029
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
@@ -4607,7 +4630,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1069
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1200
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl original() {
@@ -4622,7 +4645,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1161
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1292
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl asWildcardExtends() {
@@ -4637,7 +4660,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1174
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1305
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl asWildcardSuper() {
@@ -4660,7 +4683,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1267
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1398
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl sourceTypeDecl() {
@@ -4681,7 +4704,7 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
   /**
    * @attribute syn
    * @aspect GenericsParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:70
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:73
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isTypeVariable() {
@@ -6347,7 +6370,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:237
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:242
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean hasPackage(String packageName) {
@@ -6358,7 +6381,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:240
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:245
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ASTNode enclosingBlock() {
@@ -6604,7 +6627,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1147
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1278
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeWildcard() {
@@ -6615,7 +6638,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1160
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1291
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardExtends(TypeDecl typeDecl) {
@@ -6626,7 +6649,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1173
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1304
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
@@ -6637,7 +6660,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1193
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1324
    */
   @SuppressWarnings({"unchecked", "cast"})
   public LUBType lookupLUBType(Collection bounds) {
@@ -6648,7 +6671,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1231
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1362
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GLBType lookupGLBType(ArrayList bounds) {
@@ -7012,7 +7035,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return getParent().Define_boolean_mayBeNative(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:292
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:297
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
@@ -7023,7 +7046,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return getParent().Define_VariableScope_outerScope(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:364
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:369
    * @apilevel internal
    */
   public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
@@ -7034,7 +7057,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return getParent().Define_boolean_insideLoop(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:371
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:376
    * @apilevel internal
    */
   public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
