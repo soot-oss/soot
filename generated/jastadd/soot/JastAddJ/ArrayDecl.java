@@ -134,7 +134,7 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:737
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:853
    */
   public Access substitute(Parameterization parTypeDecl) {
     return new ArrayTypeAccess(componentType().substitute(parTypeDecl));
@@ -142,7 +142,7 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:773
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:889
    */
   public Access substituteReturnType(Parameterization parTypeDecl) {
     return new ArrayTypeAccess(componentType().substituteReturnType(parTypeDecl));
@@ -807,7 +807,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
           o if T is Class, or an invocation of Class, and V is a class literal (\u00df15.8.2).
           o If T is an enum type, and V is an enum constant. * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:492
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:494
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWith(ElementValue value) {
@@ -907,7 +907,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect GenericsErasure
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:324
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:326
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl erasure() {
@@ -944,7 +944,7 @@ if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:927
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1043
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {

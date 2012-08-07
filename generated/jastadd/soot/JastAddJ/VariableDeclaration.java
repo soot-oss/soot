@@ -141,7 +141,7 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:299
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:304
    */
   public void nameCheck() {
     SimpleSet decls = outerScope().lookupVariable(name());
@@ -150,13 +150,13 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
       if(var instanceof VariableDeclaration) {
         VariableDeclaration decl = (VariableDeclaration)var;
         if(decl != this && decl.enclosingBodyDecl() == enclosingBodyDecl())
-  	      error("duplicate declaration of local variable " + name() + " in enclosing scope");
+          error("duplicate declaration of local variable " + name() + " in enclosing scope");
       }
       // 8.4.1
       else if(var instanceof ParameterDeclaration) {
         ParameterDeclaration decl = (ParameterDeclaration)var;
-	      if(decl.enclosingBodyDecl() == enclosingBodyDecl())
-  	      error("duplicate declaration of local variable and parameter " + name());
+        if(decl.enclosingBodyDecl() == enclosingBodyDecl())
+          error("duplicate declaration of local variable and parameter " + name());
       }
     }
     if(getParent().getParent() instanceof Block) {
@@ -165,9 +165,9 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
         if(block.getStmt(i) instanceof Variable) {
           Variable v = (Variable)block.getStmt(i);
           if(v.name().equals(name()) && v != this) {
-     	    error("duplicate declaration of local variable " + name());
+            error("duplicate declaration of local variable " + name());
           }
-	}
+        }
       }
     }
   }
@@ -857,7 +857,7 @@ if(isFinal && num == state().boundariesCrossed) constant_computed = true;
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1283
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1414
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl() {
@@ -889,7 +889,7 @@ if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = tr
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:289
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:294
    */
   @SuppressWarnings({"unchecked", "cast"})
   public VariableScope outerScope() {

@@ -103,7 +103,7 @@ public class TypeAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:155
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:160
    */
   public void nameCheck() {
     if(isQualified() && !qualifier().isTypeAccess() && !qualifier().isPackageAccess())
@@ -164,7 +164,7 @@ public class TypeAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect GenericsTypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:269
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:271
    */
   public boolean isRaw() {
     /*
@@ -190,7 +190,7 @@ public class TypeAccess extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:409
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:411
    */
   public void typeCheck() {
     TypeDecl type = type();
@@ -402,7 +402,7 @@ if(isFinal && num == state().boundariesCrossed) decls_computed = true;
   /**
    * @attribute syn
    * @aspect GenericsTypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:261
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:263
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl decl() {
@@ -601,7 +601,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:911
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1027
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {

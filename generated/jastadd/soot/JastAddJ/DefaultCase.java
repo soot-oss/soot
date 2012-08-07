@@ -76,7 +76,7 @@ public class DefaultCase extends Case implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:406
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:411
    */
   public void nameCheck() {
     if(bind(this) != this) {
@@ -120,7 +120,7 @@ public class DefaultCase extends Case implements Cloneable {
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:434
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:439
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean constValue(Case c) {

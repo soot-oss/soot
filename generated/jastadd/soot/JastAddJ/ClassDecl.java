@@ -158,7 +158,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:254
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:265
    */
   public Iterator interfacesMethodsIterator() {
     return new Iterator() {
@@ -349,7 +349,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:165
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:167
    */
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     if(s.hasFormalTypeParameters()) {
@@ -379,9 +379,9 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1076
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1207
    */
-  public ClassDecl p(Parameterization parTypeDecl) {
+  public ClassDecl substitutedClassDecl(Parameterization parTypeDecl) {
     ClassDecl c = new ClassDeclSubstituted(
       (Modifiers)getModifiers().fullCopy(),
       getID(),
@@ -959,7 +959,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:269
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:280
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet interfacesMethodsSignature(String signature) {
@@ -986,7 +986,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @attribute syn
    * @aspect MemberMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:275
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:286
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap interfacesMethodsSignatureMap() {
@@ -1074,7 +1074,7 @@ if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = t
   /**
    * @attribute syn
    * @aspect AncestorMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:369
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:380
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet ancestorMethods(String signature) {
@@ -1182,7 +1182,7 @@ if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_p
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:274
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:283
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap memberFieldsMap() {
@@ -1222,7 +1222,7 @@ if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
   /**
    * @attribute syn
    * @aspect Fields
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:325
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:334
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet memberFields(String name) {
@@ -1700,7 +1700,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:371
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:373
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashSet implementedInterfaces() {

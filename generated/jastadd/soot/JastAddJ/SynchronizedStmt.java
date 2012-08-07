@@ -148,7 +148,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:485
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:500
    */
   public void jimplify2(Body b) {
     b.setLine(this);
@@ -427,7 +427,7 @@ if(isFinal && num == state().boundariesCrossed) monitor_Body_values.put(_paramet
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:452
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:467
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList exceptionRanges() {
@@ -456,7 +456,7 @@ if(isFinal && num == state().boundariesCrossed) exceptionRanges_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:479
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:494
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_begin() {
@@ -485,7 +485,7 @@ if(isFinal && num == state().boundariesCrossed) label_begin_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:480
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:495
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_end() {
@@ -514,7 +514,7 @@ if(isFinal && num == state().boundariesCrossed) label_end_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:481
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:496
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_finally() {
@@ -543,7 +543,7 @@ if(isFinal && num == state().boundariesCrossed) label_finally_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:482
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:497
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_finally_block() {
@@ -572,7 +572,7 @@ if(isFinal && num == state().boundariesCrossed) label_finally_block_computed = t
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:483
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:498
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_exception_handler() {
@@ -604,7 +604,7 @@ if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed
   /**
    * @attribute inh
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:465
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:480
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeThrowable() {
@@ -669,7 +669,7 @@ if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed
     return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:448
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:463
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {

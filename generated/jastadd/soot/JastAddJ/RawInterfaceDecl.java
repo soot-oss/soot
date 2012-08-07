@@ -29,6 +29,8 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    */
   public void flushCache() {
     super.flushCache();
+    getArgumentList_computed = false;
+    getArgumentList_value = null;
     subtype_TypeDecl_values = null;
     instanceOf_TypeDecl_values = null;
   }
@@ -44,6 +46,8 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public RawInterfaceDecl clone() throws CloneNotSupportedException {
     RawInterfaceDecl node = (RawInterfaceDecl)super.clone();
+    node.getArgumentList_computed = false;
+    node.getArgumentList_value = null;
     node.subtype_TypeDecl_values = null;
     node.instanceOf_TypeDecl_values = null;
     node.in$Circle(false);
@@ -80,19 +84,19 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:757
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:873
    */
   public Access substitute(Parameterization parTypeDecl) { return createBoundAccess(); }
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:812
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:928
    */
   public Access substituteReturnType(Parameterization parTypeDecl) { return createBoundAccess(); }
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:832
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:948
    */
   public Access substituteParameterType(Parameterization parTypeDecl) { return createBoundAccess(); }
   /**
@@ -111,10 +115,10 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @ast method 
    * @declaredat Generics.ast:10
    */
-  public RawInterfaceDecl(Modifiers p0, String p1, List<Access> p2) {
+  public RawInterfaceDecl(Modifiers p0, String p1) {
     setChild(p0, 0);
     setID(p1);
-    setChild(p2, 1);
+    setChild(new List(), 1);
     setChild(new List(), 2);
     setChild(new List(), 3);
   }
@@ -122,10 +126,10 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @ast method 
    * @declaredat Generics.ast:17
    */
-  public RawInterfaceDecl(Modifiers p0, beaver.Symbol p1, List<Access> p2) {
+  public RawInterfaceDecl(Modifiers p0, beaver.Symbol p1) {
     setChild(p0, 0);
     setID(p1);
-    setChild(p2, 1);
+    setChild(new List(), 1);
     setChild(new List(), 2);
     setChild(new List(), 3);
   }
@@ -135,7 +139,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @declaredat Generics.ast:27
    */
   protected int numChildren() {
-    return 2;
+    return 1;
   }
   /**
    * @apilevel internal
@@ -201,108 +205,13 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for ArgumentList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:5
-   */
-  public void setArgumentList(List<Access> list) {
-    setChild(list, 1);
-  }
-  /**
-   * @return number of children in ArgumentList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:12
-   */
-  public int getNumArgument() {
-    return getArgumentList().getNumChild();
-  }
-  /**
-   * Getter for child in list ArgumentList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:19
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Access getArgument(int i) {
-    return (Access)getArgumentList().getChild(i);
-  }
-  /**
-   * Add element to list ArgumentList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:27
-   */
-  public void addArgument(Access node) {
-    List<Access> list = (parent == null || state == null) ? getArgumentListNoTransform() : getArgumentList();
-    list.addChild(node);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:34
-   */
-  public void addArgumentNoTransform(Access node) {
-    List<Access> list = getArgumentListNoTransform();
-    list.addChild(node);
-  }
-  /**
-   * Setter for child in list ArgumentList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:42
-   */
-  public void setArgument(Access node, int i) {
-    List<Access> list = getArgumentList();
-    list.setChild(node, i);
-  }
-  /**
-   * Getter for Argument list.
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:50
-   */
-  public List<Access> getArguments() {
-    return getArgumentList();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:56
-   */
-  public List<Access> getArgumentsNoTransform() {
-    return getArgumentListNoTransform();
-  }
-  /**
-   * Getter for list ArgumentList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:63
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List<Access> getArgumentList() {
-    List<Access> list = (List<Access>)getChild(1);
-    list.getNumChild();
-    return list;
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:72
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List<Access> getArgumentListNoTransform() {
-    return (List<Access>)getChildNoTransform(1);
-  }
-  /**
    * Setter for SuperInterfaceIdList
    * @apilevel high-level
    * @ast method 
    * @declaredat Generics.ast:5
    */
   public void setSuperInterfaceIdList(List<Access> list) {
-    setChild(list, 2);
+    setChild(list, 1);
   }
   /**
    * @return number of children in SuperInterfaceIdList
@@ -375,7 +284,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @declaredat Generics.ast:62
    */
   public List<Access> getSuperInterfaceIdListNoTransform() {
-    return (List<Access>)getChildNoTransform(2);
+    return (List<Access>)getChildNoTransform(1);
   }
   /**
    * @apilevel low-level
@@ -383,7 +292,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @declaredat Generics.ast:68
    */
   protected int getSuperInterfaceIdListChildPosition() {
-    return 2;
+    return 1;
   }
   /**
    * Setter for BodyDeclList
@@ -392,7 +301,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @declaredat Generics.ast:5
    */
   public void setBodyDeclList(List<BodyDecl> list) {
-    setChild(list, 3);
+    setChild(list, 2);
   }
   /**
    * @return number of children in BodyDeclList
@@ -465,7 +374,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @declaredat Generics.ast:62
    */
   public List<BodyDecl> getBodyDeclListNoTransform() {
-    return (List<BodyDecl>)getChildNoTransform(3);
+    return (List<BodyDecl>)getChildNoTransform(2);
   }
   /**
    * @apilevel low-level
@@ -473,12 +382,102 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @declaredat Generics.ast:68
    */
   protected int getBodyDeclListChildPosition() {
+    return 2;
+  }
+  /**
+   * Setter for ArgumentList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Generics.ast:5
+   */
+  public void setArgumentList(List<Access> list) {
+    setChild(list, 3);
+  }
+  /**
+   * @return number of children in ArgumentList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Generics.ast:12
+   */
+  public int getNumArgument() {
+    return getArgumentList().getNumChild();
+  }
+  /**
+   * Getter for child in list ArgumentList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Generics.ast:19
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Access getArgument(int i) {
+    return (Access)getArgumentList().getChild(i);
+  }
+  /**
+   * Add element to list ArgumentList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Generics.ast:27
+   */
+  public void addArgument(Access node) {
+    List<Access> list = (parent == null || state == null) ? getArgumentListNoTransform() : getArgumentList();
+    list.addChild(node);
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat Generics.ast:34
+   */
+  public void addArgumentNoTransform(Access node) {
+    List<Access> list = getArgumentListNoTransform();
+    list.addChild(node);
+  }
+  /**
+   * Setter for child in list ArgumentList
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Generics.ast:42
+   */
+  public void setArgument(Access node, int i) {
+    List<Access> list = getArgumentList();
+    list.setChild(node, i);
+  }
+  /**
+   * Getter for Argument list.
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat Generics.ast:50
+   */
+  public List<Access> getArguments() {
+    return getArgumentList();
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat Generics.ast:56
+   */
+  public List<Access> getArgumentsNoTransform() {
+    return getArgumentListNoTransform();
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat Generics.ast:62
+   */
+  public List<Access> getArgumentListNoTransform() {
+    return (List<Access>)getChildNoTransform(3);
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * @declaredat Generics.ast:68
+   */
+  protected int getArgumentListChildPosition() {
     return 3;
   }
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:238
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:240
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isRawType() {
@@ -493,7 +492,7 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:565
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:567
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean sameSignature(Access a) {
@@ -505,6 +504,36 @@ public class RawInterfaceDecl extends ParInterfaceDecl implements Cloneable {
    * @apilevel internal
    */
   private boolean sameSignature_compute(Access a) {  return a instanceof TypeAccess && a.type() == this;  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean getArgumentList_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected List getArgumentList_value;
+  /**
+   * @attribute syn nta
+   * @aspect LookupParTypeDecl
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:729
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public List getArgumentList() {
+    if(getArgumentList_computed) {
+      return (List)ASTNode.getChild(this, getArgumentListChildPosition());
+    }
+      ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    getArgumentList_value = getArgumentList_compute();
+    setArgumentList(getArgumentList_value);
+if(true) getArgumentList_computed = true;
+    return (List)ASTNode.getChild(this, getArgumentListChildPosition());
+  }
+  /**
+   * @apilevel internal
+   */
+  private List getArgumentList_compute() {  return ((GenericInterfaceDecl)genericDecl()).createArgumentList(new ArrayList());  }
   /**
    * @attribute syn
    * @aspect GenericsParTypeDecl

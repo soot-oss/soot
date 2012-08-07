@@ -103,12 +103,11 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     setChild(new List(), 1);
     setChild(new List(), 2);
     setChild(new List(), 3);
-    setChild(new List(), 4);
 
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:11
+   * @declaredat Generics.ast:10
    */
   public GenericInterfaceDeclSubstituted(Modifiers p0, String p1, List<Access> p2, List<BodyDecl> p3, List<TypeVariable> p4, TypeDecl p5) {
     setChild(p0, 0);
@@ -117,11 +116,10 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     setChild(p3, 2);
     setChild(p4, 3);
     setOriginal(p5);
-    setChild(new List(), 4);
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:20
+   * @declaredat Generics.ast:18
    */
   public GenericInterfaceDeclSubstituted(Modifiers p0, beaver.Symbol p1, List<Access> p2, List<BodyDecl> p3, List<TypeVariable> p4, TypeDecl p5) {
     setChild(p0, 0);
@@ -130,12 +128,11 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     setChild(p3, 2);
     setChild(p4, 3);
     setOriginal(p5);
-    setChild(new List(), 4);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:32
+   * @declaredat Generics.ast:29
    */
   protected int numChildren() {
     return 4;
@@ -143,7 +140,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:38
+   * @declaredat Generics.ast:35
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -512,99 +509,9 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
     return tokenTypeDecl_Original;
   }
   /**
-   * Setter for ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:5
-   */
-  public void setParTypeDeclList(List<ParInterfaceDecl> list) {
-    setChild(list, 4);
-  }
-  /**
-   * @return number of children in ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:12
-   */
-  public int getNumParTypeDecl() {
-    return getParTypeDeclList().getNumChild();
-  }
-  /**
-   * Getter for child in list ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:19
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public ParInterfaceDecl getParTypeDecl(int i) {
-    return (ParInterfaceDecl)getParTypeDeclList().getChild(i);
-  }
-  /**
-   * Add element to list ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:27
-   */
-  public void addParTypeDecl(ParInterfaceDecl node) {
-    List<ParInterfaceDecl> list = (parent == null || state == null) ? getParTypeDeclListNoTransform() : getParTypeDeclList();
-    list.addChild(node);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:34
-   */
-  public void addParTypeDeclNoTransform(ParInterfaceDecl node) {
-    List<ParInterfaceDecl> list = getParTypeDeclListNoTransform();
-    list.addChild(node);
-  }
-  /**
-   * Setter for child in list ParTypeDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:42
-   */
-  public void setParTypeDecl(ParInterfaceDecl node, int i) {
-    List<ParInterfaceDecl> list = getParTypeDeclList();
-    list.setChild(node, i);
-  }
-  /**
-   * Getter for ParTypeDecl list.
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:50
-   */
-  public List<ParInterfaceDecl> getParTypeDecls() {
-    return getParTypeDeclList();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:56
-   */
-  public List<ParInterfaceDecl> getParTypeDeclsNoTransform() {
-    return getParTypeDeclListNoTransform();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:62
-   */
-  public List<ParInterfaceDecl> getParTypeDeclListNoTransform() {
-    return (List<ParInterfaceDecl>)getChildNoTransform(4);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:68
-   */
-  protected int getParTypeDeclListChildPosition() {
-    return 4;
-  }
-  /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1073
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1204
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl original() {
@@ -627,7 +534,7 @@ public class GenericInterfaceDeclSubstituted extends GenericInterfaceDecl implem
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1272
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1403
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl sourceTypeDecl() {
@@ -780,7 +687,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:929
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1045
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap localMethodsSignatureMap() {
@@ -802,10 +709,13 @@ if(true) localMethodsSignatureMap_computed = true;
     for(Iterator iter = original().localMethodsIterator(); iter.hasNext(); ) {
       MethodDecl decl = (MethodDecl)iter.next();
       if(!decl.isStatic() && (decl.usesTypeVariable() || isRawType())) {
-        BodyDecl b = decl.p(this);
-        b.is$Final = true;
+        BodyDecl b = decl.substitutedBodyDecl(this);
         addBodyDecl(b);
-        decl = (MethodDecl)b;
+      	// Here we should access b through an ordinary
+      	// child accessor instead of setting is$Final directly,
+      	// however doing so appears to cause unexpected behaviour!
+        b.is$Final = true;
+        decl = (MethodDecl) b;
       }
       map.put(decl.signature(), decl);
     }
@@ -815,7 +725,7 @@ if(true) localMethodsSignatureMap_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:944
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1063
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localFields(String name) {
@@ -839,10 +749,13 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
     for(Iterator iter = original().localFields(name).iterator(); iter.hasNext(); ) {
       FieldDeclaration f = (FieldDeclaration)iter.next();
       if(!f.isStatic() && (f.usesTypeVariable() || isRawType())) {
-        BodyDecl b = f.p(this);
-        b.is$Final = true;
+        BodyDecl b = f.substitutedBodyDecl(this);
         addBodyDecl(b);
-        f = (FieldDeclaration)b;
+      	// Here we should access b through an ordinary
+      	// child accessor instead of setting is$Final directly,
+      	// however doing so appears to cause unexpected behaviour!
+        b.is$Final = true;
+        f = (FieldDeclaration) b;
       }
       set = set.add(f);
     }
@@ -852,7 +765,7 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:959
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1081
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localTypeDecls(String name) {
@@ -882,18 +795,24 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
         TypeDecl typeDecl;
         if(t instanceof ClassDecl) {
           ClassDecl classDecl = (ClassDecl)t;
-          typeDecl = classDecl.p(this);
+          typeDecl = classDecl.substitutedClassDecl(this);
           b = new MemberClassDecl((ClassDecl)typeDecl);
-          b.is$Final = true;
           addBodyDecl(b);
+      	  // Here we should access b through an ordinary
+      	  // child accessor instead of setting is$Final directly,
+      	  // however doing so appears to cause unexpected behaviour!
+	  b.is$Final = true;
           set = set.add(typeDecl);
         }
         else if(t instanceof InterfaceDecl) {
           InterfaceDecl interfaceDecl = (InterfaceDecl)t;
-          typeDecl = interfaceDecl.p(this);
+          typeDecl = interfaceDecl.substitutedInterfaceDecl(this);
           b = new MemberInterfaceDecl((InterfaceDecl)typeDecl);
-          b.is$Final = true;
           addBodyDecl(b);
+      	  // Here we should access b through an ordinary
+      	  // child accessor instead of setting is$Final directly,
+      	  // however doing so appears to cause unexpected behaviour!
+	  b.is$Final = true;
           set = set.add(typeDecl);
         }
       }
@@ -911,7 +830,7 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:989
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1117
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection constructors() {
@@ -932,9 +851,12 @@ if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
     Collection set = new ArrayList();
     for(Iterator iter = original().constructors().iterator(); iter.hasNext(); ) {
       ConstructorDecl c = (ConstructorDecl)iter.next();
-      BodyDecl b = c.p(this);
-      b.is$Final = true;
+      BodyDecl b = c.substitutedBodyDecl(this);
       addBodyDecl(b);
+      // Here we should access b through an ordinary
+      // child accessor instead of setting is$Final directly,
+      // however doing so appears to cause unexpected behaviour!
+      b.is$Final = true;
       set.add(b);
     }
     return set;

@@ -102,7 +102,7 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:558
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:562
    */
   public void toString(StringBuffer s) {
     getModifiers().toString(s);
@@ -533,7 +533,7 @@ if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:542
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:546
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isAnnotationDecl() {

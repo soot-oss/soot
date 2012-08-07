@@ -180,7 +180,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:96
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:101
    */
   public void nameCheck() {
     // 8.4
@@ -254,9 +254,9 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1005
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1136
    */
-  public BodyDecl p(Parameterization parTypeDecl) {
+  public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
     //System.out.println("Begin substituting " + signature() + " in " + hostType().typeName() + " with " + parTypeDecl.typeSignature());
     MethodDecl m = new MethodDeclSubstituted(
       (Modifiers)getModifiers().fullCopy(),
@@ -273,7 +273,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1020
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1151
    */
   public Opt substituteBody(Parameterization parTypeDecl) {
     return new Opt();
@@ -1308,7 +1308,7 @@ if(isFinal && num == state().boundariesCrossed) moreSpecificThan_MethodDecl_valu
   /**
    * @attribute syn
    * @aspect MethodDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:189
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:200
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean overrides(MethodDecl m) {
@@ -1333,7 +1333,7 @@ if(isFinal && num == state().boundariesCrossed) overrides_MethodDecl_values.put(
   /**
    * @attribute syn
    * @aspect MethodDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:193
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:204
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean hides(MethodDecl m) {
@@ -1595,7 +1595,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute syn
    * @aspect TypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:89
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:135
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayOverrideReturn(MethodDecl m) {
@@ -1666,7 +1666,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:907
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1023
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
@@ -1696,7 +1696,7 @@ if(isFinal && num == state().boundariesCrossed) usesTypeVariable_computed = true
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1274
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1405
    */
   @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl sourceMethodDecl() {
@@ -1717,7 +1717,7 @@ if(isFinal && num == state().boundariesCrossed) sourceMethodDecl_computed = true
   /**
    * @attribute syn
    * @aspect GenericsParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:65
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:68
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean visibleTypeParameters() {
@@ -2129,7 +2129,7 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     return getParent().Define_boolean_mayBeStrictfp(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:241
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:246
    * @apilevel internal
    */
   public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {

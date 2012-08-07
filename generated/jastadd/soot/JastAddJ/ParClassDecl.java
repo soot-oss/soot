@@ -145,7 +145,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @ast method 
    * @aspect GenericsNameBinding
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:525
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:527
    */
   public void collectErrors() {
     // Disable error check for ParClassDecl which is an instanciated GenericClassDecl
@@ -621,7 +621,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:697
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:813
    */
   public TypeDecl substitute(TypeVariable typeVariable) {
     for(int i = 0; i < numTypeParameter(); i++)
@@ -632,7 +632,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:710
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:826
    */
   public int numTypeParameter() {
     return ((GenericTypeDecl)original()).getNumTypeParameter(); 
@@ -640,7 +640,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:713
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:829
    */
   public TypeVariable typeParameter(int index) {
     return ((GenericTypeDecl)original()).getTypeParameter(index);
@@ -648,7 +648,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:745
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:861
    */
   public Access substitute(Parameterization parTypeDecl) {
     // TODO: include nesting as well....
@@ -664,7 +664,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @ast method 
    * @aspect GenericsParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:73
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:76
    */
   public Access createQualifiedAccess() {
     List typeArgumentList = new List();
@@ -784,7 +784,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:135
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:134
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl topLevelType() {
@@ -799,7 +799,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:235
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:237
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isRawType() {
@@ -822,7 +822,7 @@ public class ParClassDecl extends ClassDecl implements Cloneable, ParTypeDecl, M
   /**
    * @attribute syn
    * @aspect GenericsErasure
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:321
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:323
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl erasure() {
@@ -851,7 +851,7 @@ if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
   /**
    * @attribute syn nta
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:872
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:988
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt getSuperClassAccessOpt() {
@@ -891,7 +891,7 @@ if(isFinal && num == state().boundariesCrossed) getSuperClassAccessOpt_computed 
   /**
    * @attribute syn nta
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:883
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:999
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List getImplementsList() {
@@ -927,7 +927,7 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
   /**
    * @attribute syn nta
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:890
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1006
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List getBodyDeclList() {
@@ -1228,7 +1228,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:232
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:234
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isParameterizedType() {
@@ -1243,7 +1243,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:351
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:353
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean sameArgument(ParTypeDecl decl) {
@@ -1275,7 +1275,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:548
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:550
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean sameSignature(Access a) {
@@ -1306,7 +1306,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:583
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:585
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean sameSignature(ArrayList list) {
@@ -1398,7 +1398,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:914
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1030
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
@@ -1466,7 +1466,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1074
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1205
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl original() {
@@ -1489,7 +1489,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1268
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1399
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl sourceTypeDecl() {
@@ -1658,7 +1658,7 @@ if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = 
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:929
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1045
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap localMethodsSignatureMap() {
@@ -1680,10 +1680,13 @@ if(true) localMethodsSignatureMap_computed = true;
     for(Iterator iter = original().localMethodsIterator(); iter.hasNext(); ) {
       MethodDecl decl = (MethodDecl)iter.next();
       if(!decl.isStatic() && (decl.usesTypeVariable() || isRawType())) {
-        BodyDecl b = decl.p(this);
-        b.is$Final = true;
+        BodyDecl b = decl.substitutedBodyDecl(this);
         addBodyDecl(b);
-        decl = (MethodDecl)b;
+      	// Here we should access b through an ordinary
+      	// child accessor instead of setting is$Final directly,
+      	// however doing so appears to cause unexpected behaviour!
+        b.is$Final = true;
+        decl = (MethodDecl) b;
       }
       map.put(decl.signature(), decl);
     }
@@ -1693,7 +1696,7 @@ if(true) localMethodsSignatureMap_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:944
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1063
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localFields(String name) {
@@ -1717,10 +1720,13 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
     for(Iterator iter = original().localFields(name).iterator(); iter.hasNext(); ) {
       FieldDeclaration f = (FieldDeclaration)iter.next();
       if(!f.isStatic() && (f.usesTypeVariable() || isRawType())) {
-        BodyDecl b = f.p(this);
-        b.is$Final = true;
+        BodyDecl b = f.substitutedBodyDecl(this);
         addBodyDecl(b);
-        f = (FieldDeclaration)b;
+      	// Here we should access b through an ordinary
+      	// child accessor instead of setting is$Final directly,
+      	// however doing so appears to cause unexpected behaviour!
+        b.is$Final = true;
+        f = (FieldDeclaration) b;
       }
       set = set.add(f);
     }
@@ -1730,7 +1736,7 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:959
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1081
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localTypeDecls(String name) {
@@ -1760,18 +1766,24 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
         TypeDecl typeDecl;
         if(t instanceof ClassDecl) {
           ClassDecl classDecl = (ClassDecl)t;
-          typeDecl = classDecl.p(this);
+          typeDecl = classDecl.substitutedClassDecl(this);
           b = new MemberClassDecl((ClassDecl)typeDecl);
-          b.is$Final = true;
           addBodyDecl(b);
+      	  // Here we should access b through an ordinary
+      	  // child accessor instead of setting is$Final directly,
+      	  // however doing so appears to cause unexpected behaviour!
+	  b.is$Final = true;
           set = set.add(typeDecl);
         }
         else if(t instanceof InterfaceDecl) {
           InterfaceDecl interfaceDecl = (InterfaceDecl)t;
-          typeDecl = interfaceDecl.p(this);
+          typeDecl = interfaceDecl.substitutedInterfaceDecl(this);
           b = new MemberInterfaceDecl((InterfaceDecl)typeDecl);
-          b.is$Final = true;
           addBodyDecl(b);
+      	  // Here we should access b through an ordinary
+      	  // child accessor instead of setting is$Final directly,
+      	  // however doing so appears to cause unexpected behaviour!
+	  b.is$Final = true;
           set = set.add(typeDecl);
         }
       }
@@ -1789,7 +1801,7 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:989
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1117
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection constructors() {
@@ -1810,9 +1822,12 @@ if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
     Collection set = new ArrayList();
     for(Iterator iter = original().constructors().iterator(); iter.hasNext(); ) {
       ConstructorDecl c = (ConstructorDecl)iter.next();
-      BodyDecl b = c.p(this);
-      b.is$Final = true;
+      BodyDecl b = c.substitutedBodyDecl(this);
       addBodyDecl(b);
+      // Here we should access b through an ordinary
+      // child accessor instead of setting is$Final directly,
+      // however doing so appears to cause unexpected behaviour!
+      b.is$Final = true;
       set.add(b);
     }
     return set;
@@ -1843,7 +1858,7 @@ if(isFinal && num == state().boundariesCrossed) genericDecl_computed = true;
     return genericDecl_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:447
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:449
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
@@ -1854,7 +1869,7 @@ if(isFinal && num == state().boundariesCrossed) genericDecl_computed = true;
     return super.Define_NameType_nameType(caller, child);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:49
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:52
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {

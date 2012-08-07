@@ -89,7 +89,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:593
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:597
    */
   public void toString(StringBuffer s) {
     getExpr().toString(s);
@@ -244,7 +244,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:474
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:476
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithTypeDecl(TypeDecl type) {
@@ -272,7 +272,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:507
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:511
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
@@ -296,7 +296,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
     return lookupElementTypeValue_String_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:546
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:550
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
@@ -306,7 +306,7 @@ public class ElementConstantValue extends ElementValue implements Cloneable {
     return getParent().Define_NameType_nameType(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:551
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:555
    * @apilevel internal
    */
   public String Define_String_methodHost(ASTNode caller, ASTNode child) {

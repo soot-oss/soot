@@ -21,7 +21,7 @@ import soot.coffi.CoffiMethodSource;
 
 /**
  * @ast node
- * @declaredat GenericMethods.ast:5
+ * @declaredat GenericMethods.ast:8
  */
 public class RawMethodDecl extends ParMethodDecl implements Cloneable {
   /**
@@ -76,7 +76,7 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:720
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:836
    */
   public boolean isRawType() {
     return true; 
@@ -98,7 +98,7 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
    * @ast method 
    * @declaredat GenericMethods.ast:11
    */
-  public RawMethodDecl(Modifiers p0, Access p1, String p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6) {
+  public RawMethodDecl(Modifiers p0, Access p1, String p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6, GenericMethodDecl p7) {
     setChild(p0, 0);
     setChild(p1, 1);
     setID(p2);
@@ -106,12 +106,13 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
     setChild(p4, 3);
     setChild(p5, 4);
     setChild(p6, 5);
+    setGenericMethodDecl(p7);
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:20
+   * @declaredat GenericMethods.ast:21
    */
-  public RawMethodDecl(Modifiers p0, Access p1, beaver.Symbol p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6) {
+  public RawMethodDecl(Modifiers p0, Access p1, beaver.Symbol p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6, GenericMethodDecl p7) {
     setChild(p0, 0);
     setChild(p1, 1);
     setID(p2);
@@ -119,11 +120,12 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
     setChild(p4, 3);
     setChild(p5, 4);
     setChild(p6, 5);
+    setGenericMethodDecl(p7);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:32
+   * @declaredat GenericMethods.ast:34
    */
   protected int numChildren() {
     return 6;
@@ -131,7 +133,7 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat GenericMethods.ast:38
+   * @declaredat GenericMethods.ast:40
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -556,6 +558,24 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getTypeArgumentListNoTransform() {
     return (List<Access>)getChildNoTransform(5);
+  }
+  /**
+   * Setter for lexeme GenericMethodDecl
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat GenericMethods.ast:5
+   */
+  public void setGenericMethodDecl(GenericMethodDecl value) {
+    tokenGenericMethodDecl_GenericMethodDecl = value;
+  }
+  /**
+   * Getter for lexeme GenericMethodDecl
+   * @apilevel high-level
+   * @ast method 
+   * @declaredat GenericMethods.ast:12
+   */
+  public GenericMethodDecl getGenericMethodDecl() {
+    return tokenGenericMethodDecl_GenericMethodDecl;
   }
   /**
    * @apilevel internal

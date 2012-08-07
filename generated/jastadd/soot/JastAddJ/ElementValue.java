@@ -127,7 +127,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:473
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:475
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithTypeDecl(TypeDecl type) {
@@ -142,7 +142,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:493
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:495
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithArrayDecl(ArrayDecl type) {
@@ -157,7 +157,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:506
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:510
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
@@ -172,7 +172,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:459
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:461
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosingAnnotationDecl() {
@@ -183,7 +183,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:511
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:515
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unknownType() {

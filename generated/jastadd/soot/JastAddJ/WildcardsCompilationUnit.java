@@ -88,7 +88,7 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1177
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1308
    */
   public static LUBType createLUBType(Collection bounds) {
     List boundList = new List();
@@ -381,7 +381,7 @@ public class WildcardsCompilationUnit extends CompilationUnit implements Cloneab
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1139
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1270
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeWildcard() {
@@ -416,7 +416,7 @@ if(true) typeWildcard_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1150
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1281
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardExtends(TypeDecl bound) {
@@ -459,7 +459,7 @@ if(true) lookupWildcardExtends_TypeDecl_values.put(_parameters, lookupWildcardEx
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1163
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1294
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardSuper(TypeDecl bound) {
@@ -502,7 +502,7 @@ if(true) lookupWildcardSuper_TypeDecl_values.put(_parameters, lookupWildcardSupe
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1176
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1307
    */
   @SuppressWarnings({"unchecked", "cast"})
   public LUBType lookupLUBType(Collection bounds) {
@@ -537,7 +537,7 @@ if(true) lookupLUBType_Collection_values.put(_parameters, lookupLUBType_Collecti
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1215
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1346
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GLBType lookupGLBType(ArrayList bounds) {

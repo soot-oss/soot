@@ -21,7 +21,7 @@ import soot.coffi.CoffiMethodSource;
 
 /**
  * @ast node
- * @declaredat GenericMethods.ast:10
+ * @declaredat GenericMethods.ast:13
  */
 public class ParMethodAccess extends MethodAccess implements Cloneable {
   /**
@@ -97,7 +97,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   /**
    * @ast method 
    * @aspect GenericMethodsPrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:133
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:179
    */
   public void toString(StringBuffer s) {
     s.append("<");
@@ -402,7 +402,7 @@ if(isFinal && num == state().boundariesCrossed) typeArguments_MethodDecl_values.
     return typeArguments;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:96
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:142
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
@@ -413,7 +413,7 @@ if(isFinal && num == state().boundariesCrossed) typeArguments_MethodDecl_values.
     return super.Define_NameType_nameType(caller, child);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:97
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:143
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {

@@ -21,7 +21,7 @@ import soot.coffi.CoffiMethodSource;
 
 /**
  * @ast node
- * @declaredat GenericMethods.ast:14
+ * @declaredat GenericMethods.ast:17
  */
 public class ParSuperConstructorAccess extends SuperConstructorAccess implements Cloneable {
   /**
@@ -76,7 +76,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
   /**
    * @ast method 
    * @aspect GenericMethodsPrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:151
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:197
    */
   public void toString(StringBuffer s) {
     s.append("<");
@@ -352,7 +352,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
     return (List<Access>)getChildNoTransform(1);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:112
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:158
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
@@ -363,7 +363,7 @@ public class ParSuperConstructorAccess extends SuperConstructorAccess implements
     return super.Define_NameType_nameType(caller, child);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:113
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:159
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {

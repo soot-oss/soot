@@ -130,7 +130,11 @@ public class ClassInstanceExpr extends Access implements Cloneable {
       if(catchType.mayCatch(exceptionType))
         return true;
     }
-    return super.reachedException(catchType);
+    for(int i = 0; i < getNumArg(); i++) {
+      if(getArg(i).reachedException(catchType))
+        return true;
+    }
+    return false;
   }
   /**
    * @ast method 
@@ -150,7 +154,7 @@ public class ClassInstanceExpr extends Access implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:137
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:142
    */
   public void refined_NameCheck_ClassInstanceExpr_nameCheck() {
     super.nameCheck();
@@ -980,7 +984,7 @@ if(isFinal && num == state().boundariesCrossed) localLookupType_String_values.pu
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:130
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:135
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean validArgs() {

@@ -633,7 +633,7 @@ public class LongType extends IntegralType implements Cloneable {
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:424
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:429
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean assignableToInt() {

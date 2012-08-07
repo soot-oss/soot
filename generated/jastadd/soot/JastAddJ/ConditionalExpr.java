@@ -112,9 +112,9 @@ public class ConditionalExpr extends Expr implements Cloneable {
    */
   public void typeCheck() {
     if(!getCondition().type().isBoolean())
-      error("*** First expression must be a boolean in conditional operator");
+      error("The first operand of a conditional expression must be a boolean");
     if(type().isUnknown() && !getTrueExpr().type().isUnknown() && !getFalseExpr().type().isUnknown()) {
-      error("*** Operands in conditional operator does not match"); 
+      error("The types of the second and third operand in this conditional expression do not match"); 
     }
   }
   /**
@@ -562,17 +562,16 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
     TypeDecl trueType = getTrueExpr().type();
     TypeDecl falseType = getFalseExpr().type();
 
-    if(type.isUnknown() && (trueType.isReferenceType() || falseType.isReferenceType())) {
+    if(type.isUnknown()) {
       if(!trueType.isReferenceType() && !trueType.boxed().isUnknown())
         trueType = trueType.boxed();
       if(!falseType.isReferenceType() && !falseType.boxed().isUnknown())
         falseType = falseType.boxed();
-      if(trueType.isReferenceType() && falseType.isReferenceType()) {
-        ArrayList list = new ArrayList();
-        list.add(trueType);
-        list.add(falseType);
-        return type.lookupLUBType(list);
-      }
+
+      ArrayList list = new ArrayList();
+      list.add(trueType);
+      list.add(falseType);
+      return type.lookupLUBType(list);
     }
     return type;
   }

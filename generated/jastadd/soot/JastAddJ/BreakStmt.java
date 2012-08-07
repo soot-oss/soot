@@ -106,7 +106,7 @@ public class BreakStmt extends Stmt implements Cloneable {
   /**
    * @ast method 
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:374
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:379
    */
   public void nameCheck() {
     if(!hasLabel() && !insideLoop() && !insideSwitch())
@@ -507,7 +507,7 @@ if(isFinal && num == state().boundariesCrossed) lookupLabel_String_values.put(_p
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:360
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:365
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean insideLoop() {
@@ -518,7 +518,7 @@ if(isFinal && num == state().boundariesCrossed) lookupLabel_String_values.put(_p
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:369
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:374
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean insideSwitch() {
@@ -529,7 +529,7 @@ if(isFinal && num == state().boundariesCrossed) lookupLabel_String_values.put(_p
   /**
    * @attribute inh
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:445
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:460
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList exceptionRanges() {

@@ -282,12 +282,14 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         soot.jimple.Stmt stmtBegin = (soot.jimple.Stmt)iter.next();
         soot.jimple.Stmt stmtEnd = (soot.jimple.Stmt)iter.next();
         if(stmtBegin != stmtEnd) {
-          b.addTrap(
-              ((BasicCatch)getCatchClause(i)).getParameter().type(),
-              stmtBegin,
-              stmtEnd,
-              ((BasicCatch)getCatchClause(i)).label()
-          );
+        	soot.jimple.Stmt lbl = ((BasicCatch)getCatchClause(i)).label();
+			b.addTrap(
+	              ((BasicCatch)getCatchClause(i)).getParameter().type(),
+	              stmtBegin,
+	              stmtEnd,
+	              lbl
+	          );
+			addFallThroughLabelTag(b, lbl, label_end);
         }
         if(stmtEnd == label_block_end)
           break;
@@ -301,8 +303,11 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
           stmtEnd = (soot.jimple.Stmt)iter.next();
         else
           stmtEnd = label_exception_handler();
-        if(stmtBegin != stmtEnd)
-          b.addTrap(typeThrowable(), stmtBegin, stmtEnd, label_exception_handler());
+        if(stmtBegin != stmtEnd) {
+          soot.jimple.Stmt lbl = label_exception_handler();
+		  b.addTrap(typeThrowable(), stmtBegin, stmtEnd, lbl);
+  		  addFallThroughLabelTag(b, lbl, label_end);
+        }
       }
       /*
       b.addTrap(
@@ -317,7 +322,21 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:467
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:448
+   */
+  protected void addFallThroughLabelTag(Body b, soot.jimple.Stmt handler, soot.jimple.Stmt fallThrough) {
+	soot.Body body = b.body;
+	soot.tagkit.TryCatchTag tag = (soot.tagkit.TryCatchTag) body.getTag(soot.tagkit.TryCatchTag.NAME);
+	if(tag == null) {
+		tag = new soot.tagkit.TryCatchTag();
+		body.addTag(tag);
+	}
+	tag.register(handler, fallThrough);
+  }
+  /**
+   * @ast method 
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:482
    */
   public void emitExceptionHandler(Body b) {
     Local l = b.newTemp(typeThrowable().getSootType());
@@ -1182,7 +1201,7 @@ if(isFinal && num == state().boundariesCrossed) label_catch_end_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:451
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:466
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList exceptionRanges() {
@@ -1284,7 +1303,7 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
   /**
    * @attribute inh
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:464
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:479
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeThrowable() {
@@ -1421,7 +1440,7 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
     return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:447
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:462
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {

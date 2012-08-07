@@ -76,7 +76,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:596
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:600
    */
   public void toString(StringBuffer s) {
     getAnnotation().toString(s);
@@ -152,7 +152,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:488
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:490
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithTypeDecl(TypeDecl type) {
@@ -169,7 +169,7 @@ public class ElementAnnotationValue extends ElementValue implements Cloneable {
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:508
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:512
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {

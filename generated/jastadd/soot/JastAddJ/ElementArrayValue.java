@@ -76,7 +76,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:599
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:603
    */
   public void toString(StringBuffer s) {
     s.append("{");
@@ -288,7 +288,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:495
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:497
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithArrayDecl(ArrayDecl type) {

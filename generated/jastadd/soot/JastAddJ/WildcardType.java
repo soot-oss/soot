@@ -276,7 +276,7 @@ public class WildcardType extends AbstractWildcardType implements Cloneable {
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:567
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:569
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean sameSignature(Access a) {

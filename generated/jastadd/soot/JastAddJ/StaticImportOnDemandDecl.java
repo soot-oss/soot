@@ -20,8 +20,11 @@ import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
 /**
+ * 7.5.4 A static-import-on-demand declaration allows all accessible (\u00ac\u00df6.6) static
+ * members declared in the type named by a canonical name to be imported as
+ * needed.
  * @ast node
- * @declaredat StaticImports.ast:4
+ * @declaredat StaticImports.ast:19
  */
 public class StaticImportOnDemandDecl extends StaticImportDecl implements Cloneable {
   /**

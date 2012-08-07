@@ -610,7 +610,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
     return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:291
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:296
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {

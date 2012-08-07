@@ -21,7 +21,7 @@ import soot.coffi.CoffiMethodSource;
 
 /**
  * @ast node
- * @declaredat GenericMethods.ast:7
+ * @declaredat GenericMethods.ast:10
  */
 public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
   /**
@@ -568,7 +568,7 @@ public class ParConstructorDecl extends ConstructorDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect GenericMethods
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:37
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:49
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericConstructorDecl genericConstructorDecl() {
@@ -601,7 +601,7 @@ if(isFinal && num == state().boundariesCrossed) genericConstructorDecl_computed 
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1279
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1410
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl sourceConstructorDecl() {

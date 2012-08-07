@@ -76,7 +76,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:834
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:950
    */
   public List substitute(Parameterization parTypeDecl) {
     List list = new List();

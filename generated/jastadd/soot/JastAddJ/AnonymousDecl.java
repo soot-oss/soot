@@ -432,6 +432,34 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     return 3;
   }
   /**
+   * @ast method 
+   * @aspect VariableArityParameters
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:107
+   */
+   
+  protected List constructorParameterList(ConstructorDecl decl) {
+    List parameterList = new List();
+    for(int i = 0; i < decl.getNumParameter(); i++) {
+      ParameterDeclaration param = decl.getParameter(i);
+      if (param instanceof VariableArityParameterDeclaration) {
+        parameterList.add(
+            new VariableArityParameterDeclaration(
+              new Modifiers(new List()),
+              ((ArrayDecl) param.type()).componentType().createBoundAccess(),
+              param.name()
+              ));
+      } else {
+        parameterList.add(
+            new ParameterDeclaration(
+              param.type().createBoundAccess(),
+              param.name()
+              ));
+      }
+    }
+
+    return parameterList;
+  }
+  /**
    * @apilevel internal
    */
   protected int isCircular_visited = -1;
@@ -603,7 +631,7 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
   /**
    * @attribute inh
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:165
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:175
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeNullPointerException() {
@@ -615,7 +643,7 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
    * @apilevel internal
    */
   public ASTNode rewriteTo() {
-    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag at line 52
+    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag at line 70
     if(noConstructor()) {
       state().duringAnonymousClasses++;
       ASTNode result = rewriteRule0();
@@ -626,36 +654,28 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
     return super.rewriteTo();
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:52
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:70
    * @apilevel internal
    */  private AnonymousDecl rewriteRule0() {
 {
-            setModifiers(new Modifiers(new List().add(new Modifier("final"))));
-      
+      setModifiers(new Modifiers(new List().add(new Modifier("final"))));
+
       ConstructorDecl decl = constructorDecl();
       Modifiers modifiers = (Modifiers)decl.getModifiers().fullCopy();
-      String name = "Anonymous" + nextAnonymousIndex();
+      String anonName = "Anonymous" + nextAnonymousIndex();
 
-      List parameterList = new List();
-      for(int i = 0; i < decl.getNumParameter(); i++) {
-        parameterList.add(
-          new ParameterDeclaration(
-            decl.getParameter(i).type().createBoundAccess(),
-            decl.getParameter(i).name()
-          )
-        );
-      }
-      
-      ConstructorDecl constructor = new ConstructorDecl(modifiers, name,
-		      parameterList, new List(), new Opt(), new Block());  
+      ConstructorDecl constructor = new ConstructorDecl(modifiers, anonName,
+          constructorParameterList(decl), new List(), new Opt(), new Block());
       constructor.setDefaultConstructor();
       addBodyDecl(constructor);
 
-      setID(name);
-      
+      setID(anonName);
+
       List argList = new List();
-      for(int i = 0; i < constructor.getNumParameter(); i++)
+      for(int i = 0; i < constructor.getNumParameter(); i++) {
         argList.add(new VarAccess(constructor.getParameter(i).name()));
+      }
+
       constructor.setConstructorInvocation(
         new ExprStmt(
           new SuperConstructorAccess("super", argList)
