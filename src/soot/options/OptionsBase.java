@@ -86,8 +86,8 @@ abstract class OptionsBase {
     protected boolean hasMoreOptions() { return !options.isEmpty(); }
     protected String nextOption() { return options.removeFirst(); }
 
-    protected LinkedList classes = new LinkedList();
-    public LinkedList classes() { return classes; }
+    protected LinkedList<String> classes = new LinkedList();
+    public List<String> classes() { return classes; }
 
     public boolean setPhaseOption( String phase, String option ) {
         return PhaseOptions.v().processPhaseOptions( phase, option );
