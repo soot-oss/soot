@@ -28,10 +28,12 @@ public class OriginalNamePacker extends BodyTransformer {
   private Map<String, List<Local>> m_baseNameToLocals;
   private Map<String, List<Type>> m_types;
   
-  public OriginalNamePacker(){
+  public OriginalNamePacker(soot.Singletons.Global g){
 
   }
   
+  public static OriginalNamePacker v() { return G.v().soot_jimple_toolkits_scalar_OriginalNamePacker(); }
+
   protected void internalTransform(Body body, String phaseName, Map options)
   {
     System.out.println("running OriginalNamePacker: "+body.getMethod().getSignature());
@@ -77,7 +79,6 @@ public class OriginalNamePacker extends BodyTransformer {
   
   private void calculateRemapping(){
   
-    m_remapping = new HashMap<Local, String>();
     m_types = new HashMap<String, List<Type>>();
     
     Iterator<String> iter = m_baseNameToLocals.keySet().iterator();

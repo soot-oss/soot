@@ -65,9 +65,7 @@ public class LocalPacker extends BodyTransformer
     public static LocalPacker v() { return G.v().soot_toolkits_scalar_LocalPacker(); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
-    {
-        new soot.jimple.toolkits.scalar.OriginalNamePacker().transform(body);
-        
+    {        
         boolean isUnsplit = PhaseOptions.getBoolean(options, "unsplit-original-locals");
         
         if(Options.v().verbose())

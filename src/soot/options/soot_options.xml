@@ -951,6 +951,19 @@ older type assigner that was in Soot.
 </long_desc>
 					</boolopt>
 				</sub_phase>
+        <sub_phase>
+          <short_desc>Fixes up the names from use-original-names</short_desc>
+          <long_desc>The OriginalNamePacker renames variables numbered with # according to their type. 
+                     It also combines similar integer types. So a boolean and integer of the same name are combined
+          </long_desc>
+          <name>Original Name Packer</name>
+          <alias>jb.onp</alias>
+          <boolopt>
+            <name>Enabled</name>
+            <alias>enabled</alias>
+            <default>true</default>
+          </boolopt>
+        </sub_phase>
 				<sub_phase>
 					<name>Unsplit-originals Local Packer</name>
 					<alias>jb.ulp</alias>

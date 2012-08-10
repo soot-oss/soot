@@ -886,4 +886,10 @@ public class Singletons {
         return instance_soot_sootify_TemplatePrinter;
     }
 
+    private soot.jimple.toolkits.scalar.OriginalNamePacker instance_soot_jimple_toolkits_scalar_OriginalNamePacker;
+    public soot.jimple.toolkits.scalar.OriginalNamePacker soot_jimple_toolkits_scalar_OriginalNamePacker() {
+        if( instance_soot_jimple_toolkits_scalar_OriginalNamePacker == null ) instance_soot_jimple_toolkits_scalar_OriginalNamePacker = new soot.jimple.toolkits.scalar.OriginalNamePacker( g );
+        return instance_soot_jimple_toolkits_scalar_OriginalNamePacker;
+    }
+
 }
