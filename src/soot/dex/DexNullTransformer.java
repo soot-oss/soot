@@ -188,7 +188,7 @@ public class DexNullTransformer extends DexTransformer {
                     use.apply( new AbstractStmtSwitch() {
                             private boolean examineInvokeExpr(InvokeExpr e) {
                                 List<Value> args = e.getArgs();
-                                List<Type> argTypes = e.getMethod().getParameterTypes();
+                                List<Type> argTypes = e.getMethodRef().parameterTypes();
                                 assert args.size() == argTypes.size();
                                 for (int i = 0; i < args.size(); i++) {
                                 	if (args.get(i) == l && isObject(argTypes.get(i))) {

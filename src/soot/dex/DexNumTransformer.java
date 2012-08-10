@@ -46,6 +46,7 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
+import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.SimpleLiveLocals;
@@ -152,9 +153,16 @@ public class DexNumTransformer extends DexTransformer {
                       } else if (r instanceof FieldRef) {
                           usedAsFloatingPoint = isFloatingPointLike(((FieldRef) r).getFieldRef().type());
                           doBreak = true;
+                      } else if (r instanceof NewArrayExpr) {
+                        NewArrayExpr nae = (NewArrayExpr)r;
+                        Type t = nae.getType();
+                        Debug.printDbg("new array expr: "+ nae +" type: "+ t);
+                        usedAsFloatingPoint = isFloatingPointLike (t);
+                        doBreak = true;
                       } else if (r instanceof ArrayRef) {
                         ArrayRef ar = (ArrayRef)r;
                         Type arType = ar.getType();
+                        Debug.printDbg("ar: "+ r +" "+ arType);
                         if (arType instanceof UnknownType) {
                           Type t = findArrayType (g, localDefs, localUses, stmt, 0); // TODO: check where else to update if(ArrayRef...
                           Debug.printDbg(" array type:"+ t);
@@ -201,7 +209,7 @@ public class DexNumTransformer extends DexTransformer {
                     use.apply( new AbstractStmtSwitch() {
                             private boolean examineInvokeExpr(InvokeExpr e) {
                                 List<Value> args = e.getArgs();
-                                List<Type> argTypes = e.getMethod().getParameterTypes();
+                                List<Type> argTypes = e.getMethodRef().parameterTypes();
                                 assert args.size() == argTypes.size();
                                 for (int i = 0; i < args.size(); i++) {
                                 	if (args.get(i) == l && isFloatingPointLike (argTypes.get(i))) {
