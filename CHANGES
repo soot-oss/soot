@@ -11,6 +11,11 @@ Improvements and API changes in HEAD
    
 3. Added option -ire to ignore field and method resolution errors.
    Missing methods and fields will unsoundly be ignored. 
+   
+4. Added option -oaat which will instruct Soot to process one class
+   at a time. Soot will load only one class at a time from the
+   -process-dir and then run the jtp pack over all bodies in that class.
+   This is repeated until all classes are processed. 
 
 Improvements and API changes in version 2.5.0
 
