@@ -53,19 +53,19 @@
 
     <target name="options" depends="settings">
         <xslt
-            style="src/soot/options/make-soot-options.xsl"
-            in="src/soot/options/soot_options.xml"
-            out="generated/options/soot/options/Options.java"
+            style="${basedir}/src/soot/options/make-soot-options.xsl"
+            in="${basedir}/src/soot/options/soot_options.xml"
+            out="${basedir}/generated/options/soot/options/Options.java"
         />
         <xslt
-            style="src/soot/options/ant-task.xsl"
-            in="src/soot/options/soot_options.xml"
-            out="generated/options/soot/AntTask.java"
+            style="${basedir}/src/soot/options/ant-task.xsl"
+            in="${basedir}/src/soot/options/soot_options.xml"
+            out="${basedir}/generated/options/soot/AntTask.java"
         />
         <xslt
-            style="src/soot/options/phase_options_dialog.xsl"
-            in="src/soot/options/soot_options.xml"
-            out="eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"
+            style="${basedir}/src/soot/options/phase_options_dialog.xsl"
+            in="${basedir}/src/soot/options/soot_options.xml"
+            out="${basedir}/eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"
         />
     </target>
 
@@ -296,6 +296,7 @@
             <zipfileset src="${jasmin.jar}"/>
             <zipfileset src="${polyglot.jar}"/>
             <zipfileset src="${javacup.jar}"/>
+            <zipfileset src="${xmlprinter.jar}"/>        	
         </jar>
 		<delete dir="META-INF"/>
     </target>
