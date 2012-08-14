@@ -298,7 +298,6 @@
             <zipfileset src="${javacup.jar}"/>
             <zipfileset src="${xmlprinter.jar}"/>      
         </jar>
-    	<echo message="XML PRINTER JAR: ${xmlprinter.jar}"/>
 		<delete dir="META-INF"/>
     </target>
     
