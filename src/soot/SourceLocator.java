@@ -186,99 +186,96 @@ public class SourceLocator
         return false;
     }
 
-    public List<String> getClassesUnder(String aPath) {
-        List<String> classes = new ArrayList<String>();
+	public List<String> getClassesUnder(String aPath) {
+		List<String> classes = new ArrayList<String>();
 
-	if (isArchive(aPath)) {
-	    List inputExtensions = new ArrayList(2);
-            inputExtensions.add(".class");
-            inputExtensions.add(".jimple");
-            inputExtensions.add(".java");
+		if (isArchive(aPath)) {
+			List inputExtensions = new ArrayList(2);
+			inputExtensions.add(".class");
+			inputExtensions.add(".jimple");
+			inputExtensions.add(".java");
 
-	    try {
-		ZipFile archive = new ZipFile(aPath);
-		
-		boolean hasClassesDotDex = false;
-    for (Enumeration entries = archive.entries(); 
-    entries.hasMoreElements(); ) {
-      ZipEntry entry = (ZipEntry) entries.nextElement();
-      String entryName = entry.getName();
-      // We are dealing with an apk file
-      if (entryName.equals("classes.dex")) {
-        hasClassesDotDex = true;
-      }
-          classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
-    }
-    
-		for (Enumeration entries = archive.entries(); 
-		     entries.hasMoreElements(); ) {
-		    ZipEntry entry = (ZipEntry) entries.nextElement();
-		    String entryName = entry.getName();
-		    int extensionIndex = entryName.lastIndexOf('.');
-		    if (extensionIndex >= 0) {
-			String entryExtension = entryName.substring(extensionIndex);
-			if (inputExtensions.contains(entryExtension)) {
-			    entryName = entryName.substring(0, extensionIndex);
-			    entryName = entryName.replace('/', '.');
-			    if (!hasClassesDotDex) {
-			      classes.add(entryName);
-			    } else {
-			      G.v().out.println("Warning: Since archive contains 'classes.dex', the following entry is not loaded: "+ entry.getName());
-			    }
+			try {
+				ZipFile archive = new ZipFile(aPath);
+
+				boolean hasClassesDotDex = false;
+				for (Enumeration entries = archive.entries(); entries.hasMoreElements();) {
+					ZipEntry entry = (ZipEntry) entries.nextElement();
+					String entryName = entry.getName();
+					// We are dealing with an apk file
+					if (entryName.equals("classes.dex")) {
+						hasClassesDotDex = true;
+						classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
+					}
+				}
+
+				for (Enumeration entries = archive.entries(); entries.hasMoreElements();) {
+					ZipEntry entry = (ZipEntry) entries.nextElement();
+					String entryName = entry.getName();
+					int extensionIndex = entryName.lastIndexOf('.');
+					if (extensionIndex >= 0) {
+						String entryExtension = entryName.substring(extensionIndex);
+						if (inputExtensions.contains(entryExtension)) {
+							entryName = entryName.substring(0, extensionIndex);
+							entryName = entryName.replace('/', '.');
+							if (!hasClassesDotDex) {
+								classes.add(entryName);
+							} else {
+								G.v().out.println("Warning: Since archive contains 'classes.dex', the following entry is not loaded: "
+												+ entry.getName());
+							}
+						}
+					}
+				}
+			} catch (IOException e) {
+				G.v().out.println("Error reading " + aPath + ": " + e.toString());
+				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 			}
-		    }
-		}
-	    } catch(IOException e) {
-		G.v().out.println("Error reading " + aPath + ": " 
-				  + e.toString());
-		throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-	    }
-	} else {
-	    File file = new File(aPath);
-
-	    File[] files = file.listFiles();
-	    if (files == null) {
-		files = new File[1];
-		files[0] = file;
-	    }
-
-	    for (File element : files) {
-		if (element.isDirectory()) {
-		    List<String> l =
-			getClassesUnder(
-					aPath + File.separatorChar + element.getName());
-		    Iterator<String> it = l.iterator();
-		    while (it.hasNext()) {
-			String s = it.next();
-			classes.add(element.getName() + "." + s);
-		    }
 		} else {
-		    String fileName = element.getName();
+			File file = new File(aPath);
 
-		    if (fileName.endsWith(".class")) {
-			int index = fileName.lastIndexOf(".class");
-			classes.add(fileName.substring(0, index));
-		    }
+			File[] files = file.listFiles();
+			if (files == null) {
+				files = new File[1];
+				files[0] = file;
+			}
 
-		    if (fileName.endsWith(".jimple")) {
-			int index = fileName.lastIndexOf(".jimple");
-			classes.add(fileName.substring(0, index));
-		    }
+			for (File element : files) {
+				if (element.isDirectory()) {
+					List<String> l = getClassesUnder(aPath + File.separatorChar + element.getName());
+					Iterator<String> it = l.iterator();
+					while (it.hasNext()) {
+						String s = it.next();
+						classes.add(element.getName() + "." + s);
+					}
+				} else {
+					String fileName = element.getName();
 
-		    if (fileName.endsWith(".java")) {
-			int index = fileName.lastIndexOf(".java");
-			classes.add(fileName.substring(0, index));
-		    }
-		    if (fileName.endsWith(".dex")) {
-                try {
-					classes.addAll(dexClassProvider().classesOfDex(element));
-				} catch (IOException e) { /* Ignore unreadable files */}
-		    }
+					if (fileName.endsWith(".class")) {
+						int index = fileName.lastIndexOf(".class");
+						classes.add(fileName.substring(0, index));
+					}
+
+					if (fileName.endsWith(".jimple")) {
+						int index = fileName.lastIndexOf(".jimple");
+						classes.add(fileName.substring(0, index));
+					}
+
+					if (fileName.endsWith(".java")) {
+						int index = fileName.lastIndexOf(".java");
+						classes.add(fileName.substring(0, index));
+					}
+					if (fileName.endsWith(".dex")) {
+						try {
+							classes.addAll(dexClassProvider().classesOfDex(element));
+						} catch (IOException e) { /* Ignore unreadable files */
+						}
+					}
+				}
+			}
 		}
-	    }
+		return classes;
 	}
-        return classes;
-    }
 
     public String getFileNameFor(SootClass c, int rep) {
         if (rep == Options.output_format_none)
