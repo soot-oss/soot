@@ -48,6 +48,10 @@ public final class TypeManager {
         this.pag = pag;
     }
     public static boolean isUnresolved(Type type) {
+    	if(type instanceof ArrayType) {
+			ArrayType at = (ArrayType) type;
+    		type = at.getArrayElementType();
+    	}
         if( !(type instanceof RefType) ) return false;
         RefType rt = (RefType) type;
         if( !rt.hasSootClass() ) return true;
