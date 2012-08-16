@@ -265,7 +265,7 @@ public class Scene  //extends AbstractHost
 		InputStream manifestIS = null;
 		try {
 			ZipFile archive = new ZipFile(apkF);
-			for (Enumeration entries = archive.entries(); entries.hasMoreElements();) {
+			for (@SuppressWarnings("rawtypes") Enumeration entries = archive.entries(); entries.hasMoreElements();) {
 				ZipEntry entry = (ZipEntry) entries.nextElement();
 				String entryName = entry.getName();
 				// We are dealing with the Android manifest
@@ -289,8 +289,6 @@ public class Scene  //extends AbstractHost
 			try {
 				AXmlResourceParser parser = new AXmlResourceParser();
 				parser.open(manifestIS);
-				StringBuilder indent = new StringBuilder(10);
-				final String indentStep = " ";
 				int depth = 0;
 				while (true) {
 					int type = parser.next();
