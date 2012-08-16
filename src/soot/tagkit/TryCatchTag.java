@@ -36,12 +36,10 @@ public class TryCatchTag implements soot.tagkit.Tag {
 		return handlerUnitToFallThroughUnit.get(handlerUnit);
 	}
 
-	@Override
 	public String getName() {
 		return NAME;
 	}
 
-	@Override
 	public byte[] getValue() throws AttributeValueException {
 		throw new UnsupportedOperationException();
 	}
