@@ -351,10 +351,8 @@ public class Scene  //extends AbstractHost
 
 	public String defaultClassPath() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(System.getProperty("java.class.path")+File.pathSeparator);
         if(System.getProperty("os.name").equals("Mac OS X")) {
-	        //in Mac OS X, rt.jar is split into classes.jar and ui.jar
-	        sb.append(File.pathSeparator);
+	        //in older Mac OS X versions, rt.jar was split into classes.jar and ui.jar
 	        sb.append(System.getProperty("java.home"));
 	        sb.append(File.separator);
 	        sb.append("..");
@@ -371,11 +369,9 @@ public class Scene  //extends AbstractHost
 	        sb.append("Classes");
 	        sb.append(File.separator);
 	        sb.append("ui.jar");
-
-
+	        sb.append(File.pathSeparator);
         }
         
-        sb.append(File.pathSeparator);
         sb.append(System.getProperty("java.home"));
         sb.append(File.separator);
         sb.append("lib");
@@ -424,7 +420,7 @@ public class Scene  //extends AbstractHost
 					throw new RuntimeException("file '"+ jarPath +"' does not exist!");
 				else
 					G.v().out.println("Using '"+ jarPath +"' as android.jar");
-				defaultClassPath += File.pathSeparator + jarPath;
+				defaultClassPath = jarPath + File.pathSeparator + defaultClassPath;
 
 			} else {
 				G.v().out.println("warning: defaultClassPath contains android.jar! Options -android-jars and -force-android-jar are ignored!");
