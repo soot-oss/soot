@@ -358,7 +358,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 			    thrownSet = throwAnalysis.mightThrow(unit);
 			}
 			ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
-			if (catchableAs.getCaught() != ThrowableSet.Manager.v().EMPTY) {
+			if (!catchableAs.getCaught().equals(ThrowableSet.Manager.v().EMPTY)) {
 			    result = addDestToMap(result, unit, trap, catchableAs.getCaught());
 			    unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
 			} else {
