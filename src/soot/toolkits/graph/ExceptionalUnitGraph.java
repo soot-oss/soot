@@ -350,26 +350,24 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 	    Trap trap = trapIt.next();
 	    RefType catcher = trap.getException().getType();
 	    for (Iterator<Unit> unitIt = units.iterator(trap.getBeginUnit(), 
-						  units.getPredOf(trap.getEndUnit()));
-		 unitIt.hasNext(); ) {
-		Unit unit = unitIt.next();
-		ThrowableSet thrownSet = unitToUncaughtThrowables.get(unit);
-		if (thrownSet == null) {
-		    thrownSet = throwAnalysis.mightThrow(unit);
-		}
-		ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
-		if (catchableAs.getCaught() != ThrowableSet.Manager.v().EMPTY) {
-		    result = addDestToMap(result, unit, trap, catchableAs.getCaught());
-		    unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
-		} else {
-		    // An assertion check:
-		    if (thrownSet != catchableAs.getUncaught()) {
-			throw new IllegalStateException("ExceptionalUnitGraph.buildExceptionDests(): catchableAs.caught == EMPTY, but catchableAs.uncaught != thrownSet" 
-							+ System.getProperty("line.separator") + body.getMethod().getSubSignature() + " Unit: " + unit.toString()
-							+ System.getProperty("line.separator") + " catchableAs.getUncaught() == " + catchableAs.getUncaught().toString() 
-							+ System.getProperty("line.separator") + " thrownSet == " + thrownSet.toString());
-		    }
-		}
+						  	units.getPredOf(trap.getEndUnit()));
+	    					unitIt.hasNext(); ) {
+			Unit unit = unitIt.next();
+			ThrowableSet thrownSet = unitToUncaughtThrowables.get(unit);
+			if (thrownSet == null) {
+			    thrownSet = throwAnalysis.mightThrow(unit);
+			}
+			ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
+			if (catchableAs.getCaught() != ThrowableSet.Manager.v().EMPTY) {
+			    result = addDestToMap(result, unit, trap, catchableAs.getCaught());
+			    unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
+			} else {
+			    assert thrownSet.equals(catchableAs.getUncaught()):
+				"ExceptionalUnitGraph.buildExceptionDests(): catchableAs.caught == EMPTY, but catchableAs.uncaught != thrownSet" 
+								+ System.getProperty("line.separator") + body.getMethod().getSubSignature() + " Unit: " + unit.toString()
+								+ System.getProperty("line.separator") + " catchableAs.getUncaught() == " + catchableAs.getUncaught().toString() 
+								+ System.getProperty("line.separator") + " thrownSet == " + thrownSet.toString();
+			}
 	    }
 	}
 

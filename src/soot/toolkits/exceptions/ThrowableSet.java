@@ -1373,4 +1373,37 @@ public final class ThrowableSet {
 	    return Collections.unmodifiableMap(memoizedAdds);
 	}
     }
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((exceptionsExcluded == null) ? 0 : exceptionsExcluded.hashCode());
+		result = prime * result + ((exceptionsIncluded == null) ? 0 : exceptionsIncluded.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ThrowableSet other = (ThrowableSet) obj;
+		if (exceptionsExcluded == null) {
+			if (other.exceptionsExcluded != null)
+				return false;
+		} else if (!exceptionsExcluded.equals(other.exceptionsExcluded))
+			return false;
+		if (exceptionsIncluded == null) {
+			if (other.exceptionsIncluded != null)
+				return false;
+		} else if (!exceptionsIncluded.equals(other.exceptionsIncluded))
+			return false;
+		return true;
+	}
 }
