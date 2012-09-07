@@ -76,6 +76,7 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
+import soot.options.Options;
 import soot.tagkit.Host;
 import soot.tagkit.SourceLnPosTag;
 import soot.util.LargeNumberedMap;
@@ -551,16 +552,22 @@ public final class OnFlyCallGraphBuilder
                     }
                 } else {
                 	SootMethod tgt = ie.getMethod();
-                	addEdge(m, s, tgt);
-                	if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
-                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
-                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
-                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
-                		
-                		Local receiver = (Local) ie.getArg(0);
-                		addVirtualCallSite( s, m, receiver, null, sigObjRun,
-                				Kind.PRIVILEGED );
-                	}                    	
+                	if(tgt!=null) {
+	                	addEdge(m, s, tgt);
+	                	if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
+	                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
+	                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
+	                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
+	                		
+	                		Local receiver = (Local) ie.getArg(0);
+	                		addVirtualCallSite( s, m, receiver, null, sigObjRun,
+	                				Kind.PRIVILEGED );
+	                	}
+                	} else {
+                		if(!Options.v().ignore_resolution_errors()) {
+                			throw new InternalError("Unresolved target "+ie.getMethod()+". Resolution error should have occured earlier.");
+                		}
+                	}
                 }
             }
         }
