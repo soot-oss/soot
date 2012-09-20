@@ -122,7 +122,7 @@ class SootMethodRefImpl implements SootMethodRef {
                     "Looking in "+cl+" which has methods "+cl.getMethods()+"\n" );
             if( cl.declaresMethod( getSubSignature() ) )
                 return checkStatic(cl.getMethod( getSubSignature() ));
-            if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
+            if(Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors()))
             {
                 SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic()?Modifier.STATIC:0);
                 m.setPhantom(true);
