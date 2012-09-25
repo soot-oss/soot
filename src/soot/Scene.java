@@ -1321,13 +1321,18 @@ public class Scene  //extends AbstractHost
         }
     }
 
-    public boolean isExcluded(SootClass sc) {
-    	String name = sc.getName();
-    	for(String pkg: excludedPackages){
-			if(name.startsWith(pkg)) {
-    			return true;
-    		}
-    	}
+	public boolean isExcluded(SootClass sc) {
+		String name = sc.getName();
+		for (String pkg : excludedPackages) {
+			if (name.startsWith(pkg)) {
+				for (String inc : (List<String>) Options.v().include()) {
+					if (name.startsWith(inc)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
 		return false;
 	}
 
