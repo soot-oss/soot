@@ -1009,7 +1009,10 @@ public class PackManager {
         Iterator clIt = reachableClasses();
         while( clIt.hasNext() ) {
             SootClass cl = (SootClass) clIt.next();
-            Iterator methodIt = cl.methodIterator();
+            //note: the following is a snapshot iterator;
+            //this is necessary because it can happen that phantom methods
+            //are added during resolution
+            Iterator methodIt = cl.getMethods().iterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
                 if(DEBUG && cl.isApplicationClass()){                	
