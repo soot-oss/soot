@@ -419,6 +419,10 @@ public class PackManager {
             PhaseDumper.v().dumpBefore("output");
         if( Options.v().output_format() == Options.output_format_dava ) {
             postProcessDAVA();
+        } else if (Options.v().output_format() == Options.output_format_dex) {
+        	setDexPrinter();
+        	writeOutput(reachableClasses());
+        	dexPrinter.print();
         } else {
             writeOutput( reachableClasses() );
             tearDownJAR();
@@ -428,6 +432,27 @@ public class PackManager {
         if(Options.v().verbose())
             PhaseDumper.v().dumpAfter("output");
     }
+    
+	public interface IDexPrinter {
+		void add(SootClass c);
+		void print();
+	}
+    
+    /**
+     * Handle to the printer for Dalvik DEX files (if present).
+     */
+    private IDexPrinter dexPrinter;
+    
+    private void setDexPrinter() {
+    	if (dexPrinter == null) {
+    		try {
+    			dexPrinter = (IDexPrinter) Class.forName("soot.toDex.DexPrinter").newInstance();
+    		} catch (Exception e) {
+    			throw new Error("Tried to print output to DEX but class soot.toDex.DexPrinter is not present on the classpath." +
+						" Did you forget to include the DEX plugin?",e);
+    		}
+    	}
+	}
 
 	private void setupJAR() {
 		if( Options.v().output_jar() ) {
@@ -736,6 +761,7 @@ public class PackManager {
             case Options.output_format_jimple :
             case Options.output_format_jimp :
             case Options.output_format_template :
+            case Options.output_format_dex :
                 break;
             case Options.output_format_shimp:
             case Options.output_format_shimple:
@@ -883,6 +909,11 @@ public class PackManager {
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;
+        if (format == Options.output_format_dex) {
+        	// just add the class to the dex printer, writing is done after adding all classes
+        	dexPrinter.add(c);
+        	return;
+        }
 
         OutputStream streamOut = null;
         PrintWriter writerOut = null;

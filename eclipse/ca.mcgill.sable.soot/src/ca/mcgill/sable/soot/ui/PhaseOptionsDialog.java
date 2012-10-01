@@ -10590,6 +10590,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		false),
 		
+		new OptionData("Dalvik Executable File",
+		"dex",
+		"\nProduce Dalvik Virtual Machine files. If input was an Android \n			Package (APK), a new APK is generated with it's classes.dex \nreplaced. If 			no input APK is found, only a classes.dex is \ngenerated.",
+		
+		false),
+		
 		new OptionData("No Output File",
 		"n",
 		"\nProduce no output files. ",

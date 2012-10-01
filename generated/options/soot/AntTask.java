@@ -271,6 +271,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "grimp" )
                 || arg.equals( "X" )
                 || arg.equals( "xml" )
+                || arg.equals( "dex" )
                 || arg.equals( "n" )
                 || arg.equals( "none" )
                 || arg.equals( "jasmin" )

@@ -613,6 +613,14 @@ version of the Soot's Jimple internal representation.
 </long_desc>
 			</value>
 			<value>
+			<name>Dalvik Executable File</name>
+			<alias>dex</alias>
+			<short_desc>Produce Dalvik Virtual Machine files</short_desc>
+			<long_desc>Produce Dalvik Virtual Machine files. If input was an Android
+			Package (APK), a new APK is generated with it's classes.dex replaced. If
+			no input APK is found, only a classes.dex is generated.</long_desc>
+			</value>
+				<value>
 				<name>No Output File</name>
 				<alias>n</alias>
 				<alias>none</alias>

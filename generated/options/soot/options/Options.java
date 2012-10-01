@@ -58,15 +58,16 @@ public class Options extends OptionsBase {
     public static final int output_format_grimp = 8;
     public static final int output_format_X = 9;
     public static final int output_format_xml = 9;
-    public static final int output_format_n = 10;
-    public static final int output_format_none = 10;
-    public static final int output_format_jasmin = 11;
-    public static final int output_format_c = 12;
-    public static final int output_format_class = 12;
-    public static final int output_format_d = 13;
-    public static final int output_format_dava = 13;
-    public static final int output_format_t = 14;
-    public static final int output_format_template = 14;
+    public static final int output_format_dex = 10;
+    public static final int output_format_n = 11;
+    public static final int output_format_none = 11;
+    public static final int output_format_jasmin = 12;
+    public static final int output_format_c = 13;
+    public static final int output_format_class = 13;
+    public static final int output_format_d = 14;
+    public static final int output_format_dava = 14;
+    public static final int output_format_t = 15;
+    public static final int output_format_template = 15;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
 
@@ -504,6 +505,17 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_xml;
+                }
+    
+                else if( false
+                || value.equals( "dex" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_dex ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_dex;
                 }
     
                 else if( false
@@ -1264,6 +1276,7 @@ public class Options extends OptionsBase {
 +padVal(" G grimple", "Produce .grimple files" )
 +padVal(" g grimp", "Produce .grimp (abbreviated Grimp) files" )
 +padVal(" X xml", "Produce .xml Files" )
++padVal(" dex", "Produce Dalvik Virtual Machine files" )
 +padVal(" n none", "Produce no output" )
 +padVal(" jasmin", "Produce .jasmin files" )
 +padVal(" c class (default)", "Produce .class Files" )
