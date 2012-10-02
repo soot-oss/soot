@@ -30,8 +30,8 @@ import org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction;
 import org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction.ArrayElement;
 import org.jf.dexlib.Code.Format.Instruction22c;
 import org.jf.dexlib.Code.Format.Instruction31t;
-import org.jf.dexlib.Util.ByteArray;
 import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
+import org.jf.dexlib.Util.ByteArrayInput;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -163,25 +163,26 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     }
 
     NumericConstant value;
-    ByteArray byteArr = new ByteArray(element.buffer);
+    ByteArrayInput byteArray = new ByteArrayInput(element.buffer);
+    byteArray.setCursor(element.bufferIndex);
     if (elementType instanceof BooleanType) {
-      value = IntConstant.v(byteArr.getByte(element.bufferIndex));
+      value = IntConstant.v(byteArray.readByte());
       IntConstant ic = (IntConstant)value;
       if (!(ic.value == 0 || ic.value == 1)) {
         throw new RuntimeException("ERROR: Invalid value for boolean: "+ value);
       }
     } else if(elementType instanceof ByteType) {
-      value = IntConstant.v(byteArr.getByte(element.bufferIndex));
+      value = IntConstant.v(byteArray.readByte());
     } else if(elementType instanceof CharType || elementType instanceof ShortType) {
-      value = IntConstant.v(byteArr.getShort(element.bufferIndex));
+      value = IntConstant.v(byteArray.readShort());
     } else if(elementType instanceof DoubleType) {
-      value = DoubleConstant.v(byteArr.getLong(element.bufferIndex));
+      value = DoubleConstant.v(byteArray.readLong());
     } else if(elementType instanceof FloatType) {
-      value = FloatConstant.v(byteArr.getInt(element.bufferIndex));
+      value = FloatConstant.v(byteArray.readInt());
     } else if(elementType instanceof IntType) {
-      value = IntConstant.v(byteArr.getInt(element.bufferIndex));
+      value = IntConstant.v(byteArray.readInt());
     } else if(elementType instanceof LongType) {
-      value = LongConstant.v(byteArr.getLong(element.bufferIndex));
+      value = LongConstant.v(byteArray.readLong());
     } else {
       throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
     }
