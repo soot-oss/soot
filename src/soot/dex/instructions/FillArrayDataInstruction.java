@@ -198,7 +198,6 @@ public class FillArrayDataInstruction extends PseudoInstruction {
       throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
 
     Instruction31t fillArrayInstr = (Instruction31t)instruction;
-    int destRegister = fillArrayInstr.getRegisterA();
     int offset = fillArrayInstr.getTargetAddressOffset();
     int targetAddress = codeAddress + offset;
 

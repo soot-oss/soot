@@ -22,18 +22,16 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.SingleRegisterInstruction;
 
-import soot.Local;
 import soot.dex.DexBody;
 import soot.dex.DvkTyperBase;
 import soot.jimple.AssignStmt;
-import soot.jimple.Expr;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
 import soot.tagkit.Tag;
 
 public class MoveResultInstruction extends DexlibAbstractInstruction {
-    private Local local;
-    private Expr expr;
+//    private Local local;
+//    private Expr expr;
     private Tag tag;
 
     public MoveResultInstruction (Instruction instruction, int codeAdress) {
@@ -66,12 +64,12 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
         }
     }
 
-    public void setLocalToMove(Local l) {
-        local = l;
-    }
-    public void setExpr(Expr e) {
-        expr = e;
-    }
+//    public void setLocalToMove(Local l) {
+//        local = l;
+//    }
+//    public void setExpr(Expr e) {
+//        expr = e;
+//    }
     public void setTag(Tag t) {
         tag = t;
     }

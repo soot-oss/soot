@@ -59,10 +59,8 @@ public class DexMethod {
     protected List<DexType> parameterTypes;
 
     private DexBody dexBody;
-    private DexFile dexFile;
 
     public DexMethod(DexFile dexFile, ClassDataItem.EncodedMethod method, DexClass dexClass) {
-      this.dexFile = dexFile;
         this.dexClass = dexClass;
         this.accessFlags = method.accessFlags;
         parameterTypes = new ArrayList<DexType>();
