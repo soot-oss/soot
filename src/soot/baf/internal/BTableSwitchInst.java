@@ -161,11 +161,17 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
             
         buffer.append("{" + endOfLine);
         
-        for(int i = lowIndex; i <= highIndex; i++)
+        for(int i = lowIndex; i < highIndex; i++)
         {
             buffer.append("    case " + i + ": goto " + 
                 getTarget(i - lowIndex) + ";" 
                           + endOfLine);
+        }
+        // in the for loop above, we cannot use "<=" since 'i' would wrap around
+        if (highIndex == Integer.MAX_VALUE) {
+        	buffer.append("    case " + highIndex + ": goto " + 
+                    getTarget(highIndex - lowIndex) + ";" 
+                              + endOfLine);
         }
 
         buffer.append("    default: goto " + getDefaultTarget() + ";" + endOfLine);
@@ -182,12 +188,11 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         
         for(int i = lowIndex; i <= highIndex; i++)
         {
-            up.literal("    case ");
-            up.literal(new Integer(i).toString());
-            up.literal(": goto ");
-            targetBoxes[i-lowIndex].toString(up);
-            up.literal(";");
-            up.newline();
+            printCaseTarget(up, i);
+        }
+        // in the for loop above, we cannot use "<=" since 'i' would wrap around
+        if (highIndex == Integer.MAX_VALUE) {
+        	printCaseTarget(up, highIndex);
         }
 
         up.literal("    default: goto ");
@@ -196,6 +201,15 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         up.newline();
         up.literal("}");
     }
+
+	private void printCaseTarget(UnitPrinter up, int targetIndex) {
+		up.literal("    case ");
+		up.literal(new Integer(targetIndex).toString());
+		up.literal(": goto ");
+		targetBoxes[targetIndex-lowIndex].toString(up);
+		up.literal(";");
+		up.newline();
+	}
 
     public List getUnitBoxes()
     {
