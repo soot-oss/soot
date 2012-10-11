@@ -39,8 +39,8 @@ import org.jf.dexlib.Util.Pair;
 import soot.Body;
 import soot.CompilationDeathException;
 import soot.G;
-import soot.PackManager.IDexPrinter;
 import soot.PackManager;
+import soot.PackManager.IDexPrinter;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -49,8 +49,6 @@ import soot.SourceLocator;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
-import soot.Value;
-import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 
 /**
@@ -80,7 +78,7 @@ public class DexPrinter implements IDexPrinter {
 		dexFile = new DexFile();
 	}
 	
-	private void printApk(String outputDir) throws IOException {
+	private void printApk(String outputDir, File originalApk) throws IOException {
 		// copying every old zip entry except classes.dex
 		String outputFileName = outputDir + File.separatorChar + originalApk.getName();
 		File outputFile = new File(outputFileName);
@@ -98,12 +96,12 @@ public class DexPrinter implements IDexPrinter {
 		outputApk.close();
 	}
 
-	private static void copyAllButClassesDexAndSigFiles(ZipFile source, ZipOutputStream destination) throws IOException {
+	private void copyAllButClassesDexAndSigFiles(ZipFile source, ZipOutputStream destination) throws IOException {
 		Enumeration<? extends ZipEntry> sourceEntries = source.entries();
 		while (sourceEntries.hasMoreElements()) {
 			ZipEntry sourceEntry = sourceEntries.nextElement();
 			String sourceEntryName = sourceEntry.getName();
-			if (sourceEntryName.equals(CLASSES_DEX) || isSigFile(sourceEntryName)) {
+			if (sourceEntryName.equals(CLASSES_DEX) || isSignatureFile(sourceEntryName)) {
 				continue;
 			}
 			// separate ZipEntry avoids compression problems due to encodings
@@ -125,7 +123,7 @@ public class DexPrinter implements IDexPrinter {
 		}
 	}
 
-	private static boolean isSigFile(String fileName) {
+	private static boolean isSignatureFile(String fileName) {
 		StringBuilder sigFileRegex = new StringBuilder();
 		// file name must start with META-INF...
 		sigFileRegex.append("META\\-INF");
@@ -158,18 +156,18 @@ public class DexPrinter implements IDexPrinter {
 			interfaceTypes.add(implementedInterface.getType());
 		}
 		TypeListItem implementedInterfaces = toTypeListItem(interfaceTypes, dexFile);
-		ClassDataItem classData = toClassDataItem(c);
+		ClassDataItem classData = toClassDataItem(c, dexFile);
 		// staticFieldInitializers is not used since the <clinit> method should be enough
 		ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType, implementedInterfaces, null, null, classData, null);
 	}
 	
-	private ClassDataItem toClassDataItem(SootClass c) {
-		Pair<List<EncodedField>, List<EncodedField>> fields = toFields(c.getFields());
-		Pair<List<EncodedMethod>, List<EncodedMethod>> methods = toMethods(c.getMethods());
-		return ClassDataItem.internClassDataItem(dexFile, fields.first, fields.second, methods.first, methods.second);
+	private static ClassDataItem toClassDataItem(SootClass c, DexFile belongingDexFile) {
+		Pair<List<EncodedField>, List<EncodedField>> fields = toFields(c.getFields(), belongingDexFile);
+		Pair<List<EncodedMethod>, List<EncodedMethod>> methods = toMethods(c.getMethods(), belongingDexFile);
+		return ClassDataItem.internClassDataItem(belongingDexFile, fields.first, fields.second, methods.first, methods.second);
 	}
 	
-	private Pair<List<EncodedField>, List<EncodedField>> toFields(Collection<SootField> sootFields) {
+	private static Pair<List<EncodedField>, List<EncodedField>> toFields(Collection<SootField> sootFields, DexFile belongingDexFile) {
 		List<EncodedField> staticFields = new ArrayList<EncodedField>();
 		List<EncodedField> instanceFields = new ArrayList<EncodedField>();
 		Pair<List<EncodedField>, List<EncodedField>> fields = new Pair<List<EncodedField>, List<EncodedField>>(staticFields, instanceFields);
@@ -177,7 +175,7 @@ public class DexPrinter implements IDexPrinter {
 			if (f.isPhantom()) {
 				continue;
 			}
-			FieldIdItem fieldIdItem = toFieldIdItem(f, dexFile);
+			FieldIdItem fieldIdItem = toFieldIdItem(f, belongingDexFile);
 			int accessFlags = f.getModifiers();
 			EncodedField ef = new EncodedField(fieldIdItem, accessFlags);
 			if (f.isStatic()) {
@@ -189,7 +187,7 @@ public class DexPrinter implements IDexPrinter {
 		return fields;
 	}
 	
-	private Pair<List<EncodedMethod>, List<EncodedMethod>> toMethods(Collection<SootMethod> sootMethods) {
+	private static Pair<List<EncodedMethod>, List<EncodedMethod>> toMethods(Collection<SootMethod> sootMethods, DexFile belongingDexFile) {
 		List<EncodedMethod> directMethods = new ArrayList<EncodedMethod>();
 		List<EncodedMethod> virtualMethods = new ArrayList<EncodedMethod>();
 		Pair<List<EncodedMethod>, List<EncodedMethod>> methods = new Pair<List<EncodedMethod>, List<EncodedMethod>>(directMethods, virtualMethods);
@@ -197,9 +195,9 @@ public class DexPrinter implements IDexPrinter {
 			if (m.isPhantom()) {
 				continue;
 			}
-			MethodIdItem methodIdItem = toMethodIdItem(m.makeRef(), dexFile);
-			int accessFlags = SootToDexUtils.toDexAccessFlags(m);
-			CodeItem codeItem = toCodeItem(m);
+			MethodIdItem methodIdItem = toMethodIdItem(m.makeRef(), belongingDexFile);
+			int accessFlags = SootToDexUtils.getDexAccessFlags(m);
+			CodeItem codeItem = toCodeItem(m, belongingDexFile);
 			EncodedMethod eM = new EncodedMethod(methodIdItem, accessFlags, codeItem);
 			if (eM.isDirect()) {
 				directMethods.add(eM);
@@ -242,27 +240,27 @@ public class DexPrinter implements IDexPrinter {
 	}
 	
 	protected static TypeIdItem toTypeIdItem(Type sootType, DexFile belongingDexFile) {
-		String dexTypeDescriptor = SootToDexUtils.toDexTypeDescriptor(sootType);
+		String dexTypeDescriptor = SootToDexUtils.getDexTypeDescriptor(sootType);
 		StringIdItem dexDescriptor = StringIdItem.internStringIdItem(belongingDexFile, dexTypeDescriptor);
 		return TypeIdItem.internTypeIdItem(belongingDexFile, dexDescriptor);
 	}
 
-	private CodeItem toCodeItem(SootMethod m) {
+	private static CodeItem toCodeItem(SootMethod m, DexFile belongingDexFile) {
 		if (m.isAbstract() || m.isNative()) {
 			return null;
 		}
 		Body activeBody = m.getActiveBody();
 		// word count of incoming parameters
 		@SuppressWarnings("unchecked")
-		int inWords = SootToDexUtils.toDexWords(m.getParameterTypes());
+		int inWords = SootToDexUtils.getDexWords(m.getParameterTypes());
 		if (!m.isStatic()) {
 			inWords++; // extra word for "this"
 		}
 		// word count of max outgoing parameters
 		Collection<Unit> units = activeBody.getUnits();
-		int outWords = toOutWords(units);
+		int outWords = SootToDexUtils.getOutWordCount(units);
 		// register count = parameters + additional registers, depending on the dex instructions generated (e.g. locals used and constants loaded)
-		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
+		StmtVisitor stmtV = new StmtVisitor(m, belongingDexFile);
 		List<Instruction> instructions = toInstructions(units, stmtV);
 		int registerCount = stmtV.getRegisterCount();
 		if (inWords > registerCount) {
@@ -276,30 +274,8 @@ public class DexPrinter implements IDexPrinter {
 			registerCount = inWords;
 		}
 		List<EncodedCatchHandler> encodedCatchHandlers = new ArrayList<CodeItem.EncodedCatchHandler>();
-		List<TryItem> tries = toTries(activeBody.getTraps(), encodedCatchHandlers, stmtV);
-		return CodeItem.internCodeItem(dexFile, registerCount, inWords, outWords, null, instructions, tries, encodedCatchHandlers);
-	}
-	
-	private static int toOutWords(Collection<Unit> units) {
-		int outWords = 0;
-		for (Unit u : units) {
-			Stmt stmt = (Stmt) u;
-			if (stmt.containsInvokeExpr()) {
-				int wordsForParameters = 0;
-				InvokeExpr invocation = stmt.getInvokeExpr();
-				List<Value> args = invocation.getArgs();
-				for (Value arg : args) {
-					wordsForParameters += SootToDexUtils.toDexWords(arg.getType());
-				}
-				if (!invocation.getMethod().isStatic()) {
-					wordsForParameters++; // extra word for "this"
-				}
-				if (wordsForParameters > outWords) {
-					outWords = wordsForParameters;
-				}
-			}
-		}
-		return outWords;
+		List<TryItem> tries = toTries(activeBody.getTraps(), encodedCatchHandlers, stmtV, belongingDexFile);
+		return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords, null, instructions, tries, encodedCatchHandlers);
 	}
 
 	private static List<Instruction> toInstructions(Collection<Unit> units, StmtVisitor stmtV) {
@@ -310,13 +286,13 @@ public class DexPrinter implements IDexPrinter {
 		return stmtV.getFinalInsns();
 	}
 	
-	private List<TryItem> toTries(Collection<Trap> traps, List<EncodedCatchHandler> encodedCatchHandlers, StmtVisitor stmtV) {
+	private static List<TryItem> toTries(Collection<Trap> traps, List<EncodedCatchHandler> encodedCatchHandlers, StmtVisitor stmtV, DexFile belongingDexFile) {
 		// assume that the mapping startCodeAddress -> TryItem is enough for a "code range", ignore different end Units / try lengths
 		Map<Integer, TryItem> codeRangesToTryItem = new HashMap<Integer, TryItem>();
 		for (Trap t : traps) {
 			Stmt handlerStmt = (Stmt) t.getHandlerUnit();
 			int handlerAddress = stmtV.getOffset(handlerStmt);
-			TypeIdItem exceptionTypeIdItem = toTypeIdItem(t.getException().getType(), dexFile);
+			TypeIdItem exceptionTypeIdItem = toTypeIdItem(t.getException().getType(), belongingDexFile);
 			EncodedTypeAddrPair handlerInfo = new EncodedTypeAddrPair(exceptionTypeIdItem, handlerAddress);
 			EncodedTypeAddrPair[] handlers;
 			// see if there is old handler info at this code range
@@ -377,7 +353,7 @@ public class DexPrinter implements IDexPrinter {
 		String outputDir = SourceLocator.v().getOutputDir();
 		try {
 			if (originalApk != null) {
-				printApk(outputDir);
+				printApk(outputDir, originalApk);
 			} else {
 				String fileName = outputDir + File.separatorChar + CLASSES_DEX;
 				G.v().out.println("Writing dex to: " + fileName);

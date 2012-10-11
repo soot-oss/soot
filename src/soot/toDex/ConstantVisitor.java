@@ -57,7 +57,7 @@ public class ConstantVisitor implements ConstantSwitch {
 	public void caseClassConstant(ClassConstant c) {
 		// "array class" types are unmodified
 		boolean classIsArray = c.value.startsWith("[");
-		String className = classIsArray ? c.value : SootToDexUtils.toDexClassName(c.value);
+		String className = classIsArray ? c.value : SootToDexUtils.getDexClassName(c.value);
 		TypeIdItem referencedClass = TypeIdItem.internTypeIdItem(stmtV.getBelongingFile(), className);
 		stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass));
 	}

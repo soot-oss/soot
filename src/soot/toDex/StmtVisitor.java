@@ -128,19 +128,19 @@ public class StmtVisitor implements StmtSwitch {
 		switchPayloads = new ArrayList<SwitchPayload>();
 	}
 	
-	public void setLastReturnTypeDescriptor(String typeDescriptor) {
+	protected void setLastReturnTypeDescriptor(String typeDescriptor) {
 		lastReturnTypeDescriptor = typeDescriptor;
 	}
 	
-	public DexFile getBelongingFile() {
+	protected DexFile getBelongingFile() {
 		return belongingFile;
 	}
 	
-	public SootClass getBelongingClass() {
+	protected SootClass getBelongingClass() {
 		return belongingMethod.getDeclaringClass();
 	}
 	
-	public void addInsn(Insn insn) {
+	protected void addInsn(Insn insn) {
 		int highestIndex = insns.size();
 		addInsn(highestIndex, insn);
 	}
@@ -149,11 +149,11 @@ public class StmtVisitor implements StmtSwitch {
 		insns.add(positionInList, insn);
 	}
 	
-	public int getOffset(Stmt stmt) {
+	protected int getOffset(Stmt stmt) {
 		return SootToDexUtils.getOffset(stmt, insns);
 	}
 	
-	public void beginNewStmt(Stmt s) {
+	protected void beginNewStmt(Stmt s) {
 		addInsn(new AddressInsn(s));
 	}
 	
@@ -207,7 +207,6 @@ public class StmtVisitor implements StmtSwitch {
 	private void finishRegs() {
 		// fit registers into insn formats, potentially replacing insns
 		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc, insns);
-		regAssigner.renumParamRegsToHigh();
 		insns = regAssigner.finishRegs();
 	}
 	
@@ -314,7 +313,7 @@ public class StmtVisitor implements StmtSwitch {
 		return (AddressInsn) potentialTarget;
 	}
 
-	public int getRegisterCount() {
+	protected int getRegisterCount() {
 		return regAlloc.getRegCount();
 	}
 
@@ -423,7 +422,7 @@ public class StmtVisitor implements StmtSwitch {
 		}
 	}
 
-	public static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
+	protected static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
 		// get the opcode type, depending on the source reg (we assume that the destination has the same type)
 		String opcType;
 		if (sourceReg.isObject()) {
@@ -469,7 +468,7 @@ public class StmtVisitor implements StmtSwitch {
 		Value index = destRef.getIndex();
 		Register indexReg = regAlloc.asImmediate(index, constantV);
 		Register sourceReg  = regAlloc.asImmediate(source, constantV);
-		String arrayTypeDescriptor = getArrayTypeDescriptor((ArrayType) array.getType());
+		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("aput", arrayTypeDescriptor);
 		return new Insn23x(opc, sourceReg, arrayReg, indexReg);
 	}
@@ -495,22 +494,12 @@ public class StmtVisitor implements StmtSwitch {
 		Register indexReg = regAlloc.asImmediate(index, constantV);
 		Value array = sourceRef.getBase();
 		Register arrayReg = regAlloc.asLocal(array);
-		String arrayTypeDescriptor = getArrayTypeDescriptor((ArrayType) array.getType());
+		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("aget", arrayTypeDescriptor);
 		return new Insn23x(opc, destinationReg, arrayReg, indexReg);
 	}
-	
-	private static String getArrayTypeDescriptor(ArrayType type) {
-		Type baseType;
-		if (type.numDimensions > 1) {
-			baseType = ArrayType.v(type.baseType, 1);
-		} else {
-			baseType = type.baseType;
-		}
-		return SootToDexUtils.toDexTypeDescriptor(baseType);
-	}
 
-	private static Opcode getPutGetOpcodeWithTypeSuffix(String prefix, String fieldType) {
+	private Opcode getPutGetOpcodeWithTypeSuffix(String prefix, String fieldType) {
 		if (fieldType.equals("Z")) {
 			return Opcode.getOpcodeByName(prefix + "-boolean");
 		} else if (fieldType.equals("I") || fieldType.equals("F")) {
@@ -602,7 +591,7 @@ public class StmtVisitor implements StmtSwitch {
 		addInsn(buildGotoInsn(target));
 	}
 	
-	private static Insn buildGotoInsn(Stmt target) {
+	private Insn buildGotoInsn(Stmt target) {
 		Insn10t insn = new Insn10t(Opcode.GOTO);
 		insn.setOffset(target);
 		return insn;

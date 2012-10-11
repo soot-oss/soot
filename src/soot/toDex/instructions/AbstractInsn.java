@@ -63,11 +63,11 @@ public abstract class AbstractInsn implements Insn {
 		int miscRegsNeed = 0;
 		boolean hasResult = opc.setsRegister();
 		if (hasResult && incompatRegs.get(0)) {
-			resultNeed = SootToDexUtils.toDexWords(regs.get(0).getType());
+			resultNeed = SootToDexUtils.getDexWords(regs.get(0).getType());
 		}
 		for (int i = hasResult ? 1 : 0; i < regs.size(); i++) {
 			if (incompatRegs.get(i)) {
-				miscRegsNeed += SootToDexUtils.toDexWords(regs.get(i).getType());
+				miscRegsNeed += SootToDexUtils.getDexWords(regs.get(i).getType());
 			}
 		}
 		return Math.max(resultNeed, miscRegsNeed);

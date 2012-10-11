@@ -143,11 +143,11 @@ public class ExprVisitor implements ExprSwitch {
 		return invokeInsn;
 	}
 
-	private static boolean isCallToPrivate(SpecialInvokeExpr sie) {
+	private boolean isCallToPrivate(SpecialInvokeExpr sie) {
 		return sie.getMethod().isPrivate();
 	}
 
-	private static boolean isCallToConstructor(SpecialInvokeExpr sie) {
+	private boolean isCallToConstructor(SpecialInvokeExpr sie) {
 		return sie.getMethod().isConstructor();
 	}
 
@@ -191,7 +191,7 @@ public class ExprVisitor implements ExprSwitch {
 		return argumentRegs;
 	}
 
-	private static Register[] pad35cRegs(List<Register> realRegs) {
+	private Register[] pad35cRegs(List<Register> realRegs) {
 		// pad real registers to an array of five bytes, as required by the instruction format "35c"
 		Register[] paddedArray = new Register[5];
 		int nextReg = 0;
@@ -255,7 +255,7 @@ public class ExprVisitor implements ExprSwitch {
 		return buildNormalBinaryInsn(binaryOperation, firstOpReg, secondOpReg);
 	}
 
-	private static String fixIntTypeString(String typeString) {
+	private String fixIntTypeString(String typeString) {
 		if (typeString.equals("boolean") || typeString.equals("byte") || typeString.equals("char") || typeString.equals("short")) {
 			return "int";
 		}
@@ -352,7 +352,7 @@ public class ExprVisitor implements ExprSwitch {
 		return comparingBinaryInsn;
 	}
 	
-	private static Value fixNullConstant(Value potentialNullConstant) {
+	private Value fixNullConstant(Value potentialNullConstant) {
 		/*
 		 * The bytecode spec says: "In terms of bitwise representation, (Object) null == (int) 0."
 		 * So use an IntConstant(0) for null comparison in if-*z opcodes.
@@ -525,12 +525,12 @@ public class ExprVisitor implements ExprSwitch {
 		}
 	}
 
-	private static boolean needsCastThroughInt(PrimitiveType sourceType, PrimitiveType castType) {
+	private boolean needsCastThroughInt(PrimitiveType sourceType, PrimitiveType castType) {
 		// source >= long && cast < int -> too far away to cast directly
 		return isEqualOrBigger(sourceType, PrimitiveType.LONG) && !isEqualOrBigger(castType, PrimitiveType.INT);
 	}
 
-	private static boolean isMoveCompatible(PrimitiveType sourceType, PrimitiveType castType) {
+	private boolean isMoveCompatible(PrimitiveType sourceType, PrimitiveType castType) {
 		if (sourceType == castType) {
 			// at this point, the types are "bigger" or equal to int, so no "should cast from int" is needed 
 			return true;
@@ -542,7 +542,7 @@ public class ExprVisitor implements ExprSwitch {
 		return false;
 	}
 
-	private static boolean shouldCastFromInt(PrimitiveType sourceType, PrimitiveType castType) {
+	private boolean shouldCastFromInt(PrimitiveType sourceType, PrimitiveType castType) {
 		if (isEqualOrBigger(sourceType, PrimitiveType.INT)) {
 			// source is already "big" enough
 			return false;
@@ -554,11 +554,11 @@ public class ExprVisitor implements ExprSwitch {
 		return true;
 	}
 
-	private static boolean isEqualOrBigger(PrimitiveType type, PrimitiveType relativeTo) {
+	private boolean isEqualOrBigger(PrimitiveType type, PrimitiveType relativeTo) {
 		return type.compareTo(relativeTo) >= 0;
 	}
 
-	private static Opcode getCastOpc(PrimitiveType sourceType, PrimitiveType castType) {
+	private Opcode getCastOpc(PrimitiveType sourceType, PrimitiveType castType) {
 		Opcode opc = Opcode.getOpcodeByName(sourceType.getName() + "-to-" + castType.getName());
 		if (opc == null) {
 			throw new RuntimeException("unsupported cast from " + sourceType + " to " + castType);

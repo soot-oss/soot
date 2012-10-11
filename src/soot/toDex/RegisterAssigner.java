@@ -33,7 +33,7 @@ public class RegisterAssigner {
 		this.insns = insns;
 	}
 	
-	public void renumParamRegsToHigh() {
+	private void renumParamRegsToHigh() {
 		int regCount = regAlloc.getRegCount();
 		int paramRegCount = regAlloc.getParamRegCount();
 		if (paramRegCount == 0 || paramRegCount == regCount) {
@@ -56,6 +56,7 @@ public class RegisterAssigner {
 	}
 
 	public List<Insn> finishRegs() {
+		renumParamRegsToHigh();
 		reserveRegisters();
 		ListIterator<Insn> insnIter = insns.listIterator();
 		while (insnIter.hasNext()) {
@@ -112,13 +113,13 @@ public class RegisterAssigner {
 		}
 	}
 
-	private static void shiftRegs(Insn insn, int shiftAmount) {
+	private void shiftRegs(Insn insn, int shiftAmount) {
 		for (Register r : insn.getRegs()) {
 			r.setNumber(r.getNumber() + shiftAmount);
 		}
 	}
 	
-	private static void addMoveForIncompatResultReg(ListIterator<Insn> insns, Register destReg, Register origResultReg) {
+	private void addMoveForIncompatResultReg(ListIterator<Insn> insns, Register destReg, Register origResultReg) {
 		if (destReg.getNumber() == 0) {
 			// destination reg is already where we want it: avoid "move r0, r0"
 			return;
@@ -129,7 +130,7 @@ public class RegisterAssigner {
 		insns.add(extraMove);
 	}
 
-	private static void addMovesForIncompatRegs(ListIterator<Insn> insns, List<Register> curRegs, BitSet incompatRegs) {
+	private void addMovesForIncompatRegs(ListIterator<Insn> insns, List<Register> curRegs, BitSet incompatRegs) {
 		insns.previous(); // extra MOVEs are added _before_ the current insn
 		int nextNewDestination = 0;
 		for (int regIdx = 0; regIdx < curRegs.size(); regIdx++) {
@@ -183,7 +184,7 @@ public class RegisterAssigner {
 		return regsNeeded;
 	}
 
-	private static int calcRegsNeeded(Insn insn) {
+	private int calcRegsNeeded(Insn insn) {
 		/*
 		 * get fitting insn with regs starting at 0, that is an "ideal" one without register constraints.
 		 * we use such an ideal insn because registers in insns that have no fitting alternative will only be
@@ -204,7 +205,7 @@ public class RegisterAssigner {
 		return insn.getMinimumRegsNeeded(stillIncompatRegs);
 	}
 	
-	private static List<Register> getLowVersion(List<Register> regs) {
+	private List<Register> getLowVersion(List<Register> regs) {
 		List<Register> lowVersion = new ArrayList<Register>();
 		int nextRegNum = 0;
 		for (Register r : regs) {
@@ -218,7 +219,7 @@ public class RegisterAssigner {
 		return lowVersion;
 	}
 
-	private static Insn findFittingInsn(Insn insn) {
+	private Insn findFittingInsn(Insn insn) {
 		if (!insn.hasIncompatibleRegs()) {
 			return null; // no incompatible regs -> no fitting needed
 		}

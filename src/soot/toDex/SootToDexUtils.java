@@ -1,5 +1,6 @@
 package soot.toDex;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,11 @@ import soot.RefType;
 import soot.ShortType;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
+import soot.Value;
 import soot.VoidType;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Stmt;
 import soot.toDex.instructions.AddressInsn;
 import soot.toDex.instructions.Insn;
 
@@ -44,22 +49,22 @@ public class SootToDexUtils {
 		sootToDexTypeDescriptor.put(VoidType.class, "V");
 	}
 	
-	public static String toDexTypeDescriptor(Type sootType) {
+	public static String getDexTypeDescriptor(Type sootType) {
 		if (sootType instanceof RefType) {
-			return toDexClassName(((RefType) sootType).getClassName());
+			return getDexClassName(((RefType) sootType).getClassName());
 		} else if (sootType instanceof ArrayType) {
-			return toDexArrayTypeDescriptor((ArrayType) sootType);
+			return getDexArrayTypeDescriptor((ArrayType) sootType);
 		} else {
 			return sootToDexTypeDescriptor.get(sootType.getClass());
 		}
 	}
 	
-	public static String toDexClassName(String dottedClassName) {
+	public static String getDexClassName(String dottedClassName) {
 		String slashedName = dottedClassName.replace('.', '/');
 		return "L" + slashedName + ";";
 	}
 
-	public static int toDexAccessFlags(SootMethod m) {
+	public static int getDexAccessFlags(SootMethod m) {
 		int dexAccessFlags = m.getModifiers();
 		// dex constructor flag is not included in the Soot modifiers, so add it if necessary
 		if (m.isConstructor()) {
@@ -76,11 +81,21 @@ public class SootToDexUtils {
 		return dexAccessFlags;
 	}
 	
-	public static String toDexArrayTypeDescriptor(ArrayType sootArray) {
+	public static String getArrayTypeDescriptor(ArrayType type) {
+		Type baseType;
+		if (type.numDimensions > 1) {
+			baseType = ArrayType.v(type.baseType, 1);
+		} else {
+			baseType = type.baseType;
+		}
+		return getDexTypeDescriptor(baseType);
+	}
+	
+	public static String getDexArrayTypeDescriptor(ArrayType sootArray) {
 		if (sootArray.numDimensions > 255) {
 			throw new RuntimeException("dex does not support more than 255 dimensions! " + sootArray + " has " + sootArray.numDimensions);
 		}
-		String baseTypeDescriptor = toDexTypeDescriptor(sootArray.baseType);
+		String baseTypeDescriptor = getDexTypeDescriptor(sootArray.baseType);
 		StringBuilder sb = new StringBuilder(sootArray.numDimensions);
 		for (int i = 0; i < sootArray.numDimensions; i++) {
 			sb.append('[');
@@ -113,19 +128,41 @@ public class SootToDexUtils {
 		return regCount;
 	}
 	
-	public static int toDexWords(Type sootType) {
+	public static int getDexWords(Type sootType) {
 		if (isWide(sootType)) {
 			return 2;
 		}
 		return 1;
 	}
 	
-	public static int toDexWords(List<Type> sootTypes) {
+	public static int getDexWords(List<Type> sootTypes) {
 		int dexWords = 0;
 		for (Type t : sootTypes) {
-			dexWords += toDexWords(t);
+			dexWords += getDexWords(t);
 		}
 		return dexWords;
+	}
+	
+	public static int getOutWordCount(Collection<Unit> units) {
+		int outWords = 0;
+		for (Unit u : units) {
+			Stmt stmt = (Stmt) u;
+			if (stmt.containsInvokeExpr()) {
+				int wordsForParameters = 0;
+				InvokeExpr invocation = stmt.getInvokeExpr();
+				List<Value> args = invocation.getArgs();
+				for (Value arg : args) {
+					wordsForParameters += getDexWords(arg.getType());
+				}
+				if (!invocation.getMethod().isStatic()) {
+					wordsForParameters++; // extra word for "this"
+				}
+				if (wordsForParameters > outWords) {
+					outWords = wordsForParameters;
+				}
+			}
+		}
+		return outWords;
 	}
 	
 	// we could use some fancy shift operations...
