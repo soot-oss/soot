@@ -9,6 +9,12 @@ import org.jf.dexlib.Code.Format.Instruction11n;
 
 import soot.toDex.Register;
 
+/**
+ * The "11n" instruction format: It needs one 16-bit code unit, has one register
+ * and is used for a 4-bit literal (hence the "n" for "nibble").<br>
+ * <br>
+ * It is used by the opcode "const/4".
+ */
 public class Insn11n extends AbstractInsn implements OneRegInsn {
 	
 	private byte litB;

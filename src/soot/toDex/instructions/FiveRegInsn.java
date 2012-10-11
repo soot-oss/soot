@@ -2,6 +2,11 @@ package soot.toDex.instructions;
 
 import soot.toDex.Register;
 
+/**
+ * Interface for instructions that need five registers.<br>
+ * <br>
+ * Note that the interface does not inherit from {@link ThreeRegInsn} due to the unusual register naming.
+ */
 public interface FiveRegInsn {
 	
 	static final int REG_D_IDX = 0;

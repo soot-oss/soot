@@ -7,6 +7,12 @@ import org.jf.dexlib.Code.Opcode;
 import soot.jimple.Stmt;
 import soot.toDex.SootToDexUtils;
 
+/**
+ * The payload for switch instructions, usually placed at the end of a method.
+ * This is where the jump targets are stored.<br>
+ * <br>
+ * Note that this is an {@link InsnWithOffset} with multiple offsets.
+ */
 public abstract class SwitchPayload extends InsnWithOffset {
 	
 	protected Insn31t switchInsn;

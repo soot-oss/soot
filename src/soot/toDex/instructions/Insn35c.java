@@ -10,6 +10,18 @@ import org.jf.dexlib.Code.Format.Instruction35c;
 
 import soot.toDex.Register;
 
+/**
+ * The "35c" instruction format: It needs three 16-bit code units, has five registers
+ * and is used for method/type items (hence the "c" for "constant pool").<br>
+ * <br>
+ * It is used by the "filled-new-array" opcode and the various "invoke-" opcodes.<br>
+ * <br>
+ * IMPLEMENTATION NOTE: the wide args for "35c" must be explicitly stated - internally,
+ * such args are implicitly represented by e.g. "regD = wide, regE = emptyReg" to avoid using null
+ * and to distinguish the first "half" of a wide reg from the second one.
+ * this is made explicit ("regD.num, regD.num + 1") while building the real insn and while getting
+ * the "real" explicit reg numbers.
+ */
 public class Insn35c extends AbstractInsn implements FiveRegInsn {
 	
 	private int regCount;
@@ -51,13 +63,6 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 		return referencedItem;
 	}
 	
-	/*
-	 * the wide args for format 35c must be explicitly stated - internally, such args
-	 * are implicitly represented by e.g. "regD = wide, regE = emptyReg" to avoid using null
-	 * and to distinguish the first "half" of a wide reg from the second one.
-	 * this is made explicit ("regD.num, regD.num + 1") while building the real insn
-	 * and while getting the "real" explicit reg numbers.
-	 */
 	private static boolean isImplicitWide(Register firstReg, Register secondReg) {
 		return firstReg.isWide() && secondReg.isEmptyReg();
 	}

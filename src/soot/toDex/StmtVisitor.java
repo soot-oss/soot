@@ -66,7 +66,19 @@ import soot.toDex.instructions.InsnWithOffset;
 import soot.toDex.instructions.PackedSwitchPayload;
 import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
+import soot.util.Switchable;
 
+/**
+ * A visitor that builds a list of instructions from the Jimple statements it visits.<br>
+ * <br>
+ * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements
+ * and {@link #getFinalInsns()} to get the final dexlib instructions.<br>
+ * <br>
+ * These final instructions do have correct offsets, jump targets and register numbers.
+ * 
+ * @see Insn intermediate representation of an instruction
+ * @see Instruction final representation of an instruction
+ */
 public class StmtVisitor implements StmtSwitch {
 	
 	private static final Map<Opcode, Opcode> oppositeIfs;

@@ -14,7 +14,14 @@ import soot.toDex.instructions.Insn21s;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.TwoRegInsn;
 
-// inspired by com.android.dx.dex.code.OutputFinisher
+/**
+ * Assigns final register numbers in instructions so that they fit into their format
+ * and obey the calling convention (that is, the last registers are for the parameters).<br>
+ * <br>
+ * Note that the final instruction list can contain additional "move" instructions.<br>
+ * <br>
+ * IMPLEMENTATION NOTE: The algorithm is heavily inspired by com.android.dx.dex.code.OutputFinisher.
+ */
 public class RegisterAssigner {
 	
 	private RegisterAllocator regAlloc;

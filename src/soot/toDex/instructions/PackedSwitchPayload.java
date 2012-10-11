@@ -8,6 +8,11 @@ import org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction;
 import soot.jimple.Stmt;
 import soot.toDex.Register;
 
+/**
+ * The payload for a packed-switch instruction.
+ * 
+ * @see SwitchPayload
+ */
 public class PackedSwitchPayload extends SwitchPayload {
 	
 	private int firstKey;

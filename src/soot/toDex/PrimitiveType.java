@@ -2,6 +2,9 @@ package soot.toDex;
 
 import java.util.Locale;
 
+/**
+ * An enumeration for the primitive types the Dalvik VM can handle.
+ */
 public enum PrimitiveType {
 	
 	// NOTE: the order is relevant for cast code generation, so do not change it

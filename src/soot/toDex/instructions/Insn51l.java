@@ -9,6 +9,12 @@ import org.jf.dexlib.Code.Format.Instruction51l;
 
 import soot.toDex.Register;
 
+/**
+ * The "51l" instruction format: It needs five 16-bit code units, has one register
+ * and is used for a 64-bit literal (hence the "l" for "long").<br>
+ * <br>
+ * It is used by the opcode "const-wide".
+ */
 public class Insn51l extends AbstractInsn implements OneRegInsn {
 	
 	private long litB;

@@ -10,6 +10,12 @@ import org.jf.dexlib.Code.Format.Instruction20t;
 import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
 
+/**
+ * The "20t" instruction format: It needs two 16-bit code units, does not have any registers
+ * and is used for jump targets (hence the "t").<br>
+ * <br>
+ * It is used by the "goto/16" opcode for jumps to a 16-bit wide offset.
+ */
 public class Insn20t extends InsnWithOffset {
 	
 	public Insn20t(Opcode opc) {

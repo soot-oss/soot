@@ -9,6 +9,12 @@ import org.jf.dexlib.Code.Format.Instruction23x;
 
 import soot.toDex.Register;
 
+/**
+ * The "23x" instruction format: It needs two 16-bit code units, has three registers
+ * and is used for general purposes (hence the "x").<br>
+ * <br>
+ * It is used e.g. by the opcodes "cmp-long", "aput" and "add-int".
+ */
 public class Insn23x extends AbstractInsn implements ThreeRegInsn {
 
 	public Insn23x(Opcode opc, Register regA, Register regB, Register regC) {

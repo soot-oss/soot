@@ -8,10 +8,10 @@ import org.jf.dexlib.Code.Opcode;
 
 import soot.toDex.Register;
 
-/* 
- * inspired by com.android.dx.dex.code.CodeAddress: pseudo insn for usage
- * as branch target or start/end of an exception handler range. has size 0,
- * so its offset is the same as the following real insn.
+/** 
+ * Inspired by com.android.dx.dex.code.CodeAddress: pseudo instruction for use
+ * as jump target or start/end of an exception handler range. It has size zero,
+ * so that its offset is the same as the following real instruction.
  */
 public class AddressInsn extends AbstractInsn {
 	

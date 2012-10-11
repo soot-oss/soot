@@ -67,7 +67,18 @@ import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
 import soot.toDex.instructions.InsnWithOffset;
+import soot.util.Switchable;
 
+/**
+ * A visitor that builds a list of instructions from the Jimple expressions it visits.<br>
+ * <br>
+ * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements.
+ * These are added to the instructions in the {@link StmtVisitor}.<br>
+ * If the expression is part of an assignment or an if statement, use {@link #setDestinationReg(Register)}
+ * and {@link #setTargetForOffset(Stmt)}, respectively.
+ * 
+ * @see StmtVisitor
+ */
 public class ExprVisitor implements ExprSwitch {
 	
 	private StmtVisitor stmtV;

@@ -10,6 +10,12 @@ import org.jf.dexlib.Code.Format.Instruction31t;
 import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
 
+/**
+ * The "31t" instruction format: It needs three 16-bit code units, has one register
+ * and is used for jump targets (hence the "t").<br>
+ * <br>
+ * It is used e.g. by the opcodes "packed-switch" and "sparse-switch".
+ */
 public class Insn31t extends InsnWithOffset implements OneRegInsn {
 	
 	public Insn31t(Opcode opc, Register regA) {

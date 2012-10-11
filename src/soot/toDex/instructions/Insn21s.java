@@ -9,6 +9,12 @@ import org.jf.dexlib.Code.Format.Instruction21s;
 
 import soot.toDex.Register;
 
+/**
+ * The "21s" instruction format: It needs two 16-bit code units, has one register
+ * and is used for a 16-bit literal (hence the "s" for "short").<br>
+ * <br>
+ * It is used by the opcodes "const/16" and "const-wide/16".
+ */
 public class Insn21s extends AbstractInsn implements OneRegInsn {
 	
 	private short litB;

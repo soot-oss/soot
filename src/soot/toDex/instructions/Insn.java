@@ -8,6 +8,9 @@ import org.jf.dexlib.Code.Opcode;
 
 import soot.toDex.Register;
 
+/**
+ * Interface for the dalvik instruction formats.
+ */
 public interface Insn extends Cloneable {
 	
 	Opcode getOpcode();

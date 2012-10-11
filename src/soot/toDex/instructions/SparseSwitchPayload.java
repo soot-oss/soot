@@ -8,6 +8,11 @@ import org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction;
 import soot.jimple.Stmt;
 import soot.toDex.Register;
 
+/**
+ * The payload for a sparse-switch instruction.
+ * 
+ * @see SwitchPayload
+ */
 public class SparseSwitchPayload extends SwitchPayload {
 
 	private int[] keys;

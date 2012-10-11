@@ -9,6 +9,12 @@ import org.jf.dexlib.Code.Format.Instruction11x;
 
 import soot.toDex.Register;
 
+/**
+ * The "11x" instruction format: It needs one 16-bit code unit, has one register
+ * and is used for general purposes (hence the "x").<br>
+ * <br>
+ * It is used e.g. by the opcodes "monitor-enter", "monitor-exit", "move-result" and "return".
+ */
 public class Insn11x extends AbstractInsn implements OneRegInsn {
 
 	public Insn11x(Opcode opc, Register regA) {

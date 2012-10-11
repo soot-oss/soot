@@ -24,6 +24,9 @@ import soot.VoidType;
 import soot.toDex.instructions.AddressInsn;
 import soot.toDex.instructions.Insn;
 
+/**
+ * Utility class for the conversion from soot to dex.
+ */
 public class SootToDexUtils {
 	
 	private static final Map<Class<? extends Type>, String> sootToDexTypeDescriptor;

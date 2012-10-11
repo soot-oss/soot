@@ -9,9 +9,14 @@ import soot.Value;
 import soot.jimple.Constant;
 import soot.jimple.internal.JimpleLocal;
 
+/**
+ * An allocator for registers. It keeps track of locals to re-use their registers.<br>
+ * <br>
+ * Note that a register number can increase beyond 65535 / 16 bit, since the instruction formats
+ * should check for their register limits themselves.
+ */
 public class RegisterAllocator {
 	
-	// this can increase beyond 65535 / 16 bit, since the insn formats should check for their reg limits
 	private int nextRegNum;
 	
 	private Map<String, Integer> localToLastRegNum;

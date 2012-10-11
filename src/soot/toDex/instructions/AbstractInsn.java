@@ -10,6 +10,9 @@ import org.jf.dexlib.Code.Opcode;
 import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
 
+/**
+ * Abstract implementation of an {@link Insn}.
+ */
 public abstract class AbstractInsn implements Insn {
 	
 	protected Opcode opc;

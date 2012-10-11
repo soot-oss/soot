@@ -9,6 +9,12 @@ import org.jf.dexlib.Code.Format.Instruction31i;
 
 import soot.toDex.Register;
 
+/**
+ * The "31i" instruction format: It needs three 16-bit code units, has one register
+ * and is used for a 32-bit literal (hence the "i" for "integer").<br>
+ * <br>
+ * It is used by the opcodes "const" and "const-wide/32".
+ */
 public class Insn31i extends AbstractInsn implements OneRegInsn {
 	
 	private int litB;

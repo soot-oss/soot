@@ -5,6 +5,9 @@ import soot.FloatType;
 import soot.IntType;
 import soot.Type;
 
+/**
+ * A register for the Dalvik VM. It has a number and a type.
+ */
 public class Register implements Cloneable {
 	
 	public static final int MAX_REG_NUM_UNCONSTRAINED = 65535;

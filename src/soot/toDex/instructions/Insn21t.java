@@ -10,6 +10,12 @@ import org.jf.dexlib.Code.Format.Instruction21t;
 import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
 
+/**
+ * The "21t" instruction format: It needs two 16-bit code units, has one register
+ * and is used for jump targets (hence the "t").<br>
+ * <br>
+ * It is used e.g. by the opcode "if-eqz" for conditional jumps to a 16-bit wide offset.
+ */
 public class Insn21t extends InsnWithOffset implements OneRegInsn {
 	
 	public Insn21t(Opcode opc, Register regA) {

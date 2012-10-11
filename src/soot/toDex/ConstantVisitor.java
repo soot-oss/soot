@@ -18,7 +18,17 @@ import soot.toDex.instructions.Insn21c;
 import soot.toDex.instructions.Insn21s;
 import soot.toDex.instructions.Insn31i;
 import soot.toDex.instructions.Insn51l;
+import soot.util.Switchable;
 
+/**
+ * A visitor that builds a list of instructions from the Jimple constants it visits.<br>
+ * <br>
+ * Use {@link Switchable#apply(soot.util.Switch)} with this visitor to add statements.
+ * These are added to the instructions in the {@link StmtVisitor}.<br>
+ * Do not forget to use {@link #setDestination(Register)} to set the storage location for the constant.
+ * 
+ * @see StmtVisitor
+ */
 public class ConstantVisitor implements ConstantSwitch {
 	
 	private StmtVisitor stmtV;
