@@ -158,11 +158,18 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
      *			     <code>false</code> for compatibility with
      *			     more conservative analyses, or to cater
      *			     to conservative bytecode verifiers.
+     *  @param drawShadowedHandlers if there exists a shadowed exception
+     *                              handler that never reached from any code,
+     *                              LocalSplitter might not work properly, thus
+     *                              type inference fails. To prevent this case,
+     *                              we need to draw edges to unreachable
+     *                              handlers. This parameter should be only turned
+     *                              on by LocalSplitter.
      */
     public ExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis,
-				boolean omitExceptingUnitEdges) {
+				boolean omitExceptingUnitEdges, boolean drawShadowedHandlers) {
 	super(body);
-	initialize(throwAnalysis, omitExceptingUnitEdges);
+	initialize(throwAnalysis, omitExceptingUnitEdges, drawShadowedHandlers);
     }
 
 
@@ -179,7 +186,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
      *
      */
     public ExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis) {
-	this(body, throwAnalysis, Options.v().omit_excepting_unit_edges());
+	this(body, throwAnalysis, Options.v().omit_excepting_unit_edges(), false);
     }
 
 
@@ -195,7 +202,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
      */
     public ExceptionalUnitGraph(Body body) {
 	this(body, Scene.v().getDefaultThrowAnalysis(),
-	     Options.v().omit_excepting_unit_edges());
+	     Options.v().omit_excepting_unit_edges(), false);
     }
 
 
@@ -206,12 +213,12 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
      *  whose constructors need to perform some subclass-specific
      *  processing before actually creating the graph edges (because,
      *  for example, the subclass overrides a utility method like
-     *  {@link #buildExceptionDests(ThrowAnalysis)} or {@link
+     *  {@link #buildExceptionDests(ThrowAnalysis, boolean)} or {@link
      *  #buildExceptionalEdges(ThrowAnalysis, Map, Map, Map, boolean)}
      *  with a replacement method that depends on additional
      *  parameters passed to the subclass's constructor).  The
      *  subclass constructor is responsible for calling {@link
-     *  #initialize(ThrowAnalysis, boolean)}, or otherwise performing
+     *  #initialize(ThrowAnalysis, boolean, boolean)}, or otherwise performing
      *  the initialization required to implement
      *  <code>ExceptionalUnitGraph</code>'s interface.</p>
      *
@@ -251,7 +258,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
      *			     which have no potential side effects.
      */
     protected void initialize(ThrowAnalysis throwAnalysis, 
-			      boolean omitExceptingUnitEdges) {
+			      boolean omitExceptingUnitEdges, boolean drawShadowedHandlers) {
 	int size = unitChain.size();
 	Set<Unit> trapUnitsThatAreHeads = Collections.emptySet();
         
@@ -276,7 +283,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 	    unitToPreds = unitToUnexceptionalPreds;
 
 	} else {
-	    unitToExceptionDests = buildExceptionDests(throwAnalysis);
+	    unitToExceptionDests = buildExceptionDests(throwAnalysis, drawShadowedHandlers);
 	    unitToExceptionalSuccs = 
 		new LinkedHashMap<Unit,List<Unit>>(unitToExceptionDests.size() * 2 + 1, 0.7f);
 	    unitToExceptionalPreds = 
@@ -340,7 +347,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
      *         <code>Unit</code>s which are outside the scope of all
      *         <code>Trap</code>s.)</p>
      */
-    protected Map<Unit,Collection<ExceptionDest>> buildExceptionDests(ThrowAnalysis throwAnalysis) {
+    protected Map<Unit,Collection<ExceptionDest>> buildExceptionDests(ThrowAnalysis throwAnalysis, boolean drawShadowedHandlers) {
 	Chain<Unit> units = body.getUnits();
 	Map<Unit, ThrowableSet> unitToUncaughtThrowables = new LinkedHashMap<Unit, ThrowableSet>(units.size());
 	Map<Unit,Collection<ExceptionDest>> result = null;
@@ -349,6 +356,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 	for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt.hasNext(); ) {
 	    Trap trap = trapIt.next();
 	    RefType catcher = trap.getException().getType();
+	    boolean connected = false;
 	    for (Iterator<Unit> unitIt = units.iterator(trap.getBeginUnit(), 
 						  	units.getPredOf(trap.getEndUnit()));
 	    					unitIt.hasNext(); ) {
@@ -360,6 +368,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 			ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
 			if (!catchableAs.getCaught().equals(ThrowableSet.Manager.v().EMPTY)) {
 			    result = addDestToMap(result, unit, trap, catchableAs.getCaught());
+			    connected = true;
 			    unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
 			} else {
 			    assert thrownSet.equals(catchableAs.getUncaught()):
@@ -369,6 +378,21 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 								+ System.getProperty("line.separator") + " thrownSet == " + thrownSet.toString();
 			}
 	    }
+
+        // give a second chance to unreachable handlers.
+        // this part only runs in LocalSplitter
+        if(!connected && drawShadowedHandlers) {
+            for (Iterator<Unit> unitIt = units.iterator(trap.getBeginUnit(),
+                 units.getPredOf(trap.getEndUnit()));
+                 unitIt.hasNext(); ) {
+                Unit unit = unitIt.next();
+                ThrowableSet thrownSet = throwAnalysis.mightThrow(unit);
+                ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
+                if (!catchableAs.getCaught().equals(ThrowableSet.Manager.v().EMPTY)) {
+                    result = addDestToMap(result, unit, trap, catchableAs.getCaught());
+                }
+            }
+        }
 	}
 
 	for (Map.Entry<Unit,ThrowableSet> entry : unitToUncaughtThrowables.entrySet()) {
