@@ -695,7 +695,7 @@ public abstract class Body extends AbstractHost implements Serializable
 	public void checkInit() {
 	Chain<Unit> units=getUnits();
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
-	    (this, PedanticThrowAnalysis.v(), false);
+	    (this, PedanticThrowAnalysis.v(), false, false);
 
 	// FIXME: Work around for bug in soot
 	Scene.v().releaseActiveHierarchy();

@@ -69,7 +69,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
                 // trapped units remain, but the default ThrowAnalysis
                 // says that none of them can throw the caught exception.
                 stmtGraph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(),
-                                                    false);
+                                                    false, false);
             }
             visited = new HashSet<Object>();
 
