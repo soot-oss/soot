@@ -97,7 +97,13 @@ public class DexClassProvider implements IDexClassProvider {
             for (String className : classesOfDex(dex)) {
                 index.put(className, dex);
             }
-        } catch (IOException e) { /* Ignore unreadable files */	}
+        } catch (IOException e) { 
+          G.v().out.println("Warning: IO error while processing dex file '"+ dex +"'");
+          G.v().out.println("Exception: "+ e);
+        } catch (Exception e) {
+          G.v().out.println("Warning: exception while processing dex file '"+ dex +"'");
+          G.v().out.println("Exception: "+ e);
+        }
     }
 
 
