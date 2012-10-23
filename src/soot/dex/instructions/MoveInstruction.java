@@ -24,7 +24,7 @@ import org.jf.dexlib.Code.TwoRegisterInstruction;
 
 import soot.dex.Debug;
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
@@ -47,9 +47,9 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.captureAssign((JAssignStmt)assign, op);
+          body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 

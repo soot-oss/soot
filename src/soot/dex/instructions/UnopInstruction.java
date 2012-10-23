@@ -26,7 +26,7 @@ import org.jf.dexlib.Code.Format.Instruction12x;
 import soot.Local;
 import soot.Value;
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
@@ -56,12 +56,12 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          //body.captureAssign((JAssignStmt)assign, op);
+          //body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;
-          body.dvkTyper.setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b]);
-          body.dvkTyper.setType(jass.leftBox, resUnType[op - 0x7b]);
+          body.dalvikTyper.setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b]);
+          body.dalvikTyper.setType(jass.leftBox, resUnType[op - 0x7b]);
         }
     }
 

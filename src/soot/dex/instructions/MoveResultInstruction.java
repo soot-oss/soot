@@ -23,7 +23,7 @@ import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.SingleRegisterInstruction;
 
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
@@ -57,10 +57,10 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
         if (tag != null)
             assign.addTag(tag);
         body.add(assign);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           JAssignStmt jassign = (JAssignStmt)assign;
-          body.captureAssign(jassign, op);
+          body.dalvikTyper.captureAssign(jassign, op);
         }
     }
 

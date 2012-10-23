@@ -26,7 +26,7 @@ import org.jf.dexlib.Code.Format.Instruction12x;
 import soot.Local;
 import soot.Value;
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.IntOpTag;
@@ -63,16 +63,16 @@ public class Binop2addrInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           if (!(op >= 0xb0 && op <= 0xcf)) {
             throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0xb0 and 0xcf.");
           }
           BinopExpr bexpr = (BinopExpr)expr;
           JAssignStmt jassign = (JAssignStmt)assign;
-          body.dvkTyper.setType(bexpr.getOp1Box(), op1BinType[op-0xb0]);
-          body.dvkTyper.setType(bexpr.getOp2Box(), op2BinType[op-0xb0]);
-          body.dvkTyper.setType(jassign.leftBox, resBinType[op-0xb0]);
+          body.dalvikTyper.setType(bexpr.getOp1Box(), op1BinType[op-0xb0]);
+          body.dalvikTyper.setType(bexpr.getOp2Box(), op2BinType[op-0xb0]);
+          body.dalvikTyper.setType(jassign.leftBox, resBinType[op-0xb0]);
         }
     }
 

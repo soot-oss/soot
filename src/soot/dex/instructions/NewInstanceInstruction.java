@@ -33,7 +33,7 @@ import org.jf.dexlib.Code.Format.Instruction21c;
 import soot.RefType;
 import soot.dex.DexBody;
 import soot.dex.DexType;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
@@ -55,9 +55,9 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
+          body.dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
         }
     }
 

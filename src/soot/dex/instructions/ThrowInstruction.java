@@ -23,7 +23,7 @@ import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.Instruction11x;
 
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
 
@@ -39,8 +39,8 @@ public class ThrowInstruction extends DexlibAbstractInstruction {
         defineBlock(throwStmt);
         tagWithLineNumber(throwStmt);
         body.add(throwStmt);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
-          body.dvkTyper.setObjectType(throwStmt.getOpBox());
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+          body.dalvikTyper.setObjectType(throwStmt.getOpBox());
         }
     }
 }

@@ -25,11 +25,12 @@ import org.jf.dexlib.Code.Format.Instruction23x;
 
 import soot.DoubleType;
 import soot.FloatType;
+import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Type;
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.dex.tags.DoubleOpTag;
 import soot.dex.tags.FloatOpTag;
 import soot.dex.tags.LongOpTag;
@@ -37,6 +38,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
 
@@ -94,11 +96,12 @@ public class CmpInstruction extends TaggedInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           getTag().getName();
           BinopExpr bexpr = (BinopExpr)cmpExpr;
-          body.dvkTyper.setType(bexpr.getOp1Box(), type);
-          body.dvkTyper.setType(bexpr.getOp2Box(), type);
+          body.dalvikTyper.setType(bexpr.getOp1Box(), type);
+          body.dalvikTyper.setType(bexpr.getOp2Box(), type);
+          body.dalvikTyper.setType(((JAssignStmt)assign).leftBox, IntType.v());
         }
     }
 

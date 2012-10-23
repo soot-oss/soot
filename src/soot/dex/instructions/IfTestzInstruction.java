@@ -24,7 +24,7 @@ import org.jf.dexlib.Code.Format.Instruction21t;
 
 import soot.IntType;
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.jimple.BinopExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
@@ -42,18 +42,18 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
         JIfStmt jif = (JIfStmt) Jimple.v().newIfStmt(condition,
                                     targetInstruction.getUnit());
         
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
            int op = instruction.opcode.value;
            switch (op) {
            case 0x38:
            case 0x39:
-             body.dvkTyper.setConstraint(condition.getOp1Box(), condition.getOp2Box());
+             body.dalvikTyper.addConstraint(condition.getOp1Box(), condition.getOp2Box());
              break;
            case 0x3a:
            case 0x3b:
            case 0x3c:
            case 0x3d:
-             body.dvkTyper.setType(condition.getOp1Box(), IntType.v());
+             body.dalvikTyper.setType(condition.getOp1Box(), IntType.v());
              break;
            default:
              throw new RuntimeException("error: unknown op: 0x"+ Integer.toHexString(op));

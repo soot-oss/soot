@@ -24,7 +24,7 @@ import org.jf.dexlib.Code.Format.Instruction22t;
 
 import soot.Local;
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.jimple.BinopExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
@@ -42,8 +42,8 @@ public class IfTestInstruction extends ConditionalJumpInstruction {
         Local other = body.getRegisterLocal(i.getRegisterB());
         BinopExpr condition = getComparisonExpr(one, other);
         JIfStmt jif = (JIfStmt)Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
-          body.dvkTyper.setConstraint(condition.getOp1Box(), condition.getOp2Box());
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+          body.dalvikTyper.addConstraint(condition.getOp1Box(), condition.getOp2Box());
         }
         return jif;
     }

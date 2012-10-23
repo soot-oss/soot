@@ -24,8 +24,10 @@ import org.jf.dexlib.Code.SingleRegisterInstruction;
 
 import soot.Local;
 import soot.dex.DexBody;
+import soot.dex.IDalvikTyper;
 import soot.jimple.ExitMonitorStmt;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 
 public class MonitorExitInstruction extends DexlibAbstractInstruction {
 
@@ -40,5 +42,9 @@ public class MonitorExitInstruction extends DexlibAbstractInstruction {
         defineBlock(s);
         tagWithLineNumber(s);
         body.add(s);
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          body.dalvikTyper.captureMonitor((JAssignStmt)s);
+        }
     }
 }

@@ -26,7 +26,7 @@ import org.jf.dexlib.Code.Format.Instruction23x;
 
 import soot.Local;
 import soot.dex.DexBody;
-import soot.dex.DvkTyperBase;
+import soot.dex.IDalvikTyper;
 import soot.dex.tags.ObjectOpTag;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -58,9 +58,9 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (DvkTyperBase.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.captureAssign((JAssignStmt)assign, op);
+          body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 
