@@ -36,7 +36,6 @@ import soot.LongType;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
-import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.VoidType;

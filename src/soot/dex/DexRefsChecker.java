@@ -19,10 +19,8 @@
 
 package soot.dex;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,44 +30,14 @@ import soot.RefLikeType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
-import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
-import soot.UnknownType;
-import soot.Value;
-import soot.jimple.AbstractStmtSwitch;
-import soot.jimple.ArrayRef;
-import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
-import soot.jimple.CastExpr;
-import soot.jimple.ConditionExpr;
-import soot.jimple.EnterMonitorStmt;
-import soot.jimple.EqExpr;
-import soot.jimple.ExitMonitorStmt;
 import soot.jimple.FieldRef;
-import soot.jimple.IdentityStmt;
-import soot.jimple.IfStmt;
-import soot.jimple.InstanceFieldRef;
-import soot.jimple.IntConstant;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
-import soot.jimple.LengthExpr;
-import soot.jimple.NeExpr;
-import soot.jimple.NewArrayExpr;
-import soot.jimple.NewExpr;
-import soot.jimple.NullConstant;
-import soot.jimple.ReturnStmt;
-import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
-import soot.jimple.StringConstant;
-import soot.jimple.ThrowStmt;
-import soot.jimple.internal.AbstractInstanceInvokeExpr;
-import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
-import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
 
