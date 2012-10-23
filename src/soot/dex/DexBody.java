@@ -76,6 +76,7 @@ import soot.jimple.internal.JCastExpr;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.internal.JInstanceFieldRef;
 import soot.jimple.internal.JInstanceOfExpr;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
@@ -464,6 +465,7 @@ public class DexBody  {
 	       will not be split. Hence we remove all dead code here.
          */
 		UnreachableCodeEliminator.v().transform(jBody);
+		DeadAssignmentEliminator.v().transform(jBody);
         
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg(""+(Body)jBody);
