@@ -446,7 +446,7 @@ public class DexBody  {
         }
         if (tries != null)
             addTraps();
-
+        
         /* We eliminate dead code. Dead code has been shown to occur under the following
          * circumstances.
          * 
@@ -472,7 +472,7 @@ public class DexBody  {
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg(""+(Body)jBody);
-        
+               
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
         
@@ -482,6 +482,7 @@ public class DexBody  {
           DexNumTransformer.v().transform (jBody);      
           DexNullTransformer.v().transform(jBody);
           DexIfTransformer.v().transform(jBody);
+          //DexRefsChecker.v().transform(jBody);
           //DexNullArrayRefTransformer.v().transform(jBody);
         }
         
