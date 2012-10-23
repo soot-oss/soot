@@ -126,6 +126,7 @@ public abstract class DexTransformer extends BodyTransformer {
     // We should find an answer only by processing the first item of the list
     Type aType = null;
     for (Unit baseDef: defsOfaBaseList) {
+      Debug.printDbg("dextransformer: "+ baseDef);
 
       // baseDef is either an assignment statement or an identity statement
       if (baseDef instanceof AssignStmt) {
@@ -204,9 +205,10 @@ public abstract class DexTransformer extends BodyTransformer {
           Type t = findArrayType (g, localDefs, localUses, stmt, ++depth);
           if (depth ==0) {
             aType = t;
-            break;
+            //break;
           } else {
-            return t;
+            //return t;
+            aType = t;
           }
         } else if (r instanceof Constant) {
         } else {
