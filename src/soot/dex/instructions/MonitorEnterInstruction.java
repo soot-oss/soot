@@ -44,7 +44,6 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
         body.add(s);
         if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureMonitor((JAssignStmt)s);
         }
     }
 }
