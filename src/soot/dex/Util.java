@@ -19,20 +19,29 @@
 
 package soot.dex;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import soot.ArrayType;
+import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
+import soot.Local;
 import soot.LongType;
 import soot.RefType;
+import soot.Scene;
 import soot.ShortType;
+import soot.SootMethodRef;
 import soot.Type;
+import soot.Unit;
 import soot.VoidType;
+import soot.jimple.Jimple;
+import soot.jimple.StringConstant;
 
 public class Util {
     /**
@@ -193,5 +202,26 @@ public class Util {
                t.equals(DoubleType.v()) ||
                t.equals(RefType.v("java.lang.Float")) ||
                t.equals(RefType.v("java.lang.Double"));
+    }
+    
+    /**
+     * Insert a runtime exception before unit u of body b. Useful to analyze broken code (which make reference to inexisting class for instance)
+     */
+    public static void addRuntimeExceptionAfterUnit (Body b, Unit u ,String m) {
+      Local l = Jimple.v().newLocal("myException", RefType.v("java.lang.RuntimeException"));
+      b.getLocals().add(l);
+      
+      List<Unit> newUnits = new ArrayList<Unit>();
+      Unit u1 = Jimple.v().newAssignStmt (l, Jimple.v().newNewExpr(RefType.v("java.lang.RuntimeException")));
+      Unit u2 = Jimple.v().newInvokeStmt (Jimple.v().newSpecialInvokeExpr(
+          l, 
+          Scene.v().getMethod("<java.lang.RuntimeException: void <init(java.lang.String)>").makeRef(), 
+          StringConstant.v(m)));
+      Unit u3 = Jimple.v().newThrowStmt(l);
+      newUnits.add(u1);
+      newUnits.add(u2);
+      newUnits.add(u3);
+      
+      b.getUnits().insertBefore(newUnits, u);
     }
 }
