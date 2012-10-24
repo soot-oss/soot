@@ -44,6 +44,7 @@ public class IfTestInstruction extends ConditionalJumpInstruction {
         Local other = body.getRegisterLocal(i.getRegisterB());
         BinopExpr condition = getComparisonExpr(one, other);
         jif = (JIfStmt)Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
+        // setUnit() is called in ConditionalJumpInstruction
         return jif;
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {

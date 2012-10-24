@@ -72,7 +72,7 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 //        body.add(nopStmtEnd);
 
 //        defineBlock(nopStmtBeginning,nopStmtEnd);
-        defineBlock (assignStmt);
+        setUnit (assignStmt);
 
 //        body.setDanglingInstruction(this);
 

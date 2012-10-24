@@ -70,7 +70,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         Local l = body.getRegisterLocal(dest);
         assign = Jimple.v().newAssignStmt(l, newArrayExpr);
 
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

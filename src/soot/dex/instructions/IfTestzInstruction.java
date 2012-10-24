@@ -43,6 +43,7 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
         BinopExpr condition = getComparisonExpr(body, i.getRegisterA());
         jif = (JIfStmt) Jimple.v().newIfStmt(condition,
                                     targetInstruction.getUnit());
+        // setUnit() is called in ConditionalJumpInstruction
         return jif;
         
 		}

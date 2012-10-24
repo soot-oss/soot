@@ -82,7 +82,7 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
 //      NopStmt nopStmtEnd = Jimple.v().newNopStmt();
 //      body.add(nopStmtEnd);
 //      defineBlock(nopStmtBeginning, nopStmtEnd);
-      defineBlock (assign);
+      setUnit (assign);
       
 //      body.setDanglingInstruction(this);
 

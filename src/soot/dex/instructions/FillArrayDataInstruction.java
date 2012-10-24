@@ -111,7 +111,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     //        body.add(nopStmtEnd);
 
     //        defineBlock(nopStmtBeginning, nopStmtEnd);
-    defineBlock (firstAssign);
+    setUnit (firstAssign);
 
   }
 

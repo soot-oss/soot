@@ -40,6 +40,7 @@ public class InvokeStaticInstruction extends MethodInvocationInstruction {
         invocation = Jimple.v().newStaticInvokeExpr(getStaticSootMethodRef(),
                                                     buildParameters(body, true));
         body.setDanglingInstruction(this);
+        // setUnit() is called in MethodInvocationInstruction
     }
 
     @Override

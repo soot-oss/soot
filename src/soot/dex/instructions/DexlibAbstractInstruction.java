@@ -178,8 +178,8 @@ public abstract class DexlibAbstractInstruction {
      *
      * Does not override already set units.
      */
-    protected void defineBlock(Unit stmt) {
-      unit = stmt;
+    protected void setUnit(Unit u) {
+      unit = u;
 //        defineBlock(stmt, stmt);
     }
 

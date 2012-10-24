@@ -42,7 +42,7 @@ public class MonitorExitInstruction extends DexlibAbstractInstruction {
         int reg = ((SingleRegisterInstruction) instruction).getRegisterA();
         Local object = body.getRegisterLocal(reg);
         exitMonitorStmt = Jimple.v().newExitMonitorStmt(object);
-        defineBlock(exitMonitorStmt);
+        setUnit(exitMonitorStmt);
         tagWithLineNumber(exitMonitorStmt);
         body.add(exitMonitorStmt);
         

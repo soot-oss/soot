@@ -59,7 +59,7 @@ public class AputInstruction extends FieldInstruction {
         if (aPutInstr.opcode.value == Opcode.APUT_OBJECT.value)
           assign.addTag(new ObjectOpTag());
         
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

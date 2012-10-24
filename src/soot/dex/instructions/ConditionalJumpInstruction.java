@@ -45,7 +45,7 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction impleme
         if (getTargetInstruction(body).getUnit() != null) {
             IfStmt s = ifStatement(body);
             body.add(s);
-            defineBlock(s);
+            setUnit(s);
         } else {
           // set marker unit to swap real gotostmt with otherwise
           body.addDeferredJimplification(this);
@@ -66,7 +66,7 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction impleme
     public void deferredJimplify(DexBody body) {
         IfStmt s = ifStatement(body);
         body.getBody().getUnits().swapWith(markerUnit, s); //insertAfter(s, markerUnit);
-        unit = s;
+        setUnit(s);
     }
 
     /**

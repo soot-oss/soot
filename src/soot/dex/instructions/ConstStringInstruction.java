@@ -53,7 +53,7 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
             throw new IllegalArgumentException("Expected Instruction21c or Instruction31c but got neither.");
         StringConstant sc = StringConstant.v(s);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), sc);
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

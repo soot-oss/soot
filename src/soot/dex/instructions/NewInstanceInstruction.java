@@ -54,7 +54,7 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
         RefType type = RefType.v(className);
         NewExpr n = Jimple.v().newNewExpr(type);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), n);
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

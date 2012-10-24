@@ -57,7 +57,7 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         if (aGetInstr.opcode.value == Opcode.AGET_OBJECT.value)
           assign.addTag(new ObjectOpTag());
 
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

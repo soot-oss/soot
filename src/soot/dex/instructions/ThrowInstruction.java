@@ -38,7 +38,7 @@ public class ThrowInstruction extends DexlibAbstractInstruction {
     public void jimplify (DexBody body) {
         Instruction11x throwInstruction = (Instruction11x)instruction;
         throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
-        defineBlock(throwStmt);
+        setUnit(throwStmt);
         tagWithLineNumber(throwStmt);
         body.add(throwStmt);
 		}

@@ -47,7 +47,7 @@ public class IgetInstruction extends FieldInstruction {
         InstanceFieldRef r = Jimple.v().newInstanceFieldRef(body.getRegisterLocal(object),
                                                             getSootFieldRef(f));
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

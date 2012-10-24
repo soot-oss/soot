@@ -46,5 +46,6 @@ public class InvokeSpecialInstruction extends MethodInvocationInstruction {
                                                      getSootMethodRef(),
                                                      parameters.subList(1, parameters.size()));
         body.setDanglingInstruction(this);
+        // setUnit() is called in MethodInvocationInstruction
     }
 }

@@ -60,7 +60,7 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         //splitter will take care of the rest
         assign = Jimple.v().newAssignStmt(castValue, castExpr);
 
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

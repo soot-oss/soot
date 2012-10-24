@@ -57,6 +57,7 @@ public class PackedSwitchInstruction extends SwitchInstruction {
             targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
 
         switchStmt = Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
+        setUnit(switchStmt);
         return switchStmt;
     }
 

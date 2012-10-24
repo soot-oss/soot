@@ -97,7 +97,7 @@ public class CmpInstruction extends TaggedInstruction {
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cmpExpr);
         assign.addTag(getTag());
 
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

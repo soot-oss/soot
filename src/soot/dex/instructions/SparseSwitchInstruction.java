@@ -62,6 +62,7 @@ public class SparseSwitchInstruction extends SwitchInstruction {
             targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
 
         switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
+        setUnit(switchStmt);
         return switchStmt;
     }
     

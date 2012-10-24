@@ -46,7 +46,7 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         int dest = i.getRegisterA();
         int source = i.getRegisterB();
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getRegisterLocal(source));
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

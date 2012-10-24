@@ -60,7 +60,7 @@ public class Binop2addrInstruction extends TaggedInstruction {
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
         assign.addTag(getTag());
 
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

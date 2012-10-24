@@ -55,7 +55,7 @@ public class UnopInstruction extends DexlibAbstractInstruction {
 
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
 
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

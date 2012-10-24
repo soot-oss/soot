@@ -43,7 +43,7 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
         Local l = body.getRegisterLocal(dest);
         stmtToRetype = Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef());
-        defineBlock(stmtToRetype);
+        setUnit(stmtToRetype);
         tagWithLineNumber(stmtToRetype);
         body.add(stmtToRetype);
     }

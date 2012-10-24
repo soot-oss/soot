@@ -57,7 +57,7 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
 
         int dest = ((SingleRegisterInstruction) instruction).getRegisterA();
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), ClassConstant.v(type));
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

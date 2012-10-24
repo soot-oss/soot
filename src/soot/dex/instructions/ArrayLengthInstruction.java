@@ -52,7 +52,7 @@ public class ArrayLengthInstruction extends DexlibAbstractInstruction {
 
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), lengthExpr);
 
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

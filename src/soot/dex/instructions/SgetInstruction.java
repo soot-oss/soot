@@ -44,7 +44,7 @@ public class SgetInstruction extends FieldInstruction {
         FieldIdItem f = (FieldIdItem)((InstructionWithReference)instruction).getReferencedItem();
         StaticFieldRef r = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         

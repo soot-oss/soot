@@ -57,7 +57,7 @@ public class CastInstruction extends TaggedInstruction {
         CastExpr cast = Jimple.v().newCastExpr(body.getRegisterLocal(source), targetType);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cast);
         assign.addTag (getTag());
-        defineBlock(assign);
+        setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         
