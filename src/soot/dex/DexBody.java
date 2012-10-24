@@ -72,6 +72,7 @@ import soot.dex.typing.DalvikTyper;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.Constant;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
@@ -486,6 +487,18 @@ public class DexBody  {
             i.retype();
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
+          // remove instructions from instructions list
+          List<DexlibAbstractInstruction> iToRemove = new ArrayList<DexlibAbstractInstruction>();
+          for (DexlibAbstractInstruction i: instructions)
+            if (!jBody.getUnits().contains(i.getUnit()))
+              iToRemove.add(i);
+          for (DexlibAbstractInstruction i: iToRemove) {
+            Debug.printDbg("removing dexinstruction containing unit '"+ i.getUnit() +"'");
+            instructions.remove(i);
+          }
+          for(DexlibAbstractInstruction instruction : instructions) {
+            instruction.getConstraint(dalvikTyper); // todo: check that this instruction still is in jbody
+          }
           Debug.printDbg("[DalvikTyper] resolving typing constraints...");
           dalvikTyper.assignType();
           Debug.printDbg("[DalvikTyper] resolving typing constraints... done.");
@@ -504,12 +517,34 @@ public class DexBody  {
         Debug.printDbg(""+(Body)jBody);
         
 
-        
-        TypeAssigner.v().transform(jBody);
         if (IDalvikTyper.ENABLE_DVKTYPER) {
           for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
               AssignStmt ass = (AssignStmt)u;
+              if (ass.getRightOp() instanceof IntConstant) {
+                System.out.println("instance of int constant: "+ u);
+                if (ass.getLeftOp() instanceof Local) {
+                  Local l = (Local)ass.getLeftOp();
+                  if (!(l.getType() instanceof PrimType)) {
+                    System.out.println("left local not instance of primtype! "+ l.getType() +" replacing zero by null...");
+                    ass.setRightOp(NullConstant.v());
+                  } else {
+                    System.out.println("left local instance of primtype! "+ l.getType());
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        TypeAssigner.v().transform(jBody);
+        
+        
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+          for (Unit u: jBody.getUnits()) {
+            if (u instanceof AssignStmt) {
+              AssignStmt ass = (AssignStmt)u;
+              // cast expr
               if (ass.getRightOp() instanceof CastExpr) {
                 CastExpr c = (CastExpr)ass.getRightOp();
                 if (c.getType() instanceof PrimType) {
@@ -537,6 +572,7 @@ public class DexBody  {
           }
 
         }
+        
         LocalPacker.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
