@@ -340,8 +340,8 @@ public class DexPrinter implements IDexPrinter {
     		return; // no dex classes were loaded
     	}
 		File sourceForClass = dexClassIndex.get(c.getName());
-    	if (sourceForClass == null) {
-    		return; // a class was written that was not a dex class
+    	if (sourceForClass == null || sourceForClass.getName().endsWith(".dex")) {
+    		return; // a class was written that was not a dex class or the class originates from a .dex file, not an APK
     	}
     	if (originalApk != null && !originalApk.equals(sourceForClass)) {
     		throw new CompilationDeathException("multiple APKs as source of an application are not supported");
