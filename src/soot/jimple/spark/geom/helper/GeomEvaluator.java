@@ -1,25 +1,14 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+/*
+ * Please attach the following author information if you would like to redistribute the source code:
+ * Developer: Xiao Xiao
+ * Address: Room 4208, Hong Kong University of Science and Technology
+ * Contact: frogxx@gmail.com
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.helper;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,25 +28,32 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
+import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InvokeExpr;
+import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.geom.geomPA.CgEdge;
-import soot.jimple.spark.geom.geomPA.EvalHelper;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.Histogram;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.GlobalVarNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.ObjSensContextManager;
+import soot.toolkits.scalar.Pair;
 import soot.util.queue.QueueReader;
 
 /**
@@ -90,7 +86,7 @@ public class GeomEvaluator {
 			SootMethod caller, SootMethod callee_signature, Histogram ce_range) 
 	{	
 		long l, r;
-		IVarAbstraction pn = ptsProvider.makeInternalNode(vn).getRepresentative();
+		IVarAbstraction pn = ptsProvider.findInternalNode(vn).getRepresentative();
 		Set<SootMethod> tgts = new HashSet<SootMethod>();
 		Set<AllocNode> set = pn.get_all_points_to_objects();
 		
@@ -463,12 +459,14 @@ public class GeomEvaluator {
 			if ( v.getType() instanceof RefType ) {
 				SootClass sc = ((RefType)v.getType()).getSootClass();
 				if ( !sc.isInterface() && Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
-						sc, GeomPointsTo.exeception_type.getSootClass()) ) {
+						sc, Constants.exeception_type.getSootClass()) ) {
 					continue;
 				}
 			}
 			al.add(v);
 		}
+		
+		Date begin = new Date();
 		
 		for ( int i = 0; i < al.size(); ++i ) {
 			Node n1 = al.get(i);
@@ -491,13 +489,16 @@ public class GeomEvaluator {
 			cnt_all += al.size() - 1 - i;
 		}
 		
+		Date end = new Date();
+		
 		ptsProvider.ps.println();
 		ptsProvider.ps.println( "--------> Alias Pairs Evaluation <---------" );
 		ptsProvider.ps.println("All pointer pairs (app code) : " + cnt_all );
-		ptsProvider.ps.println("Heap sensitive alias pairs (by Geom) : " + cnt_hs_alias
-				+ ", Percentage = " + (double) cnt_hs_alias / cnt_all );
-		ptsProvider.ps.println("Heap insensitive alias pairs (by SPARK) : " + cnt_hi_alias
-				+ ", Percentage = " + (double) cnt_hi_alias / cnt_all );
+		ptsProvider.ps.printf("Heap sensitive alias pairs (by Geom) : %d, Percentage = %.3f%%\n",
+				cnt_hs_alias, (double) cnt_hs_alias / cnt_all * 100 );
+		ptsProvider.ps.printf("Heap sensitive alias pairs (by Geom) : %d, Percentage = %.3f%%\n",
+				cnt_hi_alias, (double) cnt_hi_alias / cnt_all * 100 );
+		ptsProvider.ps.printf("Using time: %dms \n", end.getTime() - begin.getTime() );
 		ptsProvider.ps.println();
 	}
 	
@@ -533,6 +534,7 @@ public class GeomEvaluator {
 						
 						Value v = ((CastExpr) rhs).getOp();
 						VarNode node = ptsProvider.findLocalVarNode(v);
+						if (node == null) continue;
 						IVarAbstraction pn = ptsProvider.findInternalNode(node);
 						if ( pn == null ) continue;
 						
@@ -583,9 +585,11 @@ public class GeomEvaluator {
 		final Map<IVarAbstraction, int[]> defUseCounterForGeom = new HashMap<IVarAbstraction, int[]>();
 		final Map<AllocDotField, int[]> defUseCounterForSpark = new HashMap<AllocDotField, int[]>();
 		
+		Date begin = new Date();
+		
 		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
-			if (sm.isJavaLibraryMethod())
-				continue;
+//			if (sm.isJavaLibraryMethod())
+//				continue;
 			if (!sm.isConcrete())
 				continue;
 			if (!sm.hasActiveBody()) {
@@ -595,8 +599,7 @@ public class GeomEvaluator {
 				continue;
 			
 			// We first gather all the memory access expressions
-			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts
-					.hasNext();) {
+			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext();) {
 				Stmt st = (Stmt) stmts.next();
 				
 				if ( !(st instanceof AssignStmt) ) continue;
@@ -627,11 +630,12 @@ public class GeomEvaluator {
 						
 						@Override
 						public void visit(Node n) {
-							AllocDotField padf = ptsProvider.findAllocDotField( (AllocNode)n, field );
-							int[] defUseUnit = defUseCounterForSpark.get(padf);
+							IVarAbstraction padf = ptsProvider.findAndInsertInstanceField((AllocNode)n, field);
+							AllocDotField adf = (AllocDotField)padf.getWrappedNode();
+							int[] defUseUnit = defUseCounterForSpark.get(adf);
 							if ( defUseUnit == null ) {
 								defUseUnit = new int[2];
-								defUseCounterForSpark.put(padf, defUseUnit);
+								defUseCounterForSpark.put(adf, defUseUnit);
 							}
 							
 							if (lValue instanceof InstanceFieldRef) {
@@ -652,7 +656,7 @@ public class GeomEvaluator {
 					for ( AllocNode obj : objsSet ) {
 						/*
 						 * We will create a lot of instance fields.
-						 * Because in points-to analysis, we concern only the reference type.
+						 * Because in points-to analysis, we concern only the reference type fields.
 						 * But here, we concern all the fields read write including the primitive type fields.
 						 */
 						IVarAbstraction padf = ptsProvider.findAndInsertInstanceField(obj, field);
@@ -681,9 +685,12 @@ public class GeomEvaluator {
 			ans_geom += ((long)defUseUnit[0]) * defUseUnit[1];
 		}
 		
+		Date end = new Date();
+		
 		ptsProvider.ps.println();
 		ptsProvider.ps.println( "-----------> Heap Def Use Graph Evaluation <------------" );
-		ptsProvider.ps.println("The edges in the heap def-use graph is: " + ans_geom + "(" + ans_spark + ")" );
+		ptsProvider.ps.println("The edges in the heap def-use graph is: " + ans_geom + " (" + ans_spark + ")" );
+		ptsProvider.ps.printf("Using time: %dms \n", end.getTime() - begin.getTime() );
 		ptsProvider.ps.println();
 	}
 }

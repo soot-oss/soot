@@ -1,36 +1,17 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package soot.jimple.spark.geom.geomPA;
 
 import java.io.PrintStream;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
+import soot.SootField;
 import soot.Type;
-import soot.jimple.spark.geom.geomPA.CallsiteContextVar;
-import soot.jimple.spark.geom.geomPA.GeomPointsTo;
-import soot.jimple.spark.geom.geomPA.IVarAbstraction;
-import soot.jimple.spark.geom.geomPA.IWorklist;
-import soot.jimple.spark.geom.geomPA.PlainConstraint;
-import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
+import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
+import soot.jimple.spark.geom.helper.PtSensVisitor;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.SparkField;
 
 /**
  * It is used to represent the non-pointer variables (e.g. heap variable) in the encoded PAG.
@@ -43,6 +24,11 @@ public class DummyNode extends IVarAbstraction
 	public DummyNode(Node thisVarNode)
 	{
 		me = thisVarNode;
+	}
+	
+	@Override
+	public void deleteAll()
+	{
 	}
 	
 	@Override
@@ -115,18 +101,6 @@ public class DummyNode extends IVarAbstraction
 	}
 
 	@Override
-	public boolean is_empty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean has_new_pts() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public int num_of_diff_objs() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -187,13 +161,6 @@ public class DummyNode extends IVarAbstraction
 	}
 
 	@Override
-	public int get_all_context_sensitive_objects(long l, long r,
-			ZArrayNumberer<CallsiteContextVar> all_objs, Vector<CallsiteContextVar> outList) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void print_context_sensitive_points_to(PrintStream outPrintStream) {
 		// TODO Auto-generated method stub
 
@@ -215,5 +182,12 @@ public class DummyNode extends IVarAbstraction
 	public boolean isDeadObject(AllocNode obj) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void get_all_context_sensitive_objects(long l, long r,
+			PtSensVisitor visitor) {
+		// TODO Auto-generated method stub
+		
 	}
 }

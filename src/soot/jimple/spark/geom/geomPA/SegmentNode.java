@@ -1,27 +1,17 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+/*
+ * Please attach the following author information if you would like to redistribute the source code:
+ * Developer: Xiao Xiao
+ * Address: Room 4208, Hong Kong University of Science and Technology
+ * Contact: frogxx@gmail.com
  */
 package soot.jimple.spark.geom.geomPA;
+
+import soot.jimple.spark.geom.geomPA.RectangleNode;
 
 /**
  * The segment figure for the points-to/flows-to descriptor.
  * 
- * @author xiao
+ * @author richardxx
  * 
  */
 public class SegmentNode implements Comparable<SegmentNode> {
@@ -39,6 +29,11 @@ public class SegmentNode implements Comparable<SegmentNode> {
 	public SegmentNode() {}
 
 	public SegmentNode( SegmentNode other )
+	{
+		copySegment(other);
+	}
+	
+	public void copySegment( SegmentNode other )
 	{
 		I1 = other.I1;
 		I2 = other.I2;
@@ -64,7 +59,7 @@ public class SegmentNode implements Comparable<SegmentNode> {
 		return false;
 	}
 
-	
+	@Override
 	public int compareTo(SegmentNode o) 
 	{
 		long d;

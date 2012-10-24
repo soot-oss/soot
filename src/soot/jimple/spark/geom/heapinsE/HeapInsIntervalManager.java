@@ -1,27 +1,15 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+/*
+ * Please attach the following author information if you would like to redistribute the source code:
+ * Developer: Xiao Xiao
+ * Address: Room 4208, Hong Kong University of Science and Technology
+ * Contact: frogxx@gmail.com
  */
 package soot.jimple.spark.geom.heapinsE;
 
-import soot.jimple.spark.geom.geomPA.GeomPointsTo;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
+import soot.jimple.spark.geom.geomPA.SegmentNode;
 
 /**
  * An abstraction for the management of all the geometric figures pertaining to a specific node.
@@ -39,7 +27,7 @@ import soot.jimple.spark.geom.geomPA.RectangleNode;
  * @author xiao
  *
  */
-public class HeapInsIntervalManager implements IFigureManager {
+public class HeapInsIntervalManager extends IFigureManager {
 	public static int Divisions = 3;
 	
 	// Type IDs for the figures
@@ -116,7 +104,7 @@ public class HeapInsIntervalManager implements IFigureManager {
 			
 			code = ALL_TO_MANY;
 			p.I1 = p.I2 = 0;
-			p.L = GeomPointsTo.MAX_CONTEXTS;
+			p.L = Constants.MAX_CONTEXTS;
 			for ( int i = 0; i < Divisions; ++i ) {
 				size[i] = 0;
 				header[i] = null;

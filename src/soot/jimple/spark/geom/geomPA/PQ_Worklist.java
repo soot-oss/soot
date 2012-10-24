@@ -1,20 +1,8 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+/*
+ * Please attach the following author information if you would like to redistribute the source code:
+ * Developer: Xiao Xiao
+ * Address: Room 4208, Hong Kong University of Science and Technology
+ * Contact: frogxx@gmail.com
  */
 package soot.jimple.spark.geom.geomPA;
 
@@ -34,19 +22,19 @@ public class PQ_Worklist implements IWorklist {
 	private IVarAbstraction[] heap = null;
 	int cur_tail = 0;
 	
-	
+	@Override
 	public void initialize( int size )
 	{
 		heap = new IVarAbstraction[ size ];
 		cur_tail = 1;
 	}
 	
-	
+	@Override
 	public boolean has_job() {
 		return cur_tail > 1;
 	}
 
-	
+	@Override
 	public IVarAbstraction next() {
 		IVarAbstraction ret = heap[1];
 		--cur_tail;
@@ -74,7 +62,7 @@ public class PQ_Worklist implements IWorklist {
 		return ret;
 	}
 
-	
+	@Override
 	public void push(IVarAbstraction e) {
 		e.lrf_value++;
 		
@@ -113,12 +101,12 @@ public class PQ_Worklist implements IWorklist {
 		}
 	}
 
-	
+	@Override
 	public int size() {
 		return cur_tail - 1;
 	}
 
-	
+	@Override
 	public void clear() {
 		cur_tail = 1;
 	}

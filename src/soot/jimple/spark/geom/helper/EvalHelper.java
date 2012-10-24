@@ -1,22 +1,10 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+/*
+ * Please attach the following author information if you would like to redistribute the source code:
+ * Developer: Xiao Xiao
+ * Address: Room 4208, Hong Kong University of Science and Technology
+ * Contact: frogxx@gmail.com
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.helper;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -24,6 +12,7 @@ import java.util.Set;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.AllocNode;
@@ -71,7 +60,7 @@ public class EvalHelper
 		if ( vn.getType() instanceof RefType ) {
 			SootClass sc = ((RefType)vn.getType()).getSootClass();
 			if ( !sc.isInterface() && Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
-					sc, GeomPointsTo.exeception_type.getSootClass()) ) {
+					sc, Constants.exeception_type.getSootClass()) ) {
 				ptsProvider.ps.println( "An exeception receiver!" );
 				ptsProvider.ps.println();
 				return;
@@ -101,7 +90,7 @@ public class EvalHelper
 		*/
 	}
 
-	static void debug_context_sensitive_objects( IVarAbstraction pn, final GeomPointsTo ptsProvider )
+	public static void debug_context_sensitive_objects( IVarAbstraction pn, final GeomPointsTo ptsProvider )
 	{
 		Node vn = pn.getWrappedNode();
 //		if ( pn.num_of_diff_objs() >= 50 ) {
@@ -114,7 +103,7 @@ public class EvalHelper
 		if ( vn.getType() instanceof RefType ) {
 			SootClass sc = ((RefType)vn.getType()).getSootClass();
 			if ( !sc.isInterface() && Scene.v().getActiveHierarchy().isClassSubclassOfIncluding(
-					sc, GeomPointsTo.exeception_type.getSootClass()) ) {
+					sc, Constants.exeception_type.getSootClass()) ) {
 				ptsProvider.ps.println( "An exeception receiver!" );
 				ptsProvider.ps.println();
 				return;

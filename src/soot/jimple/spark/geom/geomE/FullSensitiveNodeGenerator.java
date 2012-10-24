@@ -1,38 +1,24 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+/*
+ * Please attach the following author information if you would like to redistribute the source code:
+ * Developer: Xiao Xiao
+ * Address: Room 4208, Hong Kong University of Science and Technology
+ * Contact: frogxx@gmail.com
  */
 package soot.jimple.spark.geom.geomE;
 
 import java.util.Iterator;
 
 import soot.jimple.spark.geom.geomPA.CgEdge;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.DummyNode;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
-import soot.jimple.spark.geom.geomE.FullSensitiveNode;
-import soot.jimple.spark.geom.geomE.GeometricManager;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
-import soot.options.SparkOptions;
 
 /**
  * Build the initial encoding with the geometric encoding.
@@ -42,6 +28,11 @@ import soot.options.SparkOptions;
  */
 public class FullSensitiveNodeGenerator extends IEncodingBroker 
 {
+	private static final int full_convertor[] = { 
+		GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY, 
+		GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY 
+	};
+	
 	@Override
 	public void initFlowGraph( GeomPointsTo ptAnalyzer ) 
 	{
@@ -64,11 +55,11 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 			nf2 = ptAnalyzer.getMappedMethodID(my_rhs.getWrappedNode());
 			
 			// Test how many globals are in this constraint
-			code = ((nf1==GeomPointsTo.SUPER_MAIN ? 1 : 0) << 1) |
-						(nf2==GeomPointsTo.SUPER_MAIN ? 1 : 0);
+			code = ((nf1==Constants.SUPER_MAIN ? 1 : 0) << 1) |
+						(nf2==Constants.SUPER_MAIN ? 1 : 0);
 			
 			switch (cons.type) {
-			case GeomPointsTo.NEW_CONS:
+			case Constants.NEW_CONS:
 				// We directly add the objects to the points-to set
 				
 				if ( code == 0 ) {
@@ -90,7 +81,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				ptAnalyzer.getWorklist().push(my_rhs);
 				break;
 
-			case GeomPointsTo.ASSIGN_CONS:
+			case Constants.ASSIGN_CONS:
 				// Assigning between two pointers
 				if ( cons.interCallEdges != null ) {
 					// Inter-procedural assignment (parameter passing, function return)
@@ -109,7 +100,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 							
 							// Handle the special case first
 							// In that case, nf1 is SUPER_MAIN.
-							if ( nf1 == GeomPointsTo.SUPER_MAIN ) {
+							if ( nf1 == Constants.SUPER_MAIN ) {
 								my_lhs.add_simple_constraint_4( 
 										my_rhs,
 										1,
@@ -183,7 +174,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				}
 				break;
 
-			case GeomPointsTo.LOAD_CONS:
+			case Constants.LOAD_CONS:
 				// lhs is always a local
 				// rhs = lhs.f
 				cons.code = full_convertor[code];
@@ -191,7 +182,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				my_lhs.put_complex_constraint( cons );
 				break;
 
-			case GeomPointsTo.STORE_CONS:
+			case Constants.STORE_CONS:
 				// rhs is always a local
 				// rhs.f = lhs
 				cons.code = full_convertor[code];
@@ -212,8 +203,8 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 	}
 
 	@Override
-	public int getEncodingType() {
-		return SparkOptions.geom_encoding_Geom;
+	public String getSignature() {
+		return Constants.geomE;
 	}
 
 	@Override

@@ -12,14 +12,80 @@ package soot.jimple.spark.geom.geomPA;
  * @author xiao
  *
  */
-public interface IFigureManager 
+public abstract class IFigureManager 
 {
-	public SegmentNode[] getFigures();
-	public int[] getSizes();
-	public boolean isThereUnprocessedFigures();
-	public void flush();
+	// We implement an internal memory manager here
+	private static SegmentNode segHeader = null;
+	private static SegmentNode rectHeader = null;
 	
-	public SegmentNode addNewFigure(int code, RectangleNode pnew);
-	public void mergeFigures(int size);
-	public void removeUselessSegments();
+	protected static SegmentNode getSegmentNode()
+	{
+		SegmentNode ret = null;
+		
+		if ( segHeader != null ) {
+			ret = segHeader;
+			segHeader = ret.next;
+			ret.next = null;
+			ret.is_new = true;
+		}
+		else
+			ret = new SegmentNode();
+		
+		
+		return ret;
+	}
+	
+	protected static RectangleNode getRectangleNode()
+	{
+		RectangleNode ret = null;
+		
+		if ( rectHeader != null ) {
+			ret = (RectangleNode)rectHeader;
+			rectHeader = ret.next;
+			ret.next = null;
+			ret.is_new = true;
+		}
+		else
+			ret = new RectangleNode();
+		
+		return ret;
+	}
+	
+	protected static SegmentNode reclaimSegmentNode( SegmentNode p )
+	{
+		SegmentNode q = p.next;
+		p.next = segHeader;
+		segHeader = p;
+		return q;
+	}
+	
+	protected static SegmentNode reclaimRectangleNode( SegmentNode p )
+	{
+		SegmentNode q = p.next;
+		p.next = rectHeader;
+		rectHeader = p;
+		return q;
+	}
+	
+	/**
+	 * We discard the allocated memories.
+	 */
+	public static void cleanCache()
+	{
+		segHeader = null;
+		rectHeader = null;
+	}
+	
+	
+	// Get the information of the figures
+	public abstract SegmentNode[] getFigures();
+	public abstract int[] getSizes();
+	public abstract boolean isThereUnprocessedFigures();
+	public abstract void flush();
+	
+	// Deal with the figures
+	public abstract SegmentNode addNewFigure(int code, RectangleNode pnew);
+	public abstract void mergeFigures(int size);
+	public abstract void removeUselessSegments();
+	
 }
