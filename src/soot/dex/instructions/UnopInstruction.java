@@ -37,6 +37,8 @@ import soot.jimple.internal.JCastExpr;
 
 public class UnopInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public UnopInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -51,17 +53,21 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         Local source = body.getRegisterLocal(cmpInstr.getRegisterB());
         Value expr = getExpression(source);
 
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
 
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          //body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          //dalvikTyper.captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;
-          body.dalvikTyper.setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b]);
-          body.dalvikTyper.setType(jass.leftBox, resUnType[op - 0x7b]);
+          Value expr = jass.getRightOp();
+          dalvikTyper.setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b]);
+          dalvikTyper.setType(jass.leftBox, resUnType[op - 0x7b]);
         }
     }
 

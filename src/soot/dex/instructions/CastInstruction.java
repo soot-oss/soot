@@ -43,6 +43,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class CastInstruction extends TaggedInstruction {
 
+    AssignStmt assign = null;
+  
     public CastInstruction (Instruction instruction, int codeAddress) {
         super(instruction, codeAddress);
     }
@@ -53,15 +55,18 @@ public class CastInstruction extends TaggedInstruction {
         int source = i.getRegisterB();
         Type targetType = getTargetType();
         CastExpr cast = Jimple.v().newCastExpr(body.getRegisterLocal(source), targetType);
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cast);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cast);
         assign.addTag (getTag());
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.setType(((JAssignStmt)assign).leftBox, opUnType[op - 0x7b]);
-          //body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          dalvikTyper.setType(((JAssignStmt)assign).leftBox, opUnType[op - 0x7b]);
+          //dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 

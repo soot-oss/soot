@@ -27,14 +27,19 @@ import org.jf.dexlib.Code.OffsetInstruction;
 import org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction;
 import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
 
+import soot.IntType;
 import soot.Local;
 import soot.Unit;
 import soot.dex.DexBody;
+import soot.dex.IDalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
+import soot.jimple.TableSwitchStmt;
 
 public class PackedSwitchInstruction extends SwitchInstruction {
 
+    TableSwitchStmt switchStmt = null;
+  
     public PackedSwitchInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -51,7 +56,8 @@ public class PackedSwitchInstruction extends SwitchInstruction {
         for(int address : targetAddresses)
             targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
 
-        return Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
+        switchStmt = Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
+        return switchStmt;
     }
 
     @Override
@@ -86,5 +92,9 @@ public class PackedSwitchInstruction extends SwitchInstruction {
       }
       setData (data);
       
+    }
+    
+    public void getConstraint(IDalvikTyper dalvikTyper) {
+      dalvikTyper.setType(switchStmt.getKeyBox(), IntType.v());
     }
 }

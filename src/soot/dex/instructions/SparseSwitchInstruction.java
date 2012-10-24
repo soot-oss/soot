@@ -28,15 +28,21 @@ import org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction;
 import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
 
 import soot.Immediate;
+import soot.IntType;
 import soot.Local;
 import soot.Unit;
 import soot.dex.DexBody;
+import soot.dex.IDalvikTyper;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.LookupSwitchStmt;
 import soot.jimple.Stmt;
+import soot.jimple.internal.JLookupSwitchStmt;
 
 public class SparseSwitchInstruction extends SwitchInstruction {
 
+    LookupSwitchStmt switchStmt = null;
+  
     public SparseSwitchInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -55,7 +61,8 @@ public class SparseSwitchInstruction extends SwitchInstruction {
         for(int address : targetAddresses)
             targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
 
-        return Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
+        switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
+        return switchStmt;
     }
     
     @Override
@@ -90,4 +97,9 @@ public class SparseSwitchInstruction extends SwitchInstruction {
       }
       setData (data);
     }
+    
+    public void getConstraint(IDalvikTyper dalvikTyper) {
+      dalvikTyper.setType(switchStmt.getKeyBox(), IntType.v());
+    }
+    
 }

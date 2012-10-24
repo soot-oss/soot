@@ -29,6 +29,7 @@ import soot.ArrayType;
 import soot.Type;
 import soot.dex.DexBody;
 import soot.dex.DexType;
+import soot.dex.IDalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
@@ -86,4 +87,10 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 
         return register >= startRegister && register <= endRegister && isFloatLike(arrayType);
     }
+
+    @Override
+    public void getConstraint(IDalvikTyper dalvikTyper) { 
+    }
+    
+    // dalvikTyper here?
 }

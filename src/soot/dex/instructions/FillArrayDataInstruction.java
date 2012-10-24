@@ -48,6 +48,7 @@ import soot.Type;
 import soot.dex.Debug;
 import soot.dex.DexBody;
 import soot.dex.DexType;
+import soot.dex.IDalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.DoubleConstant;
@@ -237,4 +238,9 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     }
     setData (data);
   }
+
+  @Override
+  public void getConstraint(IDalvikTyper dalvikTyper) {
+  }
+  
 }

@@ -22,6 +22,7 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 
 import soot.dex.DexBody;
+import soot.dex.IDalvikTyper;
 import soot.jimple.GotoStmt;
 import soot.jimple.Jimple;
 
@@ -52,5 +53,9 @@ public class GotoInstruction extends JumpInstruction implements DeferableInstruc
         defineBlock(go);
         tagWithLineNumber(go);
         return go;
+    }
+
+    @Override
+    public void getConstraint(IDalvikTyper dalvikTyper) {
     }
 }

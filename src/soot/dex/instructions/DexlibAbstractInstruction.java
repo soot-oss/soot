@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.jf.dexlib.Code.Instruction;
 
+import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
@@ -33,6 +34,7 @@ import soot.Type;
 import soot.Unit;
 import soot.dex.DexBody;
 import soot.dex.DexType;
+import soot.dex.IDalvikTyper;
 import soot.tagkit.Host;
 import soot.tagkit.SourceLineNumberTag;
 
@@ -49,6 +51,7 @@ public abstract class DexlibAbstractInstruction {
 //    protected Unit beginUnit;
 //    protected Unit endUnit;
     protected Unit unit;
+    protected DexBody body = null;
     
     public Instruction getInstruction() {
       return instruction;
@@ -345,5 +348,7 @@ public abstract class DexlibAbstractInstruction {
           DoubleType.v(),
           DoubleType.v()
         };
+
+      public abstract void getConstraint(IDalvikTyper dalvikTyper);
 
 }

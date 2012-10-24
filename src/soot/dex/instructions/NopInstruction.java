@@ -21,7 +21,9 @@ package soot.dex.instructions;
 
 import org.jf.dexlib.Code.Instruction;
 
+import soot.IntType;
 import soot.dex.DexBody;
+import soot.dex.IDalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.NopStmt;
 
@@ -36,6 +38,9 @@ public class NopInstruction extends DexlibAbstractInstruction {
         defineBlock(nop);
         tagWithLineNumber(nop);
         body.add(nop);
+    }
+    
+    public void getConstraint(IDalvikTyper dalvikTyper) {
     }
 }
 

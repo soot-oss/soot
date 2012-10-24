@@ -22,9 +22,11 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.SingleRegisterInstruction;
 
+import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.dex.DexBody;
+import soot.dex.IDalvikTyper;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 
@@ -32,7 +34,7 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
 
     private Type realType;
     private IdentityStmt stmtToRetype;
-
+    
     public MoveExceptionInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -64,5 +66,9 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
+    }
+    
+    public void getConstraint(IDalvikTyper dalvikTyper) {
+      dalvikTyper.setObjectType(stmtToRetype.getLeftOpBox());
     }
 }

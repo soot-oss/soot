@@ -32,6 +32,8 @@ import soot.jimple.internal.JIfStmt;
 
 public class IfTestzInstruction extends ConditionalJumpInstruction {
 
+    JIfStmt jif = null;
+  
     public IfTestzInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -39,26 +41,30 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
     protected IfStmt ifStatement(DexBody body) {
         Instruction21t i = (Instruction21t) instruction;
         BinopExpr condition = getComparisonExpr(body, i.getRegisterA());
-        JIfStmt jif = (JIfStmt) Jimple.v().newIfStmt(condition,
+        jif = (JIfStmt) Jimple.v().newIfStmt(condition,
                                     targetInstruction.getUnit());
+        return jif;
         
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+		  BinopExpr condition = (BinopExpr) jif.getCondition();
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
            int op = instruction.opcode.value;
            switch (op) {
            case 0x38:
            case 0x39:
-             body.dalvikTyper.addConstraint(condition.getOp1Box(), condition.getOp2Box());
+             dalvikTyper.addConstraint(condition.getOp1Box(), condition.getOp2Box());
              break;
            case 0x3a:
            case 0x3b:
            case 0x3c:
            case 0x3d:
-             body.dalvikTyper.setType(condition.getOp1Box(), IntType.v());
+             dalvikTyper.setType(condition.getOp1Box(), IntType.v());
              break;
            default:
              throw new RuntimeException("error: unknown op: 0x"+ Integer.toHexString(op));
            }
         }
-        return jif;
+        
     }
 }

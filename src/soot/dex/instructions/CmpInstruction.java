@@ -42,6 +42,10 @@ import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
 
+    AssignStmt assign = null;
+    Expr cmpExpr = null;
+    Type type = null;
+  
     public CmpInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -56,8 +60,8 @@ public class CmpInstruction extends TaggedInstruction {
         Local first = body.getRegisterLocal(cmpInstr.getRegisterB());
         Local second = body.getRegisterLocal(cmpInstr.getRegisterC());
 
-        Expr cmpExpr;
-        Type type = null;
+        //Expr cmpExpr;
+        //Type type = null;
         switch (instruction.opcode) {
         case CMPL_DOUBLE:
           setTag (new DoubleOpTag());
@@ -90,18 +94,22 @@ public class CmpInstruction extends TaggedInstruction {
             cmpExpr = Jimple.v().newCmpExpr(first, second);
         }
 
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cmpExpr);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cmpExpr);
         assign.addTag(getTag());
 
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+    
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           getTag().getName();
           BinopExpr bexpr = (BinopExpr)cmpExpr;
-          body.dalvikTyper.setType(bexpr.getOp1Box(), type);
-          body.dalvikTyper.setType(bexpr.getOp2Box(), type);
-          body.dalvikTyper.setType(((JAssignStmt)assign).leftBox, IntType.v());
+          dalvikTyper.setType(bexpr.getOp1Box(), type);
+          dalvikTyper.setType(bexpr.getOp2Box(), type);
+          dalvikTyper.setType(((JAssignStmt)assign).leftBox, IntType.v());
         }
     }
 

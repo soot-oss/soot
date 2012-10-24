@@ -39,6 +39,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class InstanceOfInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public InstanceOfInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -51,13 +53,16 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
         Type t = DexType.toSoot((TypeIdItem)(i.getReferencedItem()));
 
         InstanceOfExpr e = Jimple.v().newInstanceOfExpr(body.getRegisterLocal(source), t);
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), e);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), e);
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 

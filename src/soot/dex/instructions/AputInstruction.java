@@ -37,6 +37,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class AputInstruction extends FieldInstruction {
 
+    AssignStmt assign = null;
+  
     public AputInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -53,16 +55,19 @@ public class AputInstruction extends FieldInstruction {
         ArrayRef arrayRef = Jimple.v().newArrayRef(arrayBase, index);
 
         Local sourceValue = body.getRegisterLocal(source);
-        AssignStmt assign = getAssignStmt(body, sourceValue, arrayRef);
+        assign = getAssignStmt(body, sourceValue, arrayRef);
         if (aPutInstr.opcode.value == Opcode.APUT_OBJECT.value)
           assign.addTag(new ObjectOpTag());
         
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 

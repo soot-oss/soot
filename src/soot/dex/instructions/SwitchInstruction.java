@@ -26,6 +26,7 @@ import org.jf.dexlib.Code.SingleRegisterInstruction;
 import soot.Local;
 import soot.Unit;
 import soot.dex.DexBody;
+import soot.dex.IDalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
@@ -48,7 +49,7 @@ public abstract class SwitchInstruction extends PseudoInstruction implements Def
         body.add(markerUnit);
         body.addDeferredJimplification(this);
     }
-
+    
     public void deferredJimplify(DexBody body) {
         int keyRegister = ((SingleRegisterInstruction) instruction).getRegisterA();
         int offset = ((OffsetInstruction) instruction).getTargetAddressOffset();
@@ -58,4 +59,5 @@ public abstract class SwitchInstruction extends PseudoInstruction implements Def
         Stmt stmt = switchStatement(body, targetData, key);
         body.getBody().getUnits().insertAfter(stmt, markerUnit);
     }
+    
 }

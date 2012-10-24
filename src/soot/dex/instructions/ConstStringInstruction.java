@@ -34,6 +34,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class ConstStringInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public ConstStringInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -50,13 +52,16 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
         } else
             throw new IllegalArgumentException("Expected Instruction21c or Instruction31c but got neither.");
         StringConstant sc = StringConstant.v(s);
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), sc);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), sc);
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          dalvikTyper.setObjectType(assign.getLeftOpBox());
         }
     }
 

@@ -32,6 +32,8 @@ import soot.jimple.internal.JIfStmt;
 
 public class IfTestInstruction extends ConditionalJumpInstruction {
 
+    JIfStmt jif = null;
+  
     public IfTestInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -41,10 +43,13 @@ public class IfTestInstruction extends ConditionalJumpInstruction {
         Local one = body.getRegisterLocal(i.getRegisterA());
         Local other = body.getRegisterLocal(i.getRegisterB());
         BinopExpr condition = getComparisonExpr(one, other);
-        JIfStmt jif = (JIfStmt)Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          body.dalvikTyper.addConstraint(condition.getOp1Box(), condition.getOp2Box());
-        }
+        jif = (JIfStmt)Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
         return jif;
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+		  BinopExpr condition = (BinopExpr)jif.getCondition();
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
+          dalvikTyper.addConstraint(condition.getOp1Box(), condition.getOp2Box());
+        }
     }
 }

@@ -31,6 +31,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class MoveInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public MoveInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -43,13 +45,16 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         
         int dest = i.getRegisterA();
         int source = i.getRegisterB();
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getRegisterLocal(source));
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getRegisterLocal(source));
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 

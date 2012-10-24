@@ -39,6 +39,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
+    AssignStmt assign = null;
+  
     public FilledNewArrayInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -68,26 +70,30 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         // new local generated intentional, will be moved to real register by MoveResult
         arrayLocal = body.getStoreResultLocal();
-        AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
-        body.add (assignStmt);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assignStmt, op); // TODO: ref. type may be null!
-        }
-
+        assign = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
+        body.add (assign);
         for (int i = 0; i < usedRegister; i++) {
-            ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
+          ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
 
-            AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(regs[i]));
-            tagWithLineNumber(assign);
-            body.add(assign);
+          AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(regs[i]));
+          tagWithLineNumber(assign);
+          body.add(assign);
+      }
+//      NopStmt nopStmtEnd = Jimple.v().newNopStmt();
+//      body.add(nopStmtEnd);
+//      defineBlock(nopStmtBeginning, nopStmtEnd);
+      defineBlock (assign);
+      
+//      body.setDanglingInstruction(this);
+
+		}
+    
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
+          int op = (int)instruction.opcode.value;
+          dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
         }
-//        NopStmt nopStmtEnd = Jimple.v().newNopStmt();
-//        body.add(nopStmtEnd);
-//        defineBlock(nopStmtBeginning, nopStmtEnd);
-        defineBlock (assignStmt);
-        
-//        body.setDanglingInstruction(this);
+
 
     }
 

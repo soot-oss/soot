@@ -38,6 +38,9 @@ import soot.jimple.internal.JAssignStmt;
 
 public class BinopLitInstruction extends TaggedInstruction {
 
+    Value expr = null;
+    AssignStmt assign = null;
+  
     public BinopLitInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -54,15 +57,18 @@ public class BinopLitInstruction extends TaggedInstruction {
 
         IntConstant constant = IntConstant.v((int)binOpLitInstr.getLiteral());
 
-        Value expr = getExpression(source1, constant);
+        expr = getExpression(source1, constant);
 
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
         assign.addTag(getTag());
 
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           if (!(op >= 0xd0 && op <= 0xe2)) {
             throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0xd0 and 0xe2.");
@@ -74,7 +80,7 @@ public class BinopLitInstruction extends TaggedInstruction {
           }
           BinopExpr bexpr = (BinopExpr)expr;
           //body.dvkTyper.setType((op == 1) ? bexpr.getOp2Box() : bexpr.getOp1Box(), op1BinType[op]);
-          body.dalvikTyper.setType(((JAssignStmt)assign).leftBox, op1BinType[op]);
+          dalvikTyper.setType(((JAssignStmt)assign).leftBox, op1BinType[op]);
         }
     }
 

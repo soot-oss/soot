@@ -52,10 +52,12 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JAssignStmt;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
     // stores the dangling InvokeExpr
     protected InvokeExpr invocation;
+    protected AssignStmt assign = null;
 
     public MethodInvocationInstruction(Instruction instruction, int codeAddress) {
         super(instruction, codeAddress);
@@ -68,7 +70,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 //            i.setExpr(invocation);
 //            if (lineNumber != -1)
 //                i.setTag(new SourceLineNumberTag(lineNumber));
-          AssignStmt assign = Jimple.v().newAssignStmt(body.getStoreResultLocal(), invocation);
+          assign = Jimple.v().newAssignStmt(body.getStoreResultLocal(), invocation);
           defineBlock(assign);
           tagWithLineNumber(assign);
           body.add(assign);
@@ -81,14 +83,22 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             body.add(invoke);
             unit = invoke;
         }
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           if (invocation instanceof InstanceInvokeExpr) {
             Type t = invocation.getMethodRef().declaringClass().getType();
-            body.dalvikTyper.setType(((InstanceInvokeExpr) invocation).getBaseBox(), t);
+            dalvikTyper.setType(((InstanceInvokeExpr) invocation).getBaseBox(), t);
+            //dalvikTyper.setObjectType(assign.getLeftOpBox());
           }
           int i = 0;
           for (Object pt: invocation.getMethodRef().parameterTypes()) {
-            body.dalvikTyper.setType(invocation.getArgBox(i++), (Type)pt);
+            dalvikTyper.setType(invocation.getArgBox(i++), (Type)pt);
+          }
+          int op = (int)instruction.opcode.value;
+          if (assign != null) {
+            dalvikTyper.captureAssign((JAssignStmt)assign, op);
           }
         }
     }

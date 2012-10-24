@@ -31,6 +31,8 @@ import soot.jimple.ReturnStmt;
 
 public class ReturnInstruction extends DexlibAbstractInstruction {
 
+    ReturnStmt returnStmt = null;
+  
     public ReturnInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -38,13 +40,17 @@ public class ReturnInstruction extends DexlibAbstractInstruction {
     public void jimplify (DexBody body) {
         Instruction11x returnInstruction = (Instruction11x) this.instruction;
         Local l = body.getRegisterLocal(returnInstruction.getRegisterA());
-        ReturnStmt returnStmt = Jimple.v().newReturnStmt(l);
+        returnStmt = Jimple.v().newReturnStmt(l);
         defineBlock(returnStmt);
         tagWithLineNumber(returnStmt);
         body.add(returnStmt);
-        ValueBox box = returnStmt.getOpBox();
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          body.dalvikTyper.setType(box, body.getBody().getMethod().getReturnType());
+        this.body = body;
+		}
+    
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+		  ValueBox box = returnStmt.getOpBox();
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
+          dalvikTyper.setType(box, body.getBody().getMethod().getReturnType());
         }
     }
 }

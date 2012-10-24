@@ -31,6 +31,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class MonitorEnterInstruction extends DexlibAbstractInstruction {
 
+    EnterMonitorStmt enterMonitorStmt = null;
+  
     public MonitorEnterInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -38,12 +40,15 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
     public void jimplify (DexBody body) {
         int reg = ((SingleRegisterInstruction) instruction).getRegisterA();
         Local object = body.getRegisterLocal(reg);
-        EnterMonitorStmt s = Jimple.v().newEnterMonitorStmt(object);
-        defineBlock(s);
-        tagWithLineNumber(s);
-        body.add(s);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+        enterMonitorStmt = Jimple.v().newEnterMonitorStmt(object);
+        defineBlock(enterMonitorStmt);
+        tagWithLineNumber(enterMonitorStmt);
+        body.add(enterMonitorStmt);
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
+          dalvikTyper.setObjectType(enterMonitorStmt.getOpBox());
         }
     }
 }

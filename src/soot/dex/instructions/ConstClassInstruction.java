@@ -38,6 +38,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class ConstClassInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public ConstClassInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -54,13 +56,17 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
           type = type.replaceAll("^L", "").replaceAll(";$", "");
 
         int dest = ((SingleRegisterInstruction) instruction).getRegisterA();
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), ClassConstant.v(type));
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), ClassConstant.v(type));
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value; 
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op); //TODO: classtype could be null!
+          //dalvikTyper.captureAssign((JAssignStmt)assign, op); //TODO: classtype could be null!
+          dalvikTyper.setObjectType(assign.getLeftOpBox());
         }
     }
 

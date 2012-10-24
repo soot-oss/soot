@@ -33,6 +33,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class ArrayLengthInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public ArrayLengthInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -48,14 +50,17 @@ public class ArrayLengthInstruction extends DexlibAbstractInstruction {
 
         LengthExpr lengthExpr = Jimple.v().newLengthExpr(arrayReference);
 
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), lengthExpr);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), lengthExpr);
 
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 

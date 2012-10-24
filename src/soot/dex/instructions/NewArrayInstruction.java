@@ -44,6 +44,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class NewArrayInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public NewArrayInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -66,15 +68,20 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
         Local l = body.getRegisterLocal(dest);
-        AssignStmt assign = Jimple.v().newAssignStmt(l, newArrayExpr);
+        assign = Jimple.v().newAssignStmt(l, newArrayExpr);
 
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
-          body.dalvikTyper.setType(newArrayExpr.getSizeBox(), IntType.v());
+          dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
+          NewArrayExpr newArrayExpr = (NewArrayExpr)assign.getRightOp();
+          dalvikTyper.setType(newArrayExpr.getSizeBox(), IntType.v());
+          dalvikTyper.setObjectType(assign.getLeftOpBox());
         }
     }
 

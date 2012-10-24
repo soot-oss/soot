@@ -29,18 +29,22 @@ import soot.jimple.ThrowStmt;
 
 public class ThrowInstruction extends DexlibAbstractInstruction {
 
+    ThrowStmt throwStmt = null;
+  
     public ThrowInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
 
     public void jimplify (DexBody body) {
         Instruction11x throwInstruction = (Instruction11x)instruction;
-        ThrowStmt throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
+        throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
         defineBlock(throwStmt);
         tagWithLineNumber(throwStmt);
         body.add(throwStmt);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          body.dalvikTyper.setObjectType(throwStmt.getOpBox());
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
+          dalvikTyper.setObjectType(throwStmt.getOpBox());
         }
     }
 }

@@ -33,6 +33,8 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 //    private Local local;
 //    private Expr expr;
     private Tag tag;
+    
+    AssignStmt assign = null;
 
     public MoveResultInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -43,7 +45,6 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 //            throw new RuntimeException("Both local and expr are set to move.");
 
         int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
-        AssignStmt assign;
 
 //        if (local != null)
 //            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), local);
@@ -57,10 +58,13 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
         if (tag != null)
             assign.addTag(tag);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
           JAssignStmt jassign = (JAssignStmt)assign;
-          body.dalvikTyper.captureAssign(jassign, op);
+          dalvikTyper.captureAssign(jassign, op);
         }
     }
 

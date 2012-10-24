@@ -39,6 +39,8 @@ import soot.jimple.internal.JAssignStmt;
 
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 
+    AssignStmt assign = null;
+  
     public CheckCastInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -56,14 +58,17 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
 
         //generate "x = (Type) x"
         //splitter will take care of the rest
-        AssignStmt assign = Jimple.v().newAssignStmt(castValue, castExpr);
+        assign = Jimple.v().newAssignStmt(castValue, castExpr);
 
         defineBlock(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        
+		}
+		public void getConstraint(IDalvikTyper dalvikTyper) {
+				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.opcode.value;
-          body.dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: type could be null!
+          dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: type could be null!
         }
     }
 
