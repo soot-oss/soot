@@ -21,7 +21,6 @@ package soot.dex.instructions;
 
 import org.jf.dexlib.Code.Instruction;
 
-import soot.IntType;
 import soot.dex.DexBody;
 import soot.dex.IDalvikTyper;
 import soot.jimple.Jimple;

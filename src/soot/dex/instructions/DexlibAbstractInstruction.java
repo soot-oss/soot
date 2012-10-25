@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.jf.dexlib.Code.Instruction;
 
-import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;

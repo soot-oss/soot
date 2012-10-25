@@ -22,13 +22,11 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.SingleRegisterInstruction;
 
-import soot.IntType;
 import soot.Local;
 import soot.dex.DexBody;
 import soot.dex.IDalvikTyper;
 import soot.jimple.ExitMonitorStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class MonitorExitInstruction extends DexlibAbstractInstruction {
 

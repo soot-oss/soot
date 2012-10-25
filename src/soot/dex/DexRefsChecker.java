@@ -26,7 +26,6 @@ import java.util.Set;
 
 import soot.Body;
 import soot.Local;
-import soot.RefLikeType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
@@ -34,10 +33,6 @@ import soot.Type;
 import soot.Unit;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
 
 /**
 
@@ -45,9 +40,6 @@ import soot.toolkits.scalar.SmartLocalDefs;
 public class DexRefsChecker extends DexTransformer { 
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
-  
-	private boolean usedAsObject;
-	private boolean doBreak = false;
 	
     public static DexRefsChecker v() {
         return new DexRefsChecker();
@@ -55,11 +47,11 @@ public class DexRefsChecker extends DexTransformer {
 
    Local l = null;
     
-	@SuppressWarnings("unchecked")
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
-        final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-        final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-        final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
+		//final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
+		//final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+		//final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
+
 
         for (Unit u: getRefCandidates(body)) {
           Stmt s = (Stmt)u;
@@ -101,11 +93,6 @@ public class DexRefsChecker extends DexTransformer {
           
         } // for if statements
     }
-
-
-  private boolean isObject(Type t) {
-    return t instanceof RefLikeType;
-  }
 	
     /**
      * Collect all the if statements comparing two locals with 

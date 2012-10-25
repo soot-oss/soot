@@ -37,7 +37,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.Stmt;
-import soot.jimple.internal.JLookupSwitchStmt;
 
 public class SparseSwitchInstruction extends SwitchInstruction {
 

@@ -27,7 +27,6 @@ import soot.dex.DexBody;
 import soot.dex.IDalvikTyper;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class MonitorEnterInstruction extends DexlibAbstractInstruction {
 

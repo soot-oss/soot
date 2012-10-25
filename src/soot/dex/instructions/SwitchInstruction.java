@@ -26,7 +26,6 @@ import org.jf.dexlib.Code.SingleRegisterInstruction;
 import soot.Local;
 import soot.Unit;
 import soot.dex.DexBody;
-import soot.dex.IDalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 

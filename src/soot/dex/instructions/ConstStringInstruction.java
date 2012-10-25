@@ -30,7 +30,6 @@ import soot.dex.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
-import soot.jimple.internal.JAssignStmt;
 
 public class ConstStringInstruction extends DexlibAbstractInstruction {
 
@@ -60,7 +59,6 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
           dalvikTyper.setObjectType(assign.getLeftOpBox());
         }
     }

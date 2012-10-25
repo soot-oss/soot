@@ -22,7 +22,6 @@ package soot.dex.instructions;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.SingleRegisterInstruction;
 
-import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.dex.DexBody;

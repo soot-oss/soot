@@ -37,7 +37,6 @@ import soot.dex.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
-import soot.jimple.internal.JAssignStmt;
 
 public class NewInstanceInstruction extends DexlibAbstractInstruction {
 
