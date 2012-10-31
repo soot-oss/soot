@@ -28,7 +28,6 @@ import soot.RefLikeType;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.AssignStmt;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
@@ -57,64 +56,32 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
         super(g);
         invalidInstanceKeys = new HashSet<Integer>();
         /*
-         * Find all SCCs, then invalidate all instance keys for variable defined within an SCC,
-         * but not in the case in which the respective locals are only assigned values that are
-         * *not* reassigned in the loop.
-         * 
-         * In the following example we invalidate the keys for a and x but not for b or c. 
-         * A b;
-         * while (i>0){
-	            A a = new A();
-	            A x = a;
-	            c = b;
-	       }
+         * Find all SCCs, then invalidate all instance keys for variable defined within an SCC.
          */
         StronglyConnectedComponentsFast<Unit> sccAnalysis = new StronglyConnectedComponentsFast<Unit>(g);
         for (List<Unit> scc : sccAnalysis.getTrueComponents()) {
-        	boolean changes;
-        	do {
-        		changes = false;
-				for (Unit unit : scc) {
-					for (ValueBox vb : unit.getDefBoxes()) {
-						Value defValue = vb.getValue();
-						if(defValue instanceof Local) {
-							Local defLocal = (Local) defValue;
-							if(defLocal.getType() instanceof RefLikeType) {
-								if(unit instanceof AssignStmt) {
-									AssignStmt assignStmt = (AssignStmt) unit;
-									Value rightOp = assignStmt.getRightOp();
-									if(rightOp instanceof Local) {
-										if(invalidInstanceKeys.contains(getFlowBefore(unit).get(rightOp))) {
-											if(invalidInstanceKeys.add((Integer) getFlowBefore(unit).get(defLocal)))
-												changes = true;
-										}
-										if(invalidInstanceKeys.contains(getFlowAfter(unit).get(rightOp))) {
-											if(invalidInstanceKeys.add((Integer) getFlowAfter(unit).get(defLocal)))
-												changes = true;
-										}
-										continue;
-									}
-								}
-								
-								Object instanceKey = getFlowBefore(unit).get(defLocal);
-								//if key is not already UNKNOWN
-								if(instanceKey instanceof Integer) {
-									Integer intKey = (Integer) instanceKey;
-									if(invalidInstanceKeys.add(intKey))
-										changes = true;
-								}
-								instanceKey = getFlowAfter(unit).get(defLocal);
-								//if key is not already UNKNOWN
-								if(instanceKey instanceof Integer) {
-									Integer intKey = (Integer) instanceKey;
-									if(invalidInstanceKeys.add(intKey))
-										changes = true;
-								}
+			for (Unit unit : scc) {
+				for (ValueBox vb : unit.getDefBoxes()) {
+					Value defValue = vb.getValue();
+					if(defValue instanceof Local) {
+						Local defLocal = (Local) defValue;
+						if(defLocal.getType() instanceof RefLikeType) {
+							Object instanceKey = getFlowBefore(unit).get(defLocal);
+							//if key is not already UNKNOWN
+							if(instanceKey instanceof Integer) {
+								Integer intKey = (Integer) instanceKey;
+								invalidInstanceKeys.add(intKey);
+							}
+							instanceKey = getFlowAfter(unit).get(defLocal);
+							//if key is not already UNKNOWN
+							if(instanceKey instanceof Integer) {
+								Integer intKey = (Integer) instanceKey;
+								invalidInstanceKeys.add(intKey);
 							}
 						}
 					}
 				}
-        	} while(changes);
+			}
 		}
     }
     
