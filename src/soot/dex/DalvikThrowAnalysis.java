@@ -196,11 +196,18 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
 //	    }   
 //	    FINISH(2);
 //	    OP_END
+//
       @Override
 	    public void caseStringConstant(StringConstant c) {
-        result = result.add(mgr.RESOLVE_FIELD_ERRORS); // should we add another kind of exception for this?
+        //
+        // the string is already fetched when converting 
+        // Dalvik bytecode to Jimple. A potential error 
+        // would be detected there.
+        //
+        //result = result.add(mgr.RESOLVE_FIELD_ERRORS); // should we add another kind of exception for this?
 	    }
-      
+   
+//     
 // from ./vm/mterp/c/OP_CONST_CLASS.c
 //
 //      HANDLE_OPCODE(OP_CONST_CLASS /*vAA, class@BBBB*/)                                                                                                                                              
@@ -221,10 +228,16 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
 //      }   
 //      FINISH(2);
 //      OP_END
-      
+//      
 	    @Override
 	    public void caseClassConstant(ClassConstant c) {
-	      result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+	      //
+        // the string is already fetched and stored in a 
+	      // ClassConstant object when converting 
+        // Dalvik bytecode to Jimple. A potential error 
+        // would be detected there.
+	      //
+	      // result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	    }
 	  };
 	}
