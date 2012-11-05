@@ -174,10 +174,54 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
 	@Override
 	protected ValueSwitch valueSwitch() {
 	  return new UnitThrowAnalysis.ValueSwitch() {
+
+
+// from ./vm/mterp/c/OP_CONST_STRING.c
+//
+//	    HANDLE_OPCODE(OP_CONST_STRING /*vAA, string@BBBB*/)                                                                                                                                            
+//	    {   
+//	        StringObject* strObj;
+//
+//	        vdst = INST_AA(inst);
+//	        ref = FETCH(1);
+//	        ILOGV("|const-string v%d string@0x%04x", vdst, ref);
+//	        strObj = dvmDexGetResolvedString(methodClassDex, ref);
+//	        if (strObj == NULL) {
+//	            EXPORT_PC();
+//	            strObj = dvmResolveString(curMethod->clazz, ref);
+//	            if (strObj == NULL)
+//	                GOTO_exceptionThrown(); <--- HERE
+//	        }   
+//	        SET_REGISTER(vdst, (u4) strObj);
+//	    }   
+//	    FINISH(2);
+//	    OP_END
       @Override
 	    public void caseStringConstant(StringConstant c) {
         result = result.add(mgr.RESOLVE_FIELD_ERRORS); // should we add another kind of exception for this?
 	    }
+      
+// from ./vm/mterp/c/OP_CONST_CLASS.c
+//
+//      HANDLE_OPCODE(OP_CONST_CLASS /*vAA, class@BBBB*/)                                                                                                                                              
+//      {   
+//          ClassObject* clazz;
+//
+//          vdst = INST_AA(inst);
+//          ref = FETCH(1);
+//          ILOGV("|const-class v%d class@0x%04x", vdst, ref);
+//          clazz = dvmDexGetResolvedClass(methodClassDex, ref);
+//          if (clazz == NULL) {
+//              EXPORT_PC();
+//              clazz = dvmResolveClass(curMethod->clazz, ref, true);
+//              if (clazz == NULL)
+//                  GOTO_exceptionThrown(); <--- HERE
+//          }   
+//          SET_REGISTER(vdst, (u4) clazz);
+//      }   
+//      FINISH(2);
+//      OP_END
+      
 	    @Override
 	    public void caseClassConstant(ClassConstant c) {
 	      result = result.add(mgr.RESOLVE_CLASS_ERRORS);
