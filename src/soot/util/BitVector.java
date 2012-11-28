@@ -175,6 +175,22 @@ public class BitVector
 		}
 		return c;
 	}
+	
+	/**Returns true if the both the current and the specified
+   * bitvectors have at least one bit set in common.
+   * @author Quentin Sabah
+   * Inspired by the BitVector.and method.
+	*/
+	public boolean intersects(BitVector other) {
+	  long[] otherBits = other.bits;
+	  int numToCheck = otherBits.length;
+	  if(bits.length < numToCheck) numToCheck = bits.length;
+	  int i;
+	  for( i = 0; i < numToCheck; i++) {
+	    if((bits[i] & otherBits[i]) != 0) return true;
+	  }
+	  return false;
+  }
 
     private void expand( int bit ) {
         int n = indexOf( bit )+1;
