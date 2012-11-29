@@ -29,7 +29,7 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
 
 public class DexResolver {
 	
-	static Map<File,DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
+	private static Map<File,DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
 	
     /**
      * Resolve the class contained in file into the passed soot class.
@@ -81,4 +81,8 @@ public class DexResolver {
 
         return deps;
     }
+
+	public static void reset() {
+		cache.clear();
+	}
 }
