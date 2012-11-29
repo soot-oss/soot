@@ -1,10 +1,11 @@
 package soot.jimple.toolkits.ide;
 
+import heros.IFDSTabulationProblem;
+import heros.InterproceduralCFG;
+import heros.solver.IFDSSolver;
+
 import java.util.Map;
 
-import de.bodden.ide.IFDSTabulationProblem;
-import de.bodden.ide.InterproceduralCFG;
-import de.bodden.ide.solver.IFDSSolver;
 
 import soot.Local;
 import soot.PackManager;

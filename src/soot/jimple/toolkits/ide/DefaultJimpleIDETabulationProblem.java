@@ -1,9 +1,9 @@
 package soot.jimple.toolkits.ide;
 
+import heros.InterproceduralCFG;
+import heros.template.DefaultIDETabulationProblem;
 import soot.SootMethod;
 import soot.Unit;
-import de.bodden.ide.InterproceduralCFG;
-import de.bodden.ide.template.DefaultIDETabulationProblem;
 
 /**
  *  A {@link DefaultIDETabulationProblem} with {@link Unit}s as nodes and {@link SootMethod}s as methods.

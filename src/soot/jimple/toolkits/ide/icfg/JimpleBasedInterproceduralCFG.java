@@ -1,5 +1,11 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import heros.DontSynchronize;
+import heros.InterproceduralCFG;
+import heros.SynchronizedBy;
+import heros.ThreadSafe;
+import heros.solver.IDESolver;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,11 +34,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import de.bodden.ide.DontSynchronize;
-import de.bodden.ide.InterproceduralCFG;
-import de.bodden.ide.SynchronizedBy;
-import de.bodden.ide.ThreadSafe;
-import de.bodden.ide.solver.IDESolver;
 
 /**
  * Default implementation for the {@link InterproceduralCFG} interface.

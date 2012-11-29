@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.ide;
 
+import heros.InterproceduralCFG;
+import heros.solver.IFDSSolver;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -13,8 +16,6 @@ import soot.Unit;
 
 import com.google.common.collect.Table.Cell;
 
-import de.bodden.ide.InterproceduralCFG;
-import de.bodden.ide.solver.IFDSSolver;
 
 public class JimpleIFDSSolver<D, V> extends IFDSSolver<Unit, D, SootMethod, InterproceduralCFG<Unit,SootMethod>> {
 

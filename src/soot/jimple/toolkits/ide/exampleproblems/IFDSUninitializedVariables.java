@@ -1,17 +1,18 @@
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import heros.FlowFunction;
+import heros.FlowFunctions;
+import heros.InterproceduralCFG;
+import heros.flowfunc.Identity;
+import heros.flowfunc.Kill;
+import heros.flowfunc.KillAll;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.bodden.ide.FlowFunction;
-import de.bodden.ide.FlowFunctions;
-import de.bodden.ide.InterproceduralCFG;
-import de.bodden.ide.flowfunc.Identity;
-import de.bodden.ide.flowfunc.Kill;
-import de.bodden.ide.flowfunc.KillAll;
 
 import soot.Local;
 import soot.NullType;
