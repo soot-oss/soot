@@ -1,0 +1,134 @@
+package soot.jimple.toolkits.ide.exampleproblems;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import de.bodden.ide.FlowFunction;
+import de.bodden.ide.FlowFunctions;
+import de.bodden.ide.InterproceduralCFG;
+import de.bodden.ide.flowfunc.Gen;
+import de.bodden.ide.flowfunc.Identity;
+import de.bodden.ide.flowfunc.Kill;
+import de.bodden.ide.flowfunc.KillAll;
+import de.bodden.ide.flowfunc.Transfer;
+
+import soot.Local;
+import soot.NullType;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.ParameterRef;
+import soot.jimple.ReturnStmt;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JimpleLocal;
+import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
+
+public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,InterproceduralCFG<Unit, SootMethod>> {
+
+	public IFDSLocalInfoFlow(InterproceduralCFG<Unit,SootMethod> icfg) {
+		super(icfg);		
+	}
+
+	public FlowFunctions<Unit, Local, SootMethod> createFlowFunctionsFactory() {		
+		return new FlowFunctions<Unit,Local,SootMethod>() {
+
+			@Override
+			public FlowFunction<Local> getNormalFlowFunction(Unit src, Unit dest) {
+				if (src instanceof IdentityStmt && interproceduralCFG().getMethodOf(src)==Scene.v().getMainMethod()) {
+					IdentityStmt is = (IdentityStmt) src;
+					Local leftLocal = (Local) is.getLeftOp();
+					Value right = is.getRightOp();
+					if (right instanceof ParameterRef) {
+						return new Gen<Local>(leftLocal,zeroValue());
+					}
+				}
+				
+				if(src instanceof AssignStmt) {
+					AssignStmt assignStmt = (AssignStmt) src;
+					Value right = assignStmt.getRightOp();
+					if(assignStmt.getLeftOp() instanceof Local) {
+						final Local leftLocal = (Local) assignStmt.getLeftOp();
+						if(right instanceof Local) {
+							final Local rightLocal = (Local) right;
+							return new Transfer<Local>(leftLocal, rightLocal);
+						} else {
+							return new Kill<Local>(leftLocal);
+						}
+					}
+				}
+				return Identity.v();
+			}
+
+			@Override
+			public FlowFunction<Local> getCallFlowFunction(Unit src, final SootMethod dest) {
+				Stmt stmt = (Stmt) src;
+				InvokeExpr ie = stmt.getInvokeExpr();
+				final List<Value> callArgs = ie.getArgs();
+				final List<Local> paramLocals = new ArrayList<Local>();
+				for(int i=0;i<dest.getParameterCount();i++) {
+					paramLocals.add(dest.getActiveBody().getParameterLocal(i));
+				}
+				return new FlowFunction<Local>() {
+
+					public Set<Local> computeTargets(Local source) {
+						int argIndex = callArgs.indexOf(source);
+						if(argIndex>-1) {
+							return Collections.singleton(paramLocals.get(argIndex));
+						}
+						return Collections.emptySet();
+					}
+				};
+			}
+
+			@Override
+			public FlowFunction<Local> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt, Unit retSite) {
+				if (exitStmt instanceof ReturnStmt) {								
+					ReturnStmt returnStmt = (ReturnStmt) exitStmt;
+					Value op = returnStmt.getOp();
+					if(op instanceof Local) {
+						if(callSite instanceof DefinitionStmt) {
+							DefinitionStmt defnStmt = (DefinitionStmt) callSite;
+							Value leftOp = defnStmt.getLeftOp();
+							if(leftOp instanceof Local) {
+								final Local tgtLocal = (Local) leftOp;
+								final Local retLocal = (Local) op;
+								return new FlowFunction<Local>() {
+
+									public Set<Local> computeTargets(Local source) {
+										if(source==retLocal)
+											return Collections.singleton(tgtLocal);
+										return Collections.emptySet();
+									}
+									
+								};
+							}
+						}
+					}
+				} 
+				return KillAll.v();
+			}
+
+			@Override
+			public FlowFunction<Local> getCallToReturnFlowFunction(Unit call, Unit returnSite) {
+				return Identity.v();
+			}
+		};						
+	}
+
+	@Override
+	public Local createZeroValue() {
+		return new JimpleLocal("zero", NullType.v());
+	}
+
+	@Override
+	public Set<Unit> initialSeeds() {
+		return Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst());
+	}
+}
