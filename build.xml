@@ -31,6 +31,7 @@
         		<pathelement location="${polyglot.jar}"/>
            		<pathelement location="${xmlprinter.jar}"/>
            		<pathelement location="${jasmin.jar}"/>
+           		<pathelement location="${heros.jar}"/>
            		<pathelement location="${axmlprinter2.jar}"/>
         	</classpath>
             <src path="src"/>
@@ -80,10 +81,7 @@
     </target>
 
     <target name="sablecc" depends="determine-sablecc-uptodate,settings" unless="sablecc.uptodate">
-        <apply executable="sablecc">
-            <arg value="-d generated/sablecc"/>
-            <fileset dir="src" includes="jimple.scc"/>
-        </apply>
+
     </target>
 	
     <target name="determine-jastadd-uptodate" depends="settings" if="jastaddfrontend.loc">
@@ -105,7 +103,7 @@
 
     <target name="javadoc">
         <javadoc
-            classpath="classes:${polyglot.jar}:${jasmin.jar}"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}:${heros.jar}"
             sourcepath="src:generated/singletons:generated/sablecc:generated/options"
             destdir="doc"
             maxmemory="400m"
@@ -294,6 +292,7 @@
         <jar destfile="${release.loc}/soot-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
             <zipfileset src="${release.loc}/sootclasses-${soot.version}.jar"/>
             <zipfileset src="${jasmin.jar}"/>
+            <zipfileset src="${heros.jar}"/>
             <zipfileset src="${polyglot.jar}"/>
             <zipfileset src="${javacup.jar}"/>
             <zipfileset src="${xmlprinter.jar}"/>      

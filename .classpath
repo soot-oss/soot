@@ -10,6 +10,6 @@
 	<classpathentry kind="lib" path="libs/polyglot.jar"/>
 	<classpathentry kind="lib" path="libs/AXMLPrinter2.jar"/>
 	<classpathentry kind="lib" path="lib/soot-trunk.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/soot-ifds"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/heros"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
