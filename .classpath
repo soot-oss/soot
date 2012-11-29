@@ -9,5 +9,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jasmin"/>
 	<classpathentry kind="lib" path="libs/polyglot.jar"/>
 	<classpathentry kind="lib" path="libs/AXMLPrinter2.jar"/>
+	<classpathentry kind="lib" path="lib/soot-trunk.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/soot-ifds"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
