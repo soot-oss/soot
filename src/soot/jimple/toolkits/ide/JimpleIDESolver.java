@@ -1,5 +1,6 @@
 package soot.jimple.toolkits.ide;
 
+import heros.IDETabulationProblem;
 import heros.InterproceduralCFG;
 import heros.debugsupport.NewEdgeSerializer;
 import heros.solver.IDESolver;
@@ -22,11 +23,11 @@ public class JimpleIDESolver<D, V> extends IDESolver<Unit, D, SootMethod, V, Int
 
 	private final boolean DUMP_RESULTS;
 
-	public JimpleIDESolver(DefaultJimpleIDETabulationProblem<D, V, InterproceduralCFG<Unit,SootMethod>> problem) {
+	public JimpleIDESolver(IDETabulationProblem<Unit,D,SootMethod,V,InterproceduralCFG<Unit,SootMethod>> problem) {
 		this(problem,false);
 	}
 	
-	public JimpleIDESolver(DefaultJimpleIDETabulationProblem<D, V, InterproceduralCFG<Unit,SootMethod>> problem, boolean dumpResults) {
+	public JimpleIDESolver(IDETabulationProblem<Unit,D,SootMethod,V,InterproceduralCFG<Unit,SootMethod>> problem, boolean dumpResults) {
 		super(problem);
 		this.DUMP_RESULTS = dumpResults;
 	}
