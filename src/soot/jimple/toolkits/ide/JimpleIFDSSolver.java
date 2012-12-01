@@ -20,7 +20,7 @@ import soot.Unit;
 import com.google.common.collect.Table.Cell;
 
 
-public class JimpleIFDSSolver<D, V> extends IFDSSolver<Unit, D, SootMethod, InterproceduralCFG<Unit,SootMethod>> {
+public class JimpleIFDSSolver<D> extends IFDSSolver<Unit, D, SootMethod, InterproceduralCFG<Unit,SootMethod>> {
 
 	private final boolean DUMP_RESULTS;
 
