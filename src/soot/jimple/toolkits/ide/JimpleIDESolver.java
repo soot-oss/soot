@@ -6,6 +6,7 @@ import heros.solver.IDESolver;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,8 +66,8 @@ public class JimpleIDESolver<D, V> extends IDESolver<Unit, D, SootMethod, V, Int
 	}
 	
 	@Override
-	protected NewEdgeSerializer<SootMethod, D, Unit, V> createEdgeListener() {
-		return new EdgeSerializer<D,V>();
+	protected NewEdgeSerializer<SootMethod, D, Unit, V> createEdgeListener(ObjectOutputStream oos) {
+		return new EdgeSerializer<D,V>(oos);
 	}
 
 }
