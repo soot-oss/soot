@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.ide;
 
 import heros.InterproceduralCFG;
+import heros.debugsupport.NewEdgeSerializer;
 import heros.solver.IDESolver;
 
 import java.io.FileNotFoundException;
@@ -15,7 +16,6 @@ import soot.SootMethod;
 import soot.Unit;
 
 import com.google.common.collect.Table.Cell;
-
 
 public class JimpleIDESolver<D, V> extends IDESolver<Unit, D, SootMethod, V, InterproceduralCFG<Unit,SootMethod>> {
 
@@ -62,6 +62,11 @@ public class JimpleIDESolver<D, V> extends IDESolver<Unit, D, SootMethod, V, Int
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	protected NewEdgeSerializer<SootMethod, D, Unit, V> createEdgeListener() {
+		return new EdgeSerializer<D,V>();
 	}
 
 }

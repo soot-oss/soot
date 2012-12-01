@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.ide;
 
 import heros.InterproceduralCFG;
+import heros.debugsupport.NewEdgeSerializer;
 import heros.solver.IFDSSolver;
 
 import java.io.FileNotFoundException;
@@ -63,5 +64,9 @@ public class JimpleIFDSSolver<D, V> extends IFDSSolver<Unit, D, SootMethod, Inte
 			e.printStackTrace();
 		}
 	}
-
+	
+	@Override
+	protected NewEdgeSerializer<SootMethod, D, Unit, BinaryDomain> createEdgeListener() {
+		return new EdgeSerializer<D,BinaryDomain>();
+	}
 }
