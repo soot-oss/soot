@@ -258,7 +258,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 		result = result.add(mgr.RESOLVE_METHOD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
 	    result = result.add(mgr.INITIALIZATION_ERRORS);
-	    result = result.add(mightThrow(i.getMethod()));
+	    //might throw anything
+	    result = result.add(ThrowableSet.Manager.v().ALL_THROWABLES);
 	}
 	
 	public void caseStaticInvokeInst(StaticInvokeInst i) {
