@@ -20,6 +20,8 @@ Improvements and API changes in HEAD
 5. Ben Bellamy modified the fast type assigner to handle variables that
    during their lifetime both point to array and non-array typed objects.
    This is necessary for dalvik-to-Jimple code generation.
+   
+6. Soot now requires Java 1.6 to build and run. 
 
 Improvements and API changes in version 2.5.0
 

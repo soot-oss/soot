@@ -16,8 +16,8 @@
             debug="true"
 	    includeantruntime="true"
             deprecation="on"
-        	source="1.5"
-        	target="1.5"
+        	source="1.6"
+        	target="1.6"
         	fork="true"
         	memorymaximumsize="512m"
         >
