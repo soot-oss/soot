@@ -56,9 +56,10 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
                     getMethod().equals(ie.getMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
-            for (ValueBox element : argBoxes)
-				if (!(element.getValue().equivTo(element.getValue())))
-                    return false;
+            for(int i=0; i< argBoxes.length; i++){
+          	  if(!(argBoxes[i]).getValue().equivTo(ie.argBoxes[i].getValue()))
+          	    return false;
+          	}
             return true;
         }
         return false;
