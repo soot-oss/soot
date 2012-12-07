@@ -80,12 +80,11 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));					
 					while(edgeIter.hasNext()) {
 						Edge edge = edgeIter.next();
-						if(edge.getTgt()==null) {
-							System.err.println();
-						}
 						SootMethod m = edge.getTgt().method();
 						if(m.hasActiveBody())
-						res.add(m);
+							res.add(m);
+						else if(IDESolver.DEBUG) 
+							System.err.println("Method "+m.getSignature()+" is referenced but has no body!");
 					}
 					return res; 
 				}
