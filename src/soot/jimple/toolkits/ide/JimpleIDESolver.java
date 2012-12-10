@@ -17,15 +17,15 @@ import soot.Unit;
 
 import com.google.common.collect.Table.Cell;
 
-public class JimpleIDESolver<D, V> extends IDESolver<Unit, D, SootMethod, V, InterproceduralCFG<Unit,SootMethod>> {
+public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit,SootMethod>> extends IDESolver<Unit, D, SootMethod, V, I> {
 
 	private final boolean DUMP_RESULTS;
 
-	public JimpleIDESolver(IDETabulationProblem<Unit,D,SootMethod,V,InterproceduralCFG<Unit,SootMethod>> problem) {
+	public JimpleIDESolver(IDETabulationProblem<Unit,D,SootMethod,V,I> problem) {
 		this(problem,false);
 	}
 	
-	public JimpleIDESolver(IDETabulationProblem<Unit,D,SootMethod,V,InterproceduralCFG<Unit,SootMethod>> problem, boolean dumpResults) {
+	public JimpleIDESolver(IDETabulationProblem<Unit,D,SootMethod,V,I> problem, boolean dumpResults) {
 		super(problem);
 		this.DUMP_RESULTS = dumpResults;
 	}

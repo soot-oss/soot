@@ -18,15 +18,15 @@ import soot.Unit;
 import com.google.common.collect.Table.Cell;
 
 
-public class JimpleIFDSSolver<D> extends IFDSSolver<Unit, D, SootMethod, InterproceduralCFG<Unit,SootMethod>> {
+public class JimpleIFDSSolver<D,I extends InterproceduralCFG<Unit,SootMethod>> extends IFDSSolver<Unit, D, SootMethod, I> {
 
 	private final boolean DUMP_RESULTS;
 
-	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,InterproceduralCFG<Unit,SootMethod>> problem) {
+	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,I> problem) {
 		this(problem,false);
 	}
 	
-	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,InterproceduralCFG<Unit,SootMethod>> problem, boolean dumpResults) {
+	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,I> problem, boolean dumpResults) {
 		super(problem);
 		this.DUMP_RESULTS = dumpResults;
 	}
