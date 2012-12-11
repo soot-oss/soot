@@ -33,7 +33,7 @@ import org.jf.dexlib.ClassDefItem;
 import org.jf.dexlib.DexFile;
 
 import soot.SourceLocator.IDexClassProvider;
-import soot.dex.Util;
+import soot.dexpler.Util;
 
 /**
  * Looks for a dex file which includes the definition of a class.

@@ -22,7 +22,7 @@ package soot;
 
 import java.io.File;
 
-import soot.dex.DexResolver;
+import soot.dexpler.DexResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 

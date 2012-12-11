@@ -19,7 +19,7 @@
 
 package soot;
 
-import soot.dex.DexResolver;
+import soot.dexpler.DexResolver;
 
 public class Dexpler {
 	
