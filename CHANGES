@@ -23,6 +23,9 @@ Improvements and API changes in HEAD
    
 6. Soot now requires Java 1.6 to build and run. 
 
+7. Changed the definition of EntryPoints.application() to just return
+   the empty set if no main class is present.
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass
