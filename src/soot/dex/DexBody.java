@@ -1,5 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
+ * 
+ * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * Security Reliability and Trust (SnT) - All rights reserved
+ * Alexandre Bartel
+ * 
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -475,7 +480,7 @@ public class DexBody  {
         for (RetypeableInstruction i : instructionsToRetype)
             i.retype();
         
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        {
           // remove instructions from instructions list
           List<DexlibAbstractInstruction> iToRemove = new ArrayList<DexlibAbstractInstruction>();
           for (DexlibAbstractInstruction i: instructions)
@@ -485,6 +490,9 @@ public class DexBody  {
             Debug.printDbg("removing dexinstruction containing unit '"+ i.getUnit() +"'");
             instructions.remove(i);
           }
+        }
+        
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
           for(DexlibAbstractInstruction instruction : instructions) {
             instruction.getConstraint(dalvikTyper); // todo: check that this instruction still is in jbody
           }
@@ -570,6 +578,20 @@ public class DexBody  {
         Debug.printDbg(""+(Body)jBody);
         
         PackManager.v().getPack("jb").apply(jBody);
+        
+        
+        for (Unit u: jBody.getUnits()) {
+          if (u instanceof AssignStmt) {
+            AssignStmt ass = (AssignStmt)u;
+            if (ass.getRightOp() instanceof CastExpr) {
+              CastExpr c = (CastExpr)ass.getRightOp();
+              if (c.getType() instanceof NullType) {
+                Debug.printDbg("replacing cast to null_type by nullConstant assignment in "+ u);
+                ass.setRightOp(NullConstant.v());
+              }
+            }
+          }
+        }
         
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg(""+(Body)jBody);
