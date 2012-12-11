@@ -122,8 +122,11 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 
 	
 	public JimpleBasedInterproceduralCFG() {
-		cg = Scene.v().getCallGraph();
-		
+		cg = Scene.v().getCallGraph();		
+		initializeUnitToOwner();
+	}
+
+	protected void initializeUnitToOwner() {
 		List<MethodOrMethodContext> eps = new ArrayList<MethodOrMethodContext>();
 		eps.addAll(Scene.v().getEntryPoints());
 		ReachableMethods reachableMethods = new ReachableMethods(cg, eps.iterator(), new EdgeFilter());
