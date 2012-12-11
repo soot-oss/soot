@@ -1,6 +1,9 @@
 Improvements and API changes in HEAD
 
-1. Added support for Android. TODO Further comments...
+1. Added support for Android. There is a new experimental module called 
+   Dexpler which converts Dalvik bytecode to Jimple. This enables Soot
+   to directly read bytecode from Android applications. 
+   TODO Further comments...
 
 2. Changed default throw analysis from "pedantic" to "unit based". This
    changes the default the assumptions that Soot makes about which
