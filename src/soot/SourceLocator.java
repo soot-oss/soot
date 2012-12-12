@@ -130,7 +130,7 @@ public class SourceLocator
                 classProviders.add(new JavaClassProvider());
                 break;
             case Options.src_prec_apk:
-                classProviders.add(dexClassProvider());
+                classProviders.add(new DexClassProvider());
 				classProviders.add(new CoffiClassProvider());
 				classProviders.add(new JavaClassProvider());
 				classProviders.add(new JimpleClassProvider());
@@ -139,18 +139,6 @@ public class SourceLocator
                 throw new RuntimeException("Other source precedences are not currently supported.");
         }
     }
-
-    private IDexClassProvider dexClassProvider() {
-    	if(dexCP==null) {
-			try {
-				dexCP = (IDexClassProvider) Class.forName("soot.DexClassProvider").newInstance();
-	            return dexCP;
-			} catch (Exception e) {
-				throw new Error("Tried to load input from DEX but class soot.DexClassProvider is not present on the classpath." +
-						" Did you forget to include the DEX plugin?",e);
-			}
-    	} else return dexCP;
-	}
 
 	private List<ClassProvider> classProviders;
     public void setClassProviders( List<ClassProvider> classProviders ) {
@@ -205,7 +193,7 @@ public class SourceLocator
 					// We are dealing with an apk file
 					if (entryName.equals("classes.dex")) {
 						hasClassesDotDex = true;
-						classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
+						classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
 					}
 				}
 
@@ -267,7 +255,7 @@ public class SourceLocator
 					}
 					if (fileName.endsWith(".dex")) {
 						try {
-							classes.addAll(dexClassProvider().classesOfDex(element));
+							classes.addAll(DexClassProvider.classesOfDex(element));
 						} catch (IOException e) { /* Ignore unreadable files */
 						}
 					}
@@ -546,11 +534,6 @@ public class SourceLocator
     private Map<String, File> dexClassIndex;
 
     /**
-     * Handle to the class provider for Dalvik DEX files (if present).
-     */
-    private IDexClassProvider dexCP;
-
-    /**
      * Return the dex class index that maps class names to files
      *
      * @return the index
@@ -566,10 +549,6 @@ public class SourceLocator
      */
     public void setDexClassIndex(Map<String, File> index) {
     	dexClassIndex = index;
-    }
-    
-    interface IDexClassProvider extends ClassProvider {
-    	public Set<String> classesOfDex(File file) throws IOException;    	
     }
 }
 

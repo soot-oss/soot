@@ -32,14 +32,13 @@ import java.util.Set;
 import org.jf.dexlib.ClassDefItem;
 import org.jf.dexlib.DexFile;
 
-import soot.SourceLocator.IDexClassProvider;
 import soot.dexpler.Util;
 
 /**
  * Looks for a dex file which includes the definition of a class.
  * 
  */
-public class DexClassProvider implements IDexClassProvider {
+public class DexClassProvider implements ClassProvider {
 
 	/**
 	 * Provides the DexClassSource for the class.
@@ -115,7 +114,7 @@ public class DexClassProvider implements IDexClassProvider {
 	 *
 	 * @return set of class names
 	 */
-	public Set<String> classesOfDex(File file) throws IOException {
+	public static Set<String> classesOfDex(File file) throws IOException {
 		Set<String> classes = new HashSet<String>();
 		DexFile d = new DexFile(file, true, false);
 		for (ClassDefItem c : d.ClassDefsSection.getItems()) {
