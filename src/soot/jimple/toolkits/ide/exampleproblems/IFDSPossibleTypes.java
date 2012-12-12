@@ -58,10 +58,10 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
 					if(right instanceof Constant || right instanceof NewExpr) {
 						return new FlowFunction<Pair<Value,Type>>() {
 							public Set<Pair<Value, Type>> computeTargets(Pair<Value, Type> source) {
-								if(source==new Pair<Value, Type>(Jimple.v().newLocal("<dummy>", UnknownType.v()), UnknownType.v())) {
+								if(source==zeroValue()) {
 									Set<Pair<Value, Type>> res = new LinkedHashSet<Pair<Value,Type>>();
 									res.add(new Pair<Value,Type>(left,right.getType()));
-									res.add(new Pair<Value, Type>(Jimple.v().newLocal("<dummy>", UnknownType.v()), UnknownType.v()));
+									res.add(zeroValue());
 									return res;
 								} else if(source.getO1() instanceof Local && source.getO1().equivTo(left)) {
 									//strong update for local variables
