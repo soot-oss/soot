@@ -27,7 +27,7 @@ import soot.jimple.internal.JAssignStmt;
 
 public interface IDalvikTyper {
   
-  public static boolean ENABLE_DVKTYPER = true; //false;
+  public static boolean ENABLE_DVKTYPER = false; //false;
   
   public abstract void setType(ValueBox v, Type type);
   public abstract void setObjectType(ValueBox v);
