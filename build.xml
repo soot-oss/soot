@@ -297,6 +297,7 @@
             <zipfileset src="${polyglot.jar}"/>
             <zipfileset src="${javacup.jar}"/>
             <zipfileset src="${xmlprinter.jar}"/>      
+            <zipfileset src="${baksmali.jar}"/>      
         </jar>
 		<delete dir="META-INF"/>
     </target>
