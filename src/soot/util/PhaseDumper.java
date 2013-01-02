@@ -158,7 +158,7 @@ public class PhaseDumper {
 	String className = b.getMethod().getDeclaringClass().getName();
 	buf.append(className);
 	buf.append(File.separatorChar);
-	buf.append(b.getMethod().getSubSignature());
+	buf.append(b.getMethod().getSubSignature().replace('<', '[').replace('>', ']'));
 	java.io.File dir = new java.io.File(buf.toString());
 	if (dir.exists()) {
 	    if (! dir.isDirectory()) {
