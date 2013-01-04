@@ -39,8 +39,6 @@ import org.jf.dexlib.Util.Pair;
 import soot.Body;
 import soot.CompilationDeathException;
 import soot.G;
-import soot.PackManager;
-import soot.PackManager.IDexPrinter;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -59,14 +57,12 @@ import soot.jimple.Stmt;
  * If the printer has found the original APK of an added class (via {@link SourceLocator#dexClassIndex()}),
  * the files in the APK are copied to a new one, replacing it's classes.dex and excluding the signature files.
  * Note that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.<br>
- * If there is no original APK, the printer just emits a classes.dex.<br>
- * <br>
- * IMPLEMENTATION NOTE: the class name "soot.toDex.DexPrinter" is referenced from {@link PackManager} - do not change it!
+ * If there is no original APK, the printer just emits a classes.dex.
  * 
  * @see <a href="http://docs.oracle.com/javase/7/docs/technotes/tools/windows/jarsigner.html">jarsigner documentation</a>
  * @see <a href="http://developer.android.com/tools/help/zipalign.html">zipalign documentation</a>
  */
-public class DexPrinter implements IDexPrinter {
+public class DexPrinter {
 	
 	private static final String CLASSES_DEX = "classes.dex";
 	
