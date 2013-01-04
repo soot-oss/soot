@@ -57,6 +57,7 @@ import soot.jimple.toolkits.thread.mhp.MhpTransformer;
 import soot.jimple.toolkits.thread.synchronization.LockAllocator;
 import soot.tagkit.*;
 import soot.options.Options;
+import soot.toDex.DexPrinter;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
 import soot.jimple.paddle.PaddleHook;
@@ -420,7 +421,6 @@ public class PackManager {
         if( Options.v().output_format() == Options.output_format_dava ) {
             postProcessDAVA();
         } else if (Options.v().output_format() == Options.output_format_dex) {
-        	setDexPrinter();
         	writeOutput(reachableClasses());
         	dexPrinter.print();
         } else {
@@ -433,26 +433,7 @@ public class PackManager {
             PhaseDumper.v().dumpAfter("output");
     }
     
-	public interface IDexPrinter {
-		void add(SootClass c);
-		void print();
-	}
-    
-    /**
-     * Handle to the printer for Dalvik DEX files (if present).
-     */
-    private IDexPrinter dexPrinter;
-    
-    private void setDexPrinter() {
-    	if (dexPrinter == null) {
-    		try {
-    			dexPrinter = (IDexPrinter) Class.forName("soot.toDex.DexPrinter").newInstance();
-    		} catch (Exception e) {
-    			throw new Error("Tried to print output to DEX but class soot.toDex.DexPrinter is not present on the classpath." +
-						" Did you forget to include the DEX plugin?",e);
-    		}
-    	}
-	}
+    private DexPrinter dexPrinter = new DexPrinter();
 
 	private void setupJAR() {
 		if( Options.v().output_jar() ) {
