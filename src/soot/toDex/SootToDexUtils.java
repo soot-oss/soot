@@ -123,7 +123,8 @@ public class SootToDexUtils {
 	public static int getRealRegCount(List<Register> regs) {
 		int regCount = 0;
 		for (Register r : regs) {
-			regCount += r.isWide() ? 2 : 1;
+			Type regType = r.getType();
+			regCount += getDexWords(regType);
 		}
 		return regCount;
 	}

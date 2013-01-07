@@ -26,14 +26,11 @@ public class RegisterAssigner {
 	
 	private RegisterAllocator regAlloc;
 	
-	private List<Insn> insns;
-	
-	public RegisterAssigner(RegisterAllocator regAlloc, List<Insn> insns) {
+	public RegisterAssigner(RegisterAllocator regAlloc) {
 		this.regAlloc = regAlloc;
-		this.insns = insns;
 	}
 	
-	private void renumParamRegsToHigh() {
+	private void renumParamRegsToHigh(List<Insn> insns) {
 		int regCount = regAlloc.getRegCount();
 		int paramRegCount = regAlloc.getParamRegCount();
 		if (paramRegCount == 0 || paramRegCount == regCount) {
@@ -55,9 +52,9 @@ public class RegisterAssigner {
 		}
 	}
 
-	public List<Insn> finishRegs() {
-		renumParamRegsToHigh();
-		reserveRegisters();
+	public List<Insn> finishRegs(List<Insn> insns) {
+		renumParamRegsToHigh(insns);
+		reserveRegisters(insns);
 		ListIterator<Insn> insnIter = insns.listIterator();
 		while (insnIter.hasNext()) {
 			Insn oldInsn = insnIter.next();
@@ -95,11 +92,11 @@ public class RegisterAssigner {
 		return insns;
 	}
 
-	private void reserveRegisters() {
+	private void reserveRegisters(List<Insn> insns) {
 		// reserve registers as long as new ones are needed
 		int reservedRegs = 0;
 		while (true) {
-			int regsNeeded = getRegsNeeded(reservedRegs);
+			int regsNeeded = getRegsNeeded(reservedRegs, insns);
 			int regsToReserve = regsNeeded - reservedRegs;
 			if (regsToReserve <= 0) {
 				break;
@@ -161,7 +158,7 @@ public class RegisterAssigner {
 		insns.next(); // get past current insn again
 	}
 	
-	private int getRegsNeeded(int regsAlreadyReserved) {
+	private int getRegsNeeded(int regsAlreadyReserved, List<Insn> insns) {
 		int regsNeeded = regsAlreadyReserved; // we only need regs that weren't reserved yet
 		for (int i = 0; i < insns.size(); i++) {
 			Insn insn = insns.get(i);
