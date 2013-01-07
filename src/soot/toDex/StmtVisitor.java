@@ -206,8 +206,8 @@ public class StmtVisitor implements StmtSwitch {
 
 	private void finishRegs() {
 		// fit registers into insn formats, potentially replacing insns
-		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc, insns);
-		insns = regAssigner.finishRegs();
+		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc);
+		insns = regAssigner.finishRegs(insns);
 	}
 	
 	private void finishTargets() {
@@ -233,17 +233,7 @@ public class StmtVisitor implements StmtSwitch {
 				continue;
 			}
 			if (curInsn.getOpcode().name.startsWith("goto")) {
-				InsnWithOffset patchedGoto;
-				int curInsnOffset = curInsn.getInsnOffset();
-				if (SootToDexUtils.fitsSigned16(curInsnOffset)) {
-					patchedGoto = new Insn20t(Opcode.GOTO_16);
-				} else if (SootToDexUtils.fitsSigned32(curInsnOffset)) {
-					patchedGoto = new Insn30t(Opcode.GOTO_32);
-				} else {
-					throw new Error("a goto target does not fit into 32 bit - this means that the method has too many instructions");
-				}
-				patchedGoto.setInsnOffset(curInsnOffset);
-				patchedGoto.setOffset(curInsn.getOffset());
+				InsnWithOffset patchedGoto = patchGoto(curInsn);
 				insns.set(i, patchedGoto);
 				hadToPatch = true;
 			} else if (curInsn.getOpcode().name.startsWith("if-")) {
@@ -256,6 +246,21 @@ public class StmtVisitor implements StmtSwitch {
 			}
 		}
 		return hadToPatch;
+	}
+
+	private InsnWithOffset patchGoto(InsnWithOffset gotoInsn) {
+		InsnWithOffset patchedGoto;
+		int curInsnOffset = gotoInsn.getInsnOffset();
+		if (SootToDexUtils.fitsSigned16(curInsnOffset)) {
+			patchedGoto = new Insn20t(Opcode.GOTO_16);
+		} else if (SootToDexUtils.fitsSigned32(curInsnOffset)) {
+			patchedGoto = new Insn30t(Opcode.GOTO_32);
+		} else {
+			throw new Error("a goto target does not fit into 32 bit - this means that the method has too many instructions");
+		}
+		patchedGoto.setInsnOffset(curInsnOffset);
+		patchedGoto.setOffset(gotoInsn.getOffset());
+		return patchedGoto;
 	}
 
 	/*
@@ -279,17 +284,7 @@ public class StmtVisitor implements StmtSwitch {
 	 * where the if insn has a "near" target and the "goto bar" a "far" target.
 	 */
 	private void reverseIfAndAddGoto(InsnWithOffset oldIfInsn, int insnIndex) {
-		// create reversed if insn
-		Opcode oldOpc = oldIfInsn.getOpcode();
-		Opcode reversedOpc = oppositeIfs.get(oldOpc);
-		InsnWithOffset reversedIf;
-		if (oldOpc.name.endsWith("z")) {
-			Insn21t oldIfz = (Insn21t) oldIfInsn;
-			reversedIf = new Insn21t(reversedOpc, oldIfz.getRegA());
-		} else {
-			Insn22t oldIf = (Insn22t) oldIfInsn;
-			reversedIf = new Insn22t(reversedOpc, oldIf.getRegA(), oldIf.getRegB());
-		}
+		InsnWithOffset reversedIf = reverseIf(oldIfInsn);
 		// set the new near target and replace if insn
 		AddressInsn newIfTarget = getNextTarget(insnIndex + 1);
 		reversedIf.setOffset(newIfTarget.getOriginalSource());
@@ -298,6 +293,17 @@ public class StmtVisitor implements StmtSwitch {
 		Insn10t newGoto = new Insn10t(Opcode.GOTO);
 		newGoto.setOffset(oldIfInsn.getOffset());
 		insns.add(insnIndex + 1, newGoto);
+	}
+
+	private InsnWithOffset reverseIf(InsnWithOffset ifInsn) {
+		Opcode oldOpc = ifInsn.getOpcode();
+		Opcode reversedOpc = oppositeIfs.get(oldOpc);
+		if (oldOpc.name.endsWith("z")) {
+			Insn21t oldIfz = (Insn21t) ifInsn;
+			return new Insn21t(reversedOpc, oldIfz.getRegA());
+		}
+		Insn22t oldIf = (Insn22t) ifInsn;
+		return new Insn22t(reversedOpc, oldIf.getRegA(), oldIf.getRegB());
 	}
 
 	private AddressInsn getNextTarget(int startIndex) {
