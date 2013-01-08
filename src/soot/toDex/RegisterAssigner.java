@@ -143,10 +143,7 @@ public class RegisterAssigner {
 				}
 				Register source = incompatReg.clone();
 				Register destination = new Register(source.getType(), nextNewDestination);
-				nextNewDestination++;
-				if (destination.isWide()) {
-					nextNewDestination++;
-				}
+				nextNewDestination += SootToDexUtils.getDexWords(source.getType());
 				if (source.getNumber() != destination.getNumber()) {
 					Insn extraMove = StmtVisitor.buildMoveInsn(destination, source);
 					insns.add(extraMove); // advances the cursor, so no next() needed
@@ -208,10 +205,7 @@ public class RegisterAssigner {
 		for (Register r : regs) {
 			Register lowReg = r.isEmptyReg() ? r : new Register(r.getType(), nextRegNum);
 			lowVersion.add(lowReg);
-			nextRegNum++;
-			if (r.isWide()) {
-				nextRegNum++;
-			}
+			nextRegNum += SootToDexUtils.getDexWords(r.getType());
 		}
 		return lowVersion;
 	}

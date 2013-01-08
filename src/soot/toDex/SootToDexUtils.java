@@ -130,10 +130,7 @@ public class SootToDexUtils {
 	}
 	
 	public static int getDexWords(Type sootType) {
-		if (isWide(sootType)) {
-			return 2;
-		}
-		return 1;
+		return isWide(sootType) ? 2 : 1;
 	}
 	
 	public static int getDexWords(List<Type> sootTypes) {
