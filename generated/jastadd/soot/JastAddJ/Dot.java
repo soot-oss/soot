@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production Dot : {@link AbstractDot};
  * @ast node
- * @declaredat java.ast:14
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:17
  */
 public class Dot extends AbstractDot implements Cloneable {
   /**
@@ -61,18 +62,33 @@ public class Dot extends AbstractDot implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Dot fullCopy() {
-    Dot res = (Dot)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      Dot tree = (Dot) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect QualifiedNames
@@ -128,7 +144,7 @@ public class Dot extends AbstractDot implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public Dot() {
     super();
@@ -136,8 +152,19 @@ public class Dot extends AbstractDot implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public Dot(Expr p0, Access p1) {
     setChild(p0, 0);
@@ -146,7 +173,7 @@ public class Dot extends AbstractDot implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -154,59 +181,69 @@ public class Dot extends AbstractDot implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for Left
+   * Replaces the Left child.
+   * @param node The new node to replace the Left child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setLeft(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Left
+   * Retrieves the Left child.
+   * @return The current node used as the Left child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getLeft() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Left child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Left child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getLeftNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
   /**
-   * Setter for Right
+   * Replaces the Right child.
+   * @param node The new node to replace the Right child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setRight(Access node) {
     setChild(node, 1);
   }
   /**
-   * Getter for Right
+   * Retrieves the Right child.
+   * @return The current node used as the Right child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getRight() {
     return (Access)getChild(1);
   }
   /**
+   * Retrieves the Right child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Right child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getRightNoTransform() {
     return (Access)getChildNoTransform(1);
@@ -217,17 +254,17 @@ public class Dot extends AbstractDot implements Cloneable {
   public ASTNode rewriteTo() {
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag at line 210
     if(!duringSyntacticClassification() && leftSide().isPackageAccess() && rightSide().isPackageAccess()) {
-      state().duringResolveAmbiguousNames++;
+      state().duringNameResolution++;
       ASTNode result = rewriteRule0();
-      state().duringResolveAmbiguousNames--;
+      state().duringNameResolution--;
       return result;
     }
 
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag at line 222
     if(!duringSyntacticClassification() && leftSide().isPackageAccess() && !((Access)leftSide()).hasPrevExpr() && rightSide() instanceof TypeAccess) {
-      state().duringResolveAmbiguousNames++;
+      state().duringNameResolution++;
       ASTNode result = rewriteRule1();
-      state().duringResolveAmbiguousNames--;
+      state().duringNameResolution--;
       return result;
     }
 

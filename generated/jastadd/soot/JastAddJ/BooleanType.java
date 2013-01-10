@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production BooleanType : {@link PrimitiveType};
  * @ast node
- * @declaredat java.ast:51
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:54
  */
 public class BooleanType extends PrimitiveType implements Cloneable {
   /**
@@ -73,18 +74,33 @@ public class BooleanType extends PrimitiveType implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BooleanType fullCopy() {
-    BooleanType res = (BooleanType)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      BooleanType tree = (BooleanType) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect PrettyPrint
@@ -116,18 +132,29 @@ public class BooleanType extends PrimitiveType implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public BooleanType() {
     super();
 
-    setChild(new Opt(), 1);
-    setChild(new List(), 2);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new Opt(), 1);
+    setChild(new List(), 2);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public BooleanType(Modifiers p0, String p1, Opt<Access> p2, List<BodyDecl> p3) {
     setChild(p0, 0);
@@ -137,7 +164,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:15
+   * 
    */
   public BooleanType(Modifiers p0, beaver.Symbol p1, Opt<Access> p2, List<BodyDecl> p3) {
     setChild(p0, 0);
@@ -148,7 +175,7 @@ public class BooleanType extends PrimitiveType implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:24
+   * 
    */
   protected int numChildren() {
     return 3;
@@ -156,49 +183,57 @@ public class BooleanType extends PrimitiveType implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:30
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -208,102 +243,128 @@ public class BooleanType extends PrimitiveType implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for SuperClassAccessOpt
+   * Replaces the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @param opt The new node to be used as the optional node for the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setSuperClassAccessOpt(Opt<Access> opt) {
     setChild(opt, 1);
   }
   /**
-   * Does this node have a SuperClassAccess child?
+   * Check whether the optional SuperClassAccess child exists.
+   * @return {@code true} if the optional SuperClassAccess child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasSuperClassAccess() {
     return getSuperClassAccessOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child SuperClassAccess
-   * @apilevel high-level
+   * Retrieves the (optional) SuperClassAccess child.
+   * @return The SuperClassAccess child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
     return (Access)getSuperClassAccessOpt().getChild(0);
   }
   /**
-   * Setter for optional child SuperClassAccess
+   * Replaces the (optional) SuperClassAccess child.
+   * @param node The new node to be used as the SuperClassAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setSuperClassAccess(Access node) {
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @return The optional node for child the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOpt() {
     return (Opt<Access>)getChild(1);
   }
   /**
+   * Retrieves the optional node for child SuperClassAccess. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child SuperClassAccess.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOptNoTransform() {
     return (Opt<Access>)getChildNoTransform(1);
   }
   /**
-   * Setter for BodyDeclList
+   * Replaces the BodyDecl list.
+   * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBodyDeclList(List<BodyDecl> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * @return Number of children in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
-   * Getter for child in list BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDeclNoTransform() {
+    return getBodyDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the BodyDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
     return (BodyDecl)getBodyDeclList().getChild(i);
   }
   /**
-   * Add element to list BodyDeclList
+   * Append an element to the BodyDecl list.
+   * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addBodyDecl(BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
@@ -312,44 +373,51 @@ public class BooleanType extends PrimitiveType implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addBodyDeclNoTransform(BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list BodyDeclList
+   * Replaces the BodyDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setBodyDecl(BodyDecl node, int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for BodyDecl list.
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
-   * Getter for list BodyDeclList
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
@@ -358,9 +426,12 @@ public class BooleanType extends PrimitiveType implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -369,108 +440,80 @@ public class BooleanType extends PrimitiveType implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:317
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:160
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant cast(Constant c) {
-      ASTNode$State state = state();
-    Constant cast_Constant_value = cast_compute(c);
-    return cast_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c.booleanValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant cast_compute(Constant c) {  return Constant.create(c.booleanValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:418
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:266
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant andBitwise(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant andBitwise_Constant_Constant_value = andBitwise_compute(c1, c2);
-    return andBitwise_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.booleanValue() & c2.booleanValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant andBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.booleanValue() & c2.booleanValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:426
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:274
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant xorBitwise(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant xorBitwise_Constant_Constant_value = xorBitwise_compute(c1, c2);
-    return xorBitwise_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.booleanValue() ^ c2.booleanValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant xorBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.booleanValue() ^ c2.booleanValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:434
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:282
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant orBitwise(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant orBitwise_Constant_Constant_value = orBitwise_compute(c1, c2);
-    return orBitwise_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.booleanValue() | c2.booleanValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant orBitwise_compute(Constant c1, Constant c2) {  return Constant.create(c1.booleanValue() | c2.booleanValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:444
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:290
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant questionColon(Constant cond, Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
-    return questionColon_Constant_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(cond.booleanValue() ? c1.booleanValue() : c2.booleanValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.booleanValue() : c2.booleanValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:548
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:394
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean eqIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
-    return eqIsTrue_Expr_Expr_value;
+    ASTNode$State state = state();
+    try {  return left.isTrue() && right.isTrue() || left.isFalse() && right.isFalse();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean eqIsTrue_compute(Expr left, Expr right) {  return left.isTrue() && right.isTrue() || left.isFalse() && right.isFalse();  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:182
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:181
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isBoolean() {
-      ASTNode$State state = state();
-    boolean isBoolean_value = isBoolean_compute();
-    return isBoolean_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isBoolean_compute() {  return true;  }
   /**
    * @apilevel internal
    */
@@ -489,11 +532,11 @@ public class BooleanType extends PrimitiveType implements Cloneable {
     if(boxed_computed) {
       return boxed_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boxed_value = boxed_compute();
-if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
+      if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
     return boxed_value;
   }
   /**
@@ -518,11 +561,11 @@ if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
     if(jvmName_computed) {
       return jvmName_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     jvmName_value = jvmName_compute();
-if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
     return jvmName_value;
   }
   /**
@@ -532,18 +575,14 @@ if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
   /**
    * @attribute syn
    * @aspect Java2Rewrites
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:54
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:44
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String primitiveClassName() {
-      ASTNode$State state = state();
-    String primitiveClassName_value = primitiveClassName_compute();
-    return primitiveClassName_value;
+    ASTNode$State state = state();
+    try {  return "Boolean";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String primitiveClassName_compute() {  return "Boolean";  }
   /**
    * @apilevel internal
    */
@@ -562,11 +601,11 @@ if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
     if(getSootType_computed) {
       return getSootType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSootType_value = getSootType_compute();
-if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
     return getSootType_value;
   }
   /**

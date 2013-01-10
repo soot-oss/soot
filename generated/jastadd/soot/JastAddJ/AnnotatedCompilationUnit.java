@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -19,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production AnnotatedCompilationUnit : {@link CompilationUnit} ::= <span class="component">{@link Modifiers}</span>;
  * @ast node
- * @declaredat Annotations.ast:16
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.ast:16
  */
 public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneable {
   /**
@@ -62,18 +63,33 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnnotatedCompilationUnit fullCopy() {
-    AnnotatedCompilationUnit res = (AnnotatedCompilationUnit)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      AnnotatedCompilationUnit tree = (AnnotatedCompilationUnit) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect Annotations
@@ -109,18 +125,29 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:1
+   * 
    */
   public AnnotatedCompilationUnit() {
     super();
 
-    setChild(new List(), 0);
-    setChild(new List(), 1);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Annotations.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new List(), 0);
+    setChild(new List(), 1);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public AnnotatedCompilationUnit(java.lang.String p0, List<ImportDecl> p1, List<TypeDecl> p2, Modifiers p3) {
     setPackageDecl(p0);
@@ -130,7 +157,7 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:15
+   * 
    */
   public AnnotatedCompilationUnit(beaver.Symbol p0, List<ImportDecl> p1, List<TypeDecl> p2, Modifiers p3) {
     setPackageDecl(p0);
@@ -141,7 +168,7 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:24
+   * 
    */
   protected int numChildren() {
     return 3;
@@ -149,23 +176,26 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:30
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for lexeme PackageDecl
+   * Replaces the lexeme PackageDecl.
+   * @param value The new value for the lexeme PackageDecl.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setPackageDecl(java.lang.String value) {
     tokenjava_lang_String_PackageDecl = value;
   }
   /**
+   * JastAdd-internal setter for lexeme PackageDecl using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setPackageDecl(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -175,47 +205,64 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
     PackageDeclend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme PackageDecl
+   * Retrieves the value for the lexeme PackageDecl.
+   * @return The value for the lexeme PackageDecl.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public java.lang.String getPackageDecl() {
     return tokenjava_lang_String_PackageDecl != null ? tokenjava_lang_String_PackageDecl : "";
   }
   /**
-   * Setter for ImportDeclList
+   * Replaces the ImportDecl list.
+   * @param list The new list node to be used as the ImportDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setImportDeclList(List<ImportDecl> list) {
     setChild(list, 0);
   }
   /**
-   * @return number of children in ImportDeclList
+   * Retrieves the number of children in the ImportDecl list.
+   * @return Number of children in the ImportDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumImportDecl() {
     return getImportDeclList().getNumChild();
   }
   /**
-   * Getter for child in list ImportDeclList
+   * Retrieves the number of children in the ImportDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the ImportDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumImportDeclNoTransform() {
+    return getImportDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the ImportDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the ImportDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ImportDecl getImportDecl(int i) {
     return (ImportDecl)getImportDeclList().getChild(i);
   }
   /**
-   * Add element to list ImportDeclList
+   * Append an element to the ImportDecl list.
+   * @param node The element to append to the ImportDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addImportDecl(ImportDecl node) {
     List<ImportDecl> list = (parent == null || state == null) ? getImportDeclListNoTransform() : getImportDeclList();
@@ -224,44 +271,51 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addImportDeclNoTransform(ImportDecl node) {
     List<ImportDecl> list = getImportDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ImportDeclList
+   * Replaces the ImportDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setImportDecl(ImportDecl node, int i) {
     List<ImportDecl> list = getImportDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for ImportDecl list.
+   * Retrieves the ImportDecl list.
+   * @return The node representing the ImportDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<ImportDecl> getImportDecls() {
     return getImportDeclList();
   }
   /**
+   * Retrieves the ImportDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the ImportDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<ImportDecl> getImportDeclsNoTransform() {
     return getImportDeclListNoTransform();
   }
   /**
-   * Getter for list ImportDeclList
+   * Retrieves the ImportDecl list.
+   * @return The node representing the ImportDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ImportDecl> getImportDeclList() {
@@ -270,47 +324,66 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
     return list;
   }
   /**
+   * Retrieves the ImportDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the ImportDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ImportDecl> getImportDeclListNoTransform() {
     return (List<ImportDecl>)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeDeclList
+   * Replaces the TypeDecl list.
+   * @param list The new list node to be used as the TypeDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeDeclList(List<TypeDecl> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in TypeDeclList
+   * Retrieves the number of children in the TypeDecl list.
+   * @return Number of children in the TypeDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumTypeDecl() {
     return getTypeDeclList().getNumChild();
   }
   /**
-   * Getter for child in list TypeDeclList
+   * Retrieves the number of children in the TypeDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the TypeDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumTypeDeclNoTransform() {
+    return getTypeDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the TypeDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the TypeDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl getTypeDecl(int i) {
     return (TypeDecl)getTypeDeclList().getChild(i);
   }
   /**
-   * Add element to list TypeDeclList
+   * Append an element to the TypeDecl list.
+   * @param node The element to append to the TypeDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addTypeDecl(TypeDecl node) {
     List<TypeDecl> list = (parent == null || state == null) ? getTypeDeclListNoTransform() : getTypeDeclList();
@@ -319,44 +392,51 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addTypeDeclNoTransform(TypeDecl node) {
     List<TypeDecl> list = getTypeDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list TypeDeclList
+   * Replaces the TypeDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setTypeDecl(TypeDecl node, int i) {
     List<TypeDecl> list = getTypeDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for TypeDecl list.
+   * Retrieves the TypeDecl list.
+   * @return The node representing the TypeDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<TypeDecl> getTypeDecls() {
     return getTypeDeclList();
   }
   /**
+   * Retrieves the TypeDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<TypeDecl> getTypeDeclsNoTransform() {
     return getTypeDeclListNoTransform();
   }
   /**
-   * Getter for list TypeDeclList
+   * Retrieves the TypeDecl list.
+   * @return The node representing the TypeDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<TypeDecl> getTypeDeclList() {
@@ -365,36 +445,44 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
     return list;
   }
   /**
+   * Retrieves the TypeDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<TypeDecl> getTypeDeclListNoTransform() {
     return (List<TypeDecl>)getChildNoTransform(1);
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 2);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(2);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(2);
@@ -407,7 +495,8 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
     if(caller == getModifiersNoTransform()) {
       return name.equals("PACKAGE");
     }
-    return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    else {      return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:552
@@ -417,7 +506,8 @@ public class AnnotatedCompilationUnit extends CompilationUnit implements Cloneab
     if(caller == getModifiersNoTransform()) {
       return packageName();
     }
-    return super.Define_String_hostPackage(caller, child);
+    else {      return super.Define_String_hostPackage(caller, child);
+    }
   }
   /**
    * @apilevel internal

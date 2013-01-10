@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production PrimitiveTypeAccess : {@link TypeAccess} ::= <span class="component">&lt;Package:String&gt;</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">&lt;Name:String&gt;</span>;
  * @ast node
- * @declaredat java.ast:21
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:24
  */
 public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
   /**
@@ -73,21 +74,36 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public PrimitiveTypeAccess fullCopy() {
-    PrimitiveTypeAccess res = (PrimitiveTypeAccess)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      PrimitiveTypeAccess tree = (PrimitiveTypeAccess) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public PrimitiveTypeAccess() {
     super();
@@ -95,15 +111,25 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public PrimitiveTypeAccess(String p0) {
     setName(p0);
   }
   /**
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   public PrimitiveTypeAccess(beaver.Symbol p0) {
     setName(p0);
@@ -111,7 +137,7 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -119,40 +145,48 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for lexeme Name
+   * Replaces the lexeme Name.
+   * @param value The new value for the lexeme Name.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setName(String value) {
     tokenString_Name = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_Name;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_Name;
   /**
    * @ast method 
-   * @declaredat java.ast:9
+   * 
    */
   
   public int Namestart;
   /**
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   
   public int Nameend;
   /**
+   * JastAdd-internal setter for lexeme Name using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:11
+   * 
    */
   public void setName(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -162,42 +196,55 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
     Nameend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme Name
+   * Retrieves the value for the lexeme Name.
+   * @return The value for the lexeme Name.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public String getName() {
     return tokenString_Name != null ? tokenString_Name : "";
   }
   /**
-   * Setter for lexeme Package
+   * Replaces the lexeme Package.
+   * @param value The new value for the lexeme Package.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setPackage(String value) {
     tokenString_Package = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_Package;
   /**
-   * Setter for lexeme ID
+   * @apilevel internal
+   */
+  protected String tokenString_Package;
+  /**
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_ID;
   /**
    * @apilevel internal
    */
@@ -209,18 +256,18 @@ public class PrimitiveTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:146
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:234
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet decls() {
     if(decls_computed) {
       return decls_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     decls_value = decls_compute();
-if(isFinal && num == state().boundariesCrossed) decls_computed = true;
+      if(isFinal && num == state().boundariesCrossed) decls_computed = true;
     return decls_value;
   }
   /**
@@ -238,19 +285,19 @@ if(isFinal && num == state().boundariesCrossed) decls_computed = true;
   /**
    * @attribute syn nta
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:147
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:235
    */
   @SuppressWarnings({"unchecked", "cast"})
   public String getPackage() {
     if(getPackage_computed) {
       return getPackage_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getPackage_value = getPackage_compute();
       setPackage(getPackage_value);
-if(isFinal && num == state().boundariesCrossed) getPackage_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getPackage_computed = true;
     return getPackage_value;
   }
   /**
@@ -268,19 +315,19 @@ if(isFinal && num == state().boundariesCrossed) getPackage_computed = true;
   /**
    * @attribute syn nta
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:148
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:236
    */
   @SuppressWarnings({"unchecked", "cast"})
   public String getID() {
     if(getID_computed) {
       return getID_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getID_value = getID_compute();
       setID(getID_value);
-if(isFinal && num == state().boundariesCrossed) getID_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getID_computed = true;
     return getID_value;
   }
   /**

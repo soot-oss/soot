@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production FieldDeclaration : {@link MemberDecl} ::= <span class="component">{@link Modifiers}</span> <span class="component">TypeAccess:{@link Access}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">[Init:{@link Expr}]</span>;
  * @ast node
- * @declaredat java.ast:77
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:80
  */
 public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet, Iterator, Variable {
   /**
@@ -41,6 +42,8 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     sourceVariableDecl_value = null;
     sootRef_computed = false;
     sootRef_value = null;
+    throwTypes_computed = false;
+    throwTypes_value = null;
   }
   /**
    * @apilevel internal
@@ -66,6 +69,8 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     node.sourceVariableDecl_value = null;
     node.sootRef_computed = false;
     node.sootRef_value = null;
+    node.throwTypes_computed = false;
+    node.throwTypes_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -85,18 +90,33 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public FieldDeclaration fullCopy() {
-    FieldDeclaration res = (FieldDeclaration)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      FieldDeclaration tree = (FieldDeclaration) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect BoundNames
@@ -298,7 +318,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
       TypeDecl source = getInit().type();
       TypeDecl dest = type();
       if(!source.assignConversionTo(dest, getInit()))
-        error("can not assign " + name() + " of type " + dest.typeName() +
+        error("can not assign field " + name() + " of type " + dest.typeName() +
               " a value of type " + source.typeName());
     }
   }
@@ -330,7 +350,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1189
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1295
    */
   public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
     FieldDeclaration f = new FieldDeclarationSubstituted(
@@ -345,7 +365,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:278
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:290
    */
   public MethodDecl createAccessor(TypeDecl fieldQualifier) {
     MethodDecl m = (MethodDecl)fieldQualifier.getAccessor(this, "field_read");
@@ -382,7 +402,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:311
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:323
    */
   public MethodDecl createAccessorWrite(TypeDecl fieldQualifier) {
     MethodDecl m = (MethodDecl)fieldQualifier.getAccessor(this, "field_write");
@@ -431,7 +451,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:356
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:368
    */
   private Access createAccess() {
     Access fieldAccess = new BoundFieldAccess(this);
@@ -492,17 +512,37 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * @aspect UncheckedConversion
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:25
+   */
+  public void checkWarnings() {
+    if (hasInit() && !suppressWarnings("unchecked"))
+      checkUncheckedConversion(getInit().type(), type());
+  }
+  /**
+   * @ast method 
+   * 
    */
   public FieldDeclaration() {
     super();
 
-    setChild(new Opt(), 2);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:8
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new Opt(), 2);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public FieldDeclaration(Modifiers p0, Access p1, String p2, Opt<Expr> p3) {
     setChild(p0, 0);
@@ -512,7 +552,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   }
   /**
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   public FieldDeclaration(Modifiers p0, Access p1, beaver.Symbol p2, Opt<Expr> p3) {
     setChild(p0, 0);
@@ -523,7 +563,7 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:23
+   * 
    */
   protected int numChildren() {
     return 3;
@@ -531,92 +571,110 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:29
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeAccess
+   * Replaces the TypeAccess child.
+   * @param node The new node to replace the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeAccess(Access node) {
     setChild(node, 1);
   }
   /**
-   * Getter for TypeAccess
+   * Retrieves the TypeAccess child.
+   * @return The current node used as the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getTypeAccess() {
     return (Access)getChild(1);
   }
   /**
+   * Retrieves the TypeAccess child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the TypeAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getTypeAccessNoTransform() {
     return (Access)getChildNoTransform(1);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_ID;
   /**
    * @ast method 
-   * @declaredat java.ast:9
+   * 
    */
   
   public int IDstart;
   /**
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   
   public int IDend;
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:11
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -626,68 +684,89 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for InitOpt
+   * Replaces the optional node for the Init child. This is the {@code Opt} node containing the child Init, not the actual child!
+   * @param opt The new node to be used as the optional node for the Init child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setInitOpt(Opt<Expr> opt) {
     setChild(opt, 2);
   }
   /**
-   * Does this node have a Init child?
+   * Check whether the optional Init child exists.
+   * @return {@code true} if the optional Init child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasInit() {
     return getInitOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child Init
-   * @apilevel high-level
+   * Retrieves the (optional) Init child.
+   * @return The Init child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getInit() {
     return (Expr)getInitOpt().getChild(0);
   }
   /**
-   * Setter for optional child Init
+   * Replaces the (optional) Init child.
+   * @param node The new node to be used as the Init child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setInit(Expr node) {
     getInitOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the Init child. This is the {@code Opt} node containing the child Init, not the actual child!
+   * @return The optional node for child the Init child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Expr> getInitOpt() {
     return (Opt<Expr>)getChild(2);
   }
   /**
+   * Retrieves the optional node for child Init. This is the {@code Opt} node containing the child Init, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child Init.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Expr> getInitOptNoTransform() {
     return (Opt<Expr>)getChildNoTransform(2);
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:332
+   */
+  public boolean isConstant() {
+    ASTNode$State state = state();
+    try {  return isFinal() && hasInit() && getInit().isConstant() && (type() instanceof PrimitiveType || type().isString());  }
+    finally {
+    }
   }
   protected java.util.Map accessibleFrom_TypeDecl_values;
   /**
@@ -702,11 +781,11 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     if(accessibleFrom_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
-if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
     return accessibleFrom_TypeDecl_value;
   }
   /**
@@ -745,11 +824,11 @@ if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.p
     if(exceptions_computed) {
       return exceptions_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     exceptions_value = exceptions_compute();
-if(isFinal && num == state().boundariesCrossed) exceptions_computed = true;
+      if(isFinal && num == state().boundariesCrossed) exceptions_computed = true;
     return exceptions_value;
   }
   /**
@@ -769,64 +848,37 @@ if(isFinal && num == state().boundariesCrossed) exceptions_computed = true;
   }
   /**
    * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:479
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean isConstant() {
-      ASTNode$State state = state();
-    boolean isConstant_value = isConstant_compute();
-    return isConstant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isConstant_compute() {  return isFinal() && hasInit() && getInit().isConstant() && (type() instanceof PrimitiveType || type().isString());  }
-  /**
-   * @attribute syn
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:79
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int size() {
-      ASTNode$State state = state();
-    int size_value = size_compute();
-    return size_value;
+    ASTNode$State state = state();
+    try {  return 1;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int size_compute() {  return 1;  }
   /**
    * @attribute syn
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:80
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isEmpty() {
-      ASTNode$State state = state();
-    boolean isEmpty_value = isEmpty_compute();
-    return isEmpty_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isEmpty_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:84
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean contains(Object o) {
-      ASTNode$State state = state();
-    boolean contains_Object_value = contains_compute(o);
-    return contains_Object_value;
+    ASTNode$State state = state();
+    try {  return this == o;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean contains_compute(Object o) {  return this == o;  }
   protected java.util.Map isDAafter_Variable_values;
   /**
    * @attribute syn
@@ -840,11 +892,11 @@ if(isFinal && num == state().boundariesCrossed) exceptions_computed = true;
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -859,7 +911,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:770
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:771
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -868,11 +920,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -886,303 +938,223 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect Modifiers
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:216
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:214
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSynthetic() {
-      ASTNode$State state = state();
-    boolean isSynthetic_value = isSynthetic_compute();
-    return isSynthetic_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isSynthetic();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSynthetic_compute() {  return getModifiers().isSynthetic();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:239
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isPublic() {
-      ASTNode$State state = state();
-    boolean isPublic_value = isPublic_compute();
-    return isPublic_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isPublic() || hostType().isInterfaceDecl();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isPublic_compute() {  return getModifiers().isPublic() || hostType().isInterfaceDecl();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:240
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isPrivate() {
-      ASTNode$State state = state();
-    boolean isPrivate_value = isPrivate_compute();
-    return isPrivate_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isPrivate();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isPrivate_compute() {  return getModifiers().isPrivate();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:241
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isProtected() {
-      ASTNode$State state = state();
-    boolean isProtected_value = isProtected_compute();
-    return isProtected_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isProtected();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isProtected_compute() {  return getModifiers().isProtected();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:242
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isStatic() {
-      ASTNode$State state = state();
-    boolean isStatic_value = isStatic_compute();
-    return isStatic_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isStatic() || hostType().isInterfaceDecl();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isStatic_compute() {  return getModifiers().isStatic() || hostType().isInterfaceDecl();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:244
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isFinal() {
-      ASTNode$State state = state();
-    boolean isFinal_value = isFinal_compute();
-    return isFinal_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isFinal() || hostType().isInterfaceDecl();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isFinal_compute() {  return getModifiers().isFinal() || hostType().isInterfaceDecl();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:245
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isTransient() {
-      ASTNode$State state = state();
-    boolean isTransient_value = isTransient_compute();
-    return isTransient_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isTransient();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isTransient_compute() {  return getModifiers().isTransient();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:246
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isVolatile() {
-      ASTNode$State state = state();
-    boolean isVolatile_value = isVolatile_compute();
-    return isVolatile_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isVolatile();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isVolatile_compute() {  return getModifiers().isVolatile();  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:811
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:800
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String dumpString() {
-      ASTNode$State state = state();
-    String dumpString_value = dumpString_compute();
-    return dumpString_value;
+    ASTNode$State state = state();
+    try {  return getClass().getName() + " [" + getID() + "]";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String dumpString_compute() {  return getClass().getName() + " [" + getID() + "]";  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:251
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
-      ASTNode$State state = state();
-    TypeDecl type_value = type_compute();
-    return type_value;
+    ASTNode$State state = state();
+    try {  return getTypeAccess().type();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl type_compute() {  return getTypeAccess().type();  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:273
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:271
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isVoid() {
-      ASTNode$State state = state();
-    boolean isVoid_value = isVoid_compute();
-    return isVoid_value;
+    ASTNode$State state = state();
+    try {  return type().isVoid();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isVoid_compute() {  return type().isVoid();  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:32
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isParameter() {
-      ASTNode$State state = state();
-    boolean isParameter_value = isParameter_compute();
-    return isParameter_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isParameter_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:34
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isClassVariable() {
-      ASTNode$State state = state();
-    boolean isClassVariable_value = isClassVariable_compute();
-    return isClassVariable_value;
+    ASTNode$State state = state();
+    try {  return isStatic() || hostType().isInterfaceDecl();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isClassVariable_compute() {  return isStatic() || hostType().isInterfaceDecl();  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:35
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isInstanceVariable() {
-      ASTNode$State state = state();
-    boolean isInstanceVariable_value = isInstanceVariable_compute();
-    return isInstanceVariable_value;
+    ASTNode$State state = state();
+    try {  return (hostType().isClassDecl() || hostType().isAnonymous() )&& !isStatic();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isInstanceVariable_compute() {  return (hostType().isClassDecl() || hostType().isAnonymous() )&& !isStatic();  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:36
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isMethodParameter() {
-      ASTNode$State state = state();
-    boolean isMethodParameter_value = isMethodParameter_compute();
-    return isMethodParameter_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isMethodParameter_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:37
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isConstructorParameter() {
-      ASTNode$State state = state();
-    boolean isConstructorParameter_value = isConstructorParameter_compute();
-    return isConstructorParameter_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isConstructorParameter_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:38
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isExceptionHandlerParameter() {
-      ASTNode$State state = state();
-    boolean isExceptionHandlerParameter_value = isExceptionHandlerParameter_compute();
-    return isExceptionHandlerParameter_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isExceptionHandlerParameter_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:39
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isLocalVariable() {
-      ASTNode$State state = state();
-    boolean isLocalVariable_value = isLocalVariable_compute();
-    return isLocalVariable_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isLocalVariable_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:41
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isBlank() {
-      ASTNode$State state = state();
-    boolean isBlank_value = isBlank_compute();
-    return isBlank_value;
+    ASTNode$State state = state();
+    try {  return !hasInit();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isBlank_compute() {  return !hasInit();  }
   /**
    * @attribute syn
    * @aspect Variables
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:43
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String name() {
-      ASTNode$State state = state();
-    String name_value = name_compute();
-    return name_value;
+    ASTNode$State state = state();
+    try {  return getID();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String name_compute() {  return getID();  }
   /**
    * @apilevel internal
    */
@@ -1201,11 +1173,11 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(constant_computed) {
       return constant_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     constant_value = constant_compute();
-if(isFinal && num == state().boundariesCrossed) constant_computed = true;
+      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
     return constant_value;
   }
   /**
@@ -1215,33 +1187,25 @@ if(isFinal && num == state().boundariesCrossed) constant_computed = true;
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:287
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:283
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasAnnotationSuppressWarnings(String s) {
-      ASTNode$State state = state();
-    boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
-    return hasAnnotationSuppressWarnings_String_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasAnnotationSuppressWarnings_compute(String s) {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:325
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDeprecated() {
-      ASTNode$State state = state();
-    boolean isDeprecated_value = isDeprecated_compute();
-    return isDeprecated_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().hasDeprecatedAnnotation();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDeprecated_compute() {  return getModifiers().hasDeprecatedAnnotation();  }
   /**
    * @apilevel internal
    */
@@ -1253,18 +1217,18 @@ if(isFinal && num == state().boundariesCrossed) constant_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1026
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1065
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
     if(usesTypeVariable_computed) {
       return usesTypeVariable_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     usesTypeVariable_value = usesTypeVariable_compute();
-if(isFinal && num == state().boundariesCrossed) usesTypeVariable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) usesTypeVariable_computed = true;
     return usesTypeVariable_value;
   }
   /**
@@ -1282,18 +1246,18 @@ if(isFinal && num == state().boundariesCrossed) usesTypeVariable_computed = true
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1415
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1521
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl() {
     if(sourceVariableDecl_computed) {
       return sourceVariableDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceVariableDecl_value = sourceVariableDecl_compute();
-if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = true;
     return sourceVariableDecl_value;
   }
   /**
@@ -1303,33 +1267,22 @@ if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = tr
   /**
    * @attribute syn
    * @aspect GenericsParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:69
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:67
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean visibleTypeParameters() {
-      ASTNode$State state = state();
-    boolean visibleTypeParameters_value = visibleTypeParameters_compute();
-    return visibleTypeParameters_value;
+    ASTNode$State state = state();
+    try {  return !isStatic();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean visibleTypeParameters_compute() {  return !isStatic();  }
   /**
    * @attribute syn
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:127
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int sootTypeModifiers() {
-      ASTNode$State state = state();
-    int sootTypeModifiers_value = sootTypeModifiers_compute();
-    return sootTypeModifiers_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private int sootTypeModifiers_compute() {
+    ASTNode$State state = state();
+    try {
     int result = 0;
     if(isPublic()) result |= soot.Modifier.PUBLIC;
     if(isProtected()) result |= soot.Modifier.PROTECTED;
@@ -1337,6 +1290,9 @@ if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = tr
     if(isFinal()) result |= soot.Modifier.FINAL;
     if(isStatic()) result |= soot.Modifier.STATIC;
     return result;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -1356,11 +1312,11 @@ if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = tr
     if(sootRef_computed) {
       return sootRef_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sootRef_value = sootRef_compute();
-if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     return sootRef_value;
   }
   /**
@@ -1372,26 +1328,89 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
    * @aspect GenericsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:31
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public FieldDeclaration erasedField() {
-      ASTNode$State state = state();
-    FieldDeclaration erasedField_value = erasedField_compute();
-    return erasedField_value;
+    ASTNode$State state = state();
+    try {  return this;  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
    */
-  private FieldDeclaration erasedField_compute() {  return this;  }
+  protected boolean throwTypes_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected Collection<TypeDecl> throwTypes_value;
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:22
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Collection<TypeDecl> throwTypes() {
+    if(throwTypes_computed) {
+      return throwTypes_value;
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    throwTypes_value = throwTypes_compute();
+      if(isFinal && num == state().boundariesCrossed) throwTypes_computed = true;
+    return throwTypes_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private Collection<TypeDecl> throwTypes_compute() {
+		Collection<TypeDecl> tts = new LinkedList<TypeDecl>();
+		tts.add(type());
+		return tts;
+	}
+  /**
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
+   */
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSafeVarargs();  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:22
+   */
+  public boolean suppressWarnings(String type) {
+    ASTNode$State state = state();
+    try {  return hasAnnotationSuppressWarnings(type) || withinSuppressWarnings(type);  }
+    finally {
+    }
+  }
   /**
    * @attribute inh
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:34
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:48
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean handlesException(TypeDecl exceptionType) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
     return handlesException_TypeDecl_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:14
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean withinSuppressWarnings(String s) {
+    ASTNode$State state = state();
+    boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
+    return withinSuppressWarnings_String_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:39
@@ -1401,7 +1420,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getInitOptNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_isSource(this, caller);
+    else {      return getParent().Define_boolean_isSource(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:320
@@ -1411,10 +1431,11 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getInitOptNoTransform()){
     return isDAbefore(v);
   }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:152
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:166
    * @apilevel internal
    */
   public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
@@ -1430,7 +1451,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     }
     return true;
   }
-    return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    else {      return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:262
@@ -1440,7 +1462,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBePublic(this, caller);
+    else {      return getParent().Define_boolean_mayBePublic(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:263
@@ -1450,7 +1473,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeProtected(this, caller);
+    else {      return getParent().Define_boolean_mayBeProtected(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:264
@@ -1460,7 +1484,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBePrivate(this, caller);
+    else {      return getParent().Define_boolean_mayBePrivate(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:265
@@ -1470,7 +1495,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeStatic(this, caller);
+    else {      return getParent().Define_boolean_mayBeStatic(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:266
@@ -1480,7 +1506,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeFinal(this, caller);
+    else {      return getParent().Define_boolean_mayBeFinal(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:267
@@ -1490,7 +1517,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeTransient(this, caller);
+    else {      return getParent().Define_boolean_mayBeTransient(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:268
@@ -1500,7 +1528,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeVolatile(this, caller);
+    else {      return getParent().Define_boolean_mayBeVolatile(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:78
@@ -1510,7 +1539,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getTypeAccessNoTransform()) {
       return NameType.TYPE_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:260
@@ -1520,7 +1550,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getInitOptNoTransform()) {
       return type();
     }
-    return getParent().Define_TypeDecl_declType(this, caller);
+    else {      return getParent().Define_TypeDecl_declType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:141
@@ -1530,7 +1561,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getInitOptNoTransform()) {
       return isStatic() || hostType().isInterfaceDecl();
     }
-    return getParent().Define_boolean_inStaticContext(this, caller);
+    else {      return getParent().Define_boolean_inStaticContext(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:80
@@ -1540,7 +1572,8 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getModifiersNoTransform()) {
       return name.equals("FIELD");
     }
-    return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    else {      return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethodsInference.jrag:35
@@ -1550,17 +1583,19 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(caller == getInitOptNoTransform()) {
       return type();
     }
-    return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    else {      return getParent().Define_TypeDecl_assignConvertedType(this, caller);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:64
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:67
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
     if(caller == getInitOptNoTransform()) {
       return type().componentType();
     }
-    return getParent().Define_TypeDecl_expectedType(this, caller);
+    else {      return getParent().Define_TypeDecl_expectedType(this, caller);
+    }
   }
   /**
    * @apilevel internal

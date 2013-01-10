@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production List : {@link ASTNode};
  * @ast node
- * @declaredat List.ast:0
+ * 
  */
 public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   /**
@@ -61,22 +62,37 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<T> fullCopy() {
-    List res = (List)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      List tree = (List) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:950
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:977
    */
   public List substitute(Parameterization parTypeDecl) {
     List list = new List();
@@ -117,7 +133,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat List.ast:1
+   * 
    */
   public List() {
     super();
@@ -125,8 +141,18 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat List.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public List<T> add(T node) {
     addChild(node);
@@ -134,7 +160,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat List.ast:12
+   * 
    */
   public void insertChild(ASTNode node, int i) {
     list$touched = true;
@@ -142,7 +168,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat List.ast:16
+   * 
    */
   public void addChild(T node) {
     list$touched = true;
@@ -151,7 +177,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat List.ast:23
+   * 
    */
   public void removeChild(int i) {
     list$touched = true;
@@ -159,7 +185,7 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat List.ast:27
+   * 
    */
   public int getNumChild() {
     if(list$touched) {
@@ -171,14 +197,14 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat List.ast:35
+   * 
    */
   
   private boolean list$touched = true;
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat List.ast:39
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
@@ -188,37 +214,29 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
    * @aspect ImplicitConstructor
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:158
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean requiresDefaultConstructor() {
-      ASTNode$State state = state();
-    boolean requiresDefaultConstructor_value = requiresDefaultConstructor_compute();
-    return requiresDefaultConstructor_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean requiresDefaultConstructor_compute() {
+    ASTNode$State state = state();
+    try {
     if(getParent() instanceof ClassDecl) {
       ClassDecl c = (ClassDecl)getParent();
       return c.noConstructor() && c.getBodyDeclListNoTransform() == this && !(c instanceof AnonymousDecl);
     }
     return false;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:23
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:21
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean definesLabel() {
-      ASTNode$State state = state();
-    boolean definesLabel_value = definesLabel_compute();
-    return definesLabel_value;
+    ASTNode$State state = state();
+    try {  return getParent().definesLabel();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean definesLabel_compute() {  return getParent().definesLabel();  }
   /**
    * @apilevel internal
    */
@@ -231,9 +249,9 @@ public class List<T extends ASTNode> extends ASTNode<T> implements Cloneable {
     }
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag at line 186
     if(requiresDefaultConstructor()) {
-      state().duringLookupConstructor++;
+      state().duringImplicitConstructor++;
       ASTNode result = rewriteRule0();
-      state().duringLookupConstructor--;
+      state().duringImplicitConstructor--;
       return result;
     }
 

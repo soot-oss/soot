@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production Modifiers : {@link ASTNode} ::= <span class="component">{@link Modifier}*</span>;
  * @ast node
- * @declaredat java.ast:187
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:190
  */
 public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
   /**
@@ -87,18 +88,33 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Modifiers fullCopy() {
-    Modifiers res = (Modifiers)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      Modifiers tree = (Modifiers) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect Modifiers
@@ -289,17 +305,28 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
   public static final int ACC_VARARGS = 0x0080;
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public Modifiers() {
     super();
 
-    setChild(new List(), 0);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:8
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+    setChild(new List(), 0);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public Modifiers(List<Modifier> p0) {
     setChild(p0, 0);
@@ -307,7 +334,7 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -315,44 +342,60 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for ModifierList
+   * Replaces the Modifier list.
+   * @param list The new list node to be used as the Modifier list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifierList(List<Modifier> list) {
     setChild(list, 0);
   }
   /**
-   * @return number of children in ModifierList
+   * Retrieves the number of children in the Modifier list.
+   * @return Number of children in the Modifier list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumModifier() {
     return getModifierList().getNumChild();
   }
   /**
-   * Getter for child in list ModifierList
+   * Retrieves the number of children in the Modifier list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Modifier list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumModifierNoTransform() {
+    return getModifierListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Modifier list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Modifier list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Modifier getModifier(int i) {
     return (Modifier)getModifierList().getChild(i);
   }
   /**
-   * Add element to list ModifierList
+   * Append an element to the Modifier list.
+   * @param node The element to append to the Modifier list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addModifier(Modifier node) {
     List<Modifier> list = (parent == null || state == null) ? getModifierListNoTransform() : getModifierList();
@@ -361,44 +404,51 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addModifierNoTransform(Modifier node) {
     List<Modifier> list = getModifierListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ModifierList
+   * Replaces the Modifier list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setModifier(Modifier node, int i) {
     List<Modifier> list = getModifierList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Modifier list.
+   * Retrieves the Modifier list.
+   * @return The node representing the Modifier list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Modifier> getModifiers() {
     return getModifierList();
   }
   /**
+   * Retrieves the Modifier list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Modifier list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Modifier> getModifiersNoTransform() {
     return getModifierListNoTransform();
   }
   /**
-   * Getter for list ModifierList
+   * Retrieves the Modifier list.
+   * @return The node representing the Modifier list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Modifier> getModifierList() {
@@ -407,9 +457,12 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the Modifier list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Modifier list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Modifier> getModifierListNoTransform() {
@@ -433,11 +486,11 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     if(isPublic_computed) {
       return isPublic_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isPublic_value = isPublic_compute();
-if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
     return isPublic_value;
   }
   /**
@@ -462,11 +515,11 @@ if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
     if(isPrivate_computed) {
       return isPrivate_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isPrivate_value = isPrivate_compute();
-if(isFinal && num == state().boundariesCrossed) isPrivate_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isPrivate_computed = true;
     return isPrivate_value;
   }
   /**
@@ -491,11 +544,11 @@ if(isFinal && num == state().boundariesCrossed) isPrivate_computed = true;
     if(isProtected_computed) {
       return isProtected_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isProtected_value = isProtected_compute();
-if(isFinal && num == state().boundariesCrossed) isProtected_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isProtected_computed = true;
     return isProtected_value;
   }
   /**
@@ -520,11 +573,11 @@ if(isFinal && num == state().boundariesCrossed) isProtected_computed = true;
     if(isStatic_computed) {
       return isStatic_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isStatic_value = isStatic_compute();
-if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
     return isStatic_value;
   }
   /**
@@ -549,11 +602,11 @@ if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
     if(isFinal_computed) {
       return isFinal_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isFinal_value = isFinal_compute();
-if(isFinal && num == state().boundariesCrossed) isFinal_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isFinal_computed = true;
     return isFinal_value;
   }
   /**
@@ -578,11 +631,11 @@ if(isFinal && num == state().boundariesCrossed) isFinal_computed = true;
     if(isAbstract_computed) {
       return isAbstract_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isAbstract_value = isAbstract_compute();
-if(isFinal && num == state().boundariesCrossed) isAbstract_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isAbstract_computed = true;
     return isAbstract_value;
   }
   /**
@@ -607,11 +660,11 @@ if(isFinal && num == state().boundariesCrossed) isAbstract_computed = true;
     if(isVolatile_computed) {
       return isVolatile_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isVolatile_value = isVolatile_compute();
-if(isFinal && num == state().boundariesCrossed) isVolatile_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isVolatile_computed = true;
     return isVolatile_value;
   }
   /**
@@ -636,11 +689,11 @@ if(isFinal && num == state().boundariesCrossed) isVolatile_computed = true;
     if(isTransient_computed) {
       return isTransient_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isTransient_value = isTransient_compute();
-if(isFinal && num == state().boundariesCrossed) isTransient_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isTransient_computed = true;
     return isTransient_value;
   }
   /**
@@ -665,11 +718,11 @@ if(isFinal && num == state().boundariesCrossed) isTransient_computed = true;
     if(isStrictfp_computed) {
       return isStrictfp_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isStrictfp_value = isStrictfp_compute();
-if(isFinal && num == state().boundariesCrossed) isStrictfp_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isStrictfp_computed = true;
     return isStrictfp_value;
   }
   /**
@@ -694,11 +747,11 @@ if(isFinal && num == state().boundariesCrossed) isStrictfp_computed = true;
     if(isSynchronized_computed) {
       return isSynchronized_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isSynchronized_value = isSynchronized_compute();
-if(isFinal && num == state().boundariesCrossed) isSynchronized_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isSynchronized_computed = true;
     return isSynchronized_value;
   }
   /**
@@ -723,11 +776,11 @@ if(isFinal && num == state().boundariesCrossed) isSynchronized_computed = true;
     if(isNative_computed) {
       return isNative_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isNative_value = isNative_compute();
-if(isFinal && num == state().boundariesCrossed) isNative_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isNative_computed = true;
     return isNative_value;
   }
   /**
@@ -752,11 +805,11 @@ if(isFinal && num == state().boundariesCrossed) isNative_computed = true;
     if(isSynthetic_computed) {
       return isSynthetic_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isSynthetic_value = isSynthetic_compute();
-if(isFinal && num == state().boundariesCrossed) isSynthetic_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isSynthetic_computed = true;
     return isSynthetic_value;
   }
   /**
@@ -768,31 +821,23 @@ if(isFinal && num == state().boundariesCrossed) isSynthetic_computed = true;
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:386
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int numProtectionModifiers() {
-      ASTNode$State state = state();
-    int numProtectionModifiers_value = numProtectionModifiers_compute();
-    return numProtectionModifiers_value;
+    ASTNode$State state = state();
+    try {  return numModifier("public") + numModifier("protected") + numModifier("private");  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int numProtectionModifiers_compute() {  return numModifier("public") + numModifier("protected") + numModifier("private");  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:389
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int numCompletenessModifiers() {
-      ASTNode$State state = state();
-    int numCompletenessModifiers_value = numCompletenessModifiers_compute();
-    return numCompletenessModifiers_value;
+    ASTNode$State state = state();
+    try {  return numModifier("abstract") + numModifier("final") + numModifier("volatile");  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int numCompletenessModifiers_compute() {  return numModifier("abstract") + numModifier("final") + numModifier("volatile");  }
   protected java.util.Map numModifier_String_values;
   /**
    * @attribute syn
@@ -806,11 +851,11 @@ if(isFinal && num == state().boundariesCrossed) isSynthetic_computed = true;
     if(numModifier_String_values.containsKey(_parameters)) {
       return ((Integer)numModifier_String_values.get(_parameters)).intValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     int numModifier_String_value = numModifier_compute(name);
-if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_parameters, Integer.valueOf(numModifier_String_value));
+      if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_parameters, Integer.valueOf(numModifier_String_value));
     return numModifier_String_value;
   }
   /**
@@ -830,16 +875,9 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:214
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Annotation annotation(TypeDecl typeDecl) {
-      ASTNode$State state = state();
-    Annotation annotation_TypeDecl_value = annotation_compute(typeDecl);
-    return annotation_TypeDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Annotation annotation_compute(TypeDecl typeDecl) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0; i < getNumModifier(); i++) {
       if(getModifier(i) instanceof Annotation) {
         Annotation a = (Annotation)getModifier(i);
@@ -849,41 +887,48 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
     }
     return null;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:289
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasAnnotationSuppressWarnings(String s) {
-      ASTNode$State state = state();
-    boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
-    return hasAnnotationSuppressWarnings_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasAnnotationSuppressWarnings_compute(String s) {
+    ASTNode$State state = state();
+    try {
     Annotation a = annotation(lookupType("java.lang", "SuppressWarnings"));
     if(a != null && a.getNumElementValuePair() == 1 && a.getElementValuePair(0).getName().equals("value"))
       return a.getElementValuePair(0).getElementValue().hasValue(s);
     return false;
+  }
+    finally {
+    }
   }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:319
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasDeprecatedAnnotation() {
-      ASTNode$State state = state();
-    boolean hasDeprecatedAnnotation_value = hasDeprecatedAnnotation_compute();
-    return hasDeprecatedAnnotation_value;
+    ASTNode$State state = state();
+    try {  return annotation(lookupType("java.lang", "Deprecated")) != null;  }
+    finally {
+    }
   }
   /**
-   * @apilevel internal
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:49
    */
-  private boolean hasDeprecatedAnnotation_compute() {  return annotation(lookupType("java.lang", "Deprecated")) != null;  }
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return annotation(lookupType("java.lang", "SafeVarargs")) != null;  }
+    finally {
+    }
+  }
   /**
    * @attribute inh
    * @aspect Modifiers
@@ -891,7 +936,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl hostType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
     return hostType_value;
   }
@@ -902,7 +947,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBePublic() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBePublic_value = getParent().Define_boolean_mayBePublic(this, null);
     return mayBePublic_value;
   }
@@ -913,7 +958,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBePrivate() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBePrivate_value = getParent().Define_boolean_mayBePrivate(this, null);
     return mayBePrivate_value;
   }
@@ -924,7 +969,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeProtected() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeProtected_value = getParent().Define_boolean_mayBeProtected(this, null);
     return mayBeProtected_value;
   }
@@ -935,7 +980,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeStatic() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeStatic_value = getParent().Define_boolean_mayBeStatic(this, null);
     return mayBeStatic_value;
   }
@@ -946,7 +991,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeFinal() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeFinal_value = getParent().Define_boolean_mayBeFinal(this, null);
     return mayBeFinal_value;
   }
@@ -957,7 +1002,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeAbstract() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeAbstract_value = getParent().Define_boolean_mayBeAbstract(this, null);
     return mayBeAbstract_value;
   }
@@ -968,7 +1013,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeVolatile() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeVolatile_value = getParent().Define_boolean_mayBeVolatile(this, null);
     return mayBeVolatile_value;
   }
@@ -979,7 +1024,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeTransient() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeTransient_value = getParent().Define_boolean_mayBeTransient(this, null);
     return mayBeTransient_value;
   }
@@ -990,7 +1035,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeStrictfp() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeStrictfp_value = getParent().Define_boolean_mayBeStrictfp(this, null);
     return mayBeStrictfp_value;
   }
@@ -1001,7 +1046,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeSynchronized() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeSynchronized_value = getParent().Define_boolean_mayBeSynchronized(this, null);
     return mayBeSynchronized_value;
   }
@@ -1012,7 +1057,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayBeNative() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayBeNative_value = getParent().Define_boolean_mayBeNative(this, null);
     return mayBeNative_value;
   }
@@ -1023,7 +1068,7 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupType(String packageName, String typeName) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
     return lookupType_String_String_value;
   }
@@ -1038,7 +1083,8 @@ if(isFinal && num == state().boundariesCrossed) numModifier_String_values.put(_p
     return annotation(typeDecl);
   }
 }
-    return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
+    else {      return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
+    }
   }
   /**
    * @apilevel internal

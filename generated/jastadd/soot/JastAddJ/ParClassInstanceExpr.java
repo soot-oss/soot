@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ParClassInstanceExpr : {@link ClassInstanceExpr} ::= <span class="component">TypeArgument:{@link Access}*</span>;
  * @ast node
- * @declaredat GenericMethods.ast:18
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.ast:18
  */
 public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable {
   /**
@@ -61,18 +62,33 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParClassInstanceExpr fullCopy() {
-    ParClassInstanceExpr res = (ParClassInstanceExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ParClassInstanceExpr tree = (ParClassInstanceExpr) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect GenericMethodsPrettyPrint
@@ -89,19 +105,30 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:1
+   * 
    */
   public ParClassInstanceExpr() {
     super();
 
-    setChild(new List(), 1);
-    setChild(new Opt(), 2);
-    setChild(new List(), 3);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat GenericMethods.ast:10
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[4];
+    setChild(new List(), 1);
+    setChild(new Opt(), 2);
+    setChild(new List(), 3);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ParClassInstanceExpr(Access p0, List<Expr> p1, Opt<TypeDecl> p2, List<Access> p3) {
     setChild(p0, 0);
@@ -112,7 +139,7 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:19
+   * 
    */
   protected int numChildren() {
     return 4;
@@ -120,70 +147,91 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat GenericMethods.ast:25
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Access
+   * Replaces the Access child.
+   * @param node The new node to replace the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setAccess(Access node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Access
+   * Retrieves the Access child.
+   * @return The current node used as the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getAccess() {
     return (Access)getChild(0);
   }
   /**
+   * Retrieves the Access child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Access child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getAccessNoTransform() {
     return (Access)getChildNoTransform(0);
   }
   /**
-   * Setter for ArgList
+   * Replaces the Arg list.
+   * @param list The new list node to be used as the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setArgList(List<Expr> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in ArgList
+   * Retrieves the number of children in the Arg list.
+   * @return Number of children in the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumArg() {
     return getArgList().getNumChild();
   }
   /**
-   * Getter for child in list ArgList
+   * Retrieves the number of children in the Arg list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Arg list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumArgNoTransform() {
+    return getArgListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Arg list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getArg(int i) {
     return (Expr)getArgList().getChild(i);
   }
   /**
-   * Add element to list ArgList
+   * Append an element to the Arg list.
+   * @param node The element to append to the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addArg(Expr node) {
     List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
@@ -192,44 +240,51 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addArgNoTransform(Expr node) {
     List<Expr> list = getArgListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ArgList
+   * Replaces the Arg list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setArg(Expr node, int i) {
     List<Expr> list = getArgList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Arg list.
+   * Retrieves the Arg list.
+   * @return The node representing the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Expr> getArgs() {
     return getArgList();
   }
   /**
+   * Retrieves the Arg list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Arg list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Expr> getArgsNoTransform() {
     return getArgListNoTransform();
   }
   /**
-   * Getter for list ArgList
+   * Retrieves the Arg list.
+   * @return The node representing the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Expr> getArgList() {
@@ -238,102 +293,130 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
     return list;
   }
   /**
+   * Retrieves the Arg list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Arg list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Expr> getArgListNoTransform() {
     return (List<Expr>)getChildNoTransform(1);
   }
   /**
-   * Setter for TypeDeclOpt
+   * Replaces the optional node for the TypeDecl child. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
+   * @param opt The new node to be used as the optional node for the TypeDecl child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeDeclOpt(Opt<TypeDecl> opt) {
     setChild(opt, 2);
   }
   /**
-   * Does this node have a TypeDecl child?
+   * Check whether the optional TypeDecl child exists.
+   * @return {@code true} if the optional TypeDecl child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasTypeDecl() {
     return getTypeDeclOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child TypeDecl
-   * @apilevel high-level
+   * Retrieves the (optional) TypeDecl child.
+   * @return The TypeDecl child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl getTypeDecl() {
     return (TypeDecl)getTypeDeclOpt().getChild(0);
   }
   /**
-   * Setter for optional child TypeDecl
+   * Replaces the (optional) TypeDecl child.
+   * @param node The new node to be used as the TypeDecl child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setTypeDecl(TypeDecl node) {
     getTypeDeclOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the TypeDecl child. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
+   * @return The optional node for child the TypeDecl child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<TypeDecl> getTypeDeclOpt() {
     return (Opt<TypeDecl>)getChild(2);
   }
   /**
+   * Retrieves the optional node for child TypeDecl. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child TypeDecl.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<TypeDecl> getTypeDeclOptNoTransform() {
     return (Opt<TypeDecl>)getChildNoTransform(2);
   }
   /**
-   * Setter for TypeArgumentList
+   * Replaces the TypeArgument list.
+   * @param list The new list node to be used as the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:5
+   * 
    */
   public void setTypeArgumentList(List<Access> list) {
     setChild(list, 3);
   }
   /**
-   * @return number of children in TypeArgumentList
+   * Retrieves the number of children in the TypeArgument list.
+   * @return Number of children in the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:12
+   * 
    */
   public int getNumTypeArgument() {
     return getTypeArgumentList().getNumChild();
   }
   /**
-   * Getter for child in list TypeArgumentList
+   * Retrieves the number of children in the TypeArgument list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the TypeArgument list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumTypeArgumentNoTransform() {
+    return getTypeArgumentListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the TypeArgument list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getTypeArgument(int i) {
     return (Access)getTypeArgumentList().getChild(i);
   }
   /**
-   * Add element to list TypeArgumentList
+   * Append an element to the TypeArgument list.
+   * @param node The element to append to the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:27
+   * 
    */
   public void addTypeArgument(Access node) {
     List<Access> list = (parent == null || state == null) ? getTypeArgumentListNoTransform() : getTypeArgumentList();
@@ -342,44 +425,51 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:34
+   * 
    */
   public void addTypeArgumentNoTransform(Access node) {
     List<Access> list = getTypeArgumentListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list TypeArgumentList
+   * Replaces the TypeArgument list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:42
+   * 
    */
   public void setTypeArgument(Access node, int i) {
     List<Access> list = getTypeArgumentList();
     list.setChild(node, i);
   }
   /**
-   * Getter for TypeArgument list.
+   * Retrieves the TypeArgument list.
+   * @return The node representing the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:50
+   * 
    */
   public List<Access> getTypeArguments() {
     return getTypeArgumentList();
   }
   /**
+   * Retrieves the TypeArgument list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeArgument list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:56
+   * 
    */
   public List<Access> getTypeArgumentsNoTransform() {
     return getTypeArgumentListNoTransform();
   }
   /**
-   * Getter for list TypeArgumentList
+   * Retrieves the TypeArgument list.
+   * @return The node representing the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getTypeArgumentList() {
@@ -388,9 +478,12 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
     return list;
   }
   /**
+   * Retrieves the TypeArgument list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeArgument list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getTypeArgumentListNoTransform() {
@@ -405,7 +498,8 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
       int childIndex = caller.getIndexOfChild(child);
       return NameType.TYPE_NAME;
     }
-    return super.Define_NameType_nameType(caller, child);
+    else {      return super.Define_NameType_nameType(caller, child);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:173
@@ -416,7 +510,19 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
       int childIndex = caller.getIndexOfChild(child);
       return unqualifiedScope().lookupType(name);
     }
-    return super.Define_SimpleSet_lookupType(caller, child, name);
+    else {      return super.Define_SimpleSet_lookupType(caller, child, name);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:473
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isExplicitGenericConstructorAccess(ASTNode caller, ASTNode child) {
+    if(caller == getAccessNoTransform()) {
+      return true;
+    }
+    else {      return getParent().Define_boolean_isExplicitGenericConstructorAccess(this, caller);
+    }
   }
   /**
    * @apilevel internal

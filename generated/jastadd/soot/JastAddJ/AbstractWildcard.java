@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production AbstractWildcard : {@link Access};
  * @ast node
- * @declaredat Generics.ast:17
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.ast:20
  */
 public abstract class AbstractWildcard extends Access implements Cloneable {
   /**
@@ -48,7 +49,7 @@ public abstract class AbstractWildcard extends Access implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:1
+   * 
    */
   public AbstractWildcard() {
     super();
@@ -56,9 +57,19 @@ public abstract class AbstractWildcard extends Access implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:10
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -66,7 +77,7 @@ public abstract class AbstractWildcard extends Access implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:16
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;

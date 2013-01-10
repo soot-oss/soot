@@ -18,87 +18,89 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
- * @ast interface
- * @declaredat :0
+  * @ast interface
+ * 
  */
 public interface Variable {
 
-     
-    public String name();
+		 
+		public String name();
 
-     
-    public TypeDecl type();
+		 
+		public TypeDecl type();
 
-     
-    public boolean isParameter();
+		 
+		public Collection<TypeDecl> throwTypes();
 
-    // 4.5.3
-     
-    // 4.5.3
-    public boolean isClassVariable();
+		 
+		public boolean isParameter();
 
-     
-    public boolean isInstanceVariable();
+		// 4.5.3
+		 
+		// 4.5.3
+		public boolean isClassVariable();
 
-     
-    public boolean isMethodParameter();
+		 
+		public boolean isInstanceVariable();
 
-     
-    public boolean isConstructorParameter();
+		 
+		public boolean isMethodParameter();
 
-     
-    public boolean isExceptionHandlerParameter();
+		 
+		public boolean isConstructorParameter();
 
-     
-    public boolean isLocalVariable();
+		 
+		public boolean isExceptionHandlerParameter();
 
-    // 4.5.4
-     
-    // 4.5.4
-    public boolean isFinal();
+		 
+		public boolean isLocalVariable();
 
-     
-    public boolean isVolatile();
+		// 4.5.4
+		 
+		// 4.5.4
+		public boolean isFinal();
 
-
-     
-
-    public boolean isBlank();
-
-     
-    public boolean isStatic();
-
-     
-    public boolean isSynthetic();
+		 
+		public boolean isVolatile();
 
 
-     
+		 
 
-    public TypeDecl hostType();
+		public boolean isBlank();
 
+		 
+		public boolean isStatic();
 
-     
-
-    public Expr getInit();
-
-     
-    public boolean hasInit();
+		 
+		public boolean isSynthetic();
 
 
-     
+		 
 
-    public Constant constant();
+		public TypeDecl hostType();
 
 
-     
+		 
 
-    public Modifiers getModifiers();
+		public Expr getInit();
+
+		 
+		public boolean hasInit();
+
+
+		 
+
+		public Constant constant();
+
+
+		 
+
+		public Modifiers getModifiers();
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1413
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1519
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl();

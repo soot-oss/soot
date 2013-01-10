@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -19,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production GenericConstructorDecl : {@link ConstructorDecl} ::= <span class="component">TypeParameter:{@link TypeVariable}*</span>;
  * @ast node
- * @declaredat GenericMethods.ast:4
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.ast:4
  */
 public class GenericConstructorDecl extends ConstructorDecl implements Cloneable {
   /**
@@ -62,18 +63,33 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericConstructorDecl fullCopy() {
-    GenericConstructorDecl res = (GenericConstructorDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      GenericConstructorDecl tree = (GenericConstructorDecl) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect GenericMethodsPrettyPrint
@@ -123,26 +139,37 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1174
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1280
    */
   
   public GenericConstructorDecl original;
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:1
+   * 
    */
   public GenericConstructorDecl() {
     super();
 
+
+  }
+  /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[6];
     setChild(new List(), 1);
     setChild(new List(), 2);
     setChild(new Opt(), 3);
     setChild(new List(), 5);
-
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:11
+   * 
    */
   public GenericConstructorDecl(Modifiers p0, String p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5, List<TypeVariable> p6) {
     setChild(p0, 0);
@@ -155,7 +182,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:20
+   * 
    */
   public GenericConstructorDecl(Modifiers p0, beaver.Symbol p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5, List<TypeVariable> p6) {
     setChild(p0, 0);
@@ -169,7 +196,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:32
+   * 
    */
   protected int numChildren() {
     return 6;
@@ -177,49 +204,57 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat GenericMethods.ast:38
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -229,47 +264,64 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for ParameterList
+   * Replaces the Parameter list.
+   * @param list The new list node to be used as the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setParameterList(List<ParameterDeclaration> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * @return Number of children in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumParameter() {
     return getParameterList().getNumChild();
   }
   /**
-   * Getter for child in list ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Parameter list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumParameterNoTransform() {
+    return getParameterListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Parameter list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclaration getParameter(int i) {
     return (ParameterDeclaration)getParameterList().getChild(i);
   }
   /**
-   * Add element to list ParameterList
+   * Append an element to the Parameter list.
+   * @param node The element to append to the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addParameter(ParameterDeclaration node) {
     List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
@@ -278,44 +330,51 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addParameterNoTransform(ParameterDeclaration node) {
     List<ParameterDeclaration> list = getParameterListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ParameterList
+   * Replaces the Parameter list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setParameter(ParameterDeclaration node, int i) {
     List<ParameterDeclaration> list = getParameterList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Parameter list.
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<ParameterDeclaration> getParameters() {
     return getParameterList();
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<ParameterDeclaration> getParametersNoTransform() {
     return getParameterListNoTransform();
   }
   /**
-   * Getter for list ParameterList
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterList() {
@@ -324,47 +383,66 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     return list;
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterListNoTransform() {
     return (List<ParameterDeclaration>)getChildNoTransform(1);
   }
   /**
-   * Setter for ExceptionList
+   * Replaces the Exception list.
+   * @param list The new list node to be used as the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExceptionList(List<Access> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * @return Number of children in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumException() {
     return getExceptionList().getNumChild();
   }
   /**
-   * Getter for child in list ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Exception list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumExceptionNoTransform() {
+    return getExceptionListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Exception list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getException(int i) {
     return (Access)getExceptionList().getChild(i);
   }
   /**
-   * Add element to list ExceptionList
+   * Append an element to the Exception list.
+   * @param node The element to append to the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addException(Access node) {
     List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
@@ -373,44 +451,51 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addExceptionNoTransform(Access node) {
     List<Access> list = getExceptionListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ExceptionList
+   * Replaces the Exception list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setException(Access node, int i) {
     List<Access> list = getExceptionList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Exception list.
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Access> getExceptions() {
     return getExceptionList();
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Access> getExceptionsNoTransform() {
     return getExceptionListNoTransform();
   }
   /**
-   * Getter for list ExceptionList
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionList() {
@@ -419,128 +504,161 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     return list;
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionListNoTransform() {
     return (List<Access>)getChildNoTransform(2);
   }
   /**
-   * Setter for ConstructorInvocationOpt
+   * Replaces the optional node for the ConstructorInvocation child. This is the {@code Opt} node containing the child ConstructorInvocation, not the actual child!
+   * @param opt The new node to be used as the optional node for the ConstructorInvocation child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setConstructorInvocationOpt(Opt<Stmt> opt) {
     setChild(opt, 3);
   }
   /**
-   * Does this node have a ConstructorInvocation child?
+   * Check whether the optional ConstructorInvocation child exists.
+   * @return {@code true} if the optional ConstructorInvocation child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasConstructorInvocation() {
     return getConstructorInvocationOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child ConstructorInvocation
-   * @apilevel high-level
+   * Retrieves the (optional) ConstructorInvocation child.
+   * @return The ConstructorInvocation child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Stmt getConstructorInvocation() {
     return (Stmt)getConstructorInvocationOpt().getChild(0);
   }
   /**
-   * Setter for optional child ConstructorInvocation
+   * Replaces the (optional) ConstructorInvocation child.
+   * @param node The new node to be used as the ConstructorInvocation child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setConstructorInvocation(Stmt node) {
     getConstructorInvocationOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the ConstructorInvocation child. This is the {@code Opt} node containing the child ConstructorInvocation, not the actual child!
+   * @return The optional node for child the ConstructorInvocation child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Stmt> getConstructorInvocationOpt() {
     return (Opt<Stmt>)getChild(3);
   }
   /**
+   * Retrieves the optional node for child ConstructorInvocation. This is the {@code Opt} node containing the child ConstructorInvocation, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child ConstructorInvocation.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Stmt> getConstructorInvocationOptNoTransform() {
     return (Opt<Stmt>)getChildNoTransform(3);
   }
   /**
-   * Setter for Block
+   * Replaces the Block child.
+   * @param node The new node to replace the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBlock(Block node) {
     setChild(node, 4);
   }
   /**
-   * Getter for Block
+   * Retrieves the Block child.
+   * @return The current node used as the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Block getBlock() {
     return (Block)getChild(4);
   }
   /**
+   * Retrieves the Block child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Block getBlockNoTransform() {
     return (Block)getChildNoTransform(4);
   }
   /**
-   * Setter for TypeParameterList
+   * Replaces the TypeParameter list.
+   * @param list The new list node to be used as the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:5
+   * 
    */
   public void setTypeParameterList(List<TypeVariable> list) {
     setChild(list, 5);
   }
   /**
-   * @return number of children in TypeParameterList
+   * Retrieves the number of children in the TypeParameter list.
+   * @return Number of children in the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:12
+   * 
    */
   public int getNumTypeParameter() {
     return getTypeParameterList().getNumChild();
   }
   /**
-   * Getter for child in list TypeParameterList
+   * Retrieves the number of children in the TypeParameter list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the TypeParameter list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumTypeParameterNoTransform() {
+    return getTypeParameterListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the TypeParameter list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeVariable getTypeParameter(int i) {
     return (TypeVariable)getTypeParameterList().getChild(i);
   }
   /**
-   * Add element to list TypeParameterList
+   * Append an element to the TypeParameter list.
+   * @param node The element to append to the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:27
+   * 
    */
   public void addTypeParameter(TypeVariable node) {
     List<TypeVariable> list = (parent == null || state == null) ? getTypeParameterListNoTransform() : getTypeParameterList();
@@ -549,44 +667,51 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:34
+   * 
    */
   public void addTypeParameterNoTransform(TypeVariable node) {
     List<TypeVariable> list = getTypeParameterListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list TypeParameterList
+   * Replaces the TypeParameter list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:42
+   * 
    */
   public void setTypeParameter(TypeVariable node, int i) {
     List<TypeVariable> list = getTypeParameterList();
     list.setChild(node, i);
   }
   /**
-   * Getter for TypeParameter list.
+   * Retrieves the TypeParameter list.
+   * @return The node representing the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:50
+   * 
    */
   public List<TypeVariable> getTypeParameters() {
     return getTypeParameterList();
   }
   /**
+   * Retrieves the TypeParameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeParameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:56
+   * 
    */
   public List<TypeVariable> getTypeParametersNoTransform() {
     return getTypeParameterListNoTransform();
   }
   /**
-   * Getter for list TypeParameterList
+   * Retrieves the TypeParameter list.
+   * @return The node representing the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<TypeVariable> getTypeParameterList() {
@@ -595,9 +720,12 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
     return list;
   }
   /**
+   * Retrieves the TypeParameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeParameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<TypeVariable> getTypeParameterListNoTransform() {
@@ -608,37 +736,29 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
    * @aspect GenericMethodsNameAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:163
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localLookupType(String name) {
-      ASTNode$State state = state();
-    SimpleSet localLookupType_String_value = localLookupType_compute(name);
-    return localLookupType_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet localLookupType_compute(String name) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0; i < getNumTypeParameter(); i++) {
       if(original().getTypeParameter(i).name().equals(name))
         return SimpleSet.emptySet.add(original().getTypeParameter(i));
     }
     return SimpleSet.emptySet;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1173
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1279
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public GenericConstructorDecl original() {
-      ASTNode$State state = state();
-    GenericConstructorDecl original_value = original_compute();
-    return original_value;
+    ASTNode$State state = state();
+    try {  return original != null ? original : this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private GenericConstructorDecl original_compute() {  return original != null ? original : this;  }
   /**
    * @attribute inh
    * @aspect GenericMethodsNameAnalysis
@@ -646,7 +766,7 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet lookupType(String name) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
     return lookupType_String_value;
   }
@@ -659,18 +779,18 @@ public class GenericConstructorDecl extends ConstructorDecl implements Cloneable
       int childIndex = caller.getIndexOfChild(child);
       return NameType.TYPE_NAME;
     }
-    return super.Define_NameType_nameType(caller, child);
+    else {      return super.Define_NameType_nameType(caller, child);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:170
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return localLookupType(name).isEmpty() ? lookupType(name) : localLookupType(name);
     }
-    return getParent().Define_SimpleSet_lookupType(this, caller, name);
   }
   /**
    * @apilevel internal
