@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -19,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production BoundFieldAccess : {@link VarAccess} ::= <span class="component">&lt;FieldDeclaration:FieldDeclaration&gt;</span>;
  * @ast node
- * @declaredat BoundNames.ast:6
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.ast:6
  */
 public class BoundFieldAccess extends VarAccess implements Cloneable {
   /**
@@ -66,18 +67,33 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BoundFieldAccess fullCopy() {
-    BoundFieldAccess res = (BoundFieldAccess)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      BoundFieldAccess tree = (BoundFieldAccess) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect BoundNames
@@ -96,7 +112,7 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat BoundNames.ast:1
+   * 
    */
   public BoundFieldAccess() {
     super();
@@ -104,8 +120,18 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat BoundNames.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public BoundFieldAccess(String p0, FieldDeclaration p1) {
     setID(p0);
@@ -113,7 +139,7 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat BoundNames.ast:11
+   * 
    */
   public BoundFieldAccess(beaver.Symbol p0, FieldDeclaration p1) {
     setID(p0);
@@ -122,7 +148,7 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat BoundNames.ast:18
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -130,23 +156,26 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat BoundNames.ast:24
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -156,33 +185,41 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for lexeme FieldDeclaration
+   * Replaces the lexeme FieldDeclaration.
+   * @param value The new value for the lexeme FieldDeclaration.
    * @apilevel high-level
    * @ast method 
-   * @declaredat BoundNames.ast:5
+   * 
    */
   public void setFieldDeclaration(FieldDeclaration value) {
     tokenFieldDeclaration_FieldDeclaration = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat BoundNames.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected FieldDeclaration tokenFieldDeclaration_FieldDeclaration;
   /**
-   * Getter for lexeme FieldDeclaration
+   * @apilevel internal
+   */
+  protected FieldDeclaration tokenFieldDeclaration_FieldDeclaration;
+  /**
+   * Retrieves the value for the lexeme FieldDeclaration.
+   * @return The value for the lexeme FieldDeclaration.
    * @apilevel high-level
    * @ast method 
-   * @declaredat BoundNames.ast:13
+   * 
    */
   public FieldDeclaration getFieldDeclaration() {
     return tokenFieldDeclaration_FieldDeclaration;
@@ -205,11 +242,11 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
     if(decl_computed) {
       return decl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     decl_value = decl_compute();
-if(isFinal && num == state().boundariesCrossed) decl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     return decl_value;
   }
   /**

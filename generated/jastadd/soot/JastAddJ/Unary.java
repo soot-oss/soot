@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production Unary : {@link Expr} ::= <span class="component">Operand:{@link Expr}</span>;
  * @ast node
- * @declaredat java.ast:133
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:136
  */
 public abstract class Unary extends Expr implements Cloneable {
   /**
@@ -108,7 +109,7 @@ public abstract class Unary extends Expr implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public Unary() {
     super();
@@ -116,8 +117,19 @@ public abstract class Unary extends Expr implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public Unary(Expr p0) {
     setChild(p0, 0);
@@ -125,7 +137,7 @@ public abstract class Unary extends Expr implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -133,33 +145,38 @@ public abstract class Unary extends Expr implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Operand
+   * Replaces the Operand child.
+   * @param node The new node to replace the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setOperand(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Operand
+   * Retrieves the Operand child.
+   * @return The current node used as the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getOperand() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Operand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Operand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getOperandNoTransform() {
     return (Expr)getChildNoTransform(0);
@@ -167,63 +184,47 @@ public abstract class Unary extends Expr implements Cloneable {
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:398
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:235
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafter(Variable v) {
-      ASTNode$State state = state();
-    boolean isDAafter_Variable_value = isDAafter_compute(v);
-    return isDAafter_Variable_value;
+    ASTNode$State state = state();
+    try {  return getOperand().isDAafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDAafter_compute(Variable v) {  return getOperand().isDAafter(v);  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:841
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:694
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafter_Variable_value = isDUafter_compute(v);
-    return isDUafter_Variable_value;
+    ASTNode$State state = state();
+    try {  return getOperand().isDUafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafter_compute(Variable v) {  return getOperand().isDUafter(v);  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:372
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printPostOp() {
-      ASTNode$State state = state();
-    String printPostOp_value = printPostOp_compute();
-    return printPostOp_value;
+    ASTNode$State state = state();
+    try {  return "";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printPostOp_compute() {  return "";  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:376
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printPreOp() {
-      ASTNode$State state = state();
-    String printPreOp_value = printPreOp_compute();
-    return printPreOp_value;
+    ASTNode$State state = state();
+    try {  return "";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printPreOp_compute() {  return "";  }
   /**
    * @apilevel internal
    */
@@ -242,11 +243,11 @@ public abstract class Unary extends Expr implements Cloneable {
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
@@ -261,7 +262,8 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
     if(caller == getOperandNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_isSource(this, caller);
+    else {      return getParent().Define_boolean_isSource(this, caller);
+    }
   }
   /**
    * @apilevel internal

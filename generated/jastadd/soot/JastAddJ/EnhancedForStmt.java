@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production EnhancedForStmt : {@link BranchTargetStmt} ::= <span class="component">{@link VariableDeclaration}</span> <span class="component">{@link Expr}</span> <span class="component">{@link Stmt}</span>;
  * @ast node
- * @declaredat EnhancedFor.ast:1
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.ast:1
  */
 public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, VariableScope {
   /**
@@ -85,18 +86,33 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EnhancedForStmt fullCopy() {
-    EnhancedForStmt res = (EnhancedForStmt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      EnhancedForStmt tree = (EnhancedForStmt) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect EnhancedFor
@@ -311,7 +327,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
   }
   /**
    * @ast method 
-   * @declaredat EnhancedFor.ast:1
+   * 
    */
   public EnhancedForStmt() {
     super();
@@ -319,8 +335,19 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat EnhancedFor.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public EnhancedForStmt(VariableDeclaration p0, Expr p1, Stmt p2) {
     setChild(p0, 0);
@@ -330,7 +357,7 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:15
+   * 
    */
   protected int numChildren() {
     return 3;
@@ -338,85 +365,100 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat EnhancedFor.ast:21
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for VariableDeclaration
+   * Replaces the VariableDeclaration child.
+   * @param node The new node to replace the VariableDeclaration child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:5
+   * 
    */
   public void setVariableDeclaration(VariableDeclaration node) {
     setChild(node, 0);
   }
   /**
-   * Getter for VariableDeclaration
+   * Retrieves the VariableDeclaration child.
+   * @return The current node used as the VariableDeclaration child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:12
+   * 
    */
   public VariableDeclaration getVariableDeclaration() {
     return (VariableDeclaration)getChild(0);
   }
   /**
+   * Retrieves the VariableDeclaration child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the VariableDeclaration child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:18
+   * 
    */
   public VariableDeclaration getVariableDeclarationNoTransform() {
     return (VariableDeclaration)getChildNoTransform(0);
   }
   /**
-   * Setter for Expr
+   * Replaces the Expr child.
+   * @param node The new node to replace the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:5
+   * 
    */
   public void setExpr(Expr node) {
     setChild(node, 1);
   }
   /**
-   * Getter for Expr
+   * Retrieves the Expr child.
+   * @return The current node used as the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:12
+   * 
    */
   public Expr getExpr() {
     return (Expr)getChild(1);
   }
   /**
+   * Retrieves the Expr child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Expr child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:18
+   * 
    */
   public Expr getExprNoTransform() {
     return (Expr)getChildNoTransform(1);
   }
   /**
-   * Setter for Stmt
+   * Replaces the Stmt child.
+   * @param node The new node to replace the Stmt child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:5
+   * 
    */
   public void setStmt(Stmt node) {
     setChild(node, 2);
   }
   /**
-   * Getter for Stmt
+   * Retrieves the Stmt child.
+   * @return The current node used as the Stmt child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:12
+   * 
    */
   public Stmt getStmt() {
     return (Stmt)getChild(2);
   }
   /**
+   * Retrieves the Stmt child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Stmt child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat EnhancedFor.ast:18
+   * 
    */
   public Stmt getStmtNoTransform() {
     return (Stmt)getChildNoTransform(2);
@@ -426,21 +468,17 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
    * @aspect EnhancedFor
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:50
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localLookupVariable(String name) {
-      ASTNode$State state = state();
-    SimpleSet localLookupVariable_String_value = localLookupVariable_compute(name);
-    return localLookupVariable_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet localLookupVariable_compute(String name) {
+    ASTNode$State state = state();
+    try {
 		if(getVariableDeclaration().name().equals(name)) {
       return SimpleSet.emptySet.add(getVariableDeclaration());
     }
  	  return lookupVariable(name);
 	}
+    finally {
+    }
+  }
   protected java.util.Map targetOf_ContinueStmt_values;
   /**
    * @attribute syn
@@ -454,11 +492,11 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
     if(targetOf_ContinueStmt_values.containsKey(_parameters)) {
       return ((Boolean)targetOf_ContinueStmt_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean targetOf_ContinueStmt_value = targetOf_compute(stmt);
-if(isFinal && num == state().boundariesCrossed) targetOf_ContinueStmt_values.put(_parameters, Boolean.valueOf(targetOf_ContinueStmt_value));
+      if(isFinal && num == state().boundariesCrossed) targetOf_ContinueStmt_values.put(_parameters, Boolean.valueOf(targetOf_ContinueStmt_value));
     return targetOf_ContinueStmt_value;
   }
   /**
@@ -478,11 +516,11 @@ if(isFinal && num == state().boundariesCrossed) targetOf_ContinueStmt_values.put
     if(targetOf_BreakStmt_values.containsKey(_parameters)) {
       return ((Boolean)targetOf_BreakStmt_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean targetOf_BreakStmt_value = targetOf_compute(stmt);
-if(isFinal && num == state().boundariesCrossed) targetOf_BreakStmt_values.put(_parameters, Boolean.valueOf(targetOf_BreakStmt_value));
+      if(isFinal && num == state().boundariesCrossed) targetOf_BreakStmt_values.put(_parameters, Boolean.valueOf(targetOf_BreakStmt_value));
     return targetOf_BreakStmt_value;
   }
   /**
@@ -507,11 +545,11 @@ if(isFinal && num == state().boundariesCrossed) targetOf_BreakStmt_values.put(_p
     if(canCompleteNormally_computed) {
       return canCompleteNormally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     canCompleteNormally_value = canCompleteNormally_compute();
-if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
     return canCompleteNormally_value;
   }
   /**
@@ -531,11 +569,11 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -566,11 +604,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -588,19 +626,15 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
   }
   /**
    * @attribute syn
-   * @aspect EnhancedFor
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:114
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:401
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean continueLabel() {
-      ASTNode$State state = state();
-    boolean continueLabel_value = continueLabel_compute();
-    return continueLabel_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean continueLabel_compute() {  return true;  }
   /**
    * @apilevel internal
    */
@@ -619,11 +653,11 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(cond_label_computed) {
       return cond_label_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     cond_label_value = cond_label_compute();
-if(isFinal && num == state().boundariesCrossed) cond_label_computed = true;
+      if(isFinal && num == state().boundariesCrossed) cond_label_computed = true;
     return cond_label_value;
   }
   /**
@@ -648,11 +682,11 @@ if(isFinal && num == state().boundariesCrossed) cond_label_computed = true;
     if(update_label_computed) {
       return update_label_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     update_label_value = update_label_compute();
-if(isFinal && num == state().boundariesCrossed) update_label_computed = true;
+      if(isFinal && num == state().boundariesCrossed) update_label_computed = true;
     return update_label_value;
   }
   /**
@@ -677,11 +711,11 @@ if(isFinal && num == state().boundariesCrossed) update_label_computed = true;
     if(end_label_computed) {
       return end_label_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     end_label_value = end_label_compute();
-if(isFinal && num == state().boundariesCrossed) end_label_computed = true;
+      if(isFinal && num == state().boundariesCrossed) end_label_computed = true;
     return end_label_value;
   }
   /**
@@ -706,11 +740,11 @@ if(isFinal && num == state().boundariesCrossed) end_label_computed = true;
     if(extraLocalIndex_computed) {
       return extraLocalIndex_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     extraLocalIndex_value = extraLocalIndex_compute();
-if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
+      if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     return extraLocalIndex_value;
   }
   /**
@@ -719,34 +753,37 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
   private int extraLocalIndex_compute() {  return localNum();  }
   /**
    * @attribute syn
-   * @aspect EnhancedForToBytecode
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnhancedForCodegen.jrag:21
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:200
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt break_label() {
-      ASTNode$State state = state();
-    soot.jimple.Stmt break_label_value = break_label_compute();
-    return break_label_value;
+    ASTNode$State state = state();
+    try {  return end_label();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private soot.jimple.Stmt break_label_compute() {  return end_label();  }
   /**
    * @attribute syn
-   * @aspect EnhancedForToBytecode
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnhancedForCodegen.jrag:22
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:225
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt continue_label() {
-      ASTNode$State state = state();
-    soot.jimple.Stmt continue_label_value = continue_label_compute();
-    return continue_label_value;
+    ASTNode$State state = state();
+    try {  return update_label();  }
+    finally {
+    }
   }
   /**
-   * @apilevel internal
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
    */
-  private soot.jimple.Stmt continue_label_compute() {  return update_label();  }
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return getStmt().modifiedInScope(var);  }
+    finally {
+    }
+  }
   /**
    * @attribute inh
    * @aspect EnhancedFor
@@ -754,7 +791,7 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet lookupVariable(String name) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
     return lookupVariable_String_value;
   }
@@ -766,13 +803,14 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getStmtNoTransform()) {
       return localLookupVariable(name);
     }
-    if(caller == getExprNoTransform()) {
+    else if(caller == getExprNoTransform()) {
       return localLookupVariable(name);
     }
-    if(caller == getVariableDeclarationNoTransform()) {
+    else if(caller == getVariableDeclarationNoTransform()) {
       return localLookupVariable(name);
     }
-    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:43
@@ -782,7 +820,8 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getVariableDeclarationNoTransform()) {
       return NameType.TYPE_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:48
@@ -792,13 +831,14 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getStmtNoTransform()) {
       return this;
     }
-    if(caller == getExprNoTransform()) {
+    else if(caller == getExprNoTransform()) {
       return this;
     }
-    if(caller == getVariableDeclarationNoTransform()) {
+    else if(caller == getVariableDeclarationNoTransform()) {
       return this;
     }
-    return getParent().Define_VariableScope_outerScope(this, caller);
+    else {      return getParent().Define_VariableScope_outerScope(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:71
@@ -808,7 +848,8 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getVariableDeclarationNoTransform()) {
       return false;
     }
-    return getParent().Define_boolean_isMethodParameter(this, caller);
+    else {      return getParent().Define_boolean_isMethodParameter(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:72
@@ -818,7 +859,8 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getVariableDeclarationNoTransform()) {
       return false;
     }
-    return getParent().Define_boolean_isConstructorParameter(this, caller);
+    else {      return getParent().Define_boolean_isConstructorParameter(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:73
@@ -828,7 +870,8 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getVariableDeclarationNoTransform()) {
       return false;
     }
-    return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+    else {      return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:80
@@ -838,7 +881,8 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getStmtNoTransform()) {
       return reachable();
     }
-    return getParent().Define_boolean_reachable(this, caller);
+    else {      return getParent().Define_boolean_reachable(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:97
@@ -848,10 +892,11 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getStmtNoTransform()) {
       return getExpr().isDAafter(v);
     }
-    if(caller == getExprNoTransform()) {
+    else if(caller == getExprNoTransform()) {
       return v == getVariableDeclaration() || isDAbefore(v);
     }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:111
@@ -861,10 +906,11 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getStmtNoTransform()) {
       return getExpr().isDUafter(v);
     }
-    if(caller == getExprNoTransform()) {
+    else if(caller == getExprNoTransform()) {
       return v != getVariableDeclaration() && isDUbefore(v);
     }
-    return getParent().Define_boolean_isDUbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:113
@@ -874,7 +920,8 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getStmtNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_insideLoop(this, caller);
+    else {      return getParent().Define_boolean_insideLoop(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/EnhancedForCodegen.jrag:18
@@ -884,10 +931,11 @@ if(isFinal && num == state().boundariesCrossed) extraLocalIndex_computed = true;
     if(caller == getStmtNoTransform()) {
       return getVariableDeclaration().localNum() + getVariableDeclaration().type().size();
     }
-    if(caller == getVariableDeclarationNoTransform()) {
+    else if(caller == getVariableDeclarationNoTransform()) {
       return localNum() + (getExpr().type().isArrayDecl() ? 2 : 1);
     }
-    return getParent().Define_int_localNum(this, caller);
+    else {      return getParent().Define_int_localNum(this, caller);
+    }
   }
   /**
    * @apilevel internal

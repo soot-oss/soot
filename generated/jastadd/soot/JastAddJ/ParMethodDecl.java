@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -19,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production ParMethodDecl : {@link MethodDecl} ::= <span class="component">TypeArgument:{@link Access}*</span> <span class="component">&lt;GenericMethodDecl:GenericMethodDecl&gt;</span>;
  * @ast node
- * @declaredat GenericMethods.ast:7
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.ast:7
  */
 public class ParMethodDecl extends MethodDecl implements Cloneable, Parameterization {
   /**
@@ -72,18 +73,33 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParMethodDecl fullCopy() {
-    ParMethodDecl res = (ParMethodDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ParMethodDecl tree = (ParMethodDecl) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect TypeCheck
@@ -94,18 +110,18 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:819
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:846
    */
   public TypeDecl substitute(TypeVariable typeVariable) {
     for(int i = 0; i < numTypeParameter(); i++)
       if(typeParameter(i) == typeVariable)
         return getTypeArgument(i).type();
-    return hostType().substitute(typeVariable);
+    return genericMethodDecl().hostType().substitute(typeVariable);
   }
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:833
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:860
    */
   public boolean isRawType() {
     return false; 
@@ -113,7 +129,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:839
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:866
    */
   public int numTypeParameter() {
     return genericMethodDecl().original().getNumTypeParameter();
@@ -121,7 +137,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:842
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:869
    */
   public TypeVariable typeParameter(int index) {
     return genericMethodDecl().original().getTypeParameter(index);
@@ -134,20 +150,31 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   public void transformation() { }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:1
+   * 
    */
   public ParMethodDecl() {
     super();
 
+
+  }
+  /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[6];
     setChild(new List(), 2);
     setChild(new List(), 3);
     setChild(new Opt(), 4);
     setChild(new List(), 5);
-
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:11
+   * 
    */
   public ParMethodDecl(Modifiers p0, Access p1, String p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6, GenericMethodDecl p7) {
     setChild(p0, 0);
@@ -161,7 +188,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:21
+   * 
    */
   public ParMethodDecl(Modifiers p0, Access p1, beaver.Symbol p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5, List<Access> p6, GenericMethodDecl p7) {
     setChild(p0, 0);
@@ -176,7 +203,7 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:34
+   * 
    */
   protected int numChildren() {
     return 6;
@@ -184,75 +211,88 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat GenericMethods.ast:40
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeAccess
+   * Replaces the TypeAccess child.
+   * @param node The new node to replace the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeAccess(Access node) {
     setChild(node, 1);
   }
   /**
-   * Getter for TypeAccess
+   * Retrieves the TypeAccess child.
+   * @return The current node used as the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getTypeAccess() {
     return (Access)getChild(1);
   }
   /**
+   * Retrieves the TypeAccess child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the TypeAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getTypeAccessNoTransform() {
     return (Access)getChildNoTransform(1);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -262,47 +302,64 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for ParameterList
+   * Replaces the Parameter list.
+   * @param list The new list node to be used as the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setParameterList(List<ParameterDeclaration> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * @return Number of children in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumParameter() {
     return getParameterList().getNumChild();
   }
   /**
-   * Getter for child in list ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Parameter list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumParameterNoTransform() {
+    return getParameterListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Parameter list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclaration getParameter(int i) {
     return (ParameterDeclaration)getParameterList().getChild(i);
   }
   /**
-   * Add element to list ParameterList
+   * Append an element to the Parameter list.
+   * @param node The element to append to the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addParameter(ParameterDeclaration node) {
     List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
@@ -311,44 +368,51 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addParameterNoTransform(ParameterDeclaration node) {
     List<ParameterDeclaration> list = getParameterListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ParameterList
+   * Replaces the Parameter list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setParameter(ParameterDeclaration node, int i) {
     List<ParameterDeclaration> list = getParameterList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Parameter list.
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<ParameterDeclaration> getParameters() {
     return getParameterList();
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<ParameterDeclaration> getParametersNoTransform() {
     return getParameterListNoTransform();
   }
   /**
-   * Getter for list ParameterList
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterList() {
@@ -357,47 +421,66 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     return list;
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterListNoTransform() {
     return (List<ParameterDeclaration>)getChildNoTransform(2);
   }
   /**
-   * Setter for ExceptionList
+   * Replaces the Exception list.
+   * @param list The new list node to be used as the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExceptionList(List<Access> list) {
     setChild(list, 3);
   }
   /**
-   * @return number of children in ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * @return Number of children in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumException() {
     return getExceptionList().getNumChild();
   }
   /**
-   * Getter for child in list ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Exception list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumExceptionNoTransform() {
+    return getExceptionListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Exception list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getException(int i) {
     return (Access)getExceptionList().getChild(i);
   }
   /**
-   * Add element to list ExceptionList
+   * Append an element to the Exception list.
+   * @param node The element to append to the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addException(Access node) {
     List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
@@ -406,44 +489,51 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addExceptionNoTransform(Access node) {
     List<Access> list = getExceptionListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ExceptionList
+   * Replaces the Exception list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setException(Access node, int i) {
     List<Access> list = getExceptionList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Exception list.
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Access> getExceptions() {
     return getExceptionList();
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Access> getExceptionsNoTransform() {
     return getExceptionListNoTransform();
   }
   /**
-   * Getter for list ExceptionList
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionList() {
@@ -452,102 +542,130 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     return list;
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionListNoTransform() {
     return (List<Access>)getChildNoTransform(3);
   }
   /**
-   * Setter for BlockOpt
+   * Replaces the optional node for the Block child. This is the {@code Opt} node containing the child Block, not the actual child!
+   * @param opt The new node to be used as the optional node for the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBlockOpt(Opt<Block> opt) {
     setChild(opt, 4);
   }
   /**
-   * Does this node have a Block child?
+   * Check whether the optional Block child exists.
+   * @return {@code true} if the optional Block child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasBlock() {
     return getBlockOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child Block
-   * @apilevel high-level
+   * Retrieves the (optional) Block child.
+   * @return The Block child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block getBlock() {
     return (Block)getBlockOpt().getChild(0);
   }
   /**
-   * Setter for optional child Block
+   * Replaces the (optional) Block child.
+   * @param node The new node to be used as the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setBlock(Block node) {
     getBlockOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the Block child. This is the {@code Opt} node containing the child Block, not the actual child!
+   * @return The optional node for child the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Block> getBlockOpt() {
     return (Opt<Block>)getChild(4);
   }
   /**
+   * Retrieves the optional node for child Block. This is the {@code Opt} node containing the child Block, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child Block.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Block> getBlockOptNoTransform() {
     return (Opt<Block>)getChildNoTransform(4);
   }
   /**
-   * Setter for TypeArgumentList
+   * Replaces the TypeArgument list.
+   * @param list The new list node to be used as the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:5
+   * 
    */
   public void setTypeArgumentList(List<Access> list) {
     setChild(list, 5);
   }
   /**
-   * @return number of children in TypeArgumentList
+   * Retrieves the number of children in the TypeArgument list.
+   * @return Number of children in the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:12
+   * 
    */
   public int getNumTypeArgument() {
     return getTypeArgumentList().getNumChild();
   }
   /**
-   * Getter for child in list TypeArgumentList
+   * Retrieves the number of children in the TypeArgument list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the TypeArgument list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumTypeArgumentNoTransform() {
+    return getTypeArgumentListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the TypeArgument list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getTypeArgument(int i) {
     return (Access)getTypeArgumentList().getChild(i);
   }
   /**
-   * Add element to list TypeArgumentList
+   * Append an element to the TypeArgument list.
+   * @param node The element to append to the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:27
+   * 
    */
   public void addTypeArgument(Access node) {
     List<Access> list = (parent == null || state == null) ? getTypeArgumentListNoTransform() : getTypeArgumentList();
@@ -556,44 +674,51 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:34
+   * 
    */
   public void addTypeArgumentNoTransform(Access node) {
     List<Access> list = getTypeArgumentListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list TypeArgumentList
+   * Replaces the TypeArgument list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:42
+   * 
    */
   public void setTypeArgument(Access node, int i) {
     List<Access> list = getTypeArgumentList();
     list.setChild(node, i);
   }
   /**
-   * Getter for TypeArgument list.
+   * Retrieves the TypeArgument list.
+   * @return The node representing the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:50
+   * 
    */
   public List<Access> getTypeArguments() {
     return getTypeArgumentList();
   }
   /**
+   * Retrieves the TypeArgument list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeArgument list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:56
+   * 
    */
   public List<Access> getTypeArgumentsNoTransform() {
     return getTypeArgumentListNoTransform();
   }
   /**
-   * Getter for list TypeArgumentList
+   * Retrieves the TypeArgument list.
+   * @return The node representing the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getTypeArgumentList() {
@@ -602,33 +727,43 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     return list;
   }
   /**
+   * Retrieves the TypeArgument list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeArgument list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getTypeArgumentListNoTransform() {
     return (List<Access>)getChildNoTransform(5);
   }
   /**
-   * Setter for lexeme GenericMethodDecl
+   * Replaces the lexeme GenericMethodDecl.
+   * @param value The new value for the lexeme GenericMethodDecl.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:5
+   * 
    */
   public void setGenericMethodDecl(GenericMethodDecl value) {
     tokenGenericMethodDecl_GenericMethodDecl = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat GenericMethods.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected GenericMethodDecl tokenGenericMethodDecl_GenericMethodDecl;
   /**
-   * Getter for lexeme GenericMethodDecl
+   * @apilevel internal
+   */
+  protected GenericMethodDecl tokenGenericMethodDecl_GenericMethodDecl;
+  /**
+   * Retrieves the value for the lexeme GenericMethodDecl.
+   * @return The value for the lexeme GenericMethodDecl.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:13
+   * 
    */
   public GenericMethodDecl getGenericMethodDecl() {
     return tokenGenericMethodDecl_GenericMethodDecl;
@@ -651,11 +786,11 @@ public class ParMethodDecl extends MethodDecl implements Cloneable, Parameteriza
     if(genericMethodDecl_computed) {
       return genericMethodDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     genericMethodDecl_value = genericMethodDecl_compute();
-if(isFinal && num == state().boundariesCrossed) genericMethodDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) genericMethodDecl_computed = true;
     return genericMethodDecl_value;
   }
   /**
@@ -675,18 +810,18 @@ if(isFinal && num == state().boundariesCrossed) genericMethodDecl_computed = tru
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1406
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1512
    */
   @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl sourceMethodDecl() {
     if(sourceMethodDecl_computed) {
       return sourceMethodDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceMethodDecl_value = sourceMethodDecl_compute();
-if(isFinal && num == state().boundariesCrossed) sourceMethodDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sourceMethodDecl_computed = true;
     return sourceMethodDecl_value;
   }
   /**
@@ -706,11 +841,11 @@ if(isFinal && num == state().boundariesCrossed) sourceMethodDecl_computed = true
     if(moreSpecificThan_MethodDecl_values.containsKey(_parameters)) {
       return ((Boolean)moreSpecificThan_MethodDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean moreSpecificThan_MethodDecl_value = moreSpecificThan_compute(m);
-if(isFinal && num == state().boundariesCrossed) moreSpecificThan_MethodDecl_values.put(_parameters, Boolean.valueOf(moreSpecificThan_MethodDecl_value));
+      if(isFinal && num == state().boundariesCrossed) moreSpecificThan_MethodDecl_values.put(_parameters, Boolean.valueOf(moreSpecificThan_MethodDecl_value));
     return moreSpecificThan_MethodDecl_value;
   }
   /**
@@ -720,18 +855,14 @@ if(isFinal && num == state().boundariesCrossed) moreSpecificThan_MethodDecl_valu
   /**
    * @attribute syn
    * @aspect GenericsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:36
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:34
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl erasedMethod() {
-      ASTNode$State state = state();
-    MethodDecl erasedMethod_value = erasedMethod_compute();
-    return erasedMethod_value;
+    ASTNode$State state = state();
+    try {  return genericMethodDecl().erasedMethod();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private MethodDecl erasedMethod_compute() {  return genericMethodDecl().erasedMethod();  }
   /**
    * @apilevel internal
    */

@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production Access : {@link Expr};
  * @ast node
- * @declaredat java.ast:11
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:14
  */
 public abstract class Access extends Expr implements Cloneable {
   /**
@@ -78,7 +79,7 @@ public abstract class Access extends Expr implements Cloneable {
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:103
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:106
    */
   protected TypeDecl superConstructorQualifier(TypeDecl targetEnclosingType) {
     TypeDecl enclosing = hostType();
@@ -154,7 +155,7 @@ public abstract class Access extends Expr implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public Access() {
     super();
@@ -162,9 +163,19 @@ public abstract class Access extends Expr implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -172,7 +183,7 @@ public abstract class Access extends Expr implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -182,61 +193,45 @@ public abstract class Access extends Expr implements Cloneable {
    * @aspect LookupMethod
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:17
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Expr unqualifiedScope() {
-      ASTNode$State state = state();
-    Expr unqualifiedScope_value = unqualifiedScope_compute();
-    return unqualifiedScope_value;
+    ASTNode$State state = state();
+    try {  return isQualified() ? nestedScope() : this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Expr unqualifiedScope_compute() {  return isQualified() ? nestedScope() : this;  }
   /**
    * @attribute syn
    * @aspect QualifiedNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag:58
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isQualified() {
-      ASTNode$State state = state();
-    boolean isQualified_value = isQualified_compute();
-    return isQualified_value;
+    ASTNode$State state = state();
+    try {  return hasPrevExpr();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isQualified_compute() {  return hasPrevExpr();  }
   /**
    * @attribute syn
    * @aspect QualifiedNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag:61
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Expr qualifier() {
-      ASTNode$State state = state();
-    Expr qualifier_value = qualifier_compute();
-    return qualifier_value;
+    ASTNode$State state = state();
+    try {  return prevExpr();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Expr qualifier_compute() {  return prevExpr();  }
   /**
    * @attribute syn
    * @aspect QualifiedNames
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag:66
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Access lastAccess() {
-      ASTNode$State state = state();
-    Access lastAccess_value = lastAccess_compute();
-    return lastAccess_value;
+    ASTNode$State state = state();
+    try {  return this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Access lastAccess_compute() {  return this;  }
   /**
    * @apilevel internal
    */
@@ -255,11 +250,11 @@ public abstract class Access extends Expr implements Cloneable {
     if(prevExpr_computed) {
       return prevExpr_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     prevExpr_value = prevExpr_compute();
-if(isFinal && num == state().boundariesCrossed) prevExpr_computed = true;
+      if(isFinal && num == state().boundariesCrossed) prevExpr_computed = true;
     return prevExpr_value;
   }
   /**
@@ -292,11 +287,11 @@ if(isFinal && num == state().boundariesCrossed) prevExpr_computed = true;
     if(hasPrevExpr_computed) {
       return hasPrevExpr_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     hasPrevExpr_value = hasPrevExpr_compute();
-if(isFinal && num == state().boundariesCrossed) hasPrevExpr_computed = true;
+      if(isFinal && num == state().boundariesCrossed) hasPrevExpr_computed = true;
     return hasPrevExpr_value;
   }
   /**
@@ -316,16 +311,12 @@ if(isFinal && num == state().boundariesCrossed) hasPrevExpr_computed = true;
    * @aspect SyntacticClassification
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:56
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public NameType predNameType() {
-      ASTNode$State state = state();
-    NameType predNameType_value = predNameType_compute();
-    return predNameType_value;
+    ASTNode$State state = state();
+    try {  return NameType.NO_NAME;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private NameType predNameType_compute() {  return NameType.NO_NAME;  }
   /**
    * @apilevel internal
    */
@@ -344,11 +335,11 @@ if(isFinal && num == state().boundariesCrossed) hasPrevExpr_computed = true;
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
@@ -356,24 +347,51 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   private TypeDecl type_compute() {  return unknownType();  }
   /**
+   * @attribute syn
+   * @aspect TypeInference
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:65
+   */
+  public boolean isDiamond() {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /**
+	 * Builds a copy of this Access node where all occurrences
+	 * of type variables in the original type parameter list have been replaced
+	 * by the substitution type parameters.
+	 *
+	 * @return the substituted Access node
+	 * @attribute syn
+   * @aspect TypeInference
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:406
+   */
+  public Access substituted(Collection<TypeVariable> original, List<TypeVariable> substitution) {
+    ASTNode$State state = state();
+    try {  return (Access) cloneSubtree();  }
+    finally {
+    }
+  }
+  /**
    * @attribute inh
    * @aspect LookupMethod
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:18
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr nestedScope() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     Expr nestedScope_value = getParent().Define_Expr_nestedScope(this, null);
     return nestedScope_value;
   }
   /**
    * @attribute inh
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:133
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:221
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unknownType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
     return unknownType_value;
   }
@@ -384,7 +402,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable unknownField() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     Variable unknownField_value = getParent().Define_Variable_unknownField(this, null);
     return unknownField_value;
   }
@@ -395,7 +413,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean withinSuppressWarnings(String s) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
     return withinSuppressWarnings_String_value;
   }
@@ -406,7 +424,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean withinDeprecatedAnnotation() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean withinDeprecatedAnnotation_value = getParent().Define_boolean_withinDeprecatedAnnotation(this, null);
     return withinDeprecatedAnnotation_value;
   }
@@ -417,7 +435,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean inExplicitConstructorInvocation() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
     return inExplicitConstructorInvocation_value;
   }

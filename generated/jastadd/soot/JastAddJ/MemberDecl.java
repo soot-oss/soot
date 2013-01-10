@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production MemberDecl : {@link BodyDecl};
  * @ast node
- * @declaredat java.ast:74
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:77
  */
 public abstract class MemberDecl extends BodyDecl implements Cloneable {
   /**
@@ -60,7 +61,7 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public MemberDecl() {
     super();
@@ -68,9 +69,19 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -78,7 +89,7 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -93,33 +104,25 @@ public abstract class MemberDecl extends BodyDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:478
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:332
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isConstant() {
-      ASTNode$State state = state();
-    boolean isConstant_value = isConstant_compute();
-    return isConstant_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isConstant_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:214
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSynthetic() {
-      ASTNode$State state = state();
-    boolean isSynthetic_value = isSynthetic_compute();
-    return isSynthetic_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSynthetic_compute() {  return false;  }
   /**
    * @apilevel internal
    */

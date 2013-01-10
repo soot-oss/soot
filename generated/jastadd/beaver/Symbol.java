@@ -11,7 +11,7 @@ package beaver;
 /**
  * Represents a symbol of a grammar.
  */
-public class Symbol
+public class Symbol implements Cloneable
 {
 	static private final int COLUMN_FIELD_BITS = 12;
 	static private final int COLUMN_FIELD_MASK = (1 << COLUMN_FIELD_BITS) - 1; 
@@ -43,7 +43,7 @@ public class Symbol
 	/**
 	 * Value assigned to this symbol. 
 	 */
-	public final Object value;
+	public Object value;
 
 	/** 
 	 * Numeric symbol ID. 
@@ -159,5 +159,11 @@ public class Symbol
 	public int getEnd()
 	{
 		return end;
+	}
+
+	public Symbol clone() throws CloneNotSupportedException {
+		Symbol copy = (Symbol) super.clone();
+		copy.value = copy;
+		return copy;
 	}
 }

@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ParExpr : {@link PrimaryExpr} ::= <span class="component">{@link Expr}</span>;
  * @ast node
- * @declaredat java.ast:128
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:131
  */
 public class ParExpr extends PrimaryExpr implements Cloneable {
   /**
@@ -65,18 +66,33 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParExpr fullCopy() {
-    ParExpr res = (ParExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ParExpr tree = (ParExpr) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect PrettyPrint
@@ -110,7 +126,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
   public soot.Value eval(Body b) { return getExpr().eval(b); }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public ParExpr() {
     super();
@@ -118,8 +134,19 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ParExpr(Expr p0) {
     setChild(p0, 0);
@@ -127,7 +154,7 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -135,33 +162,38 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Expr
+   * Replaces the Expr child.
+   * @param node The new node to replace the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExpr(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Expr
+   * Retrieves the Expr child.
+   * @return The current node used as the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getExpr() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Expr child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Expr child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getExprNoTransform() {
     return (Expr)getChildNoTransform(0);
@@ -169,171 +201,127 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:111
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-      ASTNode$State state = state();
-    Constant constant_value = constant_compute();
-    return constant_value;
+    ASTNode$State state = state();
+    try {  return getExpr().constant();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {  return getExpr().constant();  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:494
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isConstant() {
-      ASTNode$State state = state();
-    boolean isConstant_value = isConstant_compute();
-    return isConstant_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isConstant();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isConstant_compute() {  return getExpr().isConstant();  }
   /**
    * @attribute syn
    * @aspect DefiniteAssignment
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:61
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:58
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Variable varDecl() {
-      ASTNode$State state = state();
-    Variable varDecl_value = varDecl_compute();
-    return varDecl_value;
+    ASTNode$State state = state();
+    try {  return getExpr().varDecl();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Variable varDecl_compute() {  return getExpr().varDecl();  }
   /*eq Stmt.isDAafter(Variable v) {
     //System.out.println("### isDAafter reached in " + getClass().getName());
     //throw new NullPointerException();
     throw new Error("Can not compute isDAafter for " + getClass().getName() + " at " + errorPrefix());
   }* @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:348
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:332
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafterTrue(Variable v) {
-      ASTNode$State state = state();
-    boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
-    return isDAafterTrue_Variable_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isDAafterTrue(v) || isFalse();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDAafterTrue_compute(Variable v) {  return getExpr().isDAafterTrue(v) || isFalse();  }
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:349
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:333
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafterFalse(Variable v) {
-      ASTNode$State state = state();
-    boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
-    return isDAafterFalse_Variable_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isDAafterFalse(v) || isTrue();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDAafterFalse_compute(Variable v) {  return getExpr().isDAafterFalse(v) || isTrue();  }
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:397
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:235
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafter(Variable v) {
-      ASTNode$State state = state();
-    boolean isDAafter_Variable_value = isDAafter_compute(v);
-    return isDAafter_Variable_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isDAafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDAafter_compute(Variable v) {  return getExpr().isDAafter(v);  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:798
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:702
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafterTrue(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
-    return isDUafterTrue_Variable_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isDUafterTrue(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafterTrue_compute(Variable v) {  return getExpr().isDUafterTrue(v);  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:799
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:703
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafterFalse(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
-    return isDUafterFalse_Variable_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isDUafterFalse(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafterFalse_compute(Variable v) {  return getExpr().isDUafterFalse(v);  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:840
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:694
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafter_Variable_value = isDUafter_compute(v);
-    return isDUafter_Variable_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isDUafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafter_compute(Variable v) {  return getExpr().isDUafter(v);  }
   /**
    * @attribute syn
    * @aspect AccessTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag:28
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag:25
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSuperAccess() {
-      ASTNode$State state = state();
-    boolean isSuperAccess_value = isSuperAccess_compute();
-    return isSuperAccess_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isSuperAccess();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSuperAccess_compute() {  return getExpr().isSuperAccess();  }
   /**
    * @attribute syn
    * @aspect AccessTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag:34
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag:31
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isThisAccess() {
-      ASTNode$State state = state();
-    boolean isThisAccess_value = isThisAccess_compute();
-    return isThisAccess_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isThisAccess();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isThisAccess_compute() {  return getExpr().isThisAccess();  }
   /**
    * @apilevel internal
    */
@@ -352,11 +340,11 @@ public class ParExpr extends PrimaryExpr implements Cloneable {
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
@@ -366,78 +354,58 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute syn
    * @aspect TypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:19
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:15
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isVariable() {
-      ASTNode$State state = state();
-    boolean isVariable_value = isVariable_compute();
-    return isVariable_value;
+    ASTNode$State state = state();
+    try {  return getExpr().isVariable();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isVariable_compute() {  return getExpr().isVariable();  }
   /**
    * @attribute syn
    * @aspect TypeHierarchyCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:151
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:150
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean staticContextQualifier() {
-      ASTNode$State state = state();
-    boolean staticContextQualifier_value = staticContextQualifier_compute();
-    return staticContextQualifier_value;
+    ASTNode$State state = state();
+    try {  return getExpr().staticContextQualifier();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean staticContextQualifier_compute() {  return getExpr().staticContextQualifier();  }
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:25
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:21
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean definesLabel() {
-      ASTNode$State state = state();
-    boolean definesLabel_value = definesLabel_compute();
-    return definesLabel_value;
+    ASTNode$State state = state();
+    try {  return getParent().definesLabel();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean definesLabel_compute() {  return getParent().definesLabel();  }
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:83
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:82
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean canBeTrue() {
-      ASTNode$State state = state();
-    boolean canBeTrue_value = canBeTrue_compute();
-    return canBeTrue_value;
+    ASTNode$State state = state();
+    try {  return getExpr().canBeTrue();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean canBeTrue_compute() {  return getExpr().canBeTrue();  }
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:93
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:92
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean canBeFalse() {
-      ASTNode$State state = state();
-    boolean canBeFalse_value = canBeFalse_compute();
-    return canBeFalse_value;
+    ASTNode$State state = state();
+    try {  return getExpr().canBeFalse();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean canBeFalse_compute() {  return getExpr().canBeFalse();  }
   /**
    * @apilevel internal
    */

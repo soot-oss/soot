@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production MemberClassDecl : {@link MemberTypeDecl} ::= <span class="component">{@link ClassDecl}</span>;
  * @ast node
- * @declaredat java.ast:96
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:99
  */
 public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
   /**
@@ -61,18 +62,33 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public MemberClassDecl fullCopy() {
-    MemberClassDecl res = (MemberClassDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      MemberClassDecl tree = (MemberClassDecl) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect PrettyPrint
@@ -84,7 +100,7 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public MemberClassDecl() {
     super();
@@ -92,8 +108,19 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public MemberClassDecl(ClassDecl p0) {
     setChild(p0, 0);
@@ -101,7 +128,7 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -109,33 +136,38 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for ClassDecl
+   * Replaces the ClassDecl child.
+   * @param node The new node to replace the ClassDecl child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setClassDecl(ClassDecl node) {
     setChild(node, 0);
   }
   /**
-   * Getter for ClassDecl
+   * Retrieves the ClassDecl child.
+   * @return The current node used as the ClassDecl child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public ClassDecl getClassDecl() {
     return (ClassDecl)getChild(0);
   }
   /**
+   * Retrieves the ClassDecl child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the ClassDecl child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public ClassDecl getClassDeclNoTransform() {
     return (ClassDecl)getChildNoTransform(0);
@@ -143,27 +175,24 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:397
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:484
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeDecl() {
-      ASTNode$State state = state();
-    TypeDecl typeDecl_value = typeDecl_compute();
-    return typeDecl_value;
+    ASTNode$State state = state();
+    try {  return getClassDecl();  }
+    finally {
+    }
   }
   /**
-   * @apilevel internal
-   */
-  private TypeDecl typeDecl_compute() {  return getClassDecl();  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:528
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:527
    * @apilevel internal
    */
   public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
     if(caller == getClassDeclNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_isMemberType(this, caller);
+    else {      return getParent().Define_boolean_isMemberType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:145
@@ -173,7 +202,8 @@ public class MemberClassDecl extends MemberTypeDecl implements Cloneable {
     if(caller == getClassDeclNoTransform()) {
       return false;
     }
-    return getParent().Define_boolean_inStaticContext(this, caller);
+    else {      return getParent().Define_boolean_inStaticContext(this, caller);
+    }
   }
   /**
    * @apilevel internal

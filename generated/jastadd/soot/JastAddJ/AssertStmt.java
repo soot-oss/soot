@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production AssertStmt : {@link Stmt} ::= <span class="component">first:{@link Expr}</span> <span class="component">[{@link Expr}]</span>;
  * @ast node
- * @declaredat java.ast:218
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:221
  */
 public class AssertStmt extends Stmt implements Cloneable {
   /**
@@ -65,18 +66,33 @@ public class AssertStmt extends Stmt implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AssertStmt fullCopy() {
-    AssertStmt res = (AssertStmt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      AssertStmt tree = (AssertStmt) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect PrettyPrint
@@ -146,17 +162,28 @@ public class AssertStmt extends Stmt implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public AssertStmt() {
     super();
 
-    setChild(new Opt(), 1);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:8
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+    setChild(new Opt(), 1);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public AssertStmt(Expr p0, Opt<Expr> p1) {
     setChild(p0, 0);
@@ -165,7 +192,7 @@ public class AssertStmt extends Stmt implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:15
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -173,87 +200,101 @@ public class AssertStmt extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:21
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for first
+   * Replaces the first child.
+   * @param node The new node to replace the first child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setfirst(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for first
+   * Retrieves the first child.
+   * @return The current node used as the first child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getfirst() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the first child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the first child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getfirstNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
   /**
-   * Setter for ExprOpt
+   * Replaces the optional node for the Expr child. This is the {@code Opt} node containing the child Expr, not the actual child!
+   * @param opt The new node to be used as the optional node for the Expr child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExprOpt(Opt<Expr> opt) {
     setChild(opt, 1);
   }
   /**
-   * Does this node have a Expr child?
+   * Check whether the optional Expr child exists.
+   * @return {@code true} if the optional Expr child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasExpr() {
     return getExprOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child Expr
-   * @apilevel high-level
+   * Retrieves the (optional) Expr child.
+   * @return The Expr child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getExpr() {
     return (Expr)getExprOpt().getChild(0);
   }
   /**
-   * Setter for optional child Expr
+   * Replaces the (optional) Expr child.
+   * @param node The new node to be used as the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setExpr(Expr node) {
     getExprOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the Expr child. This is the {@code Opt} node containing the child Expr, not the actual child!
+   * @return The optional node for child the Expr child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Expr> getExprOpt() {
     return (Opt<Expr>)getChild(1);
   }
   /**
+   * Retrieves the optional node for child Expr. This is the {@code Opt} node containing the child Expr, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child Expr.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Expr> getExprOptNoTransform() {
@@ -272,11 +313,11 @@ public class AssertStmt extends Stmt implements Cloneable {
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -287,7 +328,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:865
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:866
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -296,17 +337,39 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
    * @apilevel internal
    */
   private boolean isDUafter_compute(Variable v) {  return getfirst().isDUafter(v);  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:419
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
+    if(caller == getExprOptNoTransform()) {
+      return getfirst().isDAafter(v);
+    }
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
+  }
   /**
    * @apilevel internal
    */

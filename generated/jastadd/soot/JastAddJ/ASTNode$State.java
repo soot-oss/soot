@@ -18,11 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
  * @apilevel internal
- * @ast class
- * @declaredat :0
+  * @ast class
+ * 
  */
 public class ASTNode$State extends java.lang.Object {
 
@@ -134,13 +133,13 @@ public class ASTNode$State extends java.lang.Object {
   public int replacePos = 0;
 
 
-  protected int duringLookupConstructor = 0;
+  protected int duringImplicitConstructor = 0;
 
 
   protected int duringBoundNames = 0;
 
 
-  protected int duringResolveAmbiguousNames = 0;
+  protected int duringNameResolution = 0;
 
 
   protected int duringSyntacticClassification = 0;
@@ -149,13 +148,13 @@ public class ASTNode$State extends java.lang.Object {
   protected int duringAnonymousClasses = 0;
 
 
-  protected int duringVariableDeclaration = 0;
+  protected int duringVariableDeclarationTransformation = 0;
 
 
-  protected int duringConstantExpression = 0;
+  protected int duringLiterals = 0;
 
 
-  protected int duringDefiniteAssignment = 0;
+  protected int duringDU = 0;
 
 
   protected int duringAnnotations = 0;
@@ -171,17 +170,17 @@ public void reset() {
     CIRCLE_INDEX = 1;
     CHANGE = false;
     boundariesCrossed = 0;
-    if(duringLookupConstructor != 0) {
-      System.out.println("Warning: resetting duringLookupConstructor");
-      duringLookupConstructor = 0;
+    if(duringImplicitConstructor != 0) {
+      System.out.println("Warning: resetting duringImplicitConstructor");
+      duringImplicitConstructor = 0;
     }
     if(duringBoundNames != 0) {
       System.out.println("Warning: resetting duringBoundNames");
       duringBoundNames = 0;
     }
-    if(duringResolveAmbiguousNames != 0) {
-      System.out.println("Warning: resetting duringResolveAmbiguousNames");
-      duringResolveAmbiguousNames = 0;
+    if(duringNameResolution != 0) {
+      System.out.println("Warning: resetting duringNameResolution");
+      duringNameResolution = 0;
     }
     if(duringSyntacticClassification != 0) {
       System.out.println("Warning: resetting duringSyntacticClassification");
@@ -191,17 +190,17 @@ public void reset() {
       System.out.println("Warning: resetting duringAnonymousClasses");
       duringAnonymousClasses = 0;
     }
-    if(duringVariableDeclaration != 0) {
-      System.out.println("Warning: resetting duringVariableDeclaration");
-      duringVariableDeclaration = 0;
+    if(duringVariableDeclarationTransformation != 0) {
+      System.out.println("Warning: resetting duringVariableDeclarationTransformation");
+      duringVariableDeclarationTransformation = 0;
     }
-    if(duringConstantExpression != 0) {
-      System.out.println("Warning: resetting duringConstantExpression");
-      duringConstantExpression = 0;
+    if(duringLiterals != 0) {
+      System.out.println("Warning: resetting duringLiterals");
+      duringLiterals = 0;
     }
-    if(duringDefiniteAssignment != 0) {
-      System.out.println("Warning: resetting duringDefiniteAssignment");
-      duringDefiniteAssignment = 0;
+    if(duringDU != 0) {
+      System.out.println("Warning: resetting duringDU");
+      duringDU = 0;
     }
     if(duringAnnotations != 0) {
       System.out.println("Warning: resetting duringAnnotations");
