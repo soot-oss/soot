@@ -52,8 +52,7 @@ import soot.jimple.Stmt;
 /**
  * Main entry point for the "dex" output format.<br>
  * <br>
- * Use the methods provided by the {@link IDexPrinter} interface to add classes that should be printed
- * and to finally print the classes.<br>
+ * Use {@link #add(SootClass)} to add classes that should be printed as dex output and {@link #print()} to finally print the classes.<br>
  * If the printer has found the original APK of an added class (via {@link SourceLocator#dexClassIndex()}),
  * the files in the APK are copied to a new one, replacing it's classes.dex and excluding the signature files.
  * Note that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.<br>
