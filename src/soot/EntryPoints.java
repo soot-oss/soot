@@ -21,7 +21,7 @@ package soot;
 import soot.util.*;
 import java.util.*;
 import soot.entrypoints.*;
-
+import soot.options.Options;
 
 /** Returns the various potential entry points of a Java program.
  * The entry points are detected/returned in the following different ways:
@@ -80,21 +80,31 @@ public class EntryPoints
     /** Returns only the application entry points, not including entry points
      * invoked implicitly by the VM. */
     public List<SootMethod> application() {
-        List<SootMethod> ret = new ArrayList<SootMethod>();
-        Collection<SootClass> scope;
-        if (Scene.v().hasCustomEntryPoints())
-            return Scene.v().getEntryPoints();
-       else if (entryPoints.isEmpty()){
-            //Default is detecting a main method
-            entryPoints.add(new MainDetector());
-            scope = Arrays.asList(Scene.v().getMainClass());
-       } else {
-           scope = Scene.v().getApplicationClasses();
-       }
-        ret.addAll(searchEntryPoints(entryPoints, scope));
-        ret.addAll(clinitsOf(ret));
-        return ret;
+      if (entryPoints.isEmpty())
+        return old_application();
+    
+      List<SootMethod> ret = new ArrayList<SootMethod>();
+      if (Scene.v().hasCustomEntryPoints())
+        return Scene.v().getEntryPoints();
+      
+      ret.addAll(searchEntryPoints(entryPoints, Scene.v().getApplicationClasses()));
+      ret.addAll(clinitsOf(ret));
+      return ret;    
     }
+    
+    /** Returns only the application entry points, not including entry points
+     * invoked implicitly by the VM. */
+    private List<SootMethod> old_application() {
+      List<SootMethod> ret = new ArrayList<SootMethod>();
+      if(Scene.v().hasMainClass()) {
+        addMethod( ret, Scene.v().getMainClass(), sigMain );
+        for (SootMethod clinit : clinitsOf(Scene.v().getMainClass() )) {
+          ret.add(clinit);
+        }
+      }
+      return ret;
+    }
+    
     /** Returns only the entry points invoked implicitly by the VM. */
     public List<SootMethod> implicit() {
         Collection<EntryPointDetector> implicitDetectors = new ArrayList<EntryPointDetector>();
