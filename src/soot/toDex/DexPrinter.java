@@ -359,6 +359,7 @@ public class DexPrinter {
 	}
 
 	public void print() {
+		assertClassesAdded();
 		String outputDir = SourceLocator.v().getOutputDir();
 		try {
 			if (originalApk != null) {
@@ -372,6 +373,14 @@ public class DexPrinter {
 			}
 		} catch (IOException e) {
 			throw new CompilationDeathException("I/O exception while printing dex", e);
+		}
+	}
+
+	private void assertClassesAdded() {
+		List<ClassDefItem> classes = dexFile.ClassDefsSection.getItems();
+		if (classes.isEmpty()) {
+			// the dexlib would respond with an IndexOutOfBoundsException while printing the dexfile
+			throw new IllegalStateException("there were no classes added");
 		}
 	}
 }
