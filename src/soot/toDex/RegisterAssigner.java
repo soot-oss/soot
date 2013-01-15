@@ -7,6 +7,7 @@ import java.util.ListIterator;
 
 import org.jf.dexlib.Code.Opcode;
 
+import soot.CompilationDeathException;
 import soot.toDex.instructions.AddressInsn;
 import soot.toDex.instructions.Insn;
 import soot.toDex.instructions.Insn11n;
@@ -131,13 +132,10 @@ public class RegisterAssigner {
 		if (idealInsn == null) {
 			// no better insn fits -> use our low insn anyhow
 			idealInsn = lowInsn;
+		} else {
+			throw new CompilationDeathException("findFittingInsn is useful, other than we thought");
 		}
-		/*
-		 * get the regs count needed for the fitting ideal insn, given the current regs.
-		 * this corresponds with the number of additional MOVEs needed later on.
-		 */
-		BitSet stillIncompatRegs = idealInsn.getIncompatibleRegs(insn.getRegs());
-		return insn.getMinimumRegsNeeded(stillIncompatRegs);
+		return insn.getMinimumRegsNeeded(insn.getIncompatibleRegs());
 	}
 	
 	private List<Register> getLowVersion(List<Register> regs) {
