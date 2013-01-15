@@ -178,7 +178,7 @@ public class StmtVisitor implements StmtSwitch {
 		int nextOffset = 0;
 		for (Insn i : insns) {
 			i.setInsnOffset(nextOffset);
-			nextOffset += i.getSize(nextOffset);
+			nextOffset += i.getSize();
 		}
 		// ..to use them as new targets
 		setTargets();

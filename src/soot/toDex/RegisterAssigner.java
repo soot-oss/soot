@@ -1,13 +1,11 @@
 package soot.toDex;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.jf.dexlib.Code.Opcode;
 
-import soot.CompilationDeathException;
 import soot.toDex.instructions.AddressInsn;
 import soot.toDex.instructions.Insn;
 import soot.toDex.instructions.Insn11n;
@@ -112,41 +110,12 @@ public class RegisterAssigner {
 				continue;
 			}
 			// no fitting instruction -> save if we need more registers
-			int newRegsNeeded = calcRegsNeeded(insn);
+			int newRegsNeeded = insn.getMinimumRegsNeeded();
 			if (newRegsNeeded > regsNeeded) {
 				regsNeeded = newRegsNeeded;
 			}
 		}
 		return regsNeeded;
-	}
-
-	private int calcRegsNeeded(Insn insn) {
-		/*
-		 * get fitting insn with regs starting at 0, that is an "ideal" one without register constraints.
-		 * we use such an ideal insn because registers in insns that have no fitting alternative will only be
-		 * replaced after register reservation, while adding MOVEs from high registers to those low ones starting at 0.
-		 */
-		List<Register> lowRegs = getLowVersion(insn.getRegs());
-		Insn lowInsn = insn.shallowCloneWithRegs(lowRegs); // we only need a shallow clone for finding a fitting insn, the clone won't be written to
-		Insn idealInsn = findFittingInsn(lowInsn);
-		if (idealInsn == null) {
-			// no better insn fits -> use our low insn anyhow
-			idealInsn = lowInsn;
-		} else {
-			throw new CompilationDeathException("findFittingInsn is useful, other than we thought");
-		}
-		return insn.getMinimumRegsNeeded(insn.getIncompatibleRegs());
-	}
-	
-	private List<Register> getLowVersion(List<Register> regs) {
-		List<Register> lowVersion = new ArrayList<Register>();
-		int nextRegNum = 0;
-		for (Register r : regs) {
-			Register lowReg = r.isEmptyReg() ? r : new Register(r.getType(), nextRegNum);
-			lowVersion.add(lowReg);
-			nextRegNum += SootToDexUtils.getDexWords(r.getType());
-		}
-		return lowVersion;
 	}
 
 	private void shiftRegs(Insn insn, int shiftAmount) {

@@ -22,16 +22,12 @@ public interface Insn extends Cloneable {
 	List<Register> getRegs();
 	
 	BitSet getIncompatibleRegs();
-	
-	BitSet getIncompatibleRegs(List<Register> curRegs);
 
 	boolean hasIncompatibleRegs();
 	
-	int getMinimumRegsNeeded(BitSet incompatRegs);
+	int getMinimumRegsNeeded();
 	
 	Instruction getRealInsn();
 
-	int getSize(int codeAddress);
-	
-	Insn shallowCloneWithRegs(List<Register> newRegs);
+	int getSize();
 }

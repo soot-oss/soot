@@ -1,12 +1,7 @@
 package soot.toDex.instructions;
 
-import java.util.BitSet;
-import java.util.List;
-
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Opcode;
-
-import soot.toDex.Register;
 
 /** 
  * Inspired by com.android.dx.dex.code.CodeAddress: pseudo instruction for use
@@ -25,10 +20,6 @@ public class AddressInsn extends AbstractInsn {
 	public Object getOriginalSource() {
 		return originalSource;
 	}
-	
-	public BitSet getIncompatibleRegs(List<Register> curRegs) {
-		return new BitSet(0);
-	}
 
 	@Override
 	protected Instruction getRealInsn0() {
@@ -36,18 +27,12 @@ public class AddressInsn extends AbstractInsn {
 	}
 	
 	@Override
-	public int getSize(int codeAddress) {
+	public int getSize() {
 		return 0;
 	}
 	
 	@Override
 	public String toString() {
 		return "address instruction for " + originalSource;
-	}
-	
-	public AddressInsn shallowCloneWithRegs(List<Register> newRegs) {
-		AddressInsn shallowClone = new AddressInsn(getOriginalSource());
-		shallowClone.setInsnOffset(getInsnOffset());
-		return shallowClone;
 	}
 }
