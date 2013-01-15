@@ -35,11 +35,7 @@ public class RegisterAssigner {
 		ListIterator<Insn> insnIter = insns.listIterator();
 		while (insnIter.hasNext()) {
 			Insn oldInsn = insnIter.next();
-			if (oldInsn instanceof AddressInsn) {
-				continue; // no regs/fitting needed
-			}
-			BitSet curIncompatRegs = oldInsn.getIncompatibleRegs();
-			if (curIncompatRegs.cardinality() > 0) {
+			if (oldInsn.hasIncompatibleRegs()) {
 				Insn fittingInsn = findFittingInsn(oldInsn);
 				if (fittingInsn != null) {
 					insnIter.set(fittingInsn);
