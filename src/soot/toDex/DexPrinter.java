@@ -291,7 +291,7 @@ public class DexPrinter {
 			Stmt beginStmt = (Stmt) t.getBeginUnit();
 			Stmt endStmt = (Stmt) t.getEndUnit();
 			int startCodeAddress = stmtV.getOffset(beginStmt);
-			int tryLength = stmtV.getOffset(endStmt) - startCodeAddress + 1;
+			int tryLength = stmtV.getOffset(endStmt) - startCodeAddress; // FIXME this is not that simple - a jimple stmt belongs to 1 to N dex insns, so the length could be bigger
 			if (codeRangesToTryItem.containsKey(startCodeAddress)) {
 				// copy the old handlers to a bigger array (the old one cannot be modified...)
 				TryItem oldTryItem = codeRangesToTryItem.get(startCodeAddress);
