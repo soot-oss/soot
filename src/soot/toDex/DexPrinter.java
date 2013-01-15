@@ -291,7 +291,7 @@ public class DexPrinter {
 			Stmt beginStmt = (Stmt) t.getBeginUnit();
 			Stmt endStmt = (Stmt) t.getEndUnit();
 			int startCodeAddress = stmtV.getOffset(beginStmt);
-			int tryLength = stmtV.getOffset(endStmt) - startCodeAddress;
+			int tryLength = stmtV.getOffset(endStmt) - startCodeAddress + 1;
 			if (codeRangesToTryItem.containsKey(startCodeAddress)) {
 				// copy the old handlers to a bigger array (the old one cannot be modified...)
 				TryItem oldTryItem = codeRangesToTryItem.get(startCodeAddress);
