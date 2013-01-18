@@ -115,10 +115,7 @@ public class DexlibWrapper {
 					continue;
 				}
 				SootResolver.v().makeClassRef(sootTypeName);
-				if (sootTypeName.endsWith("Exception")) {
-					SootResolver.v().resolveClass(sootTypeName, SootClass.HIERARCHY); //.reResolveHierarchy(Scene.v().getSootClass(st.toString()));
-					Scene.v().getSootClass(sootTypeName).checkLevel(SootClass.HIERARCHY);
-				}
+				SootResolver.v().resolveClass(sootTypeName, SootClass.HIERARCHY);
 			}
 		}
 		for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
