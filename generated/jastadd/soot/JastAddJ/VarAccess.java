@@ -671,7 +671,7 @@ public class VarAccess extends Access implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:98
    */
   public Constant constant() {
     ASTNode$State state = state();
@@ -698,7 +698,7 @@ public class VarAccess extends Access implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:354
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:500
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isConstant() {
@@ -1104,28 +1104,6 @@ public class VarAccess extends Access implements Cloneable {
    * @apilevel internal
    */
   private soot.Local base_compute(Body b) {  return asLocal(b, createLoadQualifier(b));  }
-  /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:11
-   */
-  public Collection<TypeDecl> throwTypes() {
-    ASTNode$State state = state();
-    try {  return decl().throwTypes();  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:115
-   */
-  public boolean isVariable(Variable var) {
-    ASTNode$State state = state();
-    try {  return decl() == var;  }
-    finally {
-    }
-  }
   /**
    * @attribute inh
    * @aspect TypeHierarchyCheck

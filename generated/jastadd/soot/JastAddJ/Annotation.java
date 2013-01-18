@@ -116,6 +116,28 @@ public class Annotation extends Modifier implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:241
+   */
+  public void checkOverride() {
+    if(decl().fullName().equals("java.lang.Override") && enclosingBodyDecl() instanceof MethodDecl) {
+      MethodDecl m = (MethodDecl)enclosingBodyDecl();
+      if(!m.hostType().isClassDecl())
+        error("override annotation not valid for interface methods");
+      else {
+        boolean found = false;
+        for(Iterator iter = m.hostType().ancestorMethods(m.signature()).iterator(); iter.hasNext(); ) {
+          MethodDecl decl = (MethodDecl)iter.next();
+          if(m.overrides(decl) && decl.hostType().isClassDecl())
+            found = true;
+        }
+        if(!found)
+          error("method does not override a method from its superclass");
+      }
+    }
+  }
+  /**
+   * @ast method 
+   * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:383
    */
   public void typeCheck() {
@@ -426,37 +448,6 @@ public class Annotation extends Modifier implements Cloneable {
   public List<ElementValuePair> getElementValuePairListNoTransform() {
     return (List<ElementValuePair>)getChildNoTransform(1);
   }
-  /**
-   * @ast method 
-   * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Override.jrag:20
-   */
-   
-	public void checkOverride() {
-		if (decl().fullName().equals("java.lang.Override") &&
-				enclosingBodyDecl() instanceof MethodDecl) {
-
-			MethodDecl method = (MethodDecl)enclosingBodyDecl();
-			TypeDecl host = method.hostType();
-			SimpleSet ancestors = host.ancestorMethods(method.signature());
-			boolean found = false;
-			for (Iterator iter = ancestors.iterator(); iter.hasNext(); ) {
-				MethodDecl decl = (MethodDecl)iter.next();
-				if (method.overrides(decl)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				TypeDecl typeObject = lookupType("java.lang", "Object");
-				SimpleSet overrides =
-					typeObject.localMethodsSignature(method.signature());
-				if (overrides.isEmpty() ||
-						!((MethodDecl) overrides.iterator().next()).isPublic())
-					error("method does not override a method from a supertype");
-			}
-		}
-	}
   /**
    * @apilevel internal
    */

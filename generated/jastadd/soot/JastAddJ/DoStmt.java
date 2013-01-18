@@ -616,17 +616,6 @@ public class DoStmt extends BranchTargetStmt implements Cloneable {
     }
   }
   /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {  return getStmt().modifiedInScope(var);  }
-    finally {
-    }
-  }
-  /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:600
    * @apilevel internal
    */

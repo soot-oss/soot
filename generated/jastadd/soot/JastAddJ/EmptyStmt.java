@@ -224,17 +224,6 @@ public class EmptyStmt extends Stmt implements Cloneable {
    */
   private boolean canCompleteNormally_compute() {  return reachable();  }
   /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {  return false;  }
-    finally {
-    }
-  }
-  /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {

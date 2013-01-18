@@ -347,33 +347,6 @@ public abstract class Access extends Expr implements Cloneable {
    */
   private TypeDecl type_compute() {  return unknownType();  }
   /**
-   * @attribute syn
-   * @aspect TypeInference
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:65
-   */
-  public boolean isDiamond() {
-    ASTNode$State state = state();
-    try {  return false;  }
-    finally {
-    }
-  }
-  /**
-	 * Builds a copy of this Access node where all occurrences
-	 * of type variables in the original type parameter list have been replaced
-	 * by the substitution type parameters.
-	 *
-	 * @return the substituted Access node
-	 * @attribute syn
-   * @aspect TypeInference
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:406
-   */
-  public Access substituted(Collection<TypeVariable> original, List<TypeVariable> substitution) {
-    ASTNode$State state = state();
-    try {  return (Access) cloneSubtree();  }
-    finally {
-    }
-  }
-  /**
    * @attribute inh
    * @aspect LookupMethod
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:18

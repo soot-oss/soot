@@ -23,7 +23,7 @@ import soot.coffi.CoffiMethodSource;
  * Java null literal.
  * @production NullLiteral : {@link Literal};
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:42
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Literals.ast:28
  */
 public class NullLiteral extends Literal implements Cloneable {
   /**
@@ -187,7 +187,7 @@ public class NullLiteral extends Literal implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:482
    */
   public boolean isConstant() {
     ASTNode$State state = state();

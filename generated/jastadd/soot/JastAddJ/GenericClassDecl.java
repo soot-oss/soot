@@ -39,8 +39,6 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     usesTypeVariable_initialized = false;
     subtype_TypeDecl_values = null;
     instanceOf_TypeDecl_values = null;
-    getPlaceholderMethodList_computed = false;
-    getPlaceholderMethodList_value = null;
     lookupParTypeDecl_ParTypeAccess_values = null;
   }
   /**
@@ -63,8 +61,6 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
     node.usesTypeVariable_initialized = false;
     node.subtype_TypeDecl_values = null;
     node.instanceOf_TypeDecl_values = null;
-    node.getPlaceholderMethodList_computed = false;
-    node.getPlaceholderMethodList_value = null;
     node.lookupParTypeDecl_ParTypeAccess_values = null;
     node.in$Circle(false);
     node.is$Final(false);
@@ -1078,134 +1074,6 @@ public class GenericClassDecl extends ClassDecl implements Cloneable, GenericTyp
    * @apilevel internal
    */
   private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
-  /**
-   * @apilevel internal
-   */
-  protected boolean getPlaceholderMethodList_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected List<PlaceholderMethodDecl> getPlaceholderMethodList_value;
-  /**
- 	 * The placeholder method list for the constructors of this generic
- 	 * class.
- 	 *
- 	 * @return list of placeholder methods
- 	 * @attribute syn
-   * @aspect TypeInference
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:124
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List<PlaceholderMethodDecl> getPlaceholderMethodList() {
-    if(getPlaceholderMethodList_computed) {
-      return getPlaceholderMethodList_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    getPlaceholderMethodList_value = getPlaceholderMethodList_compute();
-    getPlaceholderMethodList_value.setParent(this);
-    getPlaceholderMethodList_value.is$Final = true;
-      if(true) getPlaceholderMethodList_computed = true;
-    return getPlaceholderMethodList_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private List<PlaceholderMethodDecl> getPlaceholderMethodList_compute() {
-		List<PlaceholderMethodDecl> placeholderMethods =
-			new List<PlaceholderMethodDecl>();
-		List<TypeVariable> typeParams = getTypeParameterList();
-		List<TypeVariable> classTypeVars = new List<TypeVariable>();
-		List<Access> typeArgs = new List<Access>();
-
-		// copy the list of type parameters
-		int arg = 0;
-		for (Iterator iter = typeParams.iterator(); iter.hasNext(); ++arg) {
-			String substName = "#"+arg;
-			typeArgs.add(new TypeAccess(substName));
-
-			TypeVariable typeVar = (TypeVariable) iter.next();
-			List<Access> typeBounds = new List<Access>();
-			for (Access typeBound : typeVar.getTypeBoundList())
-				typeBounds.add((Access) typeBound.cloneSubtree());
-			classTypeVars.add(
-					new TypeVariable(
-						new Modifiers(),
-						substName,
-						new List<BodyDecl>(),
-						typeBounds));
-		}
-
-		ParTypeAccess returnType = new ParTypeAccess(
-				createQualifiedAccess(),
-				typeArgs);
-
-		for (Iterator iter = constructors().iterator(); iter.hasNext(); ) {
-			ConstructorDecl decl = (ConstructorDecl)iter.next();
-			if (decl instanceof ConstructorDeclSubstituted)
-				decl = ((ConstructorDeclSubstituted) decl).getOriginal();
-
-			// filter accessible constructors
-			if (!decl.accessibleFrom(hostType()))
-				continue;
-
-			Collection<TypeVariable> originalTypeVars =
-				new LinkedList<TypeVariable>();
-			List<TypeVariable> typeVars = new List<TypeVariable>();
-			for (TypeVariable typeVar : typeParams)
-				originalTypeVars.add(typeVar);
-			for (TypeVariable typeVar : classTypeVars)
-				typeVars.add((TypeVariable) typeVar.cloneSubtree());
-
-			if (decl instanceof GenericConstructorDecl) {
-				GenericConstructorDecl genericDecl =
-					(GenericConstructorDecl) decl;
-				List<TypeVariable> typeVariables = new List<TypeVariable>();
-				for (int i = 0; i < genericDecl.getNumTypeParameter(); ++i) {
-					String substName = "#" + (arg+i);
-
-					TypeVariable typeVar = genericDecl.getTypeParameter(i);
-					originalTypeVars.add(typeVar);
-					List<Access> typeBounds = new List<Access>();
-					for (Access typeBound : typeVar.getTypeBoundList())
-						typeBounds.add((Access) typeBound.cloneSubtree());
-					typeVars.add(
-							new TypeVariable(
-								new Modifiers(),
-								substName,
-								new List<BodyDecl>(),
-								typeBounds));
-				}
-			}
-
-			List<ParameterDeclaration> substParameters =
-				new List<ParameterDeclaration>();
-			for (ParameterDeclaration param : decl.getParameterList()) {
-				substParameters.add(param.substituted(
-							originalTypeVars, typeVars));
-			}
-
-			List<Access> substExceptions = new List<Access>();
-			for (Access exception : decl.getExceptionList()) {
-				substExceptions.add(exception.substituted(
-							originalTypeVars, typeVars));
-			}
-
-			PlaceholderMethodDecl placeholderMethod =
-				new PlaceholderMethodDecl(
-					(Modifiers) decl.getModifiers().cloneSubtree(),
-					(Access) returnType.cloneSubtree(),
-					"#"+getID(),
-					substParameters,
-					substExceptions,
-					new Opt(new Block()),
-					typeVars);
-
-			placeholderMethods.add(placeholderMethod);
-		}
-		return placeholderMethods;
-	}
   /**
    * @attribute syn
    * @aspect Generics

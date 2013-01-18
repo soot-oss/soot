@@ -318,26 +318,11 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
    * @aspect Enums
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:504
    */
-    public void refined_Enums_SwitchStmt_typeCheck() {
+    public void typeCheck() {
      TypeDecl type = getExpr().type();
     if((!type.isIntegralType() || type.isLong()) && !type.isEnumDecl())
       error("Switch expression must be of char, byte, short, int, or enum type");
   }
-  /**
-	 * <p>Overrides the type checking of the switch statement's expression.
-	 *
-	 * <p>In JSR 334 a switch statement may use an expression of type String.
-	 * @ast method 
-   * @aspect StringsInSwitch
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/StringsInSwitch.jrag:25
-   */
-    public void typeCheck() {
-		TypeDecl type = getExpr().type();
-		if ((!type.isIntegralType() || type.isLong()) && !type.isEnumDecl()
-				&& !type.isString())
-			error("Switch expression must be of type " +
-					"char, byte, short, int, enum, or string");
-	}
   protected java.util.Map targetOf_ContinueStmt_values;
   /**
    * @attribute syn
@@ -651,17 +636,6 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
   public soot.jimple.Stmt break_label() {
     ASTNode$State state = state();
     try {  return end_label();  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {  return getBlock().modifiedInScope(var);  }
     finally {
     }
   }

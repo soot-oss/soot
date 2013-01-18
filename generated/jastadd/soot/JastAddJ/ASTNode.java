@@ -304,6 +304,23 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   }
   /**
    * @ast method 
+   * @aspect ErrorCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:195
+   */
+  public void collectErrors() {
+    nameCheck();
+    typeCheck();
+    accessControl();
+    exceptionHandling();
+    checkUnreachableStmt();
+    definiteAssignment();
+    checkModifiers();
+    for(int i = 0; i < getNumChild(); i++) {
+      getChild(i).collectErrors();
+    }
+  }
+  /**
+   * @ast method 
    * @aspect ExceptionHandling
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:54
    */
@@ -694,55 +711,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(list != null)
       b.addNextStmt(list);
   }
-  /**
-	 * Create a deep copy of this subtree.
-	 * The copy is dangling, i.e. has no parent.
-	 *
-	 * @return a dangling copy of the subtree at this node
-	 * @ast method 
-   * @aspect JastAddExtensions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/JastAddExtensions.jadd:20
-   */
-  public ASTNode cloneSubtree() {
-		try {
-			ASTNode tree = (ASTNode) clone();
-			tree.setParent(null);// make dangling
-			if (children != null) {
-				tree.children = new ASTNode[children.length];
-				for (int i = 0; i < children.length; ++i) {
-					if (children[i] == null) {
-						tree.children[i] = null;
-					} else {
-						tree.children[i] = children[i].cloneSubtree();
-						tree.children[i].setParent(tree);
-					}
-				}
-			}
-			return tree;
-		} catch (CloneNotSupportedException e) {
-			throw new Error("Error: clone not supported for " +
-					getClass().getName());
-		}
-	}
-  /**
-   * @ast method 
-   * @aspect UncheckedConversion
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:40
-   */
-  public void checkUncheckedConversion(TypeDecl source, TypeDecl dest) {
-    if (source.isUncheckedConversionTo(dest))
-      warning("unchecked conversion from raw type "+source.typeName()+
-        " to generic type "+dest.typeName());
-  }
-  /**
-	 * Checking of the SafeVarargs annotation is only needed for method
-	 * declarations.
-	 * @ast method 
-   * @aspect Warnings
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Warnings.jadd:38
-   */
-  public void checkWarnings() {
-	}
   /**
    * @ast method 
    * @aspect EmitJimpleRefinements
@@ -1181,8 +1149,8 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    * @ast method 
    * 
    */
-  protected boolean duringLiterals() {
-    if(state().duringLiterals == 0) {
+  protected boolean duringConstantExpression() {
+    if(state().duringConstantExpression == 0) {
       return false;
     }
     else {
@@ -1277,27 +1245,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   public boolean mayHaveRewrite() {
     return false;
   }
-  /**
-	 * The collectErrors method is refined so that it calls
-	 * the checkWarnings method on each ASTNode to report
-	 * unchecked warnings.
-	 * @ast method 
-   * @aspect Warnings
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Warnings.jadd:20
-   */
-    public void collectErrors() {
-		nameCheck();
-		typeCheck();
-		accessControl();
-		exceptionHandling();
-		checkUnreachableStmt();
-		definiteAssignment();
-		checkModifiers();
-		checkWarnings();
-		for(int i = 0; i < getNumChild(); i++) {
-			getChild(i).collectErrors();
-		}
-	}
   /**
    * @attribute syn
    * @aspect DU
@@ -1425,18 +1372,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     }
   }
   /**
-	 * Fetches the immediately enclosing compilation unit.
-	 * @attribute inh
-   * @aspect Literals
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:451
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public CompilationUnit compilationUnit() {
-    ASTNode$State state = state();
-    CompilationUnit compilationUnit_value = getParent().Define_CompilationUnit_compilationUnit(this, null);
-    return compilationUnit_value;
-  }
-  /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {
@@ -1445,6 +1380,54 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
       state().push(ASTNode$State.REWRITE_NOCHANGE);
     }
     return this;
+  }
+  /**
+   * @apilevel internal
+   */
+  public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
+    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+  }
+  /**
+   * @apilevel internal
+   */
+  public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
+    return getParent().Define_VariableScope_outerScope(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
+    return getParent().Define_NameType_nameType(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_reachable(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isMethodParameter(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isConstructorParameter(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+  }
+  /**
+   * @apilevel internal
+   */
+  public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
+    return getParent().Define_boolean_variableArityValid(this, caller);
   }
   /**
    * @apilevel internal
@@ -1671,12 +1654,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @apilevel internal
    */
-  public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-  }
-  /**
-   * @apilevel internal
-   */
   public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
     return getParent().Define_boolean_mayBePublic(this, caller);
   }
@@ -1749,12 +1726,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @apilevel internal
    */
-  public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-    return getParent().Define_VariableScope_outerScope(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
   public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
     return getParent().Define_boolean_insideLoop(this, caller);
   }
@@ -1775,12 +1746,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    */
   public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
     return getParent().Define_String_typeDeclIndent(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    return getParent().Define_NameType_nameType(this, caller);
   }
   /**
    * @apilevel internal
@@ -1875,24 +1840,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @apilevel internal
    */
-  public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_isMethodParameter(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_isConstructorParameter(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
   public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
     return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
   }
@@ -1977,12 +1924,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @apilevel internal
    */
-  public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_variableArityValid(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
   public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
     return getParent().Define_TypeDecl_expectedType(this, caller);
   }
@@ -2015,42 +1956,6 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
     return getParent().Define_ArrayList_exceptionRanges(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_isCatchParam(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public CatchClause Define_CatchClause_catchClause(ASTNode caller, ASTNode child) {
-    return getParent().Define_CatchClause_catchClause(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public boolean Define_boolean_resourcePreviouslyDeclared(ASTNode caller, ASTNode child, String name) {
-    return getParent().Define_boolean_resourcePreviouslyDeclared(this, caller, name);
-  }
-  /**
-   * @apilevel internal
-   */
-  public ClassInstanceExpr Define_ClassInstanceExpr_getClassInstanceExpr(ASTNode caller, ASTNode child) {
-    return getParent().Define_ClassInstanceExpr_getClassInstanceExpr(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public boolean Define_boolean_isAnonymousDecl(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_isAnonymousDecl(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public boolean Define_boolean_isExplicitGenericConstructorAccess(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_isExplicitGenericConstructorAccess(this, caller);
   }
   /**
    * @apilevel internal
@@ -2097,25 +2002,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @apilevel internal
    */
-  public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-    return getParent().Define_boolean_reachable(this, caller);
-  }
-  /**
-   * @apilevel internal
-   */
-  public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
-    return getParent().Define_boolean_inhModifiedInScope(this, caller, var);
-  }
-  /**
-   * @apilevel internal
-   */
   public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
     return getParent().Define_boolean_reachableCatchClause(this, caller, exceptionType);
-  }
-  /**
-   * @apilevel internal
-   */
-  public Collection<TypeDecl> Define_Collection_TypeDecl__caughtExceptions(ASTNode caller, ASTNode child) {
-    return getParent().Define_Collection_TypeDecl__caughtExceptions(this, caller);
   }
 }

@@ -23,7 +23,7 @@ import soot.coffi.CoffiMethodSource;
  * Abstract superclass for catch clauses.
  * @production CatchClause : {@link ASTNode} ::= <span class="component">{@link Block}</span>;
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.ast:4
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/CatchClause.ast:4
  */
 public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable, VariableScope {
   /**
@@ -168,17 +168,6 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
    */
   private SimpleSet parameterDeclaration_compute(String name) {  return SimpleSet.emptySet;  }
   /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:109
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {  return getBlock().modifiedInScope(var);  }
-    finally {
-    }
-  }
-  /**
    * @apilevel internal
    */
   protected boolean typeThrowable_computed = false;
@@ -256,28 +245,6 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
     return hostType_value;
   }
   /**
-   * @attribute inh
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:136
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Collection<TypeDecl> caughtExceptions() {
-    ASTNode$State state = state();
-    Collection<TypeDecl> caughtExceptions_value = getParent().Define_Collection_TypeDecl__caughtExceptions(this, null);
-    return caughtExceptions_value;
-  }
-  /**
-   * @attribute inh
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:195
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean reportUnreachable() {
-    ASTNode$State state = state();
-    boolean reportUnreachable_value = getParent().Define_boolean_reportUnreachable(this, null);
-    return reportUnreachable_value;
-  }
-  /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:78
    * @apilevel internal
    */
@@ -288,27 +255,6 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
     return lookupVariable(name);
   }
     else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:134
-   * @apilevel internal
-   */
-  public CatchClause Define_CatchClause_catchClause(ASTNode caller, ASTNode child) {
-     {
-      int i = this.getIndexOfChild(caller);
-      return this;
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:196
-   * @apilevel internal
-   */
-  public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-    if(caller == getBlockNoTransform()) {
-      return false;
-    }
-    else {      return getParent().Define_boolean_reportUnreachable(this, caller);
     }
   }
   /**

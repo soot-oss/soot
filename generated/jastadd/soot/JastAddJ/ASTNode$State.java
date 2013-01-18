@@ -151,7 +151,7 @@ public class ASTNode$State extends java.lang.Object {
   protected int duringVariableDeclarationTransformation = 0;
 
 
-  protected int duringLiterals = 0;
+  protected int duringConstantExpression = 0;
 
 
   protected int duringDU = 0;
@@ -194,9 +194,9 @@ public void reset() {
       System.out.println("Warning: resetting duringVariableDeclarationTransformation");
       duringVariableDeclarationTransformation = 0;
     }
-    if(duringLiterals != 0) {
-      System.out.println("Warning: resetting duringLiterals");
-      duringLiterals = 0;
+    if(duringConstantExpression != 0) {
+      System.out.println("Warning: resetting duringConstantExpression");
+      duringConstantExpression = 0;
     }
     if(duringDU != 0) {
       System.out.println("Warning: resetting duringDU");

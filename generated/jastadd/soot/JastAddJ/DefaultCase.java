@@ -154,19 +154,6 @@ public class DefaultCase extends Case implements Cloneable {
     finally {
     }
   }
-  /* Type checking for case labels need not be changed as it
-	 * already tests if the case labels have expressions which are
-	 * assignable to the switch expression
-	 * @attribute syn
-   * @aspect StringsInSwitch
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/StringsInSwitch.jrag:38
-   */
-  public boolean isDefaultCase() {
-    ASTNode$State state = state();
-    try {  return true;  }
-    finally {
-    }
-  }
   /**
    * @apilevel internal
    */

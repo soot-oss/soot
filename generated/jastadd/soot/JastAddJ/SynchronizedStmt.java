@@ -616,17 +616,6 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
    */
   private soot.jimple.Stmt label_exception_handler_compute() {  return newLabel();  }
   /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {  return getBlock().modifiedInScope(var);  }
-    finally {
-    }
-  }
-  /**
    * @attribute inh
    * @aspect Statements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:356

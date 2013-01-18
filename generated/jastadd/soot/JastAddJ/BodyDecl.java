@@ -92,18 +92,6 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
   public void jimplify2() {
   }
   /**
-	 * We must report illegal uses of the SafeVarargs annotation.
-	 * It is only allowed on variable arity method and constructor declarations.
-	 * @ast method 
-   * @aspect SafeVarargs
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:93
-   */
-  public void checkWarnings() {
-		if (hasIllegalAnnotationSafeVarargs())
-			error("@SafeVarargs is only allowed for variable " +
-				"arity method and constructor declarations");
-	}
-  /**
    * @ast method 
    * 
    */
@@ -282,31 +270,6 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
   public boolean generate() {
     ASTNode$State state = state();
     try {  return true;  }
-    finally {
-    }
-  }
-  /**
-	 * @return true if the modifier list includes the SafeVarargs annotation
-	 * @attribute syn
-   * @aspect SafeVarargs
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
-   */
-  public boolean hasAnnotationSafeVarargs() {
-    ASTNode$State state = state();
-    try {  return false;  }
-    finally {
-    }
-  }
-  /**
-	 * It is an error if the SafeVarargs annotation is used on something
-	 * that is not a variable arity method or constructor.
-	 * @attribute syn
-   * @aspect SafeVarargs
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:56
-   */
-  public boolean hasIllegalAnnotationSafeVarargs() {
-    ASTNode$State state = state();
-    try {  return hasAnnotationSafeVarargs();  }
     finally {
     }
   }
@@ -489,16 +452,6 @@ public abstract class BodyDecl extends ASTNode<ASTNode> implements Cloneable {
      {
       int childIndex = this.getIndexOfChild(caller);
       return null;
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TryWithResources.jrag:153
-   * @apilevel internal
-   */
-  public boolean Define_boolean_resourcePreviouslyDeclared(ASTNode caller, ASTNode child, String name) {
-     {
-      int i = this.getIndexOfChild(caller);
-      return false;
     }
   }
   /**

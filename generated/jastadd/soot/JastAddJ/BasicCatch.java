@@ -20,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 /**
- * A catch clause that can catch a single exception type.
+ * A catch clause which can catch a single exception type.
  * @production BasicCatch : {@link CatchClause} ::= <span class="component">Parameter:{@link ParameterDeclaration}</span> <span class="component">{@link Block}</span>;
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.ast:9
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/CatchClause.ast:9
  */
 public class BasicCatch extends CatchClause implements Cloneable {
   /**
@@ -129,16 +129,6 @@ public class BasicCatch extends CatchClause implements Cloneable {
     getParameter().local = local;
     getBlock().jimplify2(b);
   }
-  /**
-   * @ast method 
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:198
-   */
-  void checkUnreachableStmt() {
-		if (!getBlock().reachable() && reportUnreachable())
-			error("the exception "+getParameter().type().fullName()+
-			" is not thrown in the body of the try statement");
-	}
   /**
    * @ast method 
    * 
@@ -396,28 +386,6 @@ public class BasicCatch extends CatchClause implements Cloneable {
       return false;
     }
     else {      return getParent().Define_boolean_variableArityValid(this, caller);
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:52
-   * @apilevel internal
-   */
-  public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
-    if(caller == getParameterNoTransform()) {
-      return getBlock().modifiedInScope(var);
-    }
-    else {      return getParent().Define_boolean_inhModifiedInScope(this, caller, var);
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:125
-   * @apilevel internal
-   */
-  public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
-    if(caller == getParameterNoTransform()) {
-      return true;
-    }
-    else {      return getParent().Define_boolean_isCatchParam(this, caller);
     }
   }
   /**

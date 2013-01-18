@@ -774,17 +774,6 @@ public class EnhancedForStmt extends BranchTargetStmt implements Cloneable, Vari
     }
   }
   /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {  return getStmt().modifiedInScope(var);  }
-    finally {
-    }
-  }
-  /**
    * @attribute inh
    * @aspect EnhancedFor
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/EnhancedFor.jrag:38

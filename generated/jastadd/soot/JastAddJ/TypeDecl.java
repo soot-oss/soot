@@ -1667,266 +1667,6 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    */
   private SootClass refined_EmitJimple_TypeDecl_sootClass()
 { return null; }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:160
-   */
-  public Constant cast(Constant c) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation cast" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:174
-   */
-  public Constant plus(Constant c) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation plus" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:183
-   */
-  public Constant minus(Constant c) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation minus" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:192
-   */
-  public Constant bitNot(Constant c) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation bitNot" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:199
-   */
-  public Constant mul(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation mul" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:208
-   */
-  public Constant div(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation div" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:217
-   */
-  public Constant mod(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation mod" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:226
-   */
-  public Constant add(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation add" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:236
-   */
-  public Constant sub(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation sub" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:245
-   */
-  public Constant lshift(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation lshift" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:252
-   */
-  public Constant rshift(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation rshift" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:259
-   */
-  public Constant urshift(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation urshift" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:266
-   */
-  public Constant andBitwise(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation andBitwise" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:274
-   */
-  public Constant xorBitwise(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation xorBitwise" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:282
-   */
-  public Constant orBitwise(Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation orBitwise" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:290
-   */
-  public Constant questionColon(Constant cond, Constant c1, Constant c2) {
-    ASTNode$State state = state();
-    try {
-    throw new UnsupportedOperationException("ConstantExpression operation questionColon" +
-      " not supported for type " + getClass().getName()); 
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:394
-   */
-  public boolean eqIsTrue(Expr left, Expr right) {
-    ASTNode$State state = state();
-    try {
-    System.err.println("Evaluation eqIsTrue for unknown type: " + getClass().getName());
-    return false;
-  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:405
-   */
-  public boolean ltIsTrue(Expr left, Expr right) {
-    ASTNode$State state = state();
-    try {  return false;  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:411
-   */
-  public boolean leIsTrue(Expr left, Expr right) {
-    ASTNode$State state = state();
-    try {  return false;  }
-    finally {
-    }
-  }
   protected java.util.Map accessibleFromPackage_String_values;
   /**
    * @attribute syn
@@ -2189,6 +1929,266 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
         body // BodyDecl*
       );
     return typeDecl;
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:306
+   */
+  public Constant cast(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation cast" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:320
+   */
+  public Constant plus(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation plus" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:329
+   */
+  public Constant minus(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation minus" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:338
+   */
+  public Constant bitNot(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation bitNot" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:345
+   */
+  public Constant mul(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation mul" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:354
+   */
+  public Constant div(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation div" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:363
+   */
+  public Constant mod(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation mod" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:372
+   */
+  public Constant add(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation add" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:382
+   */
+  public Constant sub(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation sub" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:391
+   */
+  public Constant lshift(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation lshift" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:398
+   */
+  public Constant rshift(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation rshift" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:405
+   */
+  public Constant urshift(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation urshift" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:412
+   */
+  public Constant andBitwise(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation andBitwise" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:420
+   */
+  public Constant xorBitwise(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation xorBitwise" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:428
+   */
+  public Constant orBitwise(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation orBitwise" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:436
+   */
+  public Constant questionColon(Constant cond, Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation questionColon" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:540
+   */
+  public boolean eqIsTrue(Expr left, Expr right) {
+    ASTNode$State state = state();
+    try {
+    System.err.println("Evaluation eqIsTrue for unknown type: " + getClass().getName());
+    return false;
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:551
+   */
+  public boolean ltIsTrue(Expr left, Expr right) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:557
+   */
+  public boolean leIsTrue(Expr left, Expr right) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
   /**
    * @attribute syn
@@ -5608,47 +5608,6 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   public SimpleSet bridgeCandidates(String signature) {
     ASTNode$State state = state();
     try {  return SimpleSet.emptySet;  }
-    finally {
-    }
-  }
-  /**
-	 * @return true if the modifier list includes the SafeVarargs annotation
-	 * @attribute syn
-   * @aspect SafeVarargs
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:14
-   */
-  public boolean hasAnnotationSafeVarargs() {
-    ASTNode$State state = state();
-    try {  return getModifiers().hasAnnotationSafeVarargs();  }
-    finally {
-    }
-  }
-  /**
-	 * A type is reifiable if it either refers to a non-parameterized type,
-	 * is a raw type, is a parameterized type with only unbound wildcard
-	 * parameters or is an array type with a reifiable type parameter.
-	 *
-	 * @see "JLSv3 &sect;4.7"
-	 * @attribute syn
-   * @aspect SafeVarargs
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:106
-   */
-  public boolean isReifiable() {
-    ASTNode$State state = state();
-    try {  return true;  }
-    finally {
-    }
-  }
-  /**
-   * An unchecked conversion occurs when converting from a
-   * raw type G to a generic type G<T1, ..., Tn>.
-   * @attribute syn
-   * @aspect UncheckedConversion
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:50
-   */
-  public boolean isUncheckedConversionTo(TypeDecl dest) {
-    ASTNode$State state = state();
-    try {  return (!dest.isRawType()) && this.isRawType();  }
     finally {
     }
   }

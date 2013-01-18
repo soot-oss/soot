@@ -497,21 +497,6 @@ public class IfStmt extends Stmt implements Cloneable {
    */
   private soot.jimple.Stmt then_branch_label_compute() {  return newLabel();  }
   /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {
-		if (getThen().modifiedInScope(var))
-			return true;
-		return hasElse() && getElse().modifiedInScope(var);
-	}
-    finally {
-    }
-  }
-  /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:528
    * @apilevel internal
    */

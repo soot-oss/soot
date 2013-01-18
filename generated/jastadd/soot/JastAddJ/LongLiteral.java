@@ -22,20 +22,20 @@ import soot.coffi.CoffiMethodSource;
 /**
  * Java long integer literal. Can store any number that fits in 64 bits
  * of data, or less.
- * @production LongLiteral : {@link NumericLiteral};
+ * @production LongLiteral : {@link Literal};
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:54
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Literals.ast:40
  */
-public class LongLiteral extends NumericLiteral implements Cloneable {
+public class LongLiteral extends Literal implements Cloneable {
   /**
    * @apilevel low-level
    */
   public void flushCache() {
     super.flushCache();
-    type_computed = false;
-    type_value = null;
     constant_computed = false;
     constant_value = null;
+    type_computed = false;
+    type_value = null;
   }
   /**
    * @apilevel internal
@@ -49,10 +49,10 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public LongLiteral clone() throws CloneNotSupportedException {
     LongLiteral node = (LongLiteral)super.clone();
-    node.type_computed = false;
-    node.type_value = null;
     node.constant_computed = false;
     node.constant_value = null;
+    node.type_computed = false;
+    node.type_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -99,6 +99,25 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
         getClass().getName());
     }
   }
+  /**
+   * @ast method 
+   * @aspect PrettyPrint
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:275
+   */
+  public void toString(StringBuffer s) {
+    s.append(getLITERAL());
+    s.append("L");
+  }
+  /**
+   * @ast method 
+   * @aspect TypeCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:575
+   */
+  public void typeCheck() {
+   if(constant().error)
+     error("The value of the long literal " + getLITERAL() + " is not legal");
+
+ }
   /**
    * @ast method 
    * @aspect Expressions
@@ -154,7 +173,7 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
    * 
    */
   public boolean mayHaveRewrite() {
-    return true;
+    return false;
   }
   /**
    * Replaces the lexeme LITERAL.
@@ -190,56 +209,84 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
     return tokenString_LITERAL != null ? tokenString_LITERAL : "";
   }
   /**
-	 * Defer pretty printing to superclass.
-	 * @ast method 
-   * @aspect Literals
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:98
-   */
-    public void toString(StringBuffer s) {
-		super.toString(s);
-	}
-  /**
-	 * Check for and report literal-out-of-bounds error.
-	 * If the constant is error-marked, there exists a literal out of bounds error.
-	 * @ast method 
-   * @aspect Literals
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:130
-   */
-    public void typeCheck() {
-		if(constant().error)
-			error("The integer literal \""+getLITERAL()+"\" is too large for type long.");
-	}
-  /*syn lazy boolean FloatingPointLiteral.isZero() {
-    String s = getLITERAL();
-    for(int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
-      if(c == 'E'  || c == 'e')
-        break;
-      if(Character.isDigit(c) && c != '0') {
-        return false;
-      }
-    }
-    return true;
-  }
-  syn lazy boolean DoubleLiteral.isZero() {
-    String s = getLITERAL();
-    for(int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
-      if(c == 'E'  || c == 'e')
-        break;
-      if(Character.isDigit(c) && c != '0') {
-        return false;
-      }
-    }
-    return true;
-  }* @attribute syn
+   * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:152
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:237
+   */
+  public boolean isHex() {
+    ASTNode$State state = state();
+    try {  return getLITERAL().toLowerCase().startsWith("0x");  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:238
+   */
+  public boolean isOctal() {
+    ASTNode$State state = state();
+    try {  return getLITERAL().startsWith("0");  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:239
+   */
+  public boolean isDecimal() {
+    ASTNode$State state = state();
+    try {  return !isHex() && !isOctal();  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:241
    */
   public boolean isPositive() {
     ASTNode$State state = state();
     try {  return !getLITERAL().startsWith("-");  }
     finally {
+    }
+  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean constant_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected Constant constant_value;
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:273
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Constant constant() {
+    if(constant_computed) {
+      return constant_value;
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    constant_value = constant_compute();
+      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
+    return constant_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private Constant constant_compute() {
+    try {
+      return Constant.create(Literal.parseLong(getLITERAL()));
+    } catch (NumberFormatException e) {
+      Constant c = Constant.create(0L);
+      c.error = true;
+      return c;
     }
   }
   /**
@@ -271,62 +318,6 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
    * @apilevel internal
    */
   private TypeDecl type_compute() {  return typeLong();  }
-  /**
-   * @apilevel internal
-   */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
-	 * Parse this literal and return a fresh Constant.
-	 * @return a fresh Constant representing this LongLiteral
-	 * @attribute syn
-   * @aspect Literals
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:161
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {
-		try {
-			return Constant.create(parseLong());
-		} catch (NumberFormatException e) {
-			Constant c = Constant.create(0L);
-			c.error = true;
-			return c;
-		}
-	}
-  /**
-	 * Utility attribute for literal rewriting.
-	 * Any of the NumericLiteral subclasses have already
-	 * been rewritten and/or parsed, and should not be
-	 * rewritten again.
-	 *
-	 * @return true if this literal is a "raw", not-yet-parsed NumericLiteral
-	 * @attribute syn
-   * @aspect Literals
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:334
-   */
-  public boolean needsRewrite() {
-    ASTNode$State state = state();
-    try {  return false;  }
-    finally {
-    }
-  }
   /**
    * @apilevel internal
    */

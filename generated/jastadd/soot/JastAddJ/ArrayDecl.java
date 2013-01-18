@@ -1271,22 +1271,6 @@ public class ArrayDecl extends ClassDecl implements Cloneable {
    */
   private Type getSootType_compute() {  return soot.ArrayType.v(elementType().getSootType(), dimension());  }
   /**
-	 * A type is reifiable if it either refers to a non-parameterized type,
-	 * is a raw type, is a parameterized type with only unbound wildcard
-	 * parameters or is an array type with a reifiable type parameter.
-	 *
-	 * @see "JLSv3 &sect;4.7"
-	 * @attribute syn
-   * @aspect SafeVarargs
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:106
-   */
-  public boolean isReifiable() {
-    ASTNode$State state = state();
-    try {  return elementType().isReifiable();  }
-    finally {
-    }
-  }
-  /**
    * @attribute inh
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:140

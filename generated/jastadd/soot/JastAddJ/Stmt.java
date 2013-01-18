@@ -107,13 +107,6 @@ public abstract class Stmt extends ASTNode<ASTNode> implements Cloneable {
   public boolean mayHaveRewrite() {
     return false;
   }
-  /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public abstract boolean modifiedInScope(Variable var);
   protected java.util.Map isDAafter_Variable_values;
   /**
    * @attribute syn

@@ -90,15 +90,6 @@ public class ParseName extends Access implements Cloneable {
     }
   }
   /**
- 	 * Parser debug printout.
- 	 * @ast method 
-   * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PrettyPrint.jrag:14
-   */
-  public void toString(StringBuffer sb) {
-		sb.append(getID());
-	}
-  /**
    * @ast method 
    * 
    */

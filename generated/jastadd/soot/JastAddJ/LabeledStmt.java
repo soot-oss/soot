@@ -504,17 +504,6 @@ public class LabeledStmt extends BranchTargetStmt implements Cloneable {
     finally {
     }
   }
-  /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
-   */
-  public boolean modifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    try {  return getStmt().modifiedInScope(var);  }
-    finally {
-    }
-  }
   protected java.util.Map lookupLabel_String_values;
   /**
    * @attribute inh

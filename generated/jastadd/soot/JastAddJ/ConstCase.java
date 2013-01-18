@@ -201,7 +201,7 @@ public class ConstCase extends Case implements Cloneable {
    * @aspect Enums
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:516
    */
-    public void refined_Enums_ConstCase_typeCheck() {
+    public void typeCheck() {
     boolean isEnumConstant = getValue().isEnumConstant();
     if(switchType().isEnumDecl() && !isEnumConstant) {
       error("Unqualified enumeration constant required");
@@ -216,25 +216,6 @@ public class ConstCase extends Case implements Cloneable {
     }
   }
   /**
-	 * <p>Improve the type checking error messages given for case labels.
-	 * @ast method 
-   * @aspect StringsInSwitch
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/StringsInSwitch.jrag:68
-   */
-    public void typeCheck() {
-		boolean isEnumConstant = getValue().isEnumConstant();
-		TypeDecl switchType = switchType();
-		TypeDecl type = getValue().type();
-		if (switchType.isEnumDecl() && !isEnumConstant)
-			error("Unqualified enumeration constant required");
-		if (!type.assignConversionTo(switchType, getValue()))
-			error("Case label has incompatible type "+switchType.name()+
-					", expected type compatible with "+type.name());
-		if (!getValue().isConstant() && !getValue().type().isUnknown() &&
-				!isEnumConstant) 
-			error("Case label must have constant expression");
-	}
-  /**
    * @ast method 
    * @aspect NameCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:432
@@ -248,12 +229,13 @@ public class ConstCase extends Case implements Cloneable {
     return getValue().constant().intValue() == ((ConstCase)c).getValue().constant().intValue();
   }
   /**
-   * @ast method 
-   * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:530
+   * @attribute syn
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:431
    */
-  private boolean refined_Enums_ConstCase_constValue_Case(Case c)
-{
+  public boolean constValue(Case c) {
+    ASTNode$State state = state();
+    try {
     if(switchType().isEnumDecl()) {
       if(!(c instanceof ConstCase) || !getValue().isConstant())
         return false;
@@ -262,32 +244,6 @@ public class ConstCase extends Case implements Cloneable {
     else
       return refined_NameCheck_ConstCase_constValue_Case(c);
   }
-  /**
-   * @attribute syn
-   * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:431
-   */
-  public boolean constValue(Case c) {
-    ASTNode$State state = state();
-    try {
-		if (isDefaultCase() || c.isDefaultCase())
-			return isDefaultCase() && c.isDefaultCase();
-
-		Expr myValue = getValue();
-		Expr otherValue = ((ConstCase) c).getValue();
-		TypeDecl myType = myValue.type();
-		TypeDecl otherType = otherValue.type();
-		if (myType.isString() || otherType.isString()) {
-			if (!myType.isString() || !otherType.isString())
-				return false;
-			if (!myValue.isConstant() || !otherValue.isConstant())
-				return false;
-			return myValue.constant().stringValue().equals(
-					otherValue.constant().stringValue());
-		}
-
-		return refined_Enums_ConstCase_constValue_Case(c);
-	}
     finally {
     }
   }

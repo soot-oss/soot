@@ -36,8 +36,6 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     type_value = null;
     sourceVariableDecl_computed = false;
     sourceVariableDecl_value = null;
-    throwTypes_computed = false;
-    throwTypes_value = null;
     localNum_computed = false;
   }
   /**
@@ -56,8 +54,6 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     node.type_value = null;
     node.sourceVariableDecl_computed = false;
     node.sourceVariableDecl_value = null;
-    node.throwTypes_computed = false;
-    node.throwTypes_value = null;
     node.localNum_computed = false;
     node.in$Circle(false);
     node.is$Final(false);
@@ -156,6 +152,32 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:129
    */
   public void remove() { throw new UnsupportedOperationException(); }
+  /**
+   * @ast method 
+   * @aspect NameCheck
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:333
+   */
+  public void nameCheck() {
+    SimpleSet decls = outerScope().lookupVariable(name());
+    for(Iterator iter = decls.iterator(); iter.hasNext(); ) {
+      Variable var = (Variable)iter.next();
+      if(var instanceof VariableDeclaration) {
+        VariableDeclaration decl = (VariableDeclaration)var;
+        if(decl.enclosingBodyDecl() == enclosingBodyDecl())
+          error("duplicate declaration of local variable " + name());
+      }
+      else if(var instanceof ParameterDeclaration) {
+        ParameterDeclaration decl = (ParameterDeclaration)var;
+        if(decl.enclosingBodyDecl() == enclosingBodyDecl())
+          error("duplicate declaration of local variable " + name());
+      }
+    }
+
+    // 8.4.1  
+    if(!lookupVariable(name()).contains(this)) {
+      error("duplicate declaration of parameter " + name());
+    }
+  }
   /**
    * @ast method 
    * @aspect NodeConstructors
@@ -370,36 +392,6 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
-  /**
-   * @ast method 
-   * @aspect MultiCatch
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:214
-   */
-   
-	public void nameCheck() {
-		SimpleSet decls = outerScope().lookupVariable(name());
-		for(Iterator iter = decls.iterator(); iter.hasNext(); ) {
-			Variable var = (Variable)iter.next();
-			if(var instanceof VariableDeclaration) {
-				VariableDeclaration decl = (VariableDeclaration)var;
-				if (decl.enclosingBodyDecl() == enclosingBodyDecl())
-					error("duplicate declaration of parameter " + name());
-			} else if(var instanceof ParameterDeclaration) {
-				ParameterDeclaration decl = (ParameterDeclaration)var;
-				if(decl.enclosingBodyDecl() == enclosingBodyDecl())
-					error("duplicate declaration of parameter " + name());
-			} else if(var instanceof CatchParameterDeclaration) {
-				CatchParameterDeclaration decl = (CatchParameterDeclaration)var;
-				if(decl.enclosingBodyDecl() == enclosingBodyDecl())
-					error("duplicate declaration of parameter " + name());
-			}
-		}
-
-		// 8.4.1  
-		if(!lookupVariable(name()).contains(this)) {
-			error("duplicate declaration of parameter " + name());
-		}
-	}
   /**
    * @attribute syn
    * @aspect DataStructures
@@ -657,75 +649,6 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     }
   }
   /**
-   * @apilevel internal
-   */
-  protected boolean throwTypes_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Collection<TypeDecl> throwTypes_value;
-  /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:27
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Collection<TypeDecl> throwTypes() {
-    if(throwTypes_computed) {
-      return throwTypes_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    throwTypes_value = throwTypes_compute();
-      if(isFinal && num == state().boundariesCrossed) throwTypes_computed = true;
-    return throwTypes_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Collection<TypeDecl> throwTypes_compute() {
-		if (isCatchParam() && effectivelyFinal()) {
-			// the catch parameter must be final or implicitly
-			// final (multi-catch)
-			return catchClause().caughtExceptions();
-		} else {
-			Collection<TypeDecl> tts = new LinkedList<TypeDecl>();
-			tts.add(type());
-			return tts;
-		}
-	}
-  /**
-   * @attribute syn
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:41
-   */
-  public boolean effectivelyFinal() {
-    ASTNode$State state = state();
-    try {  return isFinal() || !inhModifiedInScope(this);  }
-    finally {
-    }
-  }
-  /**
-	 * Builds a copy of this ParameterDeclaration node where all occurrences
-	 * of type variables in the original type parameter list have been replaced
-	 * by the substitution type parameters.
-	 *
-	 * @return the substituted ParameterDeclaration node
-	 * @attribute syn
-   * @aspect TypeInference
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:391
-   */
-  public ParameterDeclaration substituted(Collection<TypeVariable> original, List<TypeVariable> substitution) {
-    ASTNode$State state = state();
-    try {  return new ParameterDeclaration(
-				(Modifiers) getModifiers().cloneSubtree(),
-				getTypeAccess().substituted(original, substitution),
-				getID());  }
-    finally {
-    }
-  }
-  /**
    * @attribute inh
    * @aspect VariableScope
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:22
@@ -826,41 +749,6 @@ public class ParameterDeclaration extends ASTNode<ASTNode> implements Cloneable,
     localNum_value = getParent().Define_int_localNum(this, null);
       if(isFinal && num == state().boundariesCrossed) localNum_computed = true;
     return localNum_value;
-  }
-  /**
- 	 * @return true if the variable var is modified in the local scope
- 	 * @attribute inh
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:47
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean inhModifiedInScope(Variable var) {
-    ASTNode$State state = state();
-    boolean inhModifiedInScope_Variable_value = getParent().Define_boolean_inhModifiedInScope(this, null, var);
-    return inhModifiedInScope_Variable_value;
-  }
-  /**
-	 * @return true if this is the parameter declaration of a catch clause
-	 * @attribute inh
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:121
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean isCatchParam() {
-    ASTNode$State state = state();
-    boolean isCatchParam_value = getParent().Define_boolean_isCatchParam(this, null);
-    return isCatchParam_value;
-  }
-  /**
-   * @attribute inh
-   * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:127
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public CatchClause catchClause() {
-    ASTNode$State state = state();
-    CatchClause catchClause_value = getParent().Define_CatchClause_catchClause(this, null);
-    return catchClause_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:288

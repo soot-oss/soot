@@ -25,7 +25,7 @@ import soot.coffi.CoffiMethodSource;
  * are transcoded by the scanner).
  * @production StringLiteral : {@link Literal};
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:37
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Literals.ast:23
  */
 public class StringLiteral extends Literal implements Cloneable {
   /**
@@ -209,7 +209,7 @@ public class StringLiteral extends Literal implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:158
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:304
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
