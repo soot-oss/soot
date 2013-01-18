@@ -199,7 +199,7 @@ public class ConstCase extends Case implements Cloneable {
   /**
    * @ast method 
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:516
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:503
    */
     public void refined_Enums_ConstCase_typeCheck() {
     boolean isEnumConstant = getValue().isEnumConstant();
@@ -250,7 +250,7 @@ public class ConstCase extends Case implements Cloneable {
   /**
    * @ast method 
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:530
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:517
    */
   private boolean refined_Enums_ConstCase_constValue_Case(Case c)
 {
@@ -292,7 +292,7 @@ public class ConstCase extends Case implements Cloneable {
     }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:510
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:497
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {

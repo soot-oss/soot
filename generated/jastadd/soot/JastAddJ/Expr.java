@@ -842,7 +842,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @attribute syn
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:513
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:500
    */
   public boolean isEnumConstant() {
     ASTNode$State state = state();

@@ -1069,7 +1069,7 @@ public class NumericLiteral extends Literal implements Cloneable {
   }
   /**
 	 * Get the trimmed digits of this literal, excluding
-	 * without underscore, prefix and suffix.
+	 * underscore, prefix and suffix.
 	 * @attribute syn
    * @aspect Literals
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:377

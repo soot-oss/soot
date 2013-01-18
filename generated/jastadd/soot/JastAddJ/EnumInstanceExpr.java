@@ -374,7 +374,7 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
     3) An enum constant may be followed by arguments, which are passed to the
     constructor of the enum type when the constant is created during class
     initialization as described later in this section. The constructor to be
-    invoked is chosen using the normal overloading rules (\ufffd15.12.2). If the
+    invoked is chosen using the normal overloading rules (\u00d4\u00f8\u03a915.12.2). If the
     arguments are omitted, an empty argument list is assumed. 
   * @attribute syn nta
    * @aspect Enums
