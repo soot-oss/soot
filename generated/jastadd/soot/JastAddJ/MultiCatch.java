@@ -20,20 +20,18 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 /**
- * A catch clause that can catch a single exception type.
- * @production BasicCatch : {@link CatchClause} ::= <span class="component">Parameter:{@link ParameterDeclaration}</span> <span class="component">{@link Block}</span>;
+ * A catch clause that can catch a multiple exception types.
+ * @production MultiCatch : {@link CatchClause} ::= <span class="component">Parameter:{@link CatchParameterDeclaration}</span> <span class="component">{@link Block}</span>;
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.ast:9
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.ast:14
  */
-public class BasicCatch extends CatchClause implements Cloneable {
+public class MultiCatch extends CatchClause implements Cloneable {
   /**
    * @apilevel low-level
    */
   public void flushCache() {
     super.flushCache();
     parameterDeclaration_String_values = null;
-    label_computed = false;
-    label_value = null;
   }
   /**
    * @apilevel internal
@@ -45,11 +43,9 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @apilevel internal
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public BasicCatch clone() throws CloneNotSupportedException {
-    BasicCatch node = (BasicCatch)super.clone();
+  public MultiCatch clone() throws CloneNotSupportedException {
+    MultiCatch node = (MultiCatch)super.clone();
     node.parameterDeclaration_String_values = null;
-    node.label_computed = false;
-    node.label_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -58,9 +54,9 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @apilevel internal
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public BasicCatch copy() {
+  public MultiCatch copy() {
       try {
-        BasicCatch node = (BasicCatch)clone();
+        MultiCatch node = (MultiCatch)clone();
         if(children != null) node.children = (ASTNode[])children.clone();
         return node;
       } catch (CloneNotSupportedException e) {
@@ -75,9 +71,9 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public BasicCatch fullCopy() {
+  public MultiCatch fullCopy() {
     try {
-      BasicCatch tree = (BasicCatch) clone();
+      MultiCatch tree = (MultiCatch) clone();
       tree.setParent(null);// make dangling
       if (children != null) {
         tree.children = new ASTNode[children.length];
@@ -97,42 +93,21 @@ public class BasicCatch extends CatchClause implements Cloneable {
     }
   }
   /**
-   * @ast method 
-   * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:722
+	 * Pretty printing of multi-catch clause.
+	 * @ast method 
+   * @aspect MultiCatch
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:146
    */
-  public void toString(StringBuffer s) {
-    s.append("catch (");
-    getParameter().toString(s);
-    s.append(") ");
-    getBlock().toString(s);
-  }
-  /**
-   * @ast method 
-   * @aspect TypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:368
-   */
-  public void typeCheck() {
-    if(!getParameter().type().instanceOf(typeThrowable()))
-      error("*** The catch variable must extend Throwable");
-  }
-  /**
-   * @ast method 
-   * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:470
-   */
-  public void jimplify2(Body b) {
-    b.addLabel(label());
-    Local local = b.newLocal(getParameter().name(), getParameter().type().getSootType());
-    b.setLine(this);
-    b.add(b.newIdentityStmt(local, b.newCaughtExceptionRef(getParameter()), this));
-    getParameter().local = local;
-    getBlock().jimplify2(b);
-  }
+  public void toString(StringBuffer sb) {
+		sb.append("catch (");
+		getParameter().toString(sb);
+		sb.append(") ");
+		getBlock().toString(sb);
+	}
   /**
    * @ast method 
    * @aspect PreciseRethrow
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:198
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:204
    */
   void checkUnreachableStmt() {
 		if (!getBlock().reachable() && reportUnreachable())
@@ -143,7 +118,7 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @ast method 
    * 
    */
-  public BasicCatch() {
+  public MultiCatch() {
     super();
 
 
@@ -163,7 +138,7 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @ast method 
    * 
    */
-  public BasicCatch(ParameterDeclaration p0, Block p1) {
+  public MultiCatch(CatchParameterDeclaration p0, Block p1) {
     setChild(p0, 0);
     setChild(p1, 1);
   }
@@ -190,7 +165,7 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @ast method 
    * 
    */
-  public void setParameter(ParameterDeclaration node) {
+  public void setParameter(CatchParameterDeclaration node) {
     setChild(node, 0);
   }
   /**
@@ -200,8 +175,8 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @ast method 
    * 
    */
-  public ParameterDeclaration getParameter() {
-    return (ParameterDeclaration)getChild(0);
+  public CatchParameterDeclaration getParameter() {
+    return (CatchParameterDeclaration)getChild(0);
   }
   /**
    * Retrieves the Parameter child.
@@ -211,8 +186,8 @@ public class BasicCatch extends CatchClause implements Cloneable {
    * @ast method 
    * 
    */
-  public ParameterDeclaration getParameterNoTransform() {
-    return (ParameterDeclaration)getChildNoTransform(0);
+  public CatchParameterDeclaration getParameterNoTransform() {
+    return (CatchParameterDeclaration)getChildNoTransform(0);
   }
   /**
    * Replaces the Block child.
@@ -245,23 +220,12 @@ public class BasicCatch extends CatchClause implements Cloneable {
   public Block getBlockNoTransform() {
     return (Block)getChildNoTransform(1);
   }
-  /**
-   * @attribute syn
-   * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:212
-   */
-  public boolean handles(TypeDecl exceptionType) {
-    ASTNode$State state = state();
-    try {  return !getParameter().type().isUnknown()
-    && exceptionType.instanceOf(getParameter().type());  }
-    finally {
-    }
-  }
   protected java.util.Map parameterDeclaration_String_values;
   /**
-   * @attribute syn
-   * @aspect VariableScope
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:113
+	 * Variable lookup in catch parameter scope.
+	 * @attribute syn
+   * @aspect MultiCatch
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:86
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet parameterDeclaration(String name) {
@@ -282,80 +246,26 @@ public class BasicCatch extends CatchClause implements Cloneable {
    */
   private SimpleSet parameterDeclaration_compute(String name) {  return getParameter().name().equals(name) ? getParameter() : SimpleSet.emptySet;  }
   /**
-   * @apilevel internal
-   */
-  protected boolean label_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected soot.jimple.Stmt label_value;
-  /**
    * @attribute syn
-   * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:469
+   * @aspect ExceptionHandling
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:212
    */
-  @SuppressWarnings({"unchecked", "cast"})
-  public soot.jimple.Stmt label() {
-    if(label_computed) {
-      return label_value;
-    }
+  public boolean handles(TypeDecl exceptionType) {
     ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    label_value = label_compute();
-      if(isFinal && num == state().boundariesCrossed) label_computed = true;
-    return label_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private soot.jimple.Stmt label_compute() {  return newLabel();  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:83
-   * @apilevel internal
-   */
-  public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(caller == getParameterNoTransform()) {
-      return parameterDeclaration(name);
-    }
-    else {      return super.Define_SimpleSet_lookupVariable(caller, child, name);
+    try {
+		CatchParameterDeclaration param = getParameter();
+		for (int i = 0; i < param.getNumTypeAccess(); ++i) {
+			TypeDecl type = param.getTypeAccess(i).type();
+			if (!type.isUnknown() && exceptionType.instanceOf(type))
+				return true;
+		}
+		return false;
+	}
+    finally {
     }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:295
-   * @apilevel internal
-   */
-  public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-    if(caller == getParameterNoTransform()) {
-      return this;
-    }
-    else {      return getParent().Define_VariableScope_outerScope(this, caller);
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:86
-   * @apilevel internal
-   */
-  public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    if(caller == getParameterNoTransform()) {
-      return NameType.TYPE_NAME;
-    }
-    else {      return getParent().Define_NameType_nameType(this, caller);
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:122
-   * @apilevel internal
-   */
-  public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-    if(caller == getBlockNoTransform()) {
-      return reachableCatchClause(getParameter().type());
-    }
-    else {      return getParent().Define_boolean_reachable(this, caller);
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:64
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:27
    * @apilevel internal
    */
   public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
@@ -366,7 +276,7 @@ public class BasicCatch extends CatchClause implements Cloneable {
     }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:65
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:28
    * @apilevel internal
    */
   public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
@@ -377,7 +287,7 @@ public class BasicCatch extends CatchClause implements Cloneable {
     }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:66
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:29
    * @apilevel internal
    */
   public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
@@ -388,36 +298,36 @@ public class BasicCatch extends CatchClause implements Cloneable {
     }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:23
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:80
    * @apilevel internal
    */
-  public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
+  public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
     if(caller == getParameterNoTransform()) {
-      return false;
+      return parameterDeclaration(name);
     }
-    else {      return getParent().Define_boolean_variableArityValid(this, caller);
+    else {      return super.Define_SimpleSet_lookupVariable(caller, child, name);
     }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:52
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:128
    * @apilevel internal
    */
-  public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
-    if(caller == getParameterNoTransform()) {
-      return getBlock().modifiedInScope(var);
-    }
-    else {      return getParent().Define_boolean_inhModifiedInScope(this, caller, var);
-    }
-  }
-  /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:125
-   * @apilevel internal
-   */
-  public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
-    if(caller == getParameterNoTransform()) {
-      return true;
-    }
-    else {      return getParent().Define_boolean_isCatchParam(this, caller);
+  public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
+    if(caller == getBlockNoTransform()){
+		boolean anyReachable = false;
+		CatchParameterDeclaration param = getParameter();
+		for (int i = 0; i < param.getNumTypeAccess(); ++i) {
+			TypeDecl type = param.getTypeAccess(i).type();
+			if (!reachableCatchClause(type))
+				error("The exception type "+type.fullName()+
+						" can not be caught "+
+						"by this multi-catch clause");
+			else
+				anyReachable = true;
+		}
+		return anyReachable;
+	}
+    else {      return getParent().Define_boolean_reachable(this, caller);
     }
   }
   /**

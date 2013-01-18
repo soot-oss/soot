@@ -1202,6 +1202,30 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
    */
   private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
   /**
+	 * A type is reifiable if it either refers to a non-parameterized type,
+	 * is a raw type, is a parameterized type with only unbound wildcard
+	 * parameters or is an array type with a reifiable type parameter.
+	 *
+	 * @see "JLSv3 &sect;4.7"
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:106
+   */
+  public boolean isReifiable() {
+    ASTNode$State state = state();
+    try {
+		if (isRawType())
+			return true;
+		for (int i = 0; i < getNumArgument(); ++i) {
+			if (!getArgument(i).type().isWildcard())
+				return false;
+		}
+		return true;
+	}
+    finally {
+    }
+  }
+  /**
    * @attribute syn
    * @aspect Generics
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:244

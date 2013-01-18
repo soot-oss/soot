@@ -525,6 +525,22 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   private boolean canCompleteNormally_compute() {  return getNumStmt() == 0 ? reachable() : getStmt(getNumStmt() - 1).canCompleteNormally();  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {
+		for (Stmt stmt : getStmtList())
+			if (stmt.modifiedInScope(var))
+				return true;
+		return false;
+	}
+    finally {
+    }
+  }
   protected java.util.Map lookupType_String_values;
   /**
    * @attribute inh

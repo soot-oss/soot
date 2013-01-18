@@ -28,6 +28,8 @@ Improvements and API changes in HEAD
 
 7. Changed the definition of EntryPoints.application() to just return
    the empty set if no main class is present.
+   
+8. Soot now support Java 7 source-code syntax. 
 
 Improvements and API changes in version 2.5.0
 

@@ -168,6 +168,18 @@ public abstract class MemberTypeDecl extends MemberDecl implements Cloneable {
     }
   }
   /**
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
+   */
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return typeDecl().hasAnnotationSafeVarargs();  }
+    finally {
+    }
+  }
+  /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {

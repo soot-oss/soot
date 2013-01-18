@@ -618,6 +618,31 @@ public class TypeAccess extends Access implements Cloneable {
     }
   }
   /**
+	 * Builds a copy of this Access node where all occurrences
+	 * of type variables in the original type parameter list have been replaced
+	 * by the substitution type parameters.
+	 *
+	 * @return the substituted Access node
+	 * @attribute syn
+   * @aspect TypeInference
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:406
+   */
+  public Access substituted(Collection<TypeVariable> original, List<TypeVariable> substitution) {
+    ASTNode$State state = state();
+    try {
+		TypeDecl decl = decl();
+		int i = 0;
+		for (TypeVariable typeVar : original) {
+			if (typeVar == decl)
+				return new TypeAccess(substitution.getChild(i).getID());
+			i += 1;
+		}
+		return super.substituted(original, substitution);
+	}
+    finally {
+    }
+  }
+  /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {

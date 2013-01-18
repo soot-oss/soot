@@ -514,6 +514,17 @@ public class ParClassInstanceExpr extends ClassInstanceExpr implements Cloneable
     }
   }
   /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:473
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isExplicitGenericConstructorAccess(ASTNode caller, ASTNode child) {
+    if(caller == getAccessNoTransform()) {
+      return true;
+    }
+    else {      return getParent().Define_boolean_isExplicitGenericConstructorAccess(this, caller);
+    }
+  }
+  /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {

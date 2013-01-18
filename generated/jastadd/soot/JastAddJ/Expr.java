@@ -335,7 +335,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:98
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
   public Constant constant() {
     ASTNode$State state = state();
@@ -346,10 +346,32 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
     finally {
     }
   }
-  /**
-   * @attribute syn
+  /*syn lazy boolean FloatingPointLiteral.isZero() {
+    String s = getLITERAL();
+    for(int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if(c == 'E'  || c == 'e')
+        break;
+      if(Character.isDigit(c) && c != '0') {
+        return false;
+      }
+    }
+    return true;
+  }
+  syn lazy boolean DoubleLiteral.isZero() {
+    String s = getLITERAL();
+    for(int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if(c == 'E'  || c == 'e')
+        break;
+      if(Character.isDigit(c) && c != '0') {
+        return false;
+      }
+    }
+    return true;
+  }* @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:241
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:152
    */
   public boolean isPositive() {
     ASTNode$State state = state();
@@ -364,7 +386,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
    * where T must be byte, char or short.
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:454
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:308
    */
   public boolean representableIn(TypeDecl t) {
     ASTNode$State state = state();
@@ -388,7 +410,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:482
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
    */
   public boolean isConstant() {
     ASTNode$State state = state();
@@ -399,7 +421,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:511
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:365
    */
   public boolean isTrue() {
     ASTNode$State state = state();
@@ -410,7 +432,7 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:512
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:366
    */
   public boolean isFalse() {
     ASTNode$State state = state();
@@ -905,6 +927,43 @@ public abstract class Expr extends ASTNode<ASTNode> implements Cloneable {
   public boolean canBeFalse() {
     ASTNode$State state = state();
     try {  return !isTrue();  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:11
+   */
+  public Collection<TypeDecl> throwTypes() {
+    ASTNode$State state = state();
+    try {
+		Collection<TypeDecl> tts = new LinkedList<TypeDecl>();
+		tts.add(type());
+		return tts;
+	}
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:111
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:115
+   */
+  public boolean isVariable(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
     finally {
     }
   }

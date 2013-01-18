@@ -1958,6 +1958,31 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     finally {
     }
   }
+  /**
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
+   */
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSafeVarargs();  }
+    finally {
+    }
+  }
+  /**
+	 * It is an error if the SafeVarargs annotation is used on something
+	 * that is not a variable arity method or constructor.
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:56
+   */
+  public boolean hasIllegalAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return hasAnnotationSafeVarargs() && !isVariableArity();  }
+    finally {
+    }
+  }
   protected java.util.Map handlesException_TypeDecl_values;
   /**
    * @attribute inh
@@ -2267,6 +2292,30 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       return getNumException() != 0;
     }
     else {      return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:48
+   * @apilevel internal
+   */
+  public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
+    if(caller == getParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+      return getBlock().modifiedInScope(var);
+    }
+    else {      return getParent().Define_boolean_inhModifiedInScope(this, caller, var);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:123
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
+    if(caller == getParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+      return false;
+    }
+    else {      return getParent().Define_boolean_isCatchParam(this, caller);
     }
   }
   /**

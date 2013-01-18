@@ -134,6 +134,15 @@ public class CastExpr extends Expr implements Cloneable {
   }
   /**
    * @ast method 
+   * @aspect UncheckedConversion
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:35
+   */
+  public void checkWarnings() {
+    if (!withinSuppressWarnings("unchecked"))
+      checkUncheckedConversion(getExpr().type(), getTypeAccess().type());
+  }
+  /**
+   * @ast method 
    * 
    */
   public CastExpr() {
@@ -241,7 +250,7 @@ public class CastExpr extends Expr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:98
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
   public Constant constant() {
     ASTNode$State state = state();
@@ -252,7 +261,7 @@ public class CastExpr extends Expr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:482
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
    */
   public boolean isConstant() {
     ASTNode$State state = state();
@@ -344,6 +353,17 @@ public class CastExpr extends Expr implements Cloneable {
     try {  return getExpr().staticContextQualifier();  }
     finally {
     }
+  }
+  /**
+   * @attribute inh
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:16
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean withinSuppressWarnings(String s) {
+    ASTNode$State state = state();
+    boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
+    return withinSuppressWarnings_String_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:88

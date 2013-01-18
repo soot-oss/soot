@@ -42,6 +42,8 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     sourceVariableDecl_value = null;
     sootRef_computed = false;
     sootRef_value = null;
+    throwTypes_computed = false;
+    throwTypes_value = null;
   }
   /**
    * @apilevel internal
@@ -67,6 +69,8 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     node.sourceVariableDecl_value = null;
     node.sootRef_computed = false;
     node.sootRef_value = null;
+    node.throwTypes_computed = false;
+    node.throwTypes_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -508,6 +512,15 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   }
   /**
    * @ast method 
+   * @aspect UncheckedConversion
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:25
+   */
+  public void checkWarnings() {
+    if (hasInit() && !suppressWarnings("unchecked"))
+      checkUncheckedConversion(getInit().type(), type());
+  }
+  /**
+   * @ast method 
    * 
    */
   public FieldDeclaration() {
@@ -744,6 +757,17 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
   public Opt<Expr> getInitOptNoTransform() {
     return (Opt<Expr>)getChildNoTransform(2);
   }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:332
+   */
+  public boolean isConstant() {
+    ASTNode$State state = state();
+    try {  return isFinal() && hasInit() && getInit().isConstant() && (type() instanceof PrimitiveType || type().isString());  }
+    finally {
+    }
+  }
   protected java.util.Map accessibleFrom_TypeDecl_values;
   /**
    * @attribute syn
@@ -821,17 +845,6 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
       }
     }
     return set;
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:478
-   */
-  public boolean isConstant() {
-    ASTNode$State state = state();
-    try {  return isFinal() && hasInit() && getInit().isConstant() && (type() instanceof PrimitiveType || type().isString());  }
-    finally {
-    }
   }
   /**
    * @attribute syn
@@ -1322,6 +1335,62 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     }
   }
   /**
+   * @apilevel internal
+   */
+  protected boolean throwTypes_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected Collection<TypeDecl> throwTypes_value;
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:22
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Collection<TypeDecl> throwTypes() {
+    if(throwTypes_computed) {
+      return throwTypes_value;
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    throwTypes_value = throwTypes_compute();
+      if(isFinal && num == state().boundariesCrossed) throwTypes_computed = true;
+    return throwTypes_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private Collection<TypeDecl> throwTypes_compute() {
+		Collection<TypeDecl> tts = new LinkedList<TypeDecl>();
+		tts.add(type());
+		return tts;
+	}
+  /**
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
+   */
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSafeVarargs();  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:22
+   */
+  public boolean suppressWarnings(String type) {
+    ASTNode$State state = state();
+    try {  return hasAnnotationSuppressWarnings(type) || withinSuppressWarnings(type);  }
+    finally {
+    }
+  }
+  /**
    * @attribute inh
    * @aspect ExceptionHandling
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:48
@@ -1331,6 +1400,17 @@ public class FieldDeclaration extends MemberDecl implements Cloneable, SimpleSet
     ASTNode$State state = state();
     boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
     return handlesException_TypeDecl_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:14
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean withinSuppressWarnings(String s) {
+    ASTNode$State state = state();
+    boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
+    return withinSuppressWarnings_String_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:39

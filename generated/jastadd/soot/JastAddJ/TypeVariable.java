@@ -1466,6 +1466,22 @@ public class TypeVariable extends ReferenceType implements Cloneable {
    */
   private boolean instanceOf_compute(TypeDecl type) {  return subtype(type);  }
   /**
+	 * A type is reifiable if it either refers to a non-parameterized type,
+	 * is a raw type, is a parameterized type with only unbound wildcard
+	 * parameters or is an array type with a reifiable type parameter.
+	 *
+	 * @see "JLSv3 &sect;4.7"
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:106
+   */
+  public boolean isReifiable() {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /**
    * @attribute inh
    * @aspect LookupParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:919

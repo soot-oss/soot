@@ -36,6 +36,8 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     constant_value = null;
     sourceVariableDecl_computed = false;
     sourceVariableDecl_value = null;
+    throwTypes_computed = false;
+    throwTypes_value = null;
     localNum_computed = false;
   }
   /**
@@ -56,6 +58,8 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     node.constant_value = null;
     node.sourceVariableDecl_computed = false;
     node.sourceVariableDecl_value = null;
+    node.throwTypes_computed = false;
+    node.throwTypes_value = null;
     node.localNum_computed = false;
     node.in$Circle(false);
     node.is$Final(false);
@@ -156,39 +160,6 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
   public void remove() { throw new UnsupportedOperationException(); }
   /**
    * @ast method 
-   * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:304
-   */
-  public void nameCheck() {
-    SimpleSet decls = outerScope().lookupVariable(name());
-    for(Iterator iter = decls.iterator(); iter.hasNext(); ) {
-      Variable var = (Variable)iter.next();
-      if(var instanceof VariableDeclaration) {
-        VariableDeclaration decl = (VariableDeclaration)var;
-        if(decl != this && decl.enclosingBodyDecl() == enclosingBodyDecl())
-          error("duplicate declaration of local variable " + name() + " in enclosing scope");
-      }
-      // 8.4.1
-      else if(var instanceof ParameterDeclaration) {
-        ParameterDeclaration decl = (ParameterDeclaration)var;
-        if(decl.enclosingBodyDecl() == enclosingBodyDecl())
-          error("duplicate declaration of local variable and parameter " + name());
-      }
-    }
-    if(getParent().getParent() instanceof Block) {
-      Block block = (Block)getParent().getParent();
-      for(int i = 0; i < block.getNumStmt(); i++) {
-        if(block.getStmt(i) instanceof Variable) {
-          Variable v = (Variable)block.getStmt(i);
-          if(v.name().equals(name()) && v != this) {
-            error("duplicate declaration of local variable " + name());
-          }
-        }
-      }
-    }
-  }
-  /**
-   * @ast method 
    * @aspect NodeConstructors
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NodeConstructors.jrag:74
    */
@@ -263,6 +234,15 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
    */
   
   public Local local;
+  /**
+   * @ast method 
+   * @aspect UncheckedConversion
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:20
+   */
+  public void checkWarnings() {
+    if (hasInit() && !suppressWarnings("unchecked"))
+      checkUncheckedConversion(getInit().type(), type());
+  }
   /**
    * @ast method 
    * 
@@ -501,6 +481,44 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
   public Opt<Expr> getInitOptNoTransform() {
     return (Opt<Expr>)getChildNoTransform(2);
   }
+  /**
+   * @ast method 
+   * @aspect MultiCatch
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.jrag:240
+   */
+   
+	public void nameCheck() {
+		SimpleSet decls = outerScope().lookupVariable(name());
+		for(Iterator iter = decls.iterator(); iter.hasNext(); ) {
+			Variable var = (Variable)iter.next();
+			if(var instanceof VariableDeclaration) {
+				VariableDeclaration decl = (VariableDeclaration)var;
+				if(decl != this && decl.enclosingBodyDecl() == enclosingBodyDecl())
+					error("duplicate declaration of local variable " + name());
+			}
+			// 8.4.1
+			else if(var instanceof ParameterDeclaration) {
+				ParameterDeclaration decl = (ParameterDeclaration)var;
+				if(decl.enclosingBodyDecl() == enclosingBodyDecl())
+					error("duplicate declaration of local variable " + name());
+			} else if(var instanceof CatchParameterDeclaration) {
+				CatchParameterDeclaration decl = (CatchParameterDeclaration)var;
+				if(decl.enclosingBodyDecl() == enclosingBodyDecl())
+					error("duplicate declaration of local variable " + name());
+			}
+		}
+		if(getParent().getParent() instanceof Block) {
+			Block block = (Block)getParent().getParent();
+			for(int i = 0; i < block.getNumStmt(); i++) {
+				if(block.getStmt(i) instanceof Variable) {
+					Variable v = (Variable)block.getStmt(i);
+					if(v.name().equals(name()) && v != this) {
+						error("duplicate declaration of local variable " + name());
+					}
+				}
+			}
+		}
+	}
   /**
    * @attribute syn
    * @aspect DataStructures
@@ -847,6 +865,72 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
    */
   private Variable sourceVariableDecl_compute() {  return this;  }
   /**
+   * @apilevel internal
+   */
+  protected boolean throwTypes_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected Collection<TypeDecl> throwTypes_value;
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:17
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Collection<TypeDecl> throwTypes() {
+    if(throwTypes_computed) {
+      return throwTypes_value;
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    throwTypes_value = throwTypes_compute();
+      if(isFinal && num == state().boundariesCrossed) throwTypes_computed = true;
+    return throwTypes_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private Collection<TypeDecl> throwTypes_compute() {
+		Collection<TypeDecl> tts = new LinkedList<TypeDecl>();
+		tts.add(type());
+		return tts;
+	}
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:10
+   */
+  public boolean hasAnnotationSuppressWarnings(String s) {
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:20
+   */
+  public boolean suppressWarnings(String type) {
+    ASTNode$State state = state();
+    try {  return hasAnnotationSuppressWarnings(type) || withinSuppressWarnings(type);  }
+    finally {
+    }
+  }
+  /**
    * @attribute inh
    * @aspect VariableScope
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:21
@@ -903,6 +987,28 @@ public class VariableDeclaration extends Stmt implements Cloneable, SimpleSet, I
     localNum_value = getParent().Define_int_localNum(this, null);
       if(isFinal && num == state().boundariesCrossed) localNum_computed = true;
     return localNum_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:13
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean withinSuppressWarnings(String s) {
+    ASTNode$State state = state();
+    boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
+    return withinSuppressWarnings_String_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect TryWithResources
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TryWithResources.jrag:144
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean resourcePreviouslyDeclared(String name) {
+    ASTNode$State state = state();
+    boolean resourcePreviouslyDeclared_String_value = getParent().Define_boolean_resourcePreviouslyDeclared(this, null, name);
+    return resourcePreviouslyDeclared_String_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:40

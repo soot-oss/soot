@@ -141,8 +141,6 @@ public class PathPart extends java.lang.Object {
           u.setPathName(pathName);
           u.setRelativeName(relativeName);
           u.setFromSource(true);
-          
-          program.addCompilationUnit(u);
 
           if(program.options().verbose())
             System.out.println("in " + (System.currentTimeMillis() - startTime) + " ms");

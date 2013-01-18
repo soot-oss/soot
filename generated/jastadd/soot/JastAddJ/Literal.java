@@ -23,7 +23,7 @@ import soot.coffi.CoffiMethodSource;
  * The abstract base class for all literals.
  * @production Literal : {@link PrimaryExpr} ::= <span class="component">&lt;LITERAL:String&gt;</span>;
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Literals.ast:4
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:4
  */
 public abstract class Literal extends PrimaryExpr implements Cloneable {
   /**
@@ -31,8 +31,6 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
    */
   public void flushCache() {
     super.flushCache();
-    constant_computed = false;
-    constant_value = null;
   }
   /**
    * @apilevel internal
@@ -46,43 +44,9 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Literal clone() throws CloneNotSupportedException {
     Literal node = (Literal)super.clone();
-    node.constant_computed = false;
-    node.constant_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
-  }
-  /**
-   * @ast method 
-   * @aspect BytecodeCONSTANT
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BytecodeCONSTANT.jrag:59
-   */
-  public static Literal buildDoubleLiteral(double value) {
-    return new DoubleLiteral(Double.toString(value));
-  }
-  /**
-   * @ast method 
-   * @aspect BytecodeCONSTANT
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BytecodeCONSTANT.jrag:63
-   */
-  public static Literal buildFloatLiteral(float value) {
-    return new FloatingPointLiteral(Double.toString(value));
-  }
-  /**
-   * @ast method 
-   * @aspect BytecodeCONSTANT
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BytecodeCONSTANT.jrag:67
-   */
-  public static Literal buildIntegerLiteral(int value) {
-    return new IntegerLiteral("0x"+Integer.toHexString(value));
-  }
-  /**
-   * @ast method 
-   * @aspect BytecodeCONSTANT
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BytecodeCONSTANT.jrag:71
-   */
-  public static Literal buildLongLiteral(long value) {
-    return new LongLiteral("0x"+Long.toHexString(value));
   }
   /**
    * @ast method 
@@ -99,83 +63,6 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
    */
   public static Literal buildStringLiteral(String value) {
     return new StringLiteral(value);
-  }
-  /**
-   * @ast method 
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:160
-   */
-  static long parseLong(String s) {
-    long x = 0L;
-    s = s.toLowerCase();
-    boolean neg = false;
-    if(s.startsWith("-")) {
-      s = s.substring(1);
-      neg = true;
-    }
-    if(s.startsWith("0x")) {
-      s = s.substring(2);
-      if(s.length() > 16) {
-        for(int i = 0; i < s.length()-16; i++)
-          if(s.charAt(i) != '0')
-            throw new NumberFormatException("");
-      }
-      for (int i = 0; i < s.length(); i++) {
-        int c = s.charAt(i);
-        if (c >= 'a' && c <= 'f')
-          c = c - 'a' + 10;
-        else if(c >= '0' && c <= '9')
-          c = c - '0';
-        else
-          throw new NumberFormatException("");
-        x = x * 16 + c;
-      }
-    }
-    else if(s.startsWith("0")) {
-      s = s.substring(1);
-      // Octals larger than 01777777777777777777777L are not valid
-      if(s.length() > 21) {
-        for(int i = 0; i < s.length() - 21; i++)
-          if(i == s.length() - 21 - 1) {
-            if(s.charAt(i) != '0' && s.charAt(i) != '1')
-              throw new NumberFormatException("");
-          }
-          else {
-            if(s.charAt(i) != '0')
-              throw new NumberFormatException("");
-          }
-      }
-      for (int i = 0; i < s.length(); i++) {
-        int c = s.charAt(i);
-        if(c >= '0' && c <= '7')
-          c = c - '0';
-        else
-          throw new NumberFormatException("");
-        x = x * 8 + c;
-      }
-    }
-    else {
-      long oldx = 0;
-      for (int i = 0; i < s.length(); i++) {
-        int c = s.charAt(i);
-        if(c >= '0' && c <= '9')
-          c = c - '0';
-        else
-          throw new NumberFormatException("");
-        x = x * 10 + c;
-        if(x < oldx) {
-          boolean negMinValue = i == (s.length()-1) && neg && x == Long.MIN_VALUE;
-          if(!negMinValue)
-            throw new NumberFormatException("");
-        }
-        oldx = x;
-      }
-      if(x == Long.MIN_VALUE)
-        return x;
-      if(x < 0)
-        throw new NumberFormatException("");
-    }
-    return neg ? -x : x;
   }
   /**
    * @ast method 
@@ -330,41 +217,61 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
     return tokenString_LITERAL != null ? tokenString_LITERAL : "";
   }
   /**
-   * @apilevel internal
+	 * @return a fresh double literal representing the given value
+	 * @ast method 
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:50
    */
-  protected boolean constant_computed = false;
+    public static Literal buildDoubleLiteral(double value) {
+		String digits = Double.toString(value);
+		NumericLiteral lit = new DoubleLiteral(digits);
+		lit.setDigits(digits);
+		lit.setKind(NumericLiteral.DECIMAL);
+		return lit;
+	}
   /**
-   * @apilevel internal
+	 * @return a fresh float literal representing the given value
+	 * @ast method 
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:62
    */
-  protected Constant constant_value;
+    public static Literal buildFloatLiteral(float value) {
+		String digits = Float.toString(value);
+		NumericLiteral lit = new FloatingPointLiteral(digits);
+		lit.setDigits(digits);
+		lit.setKind(NumericLiteral.DECIMAL);
+		return lit;
+	}
+  /**
+	 * @return a fresh integer literal representing the given value
+	 * @ast method 
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:74
+   */
+    public static Literal buildIntegerLiteral(int value) {
+		String digits = Integer.toHexString(value);
+		NumericLiteral lit = new IntegerLiteral("0x"+digits);
+		lit.setDigits(digits.toLowerCase());
+		lit.setKind(NumericLiteral.HEXADECIMAL);
+		return lit;
+	}
+  /**
+	 * @return a fresh long literal representing the given value
+	 * @ast method 
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:86
+   */
+    public static Literal buildLongLiteral(long value) {
+		String digits = Long.toHexString(value);
+		NumericLiteral lit = new LongLiteral("0x"+digits);
+		lit.setDigits(digits.toLowerCase());
+		lit.setKind(NumericLiteral.HEXADECIMAL);
+		return lit;
+	}
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:103
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {
-    throw new UnsupportedOperationException("ConstantExpression operation constant" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:482
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
    */
   public boolean isConstant() {
     ASTNode$State state = state();

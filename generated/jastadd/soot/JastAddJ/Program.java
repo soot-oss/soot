@@ -2597,6 +2597,69 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
   /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:122
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:130
+   * @apilevel internal
+   */
+  public CatchClause Define_CatchClause_catchClause(ASTNode caller, ASTNode child) {
+     { 
+   int i = this.getIndexOfChild(caller);
+{
+		throw new IllegalStateException("Could not find parent " +
+				"catch clause");
+	}
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TryWithResources.jrag:154
+   * @apilevel internal
+   */
+  public boolean Define_boolean_resourcePreviouslyDeclared(ASTNode caller, ASTNode child, String name) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:70
+   * @apilevel internal
+   */
+  public ClassInstanceExpr Define_ClassInstanceExpr_getClassInstanceExpr(ASTNode caller, ASTNode child) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return null;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:462
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isAnonymousDecl(ASTNode caller, ASTNode child) {
+     {
+      int childIndex = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:479
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isExplicitGenericConstructorAccess(ASTNode caller, ASTNode child) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {

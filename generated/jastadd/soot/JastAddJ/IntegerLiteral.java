@@ -22,18 +22,16 @@ import soot.coffi.CoffiMethodSource;
 /**
  * Default Java integer literal. Should only be used for numbers
  * that can be stored in 32 bits binary.
- * @production IntegerLiteral : {@link Literal};
+ * @production IntegerLiteral : {@link NumericLiteral};
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Literals.ast:34
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:48
  */
-public class IntegerLiteral extends Literal implements Cloneable {
+public class IntegerLiteral extends NumericLiteral implements Cloneable {
   /**
    * @apilevel low-level
    */
   public void flushCache() {
     super.flushCache();
-    constant_computed = false;
-    constant_value = null;
     type_computed = false;
     type_value = null;
   }
@@ -49,8 +47,6 @@ public class IntegerLiteral extends Literal implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public IntegerLiteral clone() throws CloneNotSupportedException {
     IntegerLiteral node = (IntegerLiteral)super.clone();
-    node.constant_computed = false;
-    node.constant_value = null;
     node.type_computed = false;
     node.type_value = null;
     node.in$Circle(false);
@@ -109,16 +105,6 @@ public class IntegerLiteral extends Literal implements Cloneable {
   }
   /**
    * @ast method 
-   * @aspect TypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:570
-   */
-  public void typeCheck() {
-   if(constant().error)
-     error("The value of an int literal must be a decimal value in the range -2147483648..2147483647 or a hexadecimal or octal literal that fits in 32 bits.");
-
- }
-  /**
-   * @ast method 
    * @aspect Expressions
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Expressions.jrag:17
    */
@@ -172,7 +158,7 @@ public class IntegerLiteral extends Literal implements Cloneable {
    * 
    */
   public boolean mayHaveRewrite() {
-    return false;
+    return true;
   }
   /**
    * Replaces the lexeme LITERAL.
@@ -208,94 +194,49 @@ public class IntegerLiteral extends Literal implements Cloneable {
     return tokenString_LITERAL != null ? tokenString_LITERAL : "";
   }
   /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:233
+	 * Check for and report literal-out-of-bounds error.
+	 * If the constant is error-marked, there exists a literal out of bounds error.
+	 * @ast method 
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:120
    */
-  public boolean isHex() {
-    ASTNode$State state = state();
-    try {  return getLITERAL().toLowerCase().startsWith("0x");  }
-    finally {
+    public void typeCheck() {
+		if (constant().error)
+			error("The integer literal \""+getLITERAL()+"\" is too large for type int.");
+
+	}
+  /*syn lazy boolean FloatingPointLiteral.isZero() {
+    String s = getLITERAL();
+    for(int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if(c == 'E'  || c == 'e')
+        break;
+      if(Character.isDigit(c) && c != '0') {
+        return false;
+      }
     }
+    return true;
   }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:234
-   */
-  public boolean isOctal() {
-    ASTNode$State state = state();
-    try {  return getLITERAL().startsWith("0");  }
-    finally {
+  syn lazy boolean DoubleLiteral.isZero() {
+    String s = getLITERAL();
+    for(int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if(c == 'E'  || c == 'e')
+        break;
+      if(Character.isDigit(c) && c != '0') {
+        return false;
+      }
     }
-  }
-  /**
-   * @attribute syn
+    return true;
+  }* @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:235
-   */
-  public boolean isDecimal() {
-    ASTNode$State state = state();
-    try {  return !isHex() && !isOctal();  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:241
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:152
    */
   public boolean isPositive() {
     ASTNode$State state = state();
     try {  return !getLITERAL().startsWith("-");  }
     finally {
     }
-  }
-  /**
-   * @apilevel internal
-   */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:255
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {
-    long l = 0;
-    try {
-      l = Literal.parseLong(getLITERAL());
-    } catch (NumberFormatException e) {
-      Constant c = Constant.create(0L);
-      c.error = true;
-      return c;
-    }
-    Constant c = Constant.create((int)l);
-    if(isDecimal() && l != (int)l)
-      c.error = true;
-    if(isOctal() && l > 037777777777L)
-      c.error = true;
-    if(isHex() && l > 0xffffffffL)
-      c.error = true;
-    return c;
   }
   /**
    * @apilevel internal
@@ -326,6 +267,50 @@ public class IntegerLiteral extends Literal implements Cloneable {
    * @apilevel internal
    */
   private TypeDecl type_compute() {  return typeInt();  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
+   */
+  public Constant constant() {
+    ASTNode$State state = state();
+    try {
+		long l = 0;
+		try {
+			l = parseLong();
+		} catch (NumberFormatException e) {
+			Constant c = Constant.create(0L);
+			c.error = true;
+			return c;
+		}
+		Constant c = Constant.create((int)l);
+		if (l != (0xFFFFFFFFL & ((int) l)) &&
+				l != ((long) ((int) l)) ) {
+			c.error = true;
+			//System.err.println("Can not cast to integer: "+l+" ("+((int)l)+")");
+		}
+		return c;
+	}
+    finally {
+    }
+  }
+  /**
+	 * Utility attribute for literal rewriting.
+	 * Any of the NumericLiteral subclasses have already
+	 * been rewritten and/or parsed, and should not be
+	 * rewritten again.
+	 *
+	 * @return true if this literal is a "raw", not-yet-parsed NumericLiteral
+	 * @attribute syn
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:334
+   */
+  public boolean needsRewrite() {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */

@@ -234,6 +234,30 @@ public abstract class Case extends Stmt implements Cloneable {
    * @apilevel internal
    */
   private soot.jimple.Stmt label_compute() {  return newLabel();  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /* Type checking for case labels need not be changed as it
+	 * already tests if the case labels have expressions which are
+	 * assignable to the switch expression
+	 * @attribute syn
+   * @aspect StringsInSwitch
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/StringsInSwitch.jrag:38
+   */
+  public boolean isDefaultCase() {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   protected java.util.Map bind_Case_values;
   /**
    * @attribute inh

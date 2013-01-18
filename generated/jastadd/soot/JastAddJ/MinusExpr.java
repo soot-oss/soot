@@ -187,7 +187,7 @@ public class MinusExpr extends Unary implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:98
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
   public Constant constant() {
     ASTNode$State state = state();
@@ -198,7 +198,7 @@ public class MinusExpr extends Unary implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:482
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
    */
   public boolean isConstant() {
     ASTNode$State state = state();
@@ -250,34 +250,46 @@ public class MinusExpr extends Unary implements Cloneable {
    * @apilevel internal
    */
   public ASTNode rewriteTo() {
-    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag at line 246
+    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag at line 341
     if(getOperand() instanceof IntegerLiteral && ((IntegerLiteral)getOperand()).isDecimal() && getOperand().isPositive()) {
-      state().duringConstantExpression++;
+      state().duringLiterals++;
       ASTNode result = rewriteRule0();
-      state().duringConstantExpression--;
+      state().duringLiterals--;
       return result;
     }
 
-    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag at line 251
+    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag at line 353
     if(getOperand() instanceof LongLiteral && ((LongLiteral)getOperand()).isDecimal() && getOperand().isPositive()) {
-      state().duringConstantExpression++;
+      state().duringLiterals++;
       ASTNode result = rewriteRule1();
-      state().duringConstantExpression--;
+      state().duringLiterals--;
       return result;
     }
 
     return super.rewriteTo();
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:246
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:341
    * @apilevel internal
    */  private IntegerLiteral rewriteRule0() {
-    return new IntegerLiteral("-" + ((IntegerLiteral)getOperand()).getLITERAL());
-  }
+{
+			IntegerLiteral original = (IntegerLiteral) getOperand();
+			IntegerLiteral literal = new IntegerLiteral("-"+
+					original.getLITERAL());
+			literal.setDigits(original.getDigits());
+			literal.setKind(original.getKind());
+			return literal;
+		}  }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:251
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:353
    * @apilevel internal
    */  private LongLiteral rewriteRule1() {
-    return new LongLiteral("-" + ((LongLiteral)getOperand()).getLITERAL());
-  }
+{
+			LongLiteral original = (LongLiteral) getOperand();
+			LongLiteral literal = new LongLiteral("-"+
+					original.getLITERAL());
+			literal.setDigits(original.getDigits());
+			literal.setKind(original.getKind());
+			return literal;
+		}  }
 }

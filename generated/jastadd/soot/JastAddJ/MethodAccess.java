@@ -462,6 +462,26 @@ public class MethodAccess extends Access implements Cloneable {
   }
   /**
    * @ast method 
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:73
+   */
+  public void checkWarnings() {
+
+		MethodDecl decl = decl();
+		if (decl.getNumParameter() == 0) return;
+		if (decl.getNumParameter() > getNumArg()) return;
+
+		ParameterDeclaration param = decl.getParameter(
+				decl.getNumParameter()-1);
+		if (!withinSuppressWarnings("unchecked") &&
+				!decl.hasAnnotationSafeVarargs() &&
+				param.isVariableArity() &&
+				!param.type().isReifiable())
+			warning("unchecked array creation for variable " +
+				"arity parameter of " + decl().name());
+	}
+  /**
+   * @ast method 
    * @aspect EmitJimpleRefinements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/SootJastAddJ/EmitJimpleRefinements.jrag:227
    */
@@ -1473,6 +1493,17 @@ public class MethodAccess extends Access implements Cloneable {
     ASTNode$State state = state();
     TypeDecl typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
     return typeObject_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:18
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean withinSuppressWarnings(String s) {
+    ASTNode$State state = state();
+    boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
+    return withinSuppressWarnings_String_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:409

@@ -422,6 +422,29 @@ public class ParTypeAccess extends Access implements Cloneable {
     }
   }
   /**
+	 * Builds a copy of this Access node where all occurrences
+	 * of type variables in the original type parameter list have been replaced
+	 * by the substitution type parameters.
+	 *
+	 * @return the substituted Access node
+	 * @attribute syn
+   * @aspect TypeInference
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:406
+   */
+  public Access substituted(Collection<TypeVariable> original, List<TypeVariable> substitution) {
+    ASTNode$State state = state();
+    try {
+		List<Access> substArgs = new List<Access>();
+		for (Access arg : getTypeArgumentList())
+			substArgs.add(arg.substituted(original, substitution));
+		return new ParTypeAccess(
+				getTypeAccess().substituted(original, substitution),
+				substArgs);
+	}
+    finally {
+    }
+  }
+  /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:265
    * @apilevel internal
    */

@@ -123,32 +123,6 @@ public class ThrowStmt extends Stmt implements Cloneable {
   }
   /**
    * @ast method 
-   * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:128
-   */
-  public void exceptionHandling() {
-    TypeDecl exceptionType = getExpr().type();
-    if(exceptionType == typeNull())
-      exceptionType = typeNullPointerException();
-    // 8.4.4
-    if(!handlesException(exceptionType))
-      error("" + this + " throws uncaught exception " + exceptionType.fullName());
-  }
-  /**
-   * @ast method 
-   * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:262
-   */
-  protected boolean reachedException(TypeDecl catchType) {
-    TypeDecl exceptionType = getExpr().type();
-    if(exceptionType == typeNull())
-      exceptionType = typeNullPointerException();
-    if(catchType.mayCatch(exceptionType))
-      return true;
-    return super.reachedException(catchType);
-  }
-  /**
-   * @ast method 
    * @aspect PrettyPrint
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:692
    */
@@ -253,6 +227,46 @@ public class ThrowStmt extends Stmt implements Cloneable {
   public Expr getExprNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
+  /**
+   * @ast method 
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:163
+   */
+   
+	public void exceptionHandling() {
+		Collection<TypeDecl> exceptionTypes = getExpr().throwTypes();
+		for (TypeDecl exceptionType : exceptionTypes) {
+			if (exceptionType == typeNull())
+				exceptionType = typeNullPointerException();
+			// 8.4.4
+			if (!handlesException(exceptionType))
+				error(""+this+" throws uncaught exception "+
+						exceptionType.fullName());
+		}
+	}
+  /**
+   * @ast method 
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:176
+   */
+   
+	protected boolean reachedException(TypeDecl catchType) {
+		Collection<TypeDecl> exceptionTypes = getExpr().throwTypes();
+		boolean reached = false;
+		for (TypeDecl exceptionType : exceptionTypes) {
+			if(exceptionType == typeNull())
+				exceptionType = typeNullPointerException();
+			if(catchType.mayCatch(exceptionType)) {
+				reached = true;
+				break;
+			}
+			if (super.reachedException(catchType)) {
+				reached = true;
+				break;
+			}
+		}
+		return reached;
+	}
   protected java.util.Map isDAafter_Variable_values;
   /**
    * @attribute syn
@@ -330,6 +344,17 @@ public class ThrowStmt extends Stmt implements Cloneable {
    * @apilevel internal
    */
   private boolean canCompleteNormally_compute() {  return false;  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */

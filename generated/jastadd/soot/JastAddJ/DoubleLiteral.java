@@ -23,21 +23,19 @@ import soot.coffi.CoffiMethodSource;
  * Java double-precision floating point literal.
  * Can store any value representable as an
  * IEEE 754 64-bit double-precision floating point number.
- * @production DoubleLiteral : {@link Literal};
+ * @production DoubleLiteral : {@link NumericLiteral};
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Literals.ast:53
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:67
  */
-public class DoubleLiteral extends Literal implements Cloneable {
+public class DoubleLiteral extends NumericLiteral implements Cloneable {
   /**
    * @apilevel low-level
    */
   public void flushCache() {
     super.flushCache();
-    isZero_computed = false;
-    constant_computed = false;
-    constant_value = null;
     type_computed = false;
     type_value = null;
+    isZero_computed = false;
   }
   /**
    * @apilevel internal
@@ -51,11 +49,9 @@ public class DoubleLiteral extends Literal implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public DoubleLiteral clone() throws CloneNotSupportedException {
     DoubleLiteral node = (DoubleLiteral)super.clone();
-    node.isZero_computed = false;
-    node.constant_computed = false;
-    node.constant_value = null;
     node.type_computed = false;
     node.type_value = null;
+    node.isZero_computed = false;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -101,15 +97,6 @@ public class DoubleLiteral extends Literal implements Cloneable {
       throw new Error("Error: clone not supported for " +
         getClass().getName());
     }
-  }
-  /**
-   * @ast method 
-   * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:285
-   */
-  public void toString(StringBuffer s) {
-    s.append(getLITERAL());
-    s.append("D");
   }
   /**
    * @ast method 
@@ -177,7 +164,7 @@ public class DoubleLiteral extends Literal implements Cloneable {
    * 
    */
   public boolean mayHaveRewrite() {
-    return false;
+    return true;
   }
   /**
    * Replaces the lexeme LITERAL.
@@ -213,83 +200,14 @@ public class DoubleLiteral extends Literal implements Cloneable {
     return tokenString_LITERAL != null ? tokenString_LITERAL : "";
   }
   /**
-   * @apilevel internal
+	 * Defer pretty printing to superclass.
+	 * @ast method 
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:112
    */
-  protected boolean isZero_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected boolean isZero_value;
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:147
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean isZero() {
-    if(isZero_computed) {
-      return isZero_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    isZero_value = isZero_compute();
-      if(isFinal && num == state().boundariesCrossed) isZero_computed = true;
-    return isZero_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isZero_compute() {
-    String s = getLITERAL();
-    for(int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
-      if(c == 'E'  || c == 'e')
-        break;
-      if(Character.isDigit(c) && c != '0') {
-        return false;
-      }
-    }
-    return true;
-  }
-  /**
-   * @apilevel internal
-   */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:292
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {
-    try {
-      return Constant.create(Double.parseDouble(getLITERAL()));
-    }
-    catch (NumberFormatException e) {
-      Constant c = Constant.create(0.0d);
-      c.error = true;
-      return c;
-    }
-  }
+    public void toString(StringBuffer s) {
+		super.toString(s);
+	}
   /**
    * @apilevel internal
    */
@@ -319,6 +237,82 @@ public class DoubleLiteral extends Literal implements Cloneable {
    * @apilevel internal
    */
   private TypeDecl type_compute() {  return typeDouble();  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean isZero_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected boolean isZero_value;
+  /**
+	 * @return true if this floating point literal is equivalent to a zero literal
+	 * @attribute syn
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:36
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean isZero() {
+    if(isZero_computed) {
+      return isZero_value;
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    isZero_value = isZero_compute();
+      if(isFinal && num == state().boundariesCrossed) isZero_computed = true;
+    return isZero_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private boolean isZero_compute() {
+		for(int i = 0; i < digits.length(); i++) {
+			char c = digits.charAt(i);
+			if (c == 'e' || c == 'p') break;
+			if (c != '0' && c != '.') {
+				return false;
+			}
+		}
+		return true;
+	}
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
+   */
+  public Constant constant() {
+    ASTNode$State state = state();
+    try {
+		try {
+			return Constant.create(Double.parseDouble(getDigits()));
+		}
+		catch (NumberFormatException e) {
+			Constant c = Constant.create(0.0d);
+			c.error = true;
+			return c;
+		}
+	}
+    finally {
+    }
+  }
+  /**
+	 * Utility attribute for literal rewriting.
+	 * Any of the NumericLiteral subclasses have already
+	 * been rewritten and/or parsed, and should not be
+	 * rewritten again.
+	 *
+	 * @return true if this literal is a "raw", not-yet-parsed NumericLiteral
+	 * @attribute syn
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:334
+   */
+  public boolean needsRewrite() {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */

@@ -224,7 +224,7 @@ public abstract class Binary extends Expr implements Cloneable {
   /**
    * @ast method 
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:516
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:370
    */
   private TypeDecl refined_ConstantExpression_Binary_binaryNumericPromotedType()
 {
@@ -266,7 +266,7 @@ public abstract class Binary extends Expr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:491
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:345
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isConstant() {
@@ -327,7 +327,7 @@ public abstract class Binary extends Expr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:514
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:368
    */
   public Expr left() {
     ASTNode$State state = state();
@@ -338,7 +338,7 @@ public abstract class Binary extends Expr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:515
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:369
    */
   public Expr right() {
     ASTNode$State state = state();
@@ -349,7 +349,7 @@ public abstract class Binary extends Expr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:516
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:370
    */
   public TypeDecl binaryNumericPromotedType() {
     ASTNode$State state = state();

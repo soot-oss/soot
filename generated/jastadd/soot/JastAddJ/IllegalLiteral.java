@@ -20,11 +20,14 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 /**
- * @production BitNotExpr : {@link Unary};
+ * Literal produced when the compiler tries to parse
+ * a malformatted NumericLiteral.
+ * This literal kind has an associated error message.
+ * @production IllegalLiteral : {@link Literal};
  * @ast node
- * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:141
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:11
  */
-public class BitNotExpr extends Unary implements Cloneable {
+public class IllegalLiteral extends Literal implements Cloneable {
   /**
    * @apilevel low-level
    */
@@ -43,8 +46,8 @@ public class BitNotExpr extends Unary implements Cloneable {
    * @apilevel internal
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public BitNotExpr clone() throws CloneNotSupportedException {
-    BitNotExpr node = (BitNotExpr)super.clone();
+  public IllegalLiteral clone() throws CloneNotSupportedException {
+    IllegalLiteral node = (IllegalLiteral)super.clone();
     node.type_computed = false;
     node.type_value = null;
     node.in$Circle(false);
@@ -55,9 +58,9 @@ public class BitNotExpr extends Unary implements Cloneable {
    * @apilevel internal
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public BitNotExpr copy() {
+  public IllegalLiteral copy() {
       try {
-        BitNotExpr node = (BitNotExpr)clone();
+        IllegalLiteral node = (IllegalLiteral)clone();
         if(children != null) node.children = (ASTNode[])children.clone();
         return node;
       } catch (CloneNotSupportedException e) {
@@ -72,9 +75,9 @@ public class BitNotExpr extends Unary implements Cloneable {
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public BitNotExpr fullCopy() {
+  public IllegalLiteral fullCopy() {
     try {
-      BitNotExpr tree = (BitNotExpr) clone();
+      IllegalLiteral tree = (IllegalLiteral) clone();
       tree.setParent(null);// make dangling
       if (children != null) {
         tree.children = new ASTNode[children.length];
@@ -94,35 +97,26 @@ public class BitNotExpr extends Unary implements Cloneable {
     }
   }
   /**
-   * @ast method 
-   * @aspect TypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:281
+	 * Error processing for literals.
+	 * Include the token range from parsing.
+	 * @ast method 
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:469
    */
-  public void typeCheck() {
-    if(!getOperand().type().isIntegralType())
-      error("unary ~ only operates on integral types");
-  }
-  /**
-   * @ast method 
-   * @aspect Expressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Expressions.jrag:696
-   */
-  public soot.Value eval(Body b) {
-    soot.Value v = IntType.emitConstant(-1);
-    soot.Local result = asLocal(b,
-      b.newXorExpr(
-        asImmediate(b, typeInt().emitCastTo(b, v, type(), this)),
-        asImmediate(b, getOperand().eval(b)),
-        this
-      )
-    );
-    return result;
-  }
+  public void collectErrors() {
+		int line = getLine(LITERALstart);
+		int column = getColumn(LITERALstart);
+		int endLine = getLine(LITERALend);
+		int endColumn = getColumn(LITERALend);
+		compilationUnit().errors.add(new Problem(sourceFile(),
+					getLITERAL(), line, column, endLine, endColumn,
+					Problem.Severity.ERROR, Problem.Kind.LEXICAL));
+	}
   /**
    * @ast method 
    * 
    */
-  public BitNotExpr() {
+  public IllegalLiteral() {
     super();
 
 
@@ -136,14 +130,20 @@ public class BitNotExpr extends Unary implements Cloneable {
    * 
    */
   public void init$Children() {
-    children = new ASTNode[1];
   }
   /**
    * @ast method 
    * 
    */
-  public BitNotExpr(Expr p0) {
-    setChild(p0, 0);
+  public IllegalLiteral(String p0) {
+    setLITERAL(p0);
+  }
+  /**
+   * @ast method 
+   * 
+   */
+  public IllegalLiteral(beaver.Symbol p0) {
+    setLITERAL(p0);
   }
   /**
    * @apilevel low-level
@@ -151,7 +151,7 @@ public class BitNotExpr extends Unary implements Cloneable {
    * 
    */
   protected int numChildren() {
-    return 1;
+    return 0;
   }
   /**
    * @apilevel internal
@@ -162,68 +162,37 @@ public class BitNotExpr extends Unary implements Cloneable {
     return false;
   }
   /**
-   * Replaces the Operand child.
-   * @param node The new node to replace the Operand child.
+   * Replaces the lexeme LITERAL.
+   * @param value The new value for the lexeme LITERAL.
    * @apilevel high-level
    * @ast method 
    * 
    */
-  public void setOperand(Expr node) {
-    setChild(node, 0);
+  public void setLITERAL(String value) {
+    tokenString_LITERAL = value;
   }
   /**
-   * Retrieves the Operand child.
-   * @return The current node used as the Operand child.
+   * JastAdd-internal setter for lexeme LITERAL using the Beaver parser.
+   * @apilevel internal
+   * @ast method 
+   * 
+   */
+  public void setLITERAL(beaver.Symbol symbol) {
+    if(symbol.value != null && !(symbol.value instanceof String))
+      throw new UnsupportedOperationException("setLITERAL is only valid for String lexemes");
+    tokenString_LITERAL = (String)symbol.value;
+    LITERALstart = symbol.getStart();
+    LITERALend = symbol.getEnd();
+  }
+  /**
+   * Retrieves the value for the lexeme LITERAL.
+   * @return The value for the lexeme LITERAL.
    * @apilevel high-level
    * @ast method 
    * 
    */
-  public Expr getOperand() {
-    return (Expr)getChild(0);
-  }
-  /**
-   * Retrieves the Operand child.
-   * <p><em>This method does not invoke AST transformations.</em></p>
-   * @return The current node used as the Operand child.
-   * @apilevel low-level
-   * @ast method 
-   * 
-   */
-  public Expr getOperandNoTransform() {
-    return (Expr)getChildNoTransform(0);
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
-   */
-  public Constant constant() {
-    ASTNode$State state = state();
-    try {  return type().bitNot(getOperand().constant());  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
-   */
-  public boolean isConstant() {
-    ASTNode$State state = state();
-    try {  return getOperand().isConstant();  }
-    finally {
-    }
-  }
-  /**
-   * @attribute syn
-   * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:376
-   */
-  public String printPreOp() {
-    ASTNode$State state = state();
-    try {  return "~";  }
-    finally {
-    }
+  public String getLITERAL() {
+    return tokenString_LITERAL != null ? tokenString_LITERAL : "";
   }
   /**
    * @apilevel internal
@@ -234,9 +203,11 @@ public class BitNotExpr extends Unary implements Cloneable {
    */
   protected TypeDecl type_value;
   /**
-   * @attribute syn
-   * @aspect TypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:317
+	 * The type of an IllegalLiteral does not matter,
+	 * as it is only a placeholder literal for error messages.
+	 * @attribute syn
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:457
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
@@ -253,7 +224,7 @@ public class BitNotExpr extends Unary implements Cloneable {
   /**
    * @apilevel internal
    */
-  private TypeDecl type_compute() {  return getOperand().type().unaryNumericPromotion();  }
+  private TypeDecl type_compute() {  return unknownType();  }
   /**
    * @apilevel internal
    */

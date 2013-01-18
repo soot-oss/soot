@@ -1266,6 +1266,24 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
    * @apilevel internal
    */
   private ArrayList exceptionRanges_compute() {  return new ArrayList();  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {
+		if (getBlock().modifiedInScope(var))
+			return true;
+		for (CatchClause cc : getCatchClauseList())
+			if (cc.modifiedInScope(var))
+				return true;
+		return hasFinally() && getFinally().modifiedInScope(var);
+	}
+    finally {
+    }
+  }
   protected java.util.Map handlesException_TypeDecl_values;
   /**
    * @attribute inh
@@ -1506,6 +1524,41 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
       return exceptionRanges();
     }
     else {      return getParent().Define_ArrayList_exceptionRanges(this, caller);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:138
+   * @apilevel internal
+   */
+  public Collection<TypeDecl> Define_Collection_TypeDecl__caughtExceptions(ASTNode caller, ASTNode child) {
+    if(caller == getCatchClauseListNoTransform()) { 
+   int index = caller.getIndexOfChild(child);
+{
+		Collection<TypeDecl> excp = new HashSet<TypeDecl>();
+		getBlock().collectExceptions(excp, this);
+		Collection<TypeDecl> caught = new LinkedList<TypeDecl>();
+		Iterator<TypeDecl> iter = excp.iterator();
+		while (iter.hasNext()) {
+			TypeDecl exception = iter.next();
+			// this catch clause handles the exception
+			if (!getCatchClause(index).handles(exception))
+				continue;
+			// no previous catch clause handles the exception
+			boolean already = false;
+			for (int i = 0; i < index; ++i) {
+				if (getCatchClause(i).handles(exception)) {
+					already = true;
+					break;
+				}
+			}
+			if (!already) {
+				caught.add(exception);
+			}
+		}
+		return caught;
+	}
+}
+    else {      return getParent().Define_Collection_TypeDecl__caughtExceptions(this, caller);
     }
   }
   /**

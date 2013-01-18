@@ -118,6 +118,15 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
   }
   /**
    * @ast method 
+   * @aspect UncheckedConversion
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:30
+   */
+  public void checkWarnings() {
+    if (!withinSuppressWarnings("unchecked"))
+      checkUncheckedConversion(getSource().type(), getDest().type());
+  }
+  /**
+   * @ast method 
    * 
    */
   public AssignSimpleExpr() {
@@ -243,6 +252,17 @@ public class AssignSimpleExpr extends AssignExpr implements Cloneable {
     try {  return getSource().type();  }
     finally {
     }
+  }
+  /**
+   * @attribute inh
+   * @aspect SuppressWarnings
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SuppressWarnings.jrag:15
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean withinSuppressWarnings(String s) {
+    ASTNode$State state = state();
+    boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
+    return withinSuppressWarnings_String_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:17

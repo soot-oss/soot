@@ -1359,6 +1359,28 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     }
   }
   /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:69
+   * @apilevel internal
+   */
+  public ClassInstanceExpr Define_ClassInstanceExpr_getClassInstanceExpr(ASTNode caller, ASTNode child) {
+    if(caller == getAccessNoTransform()) {
+      return this;
+    }
+    else {      return getParent().Define_ClassInstanceExpr_getClassInstanceExpr(this, caller);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:457
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isAnonymousDecl(ASTNode caller, ASTNode child) {
+    if(caller == getAccessNoTransform()) {
+      return hasTypeDecl();
+    }
+    else {      return getParent().Define_boolean_isAnonymousDecl(this, caller);
+    }
+  }
+  /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {

@@ -918,6 +918,18 @@ public class Modifiers extends ASTNode<ASTNode> implements Cloneable {
     }
   }
   /**
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:49
+   */
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return annotation(lookupType("java.lang", "SafeVarargs")) != null;  }
+    finally {
+    }
+  }
+  /**
    * @attribute inh
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:358
