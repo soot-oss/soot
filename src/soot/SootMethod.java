@@ -265,7 +265,7 @@ public class SootMethod
     /**
      * Returns a read-only list of the parameter types of this method.
      */
-    public List getParameterTypes() {
+    public List<Type> getParameterTypes() {
         return parameterTypes;
     }
 
