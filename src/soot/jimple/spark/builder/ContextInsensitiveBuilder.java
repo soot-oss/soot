@@ -88,8 +88,10 @@ public class ContextInsensitiveBuilder {
 	}
         while(callEdges.hasNext()) {
             Edge e = (Edge) callEdges.next();
-            MethodPAG.v( pag, e.tgt() ).addToPAG(null);
-            pag.addCallTarget( e );
+            if(!e.getTgt().method().getDeclaringClass().isPhantom()) {
+	            MethodPAG.v( pag, e.tgt() ).addToPAG(null);
+	            pag.addCallTarget( e );
+            }
         }
 
         if( pag.getOpts().verbose() ) {
