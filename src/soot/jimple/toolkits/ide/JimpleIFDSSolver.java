@@ -36,45 +36,46 @@ import soot.Unit;
 import com.google.common.collect.Table.Cell;
 
 
-public class JimpleIFDSSolver<D,I extends InterproceduralCFG<Unit,SootMethod>> extends IFDSSolver<Unit, D, SootMethod, I> {
+public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>> extends IFDSSolver<Unit, D, SootMethod, I> {
 
 	private final boolean DUMP_RESULTS;
 
-	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,I> problem) {
+	public JimpleIFDSSolver(IFDSTabulationProblem<Unit, D, SootMethod, I> problem) {
 		this(problem,false,true);
 	}
-	
+
 	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,I> problem, boolean dumpResults, boolean autoZero) {
 		super(problem,autoZero);
 		this.DUMP_RESULTS = dumpResults;
 	}
-	
+
 	@Override
 	public void solve(int numThreads) {
 		super.solve(numThreads);
-		if(DUMP_RESULTS)
+		if (DUMP_RESULTS)
 			dumpResults();
 	}
-	
+
 	public void dumpResults() {
 		try {
-			PrintWriter out = new PrintWriter(new FileOutputStream("ideSolverDump"+System.currentTimeMillis()+".csv"));
-			List<String> res = new ArrayList<String>();
-			for(Cell<Unit, D, ?> entry: val.cellSet()) {
+			PrintWriter out = new PrintWriter(new FileOutputStream("ideSolverDump" + System.currentTimeMillis() + ".csv"));
+			List<SortableCSVString> res = new ArrayList<SortableCSVString>();
+			for (Cell<Unit, D, ?> entry : val.cellSet()) {
 				SootMethod methodOf = (SootMethod) icfg.getMethodOf(entry.getRowKey());
 				PatchingChain<Unit> units = methodOf.getActiveBody().getUnits();
-				int i=0;
+				int i = 0;
 				for (Unit unit : units) {
-					if(unit==entry.getRowKey())
+					if (unit == entry.getRowKey())
 						break;
 					i++;
 				}
-
-				res.add(methodOf+";"+entry.getRowKey()+"@"+i+";"+entry.getColumnKey()+";"+entry.getValue());
+				
+				res.add(new SortableCSVString(methodOf + ";" + entry.getRowKey() + "@" + i + ";" + entry.getColumnKey() + ";" + entry.getValue(), i));
 			}
 			Collections.sort(res);
-			for (String string : res) {
-				out.println(string);
+			// replacement is bugfix for excel view:
+			for (SortableCSVString string : res) {
+				out.println(string.value.replace("\"", "'"));
 			}
 			out.flush();
 			out.close();
@@ -82,5 +83,5 @@ public class JimpleIFDSSolver<D,I extends InterproceduralCFG<Unit,SootMethod>> e
 			e.printStackTrace();
 		}
 	}
-	
+
 }
