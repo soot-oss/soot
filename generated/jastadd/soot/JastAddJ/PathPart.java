@@ -119,7 +119,7 @@ public class PathPart extends java.lang.Object {
           u.setRelativeName(relativeName);
           u.setFromSource(false);
                               
-          program.addCompilationUnit(u);
+//          program.addCompilationUnit(u);
           
           is.close();
           is = null;
@@ -144,7 +144,7 @@ public class PathPart extends java.lang.Object {
           u.setRelativeName(relativeName);
           u.setFromSource(true);
 
-          program.addCompilationUnit(u);
+//          program.addCompilationUnit(u);
 
           if(program.options().verbose())
             System.out.println("in " + (System.currentTimeMillis() - startTime) + " ms");
