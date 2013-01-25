@@ -65,6 +65,7 @@ import soot.util.StringNumberer;
 
 import org.xmlpull.v1.XmlPullParser;
 import android.content.res.AXmlResourceParser;
+import soot.entrypoints.MainDetector;
 import test.AXMLPrinter;
 
 /** Manages the SootClasses of the application being analyzed. */
@@ -1395,25 +1396,27 @@ public class Scene  //extends AbstractHost
         if( Options.v().main_class() != null
                 && Options.v().main_class().length() > 0 ) {
             setMainClass(getSootClass(Options.v().main_class()));
-        } else {             	
-        	// try to infer a main class from the command line if none is given 
-        	for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
-                    SootClass c = getSootClass(classIter.next());
-                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
-                    {
+        } else {
+            
+            final MainDetector detector = new MainDetector();
+            
+            // try to infer a main class from the command line if none is given 
+            for(String cN: Options.v().classes()){
+                SootClass c = getSootClass(cN);
+                for (SootMethod sm : c.getMethods())
+                    if (detector.isEntryPoint(sm)){
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);
                         return;
                     }
             }
-        	
-        	// try to infer a main class from the usual classpath if none is given 
-        	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
-                    SootClass c = (SootClass) classIter.next();
-                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
-                    {
-                        G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
-                        setMainClass(c);
+            
+            // try to infer a main class from the usual classpath if none is given 
+            for (SootClass sc : getApplicationClasses()){
+                    for (SootMethod sm : sc.getMethods())
+                    if (detector.isEntryPoint(sm)){
+                        G.v().out.println("No main class given. Inferred '"+sc.getName()+"' as main class.");					
+                        setMainClass(sc);
                         return;
                     }
             }
