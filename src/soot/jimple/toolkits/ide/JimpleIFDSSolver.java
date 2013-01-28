@@ -41,11 +41,11 @@ public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>>
 	private final boolean DUMP_RESULTS;
 
 	public JimpleIFDSSolver(IFDSTabulationProblem<Unit, D, SootMethod, I> problem) {
-		this(problem,false,true);
+		this(problem,false);
 	}
 
-	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,I> problem, boolean dumpResults, boolean autoZero) {
-		super(problem,autoZero);
+	public JimpleIFDSSolver(IFDSTabulationProblem<Unit,D,SootMethod,I> problem, boolean dumpResults) {
+		super(problem);
 		this.DUMP_RESULTS = dumpResults;
 	}
 
