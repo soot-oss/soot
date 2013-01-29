@@ -50,8 +50,8 @@ public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>>
 	}
 
 	@Override
-	public void solve(int numThreads) {
-		super.solve(numThreads);
+	public void solve() {
+		super.solve();
 		if (DUMP_RESULTS)
 			dumpResults();
 	}
