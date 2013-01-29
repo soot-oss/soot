@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2005 Jennifer Lhotak
+ * Copyright (C) 2013 Tata Consultancy Services & École Polytechnique de Montréal
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,13 +22,16 @@
  * Modified by the Sable Research Group and others 1997-1999.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ * 
+ * Modified by Marc-André Laverdière-Papineau in 2013
+ * 
  */
-
 package soot.tagkit;
 import java.util.*;
 
 
-/** Represents the annotation attribute attatched to a class, method, field,
+/** 
+ * Represents the annotation attribute attached to a class, method, field,
  * method param - they could have many annotations each
  * for Java 1.5.
  */
@@ -57,23 +61,36 @@ public class AnnotationTag implements Tag
     // should probably make a bunch of subclasses for all the 
     // different kinds - with second level for the constant kinds
  
+    /**
+     * The type
+     */
     private String type;
-    private int numElems = 0;
-    private ArrayList<AnnotationElem> elems;
     
-    /*public AnnotationTag(int vis, int numElems){
-        this.visibility = vis;
-        this.numElems = numElems;
-    }*/
+    /**
+     * The annotations
+     */
+    private List<AnnotationElem> elems;
     
-    public AnnotationTag(String type, int numElems){
-        this.type = type;
-        this.numElems = numElems;
+    public AnnotationTag(String type){
+      this(type, new ArrayList<AnnotationElem>());
+    }
+    public AnnotationTag(String type, Collection<AnnotationElem> elements){
+      this.type = type;
+      if (elements instanceof List<?>)
+        this.elems = (List<AnnotationElem>)elements;
+      else
+        this.elems = new ArrayList<AnnotationElem>(elements);
+    }
+    
+    @Deprecated
+    public AnnotationTag(String type, int numElem){
+      this.type = type;
+      this.elems = new ArrayList<AnnotationElem>(numElem);
     }
     
     // should also print here number of annotations and perhaps the annotations themselves
     public String toString() {
-        StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+numElems+" elems: ");
+        StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+elems.size()+" elems: ");
         if (elems != null){
             Iterator<AnnotationElem> it = elems.iterator();
             while (it.hasNext()){
@@ -98,8 +115,12 @@ public class AnnotationTag implements Tag
         return type;
     }
     
+    /**
+     * @return the number of elements
+     */
+    @Deprecated
     public int getNumElems(){
-        return numElems;
+        return elems.size();
     }
     
     /** Returns the tag raw data. */
@@ -107,19 +128,37 @@ public class AnnotationTag implements Tag
         throw new RuntimeException( "AnnotationTag has no value for bytecode" );
     }
 
+    /**
+     * Adds one element to the list
+     * @param elem the element
+     */
     public void addElem(AnnotationElem elem){
-        if (elems == null){
-            elems = new ArrayList<AnnotationElem>();
-        }
         elems.add(elem);
     }
     
-    public void setElems(ArrayList<AnnotationElem> list){
+    /**
+     * Overwrites the elements stored previously
+     * @param list the new list of elements
+     */
+    public void setElems(List<AnnotationElem> list){
         this.elems = list;
     }
 
+    /**
+     * Gets the ith element
+     * @param i the element to retrieve
+     * @return whichever element is at this index
+     */
+    @Deprecated
     public AnnotationElem getElemAt(int i){
         return elems.get(i);
+    }
+    
+    /**
+     * @return an immutable collection of the elements
+     */
+    public Collection<AnnotationElem> getElems(){
+      return Collections.unmodifiableCollection(elems);
     }
 }
 
