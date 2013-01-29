@@ -176,14 +176,14 @@ public class Annotation extends Modifier implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:305
    */
   public void appendAsAttributeTo(Collection list) {
-      soot.tagkit.AnnotationTag tag = new soot.tagkit.AnnotationTag(decl().typeDescriptor(), getNumElementValuePair());
+    
       ArrayList elements = new ArrayList(getNumElementValuePair());
       for(int i = 0; i < getNumElementValuePair(); i++) {
         String name = getElementValuePair(i).getName();
         ElementValue value = getElementValuePair(i).getElementValue();
         value.appendAsAttributeTo(elements, name);
       }
-      tag.setElems(elements);
+      soot.tagkit.AnnotationTag tag = new soot.tagkit.AnnotationTag(decl().typeDescriptor(), elements);
       list.add(tag);
   }
   /**

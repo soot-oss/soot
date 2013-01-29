@@ -225,8 +225,8 @@ public abstract class AbstractJasminClass
                 AnnotationTag annot = it.next();
                 sb.append(".annotation ");
                 sb.append(soot.util.StringTools.getQuotedStringOf(annot.getType())+"\n");
-                for (int i = 0; i < annot.getNumElems(); i++){
-                    sb.append(getElemAttr(annot.getElemAt(i)));
+                for (AnnotationElem ae : annot.getElems()){
+                  sb.append(getElemAttr(ae));
                 }
                 sb.append(".end .annotation\n");
             }
@@ -364,8 +364,8 @@ public abstract class AbstractJasminClass
                         AnnotationTag annot = ((AnnotationAnnotationElem)elem).getValue();
                         result.append(".annotation ");
                         result.append(soot.util.StringTools.getQuotedStringOf(annot.getType())+"\n");
-                        for (int i = 0; i < annot.getNumElems(); i++){
-                            result.append(getElemAttr(annot.getElemAt(i)));
+                        for (AnnotationElem ae : annot.getElems()){
+                          result.append(getElemAttr(ae));
                         }
                         result.append(".end .annotation\n");
                         result.append(".end .annot_elem\n");

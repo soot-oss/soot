@@ -985,9 +985,8 @@ swtch:
             String ref = annotType.substring(1, annotType.length()-1);
             ref = ref.replace('/', '.');
             references.add(ref);
-            int numElems = annot.num_element_value_pairs;
-            AnnotationTag annotTag = new AnnotationTag(annotType, numElems);
-            annotTag.setElems(createElementTags(numElems, coffiClass, annot.element_value_pairs));
+            AnnotationTag annotTag = new AnnotationTag(annotType, 
+                createElementTags(annot.num_element_value_pairs, coffiClass, annot.element_value_pairs));
             tag.addAnnotation(annotTag);
         }
     }
@@ -1068,9 +1067,8 @@ swtch:
                 annotation_element_value aev = (annotation_element_value)ev;
                 annotation annot = aev.annotation_value;
                 String annotType = ((CONSTANT_Utf8_info)coffiClass.constant_pool[annot.type_index]).convert();
-                int numElems = annot.num_element_value_pairs;
-                AnnotationTag annotTag = new AnnotationTag(annotType, numElems);
-                annotTag.setElems(createElementTags(numElems, coffiClass, annot.element_value_pairs));
+                AnnotationTag annotTag = new AnnotationTag(annotType, 
+                    createElementTags(annot.num_element_value_pairs, coffiClass, annot.element_value_pairs));
                 
                 AnnotationAnnotationElem elem = new AnnotationAnnotationElem(annotTag, kind, elemName);
                 list.add(elem);
