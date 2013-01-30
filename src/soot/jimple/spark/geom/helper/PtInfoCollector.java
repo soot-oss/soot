@@ -91,7 +91,7 @@ public class PtInfoCollector
 		
 		if ( isDump ) {
 			try {
-				final PrintWriter file = new PrintWriter( geom.createOutputFile("basePointers.txt") );
+				final PrintWriter file = new PrintWriter( geom.createOutputFile("geomBasePointers.txt") );
 				
 				for ( CallsiteContextVar cvar : ContextTranslator.pts_1cfa_map ) {
 					IVarAbstraction pn = geom.findInternalNode( cvar.var );

@@ -583,11 +583,13 @@ public class GeomPointsTo extends PAG
 						long start = rGen.nextLong();
 						if ( start < 0 ) start = -start;
 						if ( start > Constants.MAX_CONTEXTS - max_context_size_block[i] ) {
+							// We use the last max_context_size_block[i] bits for this mapping
 							start = Constants.MAX_CONTEXTS - max_context_size_block[i];
 							max_context_size_block[j] = Constants.MAX_CONTEXTS;
 						}
 						else {
 							if ( max_context_size_block[j] < start + max_context_size_block[i] )
+								// We compensate the difference
 								max_context_size_block[j] = start + max_context_size_block[i];
 						}
 						p.map_offset = start + 1;

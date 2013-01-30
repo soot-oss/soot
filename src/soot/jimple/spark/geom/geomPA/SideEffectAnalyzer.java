@@ -302,7 +302,7 @@ public class SideEffectAnalyzer
 	public void dumpSideEffectMatrix()
 	{
 		try {
-			final PrintWriter file = new PrintWriter( ptsProvider.createOutputFile("modref.txt") );
+			final PrintWriter file = new PrintWriter( ptsProvider.createOutputFile("geomModRef.txt") );
 			
 			// Rows and columns of the matrix
 			file.println( allModRefSets.size() + " " + selfMap.size() );

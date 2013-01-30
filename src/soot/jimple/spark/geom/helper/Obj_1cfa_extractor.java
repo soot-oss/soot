@@ -43,8 +43,7 @@ public class Obj_1cfa_extractor extends PtSensVisitor
 				long rangeR = rangeL + ptsProvider.max_context_size_block[e.s];
 				
 				// We compute if [rangeL, rangeR) intersects with [objL, objR) 
-				if ( (L <= rangeL && rangeL < R) ||
-						(rangeL <= L && L < rangeR) ) {
+				if ( L < rangeR && rangeL < R ) {
 					cobj.context = e;
 					outList.add( all_objs.searchFor(cobj) );
 				}
