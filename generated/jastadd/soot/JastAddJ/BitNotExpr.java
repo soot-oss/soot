@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production BitNotExpr : {@link Unary};
  * @ast node
- * @declaredat java.ast:138
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:141
  */
 public class BitNotExpr extends Unary implements Cloneable {
   /**
@@ -65,18 +66,33 @@ public class BitNotExpr extends Unary implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BitNotExpr fullCopy() {
-    BitNotExpr res = (BitNotExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      BitNotExpr tree = (BitNotExpr) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect TypeCheck
@@ -104,7 +120,7 @@ public class BitNotExpr extends Unary implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public BitNotExpr() {
     super();
@@ -112,8 +128,19 @@ public class BitNotExpr extends Unary implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public BitNotExpr(Expr p0) {
     setChild(p0, 0);
@@ -121,7 +148,7 @@ public class BitNotExpr extends Unary implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -129,33 +156,38 @@ public class BitNotExpr extends Unary implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Operand
+   * Replaces the Operand child.
+   * @param node The new node to replace the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setOperand(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Operand
+   * Retrieves the Operand child.
+   * @return The current node used as the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getOperand() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Operand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Operand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getOperandNoTransform() {
     return (Expr)getChildNoTransform(0);
@@ -163,48 +195,36 @@ public class BitNotExpr extends Unary implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:115
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-      ASTNode$State state = state();
-    Constant constant_value = constant_compute();
-    return constant_value;
+    ASTNode$State state = state();
+    try {  return type().bitNot(getOperand().constant());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {  return type().bitNot(getOperand().constant());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:489
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:336
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isConstant() {
-      ASTNode$State state = state();
-    boolean isConstant_value = isConstant_compute();
-    return isConstant_value;
+    ASTNode$State state = state();
+    try {  return getOperand().isConstant();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isConstant_compute() {  return getOperand().isConstant();  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:381
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:376
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printPreOp() {
-      ASTNode$State state = state();
-    String printPreOp_value = printPreOp_compute();
-    return printPreOp_value;
+    ASTNode$State state = state();
+    try {  return "~";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printPreOp_compute() {  return "~";  }
   /**
    * @apilevel internal
    */
@@ -223,11 +243,11 @@ public class BitNotExpr extends Unary implements Cloneable {
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**

@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production OrLogicalExpr : {@link LogicalExpr};
  * @ast node
- * @declaredat java.ast:170
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:173
  */
 public class OrLogicalExpr extends LogicalExpr implements Cloneable {
   /**
@@ -73,18 +74,33 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public OrLogicalExpr fullCopy() {
-    OrLogicalExpr res = (OrLogicalExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      OrLogicalExpr tree = (OrLogicalExpr) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect BooleanExpressions
@@ -102,7 +118,7 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public OrLogicalExpr() {
     super();
@@ -110,8 +126,19 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public OrLogicalExpr(Expr p0, Expr p1) {
     setChild(p0, 0);
@@ -120,7 +147,7 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -128,59 +155,69 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for LeftOperand
+   * Replaces the LeftOperand child.
+   * @param node The new node to replace the LeftOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setLeftOperand(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for LeftOperand
+   * Retrieves the LeftOperand child.
+   * @return The current node used as the LeftOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getLeftOperand() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the LeftOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the LeftOperand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getLeftOperandNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
   /**
-   * Setter for RightOperand
+   * Replaces the RightOperand child.
+   * @param node The new node to replace the RightOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setRightOperand(Expr node) {
     setChild(node, 1);
   }
   /**
-   * Getter for RightOperand
+   * Retrieves the RightOperand child.
+   * @return The current node used as the RightOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getRightOperand() {
     return (Expr)getChild(1);
   }
   /**
+   * Retrieves the RightOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the RightOperand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getRightOperandNoTransform() {
     return (Expr)getChildNoTransform(1);
@@ -188,18 +225,14 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:538
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-      ASTNode$State state = state();
-    Constant constant_value = constant_compute();
-    return constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(left().constant().booleanValue() || right().constant().booleanValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {  return Constant.create(left().constant().booleanValue() || right().constant().booleanValue());  }
   protected java.util.Map isDAafterTrue_Variable_values;
   /**
    * @attribute syn
@@ -213,11 +246,11 @@ public class OrLogicalExpr extends LogicalExpr implements Cloneable {
     if(isDAafterTrue_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafterTrue_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafterTrue_Variable_value = isDAafterTrue_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafterTrue_Variable_values.put(_parameters, Boolean.valueOf(isDAafterTrue_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafterTrue_Variable_values.put(_parameters, Boolean.valueOf(isDAafterTrue_Variable_value));
     return isDAafterTrue_Variable_value;
   }
   /**
@@ -237,11 +270,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafterTrue_Variable_values.pu
     if(isDAafterFalse_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafterFalse_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafterFalse_Variable_value = isDAafterFalse_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafterFalse_Variable_values.put(_parameters, Boolean.valueOf(isDAafterFalse_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafterFalse_Variable_values.put(_parameters, Boolean.valueOf(isDAafterFalse_Variable_value));
     return isDAafterFalse_Variable_value;
   }
   /**
@@ -261,11 +294,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafterFalse_Variable_values.p
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -275,38 +308,30 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:807
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:702
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafterTrue(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafterTrue_Variable_value = isDUafterTrue_compute(v);
-    return isDUafterTrue_Variable_value;
+    ASTNode$State state = state();
+    try {  return getLeftOperand().isDUafterTrue(v) && getRightOperand().isDUafterTrue(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafterTrue_compute(Variable v) {  return getLeftOperand().isDUafterTrue(v) && getRightOperand().isDUafterTrue(v);  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:808
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:703
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafterFalse(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafterFalse_Variable_value = isDUafterFalse_compute(v);
-    return isDUafterFalse_Variable_value;
+    ASTNode$State state = state();
+    try {  return getRightOperand().isDUafterFalse(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafterFalse_compute(Variable v) {  return getRightOperand().isDUafterFalse(v);  }
   protected java.util.Map isDUafter_Variable_values;
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:811
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:812
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -315,11 +340,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -329,48 +354,36 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:413
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:400
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printOp() {
-      ASTNode$State state = state();
-    String printOp_value = printOp_compute();
-    return printOp_value;
+    ASTNode$State state = state();
+    try {  return " || ";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printOp_compute() {  return " || ";  }
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:85
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:82
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean canBeTrue() {
-      ASTNode$State state = state();
-    boolean canBeTrue_value = canBeTrue_compute();
-    return canBeTrue_value;
+    ASTNode$State state = state();
+    try {  return getLeftOperand().canBeTrue() || getRightOperand().canBeTrue();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean canBeTrue_compute() {  return getLeftOperand().canBeTrue() || getRightOperand().canBeTrue();  }
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:95
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:92
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean canBeFalse() {
-      ASTNode$State state = state();
-    boolean canBeFalse_value = canBeFalse_compute();
-    return canBeFalse_value;
+    ASTNode$State state = state();
+    try {  return getLeftOperand().canBeFalse() && getRightOperand().canBeFalse();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean canBeFalse_compute() {  return getLeftOperand().canBeFalse() && getRightOperand().canBeFalse();  }
   /**
    * @apilevel internal
    */
@@ -389,11 +402,11 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(next_test_label_computed) {
       return next_test_label_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     next_test_label_value = next_test_label_compute();
-if(isFinal && num == state().boundariesCrossed) next_test_label_computed = true;
+      if(isFinal && num == state().boundariesCrossed) next_test_label_computed = true;
     return next_test_label_value;
   }
   /**
@@ -408,23 +421,25 @@ if(isFinal && num == state().boundariesCrossed) next_test_label_computed = true;
     if(caller == getRightOperandNoTransform()) {
       return getLeftOperand().isDAafterFalse(v);
     }
-    if(caller == getLeftOperandNoTransform()) {
+    else if(caller == getLeftOperandNoTransform()) {
       return isDAbefore(v);
     }
-    return super.Define_boolean_isDAbefore(caller, child, v);
+    else {      return super.Define_boolean_isDAbefore(caller, child, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:810
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:811
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
     if(caller == getRightOperandNoTransform()) {
       return getLeftOperand().isDUafterFalse(v);
     }
-    if(caller == getLeftOperandNoTransform()) {
+    else if(caller == getLeftOperandNoTransform()) {
       return isDUbefore(v);
     }
-    return super.Define_boolean_isDUbefore(caller, child, v);
+    else {      return super.Define_boolean_isDUbefore(caller, child, v);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:79
@@ -434,10 +449,11 @@ if(isFinal && num == state().boundariesCrossed) next_test_label_computed = true;
     if(caller == getRightOperandNoTransform()) {
       return false_label();
     }
-    if(caller == getLeftOperandNoTransform()) {
+    else if(caller == getLeftOperandNoTransform()) {
       return next_test_label();
     }
-    return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    else {      return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:80
@@ -447,10 +463,11 @@ if(isFinal && num == state().boundariesCrossed) next_test_label_computed = true;
     if(caller == getRightOperandNoTransform()) {
       return true_label();
     }
-    if(caller == getLeftOperandNoTransform()) {
+    else if(caller == getLeftOperandNoTransform()) {
       return true_label();
     }
-    return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+    else {      return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+    }
   }
   /**
    * @apilevel internal

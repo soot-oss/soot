@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,14 +19,14 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
  * 7.5.3 A single-static-import declaration imports all accessible (\u00ac\u00df6.6) static members
  * with a given simple name from a type. This makes these static members available
  * under their simple name in the class and interface declarations of the
  * compilation unit in which the single-static import declaration appears.
+ * @production SingleStaticImportDecl : {@link StaticImportDecl} ::= <span class="component">&lt;ID:String&gt;</span>;
  * @ast node
- * @declaredat StaticImports.ast:12
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/StaticImports.ast:12
  */
 public class SingleStaticImportDecl extends StaticImportDecl implements Cloneable {
   /**
@@ -65,18 +66,33 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SingleStaticImportDecl fullCopy() {
-    SingleStaticImportDecl res = (SingleStaticImportDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      SingleStaticImportDecl tree = (SingleStaticImportDecl) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect StaticImports
@@ -110,7 +126,7 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
   }
   /**
    * @ast method 
-   * @declaredat StaticImports.ast:1
+   * 
    */
   public SingleStaticImportDecl() {
     super();
@@ -118,8 +134,19 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat StaticImports.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public SingleStaticImportDecl(Access p0, String p1) {
     setChild(p0, 0);
@@ -127,7 +154,7 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
   }
   /**
    * @ast method 
-   * @declaredat StaticImports.ast:11
+   * 
    */
   public SingleStaticImportDecl(Access p0, beaver.Symbol p1) {
     setChild(p0, 0);
@@ -136,7 +163,7 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat StaticImports.ast:18
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -144,66 +171,79 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat StaticImports.ast:24
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Access
+   * Replaces the Access child.
+   * @param node The new node to replace the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setAccess(Access node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Access
+   * Retrieves the Access child.
+   * @return The current node used as the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getAccess() {
     return (Access)getChild(0);
   }
   /**
+   * Retrieves the Access child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Access child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getAccessNoTransform() {
     return (Access)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat StaticImports.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat StaticImports.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_ID;
   /**
    * @ast method 
-   * @declaredat StaticImports.ast:9
+   * 
    */
   
   public int IDstart;
   /**
    * @ast method 
-   * @declaredat StaticImports.ast:10
+   * 
    */
   
   public int IDend;
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat StaticImports.ast:11
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -213,10 +253,11 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat StaticImports.ast:22
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
@@ -224,33 +265,25 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
   /**
    * @attribute syn
    * @aspect StaticImports
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/StaticImports.jrag:54
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/StaticImports.jrag:53
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
-      ASTNode$State state = state();
-    TypeDecl type_value = type_compute();
-    return type_value;
+    ASTNode$State state = state();
+    try {  return getAccess().type();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl type_compute() {  return getAccess().type();  }
   /**
    * @attribute syn
    * @aspect StaticImports
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/StaticImports.jrag:99
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String name() {
-      ASTNode$State state = state();
-    String name_value = name_compute();
-    return name_value;
+    ASTNode$State state = state();
+    try {  return getID();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String name_compute() {  return getID();  }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/StaticImports.jrag:203
    * @apilevel internal
@@ -259,7 +292,8 @@ public class SingleStaticImportDecl extends StaticImportDecl implements Cloneabl
     if(caller == getAccessNoTransform()) {
       return NameType.TYPE_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @apilevel internal

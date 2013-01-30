@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,11 +19,11 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
  * Abstract superclass for catch clauses.
+ * @production CatchClause : {@link ASTNode} ::= <span class="component">{@link Block}</span>;
  * @ast node
- * @declaredat CatchClause.ast:4
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/MultiCatch.ast:4
  */
 public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable, VariableScope {
   /**
@@ -59,7 +60,7 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
   }
   /**
    * @ast method 
-   * @declaredat CatchClause.ast:1
+   * 
    */
   public CatchClause() {
     super();
@@ -67,8 +68,19 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat CatchClause.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public CatchClause(Block p0) {
     setChild(p0, 0);
@@ -76,7 +88,7 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat CatchClause.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -84,33 +96,38 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat CatchClause.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Block
+   * Replaces the Block child.
+   * @param node The new node to replace the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat CatchClause.ast:5
+   * 
    */
   public void setBlock(Block node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Block
+   * Retrieves the Block child.
+   * @return The current node used as the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat CatchClause.ast:12
+   * 
    */
   public Block getBlock() {
     return (Block)getChild(0);
   }
   /**
+   * Retrieves the Block child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat CatchClause.ast:18
+   * 
    */
   public Block getBlockNoTransform() {
     return (Block)getChildNoTransform(0);
@@ -118,18 +135,14 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
   /**
    * @attribute syn
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:198
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:212
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean handles(TypeDecl exceptionType) {
-      ASTNode$State state = state();
-    boolean handles_TypeDecl_value = handles_compute(exceptionType);
-    return handles_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean handles_compute(TypeDecl exceptionType) {  return false;  }
   protected java.util.Map parameterDeclaration_String_values;
   /**
    * @attribute syn
@@ -143,17 +156,28 @@ public abstract class CatchClause extends ASTNode<ASTNode> implements Cloneable,
     if(parameterDeclaration_String_values.containsKey(_parameters)) {
       return (SimpleSet)parameterDeclaration_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet parameterDeclaration_String_value = parameterDeclaration_compute(name);
-if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_values.put(_parameters, parameterDeclaration_String_value);
+      if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_values.put(_parameters, parameterDeclaration_String_value);
     return parameterDeclaration_String_value;
   }
   /**
    * @apilevel internal
    */
   private SimpleSet parameterDeclaration_compute(String name) {  return SimpleSet.emptySet;  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:109
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return getBlock().modifiedInScope(var);  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */
@@ -172,11 +196,11 @@ if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_valu
     if(typeThrowable_computed) {
       return typeThrowable_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
-if(isFinal && num == state().boundariesCrossed) typeThrowable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeThrowable_computed = true;
     return typeThrowable_value;
   }
   protected java.util.Map lookupVariable_String_values;
@@ -192,11 +216,11 @@ if(isFinal && num == state().boundariesCrossed) typeThrowable_computed = true;
     if(lookupVariable_String_values.containsKey(_parameters)) {
       return (SimpleSet)lookupVariable_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
-if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
+      if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
     return lookupVariable_String_value;
   }
   protected java.util.Map reachableCatchClause_TypeDecl_values;
@@ -213,11 +237,11 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
     if(reachableCatchClause_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)reachableCatchClause_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean reachableCatchClause_TypeDecl_value = getParent().Define_boolean_reachableCatchClause(this, null, exceptionType);
-if(isFinal && num == state().boundariesCrossed) reachableCatchClause_TypeDecl_values.put(_parameters, Boolean.valueOf(reachableCatchClause_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) reachableCatchClause_TypeDecl_values.put(_parameters, Boolean.valueOf(reachableCatchClause_TypeDecl_value));
     return reachableCatchClause_TypeDecl_value;
   }
   /**
@@ -227,9 +251,31 @@ if(isFinal && num == state().boundariesCrossed) reachableCatchClause_TypeDecl_va
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl hostType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
     return hostType_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:136
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public Collection<TypeDecl> caughtExceptions() {
+    ASTNode$State state = state();
+    Collection<TypeDecl> caughtExceptions_value = getParent().Define_Collection_TypeDecl__caughtExceptions(this, null);
+    return caughtExceptions_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:195
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public boolean reportUnreachable() {
+    ASTNode$State state = state();
+    boolean reportUnreachable_value = getParent().Define_boolean_reportUnreachable(this, null);
+    return reportUnreachable_value;
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:78
@@ -241,7 +287,29 @@ if(isFinal && num == state().boundariesCrossed) reachableCatchClause_TypeDecl_va
     if(!set.isEmpty()) return set;
     return lookupVariable(name);
   }
-    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:134
+   * @apilevel internal
+   */
+  public CatchClause Define_CatchClause_catchClause(ASTNode caller, ASTNode child) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return this;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:196
+   * @apilevel internal
+   */
+  public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
+    if(caller == getBlockNoTransform()) {
+      return false;
+    }
+    else {      return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
   }
   /**
    * @apilevel internal

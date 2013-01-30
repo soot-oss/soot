@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production LogicalExpr : {@link Binary};
  * @ast node
- * @declaredat java.ast:168
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:171
  */
 public abstract class LogicalExpr extends Binary implements Cloneable {
   /**
@@ -69,7 +70,7 @@ public abstract class LogicalExpr extends Binary implements Cloneable {
   public soot.Value eval(Body b) { return emitBooleanCondition(b); }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public LogicalExpr() {
     super();
@@ -77,8 +78,19 @@ public abstract class LogicalExpr extends Binary implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public LogicalExpr(Expr p0, Expr p1) {
     setChild(p0, 0);
@@ -87,7 +99,7 @@ public abstract class LogicalExpr extends Binary implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -95,59 +107,69 @@ public abstract class LogicalExpr extends Binary implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for LeftOperand
+   * Replaces the LeftOperand child.
+   * @param node The new node to replace the LeftOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setLeftOperand(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for LeftOperand
+   * Retrieves the LeftOperand child.
+   * @return The current node used as the LeftOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getLeftOperand() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the LeftOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the LeftOperand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getLeftOperandNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
   /**
-   * Setter for RightOperand
+   * Replaces the RightOperand child.
+   * @param node The new node to replace the RightOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setRightOperand(Expr node) {
     setChild(node, 1);
   }
   /**
-   * Getter for RightOperand
+   * Retrieves the RightOperand child.
+   * @return The current node used as the RightOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getRightOperand() {
     return (Expr)getChild(1);
   }
   /**
+   * Retrieves the RightOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the RightOperand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getRightOperandNoTransform() {
     return (Expr)getChildNoTransform(1);
@@ -170,11 +192,11 @@ public abstract class LogicalExpr extends Binary implements Cloneable {
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
@@ -184,18 +206,14 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:31
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:21
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean definesLabel() {
-      ASTNode$State state = state();
-    boolean definesLabel_value = definesLabel_compute();
-    return definesLabel_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean definesLabel_compute() {  return true;  }
   /**
    * @apilevel internal
    */

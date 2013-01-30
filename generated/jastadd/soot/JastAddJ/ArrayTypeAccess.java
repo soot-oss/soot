@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ArrayTypeAccess : {@link TypeAccess} ::= <span class="component">&lt;Package:String&gt;</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">{@link Access}</span>;
  * @ast node
- * @declaredat java.ast:22
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:25
  */
 public class ArrayTypeAccess extends TypeAccess implements Cloneable {
   /**
@@ -73,18 +74,33 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayTypeAccess fullCopy() {
-    ArrayTypeAccess res = (ArrayTypeAccess)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ArrayTypeAccess tree = (ArrayTypeAccess) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect NameCheck
@@ -113,7 +129,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public ArrayTypeAccess() {
     super();
@@ -121,8 +137,19 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ArrayTypeAccess(Access p0) {
     setChild(p0, 0);
@@ -130,7 +157,7 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -138,65 +165,82 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Access
+   * Replaces the Access child.
+   * @param node The new node to replace the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setAccess(Access node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Access
+   * Retrieves the Access child.
+   * @return The current node used as the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getAccess() {
     return (Access)getChild(0);
   }
   /**
+   * Retrieves the Access child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Access child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getAccessNoTransform() {
     return (Access)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme Package
+   * Replaces the lexeme Package.
+   * @param value The new value for the lexeme Package.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setPackage(String value) {
     tokenString_Package = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_Package;
   /**
-   * Setter for lexeme ID
+   * @apilevel internal
+   */
+  protected String tokenString_Package;
+  /**
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_ID;
   /**
    * @apilevel internal
    */
@@ -215,12 +259,12 @@ public class ArrayTypeAccess extends TypeAccess implements Cloneable {
     if(getPackage_computed) {
       return getPackage_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getPackage_value = getPackage_compute();
       setPackage(getPackage_value);
-if(isFinal && num == state().boundariesCrossed) getPackage_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getPackage_computed = true;
     return getPackage_value;
   }
   /**
@@ -245,12 +289,12 @@ if(isFinal && num == state().boundariesCrossed) getPackage_computed = true;
     if(getID_computed) {
       return getID_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getID_value = getID_compute();
       setID(getID_value);
-if(isFinal && num == state().boundariesCrossed) getID_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getID_computed = true;
     return getID_value;
   }
   /**
@@ -260,33 +304,25 @@ if(isFinal && num == state().boundariesCrossed) getID_computed = true;
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:357
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:235
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafter(Variable v) {
-      ASTNode$State state = state();
-    boolean isDAafter_Variable_value = isDAafter_compute(v);
-    return isDAafter_Variable_value;
+    ASTNode$State state = state();
+    try {  return getAccess().isDAafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDAafter_compute(Variable v) {  return getAccess().isDAafter(v);  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:836
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:694
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafter_Variable_value = isDUafter_compute(v);
-    return isDUafter_Variable_value;
+    ASTNode$State state = state();
+    try {  return getAccess().isDUafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafter_compute(Variable v) {  return getAccess().isDUafter(v);  }
   /**
    * @apilevel internal
    */
@@ -298,18 +334,18 @@ if(isFinal && num == state().boundariesCrossed) getID_computed = true;
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:158
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:246
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl decl() {
     if(decl_computed) {
       return decl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     decl_value = decl_compute();
-if(isFinal && num == state().boundariesCrossed) decl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     return decl_value;
   }
   /**
@@ -319,48 +355,36 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:805
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:800
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String dumpString() {
-      ASTNode$State state = state();
-    String dumpString_value = dumpString_compute();
-    return dumpString_value;
+    ASTNode$State state = state();
+    try {  return getClass().getName();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String dumpString_compute() {  return getClass().getName();  }
   /**
    * @attribute syn
    * @aspect SyntacticClassification
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:130
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:56
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public NameType predNameType() {
-      ASTNode$State state = state();
-    NameType predNameType_value = predNameType_compute();
-    return predNameType_value;
+    ASTNode$State state = state();
+    try {  return NameType.AMBIGUOUS_NAME;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
   /**
    * @attribute syn
    * @aspect TypeHierarchyCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:155
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:150
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean staticContextQualifier() {
-      ASTNode$State state = state();
-    boolean staticContextQualifier_value = staticContextQualifier_compute();
-    return staticContextQualifier_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean staticContextQualifier_compute() {  return true;  }
   /**
    * @apilevel internal
    */

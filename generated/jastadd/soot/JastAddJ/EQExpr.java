@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production EQExpr : {@link EqualityExpr};
  * @ast node
- * @declaredat java.ast:179
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:182
  */
 public class EQExpr extends EqualityExpr implements Cloneable {
   /**
@@ -61,18 +62,33 @@ public class EQExpr extends EqualityExpr implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EQExpr fullCopy() {
-    EQExpr res = (EQExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      EQExpr tree = (EQExpr) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect BooleanExpressions
@@ -91,7 +107,7 @@ public class EQExpr extends EqualityExpr implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public EQExpr() {
     super();
@@ -99,8 +115,19 @@ public class EQExpr extends EqualityExpr implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public EQExpr(Expr p0, Expr p1) {
     setChild(p0, 0);
@@ -109,7 +136,7 @@ public class EQExpr extends EqualityExpr implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -117,59 +144,69 @@ public class EQExpr extends EqualityExpr implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for LeftOperand
+   * Replaces the LeftOperand child.
+   * @param node The new node to replace the LeftOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setLeftOperand(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for LeftOperand
+   * Retrieves the LeftOperand child.
+   * @return The current node used as the LeftOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getLeftOperand() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the LeftOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the LeftOperand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getLeftOperandNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
   /**
-   * Setter for RightOperand
+   * Replaces the RightOperand child.
+   * @param node The new node to replace the RightOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setRightOperand(Expr node) {
     setChild(node, 1);
   }
   /**
-   * Getter for RightOperand
+   * Retrieves the RightOperand child.
+   * @return The current node used as the RightOperand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getRightOperand() {
     return (Expr)getChild(1);
   }
   /**
+   * Retrieves the RightOperand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the RightOperand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getRightOperandNoTransform() {
     return (Expr)getChildNoTransform(1);
@@ -177,33 +214,25 @@ public class EQExpr extends EqualityExpr implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:531
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-      ASTNode$State state = state();
-    Constant constant_value = constant_compute();
-    return constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(binaryNumericPromotedType().eqIsTrue(left(), right()));  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {  return Constant.create(binaryNumericPromotedType().eqIsTrue(left(), right()));  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:418
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:400
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printOp() {
-      ASTNode$State state = state();
-    String printOp_value = printOp_compute();
-    return printOp_value;
+    ASTNode$State state = state();
+    try {  return " == ";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printOp_compute() {  return " == ";  }
   /**
    * @apilevel internal
    */

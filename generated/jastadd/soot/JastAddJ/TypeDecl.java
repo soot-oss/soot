@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production TypeDecl : {@link ASTNode} ::= <span class="component">{@link Modifiers}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">{@link BodyDecl}*</span>;
  * @ast node
- * @declaredat java.ast:38
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:41
  */
 public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, SimpleSet, Iterator, VariableScope {
   /**
@@ -714,7 +715,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:164
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:184
    */
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     return this;
@@ -722,7 +723,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:808
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:835
    */
   public TypeDecl substitute(TypeVariable typeVariable) {
     if(isTopLevelType())
@@ -732,7 +733,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:846
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:873
    */
   public Access substitute(Parameterization parTypeDecl) {
     if(parTypeDecl instanceof ParTypeDecl && ((ParTypeDecl)parTypeDecl).genericDecl() == this)
@@ -744,7 +745,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:886
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:913
    */
   public Access substituteReturnType(Parameterization parTypeDecl) {
     return substitute(parTypeDecl);
@@ -752,7 +753,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:930
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:957
    */
   public Access substituteParameterType(Parameterization parTypeDecl) {
     return substitute(parTypeDecl);
@@ -793,7 +794,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:121
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:124
    */
   
 
@@ -803,7 +804,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:122
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:125
    */
   public Collection nestedTypes() {
     return nestedTypes != null ? nestedTypes : new HashSet();
@@ -811,7 +812,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:125
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:128
    */
   public void addNestedType(TypeDecl typeDecl) {
     if(nestedTypes == null) nestedTypes = new HashSet();
@@ -821,7 +822,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:132
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:135
    */
   
 
@@ -830,7 +831,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:133
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:136
    */
   public Collection usedNestedTypes() {
     return usedNestedTypes != null ? usedNestedTypes : new HashSet();
@@ -838,7 +839,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:136
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:139
    */
   public void addUsedNestedType(TypeDecl typeDecl) {
     if(usedNestedTypes == null) usedNestedTypes = new HashSet();
@@ -847,7 +848,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:167
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:170
    */
   
 
@@ -856,7 +857,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:169
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:172
    */
   
 
@@ -864,7 +865,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:170
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:173
    */
   public ASTNode getAccessor(ASTNode source, String name) {
     ArrayList key = new ArrayList(2);
@@ -876,7 +877,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:178
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:181
    */
   public void addAccessor(ASTNode source, String name, ASTNode accessor) {
     ArrayList key = new ArrayList(2);
@@ -888,7 +889,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:186
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:189
    */
   public ASTNode getAccessorSource(ASTNode accessor) {
     Iterator i = accessorMap.entrySet().iterator();
@@ -902,7 +903,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:430
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:442
    */
   
 
@@ -913,7 +914,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:431
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:443
    */
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -1293,17 +1294,28 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   private HashMap createEnumIndexMap = null;
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public TypeDecl() {
     super();
 
-    setChild(new List(), 1);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:8
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+    setChild(new List(), 1);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public TypeDecl(Modifiers p0, String p1, List<BodyDecl> p2) {
     setChild(p0, 0);
@@ -1312,7 +1324,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   }
   /**
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   public TypeDecl(Modifiers p0, beaver.Symbol p1, List<BodyDecl> p2) {
     setChild(p0, 0);
@@ -1322,7 +1334,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:21
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -1330,66 +1342,79 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_ID;
   /**
    * @ast method 
-   * @declaredat java.ast:9
+   * 
    */
   
   public int IDstart;
   /**
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   
   public int IDend;
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:11
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -1399,47 +1424,64 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for BodyDeclList
+   * Replaces the BodyDecl list.
+   * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBodyDeclList(List<BodyDecl> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * @return Number of children in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
-   * Getter for child in list BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDeclNoTransform() {
+    return getBodyDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the BodyDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
     return (BodyDecl)getBodyDeclList().getChild(i);
   }
   /**
-   * Add element to list BodyDeclList
+   * Append an element to the BodyDecl list.
+   * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addBodyDecl(BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
@@ -1448,44 +1490,51 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addBodyDeclNoTransform(BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list BodyDeclList
+   * Replaces the BodyDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setBodyDecl(BodyDecl node, int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for BodyDecl list.
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
-   * Getter for list BodyDeclList
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
@@ -1494,9 +1543,12 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     return list;
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -1505,7 +1557,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /**
    * @ast method 
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:332
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:359
    */
     public void typeCheck() {
     refined_TypeHierarchyCheck_TypeDecl_typeCheck();
@@ -1615,6 +1667,266 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    */
   private SootClass refined_EmitJimple_TypeDecl_sootClass()
 { return null; }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:160
+   */
+  public Constant cast(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation cast" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:174
+   */
+  public Constant plus(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation plus" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:183
+   */
+  public Constant minus(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation minus" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:192
+   */
+  public Constant bitNot(Constant c) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation bitNot" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:199
+   */
+  public Constant mul(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation mul" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:208
+   */
+  public Constant div(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation div" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:217
+   */
+  public Constant mod(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation mod" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:226
+   */
+  public Constant add(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation add" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:236
+   */
+  public Constant sub(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation sub" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:245
+   */
+  public Constant lshift(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation lshift" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:252
+   */
+  public Constant rshift(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation rshift" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:259
+   */
+  public Constant urshift(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation urshift" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:266
+   */
+  public Constant andBitwise(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation andBitwise" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:274
+   */
+  public Constant xorBitwise(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation xorBitwise" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:282
+   */
+  public Constant orBitwise(Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation orBitwise" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:290
+   */
+  public Constant questionColon(Constant cond, Constant c1, Constant c2) {
+    ASTNode$State state = state();
+    try {
+    throw new UnsupportedOperationException("ConstantExpression operation questionColon" +
+      " not supported for type " + getClass().getName()); 
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:394
+   */
+  public boolean eqIsTrue(Expr left, Expr right) {
+    ASTNode$State state = state();
+    try {
+    System.err.println("Evaluation eqIsTrue for unknown type: " + getClass().getName());
+    return false;
+  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:405
+   */
+  public boolean ltIsTrue(Expr left, Expr right) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /**
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:411
+   */
+  public boolean leIsTrue(Expr left, Expr right) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   protected java.util.Map accessibleFromPackage_String_values;
   /**
    * @attribute syn
@@ -1628,11 +1940,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     if(accessibleFromPackage_String_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFromPackage_String_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFromPackage_String_value = accessibleFromPackage_compute(packageName);
-if(isFinal && num == state().boundariesCrossed) accessibleFromPackage_String_values.put(_parameters, Boolean.valueOf(accessibleFromPackage_String_value));
+      if(isFinal && num == state().boundariesCrossed) accessibleFromPackage_String_values.put(_parameters, Boolean.valueOf(accessibleFromPackage_String_value));
     return accessibleFromPackage_String_value;
   }
   /**
@@ -1652,11 +1964,11 @@ if(isFinal && num == state().boundariesCrossed) accessibleFromPackage_String_val
     if(accessibleFromExtend_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFromExtend_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFromExtend_TypeDecl_value = accessibleFromExtend_compute(type);
-if(isFinal && num == state().boundariesCrossed) accessibleFromExtend_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFromExtend_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) accessibleFromExtend_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFromExtend_TypeDecl_value));
     return accessibleFromExtend_TypeDecl_value;
   }
   /**
@@ -1700,11 +2012,11 @@ if(isFinal && num == state().boundariesCrossed) accessibleFromExtend_TypeDecl_va
     if(accessibleFrom_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
-if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
     return accessibleFrom_TypeDecl_value;
   }
   /**
@@ -1760,11 +2072,11 @@ if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.p
     if(dimension_computed) {
       return dimension_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     dimension_value = dimension_compute();
-if(isFinal && num == state().boundariesCrossed) dimension_computed = true;
+      if(isFinal && num == state().boundariesCrossed) dimension_computed = true;
     return dimension_value;
   }
   /**
@@ -1789,11 +2101,11 @@ if(isFinal && num == state().boundariesCrossed) dimension_computed = true;
     if(elementType_computed) {
       return elementType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     elementType_value = elementType_compute();
-if(isFinal && num == state().boundariesCrossed) elementType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) elementType_computed = true;
     return elementType_value;
   }
   /**
@@ -1818,13 +2130,13 @@ if(isFinal && num == state().boundariesCrossed) elementType_computed = true;
     if(arrayType_computed) {
       return arrayType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     arrayType_value = arrayType_compute();
     arrayType_value.setParent(this);
     arrayType_value.is$Final = true;
-if(true) arrayType_computed = true;
+      if(true) arrayType_computed = true;
     return arrayType_value;
   }
   /**
@@ -1880,385 +2192,37 @@ if(true) arrayType_computed = true;
   }
   /**
    * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:306
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant cast(Constant c) {
-      ASTNode$State state = state();
-    Constant cast_Constant_value = cast_compute(c);
-    return cast_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant cast_compute(Constant c) {
-    throw new UnsupportedOperationException("ConstantExpression operation cast" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:320
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant plus(Constant c) {
-      ASTNode$State state = state();
-    Constant plus_Constant_value = plus_compute(c);
-    return plus_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant plus_compute(Constant c) {
-    throw new UnsupportedOperationException("ConstantExpression operation plus" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:329
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant minus(Constant c) {
-      ASTNode$State state = state();
-    Constant minus_Constant_value = minus_compute(c);
-    return minus_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant minus_compute(Constant c) {
-    throw new UnsupportedOperationException("ConstantExpression operation minus" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:338
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant bitNot(Constant c) {
-      ASTNode$State state = state();
-    Constant bitNot_Constant_value = bitNot_compute(c);
-    return bitNot_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant bitNot_compute(Constant c) {
-    throw new UnsupportedOperationException("ConstantExpression operation bitNot" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:345
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant mul(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant mul_Constant_Constant_value = mul_compute(c1, c2);
-    return mul_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant mul_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation mul" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:354
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant div(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant div_Constant_Constant_value = div_compute(c1, c2);
-    return div_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant div_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation div" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:363
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant mod(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant mod_Constant_Constant_value = mod_compute(c1, c2);
-    return mod_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant mod_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation mod" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:372
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant add(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant add_Constant_Constant_value = add_compute(c1, c2);
-    return add_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant add_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation add" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:382
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant sub(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant sub_Constant_Constant_value = sub_compute(c1, c2);
-    return sub_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant sub_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation sub" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:391
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant lshift(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant lshift_Constant_Constant_value = lshift_compute(c1, c2);
-    return lshift_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant lshift_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation lshift" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:398
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant rshift(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant rshift_Constant_Constant_value = rshift_compute(c1, c2);
-    return rshift_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant rshift_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation rshift" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:405
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant urshift(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant urshift_Constant_Constant_value = urshift_compute(c1, c2);
-    return urshift_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant urshift_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation urshift" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:412
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant andBitwise(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant andBitwise_Constant_Constant_value = andBitwise_compute(c1, c2);
-    return andBitwise_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant andBitwise_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation andBitwise" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:420
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant xorBitwise(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant xorBitwise_Constant_Constant_value = xorBitwise_compute(c1, c2);
-    return xorBitwise_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant xorBitwise_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation xorBitwise" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:428
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant orBitwise(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant orBitwise_Constant_Constant_value = orBitwise_compute(c1, c2);
-    return orBitwise_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant orBitwise_compute(Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation orBitwise" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:436
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant questionColon(Constant cond, Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
-    return questionColon_Constant_Constant_Constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {
-    throw new UnsupportedOperationException("ConstantExpression operation questionColon" +
-      " not supported for type " + getClass().getName()); 
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:540
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean eqIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
-    return eqIsTrue_Expr_Expr_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean eqIsTrue_compute(Expr left, Expr right) {
-    System.err.println("Evaluation eqIsTrue for unknown type: " + getClass().getName());
-    return false;
-  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:551
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean ltIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
-    return ltIsTrue_Expr_Expr_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean ltIsTrue_compute(Expr left, Expr right) {  return false;  }
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:557
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public boolean leIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
-    return leIsTrue_Expr_Expr_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean leIsTrue_compute(Expr left, Expr right) {  return false;  }
-  /**
-   * @attribute syn
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:134
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int size() {
-      ASTNode$State state = state();
-    int size_value = size_compute();
-    return size_value;
+    ASTNode$State state = state();
+    try {  return 1;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int size_compute() {  return 1;  }
   /**
    * @attribute syn
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:135
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isEmpty() {
-      ASTNode$State state = state();
-    boolean isEmpty_value = isEmpty_compute();
-    return isEmpty_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isEmpty_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect DataStructures
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:139
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean contains(Object o) {
-      ASTNode$State state = state();
-    boolean contains_Object_value = contains_compute(o);
-    return contains_Object_value;
+    ASTNode$State state = state();
+    try {  return this == o;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean contains_compute(Object o) {  return this == o;  }
   /**
    * @apilevel internal
    */
@@ -2277,11 +2241,11 @@ if(true) arrayType_computed = true;
     if(isException_computed) {
       return isException_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isException_value = isException_compute();
-if(isFinal && num == state().boundariesCrossed) isException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isException_computed = true;
     return isException_value;
   }
   /**
@@ -2297,20 +2261,24 @@ if(isFinal && num == state().boundariesCrossed) isException_computed = true;
    */
   protected boolean isCheckedException_value;
   /**
+   * Unfortunately the concept of checked vs. unchecked exceptions
+   * has been inverted in JastAddJ compared to the Java specification.
+   * This is a slightly unfortunate design flaw which we cannot change
+   * at this time.
    * @attribute syn
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:25
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:32
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isCheckedException() {
     if(isCheckedException_computed) {
       return isCheckedException_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isCheckedException_value = isCheckedException_compute();
-if(isFinal && num == state().boundariesCrossed) isCheckedException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isCheckedException_computed = true;
     return isCheckedException_value;
   }
   /**
@@ -2327,20 +2295,24 @@ if(isFinal && num == state().boundariesCrossed) isCheckedException_computed = tr
    */
   protected boolean isUncheckedException_value;
   /**
+   * Unfortunately the concept of checked vs. unchecked exceptions
+   * has been inverted in JastAddJ compared to the Java specification.
+   * This is a slightly unfortunate design flaw which we cannot change
+   * at this time.
    * @attribute syn
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:27
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:41
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isUncheckedException() {
     if(isUncheckedException_computed) {
       return isUncheckedException_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isUncheckedException_value = isUncheckedException_compute();
-if(isFinal && num == state().boundariesCrossed) isUncheckedException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isUncheckedException_computed = true;
     return isUncheckedException_value;
   }
   /**
@@ -2351,7 +2323,7 @@ if(isFinal && num == state().boundariesCrossed) isUncheckedException_computed = 
   /**
    * @attribute syn
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:236
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:250
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayCatch(TypeDecl thrownType) {
@@ -2360,11 +2332,11 @@ if(isFinal && num == state().boundariesCrossed) isUncheckedException_computed = 
     if(mayCatch_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)mayCatch_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean mayCatch_TypeDecl_value = mayCatch_compute(thrownType);
-if(isFinal && num == state().boundariesCrossed) mayCatch_TypeDecl_values.put(_parameters, Boolean.valueOf(mayCatch_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) mayCatch_TypeDecl_values.put(_parameters, Boolean.valueOf(mayCatch_TypeDecl_value));
     return mayCatch_TypeDecl_value;
   }
   /**
@@ -2376,16 +2348,12 @@ if(isFinal && num == state().boundariesCrossed) mayCatch_TypeDecl_values.put(_pa
    * @aspect ConstructScope
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:21
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Collection lookupSuperConstructor() {
-      ASTNode$State state = state();
-    Collection lookupSuperConstructor_value = lookupSuperConstructor_compute();
-    return lookupSuperConstructor_value;
+    ASTNode$State state = state();
+    try {  return Collections.EMPTY_LIST;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Collection lookupSuperConstructor_compute() {  return Collections.EMPTY_LIST;  }
   /**
    * @apilevel internal
    */
@@ -2404,11 +2372,11 @@ if(isFinal && num == state().boundariesCrossed) mayCatch_TypeDecl_values.put(_pa
     if(constructors_computed) {
       return constructors_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     constructors_value = constructors_compute();
-if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
+      if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
     return constructors_value;
   }
   /**
@@ -2436,11 +2404,11 @@ if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
     if(unqualifiedLookupMethod_String_values.containsKey(_parameters)) {
       return (Collection)unqualifiedLookupMethod_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     Collection unqualifiedLookupMethod_String_value = unqualifiedLookupMethod_compute(name);
-if(isFinal && num == state().boundariesCrossed) unqualifiedLookupMethod_String_values.put(_parameters, unqualifiedLookupMethod_String_value);
+      if(isFinal && num == state().boundariesCrossed) unqualifiedLookupMethod_String_values.put(_parameters, unqualifiedLookupMethod_String_value);
     return unqualifiedLookupMethod_String_value;
   }
   /**
@@ -2458,19 +2426,15 @@ if(isFinal && num == state().boundariesCrossed) unqualifiedLookupMethod_String_v
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:210
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Collection memberMethods(String name) {
-      ASTNode$State state = state();
-    Collection memberMethods_String_value = memberMethods_compute(name);
-    return memberMethods_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Collection memberMethods_compute(String name) {
+    ASTNode$State state = state();
+    try {
     Collection c = (Collection)methodsNameMap().get(name);
     if(c != null) return c;
     return Collections.EMPTY_LIST;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -2490,11 +2454,11 @@ if(isFinal && num == state().boundariesCrossed) unqualifiedLookupMethod_String_v
     if(methodsNameMap_computed) {
       return methodsNameMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     methodsNameMap_value = methodsNameMap_compute();
-if(isFinal && num == state().boundariesCrossed) methodsNameMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) methodsNameMap_computed = true;
     return methodsNameMap_value;
   }
   /**
@@ -2518,19 +2482,15 @@ if(isFinal && num == state().boundariesCrossed) methodsNameMap_computed = true;
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:247
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localMethodsSignature(String signature) {
-      ASTNode$State state = state();
-    SimpleSet localMethodsSignature_String_value = localMethodsSignature_compute(signature);
-    return localMethodsSignature_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet localMethodsSignature_compute(String signature) {
+    ASTNode$State state = state();
+    try {
     SimpleSet set = (SimpleSet)localMethodsSignatureMap().get(signature);
     if(set != null) return set;
     return SimpleSet.emptySet;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -2550,11 +2510,11 @@ if(isFinal && num == state().boundariesCrossed) methodsNameMap_computed = true;
     if(localMethodsSignatureMap_computed) {
       return localMethodsSignatureMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     localMethodsSignatureMap_value = localMethodsSignatureMap_compute();
-if(isFinal && num == state().boundariesCrossed) localMethodsSignatureMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) localMethodsSignatureMap_computed = true;
     return localMethodsSignatureMap_value;
   }
   /**
@@ -2575,19 +2535,15 @@ if(isFinal && num == state().boundariesCrossed) localMethodsSignatureMap_compute
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:315
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet methodsSignature(String signature) {
-      ASTNode$State state = state();
-    SimpleSet methodsSignature_String_value = methodsSignature_compute(signature);
-    return methodsSignature_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet methodsSignature_compute(String signature) {
+    ASTNode$State state = state();
+    try {
     SimpleSet set = (SimpleSet)methodsSignatureMap().get(signature);
     if(set != null) return set;
     return SimpleSet.emptySet;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -2607,11 +2563,11 @@ if(isFinal && num == state().boundariesCrossed) localMethodsSignatureMap_compute
     if(methodsSignatureMap_computed) {
       return methodsSignatureMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     methodsSignatureMap_value = methodsSignatureMap_compute();
-if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = true;
     return methodsSignatureMap_value;
   }
   /**
@@ -2631,11 +2587,11 @@ if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = t
     if(ancestorMethods_String_values.containsKey(_parameters)) {
       return (SimpleSet)ancestorMethods_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet ancestorMethods_String_value = ancestorMethods_compute(signature);
-if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.put(_parameters, ancestorMethods_String_value);
+      if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.put(_parameters, ancestorMethods_String_value);
     return ancestorMethods_String_value;
   }
   /**
@@ -2645,23 +2601,19 @@ if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.pu
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:390
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:478
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasType(String name) {
-      ASTNode$State state = state();
-    boolean hasType_String_value = hasType_compute(name);
-    return hasType_String_value;
+    ASTNode$State state = state();
+    try {  return !memberTypes(name).isEmpty();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasType_compute(String name) {  return !memberTypes(name).isEmpty();  }
   protected java.util.Map localTypeDecls_String_values;
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:401
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:489
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localTypeDecls(String name) {
@@ -2670,11 +2622,11 @@ if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.pu
     if(localTypeDecls_String_values.containsKey(_parameters)) {
       return (SimpleSet)localTypeDecls_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet localTypeDecls_String_value = localTypeDecls_compute(name);
-if(isFinal && num == state().boundariesCrossed) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_value);
+      if(isFinal && num == state().boundariesCrossed) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_value);
     return localTypeDecls_String_value;
   }
   /**
@@ -2691,7 +2643,7 @@ if(isFinal && num == state().boundariesCrossed) localTypeDecls_String_values.put
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:409
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:497
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet memberTypes(String name) {
@@ -2700,11 +2652,11 @@ if(isFinal && num == state().boundariesCrossed) localTypeDecls_String_values.put
     if(memberTypes_String_values.containsKey(_parameters)) {
       return (SimpleSet)memberTypes_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet memberTypes_String_value = memberTypes_compute(name);
-if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_parameters, memberTypes_String_value);
+      if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_parameters, memberTypes_String_value);
     return memberTypes_String_value;
   }
   /**
@@ -2724,11 +2676,11 @@ if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_p
     if(localFields_String_values.containsKey(_parameters)) {
       return (SimpleSet)localFields_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet localFields_String_value = localFields_compute(name);
-if(isFinal && num == state().boundariesCrossed) localFields_String_values.put(_parameters, localFields_String_value);
+      if(isFinal && num == state().boundariesCrossed) localFields_String_values.put(_parameters, localFields_String_value);
     return localFields_String_value;
   }
   /**
@@ -2753,11 +2705,11 @@ if(isFinal && num == state().boundariesCrossed) localFields_String_values.put(_p
     if(localFieldsMap_computed) {
       return localFieldsMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     localFieldsMap_value = localFieldsMap_compute();
-if(isFinal && num == state().boundariesCrossed) localFieldsMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) localFieldsMap_computed = true;
     return localFieldsMap_value;
   }
   /**
@@ -2794,11 +2746,11 @@ if(isFinal && num == state().boundariesCrossed) localFieldsMap_computed = true;
     if(memberFieldsMap_computed) {
       return memberFieldsMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     memberFieldsMap_value = memberFieldsMap_compute();
-if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
     return memberFieldsMap_value;
   }
   /**
@@ -2818,11 +2770,11 @@ if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
     if(memberFields_String_values.containsKey(_parameters)) {
       return (SimpleSet)memberFields_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet memberFields_String_value = memberFields_compute(name);
-if(isFinal && num == state().boundariesCrossed) memberFields_String_values.put(_parameters, memberFields_String_value);
+      if(isFinal && num == state().boundariesCrossed) memberFields_String_values.put(_parameters, memberFields_String_value);
     return memberFields_String_value;
   }
   /**
@@ -2847,11 +2799,11 @@ if(isFinal && num == state().boundariesCrossed) memberFields_String_values.put(_
     if(hasAbstract_computed) {
       return hasAbstract_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     hasAbstract_value = hasAbstract_compute();
-if(isFinal && num == state().boundariesCrossed) hasAbstract_computed = true;
+      if(isFinal && num == state().boundariesCrossed) hasAbstract_computed = true;
     return hasAbstract_value;
   }
   /**
@@ -2876,11 +2828,11 @@ if(isFinal && num == state().boundariesCrossed) hasAbstract_computed = true;
     if(unimplementedMethods_computed) {
       return unimplementedMethods_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unimplementedMethods_value = unimplementedMethods_compute();
-if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = true;
+      if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = true;
     return unimplementedMethods_value;
   }
   /**
@@ -2905,11 +2857,11 @@ if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = 
     if(isPublic_computed) {
       return isPublic_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isPublic_value = isPublic_compute();
-if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
     return isPublic_value;
   }
   /**
@@ -2921,46 +2873,34 @@ if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:202
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isPrivate() {
-      ASTNode$State state = state();
-    boolean isPrivate_value = isPrivate_compute();
-    return isPrivate_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isPrivate();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isPrivate_compute() {  return getModifiers().isPrivate();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:203
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isProtected() {
-      ASTNode$State state = state();
-    boolean isProtected_value = isProtected_compute();
-    return isProtected_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isProtected();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isProtected_compute() {  return getModifiers().isProtected();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:204
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isAbstract() {
-      ASTNode$State state = state();
-    boolean isAbstract_value = isAbstract_compute();
-    return isAbstract_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isAbstract();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isAbstract_compute() {  return getModifiers().isAbstract();  }
   /**
    * @apilevel internal
    */
@@ -2979,11 +2919,11 @@ if(isFinal && num == state().boundariesCrossed) isPublic_computed = true;
     if(isStatic_computed) {
       return isStatic_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isStatic_value = isStatic_compute();
-if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
     return isStatic_value;
   }
   /**
@@ -2995,127 +2935,95 @@ if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:209
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isFinal() {
-      ASTNode$State state = state();
-    boolean isFinal_value = isFinal_compute();
-    return isFinal_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isFinal();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isFinal_compute() {  return getModifiers().isFinal();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:210
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isStrictfp() {
-      ASTNode$State state = state();
-    boolean isStrictfp_value = isStrictfp_compute();
-    return isStrictfp_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isStrictfp();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isStrictfp_compute() {  return getModifiers().isStrictfp();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:212
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSynthetic() {
-      ASTNode$State state = state();
-    boolean isSynthetic_value = isSynthetic_compute();
-    return isSynthetic_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isSynthetic();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSynthetic_compute() {  return getModifiers().isSynthetic();  }
   /**
    * @attribute syn
    * @aspect NameCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:274
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasEnclosingTypeDecl(String name) {
-      ASTNode$State state = state();
-    boolean hasEnclosingTypeDecl_String_value = hasEnclosingTypeDecl_compute(name);
-    return hasEnclosingTypeDecl_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasEnclosingTypeDecl_compute(String name) {
+    ASTNode$State state = state();
+    try {
     TypeDecl enclosingType = enclosingType();
     if(enclosingType != null) {
       return enclosingType.name().equals(name) || enclosingType.hasEnclosingTypeDecl(name);
     }
     return false;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect NameCheck
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:427
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean assignableToInt() {
-      ASTNode$State state = state();
-    boolean assignableToInt_value = assignableToInt_compute();
-    return assignableToInt_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean assignableToInt_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:759
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:758
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean addsIndentationLevel() {
-      ASTNode$State state = state();
-    boolean addsIndentationLevel_value = addsIndentationLevel_compute();
-    return addsIndentationLevel_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean addsIndentationLevel_compute() {  return true;  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:810
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:800
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String dumpString() {
-      ASTNode$State state = state();
-    String dumpString_value = dumpString_compute();
-    return dumpString_value;
+    ASTNode$State state = state();
+    try {  return getClass().getName() + " [" + getID() + "]";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String dumpString_compute() {  return getClass().getName() + " [" + getID() + "]";  }
   /**
    * @attribute syn
    * @aspect TypeName
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/QualifiedNames.jrag:68
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String name() {
-      ASTNode$State state = state();
-    String name_value = name_compute();
-    return name_value;
+    ASTNode$State state = state();
+    try {  return getID();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String name_compute() {  return getID();  }
   /**
    * @apilevel internal
    */
@@ -3134,11 +3042,11 @@ if(isFinal && num == state().boundariesCrossed) isStatic_computed = true;
     if(fullName_computed) {
       return fullName_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     fullName_value = fullName_compute();
-if(isFinal && num == state().boundariesCrossed) fullName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) fullName_computed = true;
     return fullName_value;
   }
   /**
@@ -3170,11 +3078,11 @@ if(isFinal && num == state().boundariesCrossed) fullName_computed = true;
     if(typeName_computed) {
       return typeName_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeName_value = typeName_compute();
-if(isFinal && num == state().boundariesCrossed) typeName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeName_computed = true;
     return typeName_value;
   }
   /**
@@ -3193,31 +3101,23 @@ if(isFinal && num == state().boundariesCrossed) typeName_computed = true;
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:15
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean identityConversionTo(TypeDecl type) {
-      ASTNode$State state = state();
-    boolean identityConversionTo_TypeDecl_value = identityConversionTo_compute(type);
-    return identityConversionTo_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return this == type;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean identityConversionTo_compute(TypeDecl type) {  return this == type;  }
   /**
    * @attribute syn
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:17
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean wideningConversionTo(TypeDecl type) {
-      ASTNode$State state = state();
-    boolean wideningConversionTo_TypeDecl_value = wideningConversionTo_compute(type);
-    return wideningConversionTo_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return instanceOf(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean wideningConversionTo_compute(TypeDecl type) {  return instanceOf(type);  }
   protected java.util.Map narrowingConversionTo_TypeDecl_values;
   /**
    * @attribute syn
@@ -3231,11 +3131,11 @@ if(isFinal && num == state().boundariesCrossed) typeName_computed = true;
     if(narrowingConversionTo_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)narrowingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean narrowingConversionTo_TypeDecl_value = narrowingConversionTo_compute(type);
-if(isFinal && num == state().boundariesCrossed) narrowingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(narrowingConversionTo_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) narrowingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(narrowingConversionTo_TypeDecl_value));
     return narrowingConversionTo_TypeDecl_value;
   }
   /**
@@ -3247,31 +3147,20 @@ if(isFinal && num == state().boundariesCrossed) narrowingConversionTo_TypeDecl_v
    * @aspect TypeConversion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:55
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean stringConversion() {
-      ASTNode$State state = state();
-    boolean stringConversion_value = stringConversion_compute();
-    return stringConversion_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean stringConversion_compute() {  return true;  }
   /**
    * @attribute syn
-   * @aspect AutoBoxing
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:77
+   * @aspect TypeConversion
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:59
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean assignConversionTo(TypeDecl type, Expr expr) {
-      ASTNode$State state = state();
-    boolean assignConversionTo_TypeDecl_Expr_value = assignConversionTo_compute(type, expr);
-    return assignConversionTo_TypeDecl_Expr_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean assignConversionTo_compute(TypeDecl type, Expr expr) {
+    ASTNode$State state = state();
+    try {
     if(refined_TypeConversion_TypeDecl_assignConversionTo_TypeDecl_Expr(type, expr))
       return true;
     boolean canBoxThis = this instanceof PrimitiveType;
@@ -3291,6 +3180,9 @@ if(isFinal && num == state().boundariesCrossed) narrowingConversionTo_TypeDecl_v
 
     return false;
   }
+    finally {
+    }
+  }
   protected java.util.Map methodInvocationConversionTo_TypeDecl_values;
   /**
    * @attribute syn
@@ -3304,11 +3196,11 @@ if(isFinal && num == state().boundariesCrossed) narrowingConversionTo_TypeDecl_v
     if(methodInvocationConversionTo_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)methodInvocationConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean methodInvocationConversionTo_TypeDecl_value = methodInvocationConversionTo_compute(type);
-if(isFinal && num == state().boundariesCrossed) methodInvocationConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(methodInvocationConversionTo_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) methodInvocationConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(methodInvocationConversionTo_TypeDecl_value));
     return methodInvocationConversionTo_TypeDecl_value;
   }
   /**
@@ -3340,11 +3232,11 @@ if(isFinal && num == state().boundariesCrossed) methodInvocationConversionTo_Typ
     if(castingConversionTo_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)castingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean castingConversionTo_TypeDecl_value = castingConversionTo_compute(type);
-if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(castingConversionTo_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(castingConversionTo_TypeDecl_value));
     return castingConversionTo_TypeDecl_value;
   }
   /**
@@ -3375,301 +3267,221 @@ if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_val
    * @aspect NumericPromotion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:146
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unaryNumericPromotion() {
-      ASTNode$State state = state();
-    TypeDecl unaryNumericPromotion_value = unaryNumericPromotion_compute();
-    return unaryNumericPromotion_value;
+    ASTNode$State state = state();
+    try {  return this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl unaryNumericPromotion_compute() {  return this;  }
   /**
    * @attribute syn
    * @aspect NumericPromotion
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:154
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl binaryNumericPromotion(TypeDecl type) {
-      ASTNode$State state = state();
-    TypeDecl binaryNumericPromotion_TypeDecl_value = binaryNumericPromotion_compute(type);
-    return binaryNumericPromotion_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return unknownType();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl binaryNumericPromotion_compute(TypeDecl type) {  return unknownType();  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:165
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isReferenceType() {
-      ASTNode$State state = state();
-    boolean isReferenceType_value = isReferenceType_compute();
-    return isReferenceType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isReferenceType_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:168
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isPrimitiveType() {
-      ASTNode$State state = state();
-    boolean isPrimitiveType_value = isPrimitiveType_compute();
-    return isPrimitiveType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isPrimitiveType_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:173
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isNumericType() {
-      ASTNode$State state = state();
-    boolean isNumericType_value = isNumericType_compute();
-    return isNumericType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isNumericType_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:177
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isIntegralType() {
-      ASTNode$State state = state();
-    boolean isIntegralType_value = isIntegralType_compute();
-    return isIntegralType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isIntegralType_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:181
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isBoolean() {
-      ASTNode$State state = state();
-    boolean isBoolean_value = isBoolean_compute();
-    return isBoolean_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isBoolean_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:185
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isByte() {
-      ASTNode$State state = state();
-    boolean isByte_value = isByte_compute();
-    return isByte_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isByte_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:187
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isChar() {
-      ASTNode$State state = state();
-    boolean isChar_value = isChar_compute();
-    return isChar_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isChar_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:189
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isShort() {
-      ASTNode$State state = state();
-    boolean isShort_value = isShort_compute();
-    return isShort_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isShort_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:191
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isInt() {
-      ASTNode$State state = state();
-    boolean isInt_value = isInt_compute();
-    return isInt_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isInt_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:195
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isFloat() {
-      ASTNode$State state = state();
-    boolean isFloat_value = isFloat_compute();
-    return isFloat_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isFloat_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:197
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isLong() {
-      ASTNode$State state = state();
-    boolean isLong_value = isLong_compute();
-    return isLong_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isLong_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:199
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDouble() {
-      ASTNode$State state = state();
-    boolean isDouble_value = isDouble_compute();
-    return isDouble_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDouble_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:202
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isVoid() {
-      ASTNode$State state = state();
-    boolean isVoid_value = isVoid_compute();
-    return isVoid_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isVoid_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:205
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isNull() {
-      ASTNode$State state = state();
-    boolean isNull_value = isNull_compute();
-    return isNull_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isNull_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:209
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isClassDecl() {
-      ASTNode$State state = state();
-    boolean isClassDecl_value = isClassDecl_compute();
-    return isClassDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isClassDecl_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:211
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isInterfaceDecl() {
-      ASTNode$State state = state();
-    boolean isInterfaceDecl_value = isInterfaceDecl_compute();
-    return isInterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isInterfaceDecl_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:213
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isArrayDecl() {
-      ASTNode$State state = state();
-    boolean isArrayDecl_value = isArrayDecl_compute();
-    return isArrayDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isArrayDecl_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:221
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isPrimitive() {
-      ASTNode$State state = state();
-    boolean isPrimitive_value = isPrimitive_compute();
-    return isPrimitive_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isPrimitive_compute() {  return false;  }
   /**
    * @apilevel internal
    */
@@ -3688,11 +3500,11 @@ if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_val
     if(isString_computed) {
       return isString_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isString_value = isString_compute();
-if(isFinal && num == state().boundariesCrossed) isString_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isString_computed = true;
     return isString_value;
   }
   /**
@@ -3717,11 +3529,11 @@ if(isFinal && num == state().boundariesCrossed) isString_computed = true;
     if(isObject_computed) {
       return isObject_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isObject_value = isObject_compute();
-if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
     return isObject_value;
   }
   /**
@@ -3733,16 +3545,12 @@ if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:230
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isUnknown() {
-      ASTNode$State state = state();
-    boolean isUnknown_value = isUnknown_compute();
-    return isUnknown_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isUnknown_compute() {  return false;  }
   protected java.util.Map instanceOf_TypeDecl_values;
   /**
    * @attribute syn
@@ -3756,11 +3564,11 @@ if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
     if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
     return instanceOf_TypeDecl_value;
   }
   /**
@@ -3772,242 +3580,182 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:423
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfClassDecl(ClassDecl type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfClassDecl_ClassDecl_value = isSupertypeOfClassDecl_compute(type);
-    return isSupertypeOfClassDecl_ClassDecl_value;
+    ASTNode$State state = state();
+    try {  return type == this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfClassDecl_compute(ClassDecl type) {  return type == this;  }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:440
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfInterfaceDecl_InterfaceDecl_value = isSupertypeOfInterfaceDecl_compute(type);
-    return isSupertypeOfInterfaceDecl_InterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return type == this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfInterfaceDecl_compute(InterfaceDecl type) {  return type == this;  }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:453
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
-    return isSupertypeOfArrayDecl_ArrayDecl_value;
+    ASTNode$State state = state();
+    try {  return this == type;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfArrayDecl_compute(ArrayDecl type) {  return this == type;  }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:475
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfPrimitiveType(PrimitiveType type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfPrimitiveType_PrimitiveType_value = isSupertypeOfPrimitiveType_compute(type);
-    return isSupertypeOfPrimitiveType_PrimitiveType_value;
+    ASTNode$State state = state();
+    try {  return type == this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfPrimitiveType_compute(PrimitiveType type) {  return type == this;  }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:482
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfNullType(NullType type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfNullType_NullType_value = isSupertypeOfNullType_compute(type);
-    return isSupertypeOfNullType_NullType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfNullType_compute(NullType type) {  return false;  }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:486
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfVoidType(VoidType type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfVoidType_VoidType_value = isSupertypeOfVoidType_compute(type);
-    return isSupertypeOfVoidType_VoidType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfVoidType_compute(VoidType type) {  return false;  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:498
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:497
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl topLevelType() {
-      ASTNode$State state = state();
-    TypeDecl topLevelType_value = topLevelType_compute();
-    return topLevelType_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl topLevelType_compute() {
+    ASTNode$State state = state();
+    try {
     if(isTopLevelType())
       return this;
     return enclosingType().topLevelType();
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:524
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:523
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isTopLevelType() {
-      ASTNode$State state = state();
-    boolean isTopLevelType_value = isTopLevelType_compute();
-    return isTopLevelType_value;
+    ASTNode$State state = state();
+    try {  return !isNestedType();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isTopLevelType_compute() {  return !isNestedType();  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:535
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:534
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isInnerClass() {
-      ASTNode$State state = state();
-    boolean isInnerClass_value = isInnerClass_compute();
-    return isInnerClass_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isInnerClass_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:537
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:536
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isInnerType() {
-      ASTNode$State state = state();
-    boolean isInnerType_value = isInnerType_compute();
-    return isInnerType_value;
+    ASTNode$State state = state();
+    try {  return (isLocalClass() || isAnonymous() || (isMemberType() && !isStatic())) && !inStaticContext();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isInnerType_compute() {  return (isLocalClass() || isAnonymous() || (isMemberType() && !isStatic())) && !inStaticContext();  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:539
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:538
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isInnerTypeOf(TypeDecl typeDecl) {
-      ASTNode$State state = state();
-    boolean isInnerTypeOf_TypeDecl_value = isInnerTypeOf_compute(typeDecl);
-    return isInnerTypeOf_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return typeDecl == this || (isInnerType() && enclosingType().isInnerTypeOf(typeDecl));  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isInnerTypeOf_compute(TypeDecl typeDecl) {  return typeDecl == this || (isInnerType() && enclosingType().isInnerTypeOf(typeDecl));  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:546
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:545
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl withinBodyThatSubclasses(TypeDecl type) {
-      ASTNode$State state = state();
-    TypeDecl withinBodyThatSubclasses_TypeDecl_value = withinBodyThatSubclasses_compute(type);
-    return withinBodyThatSubclasses_TypeDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl withinBodyThatSubclasses_compute(TypeDecl type) {
+    ASTNode$State state = state();
+    try {
     if(instanceOf(type))
       return this;
     if(!isTopLevelType())
       return enclosingType().withinBodyThatSubclasses(type);
     return null;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:554
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:553
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean encloses(TypeDecl type) {
-      ASTNode$State state = state();
-    boolean encloses_TypeDecl_value = encloses_compute(type);
-    return encloses_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return type.enclosedBy(this);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean encloses_compute(TypeDecl type) {  return type.enclosedBy(this);  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:556
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:555
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean enclosedBy(TypeDecl type) {
-      ASTNode$State state = state();
-    boolean enclosedBy_TypeDecl_value = enclosedBy_compute(type);
-    return enclosedBy_TypeDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean enclosedBy_compute(TypeDecl type) {
+    ASTNode$State state = state();
+    try {
     if(this == type)
       return true;
     if(isTopLevelType())
       return false;
     return enclosingType().enclosedBy(type);
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:570
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:569
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl hostType() {
-      ASTNode$State state = state();
-    TypeDecl hostType_value = hostType_compute();
-    return hostType_value;
+    ASTNode$State state = state();
+    try {  return this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl hostType_compute() {  return this;  }
   /**
    * @apilevel internal
    */
@@ -4027,7 +3775,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect Circularity
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:673
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:676
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isCircular() {
@@ -4052,7 +3800,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
         isCircular_value = new_isCircular_value; 
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
       isCircular_computed = true;
       }
       else {
@@ -4092,61 +3840,45 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:121
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isValidAnnotationMethodReturnType() {
-      ASTNode$State state = state();
-    boolean isValidAnnotationMethodReturnType_value = isValidAnnotationMethodReturnType_compute();
-    return isValidAnnotationMethodReturnType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isValidAnnotationMethodReturnType_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:225
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Annotation annotation(TypeDecl typeDecl) {
-      ASTNode$State state = state();
-    Annotation annotation_TypeDecl_value = annotation_compute(typeDecl);
-    return annotation_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().annotation(typeDecl);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Annotation annotation_compute(TypeDecl typeDecl) {  return getModifiers().annotation(typeDecl);  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:282
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasAnnotationSuppressWarnings(String s) {
-      ASTNode$State state = state();
-    boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
-    return hasAnnotationSuppressWarnings_String_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasAnnotationSuppressWarnings_compute(String s) {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:321
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDeprecated() {
-      ASTNode$State state = state();
-    boolean isDeprecated_value = isDeprecated_compute();
-    return isDeprecated_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().hasDeprecatedAnnotation();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDeprecated_compute() {  return getModifiers().hasDeprecatedAnnotation();  }
   /* An element type T is commensurate with an element value V if and only if one of the following conditions is true:
     * T is an array type E[] and either:
           o V is an ElementValueArrayInitializer and each ElementValueInitializer (analogous to a variable initializer in an array initializer) in V is commensurate with E. Or
@@ -4159,31 +3891,23 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:474
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWith(ElementValue value) {
-      ASTNode$State state = state();
-    boolean commensurateWith_ElementValue_value = commensurateWith_compute(value);
-    return commensurateWith_ElementValue_value;
+    ASTNode$State state = state();
+    try {  return value.commensurateWithTypeDecl(this);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean commensurateWith_compute(ElementValue value) {  return value.commensurateWithTypeDecl(this);  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:545
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isAnnotationDecl() {
-      ASTNode$State state = state();
-    boolean isAnnotationDecl_value = isAnnotationDecl_compute();
-    return isAnnotationDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isAnnotationDecl_compute() {  return false;  }
   /* NumericTypes, BooleanTypes
      TypeChecking (ensure that an expression of a certain type is valid in a particular context)
      TypeComputation (compute the type of an expression)
@@ -4199,16 +3923,12 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
    * @aspect AutoBoxing
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:31
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean boxingConversionTo(TypeDecl typeDecl) {
-      ASTNode$State state = state();
-    boolean boxingConversionTo_TypeDecl_value = boxingConversionTo_compute(typeDecl);
-    return boxingConversionTo_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean boxingConversionTo_compute(TypeDecl typeDecl) {  return false;  }
   /**
    * @apilevel internal
    */
@@ -4227,11 +3947,11 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
     if(boxed_computed) {
       return boxed_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boxed_value = boxed_compute();
-if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
+      if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
     return boxed_value;
   }
   /**
@@ -4243,16 +3963,12 @@ if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
    * @aspect AutoBoxing
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/AutoBoxing.jrag:47
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean unboxingConversionTo(TypeDecl typeDecl) {
-      ASTNode$State state = state();
-    boolean unboxingConversionTo_TypeDecl_value = unboxingConversionTo_compute(typeDecl);
-    return unboxingConversionTo_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean unboxingConversionTo_compute(TypeDecl typeDecl) {  return false;  }
   /**
    * @apilevel internal
    */
@@ -4271,11 +3987,11 @@ if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
     if(unboxed_computed) {
       return unboxed_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unboxed_value = unboxed_compute();
-if(isFinal && num == state().boundariesCrossed) unboxed_computed = true;
+      if(isFinal && num == state().boundariesCrossed) unboxed_computed = true;
     return unboxed_value;
   }
   /**
@@ -4302,11 +4018,11 @@ if(isFinal && num == state().boundariesCrossed) unboxed_computed = true;
     if(isIterable_computed) {
       return isIterable_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isIterable_value = isIterable_compute();
-if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
     return isIterable_value;
   }
   /**
@@ -4320,31 +4036,23 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
    * @aspect Enums
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:16
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isEnumDecl() {
-      ASTNode$State state = state();
-    boolean isEnumDecl_value = isEnumDecl_compute();
-    return isEnumDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isEnumDecl_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericMethodsInference
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethodsInference.jrag:13
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isUnboxedPrimitive() {
-      ASTNode$State state = state();
-    boolean isUnboxedPrimitive_value = isUnboxedPrimitive_compute();
-    return isUnboxedPrimitive_value;
+    ASTNode$State state = state();
+    try {  return this instanceof PrimitiveType && isPrimitive();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isUnboxedPrimitive_compute() {  return this instanceof PrimitiveType && isPrimitive();  }
   /**
    * @apilevel internal
    */
@@ -4389,7 +4097,7 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
         involvesTypeParameters_value = new_involvesTypeParameters_value; 
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
       involvesTypeParameters_computed = true;
       }
       else {
@@ -4425,48 +4133,36 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:159
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:179
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isGenericType() {
-      ASTNode$State state = state();
-    boolean isGenericType_value = isGenericType_compute();
-    return isGenericType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isGenericType_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:233
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:253
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isParameterizedType() {
-      ASTNode$State state = state();
-    boolean isParameterizedType_value = isParameterizedType_compute();
-    return isParameterizedType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isParameterizedType_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:236
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:256
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isRawType() {
-      ASTNode$State state = state();
-    boolean isRawType_value = isRawType_compute();
-    return isRawType_value;
+    ASTNode$State state = state();
+    try {  return isNestedType() && enclosingType().isRawType();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isRawType_compute() {  return isNestedType() && enclosingType().isRawType();  }
   /**
    * @apilevel internal
    */
@@ -4478,18 +4174,18 @@ if(isFinal && num == state().boundariesCrossed) isIterable_computed = true;
   /**
    * @attribute syn
    * @aspect GenericsErasure
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:316
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:343
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl erasure() {
     if(erasure_computed) {
       return erasure_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     erasure_value = erasure_compute();
-if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
+      if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
     return erasure_value;
   }
   /**
@@ -4513,18 +4209,18 @@ if(isFinal && num == state().boundariesCrossed) erasure_computed = true;
   /**
    * @attribute syn
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:372
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:399
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashSet implementedInterfaces() {
     if(implementedInterfaces_computed) {
       return implementedInterfaces_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     implementedInterfaces_value = implementedInterfaces_compute();
-if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed = true;
+      if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed = true;
     return implementedInterfaces_value;
   }
   /**
@@ -4534,21 +4230,17 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:544
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:571
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean sameSignature(Access a) {
-      ASTNode$State state = state();
-    boolean sameSignature_Access_value = sameSignature_compute(a);
-    return sameSignature_Access_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean sameSignature_compute(Access a) {
+    ASTNode$State state = state();
+    try {
     if(a instanceof ParTypeAccess) return false;
     if(a instanceof AbstractWildcard) return false;
     return this == a.type();
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -4569,7 +4261,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1029
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1068
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean usesTypeVariable() {
@@ -4594,7 +4286,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
         usesTypeVariable_value = new_usesTypeVariable_value; 
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
       usesTypeVariable_computed = true;
       }
       else {
@@ -4630,48 +4322,36 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1200
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1306
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl original() {
-      ASTNode$State state = state();
-    TypeDecl original_value = original_compute();
-    return original_value;
+    ASTNode$State state = state();
+    try {  return this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl original_compute() {  return this;  }
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1292
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1398
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl asWildcardExtends() {
-      ASTNode$State state = state();
-    TypeDecl asWildcardExtends_value = asWildcardExtends_compute();
-    return asWildcardExtends_value;
+    ASTNode$State state = state();
+    try {  return lookupWildcardExtends(this);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl asWildcardExtends_compute() {  return lookupWildcardExtends(this);  }
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1305
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1411
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl asWildcardSuper() {
-      ASTNode$State state = state();
-    TypeDecl asWildcardSuper_value = asWildcardSuper_compute();
-    return asWildcardSuper_value;
+    ASTNode$State state = state();
+    try {  return lookupWildcardSuper(this);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl asWildcardSuper_compute() {  return lookupWildcardSuper(this);  }
   /**
    * @apilevel internal
    */
@@ -4683,18 +4363,18 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1398
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1504
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl sourceTypeDecl() {
     if(sourceTypeDecl_computed) {
       return sourceTypeDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceTypeDecl_value = sourceTypeDecl_compute();
-if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
     return sourceTypeDecl_value;
   }
   /**
@@ -4706,166 +4386,122 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
    * @aspect GenericsParTypeDecl
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:73
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isTypeVariable() {
-      ASTNode$State state = state();
-    boolean isTypeVariable_value = isTypeVariable_compute();
-    return isTypeVariable_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isTypeVariable_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:14
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeGenericClassDecl(GenericClassDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeGenericClassDecl_GenericClassDecl_value = supertypeGenericClassDecl_compute(type);
-    return supertypeGenericClassDecl_GenericClassDecl_value;
+    ASTNode$State state = state();
+    try {  return supertypeClassDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeGenericClassDecl_compute(GenericClassDecl type) {  return supertypeClassDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:20
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeGenericInterfaceDecl(GenericInterfaceDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeGenericInterfaceDecl_GenericInterfaceDecl_value = supertypeGenericInterfaceDecl_compute(type);
-    return supertypeGenericInterfaceDecl_GenericInterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return this == type || supertypeInterfaceDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeGenericInterfaceDecl_compute(GenericInterfaceDecl type) {  return this == type || supertypeInterfaceDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:26
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeRawClassDecl(RawClassDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeRawClassDecl_RawClassDecl_value = supertypeRawClassDecl_compute(type);
-    return supertypeRawClassDecl_RawClassDecl_value;
+    ASTNode$State state = state();
+    try {  return supertypeParClassDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeRawClassDecl_compute(RawClassDecl type) {  return supertypeParClassDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:30
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeRawInterfaceDecl(RawInterfaceDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeRawInterfaceDecl_RawInterfaceDecl_value = supertypeRawInterfaceDecl_compute(type);
-    return supertypeRawInterfaceDecl_RawInterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return supertypeParInterfaceDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeRawInterfaceDecl_compute(RawInterfaceDecl type) {  return supertypeParInterfaceDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:46
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeWildcard(WildcardType type) {
-      ASTNode$State state = state();
-    boolean supertypeWildcard_WildcardType_value = supertypeWildcard_compute(type);
-    return supertypeWildcard_WildcardType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeWildcard_compute(WildcardType type) {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:57
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeWildcardExtends(WildcardExtendsType type) {
-      ASTNode$State state = state();
-    boolean supertypeWildcardExtends_WildcardExtendsType_value = supertypeWildcardExtends_compute(type);
-    return supertypeWildcardExtends_WildcardExtendsType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeWildcardExtends_compute(WildcardExtendsType type) {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:66
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeWildcardSuper(WildcardSuperType type) {
-      ASTNode$State state = state();
-    boolean supertypeWildcardSuper_WildcardSuperType_value = supertypeWildcardSuper_compute(type);
-    return supertypeWildcardSuper_WildcardSuperType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeWildcardSuper_compute(WildcardSuperType type) {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:102
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isWildcard() {
-      ASTNode$State state = state();
-    boolean isWildcard_value = isWildcard_compute();
-    return isWildcard_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isWildcard_compute() {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:125
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeParClassDecl(ParClassDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeParClassDecl_ParClassDecl_value = supertypeParClassDecl_compute(type);
-    return supertypeParClassDecl_ParClassDecl_value;
+    ASTNode$State state = state();
+    try {  return supertypeClassDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeParClassDecl_compute(ParClassDecl type) {  return supertypeClassDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:129
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeParInterfaceDecl(ParInterfaceDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeParInterfaceDecl_ParInterfaceDecl_value = supertypeParInterfaceDecl_compute(type);
-    return supertypeParInterfaceDecl_ParInterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return supertypeInterfaceDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeParInterfaceDecl_compute(ParInterfaceDecl type) {  return supertypeInterfaceDecl(type);  }
   protected java.util.Map containedIn_TypeDecl_values;
   /**
    * @attribute syn
@@ -4906,7 +4542,7 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         containedIn_TypeDecl_values.put(_parameters, new_containedIn_TypeDecl_value);
       }
       else {
@@ -4987,7 +4623,7 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         sameStructure_TypeDecl_values.put(_parameters, new_sameStructure_TypeDecl_value);
       }
       else {
@@ -5022,16 +4658,9 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:291
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeTypeVariable(TypeVariable type) {
-      ASTNode$State state = state();
-    boolean supertypeTypeVariable_TypeVariable_value = supertypeTypeVariable_compute(type);
-    return supertypeTypeVariable_TypeVariable_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeTypeVariable_compute(TypeVariable type) {
+    ASTNode$State state = state();
+    try {
     if(type == this)
       return true;
     for(int i = 0; i < type.getNumTypeBound(); i++)
@@ -5039,46 +4668,41 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
         return true;
     return false;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:347
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeLUBType(LUBType type) {
-      ASTNode$State state = state();
-    boolean supertypeLUBType_LUBType_value = supertypeLUBType_compute(type);
-    return supertypeLUBType_LUBType_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeLUBType_compute(LUBType type) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0; i < type.getNumTypeBound(); i++)
       if(!type.getTypeBound(i).type().subtype(this))
         return false;
     return true;
+  }
+    finally {
+    }
   }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:366
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeGLBType(GLBType type) {
-      ASTNode$State state = state();
-    boolean supertypeGLBType_GLBType_value = supertypeGLBType_compute(type);
-    return supertypeGLBType_GLBType_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeGLBType_compute(GLBType type) {
+    ASTNode$State state = state();
+    try {
     // T1 && .. && Tn <: this, if exists  0 < i <= n Ti <: this 
     for(int i = 0; i < type.getNumTypeBound(); i++)
       if(type.getTypeBound(i).type().subtype(this))
         return true;
     return false;
+  }
+    finally {
+    }
   }
   protected java.util.Map subtype_TypeDecl_values;
   /**
@@ -5120,7 +4744,7 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
       }
       else {
@@ -5155,181 +4779,130 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:421
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeClassDecl(ClassDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeClassDecl_ClassDecl_value = supertypeClassDecl_compute(type);
-    return supertypeClassDecl_ClassDecl_value;
+    ASTNode$State state = state();
+    try {  return type == this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeClassDecl_compute(ClassDecl type) {  return type == this;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:437
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeInterfaceDecl(InterfaceDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeInterfaceDecl_InterfaceDecl_value = supertypeInterfaceDecl_compute(type);
-    return supertypeInterfaceDecl_InterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return type == this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeInterfaceDecl_compute(InterfaceDecl type) {  return type == this;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:450
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeArrayDecl(ArrayDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeArrayDecl_ArrayDecl_value = supertypeArrayDecl_compute(type);
-    return supertypeArrayDecl_ArrayDecl_value;
+    ASTNode$State state = state();
+    try {  return this == type;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeArrayDecl_compute(ArrayDecl type) {  return this == type;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:472
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypePrimitiveType(PrimitiveType type) {
-      ASTNode$State state = state();
-    boolean supertypePrimitiveType_PrimitiveType_value = supertypePrimitiveType_compute(type);
-    return supertypePrimitiveType_PrimitiveType_value;
+    ASTNode$State state = state();
+    try {  return type == this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypePrimitiveType_compute(PrimitiveType type) {  return type == this;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:479
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeNullType(NullType type) {
-      ASTNode$State state = state();
-    boolean supertypeNullType_NullType_value = supertypeNullType_compute(type);
-    return supertypeNullType_NullType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeNullType_compute(NullType type) {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:483
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeVoidType(VoidType type) {
-      ASTNode$State state = state();
-    boolean supertypeVoidType_VoidType_value = supertypeVoidType_compute(type);
-    return supertypeVoidType_VoidType_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeVoidType_compute(VoidType type) {  return false;  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:493
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeClassDeclSubstituted(ClassDeclSubstituted type) {
-      ASTNode$State state = state();
-    boolean supertypeClassDeclSubstituted_ClassDeclSubstituted_value = supertypeClassDeclSubstituted_compute(type);
-    return supertypeClassDeclSubstituted_ClassDeclSubstituted_value;
+    ASTNode$State state = state();
+    try {  return type.original() == this || supertypeClassDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeClassDeclSubstituted_compute(ClassDeclSubstituted type) {  return type.original() == this || supertypeClassDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:503
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeInterfaceDeclSubstituted(InterfaceDeclSubstituted type) {
-      ASTNode$State state = state();
-    boolean supertypeInterfaceDeclSubstituted_InterfaceDeclSubstituted_value = supertypeInterfaceDeclSubstituted_compute(type);
-    return supertypeInterfaceDeclSubstituted_InterfaceDeclSubstituted_value;
+    ASTNode$State state = state();
+    try {  return type.original() == this || supertypeInterfaceDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeInterfaceDeclSubstituted_compute(InterfaceDeclSubstituted type) {  return type.original() == this || supertypeInterfaceDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:513
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeGenericClassDeclSubstituted(GenericClassDeclSubstituted type) {
-      ASTNode$State state = state();
-    boolean supertypeGenericClassDeclSubstituted_GenericClassDeclSubstituted_value = supertypeGenericClassDeclSubstituted_compute(type);
-    return supertypeGenericClassDeclSubstituted_GenericClassDeclSubstituted_value;
+    ASTNode$State state = state();
+    try {  return type.original() == this || supertypeGenericClassDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeGenericClassDeclSubstituted_compute(GenericClassDeclSubstituted type) {  return type.original() == this || supertypeGenericClassDecl(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:523
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeGenericInterfaceDeclSubstituted(GenericInterfaceDeclSubstituted type) {
-      ASTNode$State state = state();
-    boolean supertypeGenericInterfaceDeclSubstituted_GenericInterfaceDeclSubstituted_value = supertypeGenericInterfaceDeclSubstituted_compute(type);
-    return supertypeGenericInterfaceDeclSubstituted_GenericInterfaceDeclSubstituted_value;
+    ASTNode$State state = state();
+    try {  return type.original() == this || supertypeGenericInterfaceDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeGenericInterfaceDeclSubstituted_compute(GenericInterfaceDeclSubstituted type) {  return type.original() == this || supertypeGenericInterfaceDecl(type);  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:79
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:82
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl stringPromotion() {
-      ASTNode$State state = state();
-    TypeDecl stringPromotion_value = stringPromotion_compute();
-    return stringPromotion_value;
+    ASTNode$State state = state();
+    try {  return this;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl stringPromotion_compute() {  return this;  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:91
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:94
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public MethodDecl methodWithArgs(String name, TypeDecl[] args) {
-      ASTNode$State state = state();
-    MethodDecl methodWithArgs_String_TypeDecl_a_value = methodWithArgs_compute(name, args);
-    return methodWithArgs_String_TypeDecl_a_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private MethodDecl methodWithArgs_compute(String name, TypeDecl[] args) {
+    ASTNode$State state = state();
+    try {
     for(Iterator iter = memberMethods(name).iterator(); iter.hasNext(); ) {
       MethodDecl m = (MethodDecl)iter.next();
       if(m.getNumParameter() == args.length) {
@@ -5339,6 +4912,9 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
       }
     }
     return null;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -5351,18 +4927,18 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:142
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:145
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection enclosingVariables() {
     if(enclosingVariables_computed) {
       return enclosingVariables_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     enclosingVariables_value = enclosingVariables_compute();
-if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = true;
+      if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = true;
     return enclosingVariables_value;
   }
   /**
@@ -5383,37 +4959,26 @@ if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = tr
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:382
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:394
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isAnonymousInNonStaticContext() {
-      ASTNode$State state = state();
-    boolean isAnonymousInNonStaticContext_value = isAnonymousInNonStaticContext_compute();
-    return isAnonymousInNonStaticContext_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isAnonymousInNonStaticContext_compute() {
+    ASTNode$State state = state();
+    try {
     return isAnonymous() && 
            !((ClassInstanceExpr)getParent().getParent()).unqualifiedScope().inStaticContext()
            && (!inExplicitConstructorInvocation() || enclosingBodyDecl().hostType().isInnerType());
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:388
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:400
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean needsEnclosing() {
-      ASTNode$State state = state();
-    boolean needsEnclosing_value = needsEnclosing_compute();
-    return needsEnclosing_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean needsEnclosing_compute() {
+    ASTNode$State state = state();
+    try {
     if(isAnonymous())
       return isAnonymousInNonStaticContext();
     else if(isLocalClass())
@@ -5422,21 +4987,17 @@ if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = tr
       return true;
     return false;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:398
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:410
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean needsSuperEnclosing() {
-      ASTNode$State state = state();
-    boolean needsSuperEnclosing_value = needsSuperEnclosing_compute();
-    return needsSuperEnclosing_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean needsSuperEnclosing_compute() {
+    ASTNode$State state = state();
+    try {
     if(!isAnonymous())
       return false;
     TypeDecl superClass = ((ClassDecl)this).superclass();
@@ -5448,21 +5009,17 @@ if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = tr
       return false;
     return false;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:410
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:422
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosing() {
-      ASTNode$State state = state();
-    TypeDecl enclosing_value = enclosing_compute();
-    return enclosing_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl enclosing_compute() {
+    ASTNode$State state = state();
+    try {
     if(!needsEnclosing())
       return null;
     TypeDecl typeDecl = enclosingType();
@@ -5470,21 +5027,20 @@ if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = tr
       typeDecl = typeDecl.enclosingType();
     return typeDecl;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:418
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:430
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl superEnclosing() {
-      ASTNode$State state = state();
-    TypeDecl superEnclosing_value = superEnclosing_compute();
-    return superEnclosing_value;
+    ASTNode$State state = state();
+    try {  return null;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl superEnclosing_compute() {  return null;  }
   /**
    * @apilevel internal
    */
@@ -5503,11 +5059,11 @@ if(isFinal && num == state().boundariesCrossed) enclosingVariables_computed = tr
     if(uniqueIndex_computed) {
       return uniqueIndex_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     uniqueIndex_value = uniqueIndex_compute();
-if(isFinal && num == state().boundariesCrossed) uniqueIndex_computed = true;
+      if(isFinal && num == state().boundariesCrossed) uniqueIndex_computed = true;
     return uniqueIndex_value;
   }
   /**
@@ -5532,11 +5088,11 @@ if(isFinal && num == state().boundariesCrossed) uniqueIndex_computed = true;
     if(jvmName_computed) {
       return jvmName_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     jvmName_value = jvmName_compute();
-if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
     return jvmName_value;
   }
   /**
@@ -5550,34 +5106,26 @@ if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:44
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String primitiveClassName() {
-      ASTNode$State state = state();
-    String primitiveClassName_value = primitiveClassName_compute();
-    return primitiveClassName_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private String primitiveClassName_compute() {
+    ASTNode$State state = state();
+    try {
     throw new Error("primitiveClassName not supported for " + name() + " of type " + getClass().getName());
+  }
+    finally {
+    }
   }
   /**
    * @attribute syn
    * @aspect Java2Rewrites
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:57
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String referenceClassFieldName() {
-      ASTNode$State state = state();
-    String referenceClassFieldName_value = referenceClassFieldName_compute();
-    return referenceClassFieldName_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private String referenceClassFieldName_compute() {
+    ASTNode$State state = state();
+    try {
     throw new Error("referenceClassFieldName not supported for " + name() + " of type " + getClass().getName());
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -5597,11 +5145,11 @@ if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
     if(getSootClassDecl_computed) {
       return getSootClassDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSootClassDecl_value = getSootClassDecl_compute();
-if(isFinal && num == state().boundariesCrossed) getSootClassDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getSootClassDecl_computed = true;
     return getSootClassDecl_value;
   }
   /**
@@ -5659,11 +5207,11 @@ if(isFinal && num == state().boundariesCrossed) getSootClassDecl_computed = true
     if(getSootType_computed) {
       return getSootType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSootType_value = getSootType_compute();
-if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
     return getSootType_value;
   }
   /**
@@ -5677,16 +5225,12 @@ if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:58
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public soot.RefType sootRef() {
-      ASTNode$State state = state();
-    soot.RefType sootRef_value = sootRef_compute();
-    return sootRef_value;
+    ASTNode$State state = state();
+    try {  return (soot.RefType)getSootType();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private soot.RefType sootRef_compute() {  return (soot.RefType)getSootType();  }
   /**
    * @apilevel internal
    */
@@ -5705,11 +5249,11 @@ if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
     if(sootClass_computed) {
       return sootClass_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sootClass_value = sootClass_compute();
-if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
     return sootClass_value;
   }
   /**
@@ -5724,34 +5268,23 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:85
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String sourceNameWithoutPath() {
-      ASTNode$State state = state();
-    String sourceNameWithoutPath_value = sourceNameWithoutPath_compute();
-    return sourceNameWithoutPath_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private String sourceNameWithoutPath_compute() {
+    ASTNode$State state = state();
+    try {
     String s = sourceFile();
     return s != null ? s.substring(s.lastIndexOf(java.io.File.separatorChar)+1) : "Unknown";
+  }
+    finally {
+    }
   }
   /**
    * @attribute syn
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:90
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int sootTypeModifiers() {
-      ASTNode$State state = state();
-    int sootTypeModifiers_value = sootTypeModifiers_compute();
-    return sootTypeModifiers_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private int sootTypeModifiers_compute() {
+    ASTNode$State state = state();
+    try {
     int result = 0;
     if(isNestedType()) {
       result |= soot.Modifier.PUBLIC;
@@ -5765,6 +5298,9 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
     if(isStatic()) result |= soot.Modifier.STATIC;
     if(isAbstract()) result |= soot.Modifier.ABSTRACT;
     return result;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -5784,11 +5320,11 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
     if(needsClinit_computed) {
       return needsClinit_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     needsClinit_value = needsClinit_compute();
-if(isFinal && num == state().boundariesCrossed) needsClinit_computed = true;
+      if(isFinal && num == state().boundariesCrossed) needsClinit_computed = true;
     return needsClinit_value;
   }
   /**
@@ -5827,11 +5363,11 @@ if(isFinal && num == state().boundariesCrossed) needsClinit_computed = true;
     if(innerClassesAttributeEntries_computed) {
       return innerClassesAttributeEntries_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     innerClassesAttributeEntries_value = innerClassesAttributeEntries_compute();
-if(isFinal && num == state().boundariesCrossed) innerClassesAttributeEntries_computed = true;
+      if(isFinal && num == state().boundariesCrossed) innerClassesAttributeEntries_computed = true;
     return innerClassesAttributeEntries_value;
   }
   /**
@@ -5862,11 +5398,11 @@ if(isFinal && num == state().boundariesCrossed) innerClassesAttributeEntries_com
     if(getSootField_String_TypeDecl_values.containsKey(_parameters)) {
       return (SootField)getSootField_String_TypeDecl_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SootField getSootField_String_TypeDecl_value = getSootField_compute(name, type);
-if(isFinal && num == state().boundariesCrossed) getSootField_String_TypeDecl_values.put(_parameters, getSootField_String_TypeDecl_value);
+      if(isFinal && num == state().boundariesCrossed) getSootField_String_TypeDecl_values.put(_parameters, getSootField_String_TypeDecl_value);
     return getSootField_String_TypeDecl_value;
   }
   /**
@@ -5882,31 +5418,23 @@ if(isFinal && num == state().boundariesCrossed) getSootField_String_TypeDecl_val
    * @aspect LocalNum
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/LocalNum.jrag:52
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int variableSize() {
-      ASTNode$State state = state();
-    int variableSize_value = variableSize_compute();
-    return variableSize_value;
+    ASTNode$State state = state();
+    try {  return 1;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int variableSize_compute() {  return 1;  }
   /**
    * @attribute syn
    * @aspect AnnotationsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:322
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String typeDescriptor() {
-      ASTNode$State state = state();
-    String typeDescriptor_value = typeDescriptor_compute();
-    return typeDescriptor_value;
+    ASTNode$State state = state();
+    try {  return jvmName();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String typeDescriptor_compute() {  return jvmName();  }
   protected java.util.Map createEnumMethod_TypeDecl_values;
   /**
    * @attribute syn
@@ -5920,11 +5448,11 @@ if(isFinal && num == state().boundariesCrossed) getSootField_String_TypeDecl_val
     if(createEnumMethod_TypeDecl_values.containsKey(_parameters)) {
       return (MethodDecl)createEnumMethod_TypeDecl_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     MethodDecl createEnumMethod_TypeDecl_value = createEnumMethod_compute(enumDecl);
-if(isFinal && num == state().boundariesCrossed) createEnumMethod_TypeDecl_values.put(_parameters, createEnumMethod_TypeDecl_value);
+      if(isFinal && num == state().boundariesCrossed) createEnumMethod_TypeDecl_values.put(_parameters, createEnumMethod_TypeDecl_value);
     return createEnumMethod_TypeDecl_value;
   }
   /**
@@ -5985,11 +5513,11 @@ if(isFinal && num == state().boundariesCrossed) createEnumMethod_TypeDecl_values
     if(createEnumIndex_EnumConstant_values.containsKey(_parameters)) {
       return ((Integer)createEnumIndex_EnumConstant_values.get(_parameters)).intValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     int createEnumIndex_EnumConstant_value = createEnumIndex_compute(e);
-if(isFinal && num == state().boundariesCrossed) createEnumIndex_EnumConstant_values.put(_parameters, Integer.valueOf(createEnumIndex_EnumConstant_value));
+      if(isFinal && num == state().boundariesCrossed) createEnumIndex_EnumConstant_values.put(_parameters, Integer.valueOf(createEnumIndex_EnumConstant_value));
     return createEnumIndex_EnumConstant_value;
   }
   /**
@@ -6050,11 +5578,11 @@ if(isFinal && num == state().boundariesCrossed) createEnumIndex_EnumConstant_val
     if(createEnumArray_TypeDecl_values.containsKey(_parameters)) {
       return (FieldDeclaration)createEnumArray_TypeDecl_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     FieldDeclaration createEnumArray_TypeDecl_value = createEnumArray_compute(enumDecl);
-if(isFinal && num == state().boundariesCrossed) createEnumArray_TypeDecl_values.put(_parameters, createEnumArray_TypeDecl_value);
+      if(isFinal && num == state().boundariesCrossed) createEnumArray_TypeDecl_values.put(_parameters, createEnumArray_TypeDecl_value);
     return createEnumArray_TypeDecl_value;
   }
   /**
@@ -6077,16 +5605,53 @@ if(isFinal && num == state().boundariesCrossed) createEnumArray_TypeDecl_values.
    * @aspect GenericsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:333
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet bridgeCandidates(String signature) {
-      ASTNode$State state = state();
-    SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
-    return bridgeCandidates_String_value;
+    ASTNode$State state = state();
+    try {  return SimpleSet.emptySet;  }
+    finally {
+    }
   }
   /**
-   * @apilevel internal
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:14
    */
-  private SimpleSet bridgeCandidates_compute(String signature) {  return SimpleSet.emptySet;  }
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSafeVarargs();  }
+    finally {
+    }
+  }
+  /**
+	 * A type is reifiable if it either refers to a non-parameterized type,
+	 * is a raw type, is a parameterized type with only unbound wildcard
+	 * parameters or is an array type with a reifiable type parameter.
+	 *
+	 * @see "JLSv3 &sect;4.7"
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:106
+   */
+  public boolean isReifiable() {
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
+  }
+  /**
+   * An unchecked conversion occurs when converting from a
+   * raw type G to a generic type G<T1, ..., Tn>.
+   * @attribute syn
+   * @aspect UncheckedConversion
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/UncheckedConversion.jrag:50
+   */
+  public boolean isUncheckedConversionTo(TypeDecl dest) {
+    ASTNode$State state = state();
+    try {  return (!dest.isRawType()) && this.isRawType();  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */
@@ -6105,11 +5670,11 @@ if(isFinal && num == state().boundariesCrossed) createEnumArray_TypeDecl_values.
     if(componentType_computed) {
       return componentType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     componentType_value = getParent().Define_TypeDecl_componentType(this, null);
-if(isFinal && num == state().boundariesCrossed) componentType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) componentType_computed = true;
     return componentType_value;
   }
   /**
@@ -6119,7 +5684,7 @@ if(isFinal && num == state().boundariesCrossed) componentType_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeCloneable() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeCloneable_value = getParent().Define_TypeDecl_typeCloneable(this, null);
     return typeCloneable_value;
   }
@@ -6130,7 +5695,7 @@ if(isFinal && num == state().boundariesCrossed) componentType_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeSerializable() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeSerializable_value = getParent().Define_TypeDecl_typeSerializable(this, null);
     return typeSerializable_value;
   }
@@ -6141,7 +5706,7 @@ if(isFinal && num == state().boundariesCrossed) componentType_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public CompilationUnit compilationUnit() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     CompilationUnit compilationUnit_value = getParent().Define_CompilationUnit_compilationUnit(this, null);
     return compilationUnit_value;
   }
@@ -6158,18 +5723,18 @@ if(isFinal && num == state().boundariesCrossed) componentType_computed = true;
     if(isDAbefore_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAbefore_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAbefore_Variable_value = getParent().Define_boolean_isDAbefore(this, null, v);
-if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_parameters, Boolean.valueOf(isDAbefore_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_parameters, Boolean.valueOf(isDAbefore_Variable_value));
     return isDAbefore_Variable_value;
   }
   protected java.util.Map isDUbefore_Variable_values;
   /**
    * @attribute inh
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:704
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:705
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUbefore(Variable v) {
@@ -6178,11 +5743,11 @@ if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_
     if(isDUbefore_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUbefore_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUbefore_Variable_value = getParent().Define_boolean_isDUbefore(this, null, v);
-if(isFinal && num == state().boundariesCrossed) isDUbefore_Variable_values.put(_parameters, Boolean.valueOf(isDUbefore_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUbefore_Variable_values.put(_parameters, Boolean.valueOf(isDUbefore_Variable_value));
     return isDUbefore_Variable_value;
   }
   /**
@@ -6203,11 +5768,11 @@ if(isFinal && num == state().boundariesCrossed) isDUbefore_Variable_values.put(_
     if(typeException_computed) {
       return typeException_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeException_value = getParent().Define_TypeDecl_typeException(this, null);
-if(isFinal && num == state().boundariesCrossed) typeException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeException_computed = true;
     return typeException_value;
   }
   /**
@@ -6228,11 +5793,11 @@ if(isFinal && num == state().boundariesCrossed) typeException_computed = true;
     if(typeRuntimeException_computed) {
       return typeRuntimeException_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeRuntimeException_value = getParent().Define_TypeDecl_typeRuntimeException(this, null);
-if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = true;
     return typeRuntimeException_value;
   }
   /**
@@ -6253,11 +5818,11 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
     if(typeError_computed) {
       return typeError_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeError_value = getParent().Define_TypeDecl_typeError(this, null);
-if(isFinal && num == state().boundariesCrossed) typeError_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeError_computed = true;
     return typeError_value;
   }
   protected java.util.Map lookupMethod_String_values;
@@ -6273,11 +5838,11 @@ if(isFinal && num == state().boundariesCrossed) typeError_computed = true;
     if(lookupMethod_String_values.containsKey(_parameters)) {
       return (Collection)lookupMethod_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     Collection lookupMethod_String_value = getParent().Define_Collection_lookupMethod(this, null, name);
-if(isFinal && num == state().boundariesCrossed) lookupMethod_String_values.put(_parameters, lookupMethod_String_value);
+      if(isFinal && num == state().boundariesCrossed) lookupMethod_String_values.put(_parameters, lookupMethod_String_value);
     return lookupMethod_String_value;
   }
   /**
@@ -6287,7 +5852,7 @@ if(isFinal && num == state().boundariesCrossed) lookupMethod_String_values.put(_
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeInt() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeInt_value = getParent().Define_TypeDecl_typeInt(this, null);
     return typeInt_value;
   }
@@ -6309,11 +5874,11 @@ if(isFinal && num == state().boundariesCrossed) lookupMethod_String_values.put(_
     if(typeObject_computed) {
       return typeObject_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeObject_value = getParent().Define_TypeDecl_typeObject(this, null);
-if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
     return typeObject_value;
   }
   /**
@@ -6323,7 +5888,7 @@ if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupType(String packageName, String typeName) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
     return lookupType_String_String_value;
   }
@@ -6331,7 +5896,7 @@ if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
   /**
    * @attribute inh
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:172
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:260
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet lookupType(String name) {
@@ -6340,11 +5905,11 @@ if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
     if(lookupType_String_values.containsKey(_parameters)) {
       return (SimpleSet)lookupType_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet lookupType_String_value = getParent().Define_SimpleSet_lookupType(this, null, name);
-if(isFinal && num == state().boundariesCrossed) lookupType_String_values.put(_parameters, lookupType_String_value);
+      if(isFinal && num == state().boundariesCrossed) lookupType_String_values.put(_parameters, lookupType_String_value);
     return lookupType_String_value;
   }
   protected java.util.Map lookupVariable_String_values;
@@ -6360,11 +5925,11 @@ if(isFinal && num == state().boundariesCrossed) lookupType_String_values.put(_pa
     if(lookupVariable_String_values.containsKey(_parameters)) {
       return (SimpleSet)lookupVariable_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet lookupVariable_String_value = getParent().Define_SimpleSet_lookupVariable(this, null, name);
-if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
+      if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put(_parameters, lookupVariable_String_value);
     return lookupVariable_String_value;
   }
   /**
@@ -6374,7 +5939,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean hasPackage(String packageName) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean hasPackage_String_value = getParent().Define_boolean_hasPackage(this, null, packageName);
     return hasPackage_String_value;
   }
@@ -6385,7 +5950,7 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ASTNode enclosingBlock() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     ASTNode enclosingBlock_value = getParent().Define_ASTNode_enclosingBlock(this, null);
     return enclosingBlock_value;
   }
@@ -6407,11 +5972,11 @@ if(isFinal && num == state().boundariesCrossed) lookupVariable_String_values.put
     if(packageName_computed) {
       return packageName_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     packageName_value = getParent().Define_String_packageName(this, null);
-if(isFinal && num == state().boundariesCrossed) packageName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) packageName_computed = true;
     return packageName_value;
   }
   /**
@@ -6432,76 +5997,76 @@ if(isFinal && num == state().boundariesCrossed) packageName_computed = true;
     if(isAnonymous_computed) {
       return isAnonymous_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isAnonymous_value = getParent().Define_boolean_isAnonymous(this, null);
-if(isFinal && num == state().boundariesCrossed) isAnonymous_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isAnonymous_computed = true;
     return isAnonymous_value;
   }
   /**
    * @attribute inh
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:497
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:496
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosingType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl enclosingType_value = getParent().Define_TypeDecl_enclosingType(this, null);
     return enclosingType_value;
   }
   /**
    * @attribute inh
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:513
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:512
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl enclosingBodyDecl() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
     return enclosingBodyDecl_value;
   }
   /**
    * @attribute inh
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:519
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:518
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isNestedType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean isNestedType_value = getParent().Define_boolean_isNestedType(this, null);
     return isNestedType_value;
   }
   /**
    * @attribute inh
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:527
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:526
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isMemberType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean isMemberType_value = getParent().Define_boolean_isMemberType(this, null);
     return isMemberType_value;
   }
   /**
    * @attribute inh
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:541
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:540
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isLocalClass() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean isLocalClass_value = getParent().Define_boolean_isLocalClass(this, null);
     return isLocalClass_value;
   }
   /**
    * @attribute inh
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:566
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:565
    */
   @SuppressWarnings({"unchecked", "cast"})
   public String hostPackage() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     String hostPackage_value = getParent().Define_String_hostPackage(this, null);
     return hostPackage_value;
   }
@@ -6516,18 +6081,18 @@ if(isFinal && num == state().boundariesCrossed) isAnonymous_computed = true;
   /**
    * @attribute inh
    * @aspect Circularity
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:672
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:675
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unknownType() {
     if(unknownType_computed) {
       return unknownType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
-if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
     return unknownType_value;
   }
   /**
@@ -6537,7 +6102,7 @@ if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeVoid() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeVoid_value = getParent().Define_TypeDecl_typeVoid(this, null);
     return typeVoid_value;
   }
@@ -6548,7 +6113,7 @@ if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosingInstance() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl enclosingInstance_value = getParent().Define_TypeDecl_enclosingInstance(this, null);
     return enclosingInstance_value;
   }
@@ -6570,11 +6135,11 @@ if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
     if(inExplicitConstructorInvocation_computed) {
       return inExplicitConstructorInvocation_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     inExplicitConstructorInvocation_value = getParent().Define_boolean_inExplicitConstructorInvocation(this, null);
-if(isFinal && num == state().boundariesCrossed) inExplicitConstructorInvocation_computed = true;
+      if(isFinal && num == state().boundariesCrossed) inExplicitConstructorInvocation_computed = true;
     return inExplicitConstructorInvocation_value;
   }
   /**
@@ -6595,11 +6160,11 @@ if(isFinal && num == state().boundariesCrossed) inExplicitConstructorInvocation_
     if(inStaticContext_computed) {
       return inStaticContext_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     inStaticContext_value = getParent().Define_boolean_inStaticContext(this, null);
-if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
+      if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return inStaticContext_value;
   }
   /**
@@ -6609,7 +6174,7 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean withinSuppressWarnings(String s) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean withinSuppressWarnings_String_value = getParent().Define_boolean_withinSuppressWarnings(this, null, s);
     return withinSuppressWarnings_String_value;
   }
@@ -6620,62 +6185,62 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean withinDeprecatedAnnotation() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean withinDeprecatedAnnotation_value = getParent().Define_boolean_withinDeprecatedAnnotation(this, null);
     return withinDeprecatedAnnotation_value;
   }
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1278
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1384
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeWildcard() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeWildcard_value = getParent().Define_TypeDecl_typeWildcard(this, null);
     return typeWildcard_value;
   }
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1291
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1397
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardExtends(TypeDecl typeDecl) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl lookupWildcardExtends_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardExtends(this, null, typeDecl);
     return lookupWildcardExtends_TypeDecl_value;
   }
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1304
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1410
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);
     return lookupWildcardSuper_TypeDecl_value;
   }
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1324
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1430
    */
   @SuppressWarnings({"unchecked", "cast"})
   public LUBType lookupLUBType(Collection bounds) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     LUBType lookupLUBType_Collection_value = getParent().Define_LUBType_lookupLUBType(this, null, bounds);
     return lookupLUBType_Collection_value;
   }
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1362
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1468
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GLBType lookupGLBType(ArrayList bounds) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     GLBType lookupGLBType_ArrayList_value = getParent().Define_GLBType_lookupGLBType(this, null, bounds);
     return lookupGLBType_ArrayList_value;
   }
@@ -6687,7 +6252,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     if(caller == arrayType_value){
       return this;
     }
-    return getParent().Define_TypeDecl_componentType(this, caller);
+    else {      return getParent().Define_TypeDecl_componentType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:20
@@ -6698,7 +6264,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_isDest(this, caller);
+    else {      return getParent().Define_boolean_isDest(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:30
@@ -6709,7 +6276,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return true;
     }
-    return getParent().Define_boolean_isSource(this, caller);
+    else {      return getParent().Define_boolean_isSource(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:245
@@ -6765,10 +6333,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return isDAbefore(v);
   }
 }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:711
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:712
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
@@ -6811,7 +6380,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return isDUbefore(v);
   }
 }
-    return getParent().Define_boolean_isDUbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:16
@@ -6822,7 +6392,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return constructors();
     }
-    return getParent().Define_Collection_lookupConstructor(this, caller);
+    else {      return getParent().Define_Collection_lookupConstructor(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:20
@@ -6833,7 +6404,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return lookupSuperConstructor();
     }
-    return getParent().Define_Collection_lookupSuperConstructor(this, caller);
+    else {      return getParent().Define_Collection_lookupSuperConstructor(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:34
@@ -6844,10 +6416,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int i = caller.getIndexOfChild(child);
       return unqualifiedLookupMethod(name);
     }
-    return getParent().Define_Collection_lookupMethod(this, caller, name);
+    else {      return getParent().Define_Collection_lookupMethod(this, caller, name);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:270
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:358
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
@@ -6875,7 +6448,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return c;
   }
 }
-    return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    else {      return getParent().Define_SimpleSet_lookupType(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:27
@@ -6893,7 +6467,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return list;
   }
 }
-    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:301
@@ -6904,10 +6479,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    if(caller == getModifiersNoTransform()) {
+    else if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBePublic(this, caller);
+    else {      return getParent().Define_boolean_mayBePublic(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:302
@@ -6918,10 +6494,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    if(caller == getModifiersNoTransform()) {
+    else if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeProtected(this, caller);
+    else {      return getParent().Define_boolean_mayBeProtected(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:303
@@ -6932,10 +6509,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    if(caller == getModifiersNoTransform()) {
+    else if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBePrivate(this, caller);
+    else {      return getParent().Define_boolean_mayBePrivate(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:306
@@ -6946,10 +6524,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    if(caller == getModifiersNoTransform()) {
+    else if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeAbstract(this, caller);
+    else {      return getParent().Define_boolean_mayBeAbstract(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:304
@@ -6960,10 +6539,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    if(caller == getModifiersNoTransform()) {
+    else if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeStatic(this, caller);
+    else {      return getParent().Define_boolean_mayBeStatic(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:309
@@ -6974,10 +6554,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    if(caller == getModifiersNoTransform()) {
+    else if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeStrictfp(this, caller);
+    else {      return getParent().Define_boolean_mayBeStrictfp(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:305
@@ -6988,7 +6569,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_mayBeFinal(this, caller);
+    else {      return getParent().Define_boolean_mayBeFinal(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:307
@@ -6999,7 +6581,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_mayBeVolatile(this, caller);
+    else {      return getParent().Define_boolean_mayBeVolatile(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:308
@@ -7010,7 +6593,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_mayBeTransient(this, caller);
+    else {      return getParent().Define_boolean_mayBeTransient(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:310
@@ -7021,7 +6605,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_mayBeSynchronized(this, caller);
+    else {      return getParent().Define_boolean_mayBeSynchronized(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:311
@@ -7032,7 +6617,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_mayBeNative(this, caller);
+    else {      return getParent().Define_boolean_mayBeNative(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:297
@@ -7043,7 +6629,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return this;
     }
-    return getParent().Define_VariableScope_outerScope(this, caller);
+    else {      return getParent().Define_VariableScope_outerScope(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:369
@@ -7054,7 +6641,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int i = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_insideLoop(this, caller);
+    else {      return getParent().Define_boolean_insideLoop(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:376
@@ -7065,7 +6653,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int i = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_insideSwitch(this, caller);
+    else {      return getParent().Define_boolean_insideSwitch(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:118
@@ -7076,7 +6665,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return NameType.EXPRESSION_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:218
@@ -7087,10 +6677,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_isAnonymous(this, caller);
+    else {      return getParent().Define_boolean_isAnonymous(this, caller);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:495
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:494
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
@@ -7098,10 +6689,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return this;
     }
-    return getParent().Define_TypeDecl_enclosingType(this, caller);
+    else {      return getParent().Define_TypeDecl_enclosingType(this, caller);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:521
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:520
    * @apilevel internal
    */
   public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
@@ -7109,10 +6701,11 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return true;
     }
-    return getParent().Define_boolean_isNestedType(this, caller);
+    else {      return getParent().Define_boolean_isNestedType(this, caller);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:543
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:542
    * @apilevel internal
    */
   public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
@@ -7120,21 +6713,25 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_isLocalClass(this, caller);
+    else {      return getParent().Define_boolean_isLocalClass(this, caller);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:572
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:575
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
     if(caller == getModifiersNoTransform()) {
       return hostType();
     }
-    if(caller == getBodyDeclListNoTransform()) {
+    else if(caller == getBodyDeclListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
       return hostType();
     }
-    return getParent().Define_TypeDecl_hostType(this, caller);
+    else  {
+      int childIndex = this.getIndexOfChild(caller);
+      return hostType();
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:404
@@ -7145,7 +6742,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return typeVoid();
     }
-    return getParent().Define_TypeDecl_returnType(this, caller);
+    else {      return getParent().Define_TypeDecl_returnType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:509
@@ -7162,7 +6760,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     return this;
   }
 }
-    return getParent().Define_TypeDecl_enclosingInstance(this, caller);
+    else {      return getParent().Define_TypeDecl_enclosingInstance(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:12
@@ -7173,7 +6772,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return typeName();
     }
-    return getParent().Define_String_methodHost(this, caller);
+    else {      return getParent().Define_String_methodHost(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:138
@@ -7184,18 +6784,18 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return isStatic() || inStaticContext();
     }
-    return getParent().Define_boolean_inStaticContext(this, caller);
+    else {      return getParent().Define_boolean_inStaticContext(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:159
    * @apilevel internal
    */
   public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return true;
     }
-    return getParent().Define_boolean_reportUnreachable(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:74
@@ -7205,7 +6805,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
     if(caller == getModifiersNoTransform()) {
       return name.equals("TYPE");
     }
-    return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    else {      return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:271
@@ -7217,7 +6818,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       return getBodyDecl(i).hasAnnotationSuppressWarnings(s) || hasAnnotationSuppressWarnings(s) ||
     withinSuppressWarnings(s);
     }
-    return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
+    else {      return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:374
@@ -7228,7 +6830,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int i = caller.getIndexOfChild(child);
       return getBodyDecl(i).isDeprecated() || isDeprecated() || withinDeprecatedAnnotation();
     }
-    return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
+    else {      return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:350
@@ -7239,7 +6842,8 @@ if(isFinal && num == state().boundariesCrossed) inStaticContext_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    else {      return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
   }
   /**
    * @apilevel internal

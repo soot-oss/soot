@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ParMethodAccess : {@link MethodAccess} ::= <span class="component">TypeArgument:{@link Access}*</span>;
  * @ast node
- * @declaredat GenericMethods.ast:13
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.ast:13
  */
 public class ParMethodAccess extends MethodAccess implements Cloneable {
   /**
@@ -63,18 +64,33 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParMethodAccess fullCopy() {
-    ParMethodAccess res = (ParMethodAccess)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ParMethodAccess tree = (ParMethodAccess) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect GenericMethods
@@ -110,18 +126,29 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:1
+   * 
    */
   public ParMethodAccess() {
     super();
 
-    setChild(new List(), 0);
-    setChild(new List(), 1);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat GenericMethods.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+    setChild(new List(), 0);
+    setChild(new List(), 1);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ParMethodAccess(String p0, List<Expr> p1, List<Access> p2) {
     setID(p0);
@@ -130,7 +157,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat GenericMethods.ast:14
+   * 
    */
   public ParMethodAccess(beaver.Symbol p0, List<Expr> p1, List<Access> p2) {
     setID(p0);
@@ -140,7 +167,7 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:22
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -148,23 +175,26 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat GenericMethods.ast:28
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -174,47 +204,64 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for ArgList
+   * Replaces the Arg list.
+   * @param list The new list node to be used as the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setArgList(List<Expr> list) {
     setChild(list, 0);
   }
   /**
-   * @return number of children in ArgList
+   * Retrieves the number of children in the Arg list.
+   * @return Number of children in the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumArg() {
     return getArgList().getNumChild();
   }
   /**
-   * Getter for child in list ArgList
+   * Retrieves the number of children in the Arg list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Arg list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumArgNoTransform() {
+    return getArgListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Arg list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getArg(int i) {
     return (Expr)getArgList().getChild(i);
   }
   /**
-   * Add element to list ArgList
+   * Append an element to the Arg list.
+   * @param node The element to append to the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addArg(Expr node) {
     List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
@@ -223,44 +270,51 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addArgNoTransform(Expr node) {
     List<Expr> list = getArgListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ArgList
+   * Replaces the Arg list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setArg(Expr node, int i) {
     List<Expr> list = getArgList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Arg list.
+   * Retrieves the Arg list.
+   * @return The node representing the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Expr> getArgs() {
     return getArgList();
   }
   /**
+   * Retrieves the Arg list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Arg list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Expr> getArgsNoTransform() {
     return getArgListNoTransform();
   }
   /**
-   * Getter for list ArgList
+   * Retrieves the Arg list.
+   * @return The node representing the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Expr> getArgList() {
@@ -269,47 +323,66 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the Arg list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Arg list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Expr> getArgListNoTransform() {
     return (List<Expr>)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeArgumentList
+   * Replaces the TypeArgument list.
+   * @param list The new list node to be used as the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:5
+   * 
    */
   public void setTypeArgumentList(List<Access> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in TypeArgumentList
+   * Retrieves the number of children in the TypeArgument list.
+   * @return Number of children in the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:12
+   * 
    */
   public int getNumTypeArgument() {
     return getTypeArgumentList().getNumChild();
   }
   /**
-   * Getter for child in list TypeArgumentList
+   * Retrieves the number of children in the TypeArgument list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the TypeArgument list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumTypeArgumentNoTransform() {
+    return getTypeArgumentListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the TypeArgument list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getTypeArgument(int i) {
     return (Access)getTypeArgumentList().getChild(i);
   }
   /**
-   * Add element to list TypeArgumentList
+   * Append an element to the TypeArgument list.
+   * @param node The element to append to the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:27
+   * 
    */
   public void addTypeArgument(Access node) {
     List<Access> list = (parent == null || state == null) ? getTypeArgumentListNoTransform() : getTypeArgumentList();
@@ -318,44 +391,51 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:34
+   * 
    */
   public void addTypeArgumentNoTransform(Access node) {
     List<Access> list = getTypeArgumentListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list TypeArgumentList
+   * Replaces the TypeArgument list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:42
+   * 
    */
   public void setTypeArgument(Access node, int i) {
     List<Access> list = getTypeArgumentList();
     list.setChild(node, i);
   }
   /**
-   * Getter for TypeArgument list.
+   * Retrieves the TypeArgument list.
+   * @return The node representing the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:50
+   * 
    */
   public List<Access> getTypeArguments() {
     return getTypeArgumentList();
   }
   /**
+   * Retrieves the TypeArgument list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeArgument list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:56
+   * 
    */
   public List<Access> getTypeArgumentsNoTransform() {
     return getTypeArgumentListNoTransform();
   }
   /**
-   * Getter for list TypeArgumentList
+   * Retrieves the TypeArgument list.
+   * @return The node representing the TypeArgument list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat GenericMethods.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getTypeArgumentList() {
@@ -364,9 +444,12 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the TypeArgument list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeArgument list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat GenericMethods.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getTypeArgumentListNoTransform() {
@@ -385,11 +468,11 @@ public class ParMethodAccess extends MethodAccess implements Cloneable {
     if(typeArguments_MethodDecl_values.containsKey(_parameters)) {
       return (ArrayList)typeArguments_MethodDecl_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     ArrayList typeArguments_MethodDecl_value = typeArguments_compute(m);
-if(isFinal && num == state().boundariesCrossed) typeArguments_MethodDecl_values.put(_parameters, typeArguments_MethodDecl_value);
+      if(isFinal && num == state().boundariesCrossed) typeArguments_MethodDecl_values.put(_parameters, typeArguments_MethodDecl_value);
     return typeArguments_MethodDecl_value;
   }
   /**
@@ -410,7 +493,8 @@ if(isFinal && num == state().boundariesCrossed) typeArguments_MethodDecl_values.
       int childIndex = caller.getIndexOfChild(child);
       return NameType.TYPE_NAME;
     }
-    return super.Define_NameType_nameType(caller, child);
+    else {      return super.Define_NameType_nameType(caller, child);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethods.jrag:143
@@ -421,7 +505,8 @@ if(isFinal && num == state().boundariesCrossed) typeArguments_MethodDecl_values.
       int childIndex = caller.getIndexOfChild(child);
       return unqualifiedScope().lookupType(name);
     }
-    return super.Define_SimpleSet_lookupType(caller, child, name);
+    else {      return super.Define_SimpleSet_lookupType(caller, child, name);
+    }
   }
   /**
    * @apilevel internal

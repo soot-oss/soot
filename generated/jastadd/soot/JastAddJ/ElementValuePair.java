@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ElementValuePair : {@link ASTNode} ::= <span class="component">&lt;Name:String&gt;</span> <span class="component">{@link ElementValue}</span>;
  * @ast node
- * @declaredat Annotations.ast:8
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.ast:8
  */
 public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   /**
@@ -65,18 +66,33 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementValuePair fullCopy() {
-    ElementValuePair res = (ElementValuePair)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ElementValuePair tree = (ElementValuePair) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect Annotations
@@ -99,7 +115,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:1
+   * 
    */
   public ElementValuePair() {
     super();
@@ -107,8 +123,19 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Annotations.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ElementValuePair(String p0, ElementValue p1) {
     setName(p0);
@@ -116,7 +143,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:11
+   * 
    */
   public ElementValuePair(beaver.Symbol p0, ElementValue p1) {
     setName(p0);
@@ -125,7 +152,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:18
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -133,40 +160,48 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:24
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for lexeme Name
+   * Replaces the lexeme Name.
+   * @param value The new value for the lexeme Name.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setName(String value) {
     tokenString_Name = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat Annotations.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_Name;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_Name;
   /**
    * @ast method 
-   * @declaredat Annotations.ast:9
+   * 
    */
   
   public int Namestart;
   /**
    * @ast method 
-   * @declaredat Annotations.ast:10
+   * 
    */
   
   public int Nameend;
   /**
+   * JastAdd-internal setter for lexeme Name using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:11
+   * 
    */
   public void setName(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -176,36 +211,42 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
     Nameend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme Name
+   * Retrieves the value for the lexeme Name.
+   * @return The value for the lexeme Name.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:22
+   * 
    */
   public String getName() {
     return tokenString_Name != null ? tokenString_Name : "";
   }
   /**
-   * Setter for ElementValue
+   * Replaces the ElementValue child.
+   * @param node The new node to replace the ElementValue child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setElementValue(ElementValue node) {
     setChild(node, 0);
   }
   /**
-   * Getter for ElementValue
+   * Retrieves the ElementValue child.
+   * @return The current node used as the ElementValue child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:12
+   * 
    */
   public ElementValue getElementValue() {
     return (ElementValue)getChild(0);
   }
   /**
+   * Retrieves the ElementValue child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the ElementValue child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:18
+   * 
    */
   public ElementValue getElementValueNoTransform() {
     return (ElementValue)getChildNoTransform(0);
@@ -229,11 +270,11 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
@@ -254,7 +295,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unknownType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
     return unknownType_value;
   }
@@ -265,7 +306,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosingAnnotationDecl() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl enclosingAnnotationDecl_value = getParent().Define_TypeDecl_enclosingAnnotationDecl(this, null);
     return enclosingAnnotationDecl_value;
   }

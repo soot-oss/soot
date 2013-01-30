@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -19,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production VarDeclStmt : {@link Stmt} ::= <span class="component">{@link Modifiers}</span> <span class="component">TypeAccess:{@link Access}</span> <span class="component">{@link VariableDecl}*</span>;
  * @ast node
- * @declaredat java.ast:79
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:82
  */
 public class VarDeclStmt extends Stmt implements Cloneable {
   /**
@@ -64,18 +65,33 @@ public class VarDeclStmt extends Stmt implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public VarDeclStmt fullCopy() {
-    VarDeclStmt res = (VarDeclStmt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      VarDeclStmt tree = (VarDeclStmt) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect VariableDeclarationTransformation
@@ -101,17 +117,28 @@ public class VarDeclStmt extends Stmt implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public VarDeclStmt() {
     super();
 
-    setChild(new List(), 2);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:8
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new List(), 2);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public VarDeclStmt(Modifiers p0, Access p1, List<VariableDecl> p2) {
     setChild(p0, 0);
@@ -121,7 +148,7 @@ public class VarDeclStmt extends Stmt implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   protected int numChildren() {
     return 3;
@@ -129,96 +156,122 @@ public class VarDeclStmt extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeAccess
+   * Replaces the TypeAccess child.
+   * @param node The new node to replace the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeAccess(Access node) {
     setChild(node, 1);
   }
   /**
-   * Getter for TypeAccess
+   * Retrieves the TypeAccess child.
+   * @return The current node used as the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getTypeAccess() {
     return (Access)getChild(1);
   }
   /**
+   * Retrieves the TypeAccess child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the TypeAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getTypeAccessNoTransform() {
     return (Access)getChildNoTransform(1);
   }
   /**
-   * Setter for VariableDeclList
+   * Replaces the VariableDecl list.
+   * @param list The new list node to be used as the VariableDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setVariableDeclList(List<VariableDecl> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in VariableDeclList
+   * Retrieves the number of children in the VariableDecl list.
+   * @return Number of children in the VariableDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumVariableDecl() {
     return getVariableDeclList().getNumChild();
   }
   /**
-   * Getter for child in list VariableDeclList
+   * Retrieves the number of children in the VariableDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the VariableDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumVariableDeclNoTransform() {
+    return getVariableDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the VariableDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the VariableDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public VariableDecl getVariableDecl(int i) {
     return (VariableDecl)getVariableDeclList().getChild(i);
   }
   /**
-   * Add element to list VariableDeclList
+   * Append an element to the VariableDecl list.
+   * @param node The element to append to the VariableDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addVariableDecl(VariableDecl node) {
     List<VariableDecl> list = (parent == null || state == null) ? getVariableDeclListNoTransform() : getVariableDeclList();
@@ -227,44 +280,51 @@ public class VarDeclStmt extends Stmt implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addVariableDeclNoTransform(VariableDecl node) {
     List<VariableDecl> list = getVariableDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list VariableDeclList
+   * Replaces the VariableDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setVariableDecl(VariableDecl node, int i) {
     List<VariableDecl> list = getVariableDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for VariableDecl list.
+   * Retrieves the VariableDecl list.
+   * @return The node representing the VariableDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<VariableDecl> getVariableDecls() {
     return getVariableDeclList();
   }
   /**
+   * Retrieves the VariableDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the VariableDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<VariableDecl> getVariableDeclsNoTransform() {
     return getVariableDeclListNoTransform();
   }
   /**
-   * Getter for list VariableDeclList
+   * Retrieves the VariableDecl list.
+   * @return The node representing the VariableDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<VariableDecl> getVariableDeclList() {
@@ -273,9 +333,12 @@ public class VarDeclStmt extends Stmt implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the VariableDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the VariableDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<VariableDecl> getVariableDeclListNoTransform() {
@@ -299,17 +362,28 @@ public class VarDeclStmt extends Stmt implements Cloneable {
     if(canCompleteNormally_computed) {
       return canCompleteNormally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     canCompleteNormally_value = canCompleteNormally_compute();
-if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
     return canCompleteNormally_value;
   }
   /**
    * @apilevel internal
    */
   private boolean canCompleteNormally_compute() {  return reachable();  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:84
    * @apilevel internal
@@ -318,7 +392,8 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
     if(caller == getTypeAccessNoTransform()) {
       return NameType.TYPE_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:258
@@ -329,7 +404,8 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
       int childIndex = caller.getIndexOfChild(child);
       return null;
     }
-    return getParent().Define_TypeDecl_declType(this, caller);
+    else {      return getParent().Define_TypeDecl_declType(this, caller);
+    }
   }
   /**
    * @apilevel internal
@@ -337,34 +413,34 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
   public ASTNode rewriteTo() {
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag at line 144
     if(getNumVariableDecl() == 1) {
-      state().duringVariableDeclaration++;
+      state().duringVariableDeclarationTransformation++;
       ASTNode result = rewriteRule0();
-      state().duringVariableDeclaration--;
+      state().duringVariableDeclarationTransformation--;
       return result;
     }
 
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag at line 155
     if(getParent().getParent() instanceof Block && 
       ((Block)getParent().getParent()).getStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
-    state().duringVariableDeclaration++;
+    state().duringVariableDeclarationTransformation++;
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       List newList = rewriteBlock_getStmt();
       for(int j = 1; j < newList.getNumChildNoTransform(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
-        state().duringVariableDeclaration--;
+        state().duringVariableDeclarationTransformation--;
       return newList.getChildNoTransform(0);
     }
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag at line 159
     if(getParent().getParent() instanceof ForStmt && 
       ((ForStmt)getParent().getParent()).getInitStmtListNoTransform() == getParent() && getNumVariableDecl() > 1) {
-    state().duringVariableDeclaration++;
+    state().duringVariableDeclarationTransformation++;
       List list = (List)getParent();
       int i = list.getIndexOfChild(this);
       List newList = rewriteForStmt_getInitStmt();
       for(int j = 1; j < newList.getNumChildNoTransform(); j++)
         list.insertChild(newList.getChildNoTransform(j), ++i);
-        state().duringVariableDeclaration--;
+        state().duringVariableDeclarationTransformation--;
       return newList.getChildNoTransform(0);
     }
     return super.rewriteTo();

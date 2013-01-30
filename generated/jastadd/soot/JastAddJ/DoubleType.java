@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production DoubleType : {@link FloatingPointType};
  * @ast node
- * @declaredat java.ast:60
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:63
  */
 public class DoubleType extends FloatingPointType implements Cloneable {
   /**
@@ -73,18 +74,33 @@ public class DoubleType extends FloatingPointType implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public DoubleType fullCopy() {
-    DoubleType res = (DoubleType)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      DoubleType tree = (DoubleType) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect PrettyPrint
@@ -95,18 +111,29 @@ public class DoubleType extends FloatingPointType implements Cloneable {
 	}
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public DoubleType() {
     super();
 
-    setChild(new Opt(), 1);
-    setChild(new List(), 2);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new Opt(), 1);
+    setChild(new List(), 2);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public DoubleType(Modifiers p0, String p1, Opt<Access> p2, List<BodyDecl> p3) {
     setChild(p0, 0);
@@ -116,7 +143,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:15
+   * 
    */
   public DoubleType(Modifiers p0, beaver.Symbol p1, Opt<Access> p2, List<BodyDecl> p3) {
     setChild(p0, 0);
@@ -127,7 +154,7 @@ public class DoubleType extends FloatingPointType implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:24
+   * 
    */
   protected int numChildren() {
     return 3;
@@ -135,49 +162,57 @@ public class DoubleType extends FloatingPointType implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:30
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -187,102 +222,128 @@ public class DoubleType extends FloatingPointType implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for SuperClassAccessOpt
+   * Replaces the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @param opt The new node to be used as the optional node for the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setSuperClassAccessOpt(Opt<Access> opt) {
     setChild(opt, 1);
   }
   /**
-   * Does this node have a SuperClassAccess child?
+   * Check whether the optional SuperClassAccess child exists.
+   * @return {@code true} if the optional SuperClassAccess child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasSuperClassAccess() {
     return getSuperClassAccessOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child SuperClassAccess
-   * @apilevel high-level
+   * Retrieves the (optional) SuperClassAccess child.
+   * @return The SuperClassAccess child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
     return (Access)getSuperClassAccessOpt().getChild(0);
   }
   /**
-   * Setter for optional child SuperClassAccess
+   * Replaces the (optional) SuperClassAccess child.
+   * @param node The new node to be used as the SuperClassAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setSuperClassAccess(Access node) {
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @return The optional node for child the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOpt() {
     return (Opt<Access>)getChild(1);
   }
   /**
+   * Retrieves the optional node for child SuperClassAccess. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child SuperClassAccess.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOptNoTransform() {
     return (Opt<Access>)getChildNoTransform(1);
   }
   /**
-   * Setter for BodyDeclList
+   * Replaces the BodyDecl list.
+   * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBodyDeclList(List<BodyDecl> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * @return Number of children in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
-   * Getter for child in list BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDeclNoTransform() {
+    return getBodyDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the BodyDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
     return (BodyDecl)getBodyDeclList().getChild(i);
   }
   /**
-   * Add element to list BodyDeclList
+   * Append an element to the BodyDecl list.
+   * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addBodyDecl(BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
@@ -291,44 +352,51 @@ public class DoubleType extends FloatingPointType implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addBodyDeclNoTransform(BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list BodyDeclList
+   * Replaces the BodyDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setBodyDecl(BodyDecl node, int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for BodyDecl list.
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
-   * Getter for list BodyDeclList
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
@@ -337,9 +405,12 @@ public class DoubleType extends FloatingPointType implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -348,198 +419,146 @@ public class DoubleType extends FloatingPointType implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:316
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:160
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant cast(Constant c) {
-      ASTNode$State state = state();
-    Constant cast_Constant_value = cast_compute(c);
-    return cast_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant cast_compute(Constant c) {  return Constant.create(c.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:327
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:174
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant plus(Constant c) {
-      ASTNode$State state = state();
-    Constant plus_Constant_value = plus_compute(c);
-    return plus_Constant_value;
+    ASTNode$State state = state();
+    try {  return c;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant plus_compute(Constant c) {  return c;  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:336
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:183
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant minus(Constant c) {
-      ASTNode$State state = state();
-    Constant minus_Constant_value = minus_compute(c);
-    return minus_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(-c.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant minus_compute(Constant c) {  return Constant.create(-c.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:352
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:199
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant mul(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant mul_Constant_Constant_value = mul_compute(c1, c2);
-    return mul_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.doubleValue() * c2.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant mul_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() * c2.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:361
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:208
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant div(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant div_Constant_Constant_value = div_compute(c1, c2);
-    return div_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.doubleValue() / c2.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant div_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() / c2.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:370
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:217
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant mod(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant mod_Constant_Constant_value = mod_compute(c1, c2);
-    return mod_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.doubleValue() % c2.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant mod_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() % c2.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:379
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:226
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant add(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant add_Constant_Constant_value = add_compute(c1, c2);
-    return add_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.doubleValue() + c2.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant add_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() + c2.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:389
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:236
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant sub(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant sub_Constant_Constant_value = sub_compute(c1, c2);
-    return sub_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.doubleValue() - c2.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant sub_compute(Constant c1, Constant c2) {  return Constant.create(c1.doubleValue() - c2.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:443
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:290
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant questionColon(Constant cond, Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
-    return questionColon_Constant_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(cond.booleanValue() ? c1.doubleValue() : c2.doubleValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.doubleValue() : c2.doubleValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:547
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:394
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean eqIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
-    return eqIsTrue_Expr_Expr_value;
+    ASTNode$State state = state();
+    try {  return left.constant().doubleValue() == right.constant().doubleValue();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean eqIsTrue_compute(Expr left, Expr right) {  return left.constant().doubleValue() == right.constant().doubleValue();  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:555
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:405
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean ltIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean ltIsTrue_Expr_Expr_value = ltIsTrue_compute(left, right);
-    return ltIsTrue_Expr_Expr_value;
+    ASTNode$State state = state();
+    try {  return left.constant().doubleValue() < right.constant().doubleValue();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean ltIsTrue_compute(Expr left, Expr right) {  return left.constant().doubleValue() < right.constant().doubleValue();  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:561
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:411
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean leIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean leIsTrue_Expr_Expr_value = leIsTrue_compute(left, right);
-    return leIsTrue_Expr_Expr_value;
+    ASTNode$State state = state();
+    try {  return left.constant().doubleValue() <= right.constant().doubleValue();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean leIsTrue_compute(Expr left, Expr right) {  return left.constant().doubleValue() <= right.constant().doubleValue();  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:200
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:199
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDouble() {
-      ASTNode$State state = state();
-    boolean isDouble_value = isDouble_compute();
-    return isDouble_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDouble_compute() {  return true;  }
   /**
    * @apilevel internal
    */
@@ -558,11 +577,11 @@ public class DoubleType extends FloatingPointType implements Cloneable {
     if(boxed_computed) {
       return boxed_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boxed_value = boxed_compute();
-if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
+      if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
     return boxed_value;
   }
   /**
@@ -587,11 +606,11 @@ if(isFinal && num == state().boundariesCrossed) boxed_computed = true;
     if(jvmName_computed) {
       return jvmName_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     jvmName_value = jvmName_compute();
-if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
+      if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
     return jvmName_value;
   }
   /**
@@ -601,18 +620,14 @@ if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
   /**
    * @attribute syn
    * @aspect Java2Rewrites
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:53
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Java2Rewrites.jrag:44
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String primitiveClassName() {
-      ASTNode$State state = state();
-    String primitiveClassName_value = primitiveClassName_compute();
-    return primitiveClassName_value;
+    ASTNode$State state = state();
+    try {  return "Double";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String primitiveClassName_compute() {  return "Double";  }
   /**
    * @apilevel internal
    */
@@ -631,11 +646,11 @@ if(isFinal && num == state().boundariesCrossed) jvmName_computed = true;
     if(getSootType_computed) {
       return getSootType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSootType_value = getSootType_compute();
-if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getSootType_computed = true;
     return getSootType_value;
   }
   /**

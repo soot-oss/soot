@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,13 +19,13 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
  * Represents a single character.
  * May not contain a Unicode escape sequence (Unicode escapes
  * are transcoded by the scanner).
+ * @production CharacterLiteral : {@link Literal};
  * @ast node
- * @declaredat Literals.ast:16
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.ast:30
  */
 public class CharacterLiteral extends Literal implements Cloneable {
   /**
@@ -32,8 +33,6 @@ public class CharacterLiteral extends Literal implements Cloneable {
    */
   public void flushCache() {
     super.flushCache();
-    constant_computed = false;
-    constant_value = null;
     type_computed = false;
     type_value = null;
   }
@@ -49,8 +48,6 @@ public class CharacterLiteral extends Literal implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public CharacterLiteral clone() throws CloneNotSupportedException {
     CharacterLiteral node = (CharacterLiteral)super.clone();
-    node.constant_computed = false;
-    node.constant_value = null;
     node.type_computed = false;
     node.type_value = null;
     node.in$Circle(false);
@@ -72,18 +69,33 @@ public class CharacterLiteral extends Literal implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public CharacterLiteral fullCopy() {
-    CharacterLiteral res = (CharacterLiteral)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      CharacterLiteral tree = (CharacterLiteral) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect PrettyPrint
@@ -102,7 +114,7 @@ public class CharacterLiteral extends Literal implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Literals.ast:1
+   * 
    */
   public CharacterLiteral() {
     super();
@@ -110,15 +122,25 @@ public class CharacterLiteral extends Literal implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Literals.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public CharacterLiteral(String p0) {
     setLITERAL(p0);
   }
   /**
    * @ast method 
-   * @declaredat Literals.ast:10
+   * 
    */
   public CharacterLiteral(beaver.Symbol p0) {
     setLITERAL(p0);
@@ -126,7 +148,7 @@ public class CharacterLiteral extends Literal implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Literals.ast:16
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -134,23 +156,26 @@ public class CharacterLiteral extends Literal implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Literals.ast:22
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for lexeme LITERAL
+   * Replaces the lexeme LITERAL.
+   * @param value The new value for the lexeme LITERAL.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Literals.ast:5
+   * 
    */
   public void setLITERAL(String value) {
     tokenString_LITERAL = value;
   }
   /**
+   * JastAdd-internal setter for lexeme LITERAL using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat Literals.ast:8
+   * 
    */
   public void setLITERAL(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -160,43 +185,26 @@ public class CharacterLiteral extends Literal implements Cloneable {
     LITERALend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme LITERAL
+   * Retrieves the value for the lexeme LITERAL.
+   * @return The value for the lexeme LITERAL.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Literals.ast:19
+   * 
    */
   public String getLITERAL() {
     return tokenString_LITERAL != null ? tokenString_LITERAL : "";
   }
   /**
-   * @apilevel internal
-   */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:303
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(getLITERAL().charAt(0));  }
+    finally {
     }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {  return Constant.create(getLITERAL().charAt(0));  }
   /**
    * @apilevel internal
    */
@@ -215,11 +223,11 @@ if(isFinal && num == state().boundariesCrossed) constant_computed = true;
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**

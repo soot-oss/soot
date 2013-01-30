@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ConstructorDecl : {@link BodyDecl} ::= <span class="component">{@link Modifiers}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">Parameter:{@link ParameterDeclaration}*</span> <span class="component">Exception:{@link Access}*</span> <span class="component">[ConstructorInvocation:{@link Stmt}]</span> <span class="component">{@link Block}</span>;
  * @ast node
- * @declaredat java.ast:72
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:75
  */
 public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
@@ -103,18 +104,33 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl fullCopy() {
-    ConstructorDecl res = (ConstructorDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ConstructorDecl tree = (ConstructorDecl) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect ConstructorDecl
@@ -275,7 +291,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1177
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1283
    */
   public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
     ConstructorDecl c = new ConstructorDeclSubstituted(
@@ -292,7 +308,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:445
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:457
    */
   
 
@@ -301,7 +317,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:446
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:458
    */
   public void addEnclosingVariables() {
     if(!addEnclosingVariables) return;
@@ -315,7 +331,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:480
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:492
    */
   public ConstructorDecl createAccessor() {
     ConstructorDecl c = (ConstructorDecl)hostType().getAccessor(this, "constructor");
@@ -363,7 +379,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:524
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:536
    */
   protected List createAccessorParameters() {
     List parameters = new List();
@@ -375,7 +391,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @ast method 
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:532
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:544
    */
   protected TypeDecl createAnonymousJavaTypeDecl() {
     ClassDecl classDecl =
@@ -536,19 +552,30 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public ConstructorDecl() {
     super();
 
-    setChild(new List(), 1);
-    setChild(new List(), 2);
-    setChild(new Opt(), 3);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:10
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[5];
+    setChild(new List(), 1);
+    setChild(new List(), 2);
+    setChild(new Opt(), 3);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ConstructorDecl(Modifiers p0, String p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5) {
     setChild(p0, 0);
@@ -560,7 +587,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public ConstructorDecl(Modifiers p0, beaver.Symbol p1, List<ParameterDeclaration> p2, List<Access> p3, Opt<Stmt> p4, Block p5) {
     setChild(p0, 0);
@@ -573,7 +600,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:29
+   * 
    */
   protected int numChildren() {
     return 5;
@@ -581,66 +608,79 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:35
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_ID;
   /**
    * @ast method 
-   * @declaredat java.ast:9
+   * 
    */
   
   public int IDstart;
   /**
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   
   public int IDend;
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:11
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -650,47 +690,64 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for ParameterList
+   * Replaces the Parameter list.
+   * @param list The new list node to be used as the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setParameterList(List<ParameterDeclaration> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * @return Number of children in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumParameter() {
     return getParameterList().getNumChild();
   }
   /**
-   * Getter for child in list ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Parameter list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumParameterNoTransform() {
+    return getParameterListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Parameter list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclaration getParameter(int i) {
     return (ParameterDeclaration)getParameterList().getChild(i);
   }
   /**
-   * Add element to list ParameterList
+   * Append an element to the Parameter list.
+   * @param node The element to append to the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addParameter(ParameterDeclaration node) {
     List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
@@ -699,44 +756,51 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addParameterNoTransform(ParameterDeclaration node) {
     List<ParameterDeclaration> list = getParameterListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ParameterList
+   * Replaces the Parameter list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setParameter(ParameterDeclaration node, int i) {
     List<ParameterDeclaration> list = getParameterList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Parameter list.
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<ParameterDeclaration> getParameters() {
     return getParameterList();
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<ParameterDeclaration> getParametersNoTransform() {
     return getParameterListNoTransform();
   }
   /**
-   * Getter for list ParameterList
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterList() {
@@ -745,47 +809,66 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterListNoTransform() {
     return (List<ParameterDeclaration>)getChildNoTransform(1);
   }
   /**
-   * Setter for ExceptionList
+   * Replaces the Exception list.
+   * @param list The new list node to be used as the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExceptionList(List<Access> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * @return Number of children in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumException() {
     return getExceptionList().getNumChild();
   }
   /**
-   * Getter for child in list ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Exception list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumExceptionNoTransform() {
+    return getExceptionListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Exception list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getException(int i) {
     return (Access)getExceptionList().getChild(i);
   }
   /**
-   * Add element to list ExceptionList
+   * Append an element to the Exception list.
+   * @param node The element to append to the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addException(Access node) {
     List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
@@ -794,44 +877,51 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addExceptionNoTransform(Access node) {
     List<Access> list = getExceptionListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ExceptionList
+   * Replaces the Exception list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setException(Access node, int i) {
     List<Access> list = getExceptionList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Exception list.
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Access> getExceptions() {
     return getExceptionList();
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Access> getExceptionsNoTransform() {
     return getExceptionListNoTransform();
   }
   /**
-   * Getter for list ExceptionList
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionList() {
@@ -840,91 +930,108 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionListNoTransform() {
     return (List<Access>)getChildNoTransform(2);
   }
   /**
-   * Setter for ConstructorInvocationOpt
+   * Replaces the optional node for the ConstructorInvocation child. This is the {@code Opt} node containing the child ConstructorInvocation, not the actual child!
+   * @param opt The new node to be used as the optional node for the ConstructorInvocation child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setConstructorInvocationOpt(Opt<Stmt> opt) {
     setChild(opt, 3);
   }
   /**
-   * Does this node have a ConstructorInvocation child?
+   * Check whether the optional ConstructorInvocation child exists.
+   * @return {@code true} if the optional ConstructorInvocation child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasConstructorInvocation() {
     return getConstructorInvocationOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child ConstructorInvocation
-   * @apilevel high-level
+   * Retrieves the (optional) ConstructorInvocation child.
+   * @return The ConstructorInvocation child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Stmt getConstructorInvocation() {
     return (Stmt)getConstructorInvocationOpt().getChild(0);
   }
   /**
-   * Setter for optional child ConstructorInvocation
+   * Replaces the (optional) ConstructorInvocation child.
+   * @param node The new node to be used as the ConstructorInvocation child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setConstructorInvocation(Stmt node) {
     getConstructorInvocationOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the ConstructorInvocation child. This is the {@code Opt} node containing the child ConstructorInvocation, not the actual child!
+   * @return The optional node for child the ConstructorInvocation child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Stmt> getConstructorInvocationOpt() {
     return (Opt<Stmt>)getChild(3);
   }
   /**
+   * Retrieves the optional node for child ConstructorInvocation. This is the {@code Opt} node containing the child ConstructorInvocation, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child ConstructorInvocation.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Stmt> getConstructorInvocationOptNoTransform() {
     return (Opt<Stmt>)getChildNoTransform(3);
   }
   /**
-   * Setter for Block
+   * Replaces the Block child.
+   * @param node The new node to replace the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBlock(Block node) {
     setChild(node, 4);
   }
   /**
-   * Getter for Block
+   * Retrieves the Block child.
+   * @return The current node used as the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Block getBlock() {
     return (Block)getChild(4);
   }
   /**
+   * Retrieves the Block child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Block getBlockNoTransform() {
     return (Block)getChildNoTransform(4);
@@ -1035,11 +1142,11 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     if(accessibleFrom_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)accessibleFrom_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean accessibleFrom_TypeDecl_value = accessibleFrom_compute(type);
-if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.put(_parameters, Boolean.valueOf(accessibleFrom_TypeDecl_value));
     return accessibleFrom_TypeDecl_value;
   }
   /**
@@ -1072,11 +1179,11 @@ if(isFinal && num == state().boundariesCrossed) accessibleFrom_TypeDecl_values.p
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -1087,7 +1194,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:751
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:752
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -1096,11 +1203,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -1111,7 +1218,7 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:145
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:159
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean throwsException(TypeDecl exceptionType) {
@@ -1120,11 +1227,11 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(throwsException_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)throwsException_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean throwsException_TypeDecl_value = throwsException_compute(exceptionType);
-if(isFinal && num == state().boundariesCrossed) throwsException_TypeDecl_values.put(_parameters, Boolean.valueOf(throwsException_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) throwsException_TypeDecl_values.put(_parameters, Boolean.valueOf(throwsException_TypeDecl_value));
     return throwsException_TypeDecl_value;
   }
   /**
@@ -1154,11 +1261,11 @@ if(isFinal && num == state().boundariesCrossed) throwsException_TypeDecl_values.
     if(name_computed) {
       return name_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     name_value = name_compute();
-if(isFinal && num == state().boundariesCrossed) name_computed = true;
+      if(isFinal && num == state().boundariesCrossed) name_computed = true;
     return name_value;
   }
   /**
@@ -1183,11 +1290,11 @@ if(isFinal && num == state().boundariesCrossed) name_computed = true;
     if(signature_computed) {
       return signature_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     signature_value = signature_compute();
-if(isFinal && num == state().boundariesCrossed) signature_computed = true;
+      if(isFinal && num == state().boundariesCrossed) signature_computed = true;
     return signature_value;
   }
   /**
@@ -1217,11 +1324,11 @@ if(isFinal && num == state().boundariesCrossed) signature_computed = true;
     if(sameSignature_ConstructorDecl_values.containsKey(_parameters)) {
       return ((Boolean)sameSignature_ConstructorDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean sameSignature_ConstructorDecl_value = sameSignature_compute(c);
-if(isFinal && num == state().boundariesCrossed) sameSignature_ConstructorDecl_values.put(_parameters, Boolean.valueOf(sameSignature_ConstructorDecl_value));
+      if(isFinal && num == state().boundariesCrossed) sameSignature_ConstructorDecl_values.put(_parameters, Boolean.valueOf(sameSignature_ConstructorDecl_value));
     return sameSignature_ConstructorDecl_value;
   }
   /**
@@ -1250,11 +1357,11 @@ if(isFinal && num == state().boundariesCrossed) sameSignature_ConstructorDecl_va
     if(moreSpecificThan_ConstructorDecl_values.containsKey(_parameters)) {
       return ((Boolean)moreSpecificThan_ConstructorDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean moreSpecificThan_ConstructorDecl_value = moreSpecificThan_compute(m);
-if(isFinal && num == state().boundariesCrossed) moreSpecificThan_ConstructorDecl_values.put(_parameters, Boolean.valueOf(moreSpecificThan_ConstructorDecl_value));
+      if(isFinal && num == state().boundariesCrossed) moreSpecificThan_ConstructorDecl_values.put(_parameters, Boolean.valueOf(moreSpecificThan_ConstructorDecl_value));
     return moreSpecificThan_ConstructorDecl_value;
   }
   /**
@@ -1278,16 +1385,12 @@ if(isFinal && num == state().boundariesCrossed) moreSpecificThan_ConstructorDecl
    * @aspect ImplicitConstructor
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:182
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDefaultConstructor() {
-      ASTNode$State state = state();
-    boolean isDefaultConstructor_value = isDefaultConstructor_compute();
-    return isDefaultConstructor_value;
+    ASTNode$State state = state();
+    try {  return isDefaultConstructor;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDefaultConstructor_compute() {  return isDefaultConstructor;  }
   protected java.util.Map parameterDeclaration_String_values;
   /**
    * @attribute syn
@@ -1301,11 +1404,11 @@ if(isFinal && num == state().boundariesCrossed) moreSpecificThan_ConstructorDecl
     if(parameterDeclaration_String_values.containsKey(_parameters)) {
       return (SimpleSet)parameterDeclaration_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet parameterDeclaration_String_value = parameterDeclaration_compute(name);
-if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_values.put(_parameters, parameterDeclaration_String_value);
+      if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_values.put(_parameters, parameterDeclaration_String_value);
     return parameterDeclaration_String_value;
   }
   /**
@@ -1322,61 +1425,45 @@ if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_valu
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:217
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSynthetic() {
-      ASTNode$State state = state();
-    boolean isSynthetic_value = isSynthetic_compute();
-    return isSynthetic_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isSynthetic();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSynthetic_compute() {  return getModifiers().isSynthetic();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:235
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isPublic() {
-      ASTNode$State state = state();
-    boolean isPublic_value = isPublic_compute();
-    return isPublic_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isPublic();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isPublic_compute() {  return getModifiers().isPublic();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:236
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isPrivate() {
-      ASTNode$State state = state();
-    boolean isPrivate_value = isPrivate_compute();
-    return isPrivate_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isPrivate();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isPrivate_compute() {  return getModifiers().isPrivate();  }
   /**
    * @attribute syn
    * @aspect Modifiers
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:237
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isProtected() {
-      ASTNode$State state = state();
-    boolean isProtected_value = isProtected_compute();
-    return isProtected_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().isProtected();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isProtected_compute() {  return getModifiers().isProtected();  }
   protected java.util.Map circularThisInvocation_ConstructorDecl_values;
   /**
    * @attribute syn
@@ -1417,7 +1504,7 @@ if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_valu
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         circularThisInvocation_ConstructorDecl_values.put(_parameters, new_circularThisInvocation_ConstructorDecl_value);
       }
       else {
@@ -1463,61 +1550,45 @@ if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_valu
    * @aspect TypeAnalysis
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:268
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
-      ASTNode$State state = state();
-    TypeDecl type_value = type_compute();
-    return type_value;
+    ASTNode$State state = state();
+    try {  return unknownType();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl type_compute() {  return unknownType();  }
   /**
    * @attribute syn
    * @aspect TypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:274
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:271
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isVoid() {
-      ASTNode$State state = state();
-    boolean isVoid_value = isVoid_compute();
-    return isVoid_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isVoid_compute() {  return true;  }
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:286
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:283
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasAnnotationSuppressWarnings(String s) {
-      ASTNode$State state = state();
-    boolean hasAnnotationSuppressWarnings_String_value = hasAnnotationSuppressWarnings_compute(s);
-    return hasAnnotationSuppressWarnings_String_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasAnnotationSuppressWarnings_compute(String s) {  return getModifiers().hasAnnotationSuppressWarnings(s);  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:324
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDeprecated() {
-      ASTNode$State state = state();
-    boolean isDeprecated_value = isDeprecated_compute();
-    return isDeprecated_value;
+    ASTNode$State state = state();
+    try {  return getModifiers().hasDeprecatedAnnotation();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDeprecated_compute() {  return getModifiers().hasDeprecatedAnnotation();  }
   /**
    * @apilevel internal
    */
@@ -1529,18 +1600,18 @@ if(isFinal && num == state().boundariesCrossed) parameterDeclaration_String_valu
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1409
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1515
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl sourceConstructorDecl() {
     if(sourceConstructorDecl_computed) {
       return sourceConstructorDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceConstructorDecl_value = sourceConstructorDecl_compute();
-if(isFinal && num == state().boundariesCrossed) sourceConstructorDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sourceConstructorDecl_computed = true;
     return sourceConstructorDecl_value;
   }
   /**
@@ -1552,16 +1623,9 @@ if(isFinal && num == state().boundariesCrossed) sourceConstructorDecl_computed =
    * @aspect MethodSignature15
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:190
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean applicableBySubtyping(List argList) {
-      ASTNode$State state = state();
-    boolean applicableBySubtyping_List_value = applicableBySubtyping_compute(argList);
-    return applicableBySubtyping_List_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean applicableBySubtyping_compute(List argList) {
+    ASTNode$State state = state();
+    try {
     if(getNumParameter() != argList.getNumChild())
       return false;
     for(int i = 0; i < getNumParameter(); i++) {
@@ -1571,21 +1635,17 @@ if(isFinal && num == state().boundariesCrossed) sourceConstructorDecl_computed =
     }
     return true;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect MethodSignature15
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:210
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean applicableByMethodInvocationConversion(List argList) {
-      ASTNode$State state = state();
-    boolean applicableByMethodInvocationConversion_List_value = applicableByMethodInvocationConversion_compute(argList);
-    return applicableByMethodInvocationConversion_List_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean applicableByMethodInvocationConversion_compute(List argList) {
+    ASTNode$State state = state();
+    try {
     if(getNumParameter() != argList.getNumChild())
       return false;
     for(int i = 0; i < getNumParameter(); i++) {
@@ -1595,21 +1655,17 @@ if(isFinal && num == state().boundariesCrossed) sourceConstructorDecl_computed =
     }
     return true;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect MethodSignature15
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:231
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean applicableVariableArity(List argList) {
-      ASTNode$State state = state();
-    boolean applicableVariableArity_List_value = applicableVariableArity_compute(argList);
-    return applicableVariableArity_List_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean applicableVariableArity_compute(List argList) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0; i < getNumParameter() - 1; i++) {
       TypeDecl arg = ((Expr)argList.getChild(i)).type();
       if(!arg.methodInvocationConversionTo(getParameter(i).type()))
@@ -1622,152 +1678,119 @@ if(isFinal && num == state().boundariesCrossed) sourceConstructorDecl_computed =
     }
     return true;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect MethodSignature15
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:318
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean potentiallyApplicable(List argList) {
-      ASTNode$State state = state();
-    boolean potentiallyApplicable_List_value = potentiallyApplicable_compute(argList);
-    return potentiallyApplicable_List_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean potentiallyApplicable_compute(List argList) {
+    ASTNode$State state = state();
+    try {
     if(isVariableArity() && !(argList.getNumChild() >= arity()-1))
       return false;
     if(!isVariableArity() && !(arity() == argList.getNumChild()))
       return false;
     return true;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect MethodSignature15
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/MethodSignature.jrag:325
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int arity() {
-      ASTNode$State state = state();
-    int arity_value = arity_compute();
-    return arity_value;
+    ASTNode$State state = state();
+    try {  return getNumParameter();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int arity_compute() {  return getNumParameter();  }
   /**
    * @attribute syn
    * @aspect VariableArityParameters
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:34
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isVariableArity() {
-      ASTNode$State state = state();
-    boolean isVariableArity_value = isVariableArity_compute();
-    return isVariableArity_value;
+    ASTNode$State state = state();
+    try {  return getNumParameter() == 0 ? false : getParameter(getNumParameter()-1).isVariableArity();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isVariableArity_compute() {  return getNumParameter() == 0 ? false : getParameter(getNumParameter()-1).isVariableArity();  }
   /**
    * @attribute syn
    * @aspect VariableArityParameters
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:63
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclaration lastParameter() {
-      ASTNode$State state = state();
-    ParameterDeclaration lastParameter_value = lastParameter_compute();
-    return lastParameter_value;
+    ASTNode$State state = state();
+    try {  return getParameter(getNumParameter() - 1);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private ParameterDeclaration lastParameter_compute() {  return getParameter(getNumParameter() - 1);  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:421
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:433
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean needsEnclosing() {
-      ASTNode$State state = state();
-    boolean needsEnclosing_value = needsEnclosing_compute();
-    return needsEnclosing_value;
+    ASTNode$State state = state();
+    try {  return hostType().needsEnclosing();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean needsEnclosing_compute() {  return hostType().needsEnclosing();  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:422
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:434
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean needsSuperEnclosing() {
-      ASTNode$State state = state();
-    boolean needsSuperEnclosing_value = needsSuperEnclosing_compute();
-    return needsSuperEnclosing_value;
+    ASTNode$State state = state();
+    try {  return hostType().needsSuperEnclosing();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean needsSuperEnclosing_compute() {  return hostType().needsSuperEnclosing();  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:424
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:436
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosing() {
-      ASTNode$State state = state();
-    TypeDecl enclosing_value = enclosing_compute();
-    return enclosing_value;
+    ASTNode$State state = state();
+    try {  return hostType().enclosing();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl enclosing_compute() {  return hostType().enclosing();  }
   /**
    * @attribute syn
    * @aspect InnerClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:425
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:437
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl superEnclosing() {
-      ASTNode$State state = state();
-    TypeDecl superEnclosing_value = superEnclosing_compute();
-    return superEnclosing_value;
+    ASTNode$State state = state();
+    try {  return hostType().superEnclosing();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl superEnclosing_compute() {  return hostType().superEnclosing();  }
   /**
    * @attribute syn
    * @aspect EmitJimple
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:120
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int sootTypeModifiers() {
-      ASTNode$State state = state();
-    int sootTypeModifiers_value = sootTypeModifiers_compute();
-    return sootTypeModifiers_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private int sootTypeModifiers_compute() {
+    ASTNode$State state = state();
+    try {
     int result = 0;
     if(isPublic()) result |= soot.Modifier.PUBLIC;
     if(isProtected()) result |= soot.Modifier.PROTECTED;
     if(isPrivate()) result |= soot.Modifier.PRIVATE;
     return result;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -1787,11 +1810,11 @@ if(isFinal && num == state().boundariesCrossed) sourceConstructorDecl_computed =
     if(sootMethod_computed) {
       return sootMethod_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sootMethod_value = sootMethod_compute();
-if(isFinal && num == state().boundariesCrossed) sootMethod_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sootMethod_computed = true;
     return sootMethod_value;
   }
   /**
@@ -1830,11 +1853,11 @@ if(isFinal && num == state().boundariesCrossed) sootMethod_computed = true;
     if(sootRef_computed) {
       return sootRef_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sootRef_value = sootRef_compute();
-if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     return sootRef_value;
   }
   /**
@@ -1875,11 +1898,11 @@ if(isFinal && num == state().boundariesCrossed) sootRef_computed = true;
     if(localNumOfFirstParameter_computed) {
       return localNumOfFirstParameter_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     localNumOfFirstParameter_value = localNumOfFirstParameter_compute();
-if(isFinal && num == state().boundariesCrossed) localNumOfFirstParameter_computed = true;
+      if(isFinal && num == state().boundariesCrossed) localNumOfFirstParameter_computed = true;
     return localNumOfFirstParameter_value;
   }
   /**
@@ -1911,11 +1934,11 @@ if(isFinal && num == state().boundariesCrossed) localNumOfFirstParameter_compute
     if(offsetFirstEnclosingVariable_computed) {
       return offsetFirstEnclosingVariable_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     offsetFirstEnclosingVariable_value = offsetFirstEnclosingVariable_compute();
-if(isFinal && num == state().boundariesCrossed) offsetFirstEnclosingVariable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) offsetFirstEnclosingVariable_computed = true;
     return offsetFirstEnclosingVariable_value;
   }
   /**
@@ -1929,21 +1952,42 @@ if(isFinal && num == state().boundariesCrossed) offsetFirstEnclosingVariable_com
    * @aspect GenericsCodegen
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:317
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl erasedConstructor() {
-      ASTNode$State state = state();
-    ConstructorDecl erasedConstructor_value = erasedConstructor_compute();
-    return erasedConstructor_value;
+    ASTNode$State state = state();
+    try {  return this;  }
+    finally {
+    }
   }
   /**
-   * @apilevel internal
+	 * @return true if the modifier list includes the SafeVarargs annotation
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
    */
-  private ConstructorDecl erasedConstructor_compute() {  return this;  }
+  public boolean hasAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return getModifiers().hasAnnotationSafeVarargs();  }
+    finally {
+    }
+  }
+  /**
+	 * It is an error if the SafeVarargs annotation is used on something
+	 * that is not a variable arity method or constructor.
+	 * @attribute syn
+   * @aspect SafeVarargs
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:56
+   */
+  public boolean hasIllegalAnnotationSafeVarargs() {
+    ASTNode$State state = state();
+    try {  return hasAnnotationSafeVarargs() && !isVariableArity();  }
+    finally {
+    }
+  }
   protected java.util.Map handlesException_TypeDecl_values;
   /**
    * @attribute inh
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:36
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:50
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean handlesException(TypeDecl exceptionType) {
@@ -1952,11 +1996,11 @@ if(isFinal && num == state().boundariesCrossed) offsetFirstEnclosingVariable_com
     if(handlesException_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)handlesException_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
-if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values.put(_parameters, Boolean.valueOf(handlesException_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values.put(_parameters, Boolean.valueOf(handlesException_TypeDecl_value));
     return handlesException_TypeDecl_value;
   }
   /**
@@ -1966,7 +2010,7 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unknownType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
     return unknownType_value;
   }
@@ -1978,30 +2022,33 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getBlockNoTransform()) {
       return hasConstructorInvocation() ? getConstructorInvocation().isDAafter(v) : isDAbefore(v);
     }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:754
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:755
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
     if(caller == getBlockNoTransform()) {
       return hasConstructorInvocation() ? getConstructorInvocation().isDUafter(v) : isDUbefore(v);
     }
-    return getParent().Define_boolean_isDUbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:142
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:156
    * @apilevel internal
    */
   public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
     if(caller == getConstructorInvocationOptNoTransform()) {
       return throwsException(exceptionType) || handlesException(exceptionType);
     }
-    if(caller == getBlockNoTransform()) {
+    else if(caller == getBlockNoTransform()) {
       return throwsException(exceptionType) || handlesException(exceptionType);
     }
-    return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    else {      return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:45
@@ -2017,7 +2064,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     }
     return c;
   }
-    return getParent().Define_Collection_lookupMethod(this, caller, name);
+    else {      return getParent().Define_Collection_lookupMethod(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:64
@@ -2028,7 +2076,7 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
       int childIndex = caller.getIndexOfChild(child);
       return parameterDeclaration(name);
     }
-    if(caller == getConstructorInvocationOptNoTransform()){
+    else if(caller == getConstructorInvocationOptNoTransform()){
     SimpleSet set = parameterDeclaration(name);
     if(!set.isEmpty()) return set;
     for(Iterator iter = lookupVariable(name).iterator(); iter.hasNext(); ) {
@@ -2038,12 +2086,13 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     }
     return set;
   }
-    if(caller == getBlockNoTransform()){
+    else if(caller == getBlockNoTransform()){
     SimpleSet set = parameterDeclaration(name);
     if(!set.isEmpty()) return set;
     return lookupVariable(name);
   }
-    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:282
@@ -2053,7 +2102,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBePublic(this, caller);
+    else {      return getParent().Define_boolean_mayBePublic(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:283
@@ -2063,7 +2113,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBeProtected(this, caller);
+    else {      return getParent().Define_boolean_mayBeProtected(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:284
@@ -2073,7 +2124,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_mayBePrivate(this, caller);
+    else {      return getParent().Define_boolean_mayBePrivate(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:247
@@ -2083,7 +2135,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getBlockNoTransform()) {
       return this;
     }
-    return getParent().Define_ASTNode_enclosingBlock(this, caller);
+    else {      return getParent().Define_ASTNode_enclosingBlock(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:117
@@ -2093,15 +2146,16 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getConstructorInvocationOptNoTransform()) {
       return NameType.EXPRESSION_NAME;
     }
-    if(caller == getExceptionListNoTransform()) {
+    else if(caller == getExceptionListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
       return NameType.TYPE_NAME;
     }
-    if(caller == getParameterListNoTransform()) {
+    else if(caller == getParameterListNoTransform()) {
       int childIndex = caller.getIndexOfChild(child);
       return NameType.TYPE_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:517
@@ -2111,7 +2165,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getConstructorInvocationOptNoTransform()) {
       return unknownType();
     }
-    return getParent().Define_TypeDecl_enclosingInstance(this, caller);
+    else {      return getParent().Define_TypeDecl_enclosingInstance(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:132
@@ -2121,7 +2176,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getConstructorInvocationOptNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+    else {      return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:144
@@ -2131,10 +2187,11 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getConstructorInvocationOptNoTransform()) {
       return false;
     }
-    if(caller == getBlockNoTransform()) {
+    else if(caller == getBlockNoTransform()) {
       return false;
     }
-    return getParent().Define_boolean_inStaticContext(this, caller);
+    else {      return getParent().Define_boolean_inStaticContext(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:32
@@ -2144,10 +2201,11 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getBlockNoTransform()) {
       return !hasConstructorInvocation() ? true : getConstructorInvocation().canCompleteNormally();
     }
-    if(caller == getConstructorInvocationOptNoTransform()) {
+    else if(caller == getConstructorInvocationOptNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_reachable(this, caller);
+    else {      return getParent().Define_boolean_reachable(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:58
@@ -2158,7 +2216,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_isMethodParameter(this, caller);
+    else {      return getParent().Define_boolean_isMethodParameter(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:59
@@ -2169,7 +2228,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
       int childIndex = caller.getIndexOfChild(child);
       return true;
     }
-    return getParent().Define_boolean_isConstructorParameter(this, caller);
+    else {      return getParent().Define_boolean_isConstructorParameter(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:60
@@ -2180,7 +2240,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
       int childIndex = caller.getIndexOfChild(child);
       return false;
     }
-    return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+    else {      return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:89
@@ -2190,7 +2251,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getModifiersNoTransform()) {
       return name.equals("CONSTRUCTOR");
     }
-    return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    else {      return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:21
@@ -2201,7 +2263,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
       int i = caller.getIndexOfChild(child);
       return i == getNumParameter() - 1;
     }
-    return getParent().Define_boolean_variableArityValid(this, caller);
+    else {      return getParent().Define_boolean_variableArityValid(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/LocalNum.jrag:45
@@ -2217,7 +2280,8 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     return getParameter(index-1).localNum() + getParameter(index-1).type().variableSize();
   }
 }
-    return getParent().Define_int_localNum(this, caller);
+    else {      return getParent().Define_int_localNum(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:352
@@ -2227,7 +2291,32 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(caller == getBlockNoTransform()) {
       return getNumException() != 0;
     }
-    return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    else {      return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:48
+   * @apilevel internal
+   */
+  public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
+    if(caller == getParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+      return getBlock().modifiedInScope(var);
+    }
+    else {      return getParent().Define_boolean_inhModifiedInScope(this, caller, var);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:123
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
+    if(caller == getParameterListNoTransform()) {
+      int childIndex = caller.getIndexOfChild(child);
+      return false;
+    }
+    else {      return getParent().Define_boolean_isCatchParam(this, caller);
+    }
   }
   /**
    * @apilevel internal
@@ -2235,9 +2324,9 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
   public ASTNode rewriteTo() {
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag at line 218
     if(!hasConstructorInvocation() && !hostType().isObject()) {
-      state().duringLookupConstructor++;
+      state().duringImplicitConstructor++;
       ASTNode result = rewriteRule0();
-      state().duringLookupConstructor--;
+      state().duringImplicitConstructor--;
       return result;
     }
 

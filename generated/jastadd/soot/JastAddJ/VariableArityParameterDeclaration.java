@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production VariableArityParameterDeclaration : {@link ParameterDeclaration};
  * @ast node
- * @declaredat VariableArityParameters.ast:1
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.ast:1
  */
 public class VariableArityParameterDeclaration extends ParameterDeclaration implements Cloneable {
   /**
@@ -65,18 +66,33 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public VariableArityParameterDeclaration fullCopy() {
-    VariableArityParameterDeclaration res = (VariableArityParameterDeclaration)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      VariableArityParameterDeclaration tree = (VariableArityParameterDeclaration) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect VariableArityParameters
@@ -99,7 +115,7 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
   }
   /**
    * @ast method 
-   * @declaredat VariableArityParameters.ast:1
+   * 
    */
   public VariableArityParameterDeclaration() {
     super();
@@ -107,8 +123,19 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat VariableArityParameters.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public VariableArityParameterDeclaration(Modifiers p0, Access p1, String p2) {
     setChild(p0, 0);
@@ -117,7 +144,7 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
   }
   /**
    * @ast method 
-   * @declaredat VariableArityParameters.ast:12
+   * 
    */
   public VariableArityParameterDeclaration(Modifiers p0, Access p1, beaver.Symbol p2) {
     setChild(p0, 0);
@@ -127,7 +154,7 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat VariableArityParameters.ast:20
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -135,75 +162,88 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat VariableArityParameters.ast:26
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeAccess
+   * Replaces the TypeAccess child.
+   * @param node The new node to replace the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeAccess(Access node) {
     setChild(node, 1);
   }
   /**
-   * Getter for TypeAccess
+   * Retrieves the TypeAccess child.
+   * @return The current node used as the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getTypeAccess() {
     return (Access)getChild(1);
   }
   /**
+   * Retrieves the TypeAccess child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the TypeAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getTypeAccessNoTransform() {
     return (Access)getChildNoTransform(1);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -213,10 +253,11 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
@@ -239,11 +280,11 @@ public class VariableArityParameterDeclaration extends ParameterDeclaration impl
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
@@ -253,18 +294,14 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute syn
    * @aspect VariableArityParameters
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:36
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:35
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isVariableArity() {
-      ASTNode$State state = state();
-    boolean isVariableArity_value = isVariableArity_compute();
-    return isVariableArity_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isVariableArity_compute() {  return true;  }
   /**
    * @attribute inh
    * @aspect VariableArityParameters
@@ -272,7 +309,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean variableArityValid() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean variableArityValid_value = getParent().Define_boolean_variableArityValid(this, null);
     return variableArityValid_value;
   }

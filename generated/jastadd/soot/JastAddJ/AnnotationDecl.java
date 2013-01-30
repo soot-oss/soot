@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -19,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production AnnotationDecl : {@link InterfaceDecl} ::= <span class="component">SuperInterfaceId:{@link Access}*</span>;
  * @ast node
- * @declaredat Annotations.ast:2
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.ast:2
  */
 public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   /**
@@ -68,18 +69,38 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnnotationDecl fullCopy() {
-    AnnotationDecl res = (AnnotationDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      AnnotationDecl tree = (AnnotationDecl) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          switch (i) {
+          case 3:
+            tree.children[i] = new List();
+            continue;
+          }
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect Annotations
@@ -115,39 +136,48 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:1
+   * 
    */
   public AnnotationDecl() {
     super();
 
-    setChild(new List(), 1);
-    setChild(new List(), 2);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Annotations.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new List(), 1);
+    setChild(new List(), 2);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public AnnotationDecl(Modifiers p0, String p1, List<BodyDecl> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
-    setChild(new List(), 2);
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:15
+   * 
    */
   public AnnotationDecl(Modifiers p0, beaver.Symbol p1, List<BodyDecl> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
-    setChild(new List(), 2);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:24
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -155,49 +185,57 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:30
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -207,47 +245,64 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for BodyDeclList
+   * Replaces the BodyDecl list.
+   * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBodyDeclList(List<BodyDecl> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * @return Number of children in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
-   * Getter for child in list BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDeclNoTransform() {
+    return getBodyDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the BodyDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
     return (BodyDecl)getBodyDeclList().getChild(i);
   }
   /**
-   * Add element to list BodyDeclList
+   * Append an element to the BodyDecl list.
+   * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addBodyDecl(BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
@@ -256,44 +311,51 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addBodyDeclNoTransform(BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list BodyDeclList
+   * Replaces the BodyDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setBodyDecl(BodyDecl node, int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for BodyDecl list.
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
-   * Getter for list BodyDeclList
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
@@ -302,47 +364,66 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
     return (List<BodyDecl>)getChildNoTransform(1);
   }
   /**
-   * Setter for SuperInterfaceIdList
+   * Replaces the SuperInterfaceId list.
+   * @param list The new list node to be used as the SuperInterfaceId list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setSuperInterfaceIdList(List<Access> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in SuperInterfaceIdList
+   * Retrieves the number of children in the SuperInterfaceId list.
+   * @return Number of children in the SuperInterfaceId list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:12
+   * 
    */
   public int getNumSuperInterfaceId() {
     return getSuperInterfaceIdList().getNumChild();
   }
   /**
-   * Getter for child in list SuperInterfaceIdList
+   * Retrieves the number of children in the SuperInterfaceId list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the SuperInterfaceId list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumSuperInterfaceIdNoTransform() {
+    return getSuperInterfaceIdListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the SuperInterfaceId list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the SuperInterfaceId list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperInterfaceId(int i) {
     return (Access)getSuperInterfaceIdList().getChild(i);
   }
   /**
-   * Add element to list SuperInterfaceIdList
+   * Append an element to the SuperInterfaceId list.
+   * @param node The element to append to the SuperInterfaceId list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:27
+   * 
    */
   public void addSuperInterfaceId(Access node) {
     List<Access> list = (parent == null || state == null) ? getSuperInterfaceIdListNoTransform() : getSuperInterfaceIdList();
@@ -351,51 +432,62 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:34
+   * 
    */
   public void addSuperInterfaceIdNoTransform(Access node) {
     List<Access> list = getSuperInterfaceIdListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list SuperInterfaceIdList
+   * Replaces the SuperInterfaceId list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:42
+   * 
    */
   public void setSuperInterfaceId(Access node, int i) {
     List<Access> list = getSuperInterfaceIdList();
     list.setChild(node, i);
   }
   /**
-   * Getter for SuperInterfaceId list.
+   * Retrieves the SuperInterfaceId list.
+   * @return The node representing the SuperInterfaceId list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:50
+   * 
    */
   public List<Access> getSuperInterfaceIds() {
     return getSuperInterfaceIdList();
   }
   /**
+   * Retrieves the SuperInterfaceId list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the SuperInterfaceId list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:56
+   * 
    */
   public List<Access> getSuperInterfaceIdsNoTransform() {
     return getSuperInterfaceIdListNoTransform();
   }
   /**
+   * Retrieves the SuperInterfaceId list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the SuperInterfaceId list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:62
+   * 
    */
   public List<Access> getSuperInterfaceIdListNoTransform() {
     return (List<Access>)getChildNoTransform(2);
   }
   /**
+   * Retrieves the child position of the SuperInterfaceId list.
+   * @return The the child position of the SuperInterfaceId list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:68
+   * 
    */
   protected int getSuperInterfaceIdListChildPosition() {
     return 2;
@@ -418,12 +510,12 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
     if(getSuperInterfaceIdList_computed) {
       return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSuperInterfaceIdList_value = getSuperInterfaceIdList_compute();
     setSuperInterfaceIdList(getSuperInterfaceIdList_value);
-if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed = true;
     return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
   }
   /**
@@ -437,18 +529,14 @@ if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed
   primitive types, String, Class and any invocation of Class, an enum type
   (\u00df8.9), an annotation type, or an array (\u00df10) of one of the preceding types.* @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:134
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:121
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isValidAnnotationMethodReturnType() {
-      ASTNode$State state = state();
-    boolean isValidAnnotationMethodReturnType_value = isValidAnnotationMethodReturnType_compute();
-    return isValidAnnotationMethodReturnType_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isValidAnnotationMethodReturnType_compute() {  return true;  }
   protected java.util.Map containsElementOf_TypeDecl_values;
   /* It is a compile-time error if an annotation type T contains an element of
   type T, either directly or indirectly.* @attribute syn
@@ -489,7 +577,7 @@ if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         containsElementOf_TypeDecl_values.put(_parameters, new_containsElementOf_TypeDecl_value);
       }
       else {
@@ -533,33 +621,25 @@ if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:546
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:545
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isAnnotationDecl() {
-      ASTNode$State state = state();
-    boolean isAnnotationDecl_value = isAnnotationDecl_compute();
-    return isAnnotationDecl_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isAnnotationDecl_compute() {  return true;  }
   /**
    * @attribute syn
-   * @aspect AnnotationsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:291
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:90
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int sootTypeModifiers() {
-      ASTNode$State state = state();
-    int sootTypeModifiers_value = sootTypeModifiers_compute();
-    return sootTypeModifiers_value;
+    ASTNode$State state = state();
+    try {  return super.sootTypeModifiers() | Modifiers.ACC_ANNOTATION;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int sootTypeModifiers_compute() {  return super.sootTypeModifiers() | Modifiers.ACC_ANNOTATION;  }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:77
    * @apilevel internal
@@ -568,7 +648,8 @@ if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed
     if(caller == getModifiersNoTransform()) {
       return name.equals("ANNOTATION_TYPE") || name.equals("TYPE");
     }
-    return super.Define_boolean_mayUseAnnotationTarget(caller, child, name);
+    else {      return super.Define_boolean_mayUseAnnotationTarget(caller, child, name);
+    }
   }
   /**
    * @apilevel internal

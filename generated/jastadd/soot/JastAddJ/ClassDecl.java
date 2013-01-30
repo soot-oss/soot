@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -19,10 +20,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production ClassDecl : {@link ReferenceType} ::= <span class="component">{@link Modifiers}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">[SuperClassAccess:{@link Access}]</span> <span class="component">Implements:{@link Access}*</span> <span class="component">{@link BodyDecl}*</span>;
  * @ast node
- * @declaredat java.ast:63
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:66
  */
 public class ClassDecl extends ReferenceType implements Cloneable {
   /**
@@ -110,18 +111,33 @@ public class ClassDecl extends ReferenceType implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ClassDecl fullCopy() {
-    ClassDecl res = (ClassDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      ClassDecl tree = (ClassDecl) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect AccessControl
@@ -149,7 +165,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:92
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:106
    */
   public void exceptionHandling() {
     constructors();
@@ -215,7 +231,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect SuperClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:593
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:596
    */
   public boolean hasSuperclass() {
     return !isObject();
@@ -223,7 +239,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect SuperClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:597
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:600
    */
   public ClassDecl superclass() {
     if(isObject())
@@ -235,7 +251,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect SuperClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:612
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:615
    */
   public Iterator interfacesIterator() {
     return new Iterator() {
@@ -349,7 +365,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:167
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:187
    */
   public TypeDecl makeGeneric(Signatures.ClassSignature s) {
     if(s.hasFormalTypeParameters()) {
@@ -379,7 +395,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1207
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1313
    */
   public ClassDecl substitutedClassDecl(Parameterization parTypeDecl) {
     ClassDecl c = new ClassDeclSubstituted(
@@ -387,7 +403,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
       getID(),
       hasSuperClassAccess() ? new Opt(getSuperClassAccess().type().substitute(parTypeDecl)) : new Opt(),
       getImplementsList().substitute(parTypeDecl),
-      new List(), 
+     // ES:  new List(), 
       this
     );
     return c;
@@ -421,19 +437,30 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public ClassDecl() {
     super();
 
-    setChild(new Opt(), 1);
-    setChild(new List(), 2);
-    setChild(new List(), 3);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:10
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[4];
+    setChild(new Opt(), 1);
+    setChild(new List(), 2);
+    setChild(new List(), 3);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ClassDecl(Modifiers p0, String p1, Opt<Access> p2, List<Access> p3, List<BodyDecl> p4) {
     setChild(p0, 0);
@@ -444,7 +471,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:17
+   * 
    */
   public ClassDecl(Modifiers p0, beaver.Symbol p1, Opt<Access> p2, List<Access> p3, List<BodyDecl> p4) {
     setChild(p0, 0);
@@ -456,7 +483,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   protected int numChildren() {
     return 4;
@@ -464,49 +491,57 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:33
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -516,102 +551,128 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for SuperClassAccessOpt
+   * Replaces the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @param opt The new node to be used as the optional node for the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setSuperClassAccessOpt(Opt<Access> opt) {
     setChild(opt, 1);
   }
   /**
-   * Does this node have a SuperClassAccess child?
+   * Check whether the optional SuperClassAccess child exists.
+   * @return {@code true} if the optional SuperClassAccess child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasSuperClassAccess() {
     return getSuperClassAccessOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child SuperClassAccess
-   * @apilevel high-level
+   * Retrieves the (optional) SuperClassAccess child.
+   * @return The SuperClassAccess child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
     return (Access)getSuperClassAccessOpt().getChild(0);
   }
   /**
-   * Setter for optional child SuperClassAccess
+   * Replaces the (optional) SuperClassAccess child.
+   * @param node The new node to be used as the SuperClassAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setSuperClassAccess(Access node) {
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @return The optional node for child the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOpt() {
     return (Opt<Access>)getChild(1);
   }
   /**
+   * Retrieves the optional node for child SuperClassAccess. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child SuperClassAccess.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOptNoTransform() {
     return (Opt<Access>)getChildNoTransform(1);
   }
   /**
-   * Setter for ImplementsList
+   * Replaces the Implements list.
+   * @param list The new list node to be used as the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setImplementsList(List<Access> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in ImplementsList
+   * Retrieves the number of children in the Implements list.
+   * @return Number of children in the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumImplements() {
     return getImplementsList().getNumChild();
   }
   /**
-   * Getter for child in list ImplementsList
+   * Retrieves the number of children in the Implements list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Implements list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumImplementsNoTransform() {
+    return getImplementsListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Implements list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getImplements(int i) {
     return (Access)getImplementsList().getChild(i);
   }
   /**
-   * Add element to list ImplementsList
+   * Append an element to the Implements list.
+   * @param node The element to append to the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addImplements(Access node) {
     List<Access> list = (parent == null || state == null) ? getImplementsListNoTransform() : getImplementsList();
@@ -620,44 +681,51 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addImplementsNoTransform(Access node) {
     List<Access> list = getImplementsListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ImplementsList
+   * Replaces the Implements list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setImplements(Access node, int i) {
     List<Access> list = getImplementsList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Implements list.
+   * Retrieves the Implements list.
+   * @return The node representing the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Access> getImplementss() {
     return getImplementsList();
   }
   /**
+   * Retrieves the Implements list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Implements list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Access> getImplementssNoTransform() {
     return getImplementsListNoTransform();
   }
   /**
-   * Getter for list ImplementsList
+   * Retrieves the Implements list.
+   * @return The node representing the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getImplementsList() {
@@ -666,47 +734,66 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the Implements list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Implements list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getImplementsListNoTransform() {
     return (List<Access>)getChildNoTransform(2);
   }
   /**
-   * Setter for BodyDeclList
+   * Replaces the BodyDecl list.
+   * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBodyDeclList(List<BodyDecl> list) {
     setChild(list, 3);
   }
   /**
-   * @return number of children in BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * @return Number of children in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
-   * Getter for child in list BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDeclNoTransform() {
+    return getBodyDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the BodyDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
     return (BodyDecl)getBodyDeclList().getChild(i);
   }
   /**
-   * Add element to list BodyDeclList
+   * Append an element to the BodyDecl list.
+   * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addBodyDecl(BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
@@ -715,44 +802,51 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addBodyDeclNoTransform(BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list BodyDeclList
+   * Replaces the BodyDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setBodyDecl(BodyDecl node, int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for BodyDecl list.
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
-   * Getter for list BodyDeclList
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
@@ -761,9 +855,12 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
@@ -790,7 +887,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @ast method 
    * @aspect Generics
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:37
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:57
    */
   private boolean refined_Generics_ClassDecl_castingConversionTo_TypeDecl(TypeDecl type)
 {
@@ -847,108 +944,77 @@ public class ClassDecl extends ReferenceType implements Cloneable {
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:318
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:160
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant cast(Constant c) {
-      ASTNode$State state = state();
-    Constant cast_Constant_value = cast_compute(c);
-    return cast_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c.stringValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant cast_compute(Constant c) {  return Constant.create(c.stringValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:380
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:226
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant add(Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant add_Constant_Constant_value = add_compute(c1, c2);
-    return add_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(c1.stringValue() + c2.stringValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant add_compute(Constant c1, Constant c2) {  return Constant.create(c1.stringValue() + c2.stringValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:445
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:290
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant questionColon(Constant cond, Constant c1, Constant c2) {
-      ASTNode$State state = state();
-    Constant questionColon_Constant_Constant_Constant_value = questionColon_compute(cond, c1, c2);
-    return questionColon_Constant_Constant_Constant_value;
+    ASTNode$State state = state();
+    try {  return Constant.create(cond.booleanValue() ? c1.stringValue() : c2.stringValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant questionColon_compute(Constant cond, Constant c1, Constant c2) {  return Constant.create(cond.booleanValue() ? c1.stringValue() : c2.stringValue());  }
   /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ConstantExpression.jrag:549
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:394
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean eqIsTrue(Expr left, Expr right) {
-      ASTNode$State state = state();
-    boolean eqIsTrue_Expr_Expr_value = eqIsTrue_compute(left, right);
-    return eqIsTrue_Expr_Expr_value;
+    ASTNode$State state = state();
+    try {  return isString() && left.constant().stringValue().equals(right.constant().stringValue());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean eqIsTrue_compute(Expr left, Expr right) {  return isString() && left.constant().stringValue().equals(right.constant().stringValue());  }
   /**
    * @attribute syn
    * @aspect ErrorCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:30
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:22
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int lineNumber() {
-      ASTNode$State state = state();
-    int lineNumber_value = lineNumber_compute();
-    return lineNumber_value;
+    ASTNode$State state = state();
+    try {  return getLine(IDstart);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private int lineNumber_compute() {  return getLine(IDstart);  }
   /**
    * @attribute syn
    * @aspect ConstructScope
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:22
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:21
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Collection lookupSuperConstructor() {
-      ASTNode$State state = state();
-    Collection lookupSuperConstructor_value = lookupSuperConstructor_compute();
-    return lookupSuperConstructor_value;
+    ASTNode$State state = state();
+    try {  return hasSuperclass() ? superclass().constructors() : Collections.EMPTY_LIST;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Collection lookupSuperConstructor_compute() {  return hasSuperclass() ? superclass().constructors() : Collections.EMPTY_LIST;  }
   /**
    * @attribute syn
    * @aspect ImplicitConstructor
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:207
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean noConstructor() {
-      ASTNode$State state = state();
-    boolean noConstructor_value = noConstructor_compute();
-    return noConstructor_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean noConstructor_compute() {
+    ASTNode$State state = state();
+    try {
     if(!compilationUnit().fromSource())
       return false;
     for(int i = 0; i < getNumBodyDecl(); i++)
@@ -956,24 +1022,23 @@ public class ClassDecl extends ReferenceType implements Cloneable {
         return false;
     return true;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect MemberMethods
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:280
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet interfacesMethodsSignature(String signature) {
-      ASTNode$State state = state();
-    SimpleSet interfacesMethodsSignature_String_value = interfacesMethodsSignature_compute(signature);
-    return interfacesMethodsSignature_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet interfacesMethodsSignature_compute(String signature) {
+    ASTNode$State state = state();
+    try {
     SimpleSet set = (SimpleSet)interfacesMethodsSignatureMap().get(signature);
     if(set != null) return set;
     return SimpleSet.emptySet;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -993,11 +1058,11 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     if(interfacesMethodsSignatureMap_computed) {
       return interfacesMethodsSignatureMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     interfacesMethodsSignatureMap_value = interfacesMethodsSignatureMap_compute();
-if(isFinal && num == state().boundariesCrossed) interfacesMethodsSignatureMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) interfacesMethodsSignatureMap_computed = true;
     return interfacesMethodsSignatureMap_value;
   }
   /**
@@ -1032,11 +1097,11 @@ if(isFinal && num == state().boundariesCrossed) interfacesMethodsSignatureMap_co
     if(methodsSignatureMap_computed) {
       return methodsSignatureMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     methodsSignatureMap_value = methodsSignatureMap_compute();
-if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = true;
     return methodsSignatureMap_value;
   }
   /**
@@ -1083,11 +1148,11 @@ if(isFinal && num == state().boundariesCrossed) methodsSignatureMap_computed = t
     if(ancestorMethods_String_values.containsKey(_parameters)) {
       return (SimpleSet)ancestorMethods_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet ancestorMethods_String_value = ancestorMethods_compute(signature);
-if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.put(_parameters, ancestorMethods_String_value);
+      if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.put(_parameters, ancestorMethods_String_value);
     return ancestorMethods_String_value;
   }
   /**
@@ -1131,7 +1196,7 @@ if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.pu
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:410
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:498
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet memberTypes(String name) {
@@ -1140,11 +1205,11 @@ if(isFinal && num == state().boundariesCrossed) ancestorMethods_String_values.pu
     if(memberTypes_String_values.containsKey(_parameters)) {
       return (SimpleSet)memberTypes_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet memberTypes_String_value = memberTypes_compute(name);
-if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_parameters, memberTypes_String_value);
+      if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_parameters, memberTypes_String_value);
     return memberTypes_String_value;
   }
   /**
@@ -1189,11 +1254,11 @@ if(isFinal && num == state().boundariesCrossed) memberTypes_String_values.put(_p
     if(memberFieldsMap_computed) {
       return memberFieldsMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     memberFieldsMap_value = memberFieldsMap_compute();
-if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
+      if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
     return memberFieldsMap_value;
   }
   /**
@@ -1231,11 +1296,11 @@ if(isFinal && num == state().boundariesCrossed) memberFieldsMap_computed = true;
     if(memberFields_String_values.containsKey(_parameters)) {
       return (SimpleSet)memberFields_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet memberFields_String_value = memberFields_compute(name);
-if(isFinal && num == state().boundariesCrossed) memberFields_String_values.put(_parameters, memberFields_String_value);
+      if(isFinal && num == state().boundariesCrossed) memberFields_String_values.put(_parameters, memberFields_String_value);
     return memberFields_String_value;
   }
   /**
@@ -1280,11 +1345,11 @@ if(isFinal && num == state().boundariesCrossed) memberFields_String_values.put(_
     if(unimplementedMethods_computed) {
       return unimplementedMethods_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unimplementedMethods_value = unimplementedMethods_compute();
-if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = true;
+      if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = true;
     return unimplementedMethods_value;
   }
   /**
@@ -1356,11 +1421,11 @@ if(isFinal && num == state().boundariesCrossed) unimplementedMethods_computed = 
     if(hasAbstract_computed) {
       return hasAbstract_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     hasAbstract_value = hasAbstract_compute();
-if(isFinal && num == state().boundariesCrossed) hasAbstract_computed = true;
+      if(isFinal && num == state().boundariesCrossed) hasAbstract_computed = true;
     return hasAbstract_value;
   }
   /**
@@ -1380,11 +1445,11 @@ if(isFinal && num == state().boundariesCrossed) hasAbstract_computed = true;
     if(castingConversionTo_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)castingConversionTo_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean castingConversionTo_TypeDecl_value = castingConversionTo_compute(type);
-if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(castingConversionTo_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_values.put(_parameters, Boolean.valueOf(castingConversionTo_TypeDecl_value));
     return castingConversionTo_TypeDecl_value;
   }
   /**
@@ -1407,18 +1472,14 @@ if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_val
   /**
    * @attribute syn
    * @aspect TypeAnalysis
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:210
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:209
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isClassDecl() {
-      ASTNode$State state = state();
-    boolean isClassDecl_value = isClassDecl_compute();
-    return isClassDecl_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isClassDecl_compute() {  return true;  }
   /**
    * @apilevel internal
    */
@@ -1437,11 +1498,11 @@ if(isFinal && num == state().boundariesCrossed) castingConversionTo_TypeDecl_val
     if(isString_computed) {
       return isString_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isString_value = isString_compute();
-if(isFinal && num == state().boundariesCrossed) isString_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isString_computed = true;
     return isString_value;
   }
   /**
@@ -1466,11 +1527,11 @@ if(isFinal && num == state().boundariesCrossed) isString_computed = true;
     if(isObject_computed) {
       return isObject_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     isObject_value = isObject_compute();
-if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
+      if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
     return isObject_value;
   }
   /**
@@ -1490,11 +1551,11 @@ if(isFinal && num == state().boundariesCrossed) isObject_computed = true;
     if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
     return instanceOf_TypeDecl_value;
   }
   /**
@@ -1504,71 +1565,55 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:424
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:423
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfClassDecl(ClassDecl type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfClassDecl_ClassDecl_value = isSupertypeOfClassDecl_compute(type);
-    return isSupertypeOfClassDecl_ClassDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfClassDecl_compute(ClassDecl type) {
+    ASTNode$State state = state();
+    try {
     if(super.isSupertypeOfClassDecl(type))
       return true;
     return type.hasSuperclass() && type.superclass() != null && type.superclass().instanceOf(this);
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:441
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:440
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfInterfaceDecl(InterfaceDecl type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfInterfaceDecl_InterfaceDecl_value = isSupertypeOfInterfaceDecl_compute(type);
-    return isSupertypeOfInterfaceDecl_InterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return isObject();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfInterfaceDecl_compute(InterfaceDecl type) {  return isObject();  }
   /**
    * @attribute syn
    * @aspect TypeWideningAndIdentity
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:454
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:453
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isSupertypeOfArrayDecl(ArrayDecl type) {
-      ASTNode$State state = state();
-    boolean isSupertypeOfArrayDecl_ArrayDecl_value = isSupertypeOfArrayDecl_compute(type);
-    return isSupertypeOfArrayDecl_ArrayDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isSupertypeOfArrayDecl_compute(ArrayDecl type) {
+    ASTNode$State state = state();
+    try {
     if(super.isSupertypeOfArrayDecl(type))
       return true;
     return type.hasSuperclass() && type.superclass() != null && type.superclass().instanceOf(this);
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect NestedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:536
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:534
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isInnerClass() {
-      ASTNode$State state = state();
-    boolean isInnerClass_value = isInnerClass_compute();
-    return isInnerClass_value;
+    ASTNode$State state = state();
+    try {  return isNestedType() && !isStatic() && enclosingType().isClassDecl();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isInnerClass_compute() {  return isNestedType() && !isStatic() && enclosingType().isClassDecl();  }
   /**
    * @apilevel internal
    */
@@ -1588,7 +1633,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect Circularity
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:674
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:677
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isCircular() {
@@ -1613,7 +1658,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
         isCircular_value = new_isCircular_value; 
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
       isCircular_computed = true;
       }
       else {
@@ -1667,18 +1712,11 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:228
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:225
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Annotation annotation(TypeDecl typeDecl) {
-      ASTNode$State state = state();
-    Annotation annotation_TypeDecl_value = annotation_compute(typeDecl);
-    return annotation_TypeDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Annotation annotation_compute(TypeDecl typeDecl) {
+    ASTNode$State state = state();
+    try {
     Annotation a = super.annotation(typeDecl);
     if(a != null) return a;
     if(hasSuperclass()) {
@@ -1688,6 +1726,9 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
         return superclass().annotation(typeDecl);
     }
     return null;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -1700,18 +1741,18 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect GenericsTypeCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:373
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:400
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashSet implementedInterfaces() {
     if(implementedInterfaces_computed) {
       return implementedInterfaces_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     implementedInterfaces_value = implementedInterfaces_compute();
-if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed = true;
+      if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed = true;
     return implementedInterfaces_value;
   }
   /**
@@ -1768,7 +1809,7 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
       }
       else {
@@ -1801,69 +1842,53 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
   /**
    * @attribute syn
    * @aspect GenericsSubtype
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:422
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:421
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeClassDecl(ClassDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeClassDecl_ClassDecl_value = supertypeClassDecl_compute(type);
-    return supertypeClassDecl_ClassDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeClassDecl_compute(ClassDecl type) {  return super.supertypeClassDecl(type) || 
+    ASTNode$State state = state();
+    try {  return super.supertypeClassDecl(type) || 
     type.hasSuperclass() && type.superclass() != null && type.superclass().subtype(this);  }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:438
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:437
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeInterfaceDecl(InterfaceDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeInterfaceDecl_InterfaceDecl_value = supertypeInterfaceDecl_compute(type);
-    return supertypeInterfaceDecl_InterfaceDecl_value;
+    ASTNode$State state = state();
+    try {  return isObject();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeInterfaceDecl_compute(InterfaceDecl type) {  return isObject();  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:451
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:450
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeArrayDecl(ArrayDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeArrayDecl_ArrayDecl_value = supertypeArrayDecl_compute(type);
-    return supertypeArrayDecl_ArrayDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeArrayDecl_compute(ArrayDecl type) {
+    ASTNode$State state = state();
+    try {
     if(super.supertypeArrayDecl(type))
       return true;
     return type.hasSuperclass() && type.superclass() != null && type.superclass().subtype(this);
   }
-  /**
-   * @attribute syn
-   * @aspect GenericsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:19
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl superEnclosing() {
-      ASTNode$State state = state();
-    TypeDecl superEnclosing_value = superEnclosing_compute();
-    return superEnclosing_value;
+    finally {
+    }
   }
   /**
-   * @apilevel internal
+   * @attribute syn
+   * @aspect InnerClasses
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:430
    */
-  private TypeDecl superEnclosing_compute() {
+  public TypeDecl superEnclosing() {
+    ASTNode$State state = state();
+    try {
     return superclass().erasure().enclosing();
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
@@ -1883,11 +1908,11 @@ if(isFinal && num == state().boundariesCrossed) implementedInterfaces_computed =
     if(sootClass_computed) {
       return sootClass_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sootClass_value = sootClass_compute();
-if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
     return sootClass_value;
   }
   /**
@@ -1913,37 +1938,29 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
   /**
    * @attribute syn
    * @aspect AnnotationsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:323
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:322
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String typeDescriptor() {
-      ASTNode$State state = state();
-    String typeDescriptor_value = typeDescriptor_compute();
-    return typeDescriptor_value;
+    ASTNode$State state = state();
+    try {  return "L" + jvmName().replace('.', '/') + ";";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String typeDescriptor_compute() {  return "L" + jvmName().replace('.', '/') + ";";  }
   /**
    * @attribute syn
    * @aspect GenericsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:335
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:333
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet bridgeCandidates(String signature) {
-      ASTNode$State state = state();
-    SimpleSet bridgeCandidates_String_value = bridgeCandidates_compute(signature);
-    return bridgeCandidates_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet bridgeCandidates_compute(String signature) {
+    ASTNode$State state = state();
+    try {
     SimpleSet set = ancestorMethods(signature);
     for(Iterator iter = interfacesMethodsSignature(signature).iterator(); iter.hasNext(); )
       set = set.add(iter.next());
     return set;
+  }
+    finally {
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:259
@@ -1953,7 +1970,8 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
     if(caller == getModifiersNoTransform()) {
       return true;
     }
-    return super.Define_boolean_mayBeFinal(caller, child);
+    else {      return super.Define_boolean_mayBeFinal(caller, child);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:74
@@ -1964,13 +1982,14 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return NameType.TYPE_NAME;
     }
-    if(caller == getSuperClassAccessOptNoTransform()) {
+    else if(caller == getSuperClassAccessOptNoTransform()) {
       return NameType.TYPE_NAME;
     }
-    return super.Define_NameType_nameType(caller, child);
+    else {      return super.Define_NameType_nameType(caller, child);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:576
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:579
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
@@ -1978,10 +1997,11 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return hostType();
     }
-    if(caller == getSuperClassAccessOptNoTransform()) {
+    else if(caller == getSuperClassAccessOptNoTransform()) {
       return hostType();
     }
-    return super.Define_TypeDecl_hostType(caller, child);
+    else {      return super.Define_TypeDecl_hostType(caller, child);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:276
@@ -1992,10 +2012,11 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return hasAnnotationSuppressWarnings(s) || withinSuppressWarnings(s);
     }
-    if(caller == getSuperClassAccessOptNoTransform()) {
+    else if(caller == getSuperClassAccessOptNoTransform()) {
       return hasAnnotationSuppressWarnings(s) || withinSuppressWarnings(s);
     }
-    return super.Define_boolean_withinSuppressWarnings(caller, child, s);
+    else {      return super.Define_boolean_withinSuppressWarnings(caller, child, s);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:377
@@ -2006,10 +2027,26 @@ if(isFinal && num == state().boundariesCrossed) sootClass_computed = true;
       int childIndex = caller.getIndexOfChild(child);
       return isDeprecated() || withinDeprecatedAnnotation();
     }
-    if(caller == getSuperClassAccessOptNoTransform()) {
+    else if(caller == getSuperClassAccessOptNoTransform()) {
       return isDeprecated() || withinDeprecatedAnnotation();
     }
-    return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
+    else {      return super.Define_boolean_withinDeprecatedAnnotation(caller, child);
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:269
+   * @apilevel internal
+   */
+  public boolean Define_boolean_inExtendsOrImplements(ASTNode caller, ASTNode child) {
+    if(caller == getImplementsListNoTransform()) {
+      int i = caller.getIndexOfChild(child);
+      return true;
+    }
+    else if(caller == getSuperClassAccessOptNoTransform()) {
+      return true;
+    }
+    else {      return getParent().Define_boolean_inExtendsOrImplements(this, caller);
+    }
   }
   /**
    * @apilevel internal

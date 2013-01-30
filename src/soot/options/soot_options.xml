@@ -345,7 +345,7 @@ The Android application must contain the AndroidManifest.xml file.
 			<short_desc>Force Soot to use <use_arg_label/> as the path for the android.jar file.</short_desc>
 			<long_desc>
 Use <use_arg_label/> as the path to the android.jar file Soot should use.
-This option overrides the "android-jars" option.
+This option overrides the 'android-jars' option.
 			</long_desc>
 		</stropt>
 

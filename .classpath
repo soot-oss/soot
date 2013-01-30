@@ -10,4 +10,11 @@
 	<classpathentry kind="lib" path="/home/xiao/workspace/soot/libs/jasminclasses.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="classes"/>
+  <!--
+	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="src/" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/soot"/>
+	<classpathentry kind="output" path="bin"/>
+  -->
 </classpath>

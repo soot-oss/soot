@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production EnumInstanceExpr : {@link ClassInstanceExpr} ::= <span class="component">{@link Access}</span> <span class="component">Arg:{@link Expr}*</span> <span class="component">[{@link TypeDecl}]</span>;
  * @ast node
- * @declaredat Enums.ast:5
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.ast:5
  */
 public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
   /**
@@ -69,42 +70,74 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EnumInstanceExpr fullCopy() {
-    EnumInstanceExpr res = (EnumInstanceExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      EnumInstanceExpr tree = (EnumInstanceExpr) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          switch (i) {
+          case 1:
+            tree.children[i] = null;
+            continue;
+          case 2:
+            tree.children[i] = new List();
+            continue;
+          }
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
-   * @declaredat Enums.ast:1
+   * 
    */
   public EnumInstanceExpr() {
     super();
 
-    setChild(new Opt(), 0);
-    setChild(new List(), 2);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Enums.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new Opt(), 0);
+    setChild(new List(), 2);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public EnumInstanceExpr(Opt<TypeDecl> p0) {
     setChild(p0, 0);
-    setChild(null, 1);
-    setChild(new List(), 2);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:17
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -112,124 +145,155 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Enums.ast:23
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for TypeDeclOpt
+   * Replaces the optional node for the TypeDecl child. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
+   * @param opt The new node to be used as the optional node for the TypeDecl child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:5
+   * 
    */
   public void setTypeDeclOpt(Opt<TypeDecl> opt) {
     setChild(opt, 0);
   }
   /**
-   * Does this node have a TypeDecl child?
+   * Check whether the optional TypeDecl child exists.
+   * @return {@code true} if the optional TypeDecl child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:12
+   * 
    */
   public boolean hasTypeDecl() {
     return getTypeDeclOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child TypeDecl
-   * @apilevel high-level
+   * Retrieves the (optional) TypeDecl child.
+   * @return The TypeDecl child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl getTypeDecl() {
     return (TypeDecl)getTypeDeclOpt().getChild(0);
   }
   /**
-   * Setter for optional child TypeDecl
+   * Replaces the (optional) TypeDecl child.
+   * @param node The new node to be used as the TypeDecl child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:27
+   * 
    */
   public void setTypeDecl(TypeDecl node) {
     getTypeDeclOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the TypeDecl child. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
+   * @return The optional node for child the TypeDecl child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<TypeDecl> getTypeDeclOpt() {
     return (Opt<TypeDecl>)getChild(0);
   }
   /**
+   * Retrieves the optional node for child TypeDecl. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child TypeDecl.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<TypeDecl> getTypeDeclOptNoTransform() {
     return (Opt<TypeDecl>)getChildNoTransform(0);
   }
   /**
-   * Setter for Access
+   * Replaces the Access child.
+   * @param node The new node to replace the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:5
+   * 
    */
   public void setAccess(Access node) {
     setChild(node, 1);
   }
   /**
+   * Retrieves the Access child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Access child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:11
+   * 
    */
   public Access getAccessNoTransform() {
     return (Access)getChildNoTransform(1);
   }
   /**
+   * Retrieves the child position of the optional child Access.
+   * @return The the child position of the optional child Access.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:17
+   * 
    */
   protected int getAccessChildPosition() {
     return 1;
   }
   /**
-   * Setter for ArgList
+   * Replaces the Arg list.
+   * @param list The new list node to be used as the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:5
+   * 
    */
   public void setArgList(List<Expr> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in ArgList
+   * Retrieves the number of children in the Arg list.
+   * @return Number of children in the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:12
+   * 
    */
   public int getNumArg() {
     return getArgList().getNumChild();
   }
   /**
-   * Getter for child in list ArgList
+   * Retrieves the number of children in the Arg list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Arg list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumArgNoTransform() {
+    return getArgListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Arg list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Expr getArg(int i) {
     return (Expr)getArgList().getChild(i);
   }
   /**
-   * Add element to list ArgList
+   * Append an element to the Arg list.
+   * @param node The element to append to the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:27
+   * 
    */
   public void addArg(Expr node) {
     List<Expr> list = (parent == null || state == null) ? getArgListNoTransform() : getArgList();
@@ -238,51 +302,62 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:34
+   * 
    */
   public void addArgNoTransform(Expr node) {
     List<Expr> list = getArgListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ArgList
+   * Replaces the Arg list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:42
+   * 
    */
   public void setArg(Expr node, int i) {
     List<Expr> list = getArgList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Arg list.
+   * Retrieves the Arg list.
+   * @return The node representing the Arg list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Enums.ast:50
+   * 
    */
   public List<Expr> getArgs() {
     return getArgList();
   }
   /**
+   * Retrieves the Arg list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Arg list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:56
+   * 
    */
   public List<Expr> getArgsNoTransform() {
     return getArgListNoTransform();
   }
   /**
+   * Retrieves the Arg list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Arg list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:62
+   * 
    */
   public List<Expr> getArgListNoTransform() {
     return (List<Expr>)getChildNoTransform(2);
   }
   /**
+   * Retrieves the child position of the Arg list.
+   * @return The the child position of the Arg list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Enums.ast:68
+   * 
    */
   protected int getArgListChildPosition() {
     return 2;
@@ -310,12 +385,12 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
     if(getAccess_computed) {
       return (Access)ASTNode.getChild(this, getAccessChildPosition());
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getAccess_value = getAccess_compute();
       setAccess(getAccess_value);
-if(isFinal && num == state().boundariesCrossed) getAccess_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getAccess_computed = true;
     return (Access)ASTNode.getChild(this, getAccessChildPosition());
   }
   /**
@@ -342,12 +417,12 @@ if(isFinal && num == state().boundariesCrossed) getAccess_computed = true;
     if(getArgList_computed) {
       return (List<Expr>)ASTNode.getChild(this, getArgListChildPosition());
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getArgList_value = getArgList_compute();
     setArgList(getArgList_value);
-if(isFinal && num == state().boundariesCrossed) getArgList_computed = true;
+      if(isFinal && num == state().boundariesCrossed) getArgList_computed = true;
     return (List<Expr>)ASTNode.getChild(this, getArgListChildPosition());
   }
   /**

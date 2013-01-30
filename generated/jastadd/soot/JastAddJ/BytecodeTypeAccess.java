@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production BytecodeTypeAccess : {@link TypeAccess};
  * @ast node
- * @declaredat BoundNames.ast:10
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.ast:10
  */
 public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
   /**
@@ -61,21 +62,36 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BytecodeTypeAccess fullCopy() {
-    BytecodeTypeAccess res = (BytecodeTypeAccess)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      BytecodeTypeAccess tree = (BytecodeTypeAccess) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
-   * @declaredat BoundNames.ast:1
+   * 
    */
   public BytecodeTypeAccess() {
     super();
@@ -83,8 +99,18 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat BoundNames.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public BytecodeTypeAccess(String p0, String p1) {
     setPackage(p0);
@@ -92,7 +118,7 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat BoundNames.ast:11
+   * 
    */
   public BytecodeTypeAccess(beaver.Symbol p0, beaver.Symbol p1) {
     setPackage(p0);
@@ -101,7 +127,7 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat BoundNames.ast:18
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -109,23 +135,26 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat BoundNames.ast:24
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for lexeme Package
+   * Replaces the lexeme Package.
+   * @param value The new value for the lexeme Package.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setPackage(String value) {
     tokenString_Package = value;
   }
   /**
+   * JastAdd-internal setter for lexeme Package using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setPackage(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -135,26 +164,30 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
     Packageend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme Package
+   * Retrieves the value for the lexeme Package.
+   * @return The value for the lexeme Package.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getPackage() {
     return tokenString_Package != null ? tokenString_Package : "";
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -164,10 +197,11 @@ public class BytecodeTypeAccess extends TypeAccess implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";

@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production GenericClassDeclSubstituted : {@link GenericClassDecl} ::= <span class="component">&lt;Original:TypeDecl&gt;</span> <span class="component">{@link BodyDecl}*</span>;
  * @ast node
- * @declaredat Generics.ast:35
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.ast:43
  */
 public class GenericClassDeclSubstituted extends GenericClassDecl implements Cloneable, MemberSubstitutor {
   /**
@@ -29,6 +30,8 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
    */
   public void flushCache() {
     super.flushCache();
+    getBodyDeclList_computed = false;
+    getBodyDeclList_value = null;
     sourceTypeDecl_computed = false;
     sourceTypeDecl_value = null;
     instanceOf_TypeDecl_values = null;
@@ -52,6 +55,8 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
   @SuppressWarnings({"unchecked", "cast"})
   public GenericClassDeclSubstituted clone() throws CloneNotSupportedException {
     GenericClassDeclSubstituted node = (GenericClassDeclSubstituted)super.clone();
+    node.getBodyDeclList_computed = false;
+    node.getBodyDeclList_value = null;
     node.sourceTypeDecl_computed = false;
     node.sourceTypeDecl_value = null;
     node.instanceOf_TypeDecl_values = null;
@@ -81,111 +86,148 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericClassDeclSubstituted fullCopy() {
-    GenericClassDeclSubstituted res = (GenericClassDeclSubstituted)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      GenericClassDeclSubstituted tree = (GenericClassDeclSubstituted) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          switch (i) {
+          case 6:
+            tree.children[i] = new List();
+            continue;
+          }
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
-   * @declaredat Generics.ast:1
+   * 
    */
   public GenericClassDeclSubstituted() {
     super();
 
+
+  }
+  /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[5];
     setChild(new Opt(), 1);
     setChild(new List(), 2);
     setChild(new List(), 3);
     setChild(new List(), 4);
-
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:11
+   * 
    */
-  public GenericClassDeclSubstituted(Modifiers p0, String p1, Opt<Access> p2, List<Access> p3, List<BodyDecl> p4, List<TypeVariable> p5, TypeDecl p6) {
+  public GenericClassDeclSubstituted(Modifiers p0, String p1, Opt<Access> p2, List<Access> p3, List<TypeVariable> p4, TypeDecl p5) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
     setChild(p3, 2);
     setChild(p4, 3);
-    setChild(p5, 4);
-    setOriginal(p6);
+    setOriginal(p5);
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:20
+   * 
    */
-  public GenericClassDeclSubstituted(Modifiers p0, beaver.Symbol p1, Opt<Access> p2, List<Access> p3, List<BodyDecl> p4, List<TypeVariable> p5, TypeDecl p6) {
+  public GenericClassDeclSubstituted(Modifiers p0, beaver.Symbol p1, Opt<Access> p2, List<Access> p3, List<TypeVariable> p4, TypeDecl p5) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
     setChild(p3, 2);
     setChild(p4, 3);
-    setChild(p5, 4);
-    setOriginal(p6);
+    setOriginal(p5);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:32
+   * 
    */
   protected int numChildren() {
-    return 5;
+    return 4;
   }
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:38
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -195,102 +237,128 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for SuperClassAccessOpt
+   * Replaces the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @param opt The new node to be used as the optional node for the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
   public void setSuperClassAccessOpt(Opt<Access> opt) {
     setChild(opt, 1);
   }
   /**
-   * Does this node have a SuperClassAccess child?
+   * Check whether the optional SuperClassAccess child exists.
+   * @return {@code true} if the optional SuperClassAccess child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:12
+   * 
    */
   public boolean hasSuperClassAccess() {
     return getSuperClassAccessOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child SuperClassAccess
-   * @apilevel high-level
+   * Retrieves the (optional) SuperClassAccess child.
+   * @return The SuperClassAccess child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
     return (Access)getSuperClassAccessOpt().getChild(0);
   }
   /**
-   * Setter for optional child SuperClassAccess
+   * Replaces the (optional) SuperClassAccess child.
+   * @param node The new node to be used as the SuperClassAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:27
+   * 
    */
   public void setSuperClassAccess(Access node) {
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @return The optional node for child the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOpt() {
     return (Opt<Access>)getChild(1);
   }
   /**
+   * Retrieves the optional node for child SuperClassAccess. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child SuperClassAccess.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOptNoTransform() {
     return (Opt<Access>)getChildNoTransform(1);
   }
   /**
-   * Setter for ImplementsList
+   * Replaces the Implements list.
+   * @param list The new list node to be used as the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
   public void setImplementsList(List<Access> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in ImplementsList
+   * Retrieves the number of children in the Implements list.
+   * @return Number of children in the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:12
+   * 
    */
   public int getNumImplements() {
     return getImplementsList().getNumChild();
   }
   /**
-   * Getter for child in list ImplementsList
+   * Retrieves the number of children in the Implements list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Implements list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumImplementsNoTransform() {
+    return getImplementsListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Implements list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getImplements(int i) {
     return (Access)getImplementsList().getChild(i);
   }
   /**
-   * Add element to list ImplementsList
+   * Append an element to the Implements list.
+   * @param node The element to append to the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:27
+   * 
    */
   public void addImplements(Access node) {
     List<Access> list = (parent == null || state == null) ? getImplementsListNoTransform() : getImplementsList();
@@ -299,44 +367,51 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:34
+   * 
    */
   public void addImplementsNoTransform(Access node) {
     List<Access> list = getImplementsListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ImplementsList
+   * Replaces the Implements list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:42
+   * 
    */
   public void setImplements(Access node, int i) {
     List<Access> list = getImplementsList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Implements list.
+   * Retrieves the Implements list.
+   * @return The node representing the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:50
+   * 
    */
   public List<Access> getImplementss() {
     return getImplementsList();
   }
   /**
+   * Retrieves the Implements list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Implements list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:56
+   * 
    */
   public List<Access> getImplementssNoTransform() {
     return getImplementsListNoTransform();
   }
   /**
-   * Getter for list ImplementsList
+   * Retrieves the Implements list.
+   * @return The node representing the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getImplementsList() {
@@ -345,142 +420,66 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
     return list;
   }
   /**
+   * Retrieves the Implements list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Implements list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getImplementsListNoTransform() {
     return (List<Access>)getChildNoTransform(2);
   }
   /**
-   * Setter for BodyDeclList
+   * Replaces the TypeParameter list.
+   * @param list The new list node to be used as the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
-  public void setBodyDeclList(List<BodyDecl> list) {
+  public void setTypeParameterList(List<TypeVariable> list) {
     setChild(list, 3);
   }
   /**
-   * @return number of children in BodyDeclList
+   * Retrieves the number of children in the TypeParameter list.
+   * @return Number of children in the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:12
-   */
-  public int getNumBodyDecl() {
-    return getBodyDeclList().getNumChild();
-  }
-  /**
-   * Getter for child in list BodyDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:19
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public BodyDecl getBodyDecl(int i) {
-    return (BodyDecl)getBodyDeclList().getChild(i);
-  }
-  /**
-   * Add element to list BodyDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:27
-   */
-  public void addBodyDecl(BodyDecl node) {
-    List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
-    list.addChild(node);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:34
-   */
-  public void addBodyDeclNoTransform(BodyDecl node) {
-    List<BodyDecl> list = getBodyDeclListNoTransform();
-    list.addChild(node);
-  }
-  /**
-   * Setter for child in list BodyDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:42
-   */
-  public void setBodyDecl(BodyDecl node, int i) {
-    List<BodyDecl> list = getBodyDeclList();
-    list.setChild(node, i);
-  }
-  /**
-   * Getter for BodyDecl list.
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:50
-   */
-  public List<BodyDecl> getBodyDecls() {
-    return getBodyDeclList();
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:56
-   */
-  public List<BodyDecl> getBodyDeclsNoTransform() {
-    return getBodyDeclListNoTransform();
-  }
-  /**
-   * Getter for list BodyDeclList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:63
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List<BodyDecl> getBodyDeclList() {
-    List<BodyDecl> list = (List<BodyDecl>)getChild(3);
-    list.getNumChild();
-    return list;
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat Generics.ast:72
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public List<BodyDecl> getBodyDeclListNoTransform() {
-    return (List<BodyDecl>)getChildNoTransform(3);
-  }
-  /**
-   * Setter for TypeParameterList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:5
-   */
-  public void setTypeParameterList(List<TypeVariable> list) {
-    setChild(list, 4);
-  }
-  /**
-   * @return number of children in TypeParameterList
-   * @apilevel high-level
-   * @ast method 
-   * @declaredat Generics.ast:12
+   * 
    */
   public int getNumTypeParameter() {
     return getTypeParameterList().getNumChild();
   }
   /**
-   * Getter for child in list TypeParameterList
+   * Retrieves the number of children in the TypeParameter list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the TypeParameter list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumTypeParameterNoTransform() {
+    return getTypeParameterListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the TypeParameter list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeVariable getTypeParameter(int i) {
     return (TypeVariable)getTypeParameterList().getChild(i);
   }
   /**
-   * Add element to list TypeParameterList
+   * Append an element to the TypeParameter list.
+   * @param node The element to append to the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:27
+   * 
    */
   public void addTypeParameter(TypeVariable node) {
     List<TypeVariable> list = (parent == null || state == null) ? getTypeParameterListNoTransform() : getTypeParameterList();
@@ -489,98 +488,269 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:34
+   * 
    */
   public void addTypeParameterNoTransform(TypeVariable node) {
     List<TypeVariable> list = getTypeParameterListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list TypeParameterList
+   * Replaces the TypeParameter list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:42
+   * 
    */
   public void setTypeParameter(TypeVariable node, int i) {
     List<TypeVariable> list = getTypeParameterList();
     list.setChild(node, i);
   }
   /**
-   * Getter for TypeParameter list.
+   * Retrieves the TypeParameter list.
+   * @return The node representing the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:50
+   * 
    */
   public List<TypeVariable> getTypeParameters() {
     return getTypeParameterList();
   }
   /**
+   * Retrieves the TypeParameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeParameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:56
+   * 
    */
   public List<TypeVariable> getTypeParametersNoTransform() {
     return getTypeParameterListNoTransform();
   }
   /**
-   * Getter for list TypeParameterList
+   * Retrieves the TypeParameter list.
+   * @return The node representing the TypeParameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<TypeVariable> getTypeParameterList() {
-    List<TypeVariable> list = (List<TypeVariable>)getChild(4);
+    List<TypeVariable> list = (List<TypeVariable>)getChild(3);
     list.getNumChild();
     return list;
   }
   /**
+   * Retrieves the TypeParameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the TypeParameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<TypeVariable> getTypeParameterListNoTransform() {
-    return (List<TypeVariable>)getChildNoTransform(4);
+    return (List<TypeVariable>)getChildNoTransform(3);
   }
   /**
-   * Setter for lexeme Original
+   * Replaces the lexeme Original.
+   * @param value The new value for the lexeme Original.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
   public void setOriginal(TypeDecl value) {
     tokenTypeDecl_Original = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat Generics.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected TypeDecl tokenTypeDecl_Original;
   /**
-   * Getter for lexeme Original
+   * @apilevel internal
+   */
+  protected TypeDecl tokenTypeDecl_Original;
+  /**
+   * Retrieves the value for the lexeme Original.
+   * @return The value for the lexeme Original.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:13
+   * 
    */
   public TypeDecl getOriginal() {
     return tokenTypeDecl_Original;
   }
   /**
-   * @attribute syn
-   * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1203
+   * Replaces the BodyDecl list.
+   * @param list The new list node to be used as the BodyDecl list.
+   * @apilevel high-level
+   * @ast method 
+   * 
+   */
+  public void setBodyDeclList(List<BodyDecl> list) {
+    setChild(list, 4);
+  }
+  /**
+   * Retrieves the number of children in the BodyDecl list.
+   * @return Number of children in the BodyDecl list.
+   * @apilevel high-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDecl() {
+    return getBodyDeclList().getNumChild();
+  }
+  /**
+   * Retrieves the number of children in the BodyDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDeclNoTransform() {
+    return getBodyDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the BodyDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the BodyDecl list.
+   * @apilevel high-level
+   * @ast method 
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl original() {
-      ASTNode$State state = state();
-    TypeDecl original_value = original_compute();
-    return original_value;
+  public BodyDecl getBodyDecl(int i) {
+    return (BodyDecl)getBodyDeclList().getChild(i);
+  }
+  /**
+   * Append an element to the BodyDecl list.
+   * @param node The element to append to the BodyDecl list.
+   * @apilevel high-level
+   * @ast method 
+   * 
+   */
+  public void addBodyDecl(BodyDecl node) {
+    List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
+    list.addChild(node);
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public void addBodyDeclNoTransform(BodyDecl node) {
+    List<BodyDecl> list = getBodyDeclListNoTransform();
+    list.addChild(node);
+  }
+  /**
+   * Replaces the BodyDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
+   * @apilevel high-level
+   * @ast method 
+   * 
+   */
+  public void setBodyDecl(BodyDecl node, int i) {
+    List<BodyDecl> list = getBodyDeclList();
+    list.setChild(node, i);
+  }
+  /**
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
+   * @apilevel high-level
+   * @ast method 
+   * 
+   */
+  public List<BodyDecl> getBodyDecls() {
+    return getBodyDeclList();
+  }
+  /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public List<BodyDecl> getBodyDeclsNoTransform() {
+    return getBodyDeclListNoTransform();
+  }
+  /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public List<BodyDecl> getBodyDeclListNoTransform() {
+    return (List<BodyDecl>)getChildNoTransform(4);
+  }
+  /**
+   * Retrieves the child position of the BodyDecl list.
+   * @return The the child position of the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  protected int getBodyDeclListChildPosition() {
+    return 4;
+  }
+  /**
+   * @attribute syn
+   * @aspect NestedTypes
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:569
+   */
+  public TypeDecl hostType() {
+    ASTNode$State state = state();
+    try {  return getOriginal();  }
+    finally {
+    }
   }
   /**
    * @apilevel internal
    */
-  private TypeDecl original_compute() {  return getOriginal().original();  }
+  protected boolean getBodyDeclList_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected List getBodyDeclList_value;
+  /**
+   * @attribute syn nta
+   * @aspect LookupParTypeDecl
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1052
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public List getBodyDeclList() {
+    if(getBodyDeclList_computed) {
+      return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    getBodyDeclList_value = getBodyDeclList_compute();
+    setBodyDeclList(getBodyDeclList_value);
+      if(isFinal && num == state().boundariesCrossed) getBodyDeclList_computed = true;
+    return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+  }
+  /**
+   * @apilevel internal
+   */
+  private List getBodyDeclList_compute() {  return new BodyDeclList();  }
+  /**
+   * @attribute syn
+   * @aspect LookupParTypeDecl
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1306
+   */
+  public TypeDecl original() {
+    ASTNode$State state = state();
+    try {  return getOriginal().original();  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */
@@ -592,18 +762,18 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1402
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1508
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl sourceTypeDecl() {
     if(sourceTypeDecl_computed) {
       return sourceTypeDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceTypeDecl_value = sourceTypeDecl_compute();
-if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
     return sourceTypeDecl_value;
   }
   /**
@@ -623,11 +793,11 @@ if(isFinal && num == state().boundariesCrossed) sourceTypeDecl_computed = true;
     if(instanceOf_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)instanceOf_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean instanceOf_TypeDecl_value = instanceOf_compute(type);
-if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_parameters, Boolean.valueOf(instanceOf_TypeDecl_value));
     return instanceOf_TypeDecl_value;
   }
   /**
@@ -674,7 +844,7 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         subtype_TypeDecl_values.put(_parameters, new_subtype_TypeDecl_value);
       }
       else {
@@ -707,33 +877,25 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect GenericsSubtype
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:515
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:513
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeGenericClassDeclSubstituted(GenericClassDeclSubstituted type) {
-      ASTNode$State state = state();
-    boolean supertypeGenericClassDeclSubstituted_GenericClassDeclSubstituted_value = supertypeGenericClassDeclSubstituted_compute(type);
-    return supertypeGenericClassDeclSubstituted_GenericClassDeclSubstituted_value;
+    ASTNode$State state = state();
+    try {  return original() == type.original() && type.enclosingType().subtype(enclosingType()) || super.supertypeGenericClassDeclSubstituted(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeGenericClassDeclSubstituted_compute(GenericClassDeclSubstituted type) {  return original() == type.original() && type.enclosingType().subtype(enclosingType()) || super.supertypeGenericClassDeclSubstituted(type);  }
   /**
    * @attribute syn
    * @aspect GenericsSubtype
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:518
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsSubtype.jrag:14
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean supertypeGenericClassDecl(GenericClassDecl type) {
-      ASTNode$State state = state();
-    boolean supertypeGenericClassDecl_GenericClassDecl_value = supertypeGenericClassDecl_compute(type);
-    return supertypeGenericClassDecl_GenericClassDecl_value;
+    ASTNode$State state = state();
+    try {  return super.supertypeGenericClassDecl(type) || original().supertypeGenericClassDecl(type);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean supertypeGenericClassDecl_compute(GenericClassDecl type) {  return super.supertypeGenericClassDecl(type) || original().supertypeGenericClassDecl(type);  }
   /**
    * @apilevel internal
    */
@@ -745,18 +907,18 @@ if(isFinal && num == state().boundariesCrossed) instanceOf_TypeDecl_values.put(_
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1045
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1084
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap localMethodsSignatureMap() {
     if(localMethodsSignatureMap_computed) {
       return localMethodsSignatureMap_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     localMethodsSignatureMap_value = localMethodsSignatureMap_compute();
-if(true) localMethodsSignatureMap_computed = true;
+      if(true) localMethodsSignatureMap_computed = true;
     return localMethodsSignatureMap_value;
   }
   /**
@@ -766,6 +928,8 @@ if(true) localMethodsSignatureMap_computed = true;
     HashMap map = new HashMap();
     for(Iterator iter = original().localMethodsIterator(); iter.hasNext(); ) {
       MethodDecl decl = (MethodDecl)iter.next();
+
+      /* ES removing this:
       if(!decl.isStatic() && (decl.usesTypeVariable() || isRawType())) {
         BodyDecl b = decl.substitutedBodyDecl(this);
         addBodyDecl(b);
@@ -776,6 +940,14 @@ if(true) localMethodsSignatureMap_computed = true;
         decl = (MethodDecl) b;
       }
       map.put(decl.signature(), decl);
+      * and replacing with:
+      */
+      if(!decl.isStatic() && (decl.usesTypeVariable() || isRawType())) {
+        BodyDecl copyDecl = ((BodyDeclList)getBodyDeclList()).localMethodSignatureCopy(decl, this);
+        decl = (MethodDecl) copyDecl;
+      }
+      map.put(decl.signature(), decl);
+
     }
     return map;
   }
@@ -783,7 +955,7 @@ if(true) localMethodsSignatureMap_computed = true;
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1063
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1119
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localFields(String name) {
@@ -792,11 +964,11 @@ if(true) localMethodsSignatureMap_computed = true;
     if(localFields_String_values.containsKey(_parameters)) {
       return (SimpleSet)localFields_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet localFields_String_value = localFields_compute(name);
-if(true) localFields_String_values.put(_parameters, localFields_String_value);
+      if(true) localFields_String_values.put(_parameters, localFields_String_value);
     return localFields_String_value;
   }
   /**
@@ -806,6 +978,8 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
     SimpleSet set = SimpleSet.emptySet;
     for(Iterator iter = original().localFields(name).iterator(); iter.hasNext(); ) {
       FieldDeclaration f = (FieldDeclaration)iter.next();
+
+      /* ES removing this:   
       if(!f.isStatic() && (f.usesTypeVariable() || isRawType())) {
         BodyDecl b = f.substitutedBodyDecl(this);
         addBodyDecl(b);
@@ -816,6 +990,14 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
         f = (FieldDeclaration) b;
       }
       set = set.add(f);
+      * and replacing with:
+      */
+      if(!f.isStatic() && (f.usesTypeVariable() || isRawType())) {
+        BodyDecl fCopy = ((BodyDeclList)getBodyDeclList()).localFieldCopy(f, this);
+        f = (FieldDeclaration) fCopy;
+      }
+      set = set.add(f);
+
     }
     return set;
   }
@@ -823,21 +1005,67 @@ if(true) localFields_String_values.put(_parameters, localFields_String_value);
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1081
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1154
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet localTypeDecls(String name) {
     Object _parameters = name;
     if(localTypeDecls_String_values == null) localTypeDecls_String_values = new java.util.HashMap(4);
+    ASTNode$State.CircularValue _value;
     if(localTypeDecls_String_values.containsKey(_parameters)) {
-      return (SimpleSet)localTypeDecls_String_values.get(_parameters);
+      Object _o = localTypeDecls_String_values.get(_parameters);
+      if(!(_o instanceof ASTNode$State.CircularValue)) {
+        return (SimpleSet)_o;
+      }
+      else
+        _value = (ASTNode$State.CircularValue)_o;
     }
-      ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    SimpleSet localTypeDecls_String_value = localTypeDecls_compute(name);
-if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_value);
-    return localTypeDecls_String_value;
+    else {
+      _value = new ASTNode$State.CircularValue();
+      localTypeDecls_String_values.put(_parameters, _value);
+      _value.value = SimpleSet.emptySet;
+    }
+    ASTNode$State state = state();
+    if (!state.IN_CIRCLE) {
+      state.IN_CIRCLE = true;
+      int num = state.boundariesCrossed;
+      boolean isFinal = this.is$Final();
+      SimpleSet new_localTypeDecls_String_value;
+      do {
+        _value.visited = new Integer(state.CIRCLE_INDEX);
+        state.CHANGE = false;
+        new_localTypeDecls_String_value = localTypeDecls_compute(name);
+        if ((new_localTypeDecls_String_value==null && (SimpleSet)_value.value!=null) || (new_localTypeDecls_String_value!=null && !new_localTypeDecls_String_value.equals((SimpleSet)_value.value))) {
+          state.CHANGE = true;
+          _value.value = new_localTypeDecls_String_value;
+        }
+        state.CIRCLE_INDEX++;
+      } while (state.CHANGE);
+        if(true) {
+        localTypeDecls_String_values.put(_parameters, new_localTypeDecls_String_value);
+      }
+      else {
+        localTypeDecls_String_values.remove(_parameters);
+      state.RESET_CYCLE = true;
+      localTypeDecls_compute(name);
+      state.RESET_CYCLE = false;
+      }
+      state.IN_CIRCLE = false; 
+      return new_localTypeDecls_String_value;
+    }
+    if(!new Integer(state.CIRCLE_INDEX).equals(_value.visited)) {
+      _value.visited = new Integer(state.CIRCLE_INDEX);
+      SimpleSet new_localTypeDecls_String_value = localTypeDecls_compute(name);
+      if (state.RESET_CYCLE) {
+        localTypeDecls_String_values.remove(_parameters);
+      }
+      else if ((new_localTypeDecls_String_value==null && (SimpleSet)_value.value!=null) || (new_localTypeDecls_String_value!=null && !new_localTypeDecls_String_value.equals((SimpleSet)_value.value))) {
+        state.CHANGE = true;
+        _value.value = new_localTypeDecls_String_value;
+      }
+      return new_localTypeDecls_String_value;
+    }
+    return (SimpleSet)_value.value;
   }
   /**
    * @apilevel internal
@@ -846,6 +1074,8 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
     SimpleSet set = SimpleSet.emptySet;
     for(Iterator iter = original().localTypeDecls(name).iterator(); iter.hasNext(); ) {
       TypeDecl t = (TypeDecl)iter.next();
+
+      /* ES: removing this:
       if(t.isStatic())
         set = set.add(t);
       else {
@@ -859,7 +1089,7 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
       	  // Here we should access b through an ordinary
       	  // child accessor instead of setting is$Final directly,
       	  // however doing so appears to cause unexpected behaviour!
-	  b.is$Final = true;
+      	  b.is$Final = true;
           set = set.add(typeDecl);
         }
         else if(t instanceof InterfaceDecl) {
@@ -870,9 +1100,20 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
       	  // Here we should access b through an ordinary
       	  // child accessor instead of setting is$Final directly,
       	  // however doing so appears to cause unexpected behaviour!
-	  b.is$Final = true;
+      	  b.is$Final = true;
           set = set.add(typeDecl);
         }
+      }
+      * and replacing with:
+      */
+      if(t.isStatic()) {
+        set = set.add(t);
+      } else if (t instanceof ClassDecl) {
+        MemberClassDecl copy = ((BodyDeclList)getBodyDeclList()).localClassDeclCopy((ClassDecl)t, this);
+        set = set.add(copy.getClassDecl());
+      } else if (t instanceof InterfaceDecl) {
+        MemberInterfaceDecl copy = ((BodyDeclList)getBodyDeclList()).localInterfaceDeclCopy((InterfaceDecl)t, this);
+        set = set.add(copy.getInterfaceDecl());
       }
     }
     return set;
@@ -888,18 +1129,18 @@ if(true) localTypeDecls_String_values.put(_parameters, localTypeDecls_String_val
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1117
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1213
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection constructors() {
     if(constructors_computed) {
       return constructors_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     constructors_value = constructors_compute();
-if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
+      if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
     return constructors_value;
   }
   /**
@@ -909,12 +1150,17 @@ if(isFinal && num == state().boundariesCrossed) constructors_computed = true;
     Collection set = new ArrayList();
     for(Iterator iter = original().constructors().iterator(); iter.hasNext(); ) {
       ConstructorDecl c = (ConstructorDecl)iter.next();
+
+      /* ES: removing this:
       BodyDecl b = c.substitutedBodyDecl(this);
       addBodyDecl(b);
       // Here we should access b through an ordinary
       // child accessor instead of setting is$Final directly,
       // however doing so appears to cause unexpected behaviour!
       b.is$Final = true;
+      * and replacing with:
+      */
+      BodyDecl b = ((BodyDeclList)getBodyDeclList()).constructorCopy(c, this);
       set.add(b);
     }
     return set;

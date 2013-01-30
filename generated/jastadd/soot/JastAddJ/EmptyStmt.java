@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production EmptyStmt : {@link Stmt};
  * @ast node
- * @declaredat java.ast:195
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:198
  */
 public class EmptyStmt extends Stmt implements Cloneable {
   /**
@@ -67,18 +68,33 @@ public class EmptyStmt extends Stmt implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EmptyStmt fullCopy() {
-    EmptyStmt res = (EmptyStmt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      EmptyStmt tree = (EmptyStmt) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect PrettyPrint
@@ -97,7 +113,7 @@ public class EmptyStmt extends Stmt implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public EmptyStmt() {
     super();
@@ -105,9 +121,19 @@ public class EmptyStmt extends Stmt implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -115,7 +141,7 @@ public class EmptyStmt extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -133,11 +159,11 @@ public class EmptyStmt extends Stmt implements Cloneable {
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -148,7 +174,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:864
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:865
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -157,11 +183,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -186,17 +212,28 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(canCompleteNormally_computed) {
       return canCompleteNormally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     canCompleteNormally_value = canCompleteNormally_compute();
-if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
     return canCompleteNormally_value;
   }
   /**
    * @apilevel internal
    */
   private boolean canCompleteNormally_compute() {  return reachable();  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */

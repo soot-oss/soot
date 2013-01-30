@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production PreDecExpr : {@link Unary};
  * @ast node
- * @declaredat java.ast:135
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:138
  */
 public class PreDecExpr extends Unary implements Cloneable {
   /**
@@ -61,18 +62,33 @@ public class PreDecExpr extends Unary implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public PreDecExpr fullCopy() {
-    PreDecExpr res = (PreDecExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      PreDecExpr tree = (PreDecExpr) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect DefiniteAssignment
@@ -89,7 +105,7 @@ public class PreDecExpr extends Unary implements Cloneable {
   /**
    * @ast method 
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:482
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:483
    */
   protected boolean checkDUeverywhere(Variable v) {
     if(getOperand().isVariable() && getOperand().varDecl() == v)
@@ -116,7 +132,7 @@ public class PreDecExpr extends Unary implements Cloneable {
   public soot.Value eval(Body b) { return emitPrefix(b, -1); }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public PreDecExpr() {
     super();
@@ -124,8 +140,19 @@ public class PreDecExpr extends Unary implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public PreDecExpr(Expr p0) {
     setChild(p0, 0);
@@ -133,7 +160,7 @@ public class PreDecExpr extends Unary implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -141,33 +168,38 @@ public class PreDecExpr extends Unary implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Operand
+   * Replaces the Operand child.
+   * @param node The new node to replace the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setOperand(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Operand
+   * Retrieves the Operand child.
+   * @return The current node used as the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getOperand() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Operand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Operand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getOperandNoTransform() {
     return (Expr)getChildNoTransform(0);
@@ -175,18 +207,14 @@ public class PreDecExpr extends Unary implements Cloneable {
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:378
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:376
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printPreOp() {
-      ASTNode$State state = state();
-    String printPreOp_value = printPreOp_compute();
-    return printPreOp_value;
+    ASTNode$State state = state();
+    try {  return "--";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printPreOp_compute() {  return "--";  }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:47
    * @apilevel internal
@@ -195,7 +223,8 @@ public class PreDecExpr extends Unary implements Cloneable {
     if(caller == getOperandNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_isDest(this, caller);
+    else {      return getParent().Define_boolean_isDest(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:55
@@ -205,7 +234,8 @@ public class PreDecExpr extends Unary implements Cloneable {
     if(caller == getOperandNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_isIncOrDec(this, caller);
+    else {      return getParent().Define_boolean_isIncOrDec(this, caller);
+    }
   }
   /**
    * @apilevel internal

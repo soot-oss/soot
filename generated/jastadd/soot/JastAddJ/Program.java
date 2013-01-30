@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production Program : {@link ASTNode} ::= <span class="component">{@link CompilationUnit}*</span>;
  * @ast node
- * @declaredat java.ast:1
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:1
  */
 public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
@@ -61,6 +62,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     unknownType_value = null;
     hasPackage_String_values = null;
     lookupType_String_String_values = null;
+    lookupLibType_String_String_values = null;
+    getLibCompilationUnit_String_values = null;
+    getPrimitiveCompilationUnit_computed = false;
+    getPrimitiveCompilationUnit_value = null;
     unknownConstructor_computed = false;
     unknownConstructor_value = null;
     wildcards_computed = false;
@@ -110,6 +115,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     node.unknownType_value = null;
     node.hasPackage_String_values = null;
     node.lookupType_String_String_values = null;
+    node.lookupLibType_String_String_values = null;
+    node.getLibCompilationUnit_String_values = null;
+    node.getPrimitiveCompilationUnit_computed = false;
+    node.getPrimitiveCompilationUnit_value = null;
     node.unknownConstructor_computed = false;
     node.unknownConstructor_value = null;
     node.wildcards_computed = false;
@@ -133,18 +142,33 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Program fullCopy() {
-    Program res = (Program)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      Program tree = (Program) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect ClassPath
@@ -173,18 +197,20 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    */
   public void initJavaParser(JavaParser p) { javaParser = p; }
   /**
+   * Add a filename to the list of source files to process.
+   * @return The CompilationUnit representing the source file,
+   * or <code>null</code> if no such file exists
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:35
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:39
    */
-  public void addSourceFile(String name) {
-    sourceFiles.addSourceFile(name);
-
+  public CompilationUnit addSourceFile(String name) {
+    return sourceFiles.addSourceFile(name);
   }
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:41
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:44
    */
   public Iterator compilationUnitIterator() {
     initPaths();
@@ -214,7 +240,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:70
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:73
    */
   public InputStream getInputStream(String name) {
     initPaths();
@@ -230,9 +256,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Could not find nested type " + name);
   }
   /**
+   * @return <code>true</code> if there is a package with the given name on
+   * the path
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:137
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:143
    */
   public boolean isPackage(String name) {
     if(sourceFiles.hasPackage(name))
@@ -252,7 +280,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:167
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:173
    */
   
 
@@ -260,28 +288,28 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:168
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:174
    */
   
   private java.util.ArrayList classPath;
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:169
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:175
    */
   
   private java.util.ArrayList sourcePath;
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:170
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:176
    */
   
   private FileNamesPart sourceFiles = new FileNamesPart(this);
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:172
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:178
    */
   public void pushClassPath(String name) {
     PathPart part = PathPart.createSourcePath(name, this);
@@ -300,7 +328,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:186
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:192
    */
   public void popClassPath() {
     if(sourcePath.size() > 0)
@@ -311,7 +339,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:193
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:199
    */
   public void initPaths() {
     if(!pathsInitialized) {
@@ -348,13 +376,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       else if(options().hasValueForOption("-cp"))
         userClasses = options().getValueForOption("-cp").split(File.pathSeparator);
       else {
-        String s = System.getProperty("java.class.path");
-        if(s != null && s.length() > 0) {
-          s = s + File.pathSeparator + "."; // TODO; This should not be necessary
-          userClasses = s.split(File.pathSeparator);
-        }
-        else
-          userClasses = ".".split(File.pathSeparator);
+        userClasses = ".".split(File.pathSeparator);
       }
       if(!options().hasValueForOption("-sourcepath")) {
         for(int i = 0; i < userClasses.length; i++) {
@@ -401,9 +423,29 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
   /**
+   * Add a path part to the library class path.
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:548
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:284
+   */
+  public void addClassPath(PathPart pathPart) {
+    classPath.add(pathPart);
+    pathPart.program = this;
+  }
+  /**
+   * Add a path part to the user class path.
+   * @ast method 
+   * @aspect ClassPath
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:292
+   */
+  public void addSourcePath(PathPart pathPart) {
+    sourcePath.add(pathPart);
+    pathPart.program = this;
+  }
+  /**
+   * @ast method 
+   * @aspect ClassPath
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:584
    */
   public void simpleReset() {
     lookupType_String_String_values = new HashMap();
@@ -466,7 +508,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect LookupFullyQualifiedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:103
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:101
    */
   
 
@@ -498,121 +540,6 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       }
     }
     return s.toString();
-  }
-  /**
-   * @ast method 
-   * @aspect PrimitiveTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrimitiveTypes.jrag:13
-   */
-  
-
-  private boolean initPrimTypes = false;
-  /**
-   * @ast method 
-   * @aspect PrimitiveTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrimitiveTypes.jrag:15
-   */
-  public void addPrimitiveTypes() {
-    if(!initPrimTypes) {
-      initPrimTypes = true;
-    
-    CompilationUnit u = new CompilationUnit();
-    u.setPackageDecl(PRIMITIVE_PACKAGE_NAME);
-    addCompilationUnit(u);
-
-    TypeDecl classDecl = generateUnknownType();
-    u.addTypeDecl(classDecl);
-    TypeDecl unknown = classDecl;
-
-    classDecl = generatePrimitiveType(new BooleanType(), "boolean", unknown);
-    u.addTypeDecl(classDecl);
-    
-    classDecl = generatePrimitiveType(new DoubleType(), "double", unknown);
-    u.addTypeDecl(classDecl);
-    
-    classDecl = generatePrimitiveType(new FloatType(), "float", classDecl);
-    u.addTypeDecl(classDecl);
-    
-    classDecl = generatePrimitiveType(new LongType(), "long", classDecl);
-    u.addTypeDecl(classDecl);
-    
-    classDecl = generatePrimitiveType(new IntType(), "int", classDecl);
-    u.addTypeDecl(classDecl);
-    TypeDecl intDecl = classDecl;
-    
-    classDecl = generatePrimitiveType(new ShortType(), "short", classDecl);
-    u.addTypeDecl(classDecl);
-    
-    classDecl = generatePrimitiveType(new ByteType(), "byte", classDecl);
-    u.addTypeDecl(classDecl);
-    
-    classDecl = generatePrimitiveType(new CharType(), "char", intDecl);
-    u.addTypeDecl(classDecl);
-    
-    classDecl = new NullType();
-    classDecl.setModifiers(new Modifiers(new List().add(new Modifier("public"))));
-    classDecl.setID("null");
-    u.addTypeDecl(classDecl);
-
-    classDecl = new VoidType();
-    classDecl.setModifiers(new Modifiers(new List().add(new Modifier("public"))));
-    classDecl.setID("void");
-    u.addTypeDecl(classDecl);
-
-    }
-  }
-  /**
-   * @ast method 
-   * @aspect PrimitiveTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrimitiveTypes.jrag:65
-   */
-  public TypeDecl generatePrimitiveType(PrimitiveType type, String name, TypeDecl superType) {
-    type.setModifiers(new Modifiers(new List().add(new Modifier("public"))));
-    type.setID(name);
-    if(superType != null)
-      type.setSuperClassAccess(superType.createQualifiedAccess());
-    return type;
-  }
-  /**
-   * @ast method 
-   * @aspect PrimitiveTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrimitiveTypes.jrag:73
-   */
-  private TypeDecl generateUnknownType() {
-    ClassDecl classDecl = new UnknownType();
-    classDecl.setModifiers(new Modifiers(new List().add(new Modifier("public"))));
-    classDecl.setID("Unknown");
-    MethodDecl methodDecl = new MethodDecl(
-        new Modifiers(new List().add(
-          new Modifier("public")
-        )),
-        new PrimitiveTypeAccess("Unknown"),
-        "unknown",
-        new List(),
-        new List(),
-        new Opt()
-    );
-    classDecl.addBodyDecl(methodDecl);
-    FieldDeclaration fieldDecl = new FieldDeclaration(
-        new Modifiers(new List().add(
-          new Modifier("public")
-        )),
-        new PrimitiveTypeAccess("Unknown"),
-        "unknown",
-        new Opt()
-    );
-    classDecl.addBodyDecl(fieldDecl);   
-    ConstructorDecl constrDecl = new ConstructorDecl(
-      new Modifiers(new List().add(new Modifier("public"))),
-      "Unknown",
-      new List(),
-      new List(),
-      new Opt(),
-      new Block()
-    );
-    classDecl.addBodyDecl(constrDecl);
-      
-    return classDecl;
   }
   /**
    * @ast method 
@@ -737,18 +664,29 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
 	}
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public Program() {
     super();
 
-    setChild(new List(), 0);
     is$Final(true);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+    setChild(new List(), 0);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public Program(List<CompilationUnit> p0) {
     setChild(p0, 0);
@@ -757,7 +695,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -765,44 +703,60 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for CompilationUnitList
+   * Replaces the CompilationUnit list.
+   * @param list The new list node to be used as the CompilationUnit list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setCompilationUnitList(List<CompilationUnit> list) {
     setChild(list, 0);
   }
   /**
-   * @return number of children in CompilationUnitList
+   * Retrieves the number of children in the CompilationUnit list.
+   * @return Number of children in the CompilationUnit list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumCompilationUnit() {
     return getCompilationUnitList().getNumChild();
   }
   /**
-   * Getter for child in list CompilationUnitList
+   * Retrieves the number of children in the CompilationUnit list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the CompilationUnit list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumCompilationUnitNoTransform() {
+    return getCompilationUnitListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the CompilationUnit list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the CompilationUnit list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public CompilationUnit getCompilationUnit(int i) {
     return (CompilationUnit)getCompilationUnitList().getChild(i);
   }
   /**
-   * Add element to list CompilationUnitList
+   * Append an element to the CompilationUnit list.
+   * @param node The element to append to the CompilationUnit list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void refined__Program_addCompilationUnit(CompilationUnit node) {
     List<CompilationUnit> list = (parent == null || state == null) ? getCompilationUnitListNoTransform() : getCompilationUnitList();
@@ -811,44 +765,51 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addCompilationUnitNoTransform(CompilationUnit node) {
     List<CompilationUnit> list = getCompilationUnitListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list CompilationUnitList
+   * Replaces the CompilationUnit list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setCompilationUnit(CompilationUnit node, int i) {
     List<CompilationUnit> list = getCompilationUnitList();
     list.setChild(node, i);
   }
   /**
-   * Getter for CompilationUnit list.
+   * Retrieves the CompilationUnit list.
+   * @return The node representing the CompilationUnit list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<CompilationUnit> getCompilationUnits() {
     return getCompilationUnitList();
   }
   /**
+   * Retrieves the CompilationUnit list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the CompilationUnit list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<CompilationUnit> getCompilationUnitsNoTransform() {
     return getCompilationUnitListNoTransform();
   }
   /**
-   * Getter for list CompilationUnitList
+   * Retrieves the CompilationUnit list.
+   * @return The node representing the CompilationUnit list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<CompilationUnit> refined__Program_getCompilationUnitList() {
@@ -857,9 +818,12 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the CompilationUnit list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the CompilationUnit list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<CompilationUnit> getCompilationUnitListNoTransform() {
@@ -959,7 +923,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:84
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:87
    */
    public List getCompilationUnitList() {
     initPaths();
@@ -983,11 +947,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     if(typeObject_computed) {
       return typeObject_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeObject_value = typeObject_compute();
-if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
     return typeObject_value;
   }
   /**
@@ -1012,11 +976,11 @@ if(isFinal && num == state().boundariesCrossed) typeObject_computed = true;
     if(typeCloneable_computed) {
       return typeCloneable_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeCloneable_value = typeCloneable_compute();
-if(isFinal && num == state().boundariesCrossed) typeCloneable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeCloneable_computed = true;
     return typeCloneable_value;
   }
   /**
@@ -1041,11 +1005,11 @@ if(isFinal && num == state().boundariesCrossed) typeCloneable_computed = true;
     if(typeSerializable_computed) {
       return typeSerializable_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeSerializable_value = typeSerializable_compute();
-if(isFinal && num == state().boundariesCrossed) typeSerializable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeSerializable_computed = true;
     return typeSerializable_value;
   }
   /**
@@ -1070,11 +1034,11 @@ if(isFinal && num == state().boundariesCrossed) typeSerializable_computed = true
     if(typeBoolean_computed) {
       return typeBoolean_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeBoolean_value = typeBoolean_compute();
-if(isFinal && num == state().boundariesCrossed) typeBoolean_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeBoolean_computed = true;
     return typeBoolean_value;
   }
   /**
@@ -1099,11 +1063,11 @@ if(isFinal && num == state().boundariesCrossed) typeBoolean_computed = true;
     if(typeByte_computed) {
       return typeByte_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeByte_value = typeByte_compute();
-if(isFinal && num == state().boundariesCrossed) typeByte_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeByte_computed = true;
     return typeByte_value;
   }
   /**
@@ -1128,11 +1092,11 @@ if(isFinal && num == state().boundariesCrossed) typeByte_computed = true;
     if(typeShort_computed) {
       return typeShort_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeShort_value = typeShort_compute();
-if(isFinal && num == state().boundariesCrossed) typeShort_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeShort_computed = true;
     return typeShort_value;
   }
   /**
@@ -1157,11 +1121,11 @@ if(isFinal && num == state().boundariesCrossed) typeShort_computed = true;
     if(typeChar_computed) {
       return typeChar_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeChar_value = typeChar_compute();
-if(isFinal && num == state().boundariesCrossed) typeChar_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeChar_computed = true;
     return typeChar_value;
   }
   /**
@@ -1186,11 +1150,11 @@ if(isFinal && num == state().boundariesCrossed) typeChar_computed = true;
     if(typeInt_computed) {
       return typeInt_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeInt_value = typeInt_compute();
-if(isFinal && num == state().boundariesCrossed) typeInt_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeInt_computed = true;
     return typeInt_value;
   }
   /**
@@ -1215,11 +1179,11 @@ if(isFinal && num == state().boundariesCrossed) typeInt_computed = true;
     if(typeLong_computed) {
       return typeLong_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeLong_value = typeLong_compute();
-if(isFinal && num == state().boundariesCrossed) typeLong_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeLong_computed = true;
     return typeLong_value;
   }
   /**
@@ -1244,11 +1208,11 @@ if(isFinal && num == state().boundariesCrossed) typeLong_computed = true;
     if(typeFloat_computed) {
       return typeFloat_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeFloat_value = typeFloat_compute();
-if(isFinal && num == state().boundariesCrossed) typeFloat_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeFloat_computed = true;
     return typeFloat_value;
   }
   /**
@@ -1273,11 +1237,11 @@ if(isFinal && num == state().boundariesCrossed) typeFloat_computed = true;
     if(typeDouble_computed) {
       return typeDouble_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeDouble_value = typeDouble_compute();
-if(isFinal && num == state().boundariesCrossed) typeDouble_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeDouble_computed = true;
     return typeDouble_value;
   }
   /**
@@ -1302,11 +1266,11 @@ if(isFinal && num == state().boundariesCrossed) typeDouble_computed = true;
     if(typeString_computed) {
       return typeString_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeString_value = typeString_compute();
-if(isFinal && num == state().boundariesCrossed) typeString_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeString_computed = true;
     return typeString_value;
   }
   /**
@@ -1331,11 +1295,11 @@ if(isFinal && num == state().boundariesCrossed) typeString_computed = true;
     if(typeVoid_computed) {
       return typeVoid_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeVoid_value = typeVoid_compute();
-if(isFinal && num == state().boundariesCrossed) typeVoid_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeVoid_computed = true;
     return typeVoid_value;
   }
   /**
@@ -1360,11 +1324,11 @@ if(isFinal && num == state().boundariesCrossed) typeVoid_computed = true;
     if(typeNull_computed) {
       return typeNull_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeNull_value = typeNull_compute();
-if(isFinal && num == state().boundariesCrossed) typeNull_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeNull_computed = true;
     return typeNull_value;
   }
   /**
@@ -1389,11 +1353,11 @@ if(isFinal && num == state().boundariesCrossed) typeNull_computed = true;
     if(unknownType_computed) {
       return unknownType_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unknownType_value = unknownType_compute();
-if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
+      if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
     return unknownType_value;
   }
   /**
@@ -1413,11 +1377,11 @@ if(isFinal && num == state().boundariesCrossed) unknownType_computed = true;
     if(hasPackage_String_values.containsKey(_parameters)) {
       return ((Boolean)hasPackage_String_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean hasPackage_String_value = hasPackage_compute(packageName);
-if(isFinal && num == state().boundariesCrossed) hasPackage_String_values.put(_parameters, Boolean.valueOf(hasPackage_String_value));
+      if(isFinal && num == state().boundariesCrossed) hasPackage_String_values.put(_parameters, Boolean.valueOf(hasPackage_String_value));
     return hasPackage_String_value;
   }
   /**
@@ -1428,9 +1392,12 @@ if(isFinal && num == state().boundariesCrossed) hasPackage_String_values.put(_pa
   }
   protected java.util.Map lookupType_String_String_values;
   /**
+   * Checks from-source compilation units for the given type.
+   * If no matching compilation unit is found the library compliation units
+   * will be searched.
    * @attribute syn
    * @aspect LookupFullyQualifiedTypes
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:105
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:158
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupType(String packageName, String typeName) {
@@ -1441,19 +1408,19 @@ if(isFinal && num == state().boundariesCrossed) hasPackage_String_values.put(_pa
     if(lookupType_String_String_values.containsKey(_parameters)) {
       return (TypeDecl)lookupType_String_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     TypeDecl lookupType_String_String_value = lookupType_compute(packageName, typeName);
-if(isFinal && num == state().boundariesCrossed) lookupType_String_String_values.put(_parameters, lookupType_String_String_value);
+      if(isFinal && num == state().boundariesCrossed) lookupType_String_String_values.put(_parameters, lookupType_String_String_value);
     return lookupType_String_String_value;
   }
   /**
    * @apilevel internal
    */
   private TypeDecl lookupType_compute(String packageName, String typeName) {
-    addPrimitiveTypes();
     String fullName = packageName.equals("") ? typeName : packageName + "." + typeName;
+    // Check for type in source
     for(int i = 0; i < getNumCompilationUnit(); i++) {
       for(int j = 0; j < getCompilationUnit(i).getNumTypeDecl(); j++) {
         TypeDecl type = getCompilationUnit(i).getTypeDecl(j);
@@ -1462,19 +1429,148 @@ if(isFinal && num == state().boundariesCrossed) lookupType_String_String_values.
         }
       }
     }
+    // Check for type in library
+    return lookupLibType(packageName, typeName);
+  }
+  protected java.util.Map lookupLibType_String_String_values;
+  /**
+   * Lookup types in the library
+   * @attribute syn
+   * @aspect LookupFullyQualifiedTypes
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:175
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public TypeDecl lookupLibType(String packageName, String typeName) {
+    java.util.List _parameters = new java.util.ArrayList(2);
+    _parameters.add(packageName);
+    _parameters.add(typeName);
+    if(lookupLibType_String_String_values == null) lookupLibType_String_String_values = new java.util.HashMap(4);
+    if(lookupLibType_String_String_values.containsKey(_parameters)) {
+      return (TypeDecl)lookupLibType_String_String_values.get(_parameters);
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    TypeDecl lookupLibType_String_String_value = lookupLibType_compute(packageName, typeName);
+      if(isFinal && num == state().boundariesCrossed) lookupLibType_String_String_values.put(_parameters, lookupLibType_String_String_value);
+    return lookupLibType_String_String_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private TypeDecl lookupLibType_compute(String packageName, String typeName) {
+    String fullName = packageName.equals("") ? typeName : packageName + "." + typeName;
+    // Check the primitive types
+    if (packageName.equals(PRIMITIVE_PACKAGE_NAME)) {
+      PrimitiveCompilationUnit unit = getPrimitiveCompilationUnit();
+      if (typeName.equals("boolean")) return unit.typeBoolean();
+      if (typeName.equals("byte")) return unit.typeByte();
+      if (typeName.equals("short")) return unit.typeShort();
+      if (typeName.equals("char")) return unit.typeChar();
+      if (typeName.equals("int")) return unit.typeInt();
+      if (typeName.equals("long")) return unit.typeLong();
+      if (typeName.equals("float")) return unit.typeFloat();
+      if (typeName.equals("double")) return unit.typeDouble();
+      if (typeName.equals("null")) return unit.typeNull();
+      if (typeName.equals("void")) return unit.typeVoid();
+      if (typeName.equals("Unknown")) return unit.unknownType(); // Is this needed?
+    } 
+    // Check the library:
+    //  A type may not be in the library but an NTA cannot map to null.
+    //  We need to do some double work to step around this.
+    //  We check the classpath directly (the same thing the library NTA does)
+    //  to prevent that we call the nta for a name that gives null back
+    //else if (getCompilationUnit(fullName) != null) { 
     
-    CompilationUnit u = getCompilationUnit(fullName);
-    if(u != null) {
-      addCompilationUnit(u);
-      getCompilationUnit(getNumCompilationUnit()-1);
-      for(int j = 0; j < u.getNumTypeDecl(); j++) {
-        if(u.getTypeDecl(j).name().equals(typeName)) {
-          return u.getTypeDecl(j);
+    // Found a library unit, check it for type
+    CompilationUnit libUnit = getLibCompilationUnit(fullName);
+    if (libUnit != null) {
+      for(int j = 0; j < libUnit.getNumTypeDecl(); j++) {
+        TypeDecl type = libUnit.getTypeDecl(j);
+        if(type.fullName().equals(fullName)) {
+          return type;
         }
       }
-      //throw new Error("No type named " + typeName + " in file " + fullName + ", " + u.pathName() + ", " + u.relativeName());
     }
+    // No type found in the library
     return null;
+  }
+  /**
+   * @apilevel internal
+   */
+  protected java.util.Map getLibCompilationUnit_String_values;
+  /**
+   * @apilevel internal
+   */
+  protected List getLibCompilationUnit_String_list;
+  /**
+   * @attribute syn
+   * @aspect LookupFullyQualifiedTypes
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:213
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public CompilationUnit getLibCompilationUnit(String fullName) {
+    Object _parameters = fullName;
+    if(getLibCompilationUnit_String_values == null) getLibCompilationUnit_String_values = new java.util.HashMap(4);
+    if(getLibCompilationUnit_String_values.containsKey(_parameters)) {
+      return (CompilationUnit)getLibCompilationUnit_String_values.get(_parameters);
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    CompilationUnit getLibCompilationUnit_String_value = getLibCompilationUnit_compute(fullName);
+    if(getLibCompilationUnit_String_list == null) {
+      getLibCompilationUnit_String_list = new List();
+      getLibCompilationUnit_String_list.is$Final = true;
+      getLibCompilationUnit_String_list.setParent(this);
+    }
+    if(getLibCompilationUnit_String_value != null) {
+      getLibCompilationUnit_String_list.add(getLibCompilationUnit_String_value);
+      getLibCompilationUnit_String_value.is$Final = true;
+    }
+      if(true) getLibCompilationUnit_String_values.put(_parameters, getLibCompilationUnit_String_value);
+    return getLibCompilationUnit_String_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private CompilationUnit getLibCompilationUnit_compute(String fullName) {
+    return getCompilationUnit(fullName);
+  }
+  /**
+   * @apilevel internal
+   */
+  protected boolean getPrimitiveCompilationUnit_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected PrimitiveCompilationUnit getPrimitiveCompilationUnit_value;
+  /**
+   * @attribute syn
+   * @aspect PrimitiveTypes
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrimitiveTypes.jrag:219
+   */
+  @SuppressWarnings({"unchecked", "cast"})
+  public PrimitiveCompilationUnit getPrimitiveCompilationUnit() {
+    if(getPrimitiveCompilationUnit_computed) {
+      return getPrimitiveCompilationUnit_value;
+    }
+    ASTNode$State state = state();
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    getPrimitiveCompilationUnit_value = getPrimitiveCompilationUnit_compute();
+    getPrimitiveCompilationUnit_value.setParent(this);
+    getPrimitiveCompilationUnit_value.is$Final = true;
+      if(true) getPrimitiveCompilationUnit_computed = true;
+    return getPrimitiveCompilationUnit_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private PrimitiveCompilationUnit getPrimitiveCompilationUnit_compute() {    
+    PrimitiveCompilationUnit u = new PrimitiveCompilationUnit();
+    u.setPackageDecl(PRIMITIVE_PACKAGE_NAME);
+    return u;
   }
   /**
    * @apilevel internal
@@ -1494,11 +1590,11 @@ if(isFinal && num == state().boundariesCrossed) lookupType_String_String_values.
     if(unknownConstructor_computed) {
       return unknownConstructor_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     unknownConstructor_value = unknownConstructor_compute();
-if(isFinal && num == state().boundariesCrossed) unknownConstructor_computed = true;
+      if(isFinal && num == state().boundariesCrossed) unknownConstructor_computed = true;
     return unknownConstructor_value;
   }
   /**
@@ -1518,20 +1614,20 @@ if(isFinal && num == state().boundariesCrossed) unknownConstructor_computed = tr
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1252
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1358
    */
   @SuppressWarnings({"unchecked", "cast"})
   public WildcardsCompilationUnit wildcards() {
     if(wildcards_computed) {
       return wildcards_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     wildcards_value = wildcards_compute();
     wildcards_value.setParent(this);
     wildcards_value.is$Final = true;
-if(true) wildcards_computed = true;
+      if(true) wildcards_computed = true;
     return wildcards_value;
   }
   /**
@@ -1549,649 +1645,591 @@ if(true) wildcards_computed = true;
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_superType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_TypeDecl_superType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:26
    * @apilevel internal
    */
   public ConstructorDecl Define_ConstructorDecl_constructorDecl(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_ConstructorDecl_constructorDecl(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Arrays.jrag:19
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_componentType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return unknownType();
     }
-    return getParent().Define_TypeDecl_componentType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:173
    * @apilevel internal
    */
   public LabeledStmt Define_LabeledStmt_lookupLabel(ASTNode caller, ASTNode child, String name) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_LabeledStmt_lookupLabel(this, caller, name);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:16
    * @apilevel internal
    */
   public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_isDest(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:26
    * @apilevel internal
    */
   public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return true;
     }
-    return getParent().Define_boolean_isSource(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:50
    * @apilevel internal
    */
   public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_isIncOrDec(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:324
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return true;
     }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:709
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:710
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return true;
     }
-    return getParent().Define_boolean_isDUbefore(this, caller, v);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:13
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeException(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return lookupType("java.lang", "Exception");
     }
-    return getParent().Define_TypeDecl_typeException(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:15
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeRuntimeException(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return lookupType("java.lang", "RuntimeException");
     }
-    return getParent().Define_TypeDecl_typeRuntimeException(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:17
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeError(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return lookupType("java.lang", "Error");
     }
-    return getParent().Define_TypeDecl_typeError(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:19
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeNullPointerException(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return lookupType("java.lang", "NullPointerException");
     }
-    return getParent().Define_TypeDecl_typeNullPointerException(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:21
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeThrowable(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return lookupType("java.lang", "Throwable");
     }
-    return getParent().Define_TypeDecl_typeThrowable(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:123
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:137
    * @apilevel internal
    */
   public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
-    if(true) { 
+     { 
    int childIndex = this.getIndexOfChild(caller);
 {
     throw new Error("Operation handlesException not supported");
   }
-}
-    return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:15
    * @apilevel internal
    */
   public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return Collections.EMPTY_LIST;
     }
-    return getParent().Define_Collection_lookupConstructor(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag:24
    * @apilevel internal
    */
   public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return Collections.EMPTY_LIST;
     }
-    return getParent().Define_Collection_lookupSuperConstructor(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:21
    * @apilevel internal
    */
   public Expr Define_Expr_nestedScope(ASTNode caller, ASTNode child) {
-    if(true) { 
+     { 
    int childIndex = this.getIndexOfChild(caller);
 { throw new UnsupportedOperationException(); }
-}
-    return getParent().Define_Expr_nestedScope(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:33
    * @apilevel internal
    */
   public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return Collections.EMPTY_LIST;
     }
-    return getParent().Define_Collection_lookupMethod(this, caller, name);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:18
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeObject(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeObject();
     }
-    return getParent().Define_TypeDecl_typeObject(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:19
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeCloneable(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeCloneable();
     }
-    return getParent().Define_TypeDecl_typeCloneable(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:20
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeSerializable(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeSerializable();
     }
-    return getParent().Define_TypeDecl_typeSerializable(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:31
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeBoolean(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeBoolean();
     }
-    return getParent().Define_TypeDecl_typeBoolean(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:32
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeByte(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeByte();
     }
-    return getParent().Define_TypeDecl_typeByte(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:33
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeShort(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeShort();
     }
-    return getParent().Define_TypeDecl_typeShort(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:34
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeChar(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeChar();
     }
-    return getParent().Define_TypeDecl_typeChar(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:35
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeInt(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeInt();
     }
-    return getParent().Define_TypeDecl_typeInt(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:36
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeLong(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeLong();
     }
-    return getParent().Define_TypeDecl_typeLong(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:37
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeFloat(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeFloat();
     }
-    return getParent().Define_TypeDecl_typeFloat(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:38
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeDouble(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeDouble();
     }
-    return getParent().Define_TypeDecl_typeDouble(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:39
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeString(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeString();
     }
-    return getParent().Define_TypeDecl_typeString(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:42
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeVoid(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeVoid();
     }
-    return getParent().Define_TypeDecl_typeVoid(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:44
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeNull(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeNull();
     }
-    return getParent().Define_TypeDecl_typeNull(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:47
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_unknownType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return unknownType();
     }
-    return getParent().Define_TypeDecl_unknownType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:81
    * @apilevel internal
    */
   public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return hasPackage(packageName);
     }
-    return getParent().Define_boolean_hasPackage(this, caller, packageName);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:101
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:151
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_lookupType(ASTNode caller, ASTNode child, String packageName, String typeName) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return lookupType(packageName, typeName);
     }
-    return getParent().Define_TypeDecl_lookupType(this, caller, packageName, typeName);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:178
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:266
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return SimpleSet.emptySet;
     }
-    return getParent().Define_SimpleSet_lookupType(this, caller, name);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:24
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return SimpleSet.emptySet;
     }
-    return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:290
    * @apilevel internal
    */
   public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBePublic(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:291
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeProtected(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:292
    * @apilevel internal
    */
   public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBePrivate(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:293
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeStatic(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:294
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeFinal(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:295
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeAbstract(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:296
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeVolatile(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:297
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeTransient(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:298
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeStrictfp(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:299
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeSynchronized(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:300
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayBeNative(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:249
    * @apilevel internal
    */
   public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_ASTNode_enclosingBlock(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:300
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-    if(true) { 
+     { 
    int childIndex = this.getIndexOfChild(caller);
 {
     throw new UnsupportedOperationException("outerScope() not defined");
   }
-}
-    return getParent().Define_VariableScope_outerScope(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:368
    * @apilevel internal
    */
   public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_insideLoop(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:375
    * @apilevel internal
    */
   public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_insideSwitch(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:425
    * @apilevel internal
    */
   public Case Define_Case_bind(ASTNode caller, ASTNode child, Case c) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_Case_bind(this, caller, c);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:354
    * @apilevel internal
    */
   public String Define_String_typeDeclIndent(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return "";
     }
-    return getParent().Define_String_typeDeclIndent(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:64
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return NameType.NO_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:219
    * @apilevel internal
    */
   public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_isAnonymous(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:233
    * @apilevel internal
    */
   public Variable Define_Variable_unknownField(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return unknownType().findSingleVariable("unknown");
     }
-    return getParent().Define_Variable_unknownField(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:237
    * @apilevel internal
    */
   public MethodDecl Define_MethodDecl_unknownMethod(ASTNode caller, ASTNode child) {
-    if(true) { 
+     { 
    int childIndex = this.getIndexOfChild(caller);
 {
     for(Iterator iter = unknownType().memberMethods("unknown").iterator(); iter.hasNext(); ) {
@@ -2200,340 +2238,319 @@ if(true) wildcards_computed = true;
     }
     throw new Error("Could not find method unknown in type Unknown");
   }
-}
-    return getParent().Define_MethodDecl_unknownMethod(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:244
    * @apilevel internal
    */
   public ConstructorDecl Define_ConstructorDecl_unknownConstructor(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return unknownConstructor();
     }
-    return getParent().Define_ConstructorDecl_unknownConstructor(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:256
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int i = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_TypeDecl_declType(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:514
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:513
    * @apilevel internal
    */
   public BodyDecl Define_BodyDecl_enclosingBodyDecl(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_BodyDecl_enclosingBodyDecl(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:532
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:531
    * @apilevel internal
    */
   public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_isMemberType(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:579
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:582
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_TypeDecl_hostType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:360
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_switchType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return unknownType();
     }
-    return getParent().Define_TypeDecl_switchType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:406
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeVoid();
     }
-    return getParent().Define_TypeDecl_returnType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:506
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_TypeDecl_enclosingInstance(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:14
    * @apilevel internal
    */
   public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-    if(true) { 
+     { 
    int childIndex = this.getIndexOfChild(caller);
 {
     throw new Error("Needs extra equation for methodHost()");
   }
-}
-    return getParent().Define_String_methodHost(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:128
    * @apilevel internal
    */
   public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_inExplicitConstructorInvocation(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:137
    * @apilevel internal
    */
   public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_inStaticContext(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:160
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:162
    * @apilevel internal
    */
   public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-    if(caller == getCompilationUnitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
+     {
+      int childIndex = this.getIndexOfChild(caller);
       return true;
     }
-    return getParent().Define_boolean_reportUnreachable(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:68
    * @apilevel internal
    */
   public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_isMethodParameter(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:69
    * @apilevel internal
    */
   public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_isConstructorParameter(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:70
    * @apilevel internal
    */
   public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:94
    * @apilevel internal
    */
   public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_mayUseAnnotationTarget(this, caller, name);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:180
    * @apilevel internal
    */
   public ElementValue Define_ElementValue_lookupElementTypeValue(ASTNode caller, ASTNode child, String name) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:269
    * @apilevel internal
    */
   public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:371
    * @apilevel internal
    */
   public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:430
    * @apilevel internal
    */
   public Annotation Define_Annotation_lookupAnnotation(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-    if(true) {
+     {
       int i = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_Annotation_lookupAnnotation(this, caller, typeDecl);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:463
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return unknownType();
     }
-    return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericMethodsInference.jrag:39
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return typeNull();
     }
-    return getParent().Define_TypeDecl_assignConvertedType(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1279
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:267
+   * @apilevel internal
+   */
+  public boolean Define_boolean_inExtendsOrImplements(ASTNode caller, ASTNode child) {
+     {
+      int childIndex = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1385
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_typeWildcard(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return wildcards().typeWildcard();
     }
-    return getParent().Define_TypeDecl_typeWildcard(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1290
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1396
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_lookupWildcardExtends(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return wildcards().lookupWildcardExtends(typeDecl);
     }
-    return getParent().Define_TypeDecl_lookupWildcardExtends(this, caller, typeDecl);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1303
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1409
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_lookupWildcardSuper(ASTNode caller, ASTNode child, TypeDecl typeDecl) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return wildcards().lookupWildcardSuper(typeDecl);
     }
-    return getParent().Define_TypeDecl_lookupWildcardSuper(this, caller, typeDecl);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1325
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1431
    * @apilevel internal
    */
   public LUBType Define_LUBType_lookupLUBType(ASTNode caller, ASTNode child, Collection bounds) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return wildcards().lookupLUBType(bounds);
     }
-    return getParent().Define_LUBType_lookupLUBType(this, caller, bounds);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1363
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1469
    * @apilevel internal
    */
   public GLBType Define_GLBType_lookupGLBType(ASTNode caller, ASTNode child, ArrayList bounds) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return wildcards().lookupGLBType(bounds);
     }
-    return getParent().Define_GLBType_lookupGLBType(this, caller, bounds);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:46
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_TypeDecl_genericDecl(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:24
    * @apilevel internal
    */
   public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_variableArityValid(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:62
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/InnerClasses.jrag:64
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-    if(caller == getCompilationUnitListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
+     {
+      int i = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_TypeDecl_expectedType(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:49
@@ -2546,7 +2563,8 @@ if(true) wildcards_computed = true;
     throw new Error("condition_false_label not implemented");
   }
 }
-    return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    else {      return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:53
@@ -2559,7 +2577,8 @@ if(true) wildcards_computed = true;
     throw new Error("condition_true_label not implemented");
   }
 }
-    return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+    else {      return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/LocalNum.jrag:15
@@ -2570,29 +2589,91 @@ if(true) wildcards_computed = true;
       int index = caller.getIndexOfChild(child);
       return 0;
     }
-    return getParent().Define_int_localNum(this, caller);
+    else {      return getParent().Define_int_localNum(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:349
    * @apilevel internal
    */
   public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return false;
     }
-    return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:465
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
-    if(true) {
+     {
       int childIndex = this.getIndexOfChild(caller);
       return null;
     }
-    return getParent().Define_ArrayList_exceptionRanges(this, caller);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:122
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:130
+   * @apilevel internal
+   */
+  public CatchClause Define_CatchClause_catchClause(ASTNode caller, ASTNode child) {
+     { 
+   int i = this.getIndexOfChild(caller);
+{
+		throw new IllegalStateException("Could not find parent " +
+				"catch clause");
+	}
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TryWithResources.jrag:154
+   * @apilevel internal
+   */
+  public boolean Define_boolean_resourcePreviouslyDeclared(ASTNode caller, ASTNode child, String name) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:70
+   * @apilevel internal
+   */
+  public ClassInstanceExpr Define_ClassInstanceExpr_getClassInstanceExpr(ASTNode caller, ASTNode child) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return null;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:462
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isAnonymousDecl(ASTNode caller, ASTNode child) {
+     {
+      int childIndex = this.getIndexOfChild(caller);
+      return false;
+    }
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/TypeInference.jrag:479
+   * @apilevel internal
+   */
+  public boolean Define_boolean_isExplicitGenericConstructorAccess(ASTNode caller, ASTNode child) {
+     {
+      int i = this.getIndexOfChild(caller);
+      return false;
+    }
   }
   /**
    * @apilevel internal

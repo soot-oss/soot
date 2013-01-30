@@ -1,3 +1,4 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
@@ -18,10 +19,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production AmbiguousAccess : {@link Access} ::= <span class="component">&lt;ID:String&gt;</span>;
  * @ast node
- * @declaredat java.ast:32
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:35
  */
 public class AmbiguousAccess extends Access implements Cloneable {
   /**
@@ -61,18 +62,33 @@ public class AmbiguousAccess extends Access implements Cloneable {
       return null;
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AmbiguousAccess fullCopy() {
-    AmbiguousAccess res = (AmbiguousAccess)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    try {
+      AmbiguousAccess tree = (AmbiguousAccess) clone();
+      tree.setParent(null);// make dangling
+      if (children != null) {
+        tree.children = new ASTNode[children.length];
+        for (int i = 0; i < children.length; ++i) {
+          if (children[i] == null) {
+            tree.children[i] = null;
+          } else {
+            tree.children[i] = ((ASTNode) children[i]).fullCopy();
+            ((ASTNode) tree.children[i]).setParent(tree);
+          }
+        }
+      }
+      return tree;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
     }
-    return res;
-    }
+  }
   /**
    * @ast method 
    * @aspect NameCheck
@@ -93,7 +109,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public AmbiguousAccess() {
     super();
@@ -101,15 +117,25 @@ public class AmbiguousAccess extends Access implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public AmbiguousAccess(String p0) {
     setID(p0);
   }
   /**
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   public AmbiguousAccess(beaver.Symbol p0) {
     setID(p0);
@@ -117,7 +143,7 @@ public class AmbiguousAccess extends Access implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -125,40 +151,48 @@ public class AmbiguousAccess extends Access implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat java.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_ID;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_ID;
   /**
    * @ast method 
-   * @declaredat java.ast:9
+   * 
    */
   
   public int IDstart;
   /**
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   
   public int IDend;
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:11
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -168,10 +202,11 @@ public class AmbiguousAccess extends Access implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:22
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
@@ -179,87 +214,67 @@ public class AmbiguousAccess extends Access implements Cloneable {
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:339
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:430
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet qualifiedLookupType(String name) {
-      ASTNode$State state = state();
-    SimpleSet qualifiedLookupType_String_value = qualifiedLookupType_compute(name);
-    return qualifiedLookupType_String_value;
+    ASTNode$State state = state();
+    try {  return SimpleSet.emptySet;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet qualifiedLookupType_compute(String name) {  return SimpleSet.emptySet;  }
   /**
    * @attribute syn
    * @aspect VariableScope
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:143
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:148
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet qualifiedLookupVariable(String name) {
-      ASTNode$State state = state();
-    SimpleSet qualifiedLookupVariable_String_value = qualifiedLookupVariable_compute(name);
-    return qualifiedLookupVariable_String_value;
+    ASTNode$State state = state();
+    try {  return SimpleSet.emptySet;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private SimpleSet qualifiedLookupVariable_compute(String name) {  return SimpleSet.emptySet;  }
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:809
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:800
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String dumpString() {
-      ASTNode$State state = state();
-    String dumpString_value = dumpString_compute();
-    return dumpString_value;
+    ASTNode$State state = state();
+    try {  return getClass().getName() + " [" + getID() + "]";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String dumpString_compute() {  return getClass().getName() + " [" + getID() + "]";  }
   /**
    * @attribute syn
    * @aspect Names
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/QualifiedNames.jrag:16
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String name() {
-      ASTNode$State state = state();
-    String name_value = name_compute();
-    return name_value;
+    ASTNode$State state = state();
+    try {  return getID();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String name_compute() {  return getID();  }
   /**
    * @attribute syn
    * @aspect SyntacticClassification
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:112
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:56
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public NameType predNameType() {
-      ASTNode$State state = state();
-    NameType predNameType_value = predNameType_compute();
-    return predNameType_value;
+    ASTNode$State state = state();
+    try {  return NameType.AMBIGUOUS_NAME;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private NameType predNameType_compute() {  return NameType.AMBIGUOUS_NAME;  }
   /**
    * @apilevel internal
    */
   public ASTNode rewriteTo() {
     // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ResolveAmbiguousNames.jrag at line 194
     if(!duringSyntacticClassification()) {
-      state().duringResolveAmbiguousNames++;
+      state().duringNameResolution++;
       ASTNode result = rewriteRule0();
-      state().duringResolveAmbiguousNames--;
+      state().duringNameResolution--;
       return result;
     }
 
