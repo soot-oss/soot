@@ -63,7 +63,7 @@ import com.google.common.cache.LoadingCache;
 public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,SootMethod> {
 	
 	//retains only callers that are explicit call sites or Thread.start()
-	protected static class EdgeFilter extends Filter {		
+	public static class EdgeFilter extends Filter {		
 		protected EdgeFilter() {
 			super(new EdgePredicate() {
 				public boolean want(Edge e) {				
