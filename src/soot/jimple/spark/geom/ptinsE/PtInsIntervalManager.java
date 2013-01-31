@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
+ * Copyright (C) 2012 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,10 @@
  */
 package soot.jimple.spark.geom.ptinsE;
 
-import soot.jimple.spark.geom.geomPA.GeomPointsTo;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
+import soot.jimple.spark.geom.geomPA.SegmentNode;
 
 /**
  * The figure manager for the PtIns descriptors.
@@ -30,7 +30,7 @@ import soot.jimple.spark.geom.geomPA.RectangleNode;
  * @author xiao
  *
  */
-public class PtInsIntervalManager implements IFigureManager
+public class PtInsIntervalManager extends IFigureManager
 {
 	public static final int Divisions = 3;
 	public static final int ALL_TO_ALL = -1;		// A special case
@@ -82,7 +82,7 @@ public class PtInsIntervalManager implements IFigureManager
 			p = new SegmentNode();
 			
 			p.I1 = p.I2 = 0;
-			p.L = GeomPointsTo.MAX_CONTEXTS;
+			p.L = Constants.MAX_CONTEXTS;
 			for ( int i = 0; i < Divisions; ++i ) {
 				size[i] = 0;
 				header[i] = null;

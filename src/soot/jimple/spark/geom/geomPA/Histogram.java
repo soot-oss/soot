@@ -19,6 +19,12 @@
 package soot.jimple.spark.geom.geomPA;
 
 import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import com.sun.org.apache.xml.internal.utils.NSInfo;
 
 /**
  * A helper class for plotting the evaluation results in histogram form.
@@ -103,7 +109,7 @@ public class Histogram {
         		output.printf("%d < x <= %d: %d (%d)", limits[i-1], limits[i], results[i], other.results[i] );
         	}
         	
-        	output.printf( ", percentage = %.2f (%.2f) \n", 
+        	output.printf( ", percentage = %.2f%% (%.2f%%) \n", 
         			(double)results[i] * 100/count, (double)other.results[i] * 100/other.count );
         }
         

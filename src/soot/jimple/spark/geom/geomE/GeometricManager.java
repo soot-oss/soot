@@ -18,12 +18,13 @@
  */
 package soot.jimple.spark.geom.geomE;
 
+import soot.jimple.spark.geom.geomPA.IFigureManager;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
 import soot.jimple.spark.geom.geomPA.SegmentNode;
-import soot.jimple.spark.geom.geomE.GeometricManager;
-import soot.jimple.spark.geom.geomPA.IFigureManager;
 
 /**
+ * This class implements the figure manager.
+ * 
  * Currently, we apply a naive management strategy:
  * For each type of object, we maintain a linked list. If we insert a new object, we don't test if
  * all the geometric objects on the plane together can cover the new object. Instead, we test if there is 
@@ -32,7 +33,7 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
  * @author xiao
  *
  */
-public class GeometricManager implements IFigureManager
+public class GeometricManager extends IFigureManager
 {
 	public static final int Divisions = 2;
 
@@ -41,6 +42,7 @@ public class GeometricManager implements IFigureManager
 	public static final int MANY_TO_MANY = 1;
 	public static final int Undefined_Mapping = -1;
 	
+	// Private fields for each instance
 	private SegmentNode header[] = { null, null };
 	private int size[] = { 0, 0 };
 	private boolean hasNewFigure = false;
@@ -92,10 +94,14 @@ public class GeometricManager implements IFigureManager
 		filterOutDuplicates( code, pnew );
 		
 		// Ok, now we generate a copy
-		if ( code == GeometricManager.ONE_TO_ONE )
-			p = new SegmentNode( pnew );
-		else
-			p = new RectangleNode( pnew );
+		if ( code == GeometricManager.ONE_TO_ONE ) {
+			p = getSegmentNode();
+			p.copySegment(pnew);
+		}
+		else {
+			p = getRectangleNode();
+			((RectangleNode)p).copyRectangle(pnew);
+		}
 		
 		hasNewFigure = true;
 		p.next = header[code];
@@ -150,18 +156,21 @@ public class GeometricManager implements IFigureManager
 	 */
 	public void removeUselessSegments() 
 	{
-		SegmentNode pnew = header[GeometricManager.ONE_TO_ONE];
+		SegmentNode p = header[GeometricManager.ONE_TO_ONE];
 		SegmentNode q = null;
 		int countAll = 0;
 		
-		while (pnew != null) {
-			SegmentNode temp = pnew.next;
-			if (!isContainedInRectangles(pnew)) {
-				pnew.next = q;
-				q = pnew;
+		while (p != null) {
+			SegmentNode temp = p.next;
+			if (!isContainedInRectangles(p)) {
+				p.next = q;
+				q = p;
 				++countAll;
 			}
-			pnew = temp;
+			else {
+				reclaimSegmentNode(p);
+			}
+			p = temp;
 		}
 
 		size[GeometricManager.ONE_TO_ONE] = countAll;
@@ -280,6 +289,7 @@ public class GeometricManager implements IFigureManager
 				}
 				
 				if ( flag == false ) {
+					// We keep this figure
 					if ( q_head == null )
 						q_head = pold;
 					else
@@ -287,13 +297,18 @@ public class GeometricManager implements IFigureManager
 					q_tail = pold;
 					
 					++countAll;
+					pold = pold.next;
 				}
-				
-				pold = pold.next;
+				else {
+					// We reclaim this figure
+					if ( i == GeometricManager.ONE_TO_ONE )
+						pold = reclaimSegmentNode(pold);
+					else
+						pold = reclaimRectangleNode(pold);
+				}
 			}
 			
-			if ( q_tail != null )
-				q_tail.next = null;
+			if ( q_tail != null ) q_tail.next = null;
 			
 			header[i] = q_head;
 			size[i] = countAll;
@@ -310,19 +325,19 @@ public class GeometricManager implements IFigureManager
 		long x_max = Long.MIN_VALUE, y_max = Long.MIN_VALUE;
 		
 		RectangleNode p = (RectangleNode)header[GeometricManager.MANY_TO_MANY];
+		header[GeometricManager.MANY_TO_MANY] = null;
+		size[GeometricManager.MANY_TO_MANY] = 0;
 		
 		while ( p != null ) {
 			if ( p.I1 < x_min ) x_min = p.I1;
 			if ( p.I2 < y_min ) y_min = p.I2;
 			if ( p.I1 + p.L > x_max ) x_max = p.I1 + p.L;
 			if ( p.I2 + p.L_prime > y_max ) y_max = p.I2 + p.L_prime;
-			p = (RectangleNode)p.next;
+			p = (RectangleNode)reclaimRectangleNode(p);
 		}
 		
 		// We assume the list has at least one element
-		p = (RectangleNode)header[GeometricManager.MANY_TO_MANY];
-		header[GeometricManager.MANY_TO_MANY] = null;
-		size[GeometricManager.MANY_TO_MANY] = 0;
+		p = getRectangleNode();
 		p.I1 = x_min;
 		p.I2 = y_min;
 		p.L = x_max - x_min;
@@ -350,10 +365,10 @@ public class GeometricManager implements IFigureManager
 			if ( p.I2 < y_min ) y_min = p.I2;
 			if ( p.I1 + p.L > x_max ) x_max = p.I1 + p.L;
 			if ( p.I2 + p.L > y_max ) y_max = p.I2 + p.L;
-			p = p.next;
+			p = reclaimSegmentNode(p);
 		}
 		
-		RectangleNode q = new RectangleNode();
+		RectangleNode q = getRectangleNode();
 		q.I1 = x_min;
 		q.I2 = y_min;
 		q.L = x_max - x_min;
