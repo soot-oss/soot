@@ -751,6 +751,10 @@ public class SootClass extends AbstractHost implements Numberable
         outerClass = c;
     }
     
+    public boolean isInnerClass() {
+    	return hasOuterClass();
+    }
+    
     /**
         Returns the name of this class.
     */
