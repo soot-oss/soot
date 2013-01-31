@@ -1,8 +1,20 @@
-/*
- * Please attach the following author information if you would like to redistribute the source code:
- * Developer: Xiao Xiao
- * Address: Room 4208, Hong Kong University of Science and Technology
- * Contact: frogxx@gmail.com
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2011 Richard Xiao
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.geom.geomPA;
 
@@ -87,19 +99,19 @@ public class GeomPointsTo extends PAG
 	protected OfflineProcessor offlineProcessor = null;
 	
 	// A table that maps the SPARK nodes to the geometric nodes 
-	public Map<Node, IVarAbstraction> consG = new HashMap<Node, IVarAbstraction>();
+	public Map<Node, IVarAbstraction> consG = null;
 	
 	// Stores all the pointers including the instance fields
-	public ZArrayNumberer<IVarAbstraction> pointers = new ZArrayNumberer<IVarAbstraction>();
+	public ZArrayNumberer<IVarAbstraction> pointers = null;
 	
 	// Stores all the symbolic objects
-	public ZArrayNumberer<IVarAbstraction> allocations = new ZArrayNumberer<IVarAbstraction>();
+	public ZArrayNumberer<IVarAbstraction> allocations = null;
 	
 	// Store all the constraints, initially generated from SPARK
-	public Vector<PlainConstraint> constraints = new Vector<PlainConstraint>();
+	public Vector<PlainConstraint> constraints = null;
 	
 	// All the callsites that spawn a new thread
-	public Set<Stmt> thread_run_callsites = new HashSet<Stmt>();
+	public Set<Stmt> thread_run_callsites = null;
 	
 	// the internal ID of the main method
 	public int mainID = -1;			
@@ -133,18 +145,18 @@ public class GeomPointsTo extends PAG
 	
 	// Call graph related components
 	protected CgEdge call_graph[];
-	protected Vector<CgEdge> obsoletedEdges = new Vector<CgEdge>();
-	protected Map<Integer, LinkedList<CgEdge>> rev_call_graph;
-	protected Deque<Integer> queue_cg = new LinkedList<Integer>();
+	protected Vector<CgEdge> obsoletedEdges = null;
+	protected Map<Integer, LinkedList<CgEdge>> rev_call_graph = null;
+	protected Deque<Integer> queue_cg = null;
 	
 	// Containers used for call graph traversal
 	protected int vis_cg[], low_cg[], rep_cg[], indeg_cg[], scc_size[];
 	protected int pre_cnt;			// preorder time-stamp for constructing the SCC condensed call graph
 	
-	// The mappings between Soot constructs and our internal representations
-	protected Map<SootMethod, Integer> func2int = new HashMap<SootMethod, Integer>(5011);
-	protected Map<Integer, SootMethod> int2func = new HashMap<Integer, SootMethod>(5011);
-	protected Map<Edge, CgEdge> edgeMapping = new HashMap<Edge, CgEdge>();
+	// The mappings between Soot functions and call edges to our internal representations
+	protected Map<SootMethod, Integer> func2int = null;
+	protected Map<Integer, SootMethod> int2func = null;
+	protected Map<Edge, CgEdge> edgeMapping = null;
 	
 	// Others
 	private boolean hasTransformed = false;
@@ -163,7 +175,46 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Using the user specified arguments to parametrize our geometric points-to engine.
+	 * Data structures that only specific to geometric solver are created here.
+	 * The initialized container sizes are empirically chosen from the primes.
+	 * We believe most of the machine today can afford the memory overhead.
+	 */
+	private void prepareContainers()
+	{
+		// All kinds of variables
+		consG = new HashMap<Node, IVarAbstraction>(39341);
+		
+		// Only the pointer variables
+		pointers = new ZArrayNumberer<IVarAbstraction>(25771);
+		
+		// Only the heap variables
+		allocations = new ZArrayNumberer<IVarAbstraction>();
+		
+		// The constraints extracted from code
+		constraints = new Vector<PlainConstraint>(25771);
+		
+		// The statements that fork a new thread
+		thread_run_callsites = new HashSet<Stmt>(251);
+		
+		// The fake virtual call edges created by SPARK
+		obsoletedEdges = new Vector<CgEdge>(4021);
+		
+		// A linkedlist used for traversing the call graph
+		queue_cg = new LinkedList<Integer>();
+		
+		// Containers for functions and call graph edges
+		func2int = new HashMap<SootMethod, Integer>(5011);
+		int2func = new HashMap<Integer, SootMethod>(5011);
+		edgeMapping = new HashMap<Edge, CgEdge>(19763);
+		
+		consG.clear();
+		constraints.clear();
+		func2int.clear();
+		edgeMapping.clear();
+	}
+	
+	/**
+	 * Using the user specified arguments to parameterize the geometric points-to solver.
 	 * @param spark_run_time
 	 */
 	public void parametrize( double spark_run_time )
@@ -243,23 +294,23 @@ public class GeomPointsTo extends PAG
 			}
 		}
 		
+		// Output the SPARK running information
+		double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+		ps.printf("Spark [Time] : %.3fs\n", (double)spark_run_time/1000 );
+		ps.printf("Spark [Memory] : %.3fMB\n", mem  / 1024 / 1024 );
+				
+		// Get type manager from SPARK
+		typeManager = getTypeManager();
+		
 		// The tunable parameters
 		Constants.max_cons_budget = opts.geom_frac_base();
 		Constants.max_pts_budget = Constants.max_cons_budget * 2;
 		Constants.cg_refine_times = opts.geom_runs();
 		
 		// Prepare for the containers
-		consG.clear();
-		constraints.clear();
-		func2int.clear();
-		edgeMapping.clear();
-		typeManager = getTypeManager();
+		prepareContainers();
 		
-		// Output the SPARK running information
-		double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-		ps.printf("Spark [Time] : %.3fs\n", (double)spark_run_time/1000 );
-		ps.printf("Spark [Memory] : %.3fMB\n", mem  / 1024 / 1024 );
-		
+		// Now we start working
 		ps.println();
 		ps.println( encoding_name + " starts working on " + (dump_dir.isEmpty() ? "untitled" : dump_dir) + " benchmark." );
 	}

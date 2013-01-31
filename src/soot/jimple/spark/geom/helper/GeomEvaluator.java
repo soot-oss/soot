@@ -1,8 +1,20 @@
-/*
- * Please attach the following author information if you would like to redistribute the source code:
- * Developer: Xiao Xiao
- * Address: Room 4208, Hong Kong University of Science and Technology
- * Contact: frogxx@gmail.com
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2011 Richard Xiao
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.geom.helper;
 
@@ -60,9 +72,11 @@ import soot.util.queue.QueueReader;
  * We provide a set of methods to evaluate the quality of geometric points-to analysis.
  * The evaluation methods are:
  * 
- * 1. Count the computed points-to matrix for avg. points-to set size, constraints evaluation graph size, etc;
+ * 1. Count the basic points-to information, such as average points-to set size, constraints evaluation graph size, etc;
  * 2. Virtual function resolution comparison;
  * 3. Static casts checking;
+ * 4. All pairs alias analysis;
+ * 5. Building heap graph.
  * 
  * @author xiao
  *
@@ -233,25 +247,24 @@ public class GeomEvaluator {
 		}
 		
 		outputer.println("");
-		outputer.println("--------------------Points-to Analysis Basic Information-------------------");
-		outputer.println("------>>>> Format:  Geometric Analysis (SPARK)" );
+		outputer.println("--------------Geom Solver Basics <Format:  Geometric Analysis (SPARK)>--------------");
 		outputer.printf("Lines of code (jimple): %.1fK\n", (double)loc/1000 );
 		outputer.printf("Reachable Methods : %d (%d)\n", ptsProvider.getNumberOfReachableFunctions(),
 																ptsProvider.getNumberOfFunctions() );
 		outputer.printf("Reachable User Methods : %d (%d)\n", ptsProvider.n_reach_user_methods, 
 																		ptsProvider.n_reach_spark_user_methods );
 		outputer.println("#Pointers (all code): " + ptsProvider.getNumberOfPointers() );
-		outputer.println("#Pointers (app code): " + n_legal_var + ", in which #AllocDot Fields : " + n_alloc_dot_fields );
-		outputer.printf("Total/Average Projected Points-to Tuples (app code): %d (%d) / %.3f (%.3f) \n", 
+		outputer.println("#Pointers (app code only): " + n_legal_var + ", in which #AllocDot Fields : " + n_alloc_dot_fields );
+		outputer.printf("Total/Average Projected Points-to Tuples (app code only): %d (%d) / %.3f (%.3f) \n", 
 				total_geom_ins_pts, total_spark_pts, 
 				(double) total_geom_ins_pts / (n_legal_var), (double) total_spark_pts / n_legal_var );
-		outputer.printf("Total/Average Context Sensitive Points-to Tuples (app code): %d / %.3f \n", 
+		outputer.printf("Total/Average Context Sensitive Points-to Tuples (app code only): %d / %.3f \n", 
 				total_geom_sen_pts, (double) total_geom_sen_pts / (n_legal_var) );
-		outputer.println("The largest points-to set size (app code): " + max_pts_geom + " (" + max_pts_spark + ")");
+		outputer.println("The largest points-to set size (app code only): " + max_pts_geom + " (" + max_pts_spark + ")");
 		
 		outputer.println();
-		pts_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Sizes Distribution (app code):", pts_size_bar_spark );
-		type_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Types Distribution (app code):", type_size_bar_spark );
+		pts_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Sizes Distribution (app code only):", pts_size_bar_spark );
+		type_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Types Distribution (app code only):", type_size_bar_spark );
 	}
 
 	/**
@@ -496,7 +509,7 @@ public class GeomEvaluator {
 		ptsProvider.ps.println("All pointer pairs (app code) : " + cnt_all );
 		ptsProvider.ps.printf("Heap sensitive alias pairs (by Geom) : %d, Percentage = %.3f%%\n",
 				cnt_hs_alias, (double) cnt_hs_alias / cnt_all * 100 );
-		ptsProvider.ps.printf("Heap sensitive alias pairs (by Geom) : %d, Percentage = %.3f%%\n",
+		ptsProvider.ps.printf("Heap insensitive alias pairs (by SPARK) : %d, Percentage = %.3f%%\n",
 				cnt_hi_alias, (double) cnt_hi_alias / cnt_all * 100 );
 		ptsProvider.ps.printf("Using time: %dms \n", end.getTime() - begin.getTime() );
 		ptsProvider.ps.println();
@@ -577,7 +590,7 @@ public class GeomEvaluator {
 	
 	/**
 	 * Estimate the size of the def-use graph for the heap memory.
-	 * The graph is estimated without context information.
+	 * The heap graph is estimated without context information.
 	 */
 	public void estimateHeapDefuseGraph()
 	{
@@ -689,7 +702,8 @@ public class GeomEvaluator {
 		
 		ptsProvider.ps.println();
 		ptsProvider.ps.println( "-----------> Heap Def Use Graph Evaluation <------------" );
-		ptsProvider.ps.println("The edges in the heap def-use graph is: " + ans_geom + " (" + ans_spark + ")" );
+		ptsProvider.ps.println("The edges in the heap def-use graph is (by Geom): " + ans_geom );
+		ptsProvider.ps.println("The edges in the heap def-use graph is (by Spark): " + ans_spark );
 		ptsProvider.ps.printf("Using time: %dms \n", end.getTime() - begin.getTime() );
 		ptsProvider.ps.println();
 	}

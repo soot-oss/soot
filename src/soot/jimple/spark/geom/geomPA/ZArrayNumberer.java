@@ -1,8 +1,20 @@
-/*
- * Please attach the following author information if you would like to redistribute the source code:
- * Developer: Xiao Xiao
- * Address: Room 4208, Hong Kong University of Science and Technology
- * Contact: frogxx@gmail.com
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2011 Richard Xiao
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.geom.geomPA;
 
@@ -14,19 +26,32 @@ import soot.util.IterableNumberer;
 import soot.util.Numberable;
 
 /**
- * Similar to the ArrayNumberer in soot. But, this class counts the objects from zero.
+ * Similar to the ArrayNumberer class in soot. But, this class counts the objects from zero.
  * And, we permit the deletion of objects from the array container.
  * And most importantly, we permits the search for a particular object efficiently.
- * Therefore, this class supports both efficiently insert, lookup, deletion and list queries.
+ * Therefore, this class supports efficiently insert, lookup, deletion and traversal queries.
  * 
  * @author xiao
  */
 public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E> , Iterable<E>
 {
-    Numberable[] numberToObj = new Numberable[1024];
-    Map<E, E> objContainer = new HashMap<E, E>();
+    Numberable[] numberToObj = null;
+    Map<E, E> objContainer = null;
     int lastNumber = 0;
     int filledCells = 0;
+    
+    public ZArrayNumberer()
+    {
+    	// With default initialize size
+    	numberToObj = new Numberable[1023];
+    	objContainer = new HashMap<E, E>(1023);
+    }
+    
+    public ZArrayNumberer( int initSize )
+    {
+    	numberToObj = new Numberable[initSize];
+    	objContainer = new HashMap<E, E>(initSize);
+    }
     
     public void add( E o ) 
     {

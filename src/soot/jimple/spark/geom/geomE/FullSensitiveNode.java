@@ -1,8 +1,20 @@
-/*
- * Please attach the following author information if you would like to redistribute the source code:
- * Developer: Xiao Xiao
- * Address: Room 4208, Hong Kong University of Science and Technology
- * Contact: frogxx@gmail.com
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2011 Richard Xiao
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.geom.geomE;
 
@@ -43,9 +55,9 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
- * This class defines the pointer for use in the geometric encoding based points-to analysis.
- * All the points-to/flows-to information and the complex constraints are all included here.
- * The pointer assignment inference rules and complex constraints initialization rules are also implemented here.
+ * This class defines an abstract pointer in the geometric points-to solver.
+ * All the points-to/flows-to information and the load/store constraints related to this pointer are stored here.
+ * The pointer assignment inference rules and the complex constraints initialization rules are also implemented here.
  *  
  * @author xiao
  *

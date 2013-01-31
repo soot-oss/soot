@@ -1,8 +1,20 @@
-/*
- * Please attach the following author information if you would like to redistribute the source code:
- * Developer: Xiao Xiao
- * Address: Room 4208, Hong Kong University of Science and Technology
- * Contact: frogxx@gmail.com
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2011 Richard Xiao
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.geom.geomPA;
 
@@ -18,6 +30,10 @@ public abstract class IFigureManager
 	private static SegmentNode segHeader = null;
 	private static SegmentNode rectHeader = null;
 	
+	/**
+	 * Generate a segment node from our own cache.
+	 * @return
+	 */
 	protected static SegmentNode getSegmentNode()
 	{
 		SegmentNode ret = null;
@@ -35,6 +51,10 @@ public abstract class IFigureManager
 		return ret;
 	}
 	
+	/**
+	 * Generate a rectangle node from our own cache.
+	 * @return
+	 */
 	protected static RectangleNode getRectangleNode()
 	{
 		RectangleNode ret = null;
@@ -51,6 +71,11 @@ public abstract class IFigureManager
 		return ret;
 	}
 	
+	/**
+	 * Return the segment node to cache.
+	 * @param p
+	 * @return
+	 */
 	protected static SegmentNode reclaimSegmentNode( SegmentNode p )
 	{
 		SegmentNode q = p.next;
@@ -59,6 +84,11 @@ public abstract class IFigureManager
 		return q;
 	}
 	
+	/**
+	 * Return the rectangle node to cache.
+	 * @param p
+	 * @return
+	 */
 	protected static SegmentNode reclaimRectangleNode( SegmentNode p )
 	{
 		SegmentNode q = p.next;
@@ -68,7 +98,7 @@ public abstract class IFigureManager
 	}
 	
 	/**
-	 * We discard the allocated memories.
+	 * We return the cached memory to garbage collector.
 	 */
 	public static void cleanCache()
 	{

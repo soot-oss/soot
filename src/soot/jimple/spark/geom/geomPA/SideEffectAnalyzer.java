@@ -1,3 +1,21 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2011 Richard Xiao
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 package soot.jimple.spark.geom.geomPA;
 
 import java.io.File;
@@ -36,11 +54,11 @@ import soot.util.BitVector;
 import soot.util.Numberable;
 
 /**
- * This class implements our own side effect matrix construction algorithm.
- * The result is an inverted side effect matrix, in which each row represents a field (o.f or f).
+ * This class implements our own side effect algorithm.
+ * The result is an inverted side effect matrix, in which each row represents an instance field (o.f) or static filed.
  * The content of each row is a set of statements that mod/ref the field represented by this row.
  * Every statement is mapped to two instances, one represents the mod set, one represents the ref set.
- * The mod/ref sets for the callsites are transitively computed.
+ * The mod/ref sets for the callsites are NOT computed yet.
  * 
  * @author xiao
  *

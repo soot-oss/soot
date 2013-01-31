@@ -47,7 +47,10 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
- * This class defines a pointer variable for use in the HeapIns encoding based points-to analysis.
+ * This class defines a pointer variable for use in the HeapIns encoding based points-to solver.
+ * HeapIns is a simpler form of geometric encoding.
+ * HeapIns is faster and uses less memory, but also, it is less precise than geometric encoding.
+ * NOT recommended to use.
  * 
  * @author xiao
  *
