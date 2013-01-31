@@ -751,6 +751,10 @@ public class SootClass extends AbstractHost implements Numberable
         outerClass = c;
     }
     
+    public boolean isInnerClass() {
+    	return hasOuterClass();
+    }
+    
     /**
         Returns the name of this class.
     */
@@ -1047,6 +1051,23 @@ public class SootClass extends AbstractHost implements Numberable
     {
         return Modifier.isAbstract(this.getModifiers());
     }
+
+    /**
+     * Convenience method returning true if this class is final.
+     */
+    public boolean isFinal()
+    {
+        return Modifier.isFinal(this.getModifiers());
+    }
+    
+    /**
+     * Convenience method returning true if this class is static.
+     */
+    public boolean isStatic()
+    {
+        return Modifier.isStatic(this.getModifiers());
+    }
+
 
     public final int getNumber() { return number; }
     public final void setNumber( int number ) { this.number = number; }
