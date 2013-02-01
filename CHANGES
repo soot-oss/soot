@@ -31,6 +31,8 @@ Improvements and API changes in HEAD
    
 8. Soot now support Java 7 source-code syntax. 
 
+9. Improves the geometric encoding points-to solver. Bug fixes for processing the functions with more than 2^63 contexts. Performance is significantly improved. It is now scalable to analyze DaCapo-2006 with JDK1.6 within 9 minutes for the largest program. Precision is slightly better due to new fake information filtering algorithm. Code is refactored to be more readable. 
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass
