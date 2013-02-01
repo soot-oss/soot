@@ -18,13 +18,13 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
-import soot.jimple.spark.geom.geomPA.GeomPointsTo;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
+import soot.jimple.spark.geom.geomPA.SegmentNode;
 
 /**
- * An abstraction for the management of all the geometric figures pertaining to a specific node.
+ * An abstraction for the management of all the heap insensitive encoding figures.
  * We employ the naive management strategy, which is a linked list based manager.
  * 
  * For HeapIns analysis, we have four types of figures:
@@ -39,7 +39,7 @@ import soot.jimple.spark.geom.geomPA.RectangleNode;
  * @author xiao
  *
  */
-public class HeapInsIntervalManager implements IFigureManager {
+public class HeapInsIntervalManager extends IFigureManager {
 	public static int Divisions = 3;
 	
 	// Type IDs for the figures
@@ -116,7 +116,7 @@ public class HeapInsIntervalManager implements IFigureManager {
 			
 			code = ALL_TO_MANY;
 			p.I1 = p.I2 = 0;
-			p.L = GeomPointsTo.MAX_CONTEXTS;
+			p.L = Constants.MAX_CONTEXTS;
 			for ( int i = 0; i < Divisions; ++i ) {
 				size[i] = 0;
 				header[i] = null;

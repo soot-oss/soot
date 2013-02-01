@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
+ * Copyright (C) 2012 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,15 +16,30 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.helper;
 
-/**
- * For anyone who wants to experiment their own points-to analysis outside Soot,
- * we provide a facility to dump the program facts to an external file.
- * 
- * @author xiao
- *
- */
-public class ConstraintsDumper {
+import soot.jimple.spark.pag.Node;
 
+public abstract class PtSensVisitor {
+
+	/**
+	 * The user should implement how to deal with the variable with the contexts [L, R).
+	 * The return value indicates that the method sm_int has no call edges, which is used to terminate the context enumeration.
+	 * 
+	 * @param var
+	 * @param L
+	 * @param R
+	 * @param sm_int : the integer ID of the SootMethod
+	 */
+	public abstract boolean visit( Node var, long L, long R, int sm_int );
+	
+	/**
+	 * Called before each round of collection.
+	 */
+	public abstract void prepare();
+	
+	/**
+	 * Called after each round of collection.
+	 */
+	public abstract void finish();
 }
