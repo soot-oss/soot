@@ -16,58 +16,15 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
-
-import soot.jimple.spark.pag.Node;
-import soot.util.Numberable;
+package soot.jimple.spark.geom.helper;
 
 /**
- * A general interface for generating the traditional context sensitive variable representation.
+ * For anyone who wants to experiment their own points-to analysis outside Soot,
+ * we provide a facility to dump the program facts to an external file.
  * 
  * @author xiao
  *
  */
-public class CallsiteContextVar implements Numberable
-{
-	// private fields
-	public CgEdge context = null;
-	public Node var = null;
-	public int id;
-	public boolean inQ = false;
-	
-	public CallsiteContextVar()
-	{
-		
-	}
-	
-	public CallsiteContextVar( CgEdge c, Node v )
-	{
-		context = c;
-		var = v;
-	}
-	
-	public boolean equals( Object o )
-	{
-		CallsiteContextVar other = (CallsiteContextVar)o;
-		return (other.context == context) && (other.var == var); 
-	}
+public class ConstraintsDumper {
 
-	
-	public int hashCode()
-	{
-		return var.hashCode();
-	}
-	
-	
-	public void setNumber(int number) 
-	{
-		id = number;
-	}
-
-	
-	public int getNumber() 
-	{
-		return id;
-	}
 }
-
