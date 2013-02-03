@@ -49,7 +49,7 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 	@Override
 	public void initFlowGraph(GeomPointsTo ptAnalyzer) 
 	{
-		int i, k;
+		int k;
 		int n_legal_cons;
 		int nf1, nf2;
 		int code;

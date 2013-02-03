@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -73,7 +72,6 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.options.SparkOptions;
 import soot.toolkits.scalar.Pair;
 import soot.util.queue.QueueReader;
-import sun.net.www.content.image.png;
 
  
 /**
@@ -262,9 +260,9 @@ public class GeomPointsTo extends PAG
 										"_log.txt" );
 			try {
 				ps = new PrintStream(log_file);
-				G.v().out.println( "Geometric Points-to ======> Analysis log can be found in: " + log_file.toString() );
+				G.v().out.println( "[Geom] Analysis log can be found in: " + log_file.toString() );
 			} catch (FileNotFoundException e) {
-				G.v().out.println( "The dump file: " + log_file.toString() + " cannot be created." );
+				G.v().out.println( "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort." );
 				System.exit(-1);
 			}
 		}
@@ -286,7 +284,7 @@ public class GeomPointsTo extends PAG
 				
 				fin.close();
 				fr.close();
-				G.v().out.println( "Read in verification file successfully.\n" );
+				G.v().out.println( "[Geom] Read in verification file successfully.\n" );
 			} catch (FileNotFoundException e) {
 				validMethods = null;
 			} catch (IOException e) {
@@ -296,8 +294,8 @@ public class GeomPointsTo extends PAG
 		
 		// Output the SPARK running information
 		double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-		ps.printf("Spark [Time] : %.3fs\n", (double)spark_run_time/1000 );
-		ps.printf("Spark [Memory] : %.3fMB\n", mem  / 1024 / 1024 );
+//		ps.printf("Spark [Time] : %.3fs\n", (double)spark_run_time/1000 );
+		ps.printf("[Spark] Memory used: %.1f MB\n", mem  / 1024 / 1024 );
 				
 		// Get type manager from SPARK
 		typeManager = getTypeManager();
@@ -312,7 +310,8 @@ public class GeomPointsTo extends PAG
 		
 		// Now we start working
 		ps.println();
-		ps.println( encoding_name + " starts working on " + (dump_dir.isEmpty() ? "untitled" : dump_dir) + " benchmark." );
+		ps.println( "[Geom]" + " Start working on " + 
+							(dump_dir.isEmpty() ? "untitled" : dump_dir) + " with " + encoding_name + " encoding." );
 	}
 	
 	/**
@@ -1038,7 +1037,7 @@ public class GeomPointsTo extends PAG
 		
 		for ( rounds = 0, n_obs = 1000; rounds < Constants.cg_refine_times && n_obs > 0; ++rounds ) {
 
-			ps.println("\n" + "Round " + rounds + " : ");
+			ps.println("\n" + "[Geom] Propagation Round " + rounds + " ==> ");
 			
 			// Encode the contexts
 			encodeContexts();
@@ -1074,9 +1073,9 @@ public class GeomPointsTo extends PAG
 		mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		
 		ps.println();
-		ps.printf("Preprocess [Time] : %.3fs \n", (double) prepare_time / 1000);
-		ps.printf("Geometric [Time] : %.3fs \n", (double) solve_time / 1000 );
-		ps.printf("Geometric [Memory] : %.3fMB \n", (double) (mem) / 1024 / 1024 );
+		ps.printf("[Geom] Preprocessing time : %.2f seconds\n", (double) prepare_time / 1000);
+		ps.printf("[Geom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
+		ps.printf("[Geom] Memory used : %.1f MB\n", (double) (mem) / 1024 / 1024 );
 		
 		// Prepare for use in various of clients
 		postProcess();

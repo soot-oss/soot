@@ -20,22 +20,16 @@ package soot.jimple.spark.geom.ptinsE;
 
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.Vector;
-
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
-import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
 import soot.jimple.spark.geom.geomE.GeometricManager;
-import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
@@ -43,18 +37,12 @@ import soot.jimple.spark.geom.geomPA.IWorklist;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
 import soot.jimple.spark.geom.geomPA.SegmentNode;
-import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
 import soot.jimple.spark.geom.heapinsE.HeapInsIntervalManager;
-import soot.jimple.spark.geom.heapinsE.HeapInsNode;
 import soot.jimple.spark.geom.helper.PtSensVisitor;
-import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
-import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
-import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.StringConstantNode;
-import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
