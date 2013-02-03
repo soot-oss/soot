@@ -19,17 +19,11 @@
 package soot.jimple.spark.geom.geomPA;
 
 import java.io.PrintStream;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import soot.SootField;
 import soot.Type;
-import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
 import soot.jimple.spark.geom.helper.PtSensVisitor;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
-import soot.jimple.spark.pag.SparkField;
 
 /**
  * It is used to represent the non-pointer variables (e.g. heap variable) in the geometric encoding PAG.

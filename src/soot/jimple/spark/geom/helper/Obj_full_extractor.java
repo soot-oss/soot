@@ -20,9 +20,7 @@ package soot.jimple.spark.geom.helper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
 
