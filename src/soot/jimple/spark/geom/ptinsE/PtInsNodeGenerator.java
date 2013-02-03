@@ -19,12 +19,6 @@
 package soot.jimple.spark.geom.ptinsE;
 
 import java.util.Iterator;
-import java.util.Set;
-
-import soot.RefType;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethod;
 import soot.jimple.spark.geom.geomE.GeometricManager;
 import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.Constants;
@@ -36,11 +30,7 @@ import soot.jimple.spark.geom.geomPA.PlainConstraint;
 import soot.jimple.spark.geom.heapinsE.HeapInsNode;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
-import soot.jimple.spark.pag.GlobalVarNode;
-import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
-import soot.jimple.spark.pag.VarNode;
-import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.toolkits.callgraph.Edge;
 
 /**
@@ -59,7 +49,7 @@ public class PtInsNodeGenerator extends IEncodingBroker
 	@Override
 	public void initFlowGraph(GeomPointsTo ptAnalyzer) 
 	{
-		int i, k;
+		int k;
 		int n_legal_cons;
 		int nf1, nf2;
 		int code;
