@@ -30,8 +30,39 @@ import java.util.Set;
 
 import org.jf.dexlib.AnnotationDirectoryItem;
 import org.jf.dexlib.ClassDataItem;
+import org.jf.dexlib.ClassDataItem.EncodedField;
 import org.jf.dexlib.ClassDefItem;
+import org.jf.dexlib.ClassDefItem.StaticFieldInitializer;
+import org.jf.dexlib.EncodedArrayItem;
 import org.jf.dexlib.TypeIdItem;
+import org.jf.dexlib.Code.Analysis.ClassPath.ClassDef;
+import org.jf.dexlib.EncodedValue.BooleanEncodedValue;
+import org.jf.dexlib.EncodedValue.ByteEncodedValue;
+import org.jf.dexlib.EncodedValue.CharEncodedValue;
+import org.jf.dexlib.EncodedValue.DoubleEncodedValue;
+import org.jf.dexlib.EncodedValue.EncodedValue;
+import org.jf.dexlib.EncodedValue.EnumEncodedValue;
+import org.jf.dexlib.EncodedValue.FloatEncodedValue;
+import org.jf.dexlib.EncodedValue.IntEncodedValue;
+import org.jf.dexlib.EncodedValue.LongEncodedValue;
+import org.jf.dexlib.EncodedValue.NullEncodedValue;
+import org.jf.dexlib.EncodedValue.ShortEncodedValue;
+import org.jf.dexlib.EncodedValue.StringEncodedValue;
+
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.G;
+import soot.IntType;
+import soot.Modifier;
+import soot.Type;
+import soot.jimple.NullConstant;
+import soot.tagkit.DoubleConstantValueTag;
+import soot.tagkit.FloatConstantValueTag;
+import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.StringConstantValueTag;
+import soot.tagkit.Tag;
 
 /**
  * DexClass is a container for all relevant information of that class
@@ -94,10 +125,19 @@ public class DexClass {
 
             // get the fields of the class
             ClassDataItem.EncodedField[] fields = Util.concat(classData.getInstanceFields(), classData.getStaticFields());
+            int fieldIndex = 0;
             for (ClassDataItem.EncodedField field : fields) {
                 DexField dexField = new DexField(field, this);
+                if (field.isStatic()) {
+                  if (Modifier.isFinal(field.accessFlags))
+                    addConstantTag(classDef, dexField, fieldIndex);
+                  fieldIndex++;
+                }
                 this.fields.add(dexField);
+               
             }
+            
+         
             ClassDataItem.EncodedMethod[] methods = Util.concat(classData.getDirectMethods(), classData.getVirtualMethods());
             // get the methods of the class
             for (ClassDataItem.EncodedMethod method : methods) {
@@ -112,6 +152,55 @@ public class DexClass {
             }
         }
     }
+    
+    private void addConstantTag(ClassDefItem classDef, DexField df, int fieldIndex) {
+      Tag tag = null;
+      
+      EncodedArrayItem fieldInitsArray = classDef.getStaticFieldInitializers();
+      if (null == fieldInitsArray)
+        return;
+      final EncodedValue[]  fieldInits = fieldInitsArray.getEncodedArray().values;
+      
+      if (fieldInits.length < fieldIndex + 1) { // put default value 0/null
+        Type t = df.fieldType.toSoot();
+        if (t instanceof IntType || t instanceof CharType || t instanceof ByteType || t instanceof BooleanType) {
+          tag = new IntegerConstantValueTag(0);
+        } else if (t.toString().equals("java.lang.String")) {
+          G.v().out.println("warning: final static String initialized to null!");
+        }
+        
+        if (tag != null)
+          df.tags.add(tag);
+        return;
+      }
+
+      EncodedValue ev = fieldInits[fieldIndex];
+      
+      if (ev instanceof BooleanEncodedValue) {
+        tag = new IntegerConstantValueTag(((BooleanEncodedValue) ev).value==true?1:0);
+      } else if (ev instanceof ByteEncodedValue) {
+        tag = new IntegerConstantValueTag(((ByteEncodedValue) ev).value);
+      } else if (ev instanceof CharEncodedValue) {
+        tag = new IntegerConstantValueTag(((CharEncodedValue) ev).value);
+      } else if (ev instanceof DoubleEncodedValue) {
+        tag = new DoubleConstantValueTag(((DoubleEncodedValue) ev).value);
+      } else if (ev instanceof FloatEncodedValue) {
+        tag = new FloatConstantValueTag(((FloatEncodedValue) ev).value);
+      } else if (ev instanceof IntEncodedValue) {
+        tag = new IntegerConstantValueTag(((IntEncodedValue) ev).value);
+      } else if (ev instanceof LongEncodedValue) {
+        tag = new LongConstantValueTag(((LongEncodedValue) ev).value);
+      } else if (ev instanceof ShortEncodedValue) {
+        tag = new IntegerConstantValueTag(((ShortEncodedValue) ev).value);
+      } else if (ev instanceof StringEncodedValue) {
+        tag = new StringConstantValueTag(((StringEncodedValue) ev).value.getStringValue());
+      }
+      
+      if (tag != null)
+        df.tags.add(tag);
+
+    }
+    
     /**
      *
      * @return modifiers of the class
@@ -161,6 +250,15 @@ public class DexClass {
      */
     public Set<DexField> getDeclaredFields() {
         return this.fields;
+    }
+    
+    public DexField getFieldByName(String fname) {
+      DexField f = null;
+      for (DexField df: getDeclaredFields()) {
+        if (df.getName().equals(fname))
+          return df;
+      }
+      throw new RuntimeException("error: no field named '"+ fname +"' in class '"+ this.name);
     }
 
     /**
