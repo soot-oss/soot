@@ -46,19 +46,16 @@ public abstract class AbstractInsn implements Insn {
 		return regs;
 	}
 	
+	public BitSet getIncompatibleRegs() {
+		return new BitSet(0);
+	}
+	
 	public boolean hasIncompatibleRegs() {
 		return getIncompatibleRegs().cardinality() > 0;
 	}
 	
-	public BitSet getIncompatibleRegs() {
-		return getIncompatibleRegs(getRegs());
-	}
-	
-	public BitSet getIncompatibleRegs(List<Register> curRegs) {
-		return new BitSet(0);
-	}
-	
-	public int getMinimumRegsNeeded(BitSet incompatRegs) {
+	public int getMinimumRegsNeeded() {
+		BitSet incompatRegs = getIncompatibleRegs();
 		int resultNeed = 0;
 		int miscRegsNeed = 0;
 		boolean hasResult = opc.setsRegister();
@@ -87,7 +84,7 @@ public abstract class AbstractInsn implements Insn {
 		return opc.toString() + " @" + insnOffset + " " + regs;
 	}
 
-	public int getSize(int codeAddress) {
+	public int getSize() {
 		return opc.format.size / 2; // the format size is in byte count, we need word count
 	}
 }

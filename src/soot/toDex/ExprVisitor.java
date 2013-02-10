@@ -35,6 +35,7 @@ import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LengthExpr;
+import soot.jimple.LongConstant;
 import soot.jimple.LtExpr;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
@@ -315,7 +316,18 @@ public class ExprVisitor implements ExprSwitch {
 	}
 	
 	public void caseXorExpr(XorExpr xe) {
-		stmtV.addInsn(buildCalculatingBinaryInsn("xor", xe.getOp1(), xe.getOp2()));
+		Value firstOperand = xe.getOp1();
+		Value secondOperand = xe.getOp2();
+		// see for unary ones-complement shortcut, may be a result of Dexpler's conversion
+		if (secondOperand.equals(IntConstant.v(-1))) {
+			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+			stmtV.addInsn(new Insn12x(Opcode.NOT_INT, destinationReg, sourceReg));
+		} else if (secondOperand.equals(LongConstant.v(-1))) {
+			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+			stmtV.addInsn(new Insn12x(Opcode.NOT_LONG, destinationReg, sourceReg));
+		} else {
+			stmtV.addInsn(buildCalculatingBinaryInsn("xor", firstOperand, secondOperand));
+		}
 	}
 	
 	public void caseShlExpr(ShlExpr sle) {

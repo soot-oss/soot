@@ -1,7 +1,6 @@
 package soot.toDex.instructions;
 
 import java.util.BitSet;
-import java.util.List;
 
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Opcode;
@@ -39,9 +38,9 @@ public class Insn11n extends AbstractInsn implements OneRegInsn {
 	}
 	
 	@Override
-	public BitSet getIncompatibleRegs(List<Register> curRegs) {
+	public BitSet getIncompatibleRegs() {
 		BitSet incompatRegs = new BitSet(1);
-		if (!curRegs.get(REG_A_IDX).fitsByte()) {
+		if (!getRegA().fitsByte()) {
 			incompatRegs.set(REG_A_IDX);
 		}
 		return incompatRegs;
@@ -50,12 +49,5 @@ public class Insn11n extends AbstractInsn implements OneRegInsn {
 	@Override
 	public String toString() {
 		return super.toString() + " lit: " + getLitB();
-	}
-	
-	public Insn11n shallowCloneWithRegs(List<Register> newRegs) {
-		Register newRegA = newRegs.get(REG_A_IDX);
-		Insn11n shallowClone = new Insn11n(getOpcode(), newRegA, getLitB());
-		shallowClone.setInsnOffset(getInsnOffset());
-		return shallowClone;
 	}
 }
