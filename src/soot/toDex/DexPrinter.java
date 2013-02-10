@@ -246,7 +246,6 @@ public class DexPrinter {
 		}
 		Body activeBody = m.getActiveBody();
 		// word count of incoming parameters
-		@SuppressWarnings("unchecked")
 		int inWords = SootToDexUtils.getDexWords(m.getParameterTypes());
 		if (!m.isStatic()) {
 			inWords++; // extra word for "this"
