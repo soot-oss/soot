@@ -3836,7 +3836,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /* It is a compile-time error if the return type of a method declared in an
   annotation type is any type other than one of the following: one of the
   primitive types, String, Class and any invocation of Class, an enum type
-  (\ufffd8.9), an annotation type, or an array (\ufffd10) of one of the preceding types.* @attribute syn
+  (\u00df8.9), an annotation type, or an array (\u00df10) of one of the preceding types.* @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:121
    */
@@ -3883,10 +3883,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     * T is an array type E[] and either:
           o V is an ElementValueArrayInitializer and each ElementValueInitializer (analogous to a variable initializer in an array initializer) in V is commensurate with E. Or
           o V is an ElementValue that is commensurate with T. 
-    * The type of V is assignment compatible (\ufffd5.2) with T and, furthermore:
-          o If T is a primitive type or String, V is a constant expression (\ufffd15.28).
+    * The type of V is assignment compatible (\u00df5.2) with T and, furthermore:
+          o If T is a primitive type or String, V is a constant expression (\u00df15.28).
           o V is not null.
-          o if T is Class, or an invocation of Class, and V is a class literal (\ufffd15.8.2).
+          o if T is Class, or an invocation of Class, and V is a class literal (\u00df15.8.2).
           o If T is an enum type, and V is an enum constant. * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:474
@@ -4031,7 +4031,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   private boolean isIterable_compute() {  return instanceOf(lookupType("java.lang", "Iterable"));  }
   /* 
      1) It is a compile-time error to attempt to explicitly instantiate an enum type
-     (\ufffd15.9.1).
+     (\u00d4\u00f8\u03a915.9.1).
   * @attribute syn
    * @aspect Enums
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:16

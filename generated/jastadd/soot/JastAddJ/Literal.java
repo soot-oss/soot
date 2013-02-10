@@ -31,8 +31,6 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
    */
   public void flushCache() {
     super.flushCache();
-    constant_computed = false;
-    constant_value = null;
   }
   /**
    * @apilevel internal
@@ -46,8 +44,6 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Literal clone() throws CloneNotSupportedException {
     Literal node = (Literal)super.clone();
-    node.constant_computed = false;
-    node.constant_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -272,38 +268,6 @@ public abstract class Literal extends PrimaryExpr implements Cloneable {
 		lit.setKind(NumericLiteral.HEXADECIMAL);
 		return lit;
 	}
-  /**
-   * @apilevel internal
-   */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:96
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
-    ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {
-    throw new UnsupportedOperationException("ConstantExpression operation constant" +
-      " not supported for type " + getClass().getName()); 
-  }
   /**
    * @attribute syn
    * @aspect ConstantExpression

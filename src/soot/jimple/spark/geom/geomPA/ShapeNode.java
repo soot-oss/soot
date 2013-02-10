@@ -21,8 +21,8 @@ package soot.jimple.spark.geom.geomPA;
 import java.io.PrintStream;
 
 /**
- * It is the the abstract super type of geometric figures, also the manager of all the generated sub-type figures.
- * We implement a simple compression by eliminating identical figures.
+ * It is the the abstract super type of geometric figures and the manager of all the generated sub-type figures.
+ * It is not used currently and we leave it here as an extensible point in future.
  * 
  * @author xiao
  *

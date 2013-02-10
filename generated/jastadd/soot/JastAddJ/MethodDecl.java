@@ -1095,7 +1095,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
   /**
    * @ast method 
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:730
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:717
    */
    
   public void checkModifiers() {

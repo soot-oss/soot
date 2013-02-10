@@ -1,49 +1,31 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+/*
+ * Please attach the following author information if you would like to redistribute the source code:
+ * Developer: Xiao Xiao
+ * Address: Room 4208, Hong Kong University of Science and Technology
+ * Contact: frogxx@gmail.com
  */
 package soot.jimple.spark.geom.heapinsE;
-//import gnu.trove.THashSet;
 
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
-import soot.jimple.spark.geom.geomPA.CallsiteContextVar;
+import soot.jimple.spark.geom.geomE.GeometricManager;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.IWorklist;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
-import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
-import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
-import soot.jimple.spark.geom.heapinsE.HeapInsIntervalManager;
-import soot.jimple.spark.geom.heapinsE.HeapInsNode;
-import soot.jimple.spark.geom.geomPA.IEncodingBroker;
+import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.helper.PtSensVisitor;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
@@ -51,7 +33,10 @@ import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
 /**
- * This class defines a pointer variable for use in the HeapIns encoding based points-to analysis.
+ * This class defines a pointer variable for use in the HeapIns encoding based points-to solver.
+ * HeapIns is a simpler form of geometric encoding.
+ * HeapIns is faster and uses less memory, but also, it is less precise than geometric encoding.
+ * NOT recommended to use.
  * 
  * @author xiao
  *
@@ -72,7 +57,7 @@ public class HeapInsNode extends IVarAbstraction
 	
 	static {
 		stubManager = new HeapInsIntervalManager();
-		pres = new RectangleNode(0, 0, GeomPointsTo.MAX_CONTEXTS, GeomPointsTo.MAX_CONTEXTS);
+		pres = new RectangleNode(0, 0, Constants.MAX_CONTEXTS, Constants.MAX_CONTEXTS);
 		stubManager.addNewFigure(HeapInsIntervalManager.ALL_TO_ALL, pres);
 		deadManager = new HeapInsIntervalManager();
 	}
@@ -83,6 +68,15 @@ public class HeapInsNode extends IVarAbstraction
 		flowto = new HashMap<HeapInsNode, HeapInsIntervalManager>();
 		pt_objs = new HashMap<AllocNode, HeapInsIntervalManager>();
 		new_pts = new HashMap<AllocNode, HeapInsIntervalManager>();
+	}
+	
+	@Override
+	public void deleteAll()
+	{
+		flowto = null;
+		pt_objs = null;
+		new_pts = null;
+		complex_cons = null;
 	}
 	
 	@Override
@@ -144,17 +138,15 @@ public class HeapInsNode extends IVarAbstraction
 	}
 
 	@Override
-	public boolean is_empty() {
-		return pt_objs.size() == 0;
-	}
-
-	@Override
-	public boolean has_new_pts() {
-		return new_pts.size() != 0;
-	}
-
-	@Override
 	public int num_of_diff_objs() {
+		// If this pointer is not a representative pointer
+		if ( parent != this )
+			return getRepresentative().num_of_diff_objs();
+		
+		// If this pointer is not updated in the points-to analysis (willUpdate = false)
+		if ( pt_objs == null )
+			injectPts();
+		
 		return pt_objs.size();
 	}
 
@@ -266,22 +258,22 @@ public class HeapInsNode extends IVarAbstraction
 						pts = int_entry1[i];
 						while ( pts != null && pts.is_new ) {
 							switch ( pcons.type ) {
-							case GeomPointsTo.STORE_CONS:
+							case Constants.STORE_CONS:
 								// Store, qv -> pv.field
 								// pts.I2 may be zero, pts.L may be less than zero
 								if ( qn.add_simple_constraint_3( objn,
-										pcons.code == IEncodingBroker.ONE_TO_ONE ? pts.I1 : 0,
+										pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
 										pts.I2,
 										pts.L < 0  ? -pts.L : pts.L
 								) )
 									worklist.push( qn );
 								break;
 								
-							case GeomPointsTo.LOAD_CONS:
+							case Constants.LOAD_CONS:
 								// Load, pv.field -> qv
 								if ( objn.add_simple_constraint_3( qn, 
 										pts.I2, 
-										pcons.code == IEncodingBroker.ONE_TO_ONE ? pts.I1 : 0,
+										pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
 										pts.L < 0 ? -pts.L : pts.L
 								) )
 									worklist.push( objn );
@@ -463,6 +455,14 @@ public class HeapInsNode extends IVarAbstraction
 	@Override
 	public Set<AllocNode> get_all_points_to_objects() 
 	{
+		// If this pointer is not a representative pointer
+		if ( parent != this )
+			return getRepresentative().get_all_points_to_objects();
+		
+		// If this pointer is not updated in the points-to analysis (willUpdate = false)
+		if ( pt_objs == null )
+			injectPts();
+		
 		return pt_objs.keySet();
 	}
 
@@ -538,22 +538,15 @@ public class HeapInsNode extends IVarAbstraction
 	}
 
 	@Override
-	public int get_all_context_sensitive_objects(long l, long r,
-			ZArrayNumberer<CallsiteContextVar> all_objs,
-			Vector<CallsiteContextVar> outList) 
+	public void get_all_context_sensitive_objects(long l, long r, PtSensVisitor visitor) 
 	{
 		GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
-		CallsiteContextVar cobj = new CallsiteContextVar();
-		CallsiteContextVar res;
-		
-		outList.clear();
 		
 		for ( Map.Entry<AllocNode, HeapInsIntervalManager> entry : pt_objs.entrySet() ) {
 			AllocNode obj = entry.getKey();
 			HeapInsIntervalManager im = entry.getValue();
 			SegmentNode[] int_entry = im.getFigures();
 			boolean flag = true;
-			cobj.var = obj;
 			
 			// We first get the 1-CFA contexts for the object
 			SootMethod sm = obj.getMethod();
@@ -563,7 +556,6 @@ public class HeapInsNode extends IVarAbstraction
 				sm_int = ptsProvider.getIDFromSootMethod(sm);
 				n_contexts = ptsProvider.context_size[sm_int];
 			}
-			List<CgEdge> edges = ptsProvider.getCallEdgesInto(sm_int);
 			
 			// We search for all the pointers falling in the range [1, r) that may point to this object
 			for ( int i = 0; i < HeapInsIntervalManager.Divisions; ++i ) {
@@ -607,43 +599,16 @@ public class HeapInsNode extends IVarAbstraction
 					}
 					
 					// Now we test which context versions should this interval [objL, objR) maps to
-					if ( objL != -1 && objR != -1 ) {
-						if ( edges != null ) {
-							for ( CgEdge e : edges ) {
-								long rangeL = e.map_offset;
-								long rangeR = rangeL + ptsProvider.max_context_size_block[e.s];
-								if ( (objL <= rangeL && rangeL < objR) ||
-										(rangeL <= objL && objL < rangeR) ) {
-									cobj.context = e;
-									res = all_objs.searchFor(cobj);
-									if ( res.inQ == false ) {
-										outList.add(res);
-										res.inQ = true;
-									}
-								}
-							}
-						}
-						else {
-							cobj.context = null;
-							res = all_objs.searchFor(cobj);
-							if ( res.inQ == false ) {
-								outList.add(res);
-								res.inQ = true;
-							}
-							flag = false;
-							break;
-						}
-					}
+					if ( objL != -1 && objR != -1 )
+						flag = visitor.visit(obj, objL, objR, sm_int);
 					
+					if ( flag == false ) break;
 					p = p.next; 
 				}
 				
-				if ( flag == false )
-					break;
+				if ( flag == false ) break;
 			}
 		}
-		
-		return outList.size();
 	}
 
 	@Override
@@ -688,14 +653,14 @@ public class HeapInsNode extends IVarAbstraction
 	private void do_pts_interval_merge()
 	{
 		for ( HeapInsIntervalManager him : new_pts.values() ) {
-			him.mergeFigures( GeomPointsTo.max_pts_budget );
+			him.mergeFigures( Constants.max_pts_budget );
 		}
 	}
 	
 	private void do_flow_edge_interval_merge()
 	{
 		for ( HeapInsIntervalManager him : flowto.values() ) {
-			him.mergeFigures( GeomPointsTo.max_cons_budget );
+			him.mergeFigures( Constants.max_cons_budget );
 		}
 	}
 	
@@ -792,4 +757,3 @@ public class HeapInsNode extends IVarAbstraction
 		return q.I2 < p.I2 + (p.L < 0 ? -p.L : p.L);
 	}
 }
-

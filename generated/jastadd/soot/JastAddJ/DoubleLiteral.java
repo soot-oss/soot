@@ -36,8 +36,6 @@ public class DoubleLiteral extends NumericLiteral implements Cloneable {
     type_computed = false;
     type_value = null;
     isZero_computed = false;
-    constant_computed = false;
-    constant_value = null;
   }
   /**
    * @apilevel internal
@@ -54,8 +52,6 @@ public class DoubleLiteral extends NumericLiteral implements Cloneable {
     node.type_computed = false;
     node.type_value = null;
     node.isZero_computed = false;
-    node.constant_computed = false;
-    node.constant_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -281,36 +277,13 @@ public class DoubleLiteral extends NumericLiteral implements Cloneable {
 		return true;
 	}
   /**
-   * @apilevel internal
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
-	 * Parse this literal and return a fresh Constant.
-	 * @return a fresh Constant representing this DoubleLiteral
-	 * @attribute syn
-   * @aspect Literals
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:190
-   */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
     ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {
+    try {
 		try {
 			return Constant.create(Double.parseDouble(getDigits()));
 		}
@@ -320,6 +293,9 @@ public class DoubleLiteral extends NumericLiteral implements Cloneable {
 			return c;
 		}
 	}
+    finally {
+    }
+  }
   /**
 	 * Utility attribute for literal rewriting.
 	 * Any of the NumericLiteral subclasses have already

@@ -595,6 +595,14 @@ public class DexBody  {
         
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg(""+(Body)jBody);
+        
+        // fields init
+
+          if (m.getName().equals("<init>") || m.getName().equals("<clinit>")) {
+             System.out.println("constant initSm: "+ m);
+             Util.addConstantTags(jBody);
+          }
+        
 
         return jBody;
     }

@@ -40,6 +40,7 @@ import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
 import soot.tagkit.Host;
+import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
 
 /**
@@ -154,8 +155,10 @@ public abstract class DexlibAbstractInstruction {
      * @param host the host to tag
      */
     protected void tagWithLineNumber(Host host) {
-        if (lineNumber != -1)
+        if (lineNumber != -1) {
+            host.addTag(new LineNumberTag(lineNumber));
             host.addTag(new SourceLineNumberTag(lineNumber));
+        }
     }
 
 //    /**

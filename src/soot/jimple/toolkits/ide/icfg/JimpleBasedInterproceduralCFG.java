@@ -1,3 +1,21 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1997-2013 Eric Bodden and others
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 package soot.jimple.toolkits.ide.icfg;
 
 import heros.DontSynchronize;
@@ -6,7 +24,6 @@ import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -26,7 +43,6 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
 import soot.jimple.toolkits.callgraph.Filter;
-import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -47,7 +63,7 @@ import com.google.common.cache.LoadingCache;
 public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,SootMethod> {
 	
 	//retains only callers that are explicit call sites or Thread.start()
-	protected static class EdgeFilter extends Filter {		
+	public static class EdgeFilter extends Filter {		
 		protected EdgeFilter() {
 			super(new EdgePredicate() {
 				public boolean want(Edge e) {				

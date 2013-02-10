@@ -99,7 +99,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:156
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:159
    */
   
 
@@ -107,21 +107,21 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:157
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:160
    */
   
   private String pathName;
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:158
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:161
    */
   
   private boolean fromSource;
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:160
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:163
    */
   public void setRelativeName(String name) {
     relativeName = name;
@@ -129,7 +129,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:163
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:166
    */
   public void setPathName(String name) {
     pathName = name;
@@ -137,7 +137,7 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:166
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:169
    */
   public void setFromSource(boolean value) {
     fromSource = value;

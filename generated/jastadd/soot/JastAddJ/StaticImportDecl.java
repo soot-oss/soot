@@ -136,7 +136,7 @@ public abstract class StaticImportDecl extends ImportDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public abstract TypeDecl type();
   protected java.util.Map importedTypes_String_values;
-  /* 7.5.3 A single-static-import declaration imports all accessible (\ufffd6.6) static members
+  /* 7.5.3 A single-static-import declaration imports all accessible (\u00df6.6) static members
   with a given simple name from a type. This makes these static members available
   under their simple name in the class and interface declarations of the
   compilation unit in which the single-static import declaration appears.* @attribute syn

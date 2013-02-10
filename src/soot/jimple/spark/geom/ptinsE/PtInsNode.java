@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
+ * Copyright (C) 2012 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,7 +21,6 @@ package soot.jimple.spark.geom.ptinsE;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -30,28 +29,25 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
-import soot.jimple.spark.geom.geomPA.CallsiteContextVar;
+import soot.jimple.spark.geom.geomE.GeometricManager;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
-import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.IWorklist;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
-import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
-import soot.jimple.spark.geom.heapinsE.HeapInsIntervalManager;
-import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.RectangleNode;
+import soot.jimple.spark.geom.geomPA.SegmentNode;
+import soot.jimple.spark.geom.heapinsE.HeapInsIntervalManager;
+import soot.jimple.spark.geom.helper.PtSensVisitor;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
-import soot.jimple.spark.geom.ptinsE.PtInsIntervalManager;
-import soot.jimple.spark.geom.ptinsE.PtInsNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 
-
 /**
- * This class defines a pointer variable for use in the PtIns encoding based points-to analysis.
+ * This class defines a pointer variable in the PtIns encoding based points-to solver.
+ * Also, it is NOT recommended to use.
  * 
  * @author xiao
  *
@@ -72,7 +68,7 @@ public class PtInsNode extends IVarAbstraction
 
 	static {
 		stubManager = new PtInsIntervalManager();
-		pres = new RectangleNode(0, 0, GeomPointsTo.MAX_CONTEXTS, GeomPointsTo.MAX_CONTEXTS);
+		pres = new RectangleNode(0, 0, Constants.MAX_CONTEXTS, Constants.MAX_CONTEXTS);
 		stubManager.addNewFigure(PtInsIntervalManager.ALL_TO_ALL, pres);
 		deadManager = new PtInsIntervalManager();
 	}
@@ -83,6 +79,15 @@ public class PtInsNode extends IVarAbstraction
 		flowto = new HashMap<PtInsNode, PtInsIntervalManager>();
 		pt_objs = new HashMap<AllocNode, PtInsIntervalManager>();
 		new_pts = new HashMap<AllocNode, PtInsIntervalManager>();
+	}
+	
+	@Override
+	public void deleteAll()
+	{
+		flowto = null;
+		pt_objs = null;
+		new_pts = null;
+		complex_cons = null;
 	}
 	
 	@Override
@@ -145,17 +150,15 @@ public class PtInsNode extends IVarAbstraction
 	}
 
 	@Override
-	public boolean is_empty() {
-		return pt_objs.size() == 0;
-	}
-
-	@Override
-	public boolean has_new_pts() {
-		return new_pts.size() != 0;
-	}
-
-	@Override
 	public int num_of_diff_objs() {
+		// If this pointer is not a representative pointer
+		if ( parent != this )
+			return getRepresentative().num_of_diff_objs();
+		
+		// If this pointer is not updated in the points-to analysis (willUpdate = false)
+		if ( pt_objs == null )
+			injectPts();
+		
 		return pt_objs.size();
 	}
 
@@ -268,22 +271,22 @@ public class PtInsNode extends IVarAbstraction
 						pts = int_entry1[i];
 						while ( pts != null && pts.is_new ) {
 							switch ( pcons.type ) {
-							case GeomPointsTo.STORE_CONS:
+							case Constants.STORE_CONS:
 								// Store, qv -> pv.field
 								// pts.I2 may be zero, pts.L may be less than zero
 								if ( qn.add_simple_constraint_3( objn,
-										pcons.code == IEncodingBroker.ONE_TO_ONE ? pts.I1 : 0,
+										pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
 										pts.I2,
 										pts.L
 								) )
 									worklist.push( qn );
 								break;
 								
-							case GeomPointsTo.LOAD_CONS:
+							case Constants.LOAD_CONS:
 								// Load, pv.field -> qv
 								if ( objn.add_simple_constraint_3( qn, 
 										pts.I2, 
-										pcons.code == IEncodingBroker.ONE_TO_ONE ? pts.I1 : 0,
+										pcons.code == GeometricManager.ONE_TO_ONE ? pts.I1 : 0,
 										pts.L
 								) )
 									worklist.push( objn );
@@ -467,6 +470,14 @@ public class PtInsNode extends IVarAbstraction
 	@Override
 	public Set<AllocNode> get_all_points_to_objects() 
 	{
+		// If this pointer is not a representative pointer
+		if ( parent != this )
+			return getRepresentative().get_all_points_to_objects();
+		
+		// If this pointer is not updated in the points-to analysis (willUpdate = false)
+		if ( pt_objs == null )
+			injectPts();
+		
 		return pt_objs.keySet();
 	}
 
@@ -542,22 +553,15 @@ public class PtInsNode extends IVarAbstraction
 	}
 
 	@Override
-	public int get_all_context_sensitive_objects(long l, long r,
-			ZArrayNumberer<CallsiteContextVar> all_objs,
-			Vector<CallsiteContextVar> outList) 
+	public void get_all_context_sensitive_objects(long l, long r, PtSensVisitor visitor) 
 	{
 		GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
-		CallsiteContextVar cobj = new CallsiteContextVar();
-		CallsiteContextVar res;
-		
-		outList.clear();
 		
 		for ( Map.Entry<AllocNode, PtInsIntervalManager> entry : pt_objs.entrySet() ) {
 			AllocNode obj = entry.getKey();
 			PtInsIntervalManager im = entry.getValue();
 			SegmentNode[] int_entry = im.getFigures();
 			boolean flag = true;
-			cobj.var = obj;
 			
 			// We first get the 1-CFA contexts for the object
 			SootMethod sm = obj.getMethod();
@@ -567,7 +571,6 @@ public class PtInsNode extends IVarAbstraction
 				sm_int = ptsProvider.getIDFromSootMethod(sm);
 				n_contexts = ptsProvider.context_size[sm_int];
 			}
-			List<CgEdge> edges = ptsProvider.getCallEdgesInto(sm_int);
 			
 			// We search for all the pointers falling in the range [1, r) that may point to this object
 			for ( int i = 0; i < PtInsIntervalManager.Divisions; ++i ) {
@@ -611,43 +614,16 @@ public class PtInsNode extends IVarAbstraction
 					}
 					
 					// Now we test which context versions should this interval [objL, objR) maps to
-					if ( objL != -1 && objR != -1 ) {
-						if ( edges != null ) {
-							for ( CgEdge e : edges ) {
-								long rangeL = e.map_offset;
-								long rangeR = rangeL + ptsProvider.max_context_size_block[e.s];
-								if ( (objL <= rangeL && rangeL < objR) ||
-										(rangeL <= objL && objL < rangeR) ) {
-									cobj.context = e;
-									res = all_objs.searchFor(cobj);
-									if ( res.inQ == false ) {
-										outList.add(res);
-										res.inQ = true;
-									}
-								}
-							}
-						}
-						else {
-							cobj.context = null;
-							res = all_objs.searchFor(cobj);
-							if ( res.inQ == false ) {
-								outList.add(res);
-								res.inQ = true;
-							}
-							flag = false;
-							break;
-						}
-					}
+					if ( objL != -1 && objR != -1 )
+						flag = visitor.visit(obj, objL, objR, sm_int);
 					
+					if ( flag == false ) break;
 					p = p.next; 
 				}
 				
-				if ( flag == false )
-					break;
+				if ( flag == false ) break;
 			}
 		}
-		
-		return outList.size();
 	}
 
 	@Override
@@ -693,14 +669,14 @@ public class PtInsNode extends IVarAbstraction
 	private void do_pts_interval_merge()
 	{
 		for ( PtInsIntervalManager im : pt_objs.values() ) {
-			im.mergeFigures( GeomPointsTo.max_pts_budget );
+			im.mergeFigures( Constants.max_pts_budget );
 		}
 	}
 	
 	private void do_flow_edge_interval_merge()
 	{
 		for ( PtInsIntervalManager im : flowto.values() ) {
-			im.mergeFigures( GeomPointsTo.max_cons_budget );
+			im.mergeFigures( Constants.max_cons_budget );
 		}
 	}
 	

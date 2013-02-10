@@ -34,8 +34,6 @@ public class IntegerLiteral extends NumericLiteral implements Cloneable {
     super.flushCache();
     type_computed = false;
     type_value = null;
-    constant_computed = false;
-    constant_value = null;
   }
   /**
    * @apilevel internal
@@ -51,8 +49,6 @@ public class IntegerLiteral extends NumericLiteral implements Cloneable {
     IntegerLiteral node = (IntegerLiteral)super.clone();
     node.type_computed = false;
     node.type_value = null;
-    node.constant_computed = false;
-    node.constant_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -272,36 +268,13 @@ public class IntegerLiteral extends NumericLiteral implements Cloneable {
    */
   private TypeDecl type_compute() {  return typeInt();  }
   /**
-   * @apilevel internal
+   * @attribute syn
+   * @aspect ConstantExpression
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
-	 * Parse this literal and return a fresh Constant.
-	 * @return a fresh Constant representing this IntegerLiteral
-	 * @attribute syn
-   * @aspect Literals
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:139
-   */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
     ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {
+    try {
 		long l = 0;
 		try {
 			l = parseLong();
@@ -318,6 +291,9 @@ public class IntegerLiteral extends NumericLiteral implements Cloneable {
 		}
 		return c;
 	}
+    finally {
+    }
+  }
   /**
 	 * Utility attribute for literal rewriting.
 	 * Any of the NumericLiteral subclasses have already

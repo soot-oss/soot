@@ -265,7 +265,7 @@ public class SootMethod
     /**
      * Returns a read-only list of the parameter types of this method.
      */
-    public List getParameterTypes() {
+    public List<Type> getParameterTypes() {
         return parameterTypes;
     }
 
@@ -443,7 +443,14 @@ public class SootMethod
     public boolean isAbstract() {
         return Modifier.isAbstract(this.getModifiers());
     }
-
+    
+    /**
+     * Convenience method returning true if this method is final.
+     */
+    public boolean isFinal() {
+        return Modifier.isFinal(this.getModifiers());
+    }
+ 
     /**
      * Convenience method returning true if this method is native.
      */

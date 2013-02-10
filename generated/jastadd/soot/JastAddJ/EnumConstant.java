@@ -158,27 +158,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
   /**
    * @ast method 
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:493
-   */
-  public int getNumChild() {
-    return 5;
-  }
-  /**
-   * @ast method 
-   * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:496
-   */
-  public ASTNode getChild(int i) {
-    switch(i) {
-      case 3: return getTypeAccess();
-      case 4: return getInitOpt();
-      default: return ASTNode.getChild(this, i);
-    }
-  }
-  /**
-   * @ast method 
-   * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:605
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:592
    */
   public void toString(StringBuffer s) {
     s.append(indent());
@@ -620,7 +600,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
   /**
    * @attribute syn
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:702
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:689
    */
   public SimpleSet localMethodsSignature(String signature) {
     ASTNode$State state = state();
@@ -643,7 +623,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
   /**
    * @attribute syn
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:709
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:696
    */
   @SuppressWarnings({"unchecked", "cast"})
   public HashMap localMethodsSignatureMap() {
@@ -673,7 +653,7 @@ public class EnumConstant extends FieldDeclaration implements Cloneable {
   /**
    * @attribute syn
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:720
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:707
    */
   public boolean implementsMethod(MethodDecl method) {
     ASTNode$State state = state();

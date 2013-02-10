@@ -256,9 +256,11 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     throw new Error("Could not find nested type " + name);
   }
   /**
+   * @return <code>true</code> if there is a package with the given name on
+   * the path
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:140
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:143
    */
   public boolean isPackage(String name) {
     if(sourceFiles.hasPackage(name))
@@ -278,7 +280,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:170
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:173
    */
   
 
@@ -286,28 +288,28 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:171
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:174
    */
   
   private java.util.ArrayList classPath;
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:172
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:175
    */
   
   private java.util.ArrayList sourcePath;
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:173
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:176
    */
   
   private FileNamesPart sourceFiles = new FileNamesPart(this);
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:175
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:178
    */
   public void pushClassPath(String name) {
     PathPart part = PathPart.createSourcePath(name, this);
@@ -326,7 +328,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:189
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:192
    */
   public void popClassPath() {
     if(sourcePath.size() > 0)
@@ -337,7 +339,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:196
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:199
    */
   public void initPaths() {
     if(!pathsInitialized) {
@@ -374,13 +376,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       else if(options().hasValueForOption("-cp"))
         userClasses = options().getValueForOption("-cp").split(File.pathSeparator);
       else {
-        String s = System.getProperty("java.class.path");
-        if(s != null && s.length() > 0) {
-          s = s + File.pathSeparator + "."; // TODO; This should not be necessary
-          userClasses = s.split(File.pathSeparator);
-        }
-        else
-          userClasses = ".".split(File.pathSeparator);
+        userClasses = ".".split(File.pathSeparator);
       }
       if(!options().hasValueForOption("-sourcepath")) {
         for(int i = 0; i < userClasses.length; i++) {
@@ -427,9 +423,29 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
   /**
+   * Add a path part to the library class path.
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:559
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:284
+   */
+  public void addClassPath(PathPart pathPart) {
+    classPath.add(pathPart);
+    pathPart.program = this;
+  }
+  /**
+   * Add a path part to the user class path.
+   * @ast method 
+   * @aspect ClassPath
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:292
+   */
+  public void addSourcePath(PathPart pathPart) {
+    sourcePath.add(pathPart);
+    pathPart.program = this;
+  }
+  /**
+   * @ast method 
+   * @aspect ClassPath
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:584
    */
   public void simpleReset() {
     lookupType_String_String_values = new HashMap();

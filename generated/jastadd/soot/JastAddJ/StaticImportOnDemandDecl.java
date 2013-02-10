@@ -20,7 +20,7 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 /**
- * 7.5.4 A static-import-on-demand declaration allows all accessible (\u00a76.6) static
+ * 7.5.4 A static-import-on-demand declaration allows all accessible (\u00ac\u00df6.6) static
  * members declared in the type named by a canonical name to be imported as
  * needed.
  * @production StaticImportOnDemandDecl : {@link StaticImportDecl};

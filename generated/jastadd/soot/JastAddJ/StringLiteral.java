@@ -33,8 +33,6 @@ public class StringLiteral extends Literal implements Cloneable {
    */
   public void flushCache() {
     super.flushCache();
-    constant_computed = false;
-    constant_value = null;
     type_computed = false;
     type_value = null;
   }
@@ -50,8 +48,6 @@ public class StringLiteral extends Literal implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public StringLiteral clone() throws CloneNotSupportedException {
     StringLiteral node = (StringLiteral)super.clone();
-    node.constant_computed = false;
-    node.constant_value = null;
     node.type_computed = false;
     node.type_value = null;
     node.in$Circle(false);
@@ -199,34 +195,16 @@ public class StringLiteral extends Literal implements Cloneable {
     return tokenString_LITERAL != null ? tokenString_LITERAL : "";
   }
   /**
-   * @apilevel internal
-   */
-  protected boolean constant_computed = false;
-  /**
-   * @apilevel internal
-   */
-  protected Constant constant_value;
-  /**
    * @attribute syn
    * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:158
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
-    if(constant_computed) {
-      return constant_value;
-    }
     ASTNode$State state = state();
-  int num = state.boundariesCrossed;
-  boolean isFinal = this.is$Final();
-    constant_value = constant_compute();
-      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
-    return constant_value;
+    try {  return Constant.create(getLITERAL());  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private Constant constant_compute() {  return Constant.create(getLITERAL());  }
   /**
    * @apilevel internal
    */

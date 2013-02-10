@@ -259,7 +259,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   protected TypeDecl type_value;
-  /* The annotation type named by an annotation must be accessible (\ufffd6.6) at the
+  /* The annotation type named by an annotation must be accessible (\u00df6.6) at the
   point where the annotation is used, or a compile-time error occurs.
   Comment: This is done by the access control framework* @attribute syn
    * @aspect Annotations

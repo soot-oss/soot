@@ -316,7 +316,7 @@ public class SwitchStmt extends BranchTargetStmt implements Cloneable {
   /**
    * @ast method 
    * @aspect Enums
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:504
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:491
    */
     public void refined_Enums_SwitchStmt_typeCheck() {
      TypeDecl type = getExpr().type();
