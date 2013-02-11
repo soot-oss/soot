@@ -450,13 +450,14 @@ public class FastHierarchy
                     resolved.add( concreteType );
                     if( concreteType.declaresMethod( methodSig ) ) {
                         SootMethod method = concreteType.getMethod( methodSig );
-                        if( method.isAbstract() )
-                            throw new RuntimeException("abstract dispatch resolved to abstract method!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
-
-                        if( isVisible( concreteType, m ) ) {
-                            ret.add( concreteType.getMethod( methodSig ) );
-                            break;
-                        }
+                        if ( isVisible(concreteType, m) ) {
+							if (method.isAbstract())
+								throw new RuntimeException("abstract dispatch resolved to abstract method!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
+							else {
+							    ret.add( concreteType.getMethod( methodSig ) );
+							    break;
+							}								
+						}
                     }
                     if( !concreteType.hasSuperclass() ) 
                         throw new RuntimeException("could not resolve abstract dispatch!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
