@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2005 Jennifer Lhotak
- * Copyright (C) 2013 Tata Consultancy Services & Ã‰cole Polytechnique de MontrÃ©al
+ * Copyright (C) 2013 Tata Consultancy Services & Ecole Polytechnique de Montréal
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,7 @@
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  * 
- * Modified by Marc-AndrÃ© LaverdiÃ¨re-Papineau in 2013
+ * Modified by Marc-André Laverdière-Papineau in 2013
  * 
  */
 package soot.tagkit;
