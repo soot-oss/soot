@@ -66,8 +66,8 @@ import soot.toolkits.scalar.UnitValueBoxPair;
  * For instance, using the dexdump disassembler on some Dalvik bytecode
  * can produce the following (wrong) output:
  * 
- * 006c : const −wide v6 , #double 0.000000 // #0014404410000000
- * 0071: and−long /2 addr v6 , v4
+ * 006c : const -wide v6 , #double 0.000000 // #0014404410000000
+ * 0071: and-long /2 addr v6 , v4
  * 
  * At 0x6c, the initialized register is not of type double, but of
  * type long because it is used in a long and operation at 0x71. 
