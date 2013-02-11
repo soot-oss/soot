@@ -184,9 +184,6 @@ public class UseChecker extends AbstractStmtSwitch
 		else if ( rhs instanceof ArrayRef )
 		{
 			this.handleArrayRef((ArrayRef)rhs, stmt);
-			if (!(tlhs instanceof BottomType || tlhs instanceof BottomType)) {
-				((ArrayRef)rhs).setBase((Local)this.uv.visit(((ArrayRef)rhs).getBase(), tlhs.makeArrayType(), stmt));
-			}
 			stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
 		}
 		else if ( rhs instanceof InstanceFieldRef )
