@@ -30,10 +30,7 @@ public class RegisterAllocator {
 	private Register asConstant(Value v, ConstantVisitor constantV) {
 		Constant c = (Constant) v;
 		Register constantRegister = new Register(c.getType(), nextRegNum);
-		nextRegNum++;
-		if (constantRegister.isWide()) {
-			nextRegNum++;
-		}
+		nextRegNum += SootToDexUtils.getDexWords(c.getType());
 		// "load" constant into the register...
 		constantV.setDestination(constantRegister);
 		c.apply(constantV);
@@ -53,10 +50,7 @@ public class RegisterAllocator {
 			// use a new reg num for this local
 			localRegister = new Register(l.getType(), nextRegNum);
 			localToLastRegNum.put(localName, nextRegNum);
-			nextRegNum++;
-			if (localRegister.isWide()) {
-				nextRegNum++;
-			}
+			nextRegNum += SootToDexUtils.getDexWords(l.getType());
 		}
 		return localRegister;
 	}
@@ -64,12 +58,9 @@ public class RegisterAllocator {
 	public void asParameter(Local l) {
 		// since a parameter in dex always has a register, we handle it like a new local without the need of a new register
 		localToLastRegNum.put(l.getName(), nextRegNum);
-		nextRegNum++;
-		paramRegCount++;
-		if (SootToDexUtils.isWide(l.getType())) {
-			nextRegNum++;
-			paramRegCount++;
-		}
+		int wordsforParameters = SootToDexUtils.getDexWords(l.getType());
+		nextRegNum += wordsforParameters;
+		paramRegCount += wordsforParameters;
 	}
 
 	public Register asImmediate(Value v, ConstantVisitor constantV) {

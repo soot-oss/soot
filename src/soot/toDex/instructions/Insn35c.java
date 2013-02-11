@@ -1,7 +1,6 @@
 package soot.toDex.instructions;
 
 import java.util.BitSet;
-import java.util.List;
 
 import org.jf.dexlib.Item;
 import org.jf.dexlib.Code.Instruction;
@@ -59,10 +58,6 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 		return regs.get(REG_A_IDX);
 	}
 	
-	public Item<?> getReferencedItem() {
-		return referencedItem;
-	}
-	
 	private static boolean isImplicitWide(Register firstReg, Register secondReg) {
 		return firstReg.isWide() && secondReg.isEmptyReg();
 	}
@@ -75,13 +70,13 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 		return reg.getNumber();
 	}
 	
-	private static int[] getRealRegNumbers(List<Register> curRegs) {
+	private int[] getRealRegNumbers() {
 		int[] realRegNumbers = new int[5];
-		Register regD = curRegs.get(REG_D_IDX);
-		Register regE = curRegs.get(REG_E_IDX);
-		Register regF = curRegs.get(REG_F_IDX);
-		Register regG = curRegs.get(REG_G_IDX);
-		Register regA = curRegs.get(REG_A_IDX);	
+		Register regD = getRegD();
+		Register regE = getRegE();
+		Register regF = getRegF();
+		Register regG = getRegG();
+		Register regA = getRegA();
 		realRegNumbers[REG_D_IDX] = regD.getNumber();
 		realRegNumbers[REG_E_IDX] = getPossiblyWideNumber(regE, regD);
 		realRegNumbers[REG_F_IDX] = getPossiblyWideNumber(regF, regE);
@@ -92,7 +87,7 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 
 	@Override
 	protected Instruction getRealInsn0() {
-		int[] realRegNumbers = getRealRegNumbers(regs);
+		int[] realRegNumbers = getRealRegNumbers();
 		byte regDNumber = (byte) realRegNumbers[REG_D_IDX];
 		byte regENumber = (byte) realRegNumbers[REG_E_IDX];
 		byte regFNumber = (byte) realRegNumbers[REG_F_IDX];
@@ -102,18 +97,18 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 	}
 	
 	@Override
-	public BitSet getIncompatibleRegs(List<Register> curRegs) {
-		BitSet incompatRegs = new BitSet(curRegs.size());
-		int[] realRegNumbers = getRealRegNumbers(curRegs);
+	public BitSet getIncompatibleRegs() {
+		BitSet incompatRegs = new BitSet(5);
+		int[] realRegNumbers = getRealRegNumbers();
 		for (int i = 0; i < realRegNumbers.length; i++) {
 			// real regs aren't wide, because those are represented as two non-wide regs
 			boolean isCompatible = Register.fitsByte(realRegNumbers[i], false);
 			if (!isCompatible) {
 				incompatRegs.set(i);
 				// if second half of a wide reg is incompatible, so is its first half
-				Register possibleSecondHalf = curRegs.get(i);
+				Register possibleSecondHalf = regs.get(i);
 				if (possibleSecondHalf.isEmptyReg() && i > 0) {
-					Register possibleFirstHalf = curRegs.get(i - 1);
+					Register possibleFirstHalf = regs.get(i - 1);
 					if (possibleFirstHalf.isWide()) {
 						incompatRegs.set(i - 1);
 					}
@@ -126,16 +121,5 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 	@Override
 	public String toString() {
 		return super.toString() + " (" + regCount + " regs), ref: " + referencedItem;
-	}
-
-	public Insn35c shallowCloneWithRegs(List<Register> newRegs) {
-		Register newRegD = newRegs.get(REG_D_IDX);
-		Register newRegE = newRegs.get(REG_E_IDX);
-		Register newRegF = newRegs.get(REG_F_IDX);
-		Register newRegG = newRegs.get(REG_G_IDX);
-		Register newRegA = newRegs.get(REG_A_IDX);
-		Insn35c shallowClone = new Insn35c(getOpcode(), regCount, newRegD, newRegE, newRegF, newRegG, newRegA, referencedItem);
-		shallowClone.setInsnOffset(getInsnOffset());
-		return shallowClone;
 	}
 }

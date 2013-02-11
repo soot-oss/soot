@@ -52,8 +52,7 @@ import soot.jimple.Stmt;
 /**
  * Main entry point for the "dex" output format.<br>
  * <br>
- * Use the methods provided by the {@link IDexPrinter} interface to add classes that should be printed
- * and to finally print the classes.<br>
+ * Use {@link #add(SootClass)} to add classes that should be printed as dex output and {@link #print()} to finally print the classes.<br>
  * If the printer has found the original APK of an added class (via {@link SourceLocator#dexClassIndex()}),
  * the files in the APK are copied to a new one, replacing it's classes.dex and excluding the signature files.
  * Note that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.<br>
@@ -247,7 +246,6 @@ public class DexPrinter {
 		}
 		Body activeBody = m.getActiveBody();
 		// word count of incoming parameters
-		@SuppressWarnings("unchecked")
 		int inWords = SootToDexUtils.getDexWords(m.getParameterTypes());
 		if (!m.isStatic()) {
 			inWords++; // extra word for "this"
@@ -286,35 +284,49 @@ public class DexPrinter {
 		// assume that the mapping startCodeAddress -> TryItem is enough for a "code range", ignore different end Units / try lengths
 		Map<Integer, TryItem> codeRangesToTryItem = new HashMap<Integer, TryItem>();
 		for (Trap t : traps) {
-			Stmt handlerStmt = (Stmt) t.getHandlerUnit();
-			int handlerAddress = stmtV.getOffset(handlerStmt);
-			TypeIdItem exceptionTypeIdItem = toTypeIdItem(t.getException().getType(), belongingDexFile);
-			EncodedTypeAddrPair handlerInfo = new EncodedTypeAddrPair(exceptionTypeIdItem, handlerAddress);
-			EncodedTypeAddrPair[] handlers;
+			EncodedTypeAddrPair newHandlerInfo = createNewHandlerInfo(t, stmtV, belongingDexFile);
+			EncodedTypeAddrPair[] handlersInfo;
 			// see if there is old handler info at this code range
 			Stmt beginStmt = (Stmt) t.getBeginUnit();
 			Stmt endStmt = (Stmt) t.getEndUnit();
 			int startCodeAddress = stmtV.getOffset(beginStmt);
-			int tryLength = stmtV.getOffset(endStmt) - startCodeAddress;
+			int tryLength = stmtV.getOffset(endStmt) - startCodeAddress; // FIXME this is not that simple - a jimple stmt belongs to 1 to N dex insns, so the length could be bigger
 			if (codeRangesToTryItem.containsKey(startCodeAddress)) {
 				// copy the old handlers to a bigger array (the old one cannot be modified...)
 				TryItem oldTryItem = codeRangesToTryItem.get(startCodeAddress);
-				int oldHandlersSize = oldTryItem.encodedCatchHandler.handlers.length;
-				handlers = new EncodedTypeAddrPair[oldHandlersSize + 1];
-				System.arraycopy(oldTryItem.encodedCatchHandler.handlers, 0, handlers, 0, oldHandlersSize);
-				// add the new one, too
-				handlers[handlers.length - 1] = handlerInfo;
+				handlersInfo = addNewHandlerInfo(newHandlerInfo, oldTryItem.encodedCatchHandler.handlers);
 			} else {
 				// just use the newly found handler info
-				handlers = new EncodedTypeAddrPair[]{handlerInfo};
+				handlersInfo = new EncodedTypeAddrPair[]{newHandlerInfo};
 			}
 			int catchAllHandlerAddress = -1; // due to Soot, we cannot distinguish a "finally" exception handler from the others
-			EncodedCatchHandler handler = new EncodedCatchHandler(handlers , catchAllHandlerAddress);
+			EncodedCatchHandler handler = new EncodedCatchHandler(handlersInfo , catchAllHandlerAddress);
 			encodedCatchHandlers.add(handler);
 			TryItem newTryItem = new TryItem(startCodeAddress, tryLength, handler);
 			codeRangesToTryItem.put(startCodeAddress, newTryItem);
 		}
-		List<TryItem> tries = new ArrayList<TryItem>(codeRangesToTryItem.values());
+		return toSortedTries(codeRangesToTryItem.values());
+	}
+
+	private static EncodedTypeAddrPair createNewHandlerInfo(Trap t, StmtVisitor stmtV, DexFile belongingDexFile) {
+		Stmt handlerStmt = (Stmt) t.getHandlerUnit();
+		int handlerAddress = stmtV.getOffset(handlerStmt);
+		TypeIdItem exceptionTypeIdItem = toTypeIdItem(t.getException().getType(), belongingDexFile);
+		return new EncodedTypeAddrPair(exceptionTypeIdItem, handlerAddress);
+	}
+
+	private static EncodedTypeAddrPair[] addNewHandlerInfo(EncodedTypeAddrPair newHandler, EncodedTypeAddrPair[] oldHandlers) {
+		// copy old handlers to new array
+		int oldHandlersSize = oldHandlers.length;
+		EncodedTypeAddrPair[] newHandlers = new EncodedTypeAddrPair[oldHandlersSize + 1];
+		System.arraycopy(oldHandlers, 0, newHandlers, 0, oldHandlersSize);
+		// add the new one
+		newHandlers[newHandlers.length - 1] = newHandler;
+		return newHandlers;
+	}
+	
+	private static List<TryItem> toSortedTries(Collection<TryItem> unsortedTries) {
+		List<TryItem> tries = new ArrayList<TryItem>(unsortedTries);
 		// sort the tries in order from low to high address
 		Collections.sort(tries, new Comparator<TryItem>() {
 			public int compare(TryItem a, TryItem b) {
@@ -346,6 +358,7 @@ public class DexPrinter {
 	}
 
 	public void print() {
+		assertClassesAdded();
 		String outputDir = SourceLocator.v().getOutputDir();
 		try {
 			if (originalApk != null) {
@@ -359,6 +372,14 @@ public class DexPrinter {
 			}
 		} catch (IOException e) {
 			throw new CompilationDeathException("I/O exception while printing dex", e);
+		}
+	}
+
+	private void assertClassesAdded() {
+		List<ClassDefItem> classes = dexFile.ClassDefsSection.getItems();
+		if (classes.isEmpty()) {
+			// the dexlib would respond with an IndexOutOfBoundsException while printing the dexfile
+			throw new IllegalStateException("there were no classes added");
 		}
 	}
 }
