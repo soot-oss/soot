@@ -218,7 +218,7 @@ public final class TypeManager {
             
         for (SootClass impl : implementers) {
             BitVector other = (BitVector)typeMask.get(impl.getType());
-            if (other == null) throw new RuntimeException(impl.toString());
+            if (other == null) other = makeClassTypeMask(impl);
             ret.or(other);          
         }
         // I think, the following can be eliminated. It is added to make
