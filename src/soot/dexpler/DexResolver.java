@@ -49,6 +49,7 @@ public class DexResolver {
     	if(wrapper==null) {
     		wrapper = new DexlibWrapper(file);
     		cache.put(file, wrapper);
+    		wrapper.initialize();
     	}
         DexClass c = wrapper.getClass(className);
         if (c == null)

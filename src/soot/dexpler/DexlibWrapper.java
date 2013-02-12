@@ -74,6 +74,8 @@ public class DexlibWrapper {
     
     private final static Set<String> systemAnnotationNames;
 
+	private final File inputDexFile;
+
     /**
      * Construct a DexlibWrapper from a dex file and stores its classes referenced by their name.
      * No further process is done here.
@@ -82,8 +84,11 @@ public class DexlibWrapper {
      */
 
     public DexlibWrapper(File inputDexFile) {
+        this.inputDexFile = inputDexFile;
+    }
 
-        this.dexClasses = new HashMap<String, ClassDefItem>();
+	public void initialize() {
+		this.dexClasses = new HashMap<String, ClassDefItem>();
         this.classesByName = new HashMap<String, DexClass>();
 
         try {
@@ -121,8 +126,7 @@ public class DexlibWrapper {
 		for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
 			Debug.printDbg("String: "+ i);
 		}
-
-    }
+	}
 
 	/**
      * Returns and processes the dex class by its fully classified name.
