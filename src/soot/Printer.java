@@ -203,11 +203,11 @@ public class Printer {
 
                     if (!Modifier.isAbstract(method.getModifiers())
                         && !Modifier.isNative(method.getModifiers())) {
-                        if (!method.hasActiveBody())
-                            throw new RuntimeException(
-                                "method "
-                                    + method.getName()
-                                    + " has no active body!");
+                        if (!method.hasActiveBody()){
+                            method.retrieveActiveBody(); //force loading the body
+                            if (!method.hasActiveBody()) //in case we really don't have it
+                                throw new RuntimeException("method "+ method.getName() + " has no active body!");
+                        }
                         else
                             if (Options.v().print_tags_in_output()){
                                 Iterator mTagIterator = method.getTags().iterator();
