@@ -20,6 +20,7 @@
 package soot.toolkits.graph;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -58,13 +59,15 @@ public class StronglyConnectedComponentsFast<N>
     s = new Stack<N>();
     List<N> heads = g.getHeads();
 
-    if(heads.size()>1)
-      throw new RuntimeException("Cannot compute SCCs for graph with number of heads = "+heads.size());
-
     indexForNode = new HashMap<N, Integer>();
     lowlinkForNode = new HashMap<N, Integer>();
 
-    recurse(heads.get(0));
+    for(Iterator<N> headsIt = heads.iterator(); headsIt.hasNext(); ) {
+      N head = headsIt.next();
+      if(!indexForNode.containsKey(head)) {
+        recurse(head);
+      }
+    }
 
     //free memory
     indexForNode = null;
