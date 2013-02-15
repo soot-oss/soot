@@ -242,7 +242,7 @@ public class FastHierarchy
                 }
                 return false;
             }
-        } else {
+        } else if (child instanceof ArrayType) {
             ArrayType achild = (ArrayType) child;
             if( parent instanceof RefType ) {
                 // From Java Language Spec 2nd ed., Chapter 10, Arrays
@@ -268,7 +268,8 @@ public class FastHierarchy
                     return true;
                 return false;
             } else return false;
-        }
+        } else
+        	return false;
     }
 
     /** Given an object of declared type child, returns true if the object
