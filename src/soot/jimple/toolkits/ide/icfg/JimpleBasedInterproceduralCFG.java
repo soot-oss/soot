@@ -167,14 +167,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 		return unitGraph.getSuccsOf(u);
 	}
 
-	@Override
-	public List<Unit> getPredsOf(Unit u) {
-		Body body = unitToOwner.get(u);
-		DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-		return unitGraph.getPredsOf(u);
-	}
-
-	private DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
+	protected DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
 		return bodyToUnitGraph.getUnchecked(body);
 	}
 
