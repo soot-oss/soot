@@ -59,7 +59,7 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
           	    return false;
           	}
         }
-        return false;
+        return true;
     }
 
     /** Returns a hash code for this object, consistent with structural equality. */
