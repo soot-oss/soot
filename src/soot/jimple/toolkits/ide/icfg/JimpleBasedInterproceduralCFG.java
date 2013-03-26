@@ -126,11 +126,9 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
 				public Set<Unit> load(SootMethod m) throws Exception {
 					Set<Unit> res = new LinkedHashSet<Unit>();
-					//only retain calls that are explicit call sites or Thread.start()
-					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(m));
-					while(edgeIter.hasNext()) {
-						Edge edge = edgeIter.next();
-						res.add(edge.srcUnit());			
+					for(Unit u: m.getActiveBody().getUnits()) {
+						if(isCallStmt(u))
+							res.add(u);
 					}
 					return res;
 				}
