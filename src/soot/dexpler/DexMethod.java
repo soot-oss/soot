@@ -71,7 +71,7 @@ public class DexMethod {
         parameterTypes = new ArrayList<DexType>();
         // get the name of the method
         this.name = method.method.getMethodName().getStringValue();
-        Debug.printDbg("processing method '"+ dexClass.name +" "+ name +"'");
+        Debug.printDbg("processing method '", dexClass.name ," ", name ,"'");
 
         // this delegator processes the set of annotations acording to the dexlib interface
         class myMethodDelegator implements MethodAnnotationIteratorDelegate {

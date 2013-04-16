@@ -46,7 +46,7 @@ public class MoveInstruction extends DexlibAbstractInstruction {
        
         TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
         
-        Debug.printDbg("moveInstruction: "+ i);
+        Debug.printDbg("moveInstruction: ", i);
         
         int dest = i.getRegisterA();
         int source = i.getRegisterB();

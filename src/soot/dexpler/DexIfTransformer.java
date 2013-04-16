@@ -109,12 +109,12 @@ public class DexIfTransformer extends DexTransformer {
           twoIfLocals.add(lOp2);
           usedAsObject = false;
           for (Local loc: twoIfLocals) {
-            Debug.printDbg("\n[null if with two local candidate] "+ loc);
+            Debug.printDbg("\n[null if with two local candidate] ", loc);
             List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
             // check if no use
             for (Unit u  : defs) {
               for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
-                Debug.printDbg("[use in u]: "+ pair.getUnit());
+                Debug.printDbg("[use in u]: ", pair.getUnit());
               }
             }
             // process normally
@@ -130,7 +130,7 @@ public class DexIfTransformer extends DexTransformer {
                 throw new RuntimeException ("ERROR: def can not be something else than Assign or Identity statement! (def: "+ u +" class: "+ u.getClass() +"");  
               }
               
-              Debug.printDbg("    target local: "+ l +" (Unit: "+u +" )");
+              Debug.printDbg("    target local: ", l ," (Unit: ",u ," )");
               
               // check defs
               u.apply(new AbstractStmtSwitch() { // Alex: should also end as soon as detected as not used as an object
@@ -190,7 +190,7 @@ public class DexIfTransformer extends DexTransformer {
               // check uses
                 for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
-                    Debug.printDbg("    use: "+ use);
+                    Debug.printDbg("    use: ", use);
                     use.apply( new AbstractStmtSwitch() {
                             private boolean examineInvokeExpr(InvokeExpr e) {
                                 List<Value> args = e.getArgs();
@@ -217,7 +217,7 @@ public class DexIfTransformer extends DexTransformer {
                             public void caseInvokeStmt(InvokeStmt stmt) {
                                 InvokeExpr e = stmt.getInvokeExpr();
                                 usedAsObject = examineInvokeExpr(e);
-                                Debug.printDbg("use as object = "+ usedAsObject);
+                                Debug.printDbg("use as object = ", usedAsObject);
                                 if (usedAsObject)
                                   doBreak = true;
                                 return;
@@ -294,7 +294,7 @@ public class DexIfTransformer extends DexTransformer {
                                   doBreak = true;
                                 return;
                               } else if (r instanceof StringConstant || r instanceof NewExpr) { 
-                                Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! "+ stmt);
+                                Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! ", stmt);
                                 System.exit(-1);
                                 usedAsObject = true;
                                 if (usedAsObject)
@@ -312,7 +312,7 @@ public class DexIfTransformer extends DexTransformer {
                                 return;
                               } else if (r instanceof InvokeExpr) {
                                 usedAsObject = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
-                                Debug.printDbg("use as object 2 = "+ usedAsObject);
+                                Debug.printDbg("use as object 2 = ", usedAsObject);
                                 if (usedAsObject)
                                   doBreak = true;
                                 return;
@@ -350,8 +350,8 @@ public class DexIfTransformer extends DexTransformer {
                             }
                             public void caseReturnStmt(ReturnStmt stmt) {
                                 usedAsObject = stmt.getOp() == l && isObject(body.getMethod().getReturnType());
-                                Debug.printDbg (" [return stmt] "+ stmt +" usedAsObject: "+ usedAsObject +", return type: "+ body.getMethod().getReturnType());
-                                Debug.printDbg (" class: "+ body.getMethod().getReturnType().getClass());
+                                Debug.printDbg (" [return stmt] ", stmt ," usedAsObject: ", usedAsObject ,", return type: ", body.getMethod().getReturnType());
+                                Debug.printDbg (" class: ", body.getMethod().getReturnType().getClass());
                                 if (usedAsObject)
                                   doBreak = true;
                                 return;
@@ -421,7 +421,7 @@ public class DexIfTransformer extends DexTransformer {
                 }
                 if (isTargetIf) {
                     candidates.add((IfStmt)u);
-                    Debug.printDbg("[add if candidate: "+ u);
+                    Debug.printDbg("[add if candidate: ", u);
                 }
 
             }
@@ -441,12 +441,12 @@ public class DexIfTransformer extends DexTransformer {
 //            ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
 //            if (expr.getOp1() instanceof IntConstant && ((IntConstant)expr.getOp1()).value == 0 ) {
 //                expr.setOp1(NullConstant.v());
-//                Debug.printDbg("[null] replacing with null in "+ u);
-//                Debug.printDbg(" new u: "+ u);
+//                Debug.printDbg("[null] replacing with null in ", u);
+//                Debug.printDbg(" new u: ", u);
 //            } else if (expr.getOp2() instanceof IntConstant && ((IntConstant)expr.getOp2()).value == 0 ) {
 //              expr.setOp2(NullConstant.v());
-//              Debug.printDbg("[null] replacing with null in "+ u);
-//              Debug.printDbg(" new u: "+ u);
+//              Debug.printDbg("[null] replacing with null in ", u);
+//              Debug.printDbg(" new u: ", u);
 //          } else {
 //            throw new RuntimeException ("ERROR: if has no IntConstant to replace by NullConstant! ("+ u +")");
 //          }
@@ -456,8 +456,8 @@ public class DexIfTransformer extends DexTransformer {
             Value v = s.getRightOp();
             if ((v instanceof IntConstant) && ((IntConstant) v).value == 0) {
                 s.setRightOp(NullConstant.v());
-                Debug.printDbg("[null] replacing with null in "+ u);
-                Debug.printDbg(" new u: "+ u);
+                Debug.printDbg("[null] replacing with null in ", u);
+                Debug.printDbg(" new u: ", u);
             }
         }
 

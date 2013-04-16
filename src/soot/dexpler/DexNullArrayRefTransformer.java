@@ -74,21 +74,21 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
     }
     NullnessAnalysis na = new NullnessAnalysis (g);
     for (Stmt s: arrayRefs) {
-      Debug.printDbg("statement contains arrayref: "+ s);
+      Debug.printDbg("statement contains arrayref: ", s);
       ArrayRef ar = s.getArrayRef();
       Value base = ar.getBase();
       boolean isAlwaysNullBefore = na.isAlwaysNullBefore(s, (Immediate) base);
-      Debug.printDbg("is always null: "+ isAlwaysNullBefore);
+      Debug.printDbg("is always null: ", isAlwaysNullBefore);
       if (isAlwaysNullBefore) {
         body.getUnits().swapWith(s, Jimple.v().newNopStmt());
       }       
     }
     for (Stmt s: lengthExprs) {
-      Debug.printDbg("statement contains length expr: "+ s);
+      Debug.printDbg("statement contains length expr: ", s);
       LengthExpr l = (LengthExpr)((AssignStmt)s).getRightOp();
       Value base = l.getOp();
       boolean isAlwaysNullBefore = na.isAlwaysNullBefore(s, (Immediate) base);
-      Debug.printDbg("is always null: "+ isAlwaysNullBefore);
+      Debug.printDbg("is always null: ", isAlwaysNullBefore);
       if (isAlwaysNullBefore) {
         body.getUnits().swapWith(s, Jimple.v().newNopStmt());
       }       

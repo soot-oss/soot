@@ -78,7 +78,7 @@ public class DexRefsChecker extends DexTransformer {
           }
           
           if (!hasField) {
-            Debug.printDbg("field "+ fr +" '"+ fr +"' has not been found!");
+            Debug.printDbg("field ", fr ," '", fr ,"' has not been found!");
             System.out.println("Warning: add missing field '"+ fr +"' to class!");
             SootClass sc = null;
             String frStr = fr.toString();
@@ -90,7 +90,7 @@ public class DexRefsChecker extends DexTransformer {
             String fname = fr.toString().split(">")[0].split(" ")[2];
             int modifiers = soot.Modifier.PUBLIC;
             Type ftype = fr.getType();
-            Debug.printDbg("missing field: to class '"+ sc +"' field name '"+ fname +"' field modifiers '"+ modifiers +"' field type '"+ ftype +"'");
+            Debug.printDbg("missing field: to class '", sc ,"' field name '", fname ,"' field modifiers '", modifiers ,"' field type '", ftype ,"'");
             sc.addField(new SootField(fname, ftype, modifiers));
           } else {
             //System.out.println("field "+ sf.getName() +" '"+ sf +"' phantom: "+ isPhantom +" declared: "+ isDeclared);

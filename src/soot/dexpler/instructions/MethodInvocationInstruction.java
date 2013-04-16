@@ -213,7 +213,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         String tItem = mItem.getContainingClass().getTypeDescriptor();
  
         String className = tItem;
-        Debug.printDbg("tItem: "+ tItem +" class name: "+ className);
+        Debug.printDbg("tItem: ", tItem ," class name: ", className);
           if (className.startsWith("[")) {
             className = "java.lang.Object";
           } else {
@@ -231,13 +231,13 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             for (TypeIdItem type : paramTypes)
                 parameterTypes.add(DexType.toSoot(type));
 
-        Debug.printDbg("sc: "+ sc);
-        Debug.printDbg("methodName: "+ methodName);
+        Debug.printDbg("sc: ", sc);
+        Debug.printDbg("methodName: ", methodName);
         Debug.printDbg("parameterTypes: ");
         for (Type t: parameterTypes)
-          Debug.printDbg(" t: "+ t);
-        Debug.printDbg("returnType: "+ returnType);
-        Debug.printDbg("isStatic: "+ isStatic);
+          Debug.printDbg(" t: ", t);
+        Debug.printDbg("returnType: ", returnType);
+        Debug.printDbg("isStatic: ", isStatic);
         return Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType, isStatic);
     }
 
@@ -258,16 +258,16 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         List<Local> parameters = new ArrayList<Local>();
         List<Integer> regs = getUsedRegistersNums();
 
-        Debug.printDbg(" [methodIdItem]: "+ item);
+        Debug.printDbg(" [methodIdItem]: ", item);
         Debug.printDbg(" params types:");
         if (paramTypes != null) {       
           for (TypeIdItem t: paramTypes) {
-            Debug.printDbg(" t: "+ t);
+            Debug.printDbg(" t: ", t);
           }
         }
-        Debug.printDbg(" used registers ("+ regs.size() +"): ");
+        Debug.printDbg(" used registers (", regs.size() ,"): ");
         for (int i: regs) {
-          Debug.printDbg( " r: "+ i);
+          Debug.printDbg( " r: ", i);
         }
         // i: index for register
         // j: index for parameter type
