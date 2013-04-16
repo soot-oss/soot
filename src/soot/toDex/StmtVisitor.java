@@ -351,7 +351,7 @@ public class StmtVisitor implements StmtSwitch {
 	
 	private Insn buildMonitorInsn(MonitorStmt stmt, Opcode opc) {
 		Value lockValue = stmt.getOp();
-		Register lockReg = regAlloc.asLocal(lockValue);
+		Register lockReg = regAlloc.asImmediate(lockValue, constantV);
 		return new Insn11x(opc, lockReg);
 	}
 	
