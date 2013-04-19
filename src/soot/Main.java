@@ -196,7 +196,6 @@ public class Main {
             
             
             PackManager.v().runPacks();
-            PackManager.v().writeOutput();
 
             Timers.v().totalTimer.end();
 

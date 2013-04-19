@@ -331,8 +331,10 @@ public class PackManager {
     public void runPacks() {
     	if(Options.v().oaat())
     		runPacksForOneClassAtATime();
-    	else
+    	else {
     		runPacksNormally();
+    		writeOutput();
+    	}
     }
 
 	private void runPacksForOneClassAtATime() {
