@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import soot.Hierarchy;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -100,23 +101,36 @@ public class HeapInsNode extends IVarAbstraction
 //		if ( !(me instanceof LocalVarNode) )
 			do_flow_edge_interval_merge();
 
-		if (me instanceof LocalVarNode && ((LocalVarNode) me).isThisPtr()) {
-			SootMethod func = ((LocalVarNode) me).getMethod();
+		// This pointer filter, please read the comments at this line in file FullSensitiveNode.java
+		Node wrappedNode = getWrappedNode();
+		if (wrappedNode instanceof LocalVarNode
+				&& ((LocalVarNode) wrappedNode).isThisPtr()) {
+			SootMethod func = ((LocalVarNode) wrappedNode).getMethod();
 			if (!func.isConstructor()) {
 				// We don't process the specialinvoke call edge
 				SootClass defClass = func.getDeclaringClass();
+				Hierarchy typeHierarchy = Scene.v().getActiveHierarchy();
 
 				for (Iterator<AllocNode> it = new_pts.keySet().iterator(); it
 						.hasNext();) {
 					AllocNode obj = it.next();
 					if (obj.getType() instanceof RefType) {
 						SootClass sc = ((RefType) obj.getType()).getSootClass();
-						if (defClass != sc
-								&& Scene.v().getActiveHierarchy()
-										.resolveConcreteDispatch(sc, func) != func) {
-							it.remove();
-							// Also preclude it from propagation again
-							pt_objs.put(obj, (HeapInsIntervalManager) deadManager);
+						if (defClass != sc) {
+							try {
+								SootMethod rt_func = typeHierarchy
+										.resolveConcreteDispatch(sc, func);
+								if (rt_func != func) {
+									it.remove();
+									// Also preclude it from propagation again
+									pt_objs.put(
+											obj,
+											(HeapInsIntervalManager) deadManager);
+								}
+							} catch (RuntimeException e) {
+								// If the input program has a wrong type cast, resolveConcreteDispatch fails and it goes here
+								// We simply ignore this error
+							}
 						}
 					}
 				}
