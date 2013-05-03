@@ -333,7 +333,6 @@ public class PackManager {
     		runPacksForOneClassAtATime();
     	else {
     		runPacksNormally();
-    		writeOutput();
     	}
     }
 
@@ -352,6 +351,9 @@ public class PackManager {
 				runBodyPacks(clazz);
 				//generate output
 				writeClass(clazz);
+            }
+            for (String cl : SourceLocator.v().getClassesUnder(path)) {            	
+                SootClass clazz = Scene.v().forceResolve(cl, SootClass.BODIES);
 				releaseBodies(clazz);
 				Scene.v().removeClass(clazz);
             }

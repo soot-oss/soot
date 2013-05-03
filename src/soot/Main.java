@@ -196,6 +196,8 @@ public class Main {
             
             
             PackManager.v().runPacks();
+            if(!Options.v().oaat())
+            	PackManager.v().writeOutput();
 
             Timers.v().totalTimer.end();
 
