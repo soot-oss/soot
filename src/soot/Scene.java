@@ -662,8 +662,8 @@ public class Scene  //extends AbstractHost
 		} else if (allowsPhantomRefs() ||
 				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
-			c.setPhantom(true);
 			addClass(c);
+            c.setPhantom(true);
 			return c;
 		} else {
 			throw new RuntimeException(System.getProperty("line.separator")
@@ -994,7 +994,7 @@ public class Scene  //extends AbstractHost
      * Sets the {@link ThrowAnalysis} to be used by default when
      * constructing CFGs which include exceptional control flow.
      *
-     * @param the default {@link ThrowAnalysis}.
+     * @param ta the default {@link ThrowAnalysis}.
      */
     public void setDefaultThrowAnalysis(ThrowAnalysis ta) 
     {
