@@ -187,9 +187,8 @@ public class ClassFile {
       Timers.v().readTimer.start();
       
       try 
-      {
-        data = new byte[classFileStream.available()];
-        classFileStream.read(data);
+      { //TODO do we really need to separate this step from that of readClass()?
+        data = readUntilEof(classFileStream);
         f = new ByteArrayInputStream(data);
          
       } catch(IOException e)
@@ -560,15 +559,20 @@ public class ClassFile {
       return true;
    }
 
-   private void readAllBytes(byte[] dest, DataInputStream d) throws IOException {
-     int total_len = dest.length;
-     int read_len = 0;
-     while(read_len < total_len){
-       int to_read = total_len - read_len;
-       int curr_read = d.read(dest, read_len, to_read);
-       read_len += curr_read;
-     }
-   }
+  /**
+   * Reads an input stream entirely
+   * @param is an input stream
+   * @return a byte array (possibly of size zero) with the read data from the stream
+   * */
+  protected byte[] readUntilEof(InputStream is) throws IOException{
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(is.available());
+    int numRead;
+    byte[] buf = new byte[4*1024];//disk sectors are traditionally 4K, so this should minimize I/O requests
+    while ((numRead = is.read(buf)) != -1){
+      bos.write(buf, 0, numRead);
+    }
+    return bos.toByteArray();
+  }
 
    /** Reads in the given number of attributes from the given stream.
     * @param d Stream forming the <tt>.class</tt> file.
@@ -607,7 +611,7 @@ public class ClassFile {
             ca.max_locals = d.readUnsignedShort();
             ca.code_length = d.readInt() & 0xFFFFFFFFL;
             ca.code = new byte[(int) ca.code_length];
-            readAllBytes(ca.code, d);
+            d.readFully(ca.code);
             ca.exception_table_length = d.readUnsignedShort();
             ca.exception_table = new exception_table_entry[ca.exception_table_length];
             int k;
@@ -822,7 +826,7 @@ public class ClassFile {
             Generic_attribute ga = new Generic_attribute();
             if (len>0) {
                ga.info = new byte[(int) len];
-               readAllBytes(ga.info, d);
+               d.readFully(ga.info);
             }
             a = (attribute_info)ga;
          }
@@ -1871,6 +1875,8 @@ public class ClassFile {
 
       inf.verboseReport(G.v().out);
    }*/
+
+
 
 
 }
