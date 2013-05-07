@@ -188,8 +188,9 @@ public class ClassFile {
       
       try 
       {
-        data = new byte[classFileStream.available()];
-        classFileStream.read(data);
+      	DataInputStream classDataStream = new DataInputStream(classFileStream);
+        data = new byte[classDataStream.available()];
+        classDataStream.readFully(data);
         f = new ByteArrayInputStream(data);
          
       } catch(IOException e)
