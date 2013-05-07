@@ -188,7 +188,9 @@ public class ClassFile {
       
       try 
       { //TODO do we really need to separate this step from that of readClass()?
-        data = readUntilEof(classFileStream);
+      	DataInputStream classDataStream = new DataInputStream(classFileStream);
+        data = new byte[classDataStream.available()];
+        classDataStream.readFully(data);
         f = new ByteArrayInputStream(data);
          
       } catch(IOException e)
