@@ -129,6 +129,9 @@ public class Evaluator {
                 else if (c1 instanceof NullConstant)
                     return IntConstant.v
                         (((NullConstant)c1).equals(c2) ? 1 : 0);
+                else if (c1 instanceof ClassConstant)
+                    return IntConstant.v
+                        (((ClassConstant)c1).equals(c2) ? 1 : 0);
                 throw new RuntimeException
                     ("constant neither numeric nor string");
             }
