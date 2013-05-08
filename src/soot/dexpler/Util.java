@@ -259,9 +259,6 @@ public class Util {
             continue;
           FieldRef fr = ass.getFieldRef();
           SootField sf = fr.getField();
-          System.out.println("sootfield: "+ sf +" modifiers: "+ sf.getModifiers());
-          System.out.println("final: "+ Modifier.FINAL);
-          //System.out.println
           if (sf.isFinal())
             addConstantTag(sf, (Constant)r);
         }
