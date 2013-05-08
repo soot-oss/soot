@@ -599,7 +599,6 @@ public class DexBody  {
         // fields init
 
           if (m.getName().equals("<init>") || m.getName().equals("<clinit>")) {
-             System.out.println("constant initSm: "+ m);
              Util.addConstantTags(jBody);
           }
         
