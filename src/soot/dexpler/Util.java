@@ -28,29 +28,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import polyglot.types.reflect.Field;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
-import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
-import soot.Modifier;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
-import soot.SootClass;
 import soot.SootField;
-import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
-import soot.PatchingChain;
 import soot.Value;
 import soot.VoidType;
 import soot.jimple.AssignStmt;
@@ -266,8 +259,6 @@ public class Util {
     }
     
     private static void addConstantTag(SootField sf, Constant c) {
-      System.out.println("add constant tag: "); 
-      Type ft = sf.getType();
       if (c instanceof IntConstant){
         sf.addTag(new soot.tagkit.IntegerConstantValueTag(((IntConstant) c).value));
       } else if (c instanceof LongConstant){
