@@ -13,5 +13,6 @@ See http://www.sable.mcgill.ca/soot/ for details.
 
 Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.
 Development happens in the develop branch. To catch the bleeding edge of Soot, check out the latter.
-You will also need the projects jasmin and heros. In case of any questions, please consult the Soot
+You will also need the projects [jasmin](https://github.com/Sable/jasmin) and 
+[heros](https://github.com/Sable/heros). In case of any questions, please consult the Soot
 mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
