@@ -28,14 +28,29 @@
 
 
 package soot.toolkits.scalar;
-import soot.options.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import soot.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Scene;
+import soot.Singletons;
+import soot.Timers;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
-import soot.toolkits.exceptions.UnitThrowAnalysis;
-import soot.toolkits.graph.*;
-import soot.util.*;
-import java.util.*;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.util.Chain;
 
 /**
  *    A BodyTransformer that attemps to indentify and separate uses of a local
@@ -75,7 +90,7 @@ public class LocalSplitter extends BodyTransformer
     	if(throwAnalysis==null)
     		throwAnalysis = Scene.v().getDefaultThrowAnalysis();
     	
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
         List<List> webs = new ArrayList<List>();
 
         if(Options.v().verbose())
@@ -90,22 +105,18 @@ public class LocalSplitter extends BodyTransformer
         {
             ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,throwAnalysis,true);
 
-            LocalDefs localDefs;
-            
-            localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-
+            LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
             
             if(Options.v().time())
                 Timers.v().splitPhase1Timer.end();
-    
             if(Options.v().time())
                 Timers.v().splitPhase2Timer.start();
 
             Set<ValueBox> markedBoxes = new HashSet<ValueBox>();
             Map<ValueBox, Unit> boxToUnit = new HashMap<ValueBox, Unit>(units.size() * 2 + 1, 0.7f);
             
-            Iterator codeIt = units.iterator();
+            Iterator<Unit> codeIt = units.iterator();
 
             while(codeIt.hasNext())
             {
@@ -113,7 +124,6 @@ public class LocalSplitter extends BodyTransformer
 
                 if (s.getDefBoxes().size() > 1)
                     throw new RuntimeException("stmt with more than 1 defbox!");
-
                 if (s.getDefBoxes().size() < 1)
                     continue;
 
@@ -191,7 +201,7 @@ public class LocalSplitter extends BodyTransformer
                 }
             }
         }
-
+        
         // Assign locals appropriately.
         {
             Map<Local, Integer> localToUseCount = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
@@ -238,6 +248,5 @@ public class LocalSplitter extends BodyTransformer
         
         if(Options.v().time())
             Timers.v().splitPhase2Timer.end();
-
     }   
 }
