@@ -181,11 +181,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
                             
                             Stmt def = (Stmt) defIt.next();
                             
-                            if(!essentialStmts.contains(def))
-                            {
-                                essentialStmts.add(def);
-                                toVisit.addLast(def);
-                            }    
+                            if(essentialStmts.add(def))
+                            	toVisit.addLast(def);
                         }         
                     }
                 }
