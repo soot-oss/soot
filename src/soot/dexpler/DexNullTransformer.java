@@ -61,6 +61,7 @@ import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
@@ -366,7 +367,34 @@ public class DexNullTransformer extends DexTransformer {
                   }
               }
             } // end if
+        }
 
+        // Check for inlined zero values
+        for (Unit u : body.getUnits()) {
+	        u.apply(new AbstractStmtSwitch() {
+	        	@Override
+	            public void caseAssignStmt (AssignStmt stmt) {
+	            	if (isObject(stmt.getLeftOp().getType()) && stmt.getRightOp() instanceof IntConstant) {
+	            		IntConstant iconst = (IntConstant) stmt.getRightOp();
+	            		assert iconst.value == 0;
+	            		stmt.setRightOp(NullConstant.v());
+	            		return;
+	            	}
+	            }
+	        });
+	        if (u instanceof Stmt) {
+	        	Stmt stmt = (Stmt) u;
+	        	if (stmt.containsInvokeExpr()) {
+	        		InvokeExpr invExpr = stmt.getInvokeExpr();
+	        		for (int i = 0; i < invExpr.getArgCount(); i++)
+	        			if (isObject(invExpr.getMethod().getParameterType(i)))
+	        				if (invExpr.getArg(i) instanceof IntConstant) {
+	        					IntConstant iconst = (IntConstant) invExpr.getArg(i);
+	        					assert iconst.value == 0;
+	        					invExpr.setArg(i, NullConstant.v());
+	        				}
+	        	}
+	        }
         }
     }
 
