@@ -380,7 +380,23 @@ public class DexNullTransformer extends DexTransformer {
 	            		stmt.setRightOp(NullConstant.v());
 	            		return;
 	            	}
+	            	if (stmt.getRightOp() instanceof CastExpr) {
+	            		CastExpr ce = (CastExpr) stmt.getRightOp();
+	            		if (isObject(ce.getCastType()) && ce.getOp() instanceof IntConstant) {
+	            			IntConstant iconst = (IntConstant) ce.getOp();
+	            			assert iconst.value == 0;
+	            			stmt.setRightOp(NullConstant.v());
+	            		}
+	            	}
 	            }
+	        	@Override
+	            public void caseReturnStmt (ReturnStmt stmt) {
+	        		if (stmt.getOp() instanceof IntConstant && isObject(body.getMethod().getReturnType())) {
+	        			IntConstant iconst = (IntConstant) stmt.getOp();
+	        			assert iconst.value == 0;
+	        			stmt.setOp(NullConstant.v());
+	        		}
+	        	}
 	        });
 	        if (u instanceof Stmt) {
 	        	Stmt stmt = (Stmt) u;
