@@ -24,6 +24,7 @@
 
 package soot.dexpler.instructions;
 
+import soot.Body;
 import soot.Type;
 import soot.dexpler.DexBody;
 
@@ -47,6 +48,8 @@ public interface RetypeableInstruction  {
      *
      * Retyping is separated from setting the type, to make it possible to
      * retype after local splitting.
+     * 
+     * @param body The body containing the processed statement
      */
-    public void retype();
+    public void retype(Body body);
 }

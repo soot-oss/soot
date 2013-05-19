@@ -476,9 +476,9 @@ public class DexBody  {
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
-               
-        for (RetypeableInstruction i : instructionsToRetype)
-            i.retype();
+        
+  		for (RetypeableInstruction i : instructionsToRetype)
+            i.retype(jBody);
         
         {
           // remove instructions from instructions list

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import soot.ArrayType;
 import soot.Body;
 import soot.Local;
 import soot.RefLikeType;
@@ -388,6 +389,13 @@ public class DexNullTransformer extends DexTransformer {
 	            			stmt.setRightOp(NullConstant.v());
 	            		}
 	            	}
+	            	if (stmt.getLeftOp() instanceof ArrayRef && stmt.getRightOp() instanceof IntConstant) {
+	            		if (isObjectArray(((ArrayRef) stmt.getLeftOp()).getBase(), body)) {
+	            			IntConstant iconst = (IntConstant) stmt.getRightOp();
+	            			assert iconst.value == 0;
+	            			stmt.setRightOp(NullConstant.v());
+	            		}
+	            	}
 	            }
 	        	@Override
 	            public void caseReturnStmt (ReturnStmt stmt) {
@@ -414,6 +422,27 @@ public class DexNullTransformer extends DexTransformer {
         }
     }
 
+	private boolean isObjectArray(Value v, Body body) {
+		for (Unit u : body.getUnits()) {
+			if (u instanceof AssignStmt) {
+				AssignStmt assign = (AssignStmt) u;
+				if (assign.getLeftOp() == v) {
+					if (assign.getRightOp() instanceof NewArrayExpr) {
+						NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
+						if (isObject(nea.getBaseType()))
+							return true;
+					}
+					if (assign.getRightOp() instanceof FieldRef) {
+						FieldRef fr = (FieldRef) assign.getRightOp();
+						if (fr.getType() instanceof ArrayType)
+							if (isObject(((ArrayType) fr.getType()).getArrayElementType()))
+								return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 
   private boolean isObject(Type t) {
     return t instanceof RefLikeType;
