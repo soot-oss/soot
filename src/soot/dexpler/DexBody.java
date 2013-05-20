@@ -59,6 +59,7 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
+import soot.Transform;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
@@ -78,10 +79,14 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.jimple.internal.JIdentityStmt;
+import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
+import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
@@ -577,9 +582,23 @@ public class DexBody  {
         Debug.printDbg("\nafter type assigner localpacker and name standardizer");
         Debug.printDbg("",(Body)jBody);
         
-        PackManager.v().getPack("jb").apply(jBody);
-        
-        
+        // Inline PackManager.v().getPack("jb").apply(jBody);
+        // Keep only transformations that have not been done
+        // at this point.
+        TrapTightener.v().transform(jBody);
+        //LocalSplitter.v().transform(jBody);
+        Aggregator.v().transform(jBody);
+        //UnusedLocalEliminator.v().transform(jBody);
+        //TypeAssigner.v().transform(jBody);
+        //LocalPacker.v().transform(jBody);
+        //LocalNameStandardizer.v().transform(jBody);
+        CopyPropagator.v().transform(jBody);
+        //DeadAssignmentEliminator.v().transform(jBody);
+        //UnusedLocalEliminator.v().transform(jBody);
+        //LocalPacker.v().transform(jBody);
+        NopEliminator.v().transform(jBody);
+        //UnreachableCodeEliminator.v().transform(jBody);
+       
         for (Unit u: jBody.getUnits()) {
           if (u instanceof AssignStmt) {
             AssignStmt ass = (AssignStmt)u;
