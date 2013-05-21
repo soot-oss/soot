@@ -481,8 +481,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 					boolean omitExceptingUnitEdges) {
 	Set<Unit> trapsThatAreHeads = new ArraySet<Unit>();
 	Unit entryPoint = (Unit) unitChain.getFirst();
-
-	for (Iterator<Entry<Unit, Collection<ExceptionDest>>> it = unitToExceptionDests.entrySet().iterator();
+    for (Iterator<Entry<Unit, Collection<ExceptionDest>>> it = unitToExceptionDests.entrySet().iterator();
 	     it.hasNext(); ) {
 		Entry<Unit, Collection<ExceptionDest>> entry = it.next();
 	    Unit thrower = (Unit) entry.getKey();

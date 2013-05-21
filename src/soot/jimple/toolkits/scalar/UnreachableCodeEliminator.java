@@ -26,15 +26,27 @@
 
 
 package soot.jimple.toolkits.scalar;
-import soot.options.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 
-import soot.util.*;
-import soot.*;
-import soot.jimple.*;
-import java.util.*;
-
-import soot.toolkits.graph.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.Singletons;
+import soot.Trap;
+import soot.Unit;
+import soot.jimple.Stmt;
+import soot.jimple.StmtBody;
+import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.util.ArraySet;
 
 public class UnreachableCodeEliminator extends BodyTransformer
 {
@@ -61,7 +73,8 @@ public class UnreachableCodeEliminator extends BodyTransformer
             numPruned = 0;
 
             if (PhaseOptions.getBoolean(options, "remove-unreachable-traps")) {
-                stmtGraph = new ExceptionalUnitGraph(body);
+                stmtGraph = new ExceptionalUnitGraph(body, Scene.v().getDefaultThrowAnalysis(),
+                        true);
             } else {
                 // Force a conservative ExceptionalUnitGraph() which
                 // necessarily includes an edge from every trapped Unit to

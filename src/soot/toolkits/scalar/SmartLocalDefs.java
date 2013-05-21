@@ -145,7 +145,7 @@ public class SmartLocalDefs implements LocalDefs
 		
         protected void flowThrough(Object inValue, Object unit, Object outValue) {
             Unit u = (Unit) unit;
-            HashSet in = (HashSet) inValue;
+            HashSet<Unit> in = (HashSet<Unit>) inValue;
             HashSet<Unit> out = (HashSet<Unit>) outValue;
             out.clear();
             Set mask = unitToMask.get(u);
@@ -153,20 +153,17 @@ public class SmartLocalDefs implements LocalDefs
 			HashSet<Unit> allDefUnits = null;
 			if (l == null)
 			{//add all units contained in mask
-	            for( Iterator inUIt = in.iterator(); inUIt.hasNext(); ) {
-	                final Unit inU = (Unit) inUIt.next();
+	            for( Unit inU : in )
 	                if( mask.contains(localDef(inU)) )
 					{
 						out.add(inU);
 					}
-	            }
 			}
 			else
 			{//check unit whether contained in allDefUnits before add into out set.
 				allDefUnits = defsOf(l);
 				
-	            for( Iterator inUIt = in.iterator(); inUIt.hasNext(); ) {
-	                final Unit inU = (Unit) inUIt.next();
+	            for( Unit inU : in )
     	            if( mask.contains(localDef(inU)) )
 					{//only add unit not contained in allDefUnits
 						if ( allDefUnits.contains(inU)){
@@ -175,7 +172,6 @@ public class SmartLocalDefs implements LocalDefs
 							out.add(inU);
 						}
 					}
-    	        }
    	            out.removeAll(allDefUnits);
    	            if(mask.contains(l)) out.add(u);
 			}
