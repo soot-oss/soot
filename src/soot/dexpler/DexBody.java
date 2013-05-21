@@ -49,6 +49,7 @@ import org.jf.dexlib.Code.InstructionIterator;
 import org.jf.dexlib.Debug.DebugInstructionIterator;
 
 import soot.Body;
+import soot.G;
 import soot.Local;
 import soot.Modifier;
 import soot.NullType;
@@ -115,9 +116,7 @@ public class DexBody  {
     private TryItem[] tries;
 
     private RefType declaringClassType;
-    
-    private static LocalSplitter splitter; 
-    
+        
     // detect array/instructions overlapping obfuscation
     private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
     private DexFile dexFile = null;
@@ -472,7 +471,7 @@ public class DexBody  {
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
         
-        splitLocals();
+        LocalSplitter.v().transform(jBody);
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
@@ -605,12 +604,6 @@ public class DexBody  {
 
         return jBody;
     }
-
-	private void splitLocals() {
-		if(splitter==null)
-        	splitter = new LocalSplitter(new DalvikThrowAnalysis());
-        splitter.transform(jBody);
-	}
 
     /**
      * Set a dangling instruction for this body.

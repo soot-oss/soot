@@ -772,6 +772,12 @@ public class Singletons {
         return instance_soot_toolkits_exceptions_UnitThrowAnalysis;
     }
 
+    private soot.dexpler.DalvikThrowAnalysis instance_soot_dexpler_DalvikThrowAnalysis;
+    public soot.dexpler.DalvikThrowAnalysis soot_dexpler_DalvikThrowAnalysis() {
+        if( instance_soot_dexpler_DalvikThrowAnalysis == null ) instance_soot_dexpler_DalvikThrowAnalysis = new soot.dexpler.DalvikThrowAnalysis( g );
+        return instance_soot_dexpler_DalvikThrowAnalysis;
+    }
+
     private soot.toolkits.exceptions.PedanticThrowAnalysis instance_soot_toolkits_exceptions_PedanticThrowAnalysis;
     public soot.toolkits.exceptions.PedanticThrowAnalysis soot_toolkits_exceptions_PedanticThrowAnalysis() {
         if( instance_soot_toolkits_exceptions_PedanticThrowAnalysis == null ) instance_soot_toolkits_exceptions_PedanticThrowAnalysis = new soot.toolkits.exceptions.PedanticThrowAnalysis( g );

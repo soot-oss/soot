@@ -20,6 +20,8 @@
 
 package soot.dexpler;
 
+import soot.G;
+import soot.Singletons;
 import soot.baf.ReturnInst;
 import soot.baf.ReturnVoidInst;
 import soot.jimple.ClassConstant;
@@ -169,7 +171,23 @@ op   fe +sput-object-volatile       21c  n field-ref     optimized|continue|thro
 
 public class DalvikThrowAnalysis extends UnitThrowAnalysis {
  
-	@Override
+    /**
+     * Constructs a <code>DalvikThrowAnalysis</code> for inclusion in 
+     * Soot's global variable manager, {@link G}.
+     *
+     * @param g guarantees that the constructor may only be called 
+     * from {@link Singletons}.
+     */
+    public DalvikThrowAnalysis(Singletons.Global g) {}
+
+    /**
+     * Returns the single instance of <code>DalvikThrowAnalysis</code>.
+     *
+     * @return Soot's <code>UnitThrowAnalysis</code>.
+     */
+    public static DalvikThrowAnalysis v() { return G.v().soot_dexpler_DalvikThrowAnalysis(); }
+
+    @Override
 	protected ThrowableSet defaultResult() {
 		return mgr.EMPTY;
 	}
@@ -179,12 +197,12 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
 	protected UnitSwitch unitSwitch() {
 		return new UnitThrowAnalysis.UnitSwitch() {	
 		  
-      // Dalvik does not throw an exception for this instructions
+			// Dalvik does not throw an exception for this instructions
 			@Override
 			public void caseReturnInst(ReturnInst i) { 
 			}
 			
-      // Dalvik does not throw an exception for this instructions
+			// Dalvik does not throw an exception for this instructions
 			@Override
 			public void caseReturnVoidInst(ReturnVoidInst i) {
 			}			
