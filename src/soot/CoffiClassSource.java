@@ -58,6 +58,9 @@ public class CoffiClassSource extends ClassSource
     }
     
     protected void addSourceFileTag(soot.SootClass sc){
+    	if (fileName == null && zipFileName == null)
+    		return;
+    	
         soot.tagkit.SourceFileTag tag = null;
         if (sc.hasTag("SourceFileTag")) {
             tag = (soot.tagkit.SourceFileTag)sc.getTag("SourceFileTag");
