@@ -19,6 +19,8 @@
 
 package soot;
 import soot.javaToJimple.IInitialResolver;
+import soot.javaToJimple.InitialResolver;
+import soot.javaToJimple.Util;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.*;
 import java.io.*;
@@ -28,9 +30,15 @@ import java.util.*;
  */
 public class CoffiClassSource extends ClassSource
 {
-    public CoffiClassSource( String className, InputStream classFile ) {
+    protected final InputStream classFile;
+	private final String fileName;
+	private final String zipFileName;
+	
+    public CoffiClassSource( String className, InputStream classFile, String fileName, String zipFileName ) {
         super( className );
         this.classFile = classFile;
+        this.fileName = fileName;
+        this.zipFileName = zipFileName;
     }
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
@@ -42,10 +50,25 @@ public class CoffiClassSource extends ClassSource
             classFile.close();
         } catch (IOException e) { throw new RuntimeException("!?"); }
         
+        addSourceFileTag(sc);
+        
         IInitialResolver.Dependencies deps = new IInitialResolver.Dependencies();
         deps.typesToSignature.addAll(references);
         return deps;
     }
-    protected InputStream classFile;
+    
+    protected void addSourceFileTag(soot.SootClass sc){
+        soot.tagkit.SourceFileTag tag = null;
+        if (sc.hasTag("SourceFileTag")) {
+            tag = (soot.tagkit.SourceFileTag)sc.getTag("SourceFileTag");
+        }
+        else {
+            tag = new soot.tagkit.SourceFileTag();
+            sc.addTag(tag);
+        }
+        
+        String name = zipFileName == null ? fileName : zipFileName;
+        tag.setSourceFile(name); 
+    }
 }
 

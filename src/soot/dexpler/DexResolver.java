@@ -85,10 +85,26 @@ public class DexResolver {
             sc.addMethod(m.toSoot());
         }
 
+        addSourceFileTag(sc, file.getAbsolutePath());
         return deps;
     }
 
-	public static void reset() {
+    /**
+     *  adds source file tag to each sootclass
+     */
+    protected static void addSourceFileTag(SootClass sc, String fileName){
+        soot.tagkit.SourceFileTag tag = null;
+        if (sc.hasTag("SourceFileTag")) {
+            tag = (soot.tagkit.SourceFileTag)sc.getTag("SourceFileTag");
+        }
+        else {
+            tag = new soot.tagkit.SourceFileTag();
+            sc.addTag(tag);
+        }
+        tag.setSourceFile(fileName); 
+    }
+    
+    public static void reset() {
 		cache.clear();
 	}
 }

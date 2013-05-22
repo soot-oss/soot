@@ -84,7 +84,7 @@ public class SourceLocator
 				        String fileName = className.replace('.', '/') + ".class";
 						InputStream stream = cl.getResourceAsStream(fileName);
 						if(stream==null) return null;
-						return new CoffiClassSource(className, stream);
+						return new CoffiClassSource(className, stream, fileName, null);
 					}
 
             	}.find(className);
@@ -98,7 +98,7 @@ public class SourceLocator
 	        String fileName = className.replace('.', '/') + ".class";
         	InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
         	if(stream!=null) {
-				return new CoffiClassSource(className, stream);
+				return new CoffiClassSource(className, stream, fileName, null);
         	}
         }
         return null;

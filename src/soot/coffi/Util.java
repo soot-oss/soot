@@ -61,7 +61,7 @@ public class Util
 
     public void resolveFromClassFile(SootClass aClass, InputStream is, List references)
     {
-        SootClass bclass = aClass;                
+        SootClass bclass = aClass;
         String className = bclass.getName();
         ClassFile coffiClass = new ClassFile(className);
         
