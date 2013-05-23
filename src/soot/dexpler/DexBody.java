@@ -49,18 +49,15 @@ import org.jf.dexlib.Code.InstructionIterator;
 import org.jf.dexlib.Debug.DebugInstructionIterator;
 
 import soot.Body;
-import soot.G;
 import soot.Local;
 import soot.Modifier;
 import soot.NullType;
-import soot.PackManager;
 import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
-import soot.Transform;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
@@ -476,7 +473,7 @@ public class DexBody  {
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
         
-        LocalSplitter.v().transform(jBody);
+        getLocalSplitter().transform(jBody);
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
@@ -622,6 +619,13 @@ public class DexBody  {
         
 
         return jBody;
+    }
+    
+    private LocalSplitter localSplitter = null;
+    protected LocalSplitter getLocalSplitter() {
+    	if (this.localSplitter == null)
+    		this.localSplitter = new LocalSplitter(DalvikThrowAnalysis.v());
+    	return this.localSplitter;
     }
 
     /**

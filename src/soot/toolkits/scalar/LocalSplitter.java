@@ -41,13 +41,14 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
+import soot.Scene;
 import soot.Singletons;
 import soot.Timers;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.dexpler.DalvikThrowAnalysis;
 import soot.options.Options;
+import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.Chain;
 
@@ -72,28 +73,36 @@ import soot.util.Chain;
  */
 public class LocalSplitter extends BodyTransformer
 {
+	
+	protected ThrowAnalysis throwAnalysis = null;
 
 	public LocalSplitter( Singletons.Global g ) {
 	}
 		
-    public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
+	public LocalSplitter( ThrowAnalysis ta ) {
+		this.throwAnalysis = ta;
+	}
+
+	public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
     
+	@Override
     protected void internalTransform(Body body, String phaseName, Map options)
     {
+		if (this.throwAnalysis == null)
+			this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+		
         Chain<Unit> units = body.getUnits();
         List<List<ValueBox>> webs = new ArrayList<List<ValueBox>>();
 
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
 
-        Map boxToSet = new HashMap(units.size() * 2 + 1, 0.7f);
-
         if(Options.v().time())
                 Timers.v().splitPhase1Timer.start();
 
         // Go through the definitions, building the webs
         {
-            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,DalvikThrowAnalysis.v(),true);
+            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,this.throwAnalysis,true);
 
             LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
