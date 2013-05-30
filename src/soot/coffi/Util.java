@@ -43,21 +43,51 @@ public class Util
     public static Util v() { return G.v().soot_coffi_Util(); }
 
 
-    Map classNameToAbbreviation;
-    Set markedClasses;
-    LinkedList classesToResolve;
+    Map classNameToAbbreviation; // UNUSED
+    Set markedClasses; // UNUSED
+    LinkedList classesToResolve; // UNUSED
 
+    private cp_info[] activeConstantPool = null;
+    private LocalVariableTable_attribute activeVariableTable;
+    private LocalVariableTypeTable_attribute activeVariableTypeTable;
+    /* maps from variable names to local variable slot indexes to soot Locals*/
+    private Map<String, Map<Integer, Local>> nameToIndexToLocal;
+    private boolean useFaithfulNaming = false;
     int activeOriginalIndex = -1;
-    cp_info[] activeConstantPool = null;
-    LocalVariableTable_attribute activeVariableTable;
-    LocalVariableTypeTable_attribute activeVariableTypeTable;
-    boolean useFaithfulNaming = false;
-    boolean isLocalStore = false;  // global variable used 
+    boolean isLocalStore = false;
     boolean isWideLocalStore = false;
+
+    public void bodySetup(LocalVariableTable_attribute la, 
+                      LocalVariableTypeTable_attribute lt,
+                      cp_info[] ca)
+    {
+      activeVariableTable = la;
+      activeVariableTypeTable = lt;
+      activeConstantPool = ca;
+      nameToIndexToLocal = null;
+      activeOriginalIndex = 0;
+
+      /*  Several variables with different slot indexes
+          but overlapping pc ranges may have the same name in the 
+          local variables table.
+
+          if pc_range(i) intersects pc_range(j)
+             and name(i) equals name(j)
+             and index(i) not equals index(j)
+          then local i and local j should be given the different name in Soot.
+
+          the simplest is to have one local for each couple (name,index)
+      */
+    }
+
     public void setFaithfulNaming(boolean v)
     {
         useFaithfulNaming = v;
-    }    
+    }   
+
+    public boolean isUsingFaithfulNaming() {
+      return useFaithfulNaming;
+    }
 
     public void resolveFromClassFile(SootClass aClass, InputStream is, List references)
     {
@@ -714,7 +744,7 @@ swtch:
             return easyNames[justifiedIndex];
     }
 
-    void setClassNameToAbbreviation(Map map)
+    void setClassNameToAbbreviation(Map map) //UNUSED
     {
         classNameToAbbreviation = map;
     }
@@ -797,7 +827,7 @@ swtch:
     }
 
 
-    public boolean declaresLocal(Body b, String localName)
+    private boolean declaresLocal(Body b, String localName)
     {
         Iterator localIt = b.getLocals().iterator();
 
@@ -812,62 +842,81 @@ swtch:
         return false;
     }
 
-     Local
-        getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
+    Local getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
     {
-        if(declaresLocal(listBody, name))
-        {
-            return getLocal(listBody, name);
+      Local l;
+      if(declaresLocal(listBody, name))
+      {
+        l = getLocal(listBody, name);
+        if(!l.getType().equals(type)) {
+          throw new RuntimeException("The body already declares this local name with a different type.");
         }
-        else {
-            Local l = Jimple.v().newLocal(name, type);
-            listBody.getLocals().add(l);
-
-            return l;
-        }
+      }
+      else {
+        l = Jimple.v().newLocal(name, type);
+        listBody.getLocals().add(l);
+      }
+      return l;
     }
 
     Local getLocalForIndex(JimpleBody listBody, int index)
     {
-        String name = null;
+        String name = null; 
+        String desc = null;
         String debug_type = null;
-        boolean assignedName = false;
+        Local l;
         if(useFaithfulNaming && activeVariableTable != null)
         {
-            if(activeOriginalIndex != -1)
-            {
-                //indicies in the local variable table start at 1 while code starts at zero
-                activeOriginalIndex++;
-                if(isWideLocalStore)
-                    activeOriginalIndex++;
+          if(activeOriginalIndex != -1)
+          {
+            /* 
+              for a load bytecode, the local is already set so we use directly the 
+              pc index of the load,
+              for a store bytecode, the local takes it actual value at the bytecode following
+              the store so we use the next bytecode pc index.
+            */
+            if(isLocalStore) activeOriginalIndex++; // next bytecode is at least one byte ahead
+            if(isWideLocalStore) activeOriginalIndex++; // there is a byte for the local index
+            // what about local store taking two bytes for the index ? (WIDE xSTORE) ??
 
-                name = activeVariableTable.getLocalVariableName(activeConstantPool, index, activeOriginalIndex);
-                if (activeVariableTypeTable != null){
-               debug_type = activeVariableTypeTable.getLocalVariableType(activeConstantPool, index, activeOriginalIndex);
-               if (debug_type != null){
-               }
+              //indicies in the local variable table start at 1 while code starts at zero
+              /*activeOriginalIndex++;
+              if(isWideLocalStore)
+                  activeOriginalIndex++;*/
+
+              name = activeVariableTable.getLocalVariableName(activeConstantPool, index, activeOriginalIndex);
+              desc = activeVariableTable.getLocalVariableDescriptor(activeConstantPool, index, activeOriginalIndex);
+              if (activeVariableTypeTable != null){
+                debug_type = activeVariableTypeTable.getLocalVariableType(activeConstantPool, index, activeOriginalIndex);
+                if (debug_type != null){
                 }
-                if(name != null) 
-                    assignedName = true;
+              }
             }
-        }  
-        
-        if(!assignedName)
+          }
+
+          if(name == null) {
             name = "l" + index;
+          }
 
-        if(declaresLocal(listBody, name))
-            return getLocal(listBody, name);
-        else {
-            Local l = Jimple.v().newLocal(name,
-                UnknownType.v());
+          if(nameToIndexToLocal == null) nameToIndexToLocal = new HashMap<String, Map<Integer, Local>>();
+          
+          Map<Integer,Local> indexToLocal;
+          
+          if(!nameToIndexToLocal.containsKey(name)) {
+            indexToLocal = new HashMap<Integer, Local>();
+            nameToIndexToLocal.put(name, indexToLocal);
+          }else indexToLocal = nameToIndexToLocal.get(name);
 
+          if(indexToLocal.containsKey(index)) {
+            l = indexToLocal.get(index);
+          }else{
+            l = Jimple.v().newLocal(name, UnknownType.v());
             listBody.getLocals().add(l);
-            /*if (debug_type != null){
-                l.addTag(new DebugTypeTag(debug_type));
-            } */   
+            indexToLocal.put(index, l);
+          }
 
-            return l;
-        }
+        //System.out.println("(" + index + " at " + activeOriginalIndex + " : " + name + ", " + desc +  ") => Local " + l + " " + l.hashCode());
+        return l;
     }
 
     /*

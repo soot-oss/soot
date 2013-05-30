@@ -850,7 +850,7 @@ public class CFG {
     public boolean jimplify(cp_info constant_pool[],int this_class, BootstrapMethods_attribute bootstrap_methods_attribute, JimpleBody listBody)
    {
         this.bootstrap_methods_attribute = bootstrap_methods_attribute;
-		Util.v().setClassNameToAbbreviation(new HashMap());
+        Util.v().setClassNameToAbbreviation(new HashMap()); // UNUSED
 
         Chain units = listBody.getUnits();
 
@@ -876,10 +876,11 @@ public class CFG {
             LocalVariableTable_attribute la = ca.findLocalVariableTable();
             LocalVariableTypeTable_attribute lt = ca.findLocalVariableTypeTable();
 
-            Util.v().activeVariableTable = la;
-            Util.v().activeVariableTypeTable = lt;
+            Util.v().bodySetup(la,lt,constant_pool);
+            //Util.v().activeVariableTable = la;
+            //Util.v().activeVariableTypeTable = lt;
             
-            Util.v().activeConstantPool = constant_pool;
+            //Util.v().activeConstantPool = constant_pool;
             
             Type thisType = RefType.v(jmethod.getDeclaringClass().getName());
             boolean isStatic = Modifier.isStatic(jmethod.getModifiers());
@@ -890,20 +891,21 @@ public class CFG {
             {
                 if(!isStatic)
                 {
-                    String name;
-                    
-                    if(!Util.v().useFaithfulNaming || la == null)
-                        name = "l0";
-                    else
-		    {
-                        name = la.getLocalVariableName(constant_pool, currentLocalIndex);
-			if (!Util.v().isValidJimpleName(name))
-			    name = "l0";
-		    }
-                        
-                    Local local = Jimple.v().newLocal(name, UnknownType.v());
+                    Local local = Util.v().getLocalForIndex(listBody, currentLocalIndex);
+                    //String name;
+                    //
+                    //if(!Util.v().isUsingFaithfulNaming() || la == null)
+                    //    name = "l0";
+                    //else
+                    //{
+                    //  name = la.getLocalVariableName(constant_pool, currentLocalIndex);
+                    //  if (!Util.v().isValidJimpleName(name))
+                    //    name = "l0";
+                    //}
+                    //    
+                    //Local local = Jimple.v().newLocal(name, UnknownType.v());
 
-                    listBody.getLocals().add(local);
+                    //listBody.getLocals().add(local);
 
                     currentLocalIndex++;
 
@@ -918,21 +920,22 @@ public class CFG {
 
                 while(typeIt.hasNext())
                 {
-                    String name;
+                    Local local = Util.v().getLocalForIndex(listBody, currentLocalIndex);
+                    //String name;
                     Type type = (Type) typeIt.next();
 
-                    if(!Util.v().useFaithfulNaming || la == null)
-                        name = "l" + currentLocalIndex;
-                    else
-		    {
-                        name = la.getLocalVariableName(constant_pool, currentLocalIndex);
-			if (!Util.v().isValidJimpleName(name))
-			    name = "l" + currentLocalIndex;
-		    }
+                    //if(!Util.v().isUsingFaithfulNaming() || la == null)
+                    //    name = "l" + currentLocalIndex;
+                    //else
+                    //{
+                    //  name = la.getLocalVariableName(constant_pool, currentLocalIndex);
+                    //  if (!Util.v().isValidJimpleName(name))
+                    //    name = "l" + currentLocalIndex;
+                    //}
 
-                    Local local = Jimple.v().newLocal(name, UnknownType.v());
+                    //Local local = Jimple.v().newLocal(name, UnknownType.v());
                     initialLocals.add(local);
-                    listBody.getLocals().add(local);
+                    //listBody.getLocals().add(local);
 
                     units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type, argCount)));
 
