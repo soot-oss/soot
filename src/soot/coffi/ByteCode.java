@@ -1107,4 +1107,38 @@ class ByteCode {
          return locateInstr(index,mini,mid-1);
       return locateInstr(index,mid+1,maxi);
    }
+   
+  /** Returns true if the bytecode is a local store */
+  public static boolean isLocalStore(int bc) {
+    switch(bc) {
+      case ByteCode.ISTORE:
+      case ByteCode.FSTORE:
+      case ByteCode.ASTORE:
+      case ByteCode.LSTORE:
+      case ByteCode.DSTORE:
+      case ByteCode.ISTORE_0:
+      case ByteCode.ISTORE_1:
+      case ByteCode.ISTORE_2:
+      case ByteCode.ISTORE_3:
+      case ByteCode.FSTORE_0:
+      case ByteCode.FSTORE_1:
+      case ByteCode.FSTORE_2:
+      case ByteCode.FSTORE_3:
+      case ByteCode.ASTORE_0:
+      case ByteCode.ASTORE_1:
+      case ByteCode.ASTORE_2:
+      case ByteCode.ASTORE_3:
+      case ByteCode.LSTORE_0:
+      case ByteCode.LSTORE_1:
+      case ByteCode.LSTORE_2:
+      case ByteCode.LSTORE_3:
+      case ByteCode.DSTORE_0:
+      case ByteCode.DSTORE_1:
+      case ByteCode.DSTORE_2:
+      case ByteCode.DSTORE_3:
+        return true;
+      default:
+        return false;
+    }
+  }
 }

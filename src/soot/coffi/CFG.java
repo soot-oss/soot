@@ -877,10 +877,6 @@ public class CFG {
             LocalVariableTypeTable_attribute lt = ca.findLocalVariableTypeTable();
 
             Util.v().bodySetup(la,lt,constant_pool);
-            //Util.v().activeVariableTable = la;
-            //Util.v().activeVariableTypeTable = lt;
-            
-            //Util.v().activeConstantPool = constant_pool;
             
             Type thisType = RefType.v(jmethod.getDeclaringClass().getName());
             boolean isStatic = Modifier.isStatic(jmethod.getModifiers());
@@ -891,24 +887,9 @@ public class CFG {
             {
                 if(!isStatic)
                 {
-                    Local local = Util.v().getLocalForIndex(listBody, currentLocalIndex);
-                    //String name;
-                    //
-                    //if(!Util.v().isUsingFaithfulNaming() || la == null)
-                    //    name = "l0";
-                    //else
-                    //{
-                    //  name = la.getLocalVariableName(constant_pool, currentLocalIndex);
-                    //  if (!Util.v().isValidJimpleName(name))
-                    //    name = "l0";
-                    //}
-                    //    
-                    //Local local = Jimple.v().newLocal(name, UnknownType.v());
-
-                    //listBody.getLocals().add(local);
-
+                    Local local = Util.v().getLocalForParameter(listBody, currentLocalIndex);
                     currentLocalIndex++;
-
+                    
                     units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newThisRef(jmethod.getDeclaringClass().getType())));
                 }
             }
@@ -920,22 +901,9 @@ public class CFG {
 
                 while(typeIt.hasNext())
                 {
-                    Local local = Util.v().getLocalForIndex(listBody, currentLocalIndex);
-                    //String name;
+                    Local local = Util.v().getLocalForParameter(listBody, currentLocalIndex);
                     Type type = (Type) typeIt.next();
-
-                    //if(!Util.v().isUsingFaithfulNaming() || la == null)
-                    //    name = "l" + currentLocalIndex;
-                    //else
-                    //{
-                    //  name = la.getLocalVariableName(constant_pool, currentLocalIndex);
-                    //  if (!Util.v().isValidJimpleName(name))
-                    //    name = "l" + currentLocalIndex;
-                    //}
-
-                    //Local local = Jimple.v().newLocal(name, UnknownType.v());
                     initialLocals.add(local);
-                    //listBody.getLocals().add(local);
 
                     units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type, argCount)));
 
@@ -2943,10 +2911,6 @@ public class CFG {
       Stmt stmt = null;
 
       int x = ((ins.code))&0xff;
-
-      Util.v().activeOriginalIndex = ins.originalIndex;
-      Util.v().isLocalStore = false;
-      Util.v().isWideLocalStore = false;
       
       switch(x)
       {
@@ -3015,7 +2979,7 @@ public class CFG {
 
          case ByteCode.ILOAD:
          {
-            Local local = Util.v().getLocalForIndex(listBody, ((Instruction_bytevar) ins).arg_b);
+            Local local = Util.v().getLocalForIndex(listBody, ((Instruction_bytevar) ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3024,7 +2988,7 @@ public class CFG {
 
          case ByteCode.FLOAD:
          {
-            Local local = Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b);
+            Local local = Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3034,7 +2998,7 @@ public class CFG {
          case ByteCode.ALOAD:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b);
+                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3044,7 +3008,7 @@ public class CFG {
          case ByteCode.DLOAD:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b);
+                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3054,7 +3018,7 @@ public class CFG {
          case ByteCode.LLOAD:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b);
+                Util.v().getLocalForIndex(listBody, ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3067,7 +3031,7 @@ public class CFG {
          case ByteCode.ILOAD_3:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.ILOAD_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.ILOAD_0), ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3080,7 +3044,7 @@ public class CFG {
          case ByteCode.FLOAD_3:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.FLOAD_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.FLOAD_0), ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3093,7 +3057,7 @@ public class CFG {
          case ByteCode.ALOAD_3:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.ALOAD_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.ALOAD_0), ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3106,7 +3070,7 @@ public class CFG {
          case ByteCode.LLOAD_3:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.LLOAD_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.LLOAD_0), ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3119,7 +3083,7 @@ public class CFG {
          case ByteCode.DLOAD_3:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.DLOAD_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.DLOAD_0), ins);
 
             stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
                 postTypeStack.topIndex()), local);
@@ -3127,65 +3091,50 @@ public class CFG {
          }
 
          case ByteCode.ISTORE:
-         {
-            Util.v().isLocalStore = true;
-            Util.v().isWideLocalStore = true;
-            
+         {  
             Local local =
                 Util.v().getLocalForIndex(listBody,
-                ((Instruction_bytevar)ins).arg_b);
+                ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
          }
 
          case ByteCode.FSTORE:
-         {
-            Util.v().isLocalStore = true;
-            Util.v().isWideLocalStore = true;
-            
+         {  
             Local local =
                 Util.v().getLocalForIndex(listBody,
-                ((Instruction_bytevar)ins).arg_b);
+                ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
          }
 
          case ByteCode.ASTORE:
-         {
-            Util.v().isLocalStore = true;
-            Util.v().isWideLocalStore = true;
-            
+         {  
             Local local =
                 Util.v().getLocalForIndex(listBody,
-                ((Instruction_bytevar)ins).arg_b);
+                ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
          }
 
          case ByteCode.LSTORE:
-         {
-            Util.v().isLocalStore = true;
-            Util.v().isWideLocalStore = true;
-            
+         {  
             Local local =
                 Util.v().getLocalForIndex(listBody,
-                ((Instruction_bytevar)ins).arg_b);
+                ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
          }
 
          case ByteCode.DSTORE:
-         {
-            Util.v().isLocalStore = true;
-            Util.v().isWideLocalStore = true;
-            
+         {  
             Local local =
                 Util.v().getLocalForIndex(listBody,
-                ((Instruction_bytevar)ins).arg_b);
+                ((Instruction_bytevar)ins).arg_b, ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
@@ -3196,9 +3145,8 @@ public class CFG {
          case ByteCode.ISTORE_2:
          case ByteCode.ISTORE_3:
          {
-            Util.v().isLocalStore = true;
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.ISTORE_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.ISTORE_0), ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
@@ -3209,8 +3157,7 @@ public class CFG {
          case ByteCode.FSTORE_2:
          case ByteCode.FSTORE_3:
          {
-            Util.v().isLocalStore = true;
-            Local local = Util.v().getLocalForIndex(listBody, (x - ByteCode.FSTORE_0));
+            Local local = Util.v().getLocalForIndex(listBody, (x - ByteCode.FSTORE_0), ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
@@ -3221,8 +3168,7 @@ public class CFG {
          case ByteCode.ASTORE_2:
          case ByteCode.ASTORE_3:
          {
-            Util.v().isLocalStore = true;
-            Local local = Util.v().getLocalForIndex(listBody, (x - ByteCode.ASTORE_0));
+            Local local = Util.v().getLocalForIndex(listBody, (x - ByteCode.ASTORE_0), ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
@@ -3233,9 +3179,8 @@ public class CFG {
          case ByteCode.LSTORE_2:
          case ByteCode.LSTORE_3:
          {
-            Util.v().isLocalStore = true;
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.LSTORE_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.LSTORE_0), ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
@@ -3246,9 +3191,8 @@ public class CFG {
          case ByteCode.DSTORE_2:
          case ByteCode.DSTORE_3:
          {
-            Util.v().isLocalStore = true;
             Local local =
-                Util.v().getLocalForIndex(listBody, (x - ByteCode.DSTORE_0));
+                Util.v().getLocalForIndex(listBody, (x - ByteCode.DSTORE_0), ins);
 
             stmt = Jimple.v().newAssignStmt(local, Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()));
             break;
@@ -3258,7 +3202,7 @@ public class CFG {
          {
             Local local =
                 Util.v().getLocalForIndex(listBody,
-                ((Instruction_Iinc)ins).arg_b);
+                ((Instruction_Iinc)ins).arg_b, ins);
 
             int amt = (((Instruction_Iinc)ins).arg_c);
             rhs = Jimple.v().newAddExpr(local, IntConstant.v(amt));
@@ -4123,7 +4067,7 @@ public class CFG {
          case ByteCode.RET:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, ((Instruction_Ret)ins).arg_b);
+                Util.v().getLocalForIndex(listBody, ((Instruction_Ret)ins).arg_b, ins);
 
             stmt = Jimple.v().newRetStmt(local);
             break;
@@ -4132,7 +4076,7 @@ public class CFG {
          case ByteCode.RET_W:
          {
             Local local =
-                Util.v().getLocalForIndex(listBody, ((Instruction_Ret_w)ins).arg_i);
+                Util.v().getLocalForIndex(listBody, ((Instruction_Ret_w)ins).arg_i, ins);
 
 
             stmt = Jimple.v().newRetStmt(local);
