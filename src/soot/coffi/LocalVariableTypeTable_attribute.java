@@ -80,7 +80,7 @@ class LocalVariableTypeTable_attribute extends attribute_info {
             if (constant_pool[e.signature_index] instanceof CONSTANT_Utf8_info)
 	    {
 	       String n = ((CONSTANT_Utf8_info)(constant_pool[e.signature_index])).convert();
-           G.v().out.println("found type: "+n);
+           //G.v().out.println("found type: "+n);
 	       //if (Util.v().isValidJimpleName(n))
 		   //return n;
 	       //else
