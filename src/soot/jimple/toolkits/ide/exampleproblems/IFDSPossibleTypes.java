@@ -150,10 +150,12 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
 				}				
 				return new FlowFunction<Pair<Value,Type>>() {
 					public Set<Pair<Value,Type>> computeTargets(Pair<Value,Type> source) {
-						Value value = source.getO1();
-						int argIndex = callArgs.indexOf(value);
-						if(argIndex>-1) {
-							return Collections.singleton(new Pair<Value,Type>(paramLocals.get(argIndex), source.getO2()));
+						if (!dest.getName().equals("<clinit>")) {
+							Value value = source.getO1();
+							int argIndex = callArgs.indexOf(value);
+							if(argIndex>-1) {
+								return Collections.singleton(new Pair<Value,Type>(paramLocals.get(argIndex), source.getO2()));
+							}
 						}
 						return Collections.emptySet();
 					}
