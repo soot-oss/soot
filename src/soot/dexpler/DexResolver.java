@@ -28,13 +28,19 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
+import soot.G;
+import soot.Singletons;
 import soot.SootClass;
 import soot.SootResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 public class DexResolver {
 	
-	private static Map<File,DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
+	private Map<File,DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
+	
+    public DexResolver(Singletons.Global g) {}
+
+    public static DexResolver v() { return G.v().soot_dexpler_DexResolver(); }
 	
     /**
      * Resolve the class contained in file into the passed soot class.
@@ -44,7 +50,7 @@ public class DexResolver {
      * @param sc the soot class that will represent the class
      * @return the dependencies of this class.
      */
-    public static Dependencies resolveFromFile(File file, String className, SootClass sc) {
+    public Dependencies resolveFromFile(File file, String className, SootClass sc) {
     	DexlibWrapper wrapper = cache.get(file);
     	if(wrapper==null) {
     		wrapper = new DexlibWrapper(file);
@@ -103,8 +109,4 @@ public class DexResolver {
         }
         tag.setSourceFile(fileName); 
     }
-    
-    public static void reset() {
-		cache.clear();
-	}
 }

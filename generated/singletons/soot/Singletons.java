@@ -892,4 +892,10 @@ public class Singletons {
         return instance_soot_sootify_TemplatePrinter;
     }
 
+    private soot.dexpler.DexResolver instance_soot_dexpler_DexResolver;
+    public soot.dexpler.DexResolver soot_dexpler_DexResolver() {
+        if( instance_soot_dexpler_DexResolver == null ) instance_soot_dexpler_DexResolver = new soot.dexpler.DexResolver( g );
+        return instance_soot_dexpler_DexResolver;
+    }
+
 }
