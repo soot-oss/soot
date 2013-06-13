@@ -25,7 +25,6 @@
 package soot.dexpler;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -456,9 +455,7 @@ public class DexNullTransformer extends DexTransformer {
      */
     private Set<Local> getNullCandidates(Body body) {
         Set<Local> candidates = new HashSet<Local>();
-        Iterator<Unit> i = body.getUnits().iterator();
-        while (i.hasNext()) {
-            Unit u = i.next();
+        for (Unit u : body.getUnits()) {
             if (u instanceof AssignStmt) {
                 AssignStmt a = (AssignStmt) u;
                 if (! (a.getLeftOp() instanceof Local))

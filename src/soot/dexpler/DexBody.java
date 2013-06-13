@@ -504,7 +504,7 @@ public class DexBody  {
           Debug.printDbg("\nafter Dalvik Typer");
           
         } else {
-          DexNumTransformer.v().transform (jBody);      
+          DexNumTransformer.v().transform (jBody);
           DexNullTransformer.v().transform(jBody);
           DexIfTransformer.v().transform(jBody);
           //DexRefsChecker.v().transform(jBody);
@@ -512,8 +512,7 @@ public class DexBody  {
           
           Debug.printDbg("\nafter Num and Null transformers");
         }
-        Debug.printDbg("",(Body)jBody);
-        
+        Debug.printDbg("",(Body)jBody);        
 
         if (IDalvikTyper.ENABLE_DVKTYPER) {
           for (Unit u: jBody.getUnits()) {
