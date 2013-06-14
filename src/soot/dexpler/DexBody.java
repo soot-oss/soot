@@ -434,7 +434,6 @@ public class DexBody  {
         storeResultLocal = Jimple.v().newLocal("$u-1", UnknownType.v());
         jBody.getLocals().add (storeResultLocal);
         
-        
         // process bytecode instructions
         for(DexlibAbstractInstruction instruction : instructions) {
             if (dangling != null) {

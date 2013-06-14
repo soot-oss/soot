@@ -234,23 +234,25 @@ class ConstraintCollector extends AbstractStmtSwitch
 	Type baset = ((Local) ref.getBase()).getType();
 	if(!(baset instanceof NullType))
 	{
-	  ArrayType base = (ArrayType) baset;
-	  Value index = ref.getIndex();
+		Value index = ref.getIndex();
+
+		// Be careful, dex can do some weird object/array casting
+		if (baset instanceof ArrayType) {
+			ArrayType base = (ArrayType) baset;
 	
-	  if((base.numDimensions == 1) &&
-	     (base.baseType instanceof IntegerType))
-	    {
-	      right = resolver.typeVariable(base.baseType);
-	    }
+			if((base.numDimensions == 1) &&
+		     (base.baseType instanceof IntegerType))
+		    {
+		      right = resolver.typeVariable(base.baseType);
+		    }
+		}
+		else if (baset instanceof IntegerType)
+			right = resolver.typeVariable(baset);
 	
-	  if(uses)
-	    {
-	      if(index instanceof Local)
-	        {
-		  resolver.typeVariable((Local) index).addParent(resolver.INT);
-	        }
-	    }
-	}
+		if(uses)
+			if(index instanceof Local)
+				resolver.typeVariable((Local) index).addParent(resolver.INT);
+		}
       }
     else if(r instanceof DoubleConstant)
       {
