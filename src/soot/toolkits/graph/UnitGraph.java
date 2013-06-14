@@ -128,7 +128,10 @@ public abstract class UnitGraph implements DirectedGraph<Unit>
 		    // target it falls through to, so we screen for duplicates:
 		    if (! successors.contains(target)) {
 			successors.add(target);
-			unitToPreds.get(target).add(currentUnit);
+			List<Unit> preds = unitToPreds.get(target);
+			if (preds == null)
+				throw new RuntimeException("Unit graph contains jump to non-existing target");
+			preds.add(currentUnit);
 		    }
 		}
 	    }
