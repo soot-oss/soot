@@ -254,7 +254,8 @@ public class UseChecker extends AbstractStmtSwitch
 				((NegExpr)rhs).getOp(), tlhs, stmt));
 		}
 		else if ( rhs instanceof Constant )
-			stmt.setLeftOp(this.uv.visit(lhs, ((Constant) rhs).getType(), stmt));
+			if (!(rhs instanceof NullConstant))
+				stmt.setLeftOp(this.uv.visit(lhs, ((Constant) rhs).getType(), stmt));
 	}
 	
 	public void caseIdentityStmt(IdentityStmt stmt) { }
