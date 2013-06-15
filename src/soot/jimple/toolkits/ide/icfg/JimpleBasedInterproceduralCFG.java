@@ -155,6 +155,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 
 	@Override
 	public SootMethod getMethodOf(Unit u) {
+		assert unitToOwner.containsKey(u);
 		return unitToOwner.get(u).getMethod();
 	}
 
