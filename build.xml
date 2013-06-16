@@ -45,7 +45,11 @@
     </target>
 
     <target name="singletons" depends="singletons-dep" unless="singletons-uptodate">
-        <exec executable="${basedir}/src/make_singletons" dir="${basedir}/src" output="${basedir}/generated/singletons/soot/Singletons.java"/>
+        <xslt
+            style="${basedir}/src/make-singletons.xsl"
+            in="${basedir}/src/singletons.xml"
+            out="${basedir}/generated/singletons/soot/Singletons.java"
+        />
     </target>
     <target name="singletons-dep">
         <uptodate property="singletons-uptodate" targetfile="generated/singletons/soot/Singletons.java">
