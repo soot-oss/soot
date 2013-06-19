@@ -53,7 +53,7 @@
     </target>
     <target name="singletons-dep">
         <uptodate property="singletons-uptodate" targetfile="generated/singletons/soot/Singletons.java">
-            <srcfiles dir="src" includes="singletons.list"/>
+            <srcfiles dir="src" includes="singletons.xml"/>
         </uptodate>
     </target>
 
