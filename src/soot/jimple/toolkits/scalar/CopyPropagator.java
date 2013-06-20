@@ -111,13 +111,9 @@ public class CopyPropagator extends BodyTransformer
             while(stmtIt.hasNext())
             {
                 Stmt stmt = (Stmt) stmtIt.next();
-                Iterator useBoxIt = stmt.getUseBoxes().iterator();
-
-                while(useBoxIt.hasNext())
+                for (ValueBox useBox : stmt.getUseBoxes())
                 {
-                    ValueBox useBox = (ValueBox) useBoxIt.next();
-
-                    if(useBox.getValue() instanceof Local)
+                	if(useBox.getValue() instanceof Local)
                     {
                         Local l = (Local) useBox.getValue();
 
@@ -133,7 +129,10 @@ public class CopyPropagator extends BodyTransformer
                         {
                             DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
 
-                            if(def.getRightOp() instanceof Local)
+                            if (def.getRightOp() instanceof Constant)
+                            	if (useBox.canContainValue(def.getRightOp()))
+                            		useBox.setValue(def.getRightOp());
+                            else if(def.getRightOp() instanceof Local)
                             {
                                 Local m = (Local) def.getRightOp();
 

@@ -587,8 +587,10 @@ public class DexBody  {
         //LocalPacker.v().transform(jBody);
         //LocalNameStandardizer.v().transform(jBody);
         CopyPropagator.v().transform(jBody);
-        //DeadAssignmentEliminator.v().transform(jBody);
-        //UnusedLocalEliminator.v().transform(jBody);
+        // we might have gotten new dead assignments and unused locals through
+        // copy propagation, so we have to do this again
+        DeadAssignmentEliminator.v().transform(jBody);
+        UnusedLocalEliminator.v().transform(jBody);
         //LocalPacker.v().transform(jBody);
         NopEliminator.v().transform(jBody);
         //UnreachableCodeEliminator.v().transform(jBody);
