@@ -77,18 +77,22 @@ public class DexPrinter {
 		// copying every old zip entry except classes.dex
 		String outputFileName = outputDir + File.separatorChar + originalApk.getName();
 		File outputFile = new File(outputFileName);
-		ZipOutputStream outputApk = new ZipOutputStream(new FileOutputStream(outputFile));
-		G.v().out.println("Writing APK to: " + outputFileName);
-		G.v().out.println("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
-		ZipFile original = new ZipFile(originalApk);
-		copyAllButClassesDexAndSigFiles(original, outputApk);
-		original.close();
-
-		// put our classes.dex into the zip archive
-		outputApk.putNextEntry(new ZipEntry(CLASSES_DEX));
-		writeTo(outputApk);
-		outputApk.closeEntry();
-		outputApk.close();
+		if(outputFile.exists()) {
+			throw new CompilationDeathException("Output file "+outputFile+" exists. Not overwriting.");
+		} else {
+			ZipOutputStream outputApk = new ZipOutputStream(new FileOutputStream(outputFile));
+			G.v().out.println("Writing APK to: " + outputFileName);
+			G.v().out.println("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
+			ZipFile original = new ZipFile(originalApk);
+			copyAllButClassesDexAndSigFiles(original, outputApk);
+			original.close();
+	
+			// put our classes.dex into the zip archive
+			outputApk.putNextEntry(new ZipEntry(CLASSES_DEX));
+			writeTo(outputApk);
+			outputApk.closeEntry();
+			outputApk.close();
+		}
 	}
 
 	private void copyAllButClassesDexAndSigFiles(ZipFile source, ZipOutputStream destination) throws IOException {
