@@ -586,8 +586,8 @@ public class SootClass extends AbstractHost implements Numberable
         }
         subSigToMethods.put(m.getNumberedSubSignature(),m);
         methodList.add(m);
-        m.isDeclared = true;
-        m.declaringClass = this;
+        m.setDeclared(true);
+        m.setDeclaringClass(this);
         
     }
 
@@ -607,7 +607,7 @@ public class SootClass extends AbstractHost implements Numberable
         }
         subSigToMethods.put(m.getNumberedSubSignature(),null);
         methodList.remove(m);
-        m.isDeclared = false;
+        m.setDeclared(false);
     }
 
     /**
