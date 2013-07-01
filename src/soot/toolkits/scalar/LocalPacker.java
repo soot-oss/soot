@@ -134,19 +134,15 @@ public class LocalPacker extends BodyTransformer
                                     
         // Map each local to a new local.
         {
-            List originalLocals = new ArrayList();
+            List<Local> originalLocals = new ArrayList<Local>();
             localToNewLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             Map groupIntToLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             
             originalLocals.addAll(body.getLocals());
             body.getLocals().clear();
 
-            Iterator localIt = originalLocals.iterator();
-
-            while(localIt.hasNext())
+            for (Local original : originalLocals)
             {
-                Local original = (Local) localIt.next();
-                
                 Object group = localToGroup.get(original);
                 int color = localToColor.get(original).intValue();
                 GroupIntPair pair = new GroupIntPair(group, color);
