@@ -117,11 +117,15 @@ public class CopyPropagator extends BodyTransformer
                     {
                         Local l = (Local) useBox.getValue();
 
-                        if(options.only_regular_locals() && l.getName().startsWith("$"))
-                            continue;
-       
-                        if(options.only_stack_locals() && !l.getName().startsWith("$"))
-                            continue;
+                        // We force propagating nulls. If a target can only be null due to
+                        // typing, we always inline that constant.
+                        if (!(l.getType() instanceof NullType)) {
+	                        if(options.only_regular_locals() && l.getName().startsWith("$"))
+	                            continue;
+	       
+	                        if(options.only_stack_locals() && !l.getName().startsWith("$"))
+	                            continue;
+                        }
                             
                         List<Unit> defsOfUse = localDefs.getDefsOfAt(l, stmt);
 
