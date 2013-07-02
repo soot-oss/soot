@@ -63,28 +63,27 @@ public class DeadAssignmentEliminator extends BodyTransformer
 
         Set<Stmt> essentialStmts = new HashSet<Stmt>();
         LinkedList<Stmt> toVisit = new LinkedList<Stmt>();
-        Chain units = b.getUnits();
+        Chain<Unit> units = b.getUnits();
         
         // Make a first pass through the statements, noting 
         // the statements we must absolutely keep. 
         {
-            Iterator stmtIt = units.iterator();
-            
-            while(stmtIt.hasNext()) 
+            for (Unit u : units) 
             {
-                Stmt s = (Stmt) stmtIt.next();
+                Stmt s = (Stmt) u;
                 boolean isEssential = true;
-                 
+
                 if(s instanceof NopStmt)
                     isEssential = false;
-                 
-                if(s instanceof AssignStmt)
+                
+                else if(s instanceof AssignStmt)
                 {
                     AssignStmt as = (AssignStmt) s;
                     
                     if(as.getLeftOp() instanceof Local &&
                         (!eliminateOnlyStackLocals || 
-                            ((Local) as.getLeftOp()).getName().startsWith("$")))
+                            ((Local) as.getLeftOp()).getName().startsWith("$")
+                            || as.getLeftOp().getType() instanceof NullType))
                     {
                         Value rhs = as.getRightOp();
                     
@@ -95,7 +94,6 @@ public class DeadAssignmentEliminator extends BodyTransformer
                         {
                            // Note that ArrayRef and InvokeExpr all can
                            // have side effects (like throwing a null pointer exception)
-                    
                             isEssential = true;
                         }
 
@@ -157,7 +155,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         LocalDefs defs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
         LocalUses uses = new SimpleLocalUses(graph, defs);
         
-        // Add all the statements which are used to compute values
+    	// Add all the statements which are used to compute values
         // for the essential statements, recursively
         {
             

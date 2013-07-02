@@ -53,5 +53,10 @@ public class GroupIntPair
     {
         return group.hashCode() + 1013 * x;
     }
+
+    @Override
+    public String toString() {
+    	return this.group + ": " + this.x;
+    }
     
 }
