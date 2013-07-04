@@ -850,7 +850,6 @@ public class CFG {
     public boolean jimplify(cp_info constant_pool[],int this_class, BootstrapMethods_attribute bootstrap_methods_attribute, JimpleBody listBody)
    {
         this.bootstrap_methods_attribute = bootstrap_methods_attribute;
-        Util.v().setClassNameToAbbreviation(new HashMap()); // UNUSED
 
         Chain units = listBody.getUnits();
 

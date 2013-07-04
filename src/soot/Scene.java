@@ -115,22 +115,22 @@ public class Scene  //extends AbstractHost
 	}
     public static Scene  v() { return G.v().soot_Scene (); }
     
-    Chain<SootClass> classes = new HashChain<SootClass>();
-    Chain<SootClass> applicationClasses = new HashChain<SootClass>();
-    Chain<SootClass> libraryClasses = new HashChain<SootClass>();
-    Chain<SootClass> phantomClasses = new HashChain<SootClass>();
+    private Chain<SootClass> classes = new HashChain<SootClass>();
+    private Chain<SootClass> applicationClasses = new HashChain<SootClass>();
+    private Chain<SootClass> libraryClasses = new HashChain<SootClass>();
+    private Chain<SootClass> phantomClasses = new HashChain<SootClass>();
     
     private final Map<String,Type> nameToClass = new HashMap<String,Type>();
 
-    ArrayNumberer kindNumberer = new ArrayNumberer();
-    ArrayNumberer typeNumberer = new ArrayNumberer();
-    ArrayNumberer methodNumberer = new ArrayNumberer();
-    Numberer unitNumberer = new MapNumberer();
-    Numberer contextNumberer = null;
-    ArrayNumberer fieldNumberer = new ArrayNumberer();
-    ArrayNumberer classNumberer = new ArrayNumberer();
-    StringNumberer subSigNumberer = new StringNumberer();
-    ArrayNumberer localNumberer = new ArrayNumberer();
+    private ArrayNumberer kindNumberer = new ArrayNumberer();
+    private ArrayNumberer typeNumberer = new ArrayNumberer();
+    private ArrayNumberer methodNumberer = new ArrayNumberer();
+    private Numberer unitNumberer = new MapNumberer();
+    private Numberer contextNumberer = null;
+    private ArrayNumberer fieldNumberer = new ArrayNumberer();
+    private ArrayNumberer classNumberer = new ArrayNumberer();
+    private StringNumberer subSigNumberer = new StringNumberer();
+    private ArrayNumberer localNumberer = new ArrayNumberer();
 
     private Hierarchy activeHierarchy;
     private FastHierarchy activeFastHierarchy;

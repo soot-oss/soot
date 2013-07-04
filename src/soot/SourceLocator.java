@@ -445,6 +445,12 @@ public class SourceLocator
                 throw new RuntimeException( "Caught IOException "+e );
             }
         }
+        public File inputFile(){
+            if (file != null)
+                return file;
+            else
+                return new File(zipFile.getName());
+        }
     }
 
     private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {

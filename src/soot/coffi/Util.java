@@ -42,11 +42,6 @@ public class Util
     public Util( Singletons.Global g ) {}
     public static Util v() { return G.v().soot_coffi_Util(); }
 
-
-    Map classNameToAbbreviation; // UNUSED
-    Set markedClasses; // UNUSED
-    LinkedList classesToResolve; // UNUSED
-
     private cp_info[] activeConstantPool = null;
     private LocalVariableTable_attribute activeVariableTable;
     private LocalVariableTypeTable_attribute activeVariableTypeTable;
@@ -79,7 +74,7 @@ public class Util
       return useFaithfulNaming;
     }
 
-    public void resolveFromClassFile(SootClass aClass, InputStream is, List references)
+    public void resolveFromClassFile(SootClass aClass, InputStream is, String filePath, List references)
     {
         SootClass bclass = aClass;
         String className = bclass.getName();
@@ -378,7 +373,7 @@ public class Util
             if( sourceFile.indexOf(' ') >= 0 ) {
                 G.v().out.println( "Warning: Class "+className+" has invalid SourceFile attribute (will be ignored)." );
             } else {
-                bclass.addTag(new SourceFileTag( sourceFile ) );
+                bclass.addTag(new SourceFileTag( sourceFile , filePath) );
             }
 	
 	    }
@@ -732,11 +727,6 @@ swtch:
             return "local" + (justifiedIndex - easyNames.length);
         else
             return easyNames[justifiedIndex];
-    }
-
-    void setClassNameToAbbreviation(Map map) //UNUSED
-    {
-        classNameToAbbreviation = map;
     }
 
     Local getLocalForStackOp(JimpleBody listBody, TypeStack typeStack,
