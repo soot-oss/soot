@@ -333,8 +333,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     sc.setResolvingLevel(SootClass.DANGLING);
     sc.setModifiers(sootTypeModifiers());
     sc.setApplicationClass();
-    SourceFileTag st = new soot.tagkit.SourceFileTag(sourceNameWithoutPath());
-    st.setAbsolutePath(compilationUnit().pathName());
+    SourceFileTag st = new soot.tagkit.SourceFileTag(sourceNameWithoutPath(),compilationUnit().pathName());
     sc.addTag(st);
     sc.setSuperclass(typeObject().getSootClassDecl());
     for(Iterator iter = superinterfacesIterator(); iter.hasNext(); ) {
