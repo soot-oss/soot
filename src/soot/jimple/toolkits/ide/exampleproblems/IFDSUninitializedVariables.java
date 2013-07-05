@@ -18,6 +18,7 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
 import heros.InterproceduralCFG;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -36,6 +38,7 @@ import soot.Local;
 import soot.NullType;
 import soot.Scene;
 import soot.SootMethod;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -46,6 +49,7 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
+import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 
 public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProblem<Local,InterproceduralCFG<Unit, SootMethod>> {
@@ -199,9 +203,9 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
 			}
 		};
 	}
-	@Override
-	public Set<Unit> initialSeeds() {
-		return Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst());
+
+	public Map<Unit, Set<Local>> initialSeeds() {
+		return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
 	}
 
 	@Override

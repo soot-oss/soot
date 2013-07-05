@@ -18,6 +18,7 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
 import heros.InterproceduralCFG;
@@ -30,6 +31,7 @@ import heros.flowfunc.Transfer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -147,7 +149,7 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
 	}
 
 	@Override
-	public Set<Unit> initialSeeds() {
-		return Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst());
+	public Map<Unit, Set<Local>> initialSeeds() {
+		return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
 	}
 }
