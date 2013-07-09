@@ -24,8 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.Instruction22t;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction22t;
 
 import soot.Local;
 import soot.dexpler.DexBody;

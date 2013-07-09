@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,39 +24,25 @@
 
 package soot.dexpler;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib.AnnotationDirectoryItem;
-import org.jf.dexlib.ClassDataItem;
-import org.jf.dexlib.ClassDataItem.EncodedField;
-import org.jf.dexlib.ClassDefItem;
-import org.jf.dexlib.ClassDefItem.StaticFieldInitializer;
-import org.jf.dexlib.EncodedArrayItem;
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Analysis.ClassPath.ClassDef;
-import org.jf.dexlib.EncodedValue.BooleanEncodedValue;
-import org.jf.dexlib.EncodedValue.ByteEncodedValue;
-import org.jf.dexlib.EncodedValue.CharEncodedValue;
-import org.jf.dexlib.EncodedValue.DoubleEncodedValue;
-import org.jf.dexlib.EncodedValue.EncodedValue;
-import org.jf.dexlib.EncodedValue.EnumEncodedValue;
-import org.jf.dexlib.EncodedValue.FloatEncodedValue;
-import org.jf.dexlib.EncodedValue.IntEncodedValue;
-import org.jf.dexlib.EncodedValue.LongEncodedValue;
-import org.jf.dexlib.EncodedValue.NullEncodedValue;
-import org.jf.dexlib.EncodedValue.ShortEncodedValue;
-import org.jf.dexlib.EncodedValue.StringEncodedValue;
+import org.jf.dexlib2.iface.Annotation;
+import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.iface.Field;
+import org.jf.dexlib2.iface.Method;
+import org.jf.dexlib2.iface.value.BooleanEncodedValue;
+import org.jf.dexlib2.iface.value.ByteEncodedValue;
+import org.jf.dexlib2.iface.value.CharEncodedValue;
+import org.jf.dexlib2.iface.value.DoubleEncodedValue;
+import org.jf.dexlib2.iface.value.EncodedValue;
+import org.jf.dexlib2.iface.value.FloatEncodedValue;
+import org.jf.dexlib2.iface.value.IntEncodedValue;
+import org.jf.dexlib2.iface.value.LongEncodedValue;
+import org.jf.dexlib2.iface.value.ShortEncodedValue;
+import org.jf.dexlib2.iface.value.StringEncodedValue;
 
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.G;
-import soot.IntType;
 import soot.Modifier;
-import soot.Type;
-import soot.jimple.NullConstant;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
@@ -73,12 +59,12 @@ import soot.tagkit.Tag;
 public class DexClass {
 
     protected String name;
-    protected TypeIdItem type;
+    protected String type;
 
     protected String superClassName;
     protected String[] interfaceNames;
 
-    protected AnnotationDirectoryItem annotations;
+    protected Set<? extends Annotation> annotations;
     protected Set<DexField> fields;
     protected Set<DexMethod> methods;
     protected Set<DexType> types;
@@ -89,12 +75,12 @@ public class DexClass {
      * The constructor consumes a class definition item of dexlib and retrieves all subsequent methods, types and fields.
      * @param classDef
      */
-    public DexClass(ClassDefItem classDef) {
-    	type = classDef.getClassType();
-        this.name = classDef.getClassType().getTypeDescriptor();
+    public DexClass(ClassDef classDef) {
+        type = classDef.getType();
+        this.name = classDef.getType();
         this.types = new HashSet<DexType>();
-        TypeIdItem superClass = classDef.getSuperclass();
-		this.superClassName = superClass.getTypeDescriptor();
+        String superClass = classDef.getSuperclass();
+		this.superClassName = classDef.getSuperclass();
 		this.types.add(new DexType(superClass));
         this.accessFlags = classDef.getAccessFlags();
 
@@ -102,105 +88,77 @@ public class DexClass {
         if (classDef.getInterfaces() == null)
             this.interfaceNames = new String[0];
         else {
-            this.interfaceNames = new String[classDef.getInterfaces().getTypes().size()];
+            this.interfaceNames = new String[classDef.getInterfaces().size()];
             int i = 0;
-            for (TypeIdItem interfaceName : classDef.getInterfaces().getTypes()) {
-                this.interfaceNames[i++] = interfaceName.getTypeDescriptor();
+            for (String interfaceName : classDef.getInterfaces()) {
+                this.interfaceNames[i++] = interfaceName;
                 this.types.add(new DexType(interfaceName));
             }
         }
 
         // retrieve methods, fields and annotations
-        ClassDataItem classData = classDef.getClassData();
-        if (classData == null) {
-            this.methods = Collections.emptySet();
-            this.fields = Collections.emptySet();
-        } else {
-            int numMethods = classData.getDirectMethods().length + classData.getVirtualMethods().length;
-            int numFields = classData.getInstanceFields().length + classData.getStaticFields().length;
+        this.methods = new HashSet<DexMethod>(); // size of 16 by default
+        this.fields = new HashSet<DexField>(); // size of 16 by default
+        this.annotations = classDef.getAnnotations();
 
-            this.methods = new HashSet<DexMethod>(numMethods);
-            this.fields = new HashSet<DexField>(numFields);
-            this.annotations = classDef.getAnnotations();
-
-            // get the fields of the class
-            ClassDataItem.EncodedField[] fields = Util.concat(classData.getInstanceFields(), classData.getStaticFields());
-            int fieldIndex = 0;
-            for (ClassDataItem.EncodedField field : fields) {
-                DexField dexField = new DexField(field, this);
-                if (field.isStatic()) {
-                  if (Modifier.isFinal(field.accessFlags))
-                    addConstantTag(classDef, dexField, fieldIndex);
-                  fieldIndex++;
-                }
-                this.fields.add(dexField);
-               
-            }
-            
-         
-            ClassDataItem.EncodedMethod[] methods = Util.concat(classData.getDirectMethods(), classData.getVirtualMethods());
-            // get the methods of the class
-            for (ClassDataItem.EncodedMethod method : methods) {
-                DexMethod dexMethod;
-//                try {
-                  dexMethod = new DexMethod(classDef.getDexFile(), method, this);
-                  this.methods.add(dexMethod);
-//                } catch (Exception e) {
-//                  e.printStackTrace();
-//                  G.v().out.println("Warning: method '"+ this.name +"."+ method.method.getMethodString() +"generated an Exception!");
-//                }
-            }
+        // get the fields of the class
+        int fieldIndex = 0;
+        for (Field sf : classDef.getStaticFields()) {
+            DexField dexField = new DexField(sf, this);
+            if (Modifier.isFinal(sf.getAccessFlags()))
+                addConstantTag(classDef, dexField, sf);
+            fieldIndex++;
+            this.fields.add(dexField);
         }
+        for (Field f: classDef.getInstanceFields()) {
+            DexField dexField = new DexField(f, this);
+            fieldIndex++;
+            this.fields.add(dexField);
+        }
+
+
+        // get the methods of the class
+        for (Method method : classDef.getDirectMethods()) {
+            DexMethod dexMethod = new DexMethod(classDef.getSourceFile(), method, this);
+            this.methods.add(dexMethod);
+        }
+        for (Method method : classDef.getVirtualMethods()) {
+            DexMethod dexMethod = new DexMethod(classDef.getSourceFile(), method, this);
+            this.methods.add(dexMethod);
+        }
+
     }
-    
-    private void addConstantTag(ClassDefItem classDef, DexField df, int fieldIndex) {
+
+    private void addConstantTag(ClassDef classDef, DexField df, Field sf) {
       Tag tag = null;
-      
-      EncodedArrayItem fieldInitsArray = classDef.getStaticFieldInitializers();
-      if (null == fieldInitsArray)
-        return;
-      final EncodedValue[]  fieldInits = fieldInitsArray.getEncodedArray().values;
-      
-      if (fieldInits.length < fieldIndex + 1) { // put default value 0/null
-        Type t = df.fieldType.toSoot();
-        if (t instanceof IntType || t instanceof CharType || t instanceof ByteType || t instanceof BooleanType) {
-          tag = new IntegerConstantValueTag(0);
-        } else if (t.toString().equals("java.lang.String")) {
-          G.v().out.println("warning: final static String initialized to null!");
-        }
-        
-        if (tag != null)
-          df.tags.add(tag);
-        return;
+
+      EncodedValue ev = sf.getInitialValue();
+
+      if (ev instanceof BooleanEncodedValue) {
+        tag = new IntegerConstantValueTag(((BooleanEncodedValue) ev).getValue() ==true?1:0);
+      } else if (ev instanceof ByteEncodedValue) {
+        tag = new IntegerConstantValueTag(((ByteEncodedValue) ev).getValue());
+      } else if (ev instanceof CharEncodedValue) {
+        tag = new IntegerConstantValueTag(((CharEncodedValue) ev).getValue());
+      } else if (ev instanceof DoubleEncodedValue) {
+        tag = new DoubleConstantValueTag(((DoubleEncodedValue) ev).getValue());
+      } else if (ev instanceof FloatEncodedValue) {
+        tag = new FloatConstantValueTag(((FloatEncodedValue) ev).getValue());
+      } else if (ev instanceof IntEncodedValue) {
+        tag = new IntegerConstantValueTag(((IntEncodedValue) ev).getValue());
+      } else if (ev instanceof LongEncodedValue) {
+        tag = new LongConstantValueTag(((LongEncodedValue) ev).getValue());
+      } else if (ev instanceof ShortEncodedValue) {
+        tag = new IntegerConstantValueTag(((ShortEncodedValue) ev).getValue());
+      } else if (ev instanceof StringEncodedValue) {
+        tag = new StringConstantValueTag(((StringEncodedValue) ev).getValue());
       }
 
-      EncodedValue ev = fieldInits[fieldIndex];
-      
-      if (ev instanceof BooleanEncodedValue) {
-        tag = new IntegerConstantValueTag(((BooleanEncodedValue) ev).value==true?1:0);
-      } else if (ev instanceof ByteEncodedValue) {
-        tag = new IntegerConstantValueTag(((ByteEncodedValue) ev).value);
-      } else if (ev instanceof CharEncodedValue) {
-        tag = new IntegerConstantValueTag(((CharEncodedValue) ev).value);
-      } else if (ev instanceof DoubleEncodedValue) {
-        tag = new DoubleConstantValueTag(((DoubleEncodedValue) ev).value);
-      } else if (ev instanceof FloatEncodedValue) {
-        tag = new FloatConstantValueTag(((FloatEncodedValue) ev).value);
-      } else if (ev instanceof IntEncodedValue) {
-        tag = new IntegerConstantValueTag(((IntEncodedValue) ev).value);
-      } else if (ev instanceof LongEncodedValue) {
-        tag = new LongConstantValueTag(((LongEncodedValue) ev).value);
-      } else if (ev instanceof ShortEncodedValue) {
-        tag = new IntegerConstantValueTag(((ShortEncodedValue) ev).value);
-      } else if (ev instanceof StringEncodedValue) {
-        tag = new StringConstantValueTag(((StringEncodedValue) ev).value.getStringValue());
-      }
-      
       if (tag != null)
         df.tags.add(tag);
 
     }
-    
+
     /**
      *
      * @return modifiers of the class
@@ -217,7 +175,7 @@ public class DexClass {
         return this.name;
     }
 
-    public TypeIdItem getType() {
+    public String getType() {
         return type;
     }
 
@@ -251,7 +209,7 @@ public class DexClass {
     public Set<DexField> getDeclaredFields() {
         return this.fields;
     }
-    
+
     public DexField getFieldByName(String fname) {
       DexField f = null;
       for (DexField df: getDeclaredFields()) {

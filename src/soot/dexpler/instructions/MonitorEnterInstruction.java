@@ -24,8 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.Local;
 import soot.dexpler.DexBody;
@@ -42,7 +42,7 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
     }
 
     public void jimplify (DexBody body) {
-        int reg = ((SingleRegisterInstruction) instruction).getRegisterA();
+        int reg = ((OneRegisterInstruction) instruction).getRegisterA();
         Local object = body.getRegisterLocal(reg);
         enterMonitorStmt = Jimple.v().newEnterMonitorStmt(object);
         setUnit(enterMonitorStmt);

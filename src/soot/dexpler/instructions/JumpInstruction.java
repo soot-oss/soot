@@ -24,8 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.OffsetInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OffsetInstruction;
 
 import soot.Unit;
 import soot.dexpler.DexBody;
@@ -39,7 +39,7 @@ public abstract class JumpInstruction extends DexlibAbstractInstruction {
     }
 
     protected DexlibAbstractInstruction getTargetInstruction(DexBody body) {
-        int offset = ((OffsetInstruction) instruction).getTargetAddressOffset();
+        int offset = ((OffsetInstruction) instruction).getCodeOffset();
         int targetAddress = codeAddress + offset;
         targetInstruction = body.instructionAtAddress(targetAddress);
         return targetInstruction;

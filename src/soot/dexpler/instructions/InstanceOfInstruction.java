@@ -27,11 +27,11 @@ package soot.dexpler.instructions;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction22c;
+import org.jf.dexlib2.iface.reference.TypeReference;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 
 import soot.Type;
 import soot.dexpler.DexBody;
@@ -55,7 +55,7 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
         int dest = i.getRegisterA();
         int source = i.getRegisterB();
         
-        Type t = DexType.toSoot((TypeIdItem)(i.getReferencedItem()));
+        Type t = DexType.toSoot((TypeReference)(i.getReference()));
 
         InstanceOfExpr e = Jimple.v().newInstanceOfExpr(body.getRegisterLocal(source), t);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), e);
@@ -66,7 +66,7 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
@@ -80,10 +80,10 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
 
     @Override
     public Set<DexType> introducedTypes() {
-        InstructionWithReference i = (InstructionWithReference) instruction;
+        ReferenceInstruction i = (ReferenceInstruction) instruction;
 
         Set<DexType> types = new HashSet<DexType>();
-        types.add(new DexType((TypeIdItem) i.getReferencedItem()));
+        types.add(new DexType((TypeReference) i.getReference()));
         return types;
     }
 }

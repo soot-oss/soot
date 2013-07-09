@@ -29,7 +29,7 @@ package soot.dexpler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib.ClassDataItem;
+import org.jf.dexlib2.iface.Field;
 
 import soot.SootField;
 import soot.tagkit.Tag;
@@ -49,11 +49,11 @@ public class DexField {
     /**
      * Constructor building all relevant information
      */
-    public DexField(ClassDataItem.EncodedField field, DexClass dexClass) {
-        this.name = field.field.getFieldName().getStringValue();
+    public DexField(Field field, DexClass dexClass) {
+        this.name = field.getName();
         this.dexClass = dexClass;
-        this.accessFlags = field.accessFlags;
-        this.fieldType = new DexType(field.field.getFieldType());
+        this.accessFlags = field.getAccessFlags();
+        this.fieldType = new DexType(field.getType());
         dexClass.types.add(fieldType);
     }
 

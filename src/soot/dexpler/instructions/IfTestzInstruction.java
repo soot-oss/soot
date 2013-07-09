@@ -24,8 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.Instruction21t;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction21t;
 
 import soot.IntType;
 import soot.dexpler.DexBody;
@@ -55,7 +55,7 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 		  BinopExpr condition = (BinopExpr) jif.getCondition();
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-           int op = instruction.opcode.value;
+           int op = instruction.getOpcode().value;
            switch (op) {
            case 0x38:
            case 0x39:

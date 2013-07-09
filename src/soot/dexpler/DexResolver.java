@@ -78,6 +78,7 @@ public class DexResolver {
 
         // all types for signature level
         for (DexType t : c.getAllTypes()) {
+            System.out.println(t.name+ "  "+ t.type);
             deps.typesToSignature.add(t.toSoot());
         }
 

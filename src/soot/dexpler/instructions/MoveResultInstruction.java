@@ -24,8 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
@@ -49,7 +49,7 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 //        if (local != null && expr != null)
 //            throw new RuntimeException("Both local and expr are set to move.");
 
-        int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
+        int dest = ((OneRegisterInstruction)instruction).getRegisterA();
 
 //        if (local != null)
 //            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), local);
@@ -67,7 +67,7 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           JAssignStmt jassign = (JAssignStmt)assign;
           dalvikTyper.captureAssign(jassign, op);
         }
@@ -85,7 +85,7 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }

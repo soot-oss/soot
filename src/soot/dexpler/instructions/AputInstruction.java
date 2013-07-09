@@ -24,9 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.ArrayType;
 import soot.Local;
@@ -61,7 +61,7 @@ public class AputInstruction extends FieldInstruction {
 
         Local sourceValue = body.getRegisterLocal(source);
         assign = getAssignStmt(body, sourceValue, arrayRef);
-        if (aPutInstr.opcode.value == Opcode.APUT_OBJECT.value)
+        if (aPutInstr.getOpcode().value == Opcode.APUT_OBJECT.value)
           assign.addTag(new ObjectOpTag());
         
         setUnit(assign);
@@ -71,7 +71,7 @@ public class AputInstruction extends FieldInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }

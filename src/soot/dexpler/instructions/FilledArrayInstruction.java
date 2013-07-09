@@ -27,9 +27,9 @@ package soot.dexpler.instructions;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.Local;
 import soot.dexpler.DexBody;
@@ -54,10 +54,10 @@ public abstract class FilledArrayInstruction extends DexlibAbstractInstruction i
 
     @Override
     public Set<DexType> introducedTypes() {
-        InstructionWithReference i = (InstructionWithReference) instruction;
+        ReferenceInstruction i = (ReferenceInstruction) instruction;
 
         Set<DexType> types = new HashSet<DexType>();
-        types.add(new DexType((TypeIdItem) i.getReferencedItem()));
+        types.add(new DexType((TypeReference) i.getReference()));
         return types;
     }
 

@@ -24,9 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.ThreeRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ThreeRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.Local;
 import soot.Value;
@@ -72,7 +73,7 @@ public class BinopInstruction extends TaggedInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           if (!(op >= 0x90 && op <= 0xaf)) {
             throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0x90 and 0xaf.");
           }
@@ -85,7 +86,8 @@ public class BinopInstruction extends TaggedInstruction {
     }
 
     private Value getExpression(Local source1, Local source2) {
-        switch(instruction.opcode) {
+        Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case ADD_LONG:
           setTag (new LongOpTag());
           return Jimple.v().newAddExpr(source1, source2);
@@ -194,7 +196,7 @@ public class BinopInstruction extends TaggedInstruction {
             return Jimple.v().newUshrExpr(source1, source2);
 
         default :
-            throw new RuntimeException("Invalid Opcode: " + instruction.opcode);
+            throw new RuntimeException("Invalid Opcode: " + opcode);
         }
     }
 

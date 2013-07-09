@@ -28,7 +28,7 @@ package soot.dexpler.instructions;
 import java.util.Collections;
 import java.util.Set;
 
-import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.DoubleType;
 import soot.FloatType;

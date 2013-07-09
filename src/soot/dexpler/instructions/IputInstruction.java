@@ -24,10 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.FieldIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 
 import soot.Local;
 import soot.Type;
@@ -51,7 +51,7 @@ public class IputInstruction extends FieldInstruction {
         TwoRegisterInstruction i = (TwoRegisterInstruction)instruction;
         int source = i.getRegisterA();
         int object = i.getRegisterB();
-        FieldIdItem f = (FieldIdItem)((InstructionWithReference)instruction).getReferencedItem();
+        FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
         InstanceFieldRef instanceField = Jimple.v().newInstanceFieldRef(body.getRegisterLocal(object),
                              getSootFieldRef(f));
         Local sourceValue = body.getRegisterLocal(source);
@@ -63,14 +63,14 @@ public class IputInstruction extends FieldInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 
     @Override
     protected Type getTargetType(DexBody body) {
-        FieldIdItem f = (FieldIdItem)((InstructionWithReference) instruction).getReferencedItem();
-        return DexType.toSoot(f.getFieldType());
+        FieldReference f = (FieldReference)((ReferenceInstruction) instruction).getReference();
+        return DexType.toSoot(f.getType());
     }
 }

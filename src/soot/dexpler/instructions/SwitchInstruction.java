@@ -24,9 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.OffsetInstruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OffsetInstruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.Local;
 import soot.Unit;
@@ -55,8 +55,8 @@ public abstract class SwitchInstruction extends PseudoInstruction implements Def
     }
     
     public void deferredJimplify(DexBody body) {
-        int keyRegister = ((SingleRegisterInstruction) instruction).getRegisterA();
-        int offset = ((OffsetInstruction) instruction).getTargetAddressOffset();
+        int keyRegister = ((OneRegisterInstruction) instruction).getRegisterA();
+        int offset = ((OffsetInstruction) instruction).getCodeOffset();
         Local key = body.getRegisterLocal(keyRegister);
         int targetAddress = codeAddress + offset;
         Instruction targetData = body.instructionAtAddress(targetAddress).instruction;

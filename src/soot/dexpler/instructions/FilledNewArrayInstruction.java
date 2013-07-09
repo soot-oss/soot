@@ -26,9 +26,9 @@ package soot.dexpler.instructions;
 
 import static soot.dexpler.Util.isFloatLike;
 
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.Instruction35c;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
+import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.Type;
@@ -60,15 +60,15 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
                       filledNewArrayInstr.getRegisterE(),
                       filledNewArrayInstr.getRegisterF(),
                       filledNewArrayInstr.getRegisterG(),
-                      filledNewArrayInstr.getRegisterA()
+                      filledNewArrayInstr.getRegisterC()
                      };
 
 //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
 //        body.add(nopStmtBeginning);
 
-        int usedRegister = filledNewArrayInstr.getRegCount();
+        int usedRegister = filledNewArrayInstr.getRegisterCount();
 
-        Type t = DexType.toSoot((TypeIdItem) filledNewArrayInstr.getReferencedItem());
+        Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
 
@@ -95,7 +95,7 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
     
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
         }
 
@@ -105,7 +105,7 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
     @Override
     boolean isUsedAsFloatingPoint(DexBody body, int register) {
         Instruction35c i = (Instruction35c) instruction;
-        Type arrayType = DexType.toSoot((TypeIdItem) i.getReferencedItem());
+        Type arrayType = DexType.toSoot((TypeReference) i.getReference());
         return isRegisterUsed(register) && isFloatLike(arrayType);
     }
 
@@ -119,7 +119,7 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
             register == i.getRegisterE() ||
             register == i.getRegisterF() ||
             register == i.getRegisterG() ||
-            register == i.getRegisterA();
+            register == i.getRegisterC();
     }
 
 

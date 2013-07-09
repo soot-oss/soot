@@ -24,9 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.ThreeRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ThreeRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.DoubleType;
 import soot.FloatType;
@@ -66,8 +67,9 @@ public class CmpInstruction extends TaggedInstruction {
         Local second = body.getRegisterLocal(cmpInstr.getRegisterC());
 
         //Expr cmpExpr;
-        //Type type = null;
-        switch (instruction.opcode) {
+        //Type type = null
+        Opcode opcode = instruction.getOpcode();
+        switch (opcode) {
         case CMPL_DOUBLE:
           setTag (new DoubleOpTag());
           type = DoubleType.v();
@@ -94,7 +96,7 @@ public class CmpInstruction extends TaggedInstruction {
           cmpExpr = Jimple.v().newCmpExpr(first, second);
           break;
         default:
-            System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(instruction.opcode.value));
+            System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(opcode.value));
             System.exit(-1);
             cmpExpr = Jimple.v().newCmpExpr(first, second);
         }

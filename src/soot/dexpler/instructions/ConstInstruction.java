@@ -24,9 +24,11 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.LiteralInstruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.WideLiteralInstruction;
 
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
@@ -48,7 +50,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
     }
 
     public void jimplify (DexBody body) {
-        int dest = ((SingleRegisterInstruction) instruction).getRegisterA();
+        int dest = ((OneRegisterInstruction) instruction).getRegisterA();
 
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), getConstant(dest, body));
         setUnit(assign);
@@ -58,7 +60,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
@@ -70,10 +72,20 @@ public class ConstInstruction extends DexlibAbstractInstruction {
      * @param body the body containing the instruction
      */
     private Constant getConstant(int dest, DexBody body) {
-        long literal = ((LiteralInstruction) instruction).getLiteral();
-        boolean isFloatingPoint = false; // this is done later in DexBody by calling DexNumtransformer
 
-        switch (instruction.opcode) {
+        long literal = 0;
+
+        if (instruction instanceof WideLiteralInstruction) {
+            literal = ((WideLiteralInstruction)instruction).getWideLiteral();
+        } else if (instruction instanceof NarrowLiteralInstruction) {
+            literal = ((NarrowLiteralInstruction)instruction).getNarrowLiteral();
+        } else {
+            throw new RuntimeException("literal error: expected narrow or wide literal.");
+        }
+
+        boolean isFloatingPoint = false; // this is done later in DexBody by calling DexNumtransformer
+        Opcode opcode = instruction.getOpcode();
+        switch (opcode) {
         case CONST:
         case CONST_4:
         case CONST_16:
@@ -82,10 +94,10 @@ public class ConstInstruction extends DexlibAbstractInstruction {
             return IntConstant.v((int) literal);
 
         case CONST_HIGH16:
-            return IntConstant.v((int) literal << 16);
+            return IntConstant.v((int) literal);
 
         case CONST_WIDE_HIGH16:
-            return LongConstant.v(literal << 48);
+            return LongConstant.v(literal);
 
         case CONST_WIDE:
         case CONST_WIDE_16:
@@ -101,7 +113,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }
