@@ -26,21 +26,22 @@
 
 
 package soot;
-import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.options.*;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
-import polyglot.util.StdErrorQueue;
-
-import soot.JastAddJ.ASTNode;
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
-import soot.JastAddJ.JavaParser;
 import soot.JastAddJ.JastAddJavaParser;
+import soot.JastAddJ.JavaParser;
 import soot.JastAddJ.Program;
+import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
@@ -119,10 +120,20 @@ public class SootResolver
      * been resolved, just returns the class that was already resolved.
      * */
     public SootClass resolveClass(String className, int desiredLevel) {
-        SootClass resolvedClass = makeClassRef(className);
-        addToResolveWorklist(resolvedClass, desiredLevel);
-        processResolveWorklist();
-        return resolvedClass;
+    	SootClass resolvedClass = null;
+    	try{
+			resolvedClass = makeClassRef(className);
+	        addToResolveWorklist(resolvedClass, desiredLevel);
+	        processResolveWorklist();
+	        return resolvedClass;
+    	} catch(SootClassNotFoundException e) {
+    		//remove unresolved class and rethrow
+    		if(resolvedClass!=null) {
+    			assert resolvedClass.resolvingLevel()==SootClass.DANGLING;
+    			Scene.v().removeClass(resolvedClass);
+    		}
+    		throw e;
+    	}
     }
 
     /** Resolve all classes on toResolveWorklist. */
@@ -202,7 +213,7 @@ public class SootResolver
             				"java -cp sootclasses.jar soot.Main -cp " +
             				".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
             	}
-                throw new RuntimeException("couldn't find class: " +
+                throw new SootClassNotFoundException("couldn't find class: " +
                     className + " (is your soot-class-path set properly?)"+suffix);
             } else {
                 G.v().out.println(
@@ -326,6 +337,12 @@ public class SootResolver
 
 	public Program getProgram() {
 		return program;
+	}
+	
+	private class SootClassNotFoundException extends RuntimeException {
+		private SootClassNotFoundException(String s) {
+			super(s);
+		}		
 	}
 }
 
