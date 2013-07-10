@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,13 +35,13 @@ import soot.SootResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 public class DexResolver {
-	
+
 	private Map<File,DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
-	
+
     public DexResolver(Singletons.Global g) {}
 
     public static DexResolver v() { return G.v().soot_dexpler_DexResolver(); }
-	
+
     /**
      * Resolve the class contained in file into the passed soot class.
      *
@@ -78,7 +78,6 @@ public class DexResolver {
 
         // all types for signature level
         for (DexType t : c.getAllTypes()) {
-            System.out.println(t.name+ "  "+ t.type);
             deps.typesToSignature.add(t.toSoot());
         }
 
@@ -108,6 +107,6 @@ public class DexResolver {
             tag = new soot.tagkit.SourceFileTag();
             sc.addTag(tag);
         }
-        tag.setSourceFile(fileName); 
+        tag.setSourceFile(fileName);
     }
 }
