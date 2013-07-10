@@ -158,12 +158,9 @@ public class DexBody  {
         isStatic = Modifier.isStatic(method.getAccessFlags());
 
         numRegisters = code.getRegisterCount();
-        numParameterRegisters = MethodUtil.getParameterRegisterCount(method); //TODO: still needed?
+        numParameterRegisters = MethodUtil.getParameterRegisterCount(method);
         if (!isStatic)
             numParameterRegisters--;
-        System.out.println("parameter register count: "+ numParameterRegisters +"("+ numRegisters + ")");
-
-
 
         instructions = new ArrayList<DexlibAbstractInstruction>();
         instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
@@ -477,7 +474,7 @@ public class DexBody  {
 	       will not be split. Hence we remove all dead code here.
          */
 
-        System.out.println("body before any transformation : \n"+ jBody);
+        Debug.printDbg("body before any transformation : \n", jBody);
 
 		UnreachableCodeEliminator.v().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
