@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,10 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
 
 import soot.Local;
 import soot.Type;
@@ -42,7 +42,7 @@ import soot.jimple.internal.JAssignStmt;
 public class IputInstruction extends FieldInstruction {
 
     AssignStmt assign = null;
-  
+
     public IputInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -59,7 +59,7 @@ public class IputInstruction extends FieldInstruction {
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        
+
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {

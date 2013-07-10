@@ -94,7 +94,7 @@ public class DexlibWrapper {
         }
 
 //		for (TypeIdItem t: this.dexFile.TypeIdsSection.getItems()) {
-//			DexType dt = new DexType (t);
+//			Type dt = new Type (t);
 //			Type st = dt.toSoot();
 //			if (st instanceof ArrayType) {
 //				st = ((ArrayType) st).baseType;

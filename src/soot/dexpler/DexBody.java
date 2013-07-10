@@ -158,12 +158,9 @@ public class DexBody  {
         isStatic = Modifier.isStatic(method.getAccessFlags());
 
         numRegisters = code.getRegisterCount();
-        numParameterRegisters = MethodUtil.getParameterRegisterCount(method); //TODO: still needed?
+        numParameterRegisters = MethodUtil.getParameterRegisterCount(method);
         if (!isStatic)
             numParameterRegisters--;
-        System.out.println("parameter register count: "+ numParameterRegisters +"("+ numRegisters + ")");
-
-
 
         instructions = new ArrayList<DexlibAbstractInstruction>();
         instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
@@ -207,8 +204,8 @@ public class DexBody  {
     /**
      * Return the types that are used in this body.
      */
-    public Set<DexType> usedTypes() {
-        Set<DexType> types = new HashSet<DexType>();
+    public Set<Type> usedTypes() {
+        Set<Type> types = new HashSet<Type>();
         for (DexlibAbstractInstruction i : instructions)
             types.addAll(i.introducedTypes());
 
@@ -219,7 +216,7 @@ public class DexBody  {
 		            String exType = handler.getExceptionType();
 		            if (exType == null) // for handler which capture all Exceptions
 		                continue;
-		            types.add(new DexType(exType));
+		            types.add(DexType.toSoot(exType));
 		        }
 	        }
         }
@@ -460,6 +457,20 @@ public class DexBody  {
         if (tries != null)
             addTraps();
 
+        // At this point Jimple code is generated
+        // Cleaning...
+
+        instructions = null;
+        //registerLocals = null;
+        //storeResultLocal = null;
+        instructionAtAddress.clear();
+        //localGenerator = null;
+        deferredInstructions = null;
+        //instructionsToRetype = null;
+        dangling = null;
+        parameterTypes = null;
+        tries = null;
+
         /* We eliminate dead code. Dead code has been shown to occur under the following
          * circumstances.
          *
@@ -477,7 +488,7 @@ public class DexBody  {
 	       will not be split. Hence we remove all dead code here.
          */
 
-        System.out.println("body before any transformation : \n"+ jBody);
+        Debug.printDbg("body before any transformation : \n", jBody);
 
 		UnreachableCodeEliminator.v().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
@@ -493,17 +504,17 @@ public class DexBody  {
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
 
-        {
-          // remove instructions from instructions list
-          List<DexlibAbstractInstruction> iToRemove = new ArrayList<DexlibAbstractInstruction>();
-          for (DexlibAbstractInstruction i: instructions)
-            if (!jBody.getUnits().contains(i.getUnit()))
-              iToRemove.add(i);
-          for (DexlibAbstractInstruction i: iToRemove) {
-            Debug.printDbg("removing dexinstruction containing unit '", i.getUnit() ,"'");
-            instructions.remove(i);
-          }
-        }
+//        {
+//          // remove instructions from instructions list
+//          List<DexlibAbstractInstruction> iToRemove = new ArrayList<DexlibAbstractInstruction>();
+//          for (DexlibAbstractInstruction i: instructions)
+//            if (!jBody.getUnits().contains(i.getUnit()))
+//              iToRemove.add(i);
+//          for (DexlibAbstractInstruction i: iToRemove) {
+//            Debug.printDbg("removing dexinstruction containing unit '", i.getUnit() ,"'");
+//            instructions.remove(i);
+//          }
+//        }
 
         if (IDalvikTyper.ENABLE_DVKTYPER) {
           for(DexlibAbstractInstruction instruction : instructions) {

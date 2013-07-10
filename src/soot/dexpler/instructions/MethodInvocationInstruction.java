@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,12 +32,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
+import org.jf.dexlib2.iface.reference.MethodReference;
 
 import soot.Local;
 import soot.RefType;
@@ -86,7 +85,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             body.add(invoke);
             unit = invoke;
         }
-        
+
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
@@ -106,16 +105,16 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         }
     }
 
-    public Set<DexType> introducedTypes() {
-        Set<DexType> types = new HashSet<DexType>();
+    public Set<Type> introducedTypes() {
+        Set<Type> types = new HashSet<Type>();
         MethodReference method = (MethodReference) (((ReferenceInstruction) instruction).getReference());
 
-        types.add(new DexType(method.getDefiningClass()));
-        types.add(new DexType(method.getReturnType()));
+        types.add(DexType.toSoot(method.getDefiningClass()));
+        types.add(DexType.toSoot(method.getReturnType()));
         List<? extends CharSequence> paramTypes = method.getParameterTypes();
         if (paramTypes != null)
             for (CharSequence type : paramTypes)
-                types.add(new DexType(type.toString()));
+                types.add(DexType.toSoot(type.toString()));
 
         return types;
     }
@@ -209,7 +208,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     private SootMethodRef getSootMethodRef(boolean isStatic) {
         MethodReference mItem = (MethodReference) ((ReferenceInstruction) instruction).getReference();
         String tItem = mItem.getDefiningClass();
- 
+
         String className = tItem;
         Debug.printDbg("tItem: ", tItem ," class name: ", className);
           if (className.startsWith("[")) {
@@ -217,7 +216,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
           } else {
             className = dottedClassName (tItem);
           }
-        
+
         SootClass sc = SootResolver.v().makeClassRef(className);
         String methodName = mItem.getName();
 
@@ -257,7 +256,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
         Debug.printDbg(" [methodIdItem]: ", item);
         Debug.printDbg(" params types:");
-        if (paramTypes != null) {       
+        if (paramTypes != null) {
           for (CharSequence t: paramTypes) {
             Debug.printDbg(" t: ", t);
           }
