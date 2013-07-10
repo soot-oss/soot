@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,8 +30,6 @@ import static soot.dexpler.Util.isFloatLike;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
@@ -90,7 +88,7 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
                                       DexType.toSoot(fref.getType()),
                                       isStatic);
     }
-    
+
     /**
      * Check if the field type equals the type of the value that will be stored in the field. A cast expression has to be introduced for the unequal case.
      * @return assignment statement which hold a cast or not depending on the types of the operation
@@ -144,8 +142,8 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
     }
 
     @Override
-    public Set<DexType> introducedTypes() {
-        Set<DexType> types = new HashSet<DexType>();
+    public Set<Type> introducedTypes() {
+        Set<Type> types = new HashSet<Type>();
         // Aput instructions don't have references
         if (!(instruction instanceof ReferenceInstruction))
             return types;
@@ -154,8 +152,8 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
 
         FieldReference field = (FieldReference) i.getReference();
 
-        types.add(new DexType(field.getType()));
-        types.add(new DexType(field.getDefiningClass()));
+        types.add(DexType.toSoot(field.getType()));
+        types.add(DexType.toSoot(field.getDefiningClass()));
         return types;
     }
 }

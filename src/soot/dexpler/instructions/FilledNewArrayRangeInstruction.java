@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -94,8 +94,8 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
     }
 
     @Override
-    public void getConstraint(IDalvikTyper dalvikTyper) { 
+    public void getConstraint(IDalvikTyper dalvikTyper) {
     }
-    
+
     // dalvikTyper here?
 }

@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,6 @@ package soot.dexpler.instructions;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
@@ -51,7 +50,7 @@ import soot.jimple.internal.JAssignStmt;
 public class NewArrayInstruction extends DexlibAbstractInstruction {
 
     AssignStmt assign = null;
-  
+
     public NewArrayInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -79,7 +78,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        
+
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
@@ -99,11 +98,11 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
     }
 
     @Override
-    public Set<DexType> introducedTypes() {
+    public Set<Type> introducedTypes() {
         ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-        Set<DexType> types = new HashSet<DexType>();
-        types.add(new DexType((TypeReference) i.getReference()));
+        Set<Type> types = new HashSet<Type>();
+        types.add(DexType.toSoot((TypeReference) i.getReference()));
         return types;
     }
 }

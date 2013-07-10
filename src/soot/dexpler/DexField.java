@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,6 +32,7 @@ import java.util.List;
 import org.jf.dexlib2.iface.Field;
 
 import soot.SootField;
+import soot.Type;
 import soot.tagkit.Tag;
 
 /**
@@ -43,7 +44,7 @@ public class DexField {
     protected String name;
     protected int accessFlags;
     protected DexClass dexClass;
-    protected DexType fieldType;
+    protected Type fieldType;
     protected List<Tag> tags = new ArrayList<Tag>();
 
     /**
@@ -53,7 +54,7 @@ public class DexField {
         this.name = field.getName();
         this.dexClass = dexClass;
         this.accessFlags = field.getAccessFlags();
-        this.fieldType = new DexType(field.getType());
+        this.fieldType = DexType.toSoot(field.getType());
         dexClass.types.add(fieldType);
     }
 
@@ -90,7 +91,7 @@ public class DexField {
      * @return the soot equivalent of a field
      */
     public SootField toSoot() {
-        SootField sf = new SootField(name, fieldType.toSoot(), accessFlags);
+        SootField sf = new SootField(name, fieldType, accessFlags);
         for (Tag t: tags)
           sf.addTag(t);
         return sf;

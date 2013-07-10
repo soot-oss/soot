@@ -31,7 +31,10 @@ import java.util.TreeMap;
 import soot.G;
 import soot.Singletons;
 import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
 import soot.SootResolver;
+import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 public class DexResolver {
@@ -77,18 +80,18 @@ public class DexResolver {
         deps.typesToHierarchy.add(superClass.getType());
 
         // all types for signature level
-        for (DexType t : c.getAllTypes()) {
-            deps.typesToSignature.add(t.toSoot());
+        for (Type t : c.getAllTypes()) {
+            deps.typesToSignature.add(t);
         }
 
         // fields
-        for (DexField f : c.getDeclaredFields()) {
-            sc.addField(f.toSoot());
+        for (SootField sf : c.getDeclaredFields()) {
+            sc.addField(sf);
         }
 
         // methods
-        for (DexMethod m : c.getDeclaredMethods()) {
-            sc.addMethod(m.toSoot());
+        for (SootMethod sm : c.getDeclaredMethods()) {
+            sc.addMethod(sm);
         }
 
         addSourceFileTag(sc, file.getAbsolutePath());

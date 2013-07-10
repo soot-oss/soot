@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ import soot.jimple.internal.JAssignStmt;
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
     AssignStmt assign = null;
-  
+
     public FilledNewArrayInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -88,11 +88,11 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
 //      body.add(nopStmtEnd);
 //      defineBlock(nopStmtBeginning, nopStmtEnd);
       setUnit (assign);
-      
+
 //      body.setDanglingInstruction(this);
 
 		}
-    
+
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
           int op = (int)instruction.getOpcode().value;

@@ -54,15 +54,15 @@ public class DexMethod {
     protected DexClass dexClass;
     protected int accessFlags;
     protected List<String> thrownExceptions;
-    protected DexType returnType;
-    protected List<DexType> parameterTypes;
+    protected Type returnType;
+    protected List<Type> parameterTypes;
 
     private DexBody dexBody;
 
     public DexMethod(String dexFile, Method method, DexClass dexClass) {
         this.dexClass = dexClass;
         this.accessFlags = method.getAccessFlags();
-        parameterTypes = new ArrayList<DexType>();
+        parameterTypes = new ArrayList<Type>();
         // get the name of the method
         this.name = method.getName();
         Debug.printDbg("processing method '", method.getDefiningClass() ,": ", method.getReturnType(), " ", method.getName(), " p: ", method.getParameters(), "'");
@@ -90,14 +90,14 @@ public class DexMethod {
             List<? extends CharSequence> parameters = method.getParameterTypes();
 
             for(CharSequence t : parameters) {
-                DexType type = new DexType(t.toString());
+                Type type = DexType.toSoot(t.toString());
                 this.parameterTypes.add(type);
                 dexClass.types.add(type);
             }
         }
 
         // retrieve the return type of this method
-        returnType = new DexType(method.getReturnType());
+        returnType = DexType.toSoot(method.getReturnType());
         dexClass.types.add(this.returnType);
 
         // if the method is abstract or native, no code needs to be transformed
@@ -110,7 +110,7 @@ public class DexMethod {
 //        if(debugInfo!=null) {
 //			for(Item<?> item : debugInfo.getReferencedItems()) {
 //	            if (item instanceof TypeIdItem) {
-//	                DexType type = new DexType((TypeIdItem) item);
+//	                Type type = DexType.toSoot((TypeIdItem) item);
 //	                dexClass.types.add(type);
 //	            }
 //
@@ -120,7 +120,7 @@ public class DexMethod {
         //add the body of this code item
         dexBody = new DexBody(dexFile, method, (RefType) DexType.toSoot(dexClass.getType()));
 
-        for (DexType t : dexBody.usedTypes())
+        for (Type t : dexBody.usedTypes())
             dexClass.types.add(t);
     }
     /**
@@ -147,7 +147,7 @@ public class DexMethod {
      *
      * @return the return type of the method
      */
-    public DexType getReturnType() {
+    public Type getReturnType() {
         return this.returnType;
     }
     /**
@@ -171,7 +171,7 @@ public class DexMethod {
      *
      * @return a list of types that the parameters of this method use
      */
-    public List<DexType> getParameterTypes() {
+    public List<Type> getParameterTypes() {
         return this.parameterTypes;
     }
 
@@ -181,8 +181,8 @@ public class DexMethod {
      */
     public SootMethod toSoot() {
         List<Type> parameters = new ArrayList<Type>();
-        for(DexType t : parameterTypes) {
-            parameters.add(t.toSoot());
+        for(Type t : parameterTypes) {
+            parameters.add(t);
         }
         List<SootClass> exceptions = new ArrayList<SootClass>();
         for (String exceptionName : thrownExceptions()) {
@@ -191,7 +191,7 @@ public class DexMethod {
         }
 
         //Build soot method by all available parameters
-        SootMethod m = new SootMethod(name, parameters, returnType.toSoot(),
+        SootMethod m = new SootMethod(name, parameters, returnType,
                                       accessFlags, exceptions);
         if (dexBody != null) {
             // sets the method source by adding its body as the active body
