@@ -74,6 +74,7 @@ import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
@@ -611,14 +612,25 @@ public class DexBody  {
         //LocalPacker.v().transform(jBody);
         //LocalNameStandardizer.v().transform(jBody);
         CopyPropagator.v().transform(jBody);
+
+        // Remove if (null == null) goto x else <madness>. We can only do this
+        // after we have run the constant propagation as we might not be able
+        // to statically decide the conditions earlier.
+        ConditionalBranchFolder.v().transform(jBody);
+        
+        // We need to run this transformer since the conditional branch folder
+        // might have rendered some code unreachable (well, it was unreachable
+        // before as well, but we didn't know).
+        UnreachableCodeEliminator.v().transform(jBody);
+
         // we might have gotten new dead assignments and unused locals through
-        // copy propagation, so we have to do this again
+        // copy propagation and unreachable code elimination, so we have to do
+        // this again
         DeadAssignmentEliminator.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         //LocalPacker.v().transform(jBody);
         NopEliminator.v().transform(jBody);
-        //UnreachableCodeEliminator.v().transform(jBody);
-
+        
         for (Unit u: jBody.getUnits()) {
           if (u instanceof AssignStmt) {
             AssignStmt ass = (AssignStmt)u;
