@@ -394,8 +394,12 @@ public class SootMethod
     }
 
     public void setExceptions(List exceptions) {
-        this.exceptions = new ArrayList<SootClass>();
-        this.exceptions.addAll(exceptions);
+    	if (exceptions != null && !exceptions.isEmpty()) {
+	        this.exceptions = new ArrayList<SootClass>();
+	        this.exceptions.addAll(exceptions);
+	    }
+    	else
+    		this.exceptions = null;
     }
 
     /**
