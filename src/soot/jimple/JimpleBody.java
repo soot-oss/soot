@@ -25,10 +25,15 @@
 
 package soot.jimple;
 
-import soot.*;
-import soot.util.Chain;
+import java.util.Iterator;
 
-import java.util.*;
+import soot.Body;
+import soot.Local;
+import soot.RefType;
+import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
+import soot.util.Chain;
 
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody
@@ -65,9 +70,24 @@ public class JimpleBody extends StmtBody
     {
         super.validate();
         validateIdentityStatements();
+        
+        // A jimple body must contain a return statement
+        validateReturnStatement();
     }
     
     /**
+     * Checks that this Jimple body actually contains a return statement
+     */
+    private void validateReturnStatement() {
+		for (Unit u : this.getUnits())
+			if ((u instanceof ReturnStmt) || (u instanceof ReturnVoidStmt)
+					|| (u instanceof RetStmt)
+					|| (u instanceof ThrowStmt))
+				return;
+		throw new RuntimeException("Body does not contain a return statement");
+	}
+
+	/**
      * Checks the following invariants on this Jimple body:
      * <ol>
      * <li> this-references may only occur in instance methods
