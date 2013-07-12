@@ -226,4 +226,9 @@ public class RefType extends RefLikeType implements Comparable
     public void setAnySubType( AnySubType anySubType ) {
         this.anySubType = anySubType;
     }
+    
+    public boolean isAllowedInFinalCode() {
+    	return true;
+    }
+
 }

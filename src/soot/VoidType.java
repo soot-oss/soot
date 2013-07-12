@@ -52,4 +52,9 @@ public class VoidType extends Type
     {
         ((TypeSwitch) sw).caseVoidType(this);
     }
+    
+    public boolean isAllowedInFinalCode() {
+    	return true;
+    }
+
 }
