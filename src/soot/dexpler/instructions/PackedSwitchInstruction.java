@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,79 +27,53 @@ package soot.dexpler.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.OffsetInstruction;
-import org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction;
-import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.SwitchElement;
+import org.jf.dexlib2.iface.instruction.formats.PackedSwitchPayload;
 
+import soot.Immediate;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.LookupSwitchStmt;
 import soot.jimple.Stmt;
-import soot.jimple.TableSwitchStmt;
 
 public class PackedSwitchInstruction extends SwitchInstruction {
 
-    TableSwitchStmt switchStmt = null;
-  
+    LookupSwitchStmt switchStmt = null;
+
     public PackedSwitchInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
 
     protected Stmt switchStatement(DexBody body, Instruction targetData, Local key) {
-        PackedSwitchDataPseudoInstruction i = (PackedSwitchDataPseudoInstruction) targetData;
-        int[] targetAddresses = i.getTargets();
-        int lowIndex = i.getFirstKey();
-        int highIndex = lowIndex + targetAddresses.length - 1;
-        // the default target always follows the switch statement
-        int defaultTargetAddress = codeAddress + instruction.getSize(codeAddress);
-        Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
-        List<Unit> targets = new ArrayList<Unit>();
-        for(int address : targetAddresses)
-            targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
+        PackedSwitchPayload i = (PackedSwitchPayload) targetData;
+        List<? extends SwitchElement> seList = i.getSwitchElements();
 
-        switchStmt = Jimple.v().newTableSwitchStmt(key, lowIndex, highIndex, targets, defaultTarget);
+        // the default target always follows the switch statement
+        int defaultTargetAddress = codeAddress + instruction.getCodeUnits();
+        Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
+
+        List<Immediate> lookupValues = new ArrayList<Immediate>();
+        List<Unit> targets = new ArrayList<Unit>();
+        for(SwitchElement se: seList) {
+          lookupValues.add(IntConstant.v(se.getKey()));
+          int offset = se.getOffset();
+          targets.add(body.instructionAtAddress(codeAddress + offset).getUnit());
+        }
+        switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
         setUnit(switchStmt);
         return switchStmt;
     }
 
     @Override
     public void computeDataOffsets(DexBody body) {
-      int offset = ((OffsetInstruction) instruction).getTargetAddressOffset();
-      int targetAddress = codeAddress + offset;
-      Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
-      PackedSwitchDataPseudoInstruction psInst = (PackedSwitchDataPseudoInstruction) targetData;
-      int[] targetAddresses = psInst.getTargets();
-      int size = targetAddresses.length * 2; // @ are on 32bits
-      
-      // From org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction we learn
-      // that there are 2 bytes after the magic number that we have to jump.
-      // 2 bytes to jump = address + 1
-      //
-      //      out.writeByte(0x00); // magic
-      //      out.writeByte(0x01); // number
-      //      out.writeShort(targets.length); // 2 bytes
-      //      out.writeInt(firstKey);
-      
-      setDataFirstByte (targetAddress + 1);
-      setDataLastByte (targetAddress + 1 + size - 1);
-      setDataSize (size);
-      
-      ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
-      psInst.write(out, targetAddress);
-
-      byte[] outa = out.getArray();
-      byte[] data = new byte[outa.length-2];
-      for (int i=2; i<outa.length; i++) {
-        data[i-2] = outa[i];
-      }
-      setData (data);
-      
     }
-    
+
     public void getConstraint(IDalvikTyper dalvikTyper) {
       dalvikTyper.setType(switchStmt.getKeyBox(), IntType.v());
     }

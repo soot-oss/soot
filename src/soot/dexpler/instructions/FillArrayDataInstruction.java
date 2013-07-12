@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,18 +25,14 @@
 package soot.dexpler.instructions;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction;
-import org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction.ArrayElement;
-import org.jf.dexlib.Code.Format.Instruction22c;
-import org.jf.dexlib.Code.Format.Instruction31t;
-import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
-import org.jf.dexlib.Util.ByteArrayInput;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
+import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
+import org.jf.dexlib2.iface.instruction.formats.Instruction31t;
+import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -76,28 +72,28 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 
     Instruction31t fillArrayInstr = (Instruction31t)instruction;
     int destRegister = fillArrayInstr.getRegisterA();
-    int offset = fillArrayInstr.getTargetAddressOffset();
+    int offset = fillArrayInstr.getCodeOffset();
     int targetAddress = codeAddress + offset;
 
     Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
 
-    if(!(referenceTable instanceof ArrayDataPseudoInstruction)) {
+    if(!(referenceTable instanceof ArrayPayload)) {
       throw new RuntimeException("Address " + targetAddress + "refers to an invalid PseudoInstruction.");
     }
 
-    ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
-    int numElements = arrayTable.getElementCount();
+    ArrayPayload arrayTable = (ArrayPayload)referenceTable;
 
     //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
     //        body.add(nopStmtBeginning);
 
     Local arrayReference = body.getRegisterLocal(destRegister);
+    List<Number> elements = arrayTable.getArrayElements();
+    int numElements = elements.size();
 
-    Iterator<ArrayElement> elements = arrayTable.getElements();
     Stmt firstAssign = null;
     for (int i = 0; i < numElements; i++) {
       ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
-      NumericConstant element = getArrayElement(elements.next(),body,destRegister);
+      NumericConstant element = getArrayElement(elements.get(i),body,destRegister);
       if (element == null) //array was not defined -> element type can not be found (obfuscated bytecode?)
         break;
       AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
@@ -120,7 +116,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 
   }
 
-  private NumericConstant getArrayElement(ArrayElement element, DexBody body, int arrayRegister) {
+  private NumericConstant getArrayElement(Number element, DexBody body, int arrayRegister) {
 
     List<DexlibAbstractInstruction> instructions = body.instructionsBefore(this);
     Set<Integer> usedRegisters = new HashSet<Integer>();
@@ -137,7 +133,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
             NewArrayInstruction newArrayInstruction = (NewArrayInstruction) i;
             Instruction22c instruction22c = (Instruction22c)newArrayInstruction.instruction;
             if (instruction22c.getRegisterA()==reg) {
-              ArrayType arrayType = (ArrayType) DexType.toSoot((TypeIdItem) instruction22c.getReferencedItem());
+              ArrayType arrayType = (ArrayType) DexType.toSoot((TypeReference) instruction22c.getReference());
               elementType = arrayType.getElementType();
               break Outer;
             }
@@ -146,7 +142,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 //        // look for obsolete registers
 //        for (int reg : usedRegisters) {
 //          if (i.overridesRegister(reg)) {
-//            usedRegisters.remove(reg);            
+//            usedRegisters.remove(reg);
 //            break;      // there can't be more than one obsolete
 //          }
 //        }
@@ -169,26 +165,25 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     }
 
     NumericConstant value;
-    ByteArrayInput byteArray = new ByteArrayInput(element.buffer);
-    byteArray.setCursor(element.bufferIndex);
+
     if (elementType instanceof BooleanType) {
-      value = IntConstant.v(byteArray.readByte());
+      value = IntConstant.v(element.intValue());
       IntConstant ic = (IntConstant)value;
       if (!(ic.value == 0 || ic.value == 1)) {
         throw new RuntimeException("ERROR: Invalid value for boolean: "+ value);
       }
     } else if(elementType instanceof ByteType) {
-      value = IntConstant.v(byteArray.readByte());
+      value = IntConstant.v(element.byteValue());
     } else if(elementType instanceof CharType || elementType instanceof ShortType) {
-      value = IntConstant.v(byteArray.readShort());
+      value = IntConstant.v(element.shortValue());
     } else if(elementType instanceof DoubleType) {
-      value = DoubleConstant.v(byteArray.readLong());
+      value = DoubleConstant.v(element.doubleValue());
     } else if(elementType instanceof FloatType) {
-      value = FloatConstant.v(byteArray.readInt());
+      value = FloatConstant.v(element.floatValue());
     } else if(elementType instanceof IntType) {
-      value = IntConstant.v(byteArray.readInt());
+      value = IntConstant.v(element.intValue());
     } else if(elementType instanceof LongType) {
-      value = LongConstant.v(byteArray.readLong());
+      value = LongConstant.v(element.longValue());
     } else {
       throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
     }
@@ -204,20 +199,20 @@ public class FillArrayDataInstruction extends PseudoInstruction {
       throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
 
     Instruction31t fillArrayInstr = (Instruction31t)instruction;
-    int offset = fillArrayInstr.getTargetAddressOffset();
+    int offset = fillArrayInstr.getCodeOffset();
     int targetAddress = codeAddress + offset;
 
     Instruction referenceTable = body.instructionAtAddress(targetAddress).instruction;
 
-    if(!(referenceTable instanceof ArrayDataPseudoInstruction)) {
+    if(!(referenceTable instanceof ArrayPayload)) {
       throw new RuntimeException("Address 0x" + Integer.toHexString(targetAddress) + " refers to an invalid PseudoInstruction ("+ referenceTable.getClass() +").");
     }
 
-    ArrayDataPseudoInstruction arrayTable = (ArrayDataPseudoInstruction)referenceTable;
-    int numElements = arrayTable.getElementCount();
+    ArrayPayload arrayTable = (ArrayPayload)referenceTable;
+    int numElements = arrayTable.getArrayElements().size();
     int widthElement = arrayTable.getElementWidth();
     int size = (widthElement * numElements) / 2; // addresses are on 16bits
-  
+
     // From org.jf.dexlib.Code.Format.ArrayDataPseudoInstruction we learn
     // that there are 6 bytes after the magic number that we have to jump.
     // 6 bytes to jump = address + 3
@@ -228,24 +223,25 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     //    out.writeInt(elementCount); // 4 bytes
     //    out.write(encodedValues);
     //
-    
+
     setDataFirstByte (targetAddress + 3); // address for 16 bits elements not 8 bits
     setDataLastByte (targetAddress + 3 + size);// - 1);
     setDataSize (size);
-    
-    ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
-    arrayTable.write(out, targetAddress);
-    
-    byte[] outa = out.getArray();
-    byte[] data = new byte[outa.length-6];
-    for (int i=6; i<outa.length; i++) {
-      data[i-6] = outa[i];
-    }
-    setData (data);
+
+// TODO: how to handle this with dexlib2 ?
+//    ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
+//    arrayTable.write(out, targetAddress);
+//
+//    byte[] outa = out.getArray();
+//    byte[] data = new byte[outa.length-6];
+//    for (int i=6; i<outa.length; i++) {
+//      data[i-6] = outa[i];
+//    }
+//    setData (data);
   }
 
   @Override
   public void getConstraint(IDalvikTyper dalvikTyper) {
   }
-  
+
 }

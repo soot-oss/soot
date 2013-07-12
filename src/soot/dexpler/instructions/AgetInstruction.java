@@ -24,10 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.Local;
 import soot.dexpler.DexBody;
@@ -59,7 +59,7 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         ArrayRef arrayRef = Jimple.v().newArrayRef(arrayBase, index);
 
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), arrayRef);
-        if (aGetInstr.opcode.value == Opcode.AGET_OBJECT.value)
+        if (aGetInstr.getOpcode().value == Opcode.AGET_OBJECT.value)
           assign.addTag(new ObjectOpTag());
 
         setUnit(assign);
@@ -69,14 +69,14 @@ public class AgetInstruction extends DexlibAbstractInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }

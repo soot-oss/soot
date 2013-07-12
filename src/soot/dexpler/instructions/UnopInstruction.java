@@ -24,9 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction12x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
 
 import soot.Local;
 import soot.Value;
@@ -67,7 +68,7 @@ public class UnopInstruction extends DexlibAbstractInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           //dalvikTyper.captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;
           Value expr = jass.getRightOp();
@@ -80,8 +81,8 @@ public class UnopInstruction extends DexlibAbstractInstruction {
      * Return the appropriate Jimple Expression according to the OpCode
      */
     private Value getExpression(Local source) {
-
-        switch(instruction.opcode) {
+        Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case NEG_INT:
         case NEG_LONG:
         case NEG_FLOAT:
@@ -92,7 +93,7 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         case NOT_INT:
             return getNotIntExpr(source);
         default:
-            throw new RuntimeException("Invalid Opcode: " + instruction.opcode);
+            throw new RuntimeException("Invalid Opcode: " + opcode);
         }
 
     }
@@ -125,7 +126,8 @@ public class UnopInstruction extends DexlibAbstractInstruction {
     @Override
     boolean isUsedAsFloatingPoint(DexBody body, int register) {
         int source = ((TwoRegisterInstruction) instruction).getRegisterB();
-        switch(instruction.opcode) {
+        Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case NEG_FLOAT:
         case NEG_DOUBLE:
             return source == register;

@@ -24,7 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.Immediate;
 import soot.Local;
@@ -96,7 +97,8 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction impleme
      * @throws RuntimeException if this is not a IfTest or IfTestz instruction.
      */
     protected ConditionExpr getComparisonExpr(Immediate one, Immediate other) {
-        switch(instruction.opcode) {
+      Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case IF_EQ:
         case IF_EQZ:
             return Jimple.v().newEqExpr(one, other);

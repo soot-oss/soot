@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,7 @@ package soot.dexpler.instructions;
 import java.util.Collections;
 import java.util.Set;
 
-import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.DoubleType;
 import soot.FloatType;
@@ -37,7 +37,6 @@ import soot.LongType;
 import soot.Type;
 import soot.Unit;
 import soot.dexpler.DexBody;
-import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
 import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
@@ -57,11 +56,11 @@ public abstract class DexlibAbstractInstruction {
 //    protected Unit endUnit;
     protected Unit unit;
     protected DexBody body = null;
-    
+
     public Instruction getInstruction() {
       return instruction;
     }
-    
+
     /**
      * Jimplify this instruction.
      *
@@ -71,7 +70,7 @@ public abstract class DexlibAbstractInstruction {
 
     /**
      * Return the target register that is a copy of the given register.
-     * For instruction such as v0 = v3 (v0 gets the content of v3), 
+     * For instruction such as v0 = v3 (v0 gets the content of v3),
      * movesRegister(3) returns 0
      * movesRegister(0) returns -1
      *
@@ -86,7 +85,7 @@ public abstract class DexlibAbstractInstruction {
 
     /**
      * Return the source register that is moved to the given register.
-     * For instruction such as v0 = v3 (v0 gets the content of v3), 
+     * For instruction such as v0 = v3 (v0 gets the content of v3),
      * movesToRegister(3) returns -1
      * movesToRegister(0) returns 3
      *
@@ -128,7 +127,7 @@ public abstract class DexlibAbstractInstruction {
      *
      * Instructions that may introduce types should override this.
      */
-    public Set<DexType> introducedTypes() {
+    public Set<Type> introducedTypes() {
         return Collections.emptySet();
     }
 
@@ -210,11 +209,11 @@ public abstract class DexlibAbstractInstruction {
         LongType.v(),   // 0x7E
         FloatType.v(),  // 0x7F
         DoubleType.v(), // 0x80
-        IntType.v(), 
-        IntType.v(), 
         IntType.v(),
-        LongType.v(), 
-        LongType.v(), 
+        IntType.v(),
+        IntType.v(),
+        LongType.v(),
+        LongType.v(),
         LongType.v(),
         FloatType.v(),
         FloatType.v(),
@@ -226,12 +225,12 @@ public abstract class DexlibAbstractInstruction {
         IntType.v(),
         IntType.v()     // 0x8F int-to-short vx, vy
       };
-      
+
       protected Type [] resUnType = {
           IntType.v(),  // 0x7B
-          IntType.v(), 
-          LongType.v(), 
-          LongType.v(), 
+          IntType.v(),
+          LongType.v(),
+          LongType.v(),
           FloatType.v(),
           DoubleType.v(),
           LongType.v(),
@@ -250,7 +249,7 @@ public abstract class DexlibAbstractInstruction {
           IntType.v(),
           IntType.v()     // 0x8F
       };
-      
+
       protected Type []  resBinType = {
           IntType.v(),
           IntType.v(),
@@ -320,7 +319,7 @@ public abstract class DexlibAbstractInstruction {
         DoubleType.v(),
         DoubleType.v()
       };
-      
+
       protected Type []  op2BinType = {
           IntType.v(),
           IntType.v(),

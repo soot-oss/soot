@@ -33,6 +33,10 @@ public class SourceFileTag implements Tag
     String sourceFile;
     String absolutePath;
     
+    public SourceFileTag(String sourceFile) {
+    	this(sourceFile,null);
+    }
+
     public SourceFileTag(String sourceFile, String path)
     {
 	    this.sourceFile = sourceFile;

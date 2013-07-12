@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,17 +31,20 @@ import java.util.TreeMap;
 import soot.G;
 import soot.Singletons;
 import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
 import soot.SootResolver;
+import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 public class DexResolver {
-	
+
 	private Map<File,DexlibWrapper> cache = new TreeMap<File, DexlibWrapper>();
-	
+
     public DexResolver(Singletons.Global g) {}
 
     public static DexResolver v() { return G.v().soot_dexpler_DexResolver(); }
-	
+
     /**
      * Resolve the class contained in file into the passed soot class.
      *
@@ -77,18 +80,18 @@ public class DexResolver {
         deps.typesToHierarchy.add(superClass.getType());
 
         // all types for signature level
-        for (DexType t : c.getAllTypes()) {
-            deps.typesToSignature.add(t.toSoot());
+        for (Type t : c.getAllTypes()) {
+            deps.typesToSignature.add(t);
         }
 
         // fields
-        for (DexField f : c.getDeclaredFields()) {
-            sc.addField(f.toSoot());
+        for (SootField sf : c.getDeclaredFields()) {
+            sc.addField(sf);
         }
 
         // methods
-        for (DexMethod m : c.getDeclaredMethods()) {
-            sc.addMethod(m.toSoot());
+        for (SootMethod sm : c.getDeclaredMethods()) {
+            sc.addMethod(sm);
         }
 
         addSourceFileTag(sc, file.getAbsolutePath());
@@ -107,6 +110,6 @@ public class DexResolver {
             tag = new soot.tagkit.SourceFileTag();
             sc.addTag(tag);
         }
-        tag.setSourceFile(fileName); 
+        tag.setSourceFile(fileName);
     }
 }

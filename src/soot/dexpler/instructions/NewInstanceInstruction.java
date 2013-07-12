@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,13 +29,14 @@ import static soot.dexpler.Util.dottedClassName;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction21c;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
+import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.RefType;
+import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -46,7 +47,7 @@ import soot.jimple.NewExpr;
 public class NewInstanceInstruction extends DexlibAbstractInstruction {
 
     AssignStmt assign = null;
-  
+
     public NewInstanceInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -54,18 +55,18 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
     public void jimplify (DexBody body) {
         Instruction21c i = (Instruction21c)instruction;
         int dest = i.getRegisterA();
-        String className = dottedClassName(((TypeIdItem)(i.getReferencedItem())).getTypeDescriptor());
+        String className = dottedClassName(((TypeReference)(i.getReference())).toString());
         RefType type = RefType.v(className);
         NewExpr n = Jimple.v().newNewExpr(type);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), n);
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        
+
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           //dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
           dalvikTyper.setObjectType(assign.getLeftOpBox());
         }
@@ -73,17 +74,17 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }
-    
-    @Override
-    public Set<DexType> introducedTypes() {
-        InstructionWithReference i = (InstructionWithReference) instruction;
 
-        Set<DexType> types = new HashSet<DexType>();
-        types.add(new DexType((TypeIdItem) i.getReferencedItem()));
+    @Override
+    public Set<Type> introducedTypes() {
+        ReferenceInstruction i = (ReferenceInstruction) instruction;
+
+        Set<Type> types = new HashSet<Type>();
+        types.add(DexType.toSoot((TypeReference) i.getReference()));
         return types;
     }
 }

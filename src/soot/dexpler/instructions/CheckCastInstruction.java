@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,10 +27,10 @@ package soot.dexpler.instructions;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.Format.Instruction21c;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
+import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.Local;
 import soot.Type;
@@ -45,7 +45,7 @@ import soot.jimple.internal.JAssignStmt;
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 
     AssignStmt assign = null;
-  
+
     public CheckCastInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -57,7 +57,7 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         Instruction21c checkCastInstr = (Instruction21c)instruction;
 
         Local castValue = body.getRegisterLocal(checkCastInstr.getRegisterA());
-        Type checkCastType = DexType.toSoot((TypeIdItem) checkCastInstr.getReferencedItem());
+        Type checkCastType = DexType.toSoot((TypeReference) checkCastInstr.getReference());
 
         CastExpr castExpr =  Jimple.v().newCastExpr(castValue, checkCastType);
 
@@ -68,21 +68,21 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        
+
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: type could be null!
         }
     }
 
     @Override
-    public Set<DexType> introducedTypes() {
-        InstructionWithReference i = (InstructionWithReference) instruction;
+    public Set<Type> introducedTypes() {
+        ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-        Set<DexType> types = new HashSet<DexType>();
-        types.add(new DexType((TypeIdItem) i.getReferencedItem()));
+        Set<Type> types = new HashSet<Type>();
+        types.add(DexType.toSoot((TypeReference) i.getReference()));
         return types;
     }
 }

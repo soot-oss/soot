@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="libs/polyglot.jar"/>
 	<classpathentry kind="lib" path="libs/AXMLPrinter2.jar"/>
 	<classpathentry kind="lib" path="libs/baksmali-1.3.2.jar"/>
+	<classpathentry kind="lib" path="libs/baksmali-2.0b5.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

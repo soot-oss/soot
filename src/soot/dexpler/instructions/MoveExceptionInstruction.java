@@ -24,8 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.Body;
 import soot.Local;
@@ -45,7 +45,7 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
     }
 
     public void jimplify (DexBody body) {
-        int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
+        int dest = ((OneRegisterInstruction)instruction).getRegisterA();
         Local l = body.getRegisterLocal(dest);
         stmtToRetype = Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef());
         setUnit(stmtToRetype);
@@ -70,7 +70,7 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }

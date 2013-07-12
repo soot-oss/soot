@@ -20,7 +20,7 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
 
@@ -28,7 +28,6 @@ public abstract class PseudoInstruction extends DexlibAbstractInstruction {
 
   public PseudoInstruction(Instruction instruction, int codeAddress) {
     super(instruction, codeAddress);
-    // TODO Auto-generated constructor stub
   }
 
   int dataFirstByte = -1;

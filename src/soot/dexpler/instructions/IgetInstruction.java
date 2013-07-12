@@ -24,10 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.FieldIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
@@ -48,7 +48,7 @@ public class IgetInstruction extends FieldInstruction {
         TwoRegisterInstruction i = (TwoRegisterInstruction)instruction;
         int dest = i.getRegisterA();
         int object = i.getRegisterB();
-        FieldIdItem f = (FieldIdItem)((InstructionWithReference)instruction).getReferencedItem();
+        FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
         InstanceFieldRef r = Jimple.v().newInstanceFieldRef(body.getRegisterLocal(object),
                                                             getSootFieldRef(f));
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
@@ -59,7 +59,7 @@ public class IgetInstruction extends FieldInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }

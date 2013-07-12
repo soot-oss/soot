@@ -24,10 +24,10 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.FieldIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
@@ -45,8 +45,8 @@ public class SgetInstruction extends FieldInstruction {
     }
 
     public void jimplify (DexBody body) {
-        int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
-        FieldIdItem f = (FieldIdItem)((InstructionWithReference)instruction).getReferencedItem();
+        int dest = ((OneRegisterInstruction)instruction).getRegisterA();
+        FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
         StaticFieldRef r = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
         setUnit(assign);
@@ -56,14 +56,14 @@ public class SgetInstruction extends FieldInstruction {
 		}
 		public void getConstraint(IDalvikTyper dalvikTyper) {
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           dalvikTyper.captureAssign((JAssignStmt)assign, op);
         }
     }
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }

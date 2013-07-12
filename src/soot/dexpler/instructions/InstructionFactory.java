@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,8 +24,8 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
 
 /**
  * Factory that returns an appropriate Instruction instances for given dexlib
@@ -41,7 +41,7 @@ public class InstructionFactory {
      * @param codeAddress the byte code address of the instruction
      */
     public static DexlibAbstractInstruction fromInstruction(Instruction instruction, int codeAddress) {
-        return fromOpcode(instruction.opcode, instruction, codeAddress);
+        return fromOpcode(instruction.getOpcode(), instruction, codeAddress);
     }
 
     /**
@@ -54,6 +54,9 @@ public class InstructionFactory {
     public static DexlibAbstractInstruction fromOpcode(Opcode op, Instruction instruction, int codeAddress) {
         switch (op) {
 
+        case SPARSE_SWITCH_PAYLOAD:
+        case PACKED_SWITCH_PAYLOAD:
+        case ARRAY_PAYLOAD:
         case NOP:               // also includes
                                 // PackedSwitchDataPseudoInstruction,
                                 // SparseSwitchDataPseudoInstruction and
@@ -144,8 +147,10 @@ public class InstructionFactory {
             return new GotoInstruction(instruction, codeAddress);
 
         case PACKED_SWITCH:
+        //case PACKED_SWITCH_PAYLOAD:
             return new PackedSwitchInstruction(instruction, codeAddress);
         case SPARSE_SWITCH:
+        //case SPARSE_SWITCH_PAYLOAD:
             return new SparseSwitchInstruction(instruction, codeAddress);
 
         case CMPL_FLOAT:
@@ -249,7 +254,7 @@ public class InstructionFactory {
         case NOT_LONG:
         case NEG_DOUBLE:
             return new UnopInstruction(instruction, codeAddress);
-            
+
         case INT_TO_LONG:
         case INT_TO_DOUBLE:
         case FLOAT_TO_LONG:
@@ -358,7 +363,7 @@ public class InstructionFactory {
 
 
         default:
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Opcode: "+ op +" @ 0x"+ Integer.toHexString(codeAddress));
         }
     }
 }

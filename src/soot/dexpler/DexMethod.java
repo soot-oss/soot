@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,22 +27,16 @@ package soot.dexpler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib.AnnotationDirectoryItem.MethodAnnotationIteratorDelegate;
-import org.jf.dexlib.AnnotationItem;
-import org.jf.dexlib.AnnotationSetItem;
-import org.jf.dexlib.ClassDataItem;
-import org.jf.dexlib.DebugInfoItem;
-import org.jf.dexlib.DexFile;
-import org.jf.dexlib.Item;
-import org.jf.dexlib.MethodIdItem;
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.EncodedValue.AnnotationEncodedSubValue;
-import org.jf.dexlib.EncodedValue.ArrayEncodedValue;
-import org.jf.dexlib.EncodedValue.EncodedValue;
-import org.jf.dexlib.EncodedValue.TypeEncodedValue;
+import org.jf.dexlib2.iface.Annotation;
+import org.jf.dexlib2.iface.AnnotationElement;
+import org.jf.dexlib2.iface.Method;
+import org.jf.dexlib2.iface.value.ArrayEncodedValue;
+import org.jf.dexlib2.iface.value.EncodedValue;
+import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
 import soot.Body;
 import soot.MethodSource;
+import soot.Modifier;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
@@ -60,103 +54,73 @@ public class DexMethod {
     protected DexClass dexClass;
     protected int accessFlags;
     protected List<String> thrownExceptions;
-    protected DexType returnType;
-    protected List<DexType> parameterTypes;
+    protected Type returnType;
+    protected List<Type> parameterTypes;
 
     private DexBody dexBody;
 
-    public DexMethod(DexFile dexFile, ClassDataItem.EncodedMethod method, DexClass dexClass) {
+    public DexMethod(String dexFile, Method method, DexClass dexClass) {
         this.dexClass = dexClass;
-        this.accessFlags = method.accessFlags;
-        parameterTypes = new ArrayList<DexType>();
+        this.accessFlags = method.getAccessFlags();
+        parameterTypes = new ArrayList<Type>();
         // get the name of the method
-        this.name = method.method.getMethodName().getStringValue();
-        Debug.printDbg("processing method '", dexClass.name ," ", name ,"'");
+        this.name = method.getName();
+        Debug.printDbg("processing method '", method.getDefiningClass() ,": ", method.getReturnType(), " ", method.getName(), " p: ", method.getParameters(), "'");
 
-        // this delegator processes the set of annotations acording to the dexlib interface
-        class myMethodDelegator implements MethodAnnotationIteratorDelegate {
-            MethodIdItem method;
-            AnnotationSetItem methodAnnotations;
 
-            public AnnotationSetItem getMethodAnnotations() {
-                return methodAnnotations;
-            }
-            public void setMethodAnnotations(AnnotationSetItem methodAnnotations) {
-                this.methodAnnotations = methodAnnotations;
-            }
-
-            public myMethodDelegator(MethodIdItem method) {
-                this.method = method;
-            }
-            public void processMethodAnnotations(MethodIdItem method,
-                                                 AnnotationSetItem methodAnnotations) {
-                if(method.equals(this.method)) {
-                    setMethodAnnotations(methodAnnotations);
-                }
-
-            }
-        }
-
-        // the following snippet retrieves all exceptions that this class throws by analyzing the class annotation
+        // the following snippet retrieves all exceptions that this method throws by analyzing its annotations
         thrownExceptions = new ArrayList<String>();
-        myMethodDelegator delegate = new myMethodDelegator(method.method);
-        if(dexClass.annotations!=null) {
-            dexClass.annotations.iterateMethodAnnotations(delegate);
-            AnnotationSetItem  annotations = delegate.getMethodAnnotations();
-            if(annotations!=null) {
-                for(AnnotationItem annotationItem : annotations.getAnnotations()) {
-                    AnnotationEncodedSubValue value = annotationItem.getEncodedAnnotation();
-                    for(EncodedValue encodedValue : value.values) {
-                        if(encodedValue instanceof ArrayEncodedValue) {
-                            for(EncodedValue encodedValueSub : ((ArrayEncodedValue) encodedValue).values) {
-                                if(encodedValueSub instanceof TypeEncodedValue) {
-                                    TypeEncodedValue valueType = (TypeEncodedValue) encodedValueSub;
-                                    thrownExceptions.add(valueType.value.getTypeDescriptor());
-                                }
-                            }
+        for (Annotation a : method.getAnnotations()) {
+            for (AnnotationElement ae : a.getElements()) {
+                EncodedValue ev = ae.getValue();
+                if(ev instanceof ArrayEncodedValue) {
+                    for(EncodedValue evSub : ((ArrayEncodedValue) ev).getValue()) {
+                        if(evSub instanceof TypeEncodedValue) {
+                            TypeEncodedValue valueType = (TypeEncodedValue) evSub;
+                            thrownExceptions.add(valueType.getValue());
                         }
-
                     }
                 }
-
             }
         }
 
-        // retrieve all parameter types
-        if (method.method.getPrototype().getParameters() != null) {
-            List<TypeIdItem> parameters = method.method.getPrototype().getParameters().getTypes();
 
-            for(TypeIdItem t : parameters) {
-                DexType type = new DexType(t);
+        // retrieve all parameter types
+        if (method.getParameters() != null) {
+            List<? extends CharSequence> parameters = method.getParameterTypes();
+
+            for(CharSequence t : parameters) {
+                Type type = DexType.toSoot(t.toString());
                 this.parameterTypes.add(type);
                 dexClass.types.add(type);
             }
         }
 
         // retrieve the return type of this method
-        returnType = new DexType(method.method.getPrototype().getReturnType());
+        returnType = DexType.toSoot(method.getReturnType());
         dexClass.types.add(this.returnType);
 
-        // if the method is abstract, no code needs to be transformed
-        if (method.codeItem == null || method.codeItem.getInstructions() == null)
+        // if the method is abstract or native, no code needs to be transformed
+        int flags = method.getAccessFlags();
+        if (Modifier.isAbstract(flags)|| Modifier.isNative(flags))
             return;
 
-        // retrieve all local types of the method
-        DebugInfoItem debugInfo = method.codeItem.getDebugInfo();
-        if(debugInfo!=null) {
-			for(Item<?> item : debugInfo.getReferencedItems()) {
-	            if (item instanceof TypeIdItem) {
-	                DexType type = new DexType((TypeIdItem) item);
-	                dexClass.types.add(type);
-	            }
-	
-	        }
-        }
-        
-        //add the body of this code item
-        dexBody = new DexBody(dexFile, method.codeItem, (RefType) DexType.toSoot(dexClass.getType()));
+//        // retrieve all local types of the method
+//        DebugInfoItem debugInfo = method.g.codeItem.getDebugInfo();
+//        if(debugInfo!=null) {
+//			for(Item<?> item : debugInfo.getReferencedItems()) {
+//	            if (item instanceof TypeIdItem) {
+//	                Type type = DexType.toSoot((TypeIdItem) item);
+//	                dexClass.types.add(type);
+//	            }
+//
+//	        }
+//        }
 
-        for (DexType t : dexBody.usedTypes())
+        //add the body of this code item
+        dexBody = new DexBody(dexFile, method, (RefType) DexType.toSoot(dexClass.getType()));
+
+        for (Type t : dexBody.usedTypes())
             dexClass.types.add(t);
     }
     /**
@@ -183,7 +147,7 @@ public class DexMethod {
      *
      * @return the return type of the method
      */
-    public DexType getReturnType() {
+    public Type getReturnType() {
         return this.returnType;
     }
     /**
@@ -207,7 +171,7 @@ public class DexMethod {
      *
      * @return a list of types that the parameters of this method use
      */
-    public List<DexType> getParameterTypes() {
+    public List<Type> getParameterTypes() {
         return this.parameterTypes;
     }
 
@@ -217,8 +181,8 @@ public class DexMethod {
      */
     public SootMethod toSoot() {
         List<Type> parameters = new ArrayList<Type>();
-        for(DexType t : parameterTypes) {
-            parameters.add(t.toSoot());
+        for(Type t : parameterTypes) {
+            parameters.add(t);
         }
         List<SootClass> exceptions = new ArrayList<SootClass>();
         for (String exceptionName : thrownExceptions()) {
@@ -227,7 +191,7 @@ public class DexMethod {
         }
 
         //Build soot method by all available parameters
-        SootMethod m = new SootMethod(name, parameters, returnType.toSoot(),
+        SootMethod m = new SootMethod(name, parameters, returnType,
                                       accessFlags, exceptions);
         if (dexBody != null) {
             // sets the method source by adding its body as the active body

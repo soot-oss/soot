@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,10 +27,9 @@ package soot.dexpler.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.OffsetInstruction;
-import org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction;
-import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.SwitchElement;
+import org.jf.dexlib2.iface.instruction.formats.SparseSwitchPayload;
 
 import soot.Immediate;
 import soot.IntType;
@@ -46,65 +45,67 @@ import soot.jimple.Stmt;
 public class SparseSwitchInstruction extends SwitchInstruction {
 
     LookupSwitchStmt switchStmt = null;
-  
+
     public SparseSwitchInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
 
     protected Stmt switchStatement(DexBody body, Instruction targetData, Local key) {
-        SparseSwitchDataPseudoInstruction i = (SparseSwitchDataPseudoInstruction) targetData;
-        int[] targetAddresses = i.getTargets();
-        List<Immediate> lookupValues = new ArrayList<Immediate>();
-        for(int k : i.getKeys())
-            lookupValues.add(IntConstant.v(k));
+        SparseSwitchPayload i = (SparseSwitchPayload) targetData;
+        List<? extends SwitchElement> seList = i.getSwitchElements();
 
         // the default target always follows the switch statement
-        int defaultTargetAddress = codeAddress + instruction.getSize(codeAddress);
+        int defaultTargetAddress = codeAddress + instruction.getCodeUnits();
         Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
-        List<Unit> targets = new ArrayList<Unit>();
-        for(int address : targetAddresses)
-            targets.add(body.instructionAtAddress(codeAddress + address).getUnit());
 
+        List<Immediate> lookupValues = new ArrayList<Immediate>();
+        List<Unit> targets = new ArrayList<Unit>();
+        for(SwitchElement se: seList) {
+          lookupValues.add(IntConstant.v(se.getKey()));
+          int offset = se.getOffset();
+          targets.add(body.instructionAtAddress(codeAddress + offset).getUnit());
+        }
         switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
         setUnit(switchStmt);
         return switchStmt;
     }
-    
+
     @Override
     public void computeDataOffsets(DexBody body) {
-      int offset = ((OffsetInstruction) instruction).getTargetAddressOffset();
-      int targetAddress = codeAddress + offset;
-      Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
-      SparseSwitchDataPseudoInstruction ssInst = (SparseSwitchDataPseudoInstruction) targetData;
-      int[] targetAddresses = ssInst.getTargets();
-      int size = targetAddresses.length * 2; // @ are on 32bits
-      
-      // From org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction we learn
-      // that there are 2 bytes after the magic number that we have to jump.
-      // 2 bytes to jump = address + 1
-      //
-      //      out.writeByte(0x00); // magic
-      //      out.writeByte(0x02); // number
-      //      out.writeShort(targets.length); // 2 bytes
-      //      out.writeInt(firstKey);
-      
-      setDataFirstByte (targetAddress + 1);
-      setDataLastByte (targetAddress + 1 + size - 1);
-      setDataSize (size);
-      
-      ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
-      ssInst.write(out, targetAddress);
-
-      byte[] outa = out.getArray();
-      byte[] data = new byte[outa.length-2];
-      for (int i=2; i<outa.length; i++) {
-        data[i-2] = outa[i];
-      }
-      setData (data);
+//        System.out.println("class of instruction: "+ instruction.getClass());
+//        int offset = ((OffsetInstruction) instruction).getCodeOffset();
+//        int targetAddress = codeAddress + offset;
+//        Instruction targetData = body.instructionAtAddress(targetAddress).instruction;
+//        SparseSwitchPayload ssInst = (SparseSwitchPayload) targetData;
+//        List<? extends SwitchElement> targetAddresses = ssInst.getSwitchElements();
+//        int size = targetAddresses.size() * 2; // @ are on 32bits
+//
+//        // From org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction we learn
+//        // that there are 2 bytes after the magic number that we have to jump.
+//        // 2 bytes to jump = address + 1
+//        //
+//        // out.writeByte(0x00); // magic
+//        // out.writeByte(0x02); // number
+//        // out.writeShort(targets.length); // 2 bytes
+//        // out.writeInt(firstKey);
+//
+//        setDataFirstByte (targetAddress + 1);
+//        setDataLastByte (targetAddress + 1 + size - 1);
+//        setDataSize (size);
+//
+//        ByteArrayAnnotatedOutput out = new ByteArrayAnnotatedOutput();
+//        ssInst.write(out, targetAddress);
+//
+//        byte[] outa = out.getArray();
+//        byte[] data = new byte[outa.length-2];
+//        for (int i=2; i<outa.length; i++) {
+//          data[i-2] = outa[i];
+//        }
+//        setData (data);
     }
-    
+
     public void getConstraint(IDalvikTyper dalvikTyper) {
       dalvikTyper.setType(switchStmt.getKeyBox(), IntType.v());
     }
-    
+
 }

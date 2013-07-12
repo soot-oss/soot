@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,13 +30,12 @@ import static soot.dexpler.Util.isFloatLike;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib.FieldIdItem;
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.Format.Instruction21c;
-import org.jf.dexlib.Code.Format.Instruction22c;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
+import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
+import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+import org.jf.dexlib2.iface.reference.FieldReference;
 
 import soot.Local;
 import soot.Scene;
@@ -58,38 +57,38 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
     }
 
     /**
-     * Return a static SootFieldRef for a dexlib FieldIdItem.
+     * Return a static SootFieldRef for a dexlib FieldReference.
      *
-     * @param item the dexlib FieldIdItem.
+     * @param item the dexlib FieldReference.
      */
-    protected SootFieldRef getStaticSootFieldRef(FieldIdItem item) {
-        return getSootFieldRef(item, true);
+    protected SootFieldRef getStaticSootFieldRef(FieldReference fref) {
+        return getSootFieldRef(fref, true);
     }
 
     /**
-     * Return a SootFieldRef for a dexlib FieldIdItem.
+     * Return a SootFieldRef for a dexlib FieldReference.
      *
-     * @param item the dexlib FieldIdItem.
+     * @param item the dexlib FieldReference.
      */
-    protected SootFieldRef getSootFieldRef(FieldIdItem item) {
-        return getSootFieldRef(item, false);
+    protected SootFieldRef getSootFieldRef(FieldReference fref) {
+        return getSootFieldRef(fref, false);
     }
 
     /**
-     * Return a SootFieldRef for a dexlib FieldIdItem.
+     * Return a SootFieldRef for a dexlib FieldReference.
      *
-     * @param item the dexlib FieldIdItem.
+     * @param item the dexlib FieldReference.
      * @param isStatic if the FieldRef should be static
      */
-    private SootFieldRef getSootFieldRef(FieldIdItem item, boolean isStatic) {
-        String className = dottedClassName(((TypeIdItem) item.getContainingClass()).getTypeDescriptor());
+    private SootFieldRef getSootFieldRef(FieldReference fref, boolean isStatic) {
+        String className = dottedClassName(fref.getDefiningClass());
         SootClass sc = SootResolver.v().makeClassRef(className);
         return Scene.v().makeFieldRef(sc,
-                                      item.getFieldName().getStringValue(),
-                                      DexType.toSoot(item.getFieldType()),
+                                      fref.getName(),
+                                      DexType.toSoot(fref.getType()),
                                       isStatic);
     }
-    
+
     /**
      * Check if the field type equals the type of the value that will be stored in the field. A cast expression has to be introduced for the unequal case.
      * @return assignment statement which hold a cast or not depending on the types of the operation
@@ -143,17 +142,18 @@ public abstract class FieldInstruction extends DexlibAbstractInstruction {
     }
 
     @Override
-    public Set<DexType> introducedTypes() {
-        Set<DexType> types = new HashSet<DexType>();
+    public Set<Type> introducedTypes() {
+        Set<Type> types = new HashSet<Type>();
         // Aput instructions don't have references
-        if (!(instruction instanceof InstructionWithReference))
+        if (!(instruction instanceof ReferenceInstruction))
             return types;
 
-        InstructionWithReference i = (InstructionWithReference) instruction;
-        FieldIdItem field = (FieldIdItem) i.getReferencedItem();
+        ReferenceInstruction i = (ReferenceInstruction) instruction;
 
-        types.add(new DexType(field.getFieldType()));
-        types.add(new DexType(field.getContainingClass()));
+        FieldReference field = (FieldReference) i.getReference();
+
+        types.add(DexType.toSoot(field.getType()));
+        types.add(DexType.toSoot(field.getDefiningClass()));
         return types;
     }
 }

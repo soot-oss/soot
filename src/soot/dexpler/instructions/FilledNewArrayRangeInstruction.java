@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,9 +26,9 @@ package soot.dexpler.instructions;
 
 import static soot.dexpler.Util.isFloatLike;
 
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.Instruction3rc;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
+import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.Type;
@@ -56,8 +56,8 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
 //        body.add(nopStmtBeginning);
 
-        int usedRegister = filledNewArrayInstr.getRegCount();
-        Type t = DexType.toSoot((TypeIdItem) filledNewArrayInstr.getReferencedItem());
+        int usedRegister = filledNewArrayInstr.getRegisterCount();
+        Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
 
@@ -86,16 +86,16 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
     @Override
     boolean isUsedAsFloatingPoint(DexBody body, int register) {
         Instruction3rc i = (Instruction3rc) instruction;
-        Type arrayType = DexType.toSoot((TypeIdItem) i.getReferencedItem());
+        Type arrayType = DexType.toSoot((TypeReference) i.getReference());
         int startRegister = i.getStartRegister();
-        int endRegister = startRegister + i.getRegCount();
+        int endRegister = startRegister + i.getRegisterCount();
 
         return register >= startRegister && register <= endRegister && isFloatLike(arrayType);
     }
 
     @Override
-    public void getConstraint(IDalvikTyper dalvikTyper) { 
+    public void getConstraint(IDalvikTyper dalvikTyper) {
     }
-    
+
     // dalvikTyper here?
 }
