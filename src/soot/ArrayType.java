@@ -166,5 +166,10 @@ public class ArrayType extends RefLikeType
     public ArrayType makeArrayType() {
         return ArrayType.v( baseType, numDimensions+1 );
     }
+    
+    public boolean isAllowedInFinalCode() {
+    	return true;
+    }
+
 }
 
