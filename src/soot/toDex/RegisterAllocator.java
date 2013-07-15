@@ -57,6 +57,11 @@ public class RegisterAllocator {
 	}
 
 	public void asParameter(SootMethod sm, Local l) {
+		// If we already have a register for this parameter, there is nothing
+		// more to be done here.
+		if (localToLastRegNum.containsKey(l.getName()))
+			return;
+		
 		// since a parameter in dex always has a register, we handle it like a new local without the need of a new register
 		// Register allocation is fixed! 0 for this, 1...n for parameters. We do not expect
 		// the IdentityStmts in the body in any fixed order, so we directly calculate
@@ -67,7 +72,9 @@ public class RegisterAllocator {
 		else
 			for (int i = 0; i < sm.getParameterCount(); i++)
 				if (sm.getActiveBody().getParameterLocal(i) == l) {
-					paramRegNum = i + 1;
+					paramRegNum = i;
+					if (!sm.isStatic())
+						paramRegNum++;
 					break;
 				}
 		if (paramRegNum < 0)
