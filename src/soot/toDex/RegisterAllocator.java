@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import soot.Local;
+import soot.SootMethod;
 import soot.Type;
 import soot.Value;
 import soot.jimple.Constant;
@@ -55,11 +56,33 @@ public class RegisterAllocator {
 		return localRegister;
 	}
 
-	public void asParameter(Local l) {
+	public void asParameter(SootMethod sm, Local l) {
+		// If we already have a register for this parameter, there is nothing
+		// more to be done here.
+		if (localToLastRegNum.containsKey(l.getName()))
+			return;
+		
 		// since a parameter in dex always has a register, we handle it like a new local without the need of a new register
-		localToLastRegNum.put(l.getName(), nextRegNum);
+		// Register allocation is fixed! 0 for this, 1...n for parameters. We do not expect
+		// the IdentityStmts in the body in any fixed order, so we directly calculate
+		// the correct register number.
+		int paramRegNum = -1;
+		if (!sm.isStatic() && sm.getActiveBody().getThisLocal() == l)
+			paramRegNum = 0;
+		else
+			for (int i = 0; i < sm.getParameterCount(); i++)
+				if (sm.getActiveBody().getParameterLocal(i) == l) {
+					paramRegNum = i;
+					if (!sm.isStatic())
+						paramRegNum++;
+					break;
+				}
+		if (paramRegNum < 0)
+			throw new RuntimeException("Parameter local not found");
+		
+		localToLastRegNum.put(l.getName(), paramRegNum);
 		int wordsforParameters = SootToDexUtils.getDexWords(l.getType());
-		nextRegNum += wordsforParameters;
+		nextRegNum = Math.max(nextRegNum + wordsforParameters, paramRegNum + wordsforParameters);
 		paramRegCount += wordsforParameters;
 	}
 

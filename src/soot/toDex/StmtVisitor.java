@@ -586,7 +586,7 @@ public class StmtVisitor implements StmtSwitch {
 			 * at least use the local for further reference in the statements
 			 */
 			Local localForThis = (Local) lhs;
-			regAlloc.asParameter(localForThis);
+			regAlloc.asParameter(belongingMethod, localForThis);
 		} else {
 			throw new Error("unknown Value as right-hand side of IdentityStmt: " + rhs);
 		}
