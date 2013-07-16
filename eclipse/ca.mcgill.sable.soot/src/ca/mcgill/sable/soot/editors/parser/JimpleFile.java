@@ -20,13 +20,26 @@
 
 package ca.mcgill.sable.soot.editors.parser;
 
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 
 import ca.mcgill.sable.soot.editors.JimpleOutlineObject;
 
+@SuppressWarnings("rawtypes")
 public class JimpleFile {
 
 	private String file;
+	private IFile input;
+	
 	private ArrayList arr;
 	private ArrayList fields;
 	private ArrayList methods;
@@ -36,17 +49,32 @@ public class JimpleFile {
 	public static final String LEFT_BRACE = "{"; 
 	public static final String RIGHT_BRACE = "}";
 		
-	public JimpleFile(ArrayList file){
-		setArr(file);
-		Iterator it = file.iterator();
-		StringBuffer sb = new StringBuffer();
-		while (it.hasNext()){
-			sb.append((String)it.next());
+	public JimpleFile(IFile file){
+		setInput(file);
+		
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new InputStreamReader(getInput().getContents()));
+			
+			StringBuffer sb = new StringBuffer();
+			String line;
+			
+			try {
+				while ((line = br.readLine()) != null) {
+					sb.append(line + "\n");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			setFile(sb.toString());	
+			
+		} catch (CoreException e1) {
+			e1.printStackTrace();
 		}
-		setFile(sb.toString());	
 	}
 	
-	public boolean isJimpleFile(){
+	public boolean isJimpleFile() throws IOException, CoreException{
 		
 		// handles body section
 		
@@ -86,7 +114,7 @@ public class JimpleFile {
 		return bits;
 	}
 	
-	public JimpleOutlineObject getOutline(){
+	public JimpleOutlineObject getOutline() {
 		
 		
 		StringBuffer sb = new StringBuffer(getFile());
@@ -181,22 +209,41 @@ public class JimpleFile {
 		return search;
 	}
 	
-	public int getStartOfSelected(String val){
+	public int getStartOfSelected(String val) {
 		
-		Iterator it;
-		String search = getSearch(val);
-				
-		it = getArr().iterator();
-		int count = 0;
-		while (it.hasNext()){
-			String temp = (String)it.next();
-			if (temp.indexOf(search.trim()) != -1){
-				count = count + temp.indexOf(search.trim());
-				return count;
-			}
-			count = count + temp.length() + 1;
+		BufferedReader in;
+		try {
+			in = new BufferedReader(new InputStreamReader(getInput().getContents()));
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+			return 0;
 		}
-		return count;
+		String search = getSearch(val).trim();
+
+		int count = 0;
+		int cur;
+		String line = "";
+		
+		try {
+			while ((cur = in.read()) != -1) {
+				char c = (char) cur;
+				
+				if (c == '\n' || ("" + c).equals(System.getProperty("line.separator"))) {
+					int index = line.indexOf(search);
+					if (index != -1) {
+						return count - line.length() + index;
+					}
+					
+					line = "";
+				}
+
+				line += c;
+				count += 1;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 	
 	public int getLength(String val){
@@ -233,15 +280,45 @@ public class JimpleFile {
 	/**
 	 * @return
 	 */
+	public IFile getInput() {
+		return input;
+	}
+	
 	public ArrayList getArr() {
+		if (arr == null)
+			initArr();
+		
 		return arr;
+	}
+	
+	private void initArr() {
+		ArrayList text = new ArrayList();
+		
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(getInput().getContents()));
+			
+			while (true) {
+				String nextLine = null;
+				try {
+					nextLine = br.readLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (nextLine == null) break;// || (nextLine.length() == 0)) break;
+				text.add(nextLine);
+			}
+			
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		arr = text;
 	}
 
 	/**
 	 * @param list
 	 */
-	public void setArr(ArrayList list) {
-		arr = list;
+	public void setInput(IFile file) {
+		input = file;
 	}
 
 	/**
