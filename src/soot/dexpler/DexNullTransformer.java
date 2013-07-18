@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,19 +78,19 @@ import soot.toolkits.scalar.UnitValueBoxPair;
  *
  * @author Michael Markert
  */
-public class DexNullTransformer extends DexTransformer { 
+public class DexNullTransformer extends DexTransformer {
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
-  
+
 	private boolean usedAsObject;
 	private boolean doBreak = false;
-	
+
     public static DexNullTransformer v() {
         return new DexNullTransformer();
     }
 
    Local l = null;
-    
+
 	@SuppressWarnings("unchecked")
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
         final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
@@ -110,14 +110,14 @@ public class DexNullTransformer extends DexTransformer {
             // process normally
             doBreak = false;
             for (Unit u  : defs) {
-              
+
               // put correct local in l
               if (u instanceof AssignStmt) {
                 l = (Local)((AssignStmt)u).getLeftOp();
               } else if (u instanceof IdentityStmt) {
                 l = (Local)((IdentityStmt)u).getLeftOp();
               } else if (u instanceof IfStmt) {
-                throw new RuntimeException ("ERROR: def can not be something else than Assign or Identity statement! (def: "+ u +" class: "+ u.getClass() +"");               
+                throw new RuntimeException ("ERROR: def can not be something else than Assign or Identity statement! (def: "+ u +" class: "+ u.getClass() +"");
 //                IfStmt ifstmt = (IfStmt)u;
 //                Value v = ifstmt.getCondition();
 //                if (!(v instanceof CmpExpr)) {
@@ -136,9 +136,9 @@ public class DexNullTransformer extends DexTransformer {
 //                  System.exit(-1);
 //                }
               }
-              
+
               Debug.printDbg("    target local: ", l ," (Unit: ",u ," )");
-              
+
               // check defs
               u.apply(new AbstractStmtSwitch() { // Alex: should also end as soon as detected as not used as an object
                 public void caseAssignStmt (AssignStmt stmt) {
@@ -152,7 +152,7 @@ public class DexNullTransformer extends DexTransformer {
                           if (ar.getType() instanceof UnknownType) {
                             usedAsObject = stmt.hasTag("ObjectOpTag"); //isObject (findArrayType (g, localDefs, localUses, stmt));
                           } else {
-                            usedAsObject = isObject(ar.getType());                         
+                            usedAsObject = isObject(ar.getType());
                           }
                           doBreak = true;
                           return;
@@ -186,7 +186,7 @@ public class DexNullTransformer extends DexTransformer {
               });
               if (doBreak)
                 break;
-              
+
               // check uses
                 for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
@@ -224,14 +224,14 @@ public class DexNullTransformer extends DexTransformer {
                             public void caseAssignStmt(AssignStmt stmt) {
                               Value left = stmt.getLeftOp();
                                 Value r = stmt.getRightOp();
-                                
+
                                 if (left instanceof ArrayRef) {
                                   if (((ArrayRef)left).getIndex() == l) {
                                     doBreak = true;
                                     return;
                                   }
                                 }
-                                
+
 
 // IMPOSSIBLE! WOULD BE DEF!
 //                            // gets value assigned
@@ -266,7 +266,7 @@ public class DexNullTransformer extends DexTransformer {
                                       if (aType instanceof UnknownType) {
                                         usedAsObject = stmt.hasTag("ObjectOpTag"); //isObject( findArrayType(g, localDefs, localUses, stmt));
                                       } else {
-                                        usedAsObject = isObject(aType); 
+                                        usedAsObject = isObject(aType);
                                       }
                                         doBreak = true;
                                         return;
@@ -287,7 +287,7 @@ public class DexNullTransformer extends DexTransformer {
                                 }
                                 doBreak = true;
                                 return;
-                              } else if (r instanceof StringConstant || r instanceof NewExpr) { 
+                              } else if (r instanceof StringConstant || r instanceof NewExpr) {
                                 Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! ", stmt);
                                 System.exit(-1);
                                 usedAsObject = true;
@@ -347,8 +347,8 @@ public class DexNullTransformer extends DexTransformer {
                                 return;
                             }
                         });
-                    
-                    
+
+
                     if (doBreak)
                         break;
 
@@ -356,7 +356,7 @@ public class DexNullTransformer extends DexTransformer {
                 if (doBreak)
                   break;
             } // for defs
-            
+
             // change values
             if (usedAsObject) {
               for (Unit u : defs) {
@@ -410,7 +410,7 @@ public class DexNullTransformer extends DexTransformer {
 	        	if (stmt.containsInvokeExpr()) {
 	        		InvokeExpr invExpr = stmt.getInvokeExpr();
 	        		for (int i = 0; i < invExpr.getArgCount(); i++)
-	        			if (isObject(invExpr.getMethod().getParameterType(i)))
+	        			if (isObject(invExpr.getMethodRef().parameterType(i)))
 	        				if (invExpr.getArg(i) instanceof IntConstant) {
 	        					IntConstant iconst = (IntConstant) invExpr.getArg(i);
 	        					assert iconst.value == 0;
@@ -446,7 +446,7 @@ public class DexNullTransformer extends DexTransformer {
   private boolean isObject(Type t) {
     return t instanceof RefLikeType;
   }
-	
+
     /**
      * Collect all the locals which are assigned a IntConstant(0) or are used
      * within a zero comparison.
@@ -486,7 +486,7 @@ public class DexNullTransformer extends DexTransformer {
      * @param u the unit where 0 will be replaced with null.
      */
     private void replaceWithNull(Unit u) {
-      
+
         if (u instanceof IfStmt) {
             ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
             if (isZeroComparison(expr)) {

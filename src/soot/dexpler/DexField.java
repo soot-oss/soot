@@ -26,13 +26,26 @@
 package soot.dexpler;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jf.dexlib2.iface.Field;
+import org.jf.dexlib2.iface.value.BooleanEncodedValue;
+import org.jf.dexlib2.iface.value.ByteEncodedValue;
+import org.jf.dexlib2.iface.value.CharEncodedValue;
+import org.jf.dexlib2.iface.value.DoubleEncodedValue;
+import org.jf.dexlib2.iface.value.EncodedValue;
+import org.jf.dexlib2.iface.value.FloatEncodedValue;
+import org.jf.dexlib2.iface.value.IntEncodedValue;
+import org.jf.dexlib2.iface.value.LongEncodedValue;
+import org.jf.dexlib2.iface.value.ShortEncodedValue;
+import org.jf.dexlib2.iface.value.StringEncodedValue;
 
+import soot.Modifier;
 import soot.SootField;
 import soot.Type;
+import soot.tagkit.DoubleConstantValueTag;
+import soot.tagkit.FloatConstantValueTag;
+import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 
 /**
@@ -40,60 +53,53 @@ import soot.tagkit.Tag;
  * It holds its name, its modifier, and the type
  */
 public class DexField {
-
-    protected String name;
-    protected int accessFlags;
-    protected DexClass dexClass;
-    protected Type fieldType;
-    protected List<Tag> tags = new ArrayList<Tag>();
+    private DexField() {}
 
     /**
-     * Constructor building all relevant information
+     * Add constant tag. Should only be called if field is final.
+     * @param df
+     * @param sf
      */
-    public DexField(Field field, DexClass dexClass) {
-        this.name = field.getName();
-        this.dexClass = dexClass;
-        this.accessFlags = field.getAccessFlags();
-        this.fieldType = DexType.toSoot(field.getType());
-        dexClass.types.add(fieldType);
+    private static void addConstantTag(SootField df, Field sf) {
+        Tag tag = null;
+
+        EncodedValue ev = sf.getInitialValue();
+
+        if (ev instanceof BooleanEncodedValue) {
+          tag = new IntegerConstantValueTag(((BooleanEncodedValue) ev).getValue() ==true?1:0);
+        } else if (ev instanceof ByteEncodedValue) {
+          tag = new IntegerConstantValueTag(((ByteEncodedValue) ev).getValue());
+        } else if (ev instanceof CharEncodedValue) {
+          tag = new IntegerConstantValueTag(((CharEncodedValue) ev).getValue());
+        } else if (ev instanceof DoubleEncodedValue) {
+          tag = new DoubleConstantValueTag(((DoubleEncodedValue) ev).getValue());
+        } else if (ev instanceof FloatEncodedValue) {
+          tag = new FloatConstantValueTag(((FloatEncodedValue) ev).getValue());
+        } else if (ev instanceof IntEncodedValue) {
+          tag = new IntegerConstantValueTag(((IntEncodedValue) ev).getValue());
+        } else if (ev instanceof LongEncodedValue) {
+          tag = new LongConstantValueTag(((LongEncodedValue) ev).getValue());
+        } else if (ev instanceof ShortEncodedValue) {
+          tag = new IntegerConstantValueTag(((ShortEncodedValue) ev).getValue());
+        } else if (ev instanceof StringEncodedValue) {
+          tag = new StringConstantValueTag(((StringEncodedValue) ev).getValue());
+        }
+
+        if (tag != null)
+          df.addTag(tag);
     }
 
     /**
      *
-     * @return the name of the field
+     * @return the Soot equivalent of a field
      */
-    public String getName() {
-        return this.name;
-    }
-    /**
-     *
-     * @return the classname concatenated with the field name
-     */
-    public String getFullName() {
-        return this.dexClass.getName() + "->" + this.name;
-    }
-    /**
-     *
-     * @return the dexClass where this field is stored
-     */
-    public DexClass getDexClass() {
-        return this.dexClass;
-    }
-    /**
-     *
-     * @return modifiers of the class
-     */
-    public int getModifier() {
-        return this.accessFlags;
-    }
-    /**
-     *
-     * @return the soot equivalent of a field
-     */
-    public SootField toSoot() {
-        SootField sf = new SootField(name, fieldType, accessFlags);
-        for (Tag t: tags)
-          sf.addTag(t);
+    public static SootField makeSootField(Field f) {
+        String name = f.getName();
+        Type type = DexType.toSoot(f.getType());
+        int flags = f.getAccessFlags();
+        SootField sf = new SootField(name, type, flags);
+        if (Modifier.isFinal(flags))
+            DexField.addConstantTag(sf, f);
         return sf;
     }
 }

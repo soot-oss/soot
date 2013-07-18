@@ -25,7 +25,9 @@ package soot.dexpler;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
@@ -42,6 +44,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
 import soot.Type;
+import soot.options.Options;
 
 /**
  * DexMethod is a container for all methods that are declared in a class.
@@ -50,26 +53,26 @@ import soot.Type;
  */
 public class DexMethod {
 
-    protected String name;
-    protected DexClass dexClass;
-    protected int accessFlags;
-    protected List<String> thrownExceptions;
-    protected Type returnType;
-    protected List<Type> parameterTypes;
+    private DexMethod() {}
 
-    private DexBody dexBody;
+    /**
+     * Retrieve the SootMethod equivalent of this method
+     * @return the SootMethod of this method
+     */
+    public static SootMethod makeSootMethod(String dexFile, Method method, SootClass declaringClass) {
 
-    public DexMethod(String dexFile, Method method, DexClass dexClass) {
-        this.dexClass = dexClass;
-        this.accessFlags = method.getAccessFlags();
-        parameterTypes = new ArrayList<Type>();
+        Set<Type> types = new HashSet<Type>();
+
+        int accessFlags = method.getAccessFlags();
+        List<Type> parameterTypes = new ArrayList<Type>();
+
         // get the name of the method
-        this.name = method.getName();
+        String name = method.getName();
         Debug.printDbg("processing method '", method.getDefiningClass() ,": ", method.getReturnType(), " ", method.getName(), " p: ", method.getParameters(), "'");
 
 
         // the following snippet retrieves all exceptions that this method throws by analyzing its annotations
-        thrownExceptions = new ArrayList<String>();
+        List<SootClass> thrownExceptions = new ArrayList<SootClass>();
         for (Annotation a : method.getAnnotations()) {
             for (AnnotationElement ae : a.getElements()) {
                 EncodedValue ev = ae.getValue();
@@ -77,7 +80,9 @@ public class DexMethod {
                     for(EncodedValue evSub : ((ArrayEncodedValue) ev).getValue()) {
                         if(evSub instanceof TypeEncodedValue) {
                             TypeEncodedValue valueType = (TypeEncodedValue) evSub;
-                            thrownExceptions.add(valueType.getValue());
+                            String exceptionName = valueType.getValue();
+                            String dottedName = Util.dottedClassName(exceptionName);
+                            thrownExceptions.add(SootResolver.v().makeClassRef(dottedName));
                         }
                     }
                 }
@@ -91,19 +96,30 @@ public class DexMethod {
 
             for(CharSequence t : parameters) {
                 Type type = DexType.toSoot(t.toString());
-                this.parameterTypes.add(type);
-                dexClass.types.add(type);
+                parameterTypes.add(type);
+                types.add(type);
             }
         }
 
         // retrieve the return type of this method
-        returnType = DexType.toSoot(method.getReturnType());
-        dexClass.types.add(this.returnType);
+        Type returnType = DexType.toSoot(method.getReturnType());
+        types.add(returnType);
+
+        //Build soot method by all available parameters
+        SootMethod sm = null;
+        if (declaringClass.declaresMethod(name, parameterTypes, returnType)) {
+            sm = declaringClass.getMethod(name, parameterTypes, returnType);
+        } else {
+            sm = new SootMethod(name, parameterTypes, returnType, accessFlags, thrownExceptions);
+        }
 
         // if the method is abstract or native, no code needs to be transformed
         int flags = method.getAccessFlags();
         if (Modifier.isAbstract(flags)|| Modifier.isNative(flags))
-            return;
+            return sm;
+
+        if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)
+            return sm;
 
 //        // retrieve all local types of the method
 //        DebugInfoItem debugInfo = method.g.codeItem.getDebugInfo();
@@ -118,84 +134,16 @@ public class DexMethod {
 //        }
 
         //add the body of this code item
-        dexBody = new DexBody(dexFile, method, (RefType) DexType.toSoot(dexClass.getType()));
+        final DexBody dexBody = new DexBody(dexFile, method, (RefType) declaringClass.getType());
 
         for (Type t : dexBody.usedTypes())
-            dexClass.types.add(t);
-    }
-    /**
-     * @return The name of the method.
-     */
-    public String getName() {
-        return this.name;
-    }
-    /**
-     * @return the class name concatenated with the method name
-     */
-    public String getFullName() {
-        return this.dexClass.getName() + "->" + name;
-    }
+            types.add(t);
 
-    /**
-     * Returns the dexClass that this method belongs to
-     * @return DexClass
-     */
-    public DexClass getDexClass() {
-        return this.dexClass;
-    }
-    /**
-     *
-     * @return the return type of the method
-     */
-    public Type getReturnType() {
-        return this.returnType;
-    }
-    /**
-     *
-     * @return the modifiers of this method
-     */
-    public int getModifiers() {
-        return this.accessFlags;
-    }
 
-    /**
-     * Return the exceptions that are declared by the method via a throws clause.
-     *
-     * @return the byte code names of the declared exceptions
-     */
-    public List<String> thrownExceptions() {
-        return thrownExceptions;
-    }
 
-    /**
-     *
-     * @return a list of types that the parameters of this method use
-     */
-    public List<Type> getParameterTypes() {
-        return this.parameterTypes;
-    }
-
-    /**
-     * Retrieve the SootMethod equivalent of this method
-     * @return the SootMethod of this method
-     */
-    public SootMethod toSoot() {
-        List<Type> parameters = new ArrayList<Type>();
-        for(Type t : parameterTypes) {
-            parameters.add(t);
-        }
-        List<SootClass> exceptions = new ArrayList<SootClass>();
-        for (String exceptionName : thrownExceptions()) {
-            String dottedName = Util.dottedClassName(exceptionName);
-            exceptions.add(SootResolver.v().makeClassRef(dottedName));
-        }
-
-        //Build soot method by all available parameters
-        SootMethod m = new SootMethod(name, parameters, returnType,
-                                      accessFlags, exceptions);
         if (dexBody != null) {
             // sets the method source by adding its body as the active body
-            m.setSource(new MethodSource() {
+            sm.setSource(new MethodSource() {
                     public Body getBody(SootMethod m, String phaseName) {
                         m.setActiveBody(dexBody.jimplify(m));
                         return m.getActiveBody();
@@ -203,6 +151,6 @@ public class DexMethod {
                 });
         }
 
-        return m;
+        return sm;
     }
 }

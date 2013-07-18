@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
+ *
  * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -76,24 +76,24 @@ import soot.toolkits.scalar.UnitValueBoxPair;
  * BodyTransformer to find and change definition of locals used
  * within an if which contains a condition involving two locals (
  * and not only one local as in DexNullTransformer).
- * 
+ *
  * It this case, if any of the two locals leads to an object being
  * def or used, all the appropriate defs of the two locals are updated
  * to reflect the use of objects (i.e: 0s are replaced by nulls).
  */
-public class DexIfTransformer extends DexTransformer { 
+public class DexIfTransformer extends DexTransformer {
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
-  
+
 	private boolean usedAsObject;
 	private boolean doBreak = false;
-	
+
     public static DexIfTransformer v() {
         return new DexIfTransformer();
     }
 
    Local l = null;
-    
+
 	@SuppressWarnings("unchecked")
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
         final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
@@ -120,18 +120,18 @@ public class DexIfTransformer extends DexTransformer {
             // process normally
             doBreak = false;
             for (Unit u  : defs) {
-              
+
               // put correct local in l
               if (u instanceof AssignStmt) {
                 l = (Local)((AssignStmt)u).getLeftOp();
               } else if (u instanceof IdentityStmt) {
                 l = (Local)((IdentityStmt)u).getLeftOp();
               } else if (u instanceof IfStmt) {
-                throw new RuntimeException ("ERROR: def can not be something else than Assign or Identity statement! (def: "+ u +" class: "+ u.getClass() +"");  
+                throw new RuntimeException ("ERROR: def can not be something else than Assign or Identity statement! (def: "+ u +" class: "+ u.getClass() +"");
               }
-              
+
               Debug.printDbg("    target local: ", l ," (Unit: ",u ," )");
-              
+
               // check defs
               u.apply(new AbstractStmtSwitch() { // Alex: should also end as soon as detected as not used as an object
                 public void caseAssignStmt (AssignStmt stmt) {
@@ -146,7 +146,7 @@ public class DexIfTransformer extends DexTransformer {
                           if (ar.getType() instanceof UnknownType) {
                             usedAsObject = stmt.hasTag("ObjectOpTag"); //isObject (findArrayType (g, localDefs, localUses, stmt));
                           } else {
-                            usedAsObject = isObject(ar.getType());                         
+                            usedAsObject = isObject(ar.getType());
                           }
                           if (usedAsObject)
                             doBreak = true;
@@ -186,7 +186,7 @@ public class DexIfTransformer extends DexTransformer {
               });
               if (doBreak)
                 break;
-              
+
               // check uses
                 for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
@@ -194,7 +194,7 @@ public class DexIfTransformer extends DexTransformer {
                     use.apply( new AbstractStmtSwitch() {
                             private boolean examineInvokeExpr(InvokeExpr e) {
                                 List<Value> args = e.getArgs();
-                                List<Type> argTypes = e.getMethod().getParameterTypes();
+                                List<Type> argTypes = e.getMethodRef().parameterTypes();
                                 assert args.size() == argTypes.size();
                                 for (int i = 0; i < args.size(); i++) {
                                 	if (args.get(i) == l && isObject(argTypes.get(i))) {
@@ -225,14 +225,14 @@ public class DexIfTransformer extends DexTransformer {
                             public void caseAssignStmt(AssignStmt stmt) {
                               Value left = stmt.getLeftOp();
                                 Value r = stmt.getRightOp();
-                                
+
                                 if (left instanceof ArrayRef) {
                                   if (((ArrayRef)left).getIndex() == l) {
                                     //doBreak = true;
                                     return;
                                   }
                                 }
-                                
+
 
 // IMPOSSIBLE! WOULD BE DEF!
 //                            // gets value assigned
@@ -269,7 +269,7 @@ public class DexIfTransformer extends DexTransformer {
                                       if (aType instanceof UnknownType) {
                                         usedAsObject = stmt.hasTag("ObjectOpTag"); //isObject( findArrayType(g, localDefs, localUses, stmt));
                                       } else {
-                                        usedAsObject = isObject(aType); 
+                                        usedAsObject = isObject(aType);
                                       }
                                         if (usedAsObject)
                                           doBreak = true;
@@ -293,7 +293,7 @@ public class DexIfTransformer extends DexTransformer {
                                 if (usedAsObject)
                                   doBreak = true;
                                 return;
-                              } else if (r instanceof StringConstant || r instanceof NewExpr) { 
+                              } else if (r instanceof StringConstant || r instanceof NewExpr) {
                                 Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! ", stmt);
                                 System.exit(-1);
                                 usedAsObject = true;
@@ -363,8 +363,8 @@ public class DexIfTransformer extends DexTransformer {
                                 return;
                             }
                         });
-                    
-                    
+
+
                     if (doBreak)
                         break;
 
@@ -372,12 +372,12 @@ public class DexIfTransformer extends DexTransformer {
                 if (doBreak)
                   break;
             } // for defs
-            
+
             if (doBreak) // as soon as one def or use refers to an object all defs from the two locals in the if must be updated
               break;
 
          } // for two locals in if
-          
+
           // change values
           if (usedAsObject) {
             List<Unit> defsOp1 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
@@ -391,7 +391,7 @@ public class DexIfTransformer extends DexTransformer {
                 }
             }
           } // end if
-          
+
         } // for if statements
     }
 
@@ -399,9 +399,9 @@ public class DexIfTransformer extends DexTransformer {
   private boolean isObject(Type t) {
     return t instanceof RefLikeType;
   }
-	
+
     /**
-     * Collect all the if statements comparing two locals with 
+     * Collect all the if statements comparing two locals with
      * an Eq or Ne expression
      *
      * @param body the body to analyze
@@ -436,7 +436,7 @@ public class DexIfTransformer extends DexTransformer {
      * @param u the unit where 0 will be replaced with null.
      */
     private void replaceWithNull(Unit u) {
-      
+
 //        if (u instanceof IfStmt) {
 //            ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
 //            if (expr.getOp1() instanceof IntConstant && ((IntConstant)expr.getOp1()).value == 0 ) {
@@ -450,7 +450,7 @@ public class DexIfTransformer extends DexTransformer {
 //          } else {
 //            throw new RuntimeException ("ERROR: if has no IntConstant to replace by NullConstant! ("+ u +")");
 //          }
-//        } else 
+//        } else
       if (u instanceof AssignStmt) {
         	AssignStmt s = (AssignStmt) u;
             Value v = s.getRightOp();
