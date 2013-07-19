@@ -34,7 +34,7 @@
            		<pathelement location="${heros.jar}"/>
            		<pathelement location="${axmlprinter2.jar}"/>
            		<pathelement location="${baksmali.jar}"/>
-           		<pathelement location="${baksmali2.jar}"/>
+           		<pathelement location="${dexlib2.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
@@ -303,7 +303,7 @@
             <zipfileset src="${javacup.jar}"/>
             <zipfileset src="${xmlprinter.jar}"/>      
             <zipfileset src="${baksmali.jar}"/>      
-            <zipfileset src="${baksmali2.jar}"/>      
+            <zipfileset src="${dexlib2.jar}"/>      
         </jar>
 		<delete dir="META-INF"/>
     </target>
