@@ -34,7 +34,7 @@
            		<pathelement location="${heros.jar}"/>
            		<pathelement location="${axmlprinter2.jar}"/>
            		<pathelement location="${baksmali.jar}"/>
-           		<pathelement location="${dexlib2.jar}"/>
+           		<pathelement location="${baksmali2.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
