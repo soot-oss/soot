@@ -229,7 +229,6 @@ public abstract class Body extends AbstractHost implements Serializable
         validateLocals();
         validateTraps();
         validateUnitBoxes();
-        validateTypes();
         if (Options.v().debug() || Options.v().validate()) {
             validateUses();
             validateValueBoxes();
@@ -238,25 +237,6 @@ public abstract class Body extends AbstractHost implements Serializable
             checkLocals();
         }
     }
-
-    private void validateTypes() {
-		if(method!=null) {
-			if(!method.getReturnType().isAllowedInFinalCode()) {
-				throw new RuntimeException("return type not allowed in final code:"+method.getReturnType());
-			}
-			for(Type t: method.getParameterTypes()) {
-				if(!t.isAllowedInFinalCode()) {
-					throw new RuntimeException("parameter type not allowed in final code:"+t);
-				}
-			}
-		}
-		for(Local l: localChain) {
-			Type t = l.getType();
-			if(!t.isAllowedInFinalCode()) {
-				throw new RuntimeException("local type not allowed in final code:"+t);
-			}
-		}
-	}
 
 	/** Verifies that a ValueBox is not used in more than one place. */
     public void validateValueBoxes()
