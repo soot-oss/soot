@@ -126,8 +126,8 @@ public class DexlibWrapper {
             				SootResolver.v().makeClassRef(sootTypeName);
             				//Scene.v().addBasicClass(st.toString(),SootClass.HIERARCHY);
             				//Scene.v().loadBasicClasses();
-            				SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
             			}
+            			SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
             		//}
                 }
            } catch (Exception e) {
