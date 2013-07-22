@@ -86,9 +86,7 @@ public class DexlibWrapper {
         this.inputDexFile = inputDexFile;
     }
 
-	public void initialize() {
-//		this.dexClasses = new HashMap<String, ClassDef>();
-//        this.classesByName = new HashMap<String, DexClass>();
+    public void initialize() {
 
         try {
             int api = 1; // TODO:
@@ -98,53 +96,48 @@ public class DexlibWrapper {
         }
 
         if (dexFile instanceof DexBackedDexFile) {
-            //RawDexFile  rdf = new RawDexFile(new Opcodes(0), this.dexFile);//(RawDexFile)dexFile;
+
             DexBackedDexFile dbdf = (DexBackedDexFile)dexFile;
             int i = 0;
             try {
                 while (true) {
-                    //int index = dbdf.getTypeIdItemOffset(i++);
+
                     String t = dbdf.getType(i++);
 
-                    //for (String t: TypeIdItem.getTypes(rdf)) {
-            			Type st = DexType.toSoot(t);
-            			if (st instanceof ArrayType) {
-            				st = ((ArrayType) st).baseType;
-            			}
-            			Debug.printDbg("Type: ", t ," soot type:", st);
-            			String sootTypeName = st.toString();
-            			if (!Scene.v().containsClass(sootTypeName)) {
-            				if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
-            					// dex files contain references to the Type IDs of void / primitive types - we obviously do not want them to be resolved
-            					/*
-            					 * dex files contain references to the Type IDs of the system annotations.
-            					 * They are only visible to the Dalvik VM (for reflection, see vm/reflect/Annotations.cpp), and not to
-            					 * the user - so we do not want them to be resolved.
-            					 */
-            					continue;
-            				}
-            				SootResolver.v().makeClassRef(sootTypeName);
-            				//Scene.v().addBasicClass(st.toString(),SootClass.HIERARCHY);
-            				//Scene.v().loadBasicClasses();
-            				SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
-            			}
-            		//}
-                }
-           } catch (Exception e) {
-               // hack: we stop when an exception is thrown at us
-               // indicating that the type index reached its max value
+                    Type st = DexType.toSoot(t);
+                    if (st instanceof ArrayType) {
+                        st = ((ArrayType) st).baseType;
+                    }
+                    Debug.printDbg("Type: ", t ," soot type:", st);
+                    String sootTypeName = st.toString();
+                    if (!Scene.v().containsClass(sootTypeName)) {
+                        if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
+                            // dex files contain references to the Type IDs of void / primitive types - we obviously do not want them to be resolved
+                            /*
+                             * dex files contain references to the Type IDs of the system annotations.
+                             * They are only visible to the Dalvik VM (for reflection, see vm/reflect/Annotations.cpp), and not to
+                             * the user - so we do not want them to be resolved.
+                             */
+                            continue;
+                        }
+                        SootResolver.v().makeClassRef(sootTypeName);
 
-               //System.out.println("Exception: "+ e);
-               //e.printStackTrace();
-           }
-//    		for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
-//    			Debug.printDbg("String: ", i);
-//            }
+                    }
+                    SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
+                }
+            } catch (Exception e) {
+                // hack: we stop when an exception is thrown at us
+                // indicating that the type index reached its max value
+                //
+                //System.out.println("Exception: "+ e);
+                //e.printStackTrace();
+            }
+
         } else {
             System.out.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
             System.out.println("type: "+ dexFile.getClass());
         }
-	}
+    }
 
 
 
