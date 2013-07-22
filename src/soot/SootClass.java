@@ -481,7 +481,7 @@ public class SootClass extends AbstractHost implements Numberable
             if(method.getName().equals(name))
             {
                 if(found)
-                    throw new RuntimeException("ambiguous method");
+                    throw new RuntimeException("ambiguous method: " + name + " in class " + this);
                 else {                    
                     found = true;
                     foundMethod = method;
