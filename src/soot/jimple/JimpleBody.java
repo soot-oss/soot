@@ -70,11 +70,31 @@ public class JimpleBody extends StmtBody
     {
         super.validate();
         validateIdentityStatements();
+        validateTypes();
         
         // A jimple body must contain a return statement
         validateReturnStatement();
     }
     
+    private void validateTypes() {
+		if(method!=null) {
+			if(!method.getReturnType().isAllowedInFinalCode()) {
+				throw new RuntimeException("return type not allowed in final code:"+method.getReturnType());
+			}
+			for(Type t: method.getParameterTypes()) {
+				if(!t.isAllowedInFinalCode()) {
+					throw new RuntimeException("parameter type not allowed in final code:"+t);
+				}
+			}
+		}
+		for(Local l: localChain) {
+			Type t = l.getType();
+			if(!t.isAllowedInFinalCode()) {
+				throw new RuntimeException("local type not allowed in final code:"+t);
+			}
+		}
+	}
+
     /**
      * Checks that this Jimple body actually contains a return statement
      */

@@ -37,6 +37,7 @@ import soot.jimple.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 import java.io.*;
+
 import soot.baf.*;
 
 public abstract class AbstractJasminClass
@@ -395,7 +396,12 @@ public abstract class AbstractJasminClass
             
             if ((sootClass.getTag("SourceFileTag") != null) && (!Options.v().no_output_source_file_attribute())){
                 String srcName = ((SourceFileTag)sootClass.getTag("SourceFileTag")).getSourceFile();
-                emit(".source "+soot.util.StringTools.getEscapedStringOf(srcName));
+                // Since Jasmin fails on backslashes and only Windows uses backslashes,
+                // but also accepts forward slashes, we transform it.
+                if (File.separatorChar == '\\')
+             	   srcName = srcName.replace('\\', '/');
+                srcName = soot.util.StringTools.getEscapedStringOf(srcName);
+             	emit(".source "+srcName);
             }
             if(Modifier.isInterface(modifiers))
             {
