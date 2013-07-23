@@ -560,7 +560,6 @@ public class DexBody  {
 
         TypeAssigner.v().transform(jBody);
 
-
         if (IDalvikTyper.ENABLE_DVKTYPER) {
           for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
@@ -593,7 +592,7 @@ public class DexBody  {
           }
 
         }
-
+        
         LocalPacker.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
@@ -652,8 +651,7 @@ public class DexBody  {
           if (m.getName().equals("<init>") || m.getName().equals("<clinit>")) {
              Util.addConstantTags(jBody);
           }
-
-
+          
         return jBody;
     }
 
@@ -736,7 +734,7 @@ public class DexBody  {
               Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress)   ,"): ", instructionAtAddress (handlerAddress).getUnit()  ," --- ", instructionAtAddress (handlerAddress-1).getUnit());
               String exceptionType = handler.getExceptionType();
               if (exceptionType == null)
-                  exceptionType = "java.lang.Throwable";
+                  exceptionType = "Ljava/lang/Throwable;";
               Type t = DexType.toSoot(exceptionType);
                 // exceptions can only be of RefType
                 if (t instanceof RefType) {
