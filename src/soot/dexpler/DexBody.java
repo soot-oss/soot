@@ -531,6 +531,10 @@ public class DexBody  {
           DexNumTransformer.v().transform (jBody);
           DexNullTransformer.v().transform(jBody);
           DexIfTransformer.v().transform(jBody);
+          
+          DexReturnInliner.v().transform(jBody);
+          DeadAssignmentEliminator.v().transform(jBody);
+          
           //DexRefsChecker.v().transform(jBody);
           //DexNullArrayRefTransformer.v().transform(jBody);
 
