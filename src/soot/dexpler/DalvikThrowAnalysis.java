@@ -21,10 +21,17 @@
 package soot.dexpler;
 
 import soot.G;
+import soot.RefType;
 import soot.Singletons;
+import soot.UnknownType;
+import soot.Value;
+import soot.baf.EnterMonitorInst;
 import soot.baf.ReturnInst;
 import soot.baf.ReturnVoidInst;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
+import soot.jimple.EnterMonitorStmt;
 import soot.jimple.StringConstant;
 import soot.toolkits.exceptions.ThrowableSet;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
@@ -167,6 +174,9 @@ op   fe +sput-object-volatile       21c  n field-ref     optimized|continue|thro
  * - [ais][get|put]        already handled in UnitThrowAnalysis
  * - div/rem               already handled in UnitThrowAnalysis
  * 
+ * For a reference manual, look at https://code.google.com/p/android-source-browsing
+ * 
+ * 
  */
 
 public class DalvikThrowAnalysis extends UnitThrowAnalysis {
@@ -191,21 +201,50 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
 	protected ThrowableSet defaultResult() {
 		return mgr.EMPTY;
 	}
+
+    @Override
+    protected ThrowableSet mightThrow(Value v) {
+    	return super.mightThrow(v);
+    }
 	
 	
 	@Override
 	protected UnitSwitch unitSwitch() {
 		return new UnitThrowAnalysis.UnitSwitch() {	
 		  
-			// Dalvik does not throw an exception for this instructions
+			// Dalvik does not throw an exception for this instruction
 			@Override
 			public void caseReturnInst(ReturnInst i) { 
 			}
 			
-			// Dalvik does not throw an exception for this instructions
+			// Dalvik does not throw an exception for this instruction
 			@Override
 			public void caseReturnVoidInst(ReturnVoidInst i) {
-			}			
+			}
+			
+			@Override
+			public void caseEnterMonitorInst(EnterMonitorInst i) {
+			    result = result.add(mgr.NULL_POINTER_EXCEPTION);
+			    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
+			}
+
+			@Override
+			public void caseEnterMonitorStmt(EnterMonitorStmt s) {
+			    result = result.add(mgr.NULL_POINTER_EXCEPTION);
+			    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
+			    result = result.add(mightThrow(s.getOp()));
+			}
+		
+			@Override
+			public void caseAssignStmt(AssignStmt s) {
+				// Dalvik only throws ArrayIndexOutOfBounds and
+				// NullPointerException which are both handled through the
+				// ArrayRef expressions. There is no ArrayStoreException in
+				// Dalvik.
+			    result = result.add(mightThrow(s.getLeftOp()));
+			    result = result.add(mightThrow(s.getRightOp()));
+			}
+
 		};
 	}
 	
