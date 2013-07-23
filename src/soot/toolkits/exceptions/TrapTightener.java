@@ -88,15 +88,21 @@ public final class TrapTightener extends BodyTransformer {
 			}
 		    }
 		}
-		if (firstTrappedThrower != null &&
-		    firstTrappedUnit != firstTrappedThrower) {
-		    trap.setBeginUnit(firstTrappedThrower);
-		}
-		if (lastTrappedThrower == null) {
-		    lastTrappedThrower = firstTrappedUnit;
-		}
-		if (lastTrappedUnit != lastTrappedThrower) {
-		    trap.setEndUnit((Unit) unitChain.getSuccOf(lastTrappedThrower));
+		// If no statement inside the trap can throw an exception, we remove the
+		// complete trap.
+		if (firstTrappedThrower == null)
+			trapIt.remove();
+		else {
+			if (firstTrappedThrower != null &&
+					firstTrappedUnit != firstTrappedThrower) {
+			    trap.setBeginUnit(firstTrappedThrower);
+			}
+			if (lastTrappedThrower == null) {
+			    lastTrappedThrower = firstTrappedUnit;
+			}
+			if (lastTrappedUnit != lastTrappedThrower) {
+			    trap.setEndUnit((Unit) unitChain.getSuccOf(lastTrappedThrower));
+			}
 		}
 	    }
 	}
@@ -114,6 +120,9 @@ public final class TrapTightener extends BodyTransformer {
      * by <tt>t</tt>, according to <tt>g</tt.
      */
     protected boolean mightThrowTo(ExceptionalUnitGraph g, Unit u, Trap t) {
+    	if (u.toString().equals("staticinvoke <com.jjokgRKsBF.vkDxTFSFOo122628.Util: void setApiKey(java.lang.String)>($r12)"))
+    		System.out.println("x");
+    	
 	Collection dests = g.getExceptionDests(u);
 	for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
 	    ExceptionalUnitGraph.ExceptionDest dest = 
