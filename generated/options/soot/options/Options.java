@@ -668,7 +668,10 @@ public class Options extends OptionsBase {
 
                 plugin.add( value );
                 
-                loadPluginConfiguration(value);
+                if(!loadPluginConfiguration(value)) {
+                    G.v().out.println( "Failed to load plugin" +value );
+                    return false;
+                }
                 
             }
   

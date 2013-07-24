@@ -172,7 +172,10 @@ public class Options extends OptionsBase {
 
                 <xsl:copy-of select="$name"/>.add( value );
                 <xsl:if test="'plugin' = $name">
-                loadPluginConfiguration(value);
+                if(!loadPluginConfiguration(value)) {
+                    G.v().out.println( "Failed to load plugin" +value );
+                    return false;
+                }
                 </xsl:if>
             }
   </xsl:template>
