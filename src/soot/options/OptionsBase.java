@@ -93,5 +93,8 @@ abstract class OptionsBase {
         return PhaseOptions.v().processPhaseOptions( phase, option );
     }
 
+    protected void loadPluginConfiguration(final String file) {
+    	
+    }
 }
   

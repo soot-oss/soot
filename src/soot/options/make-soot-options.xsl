@@ -171,6 +171,9 @@ public class Options extends OptionsBase {
                     <xsl:copy-of select="$name"/> = new LinkedList();
 
                 <xsl:copy-of select="$name"/>.add( value );
+                <xsl:if test="'plugin' = $name">
+                loadPluginConfiguration(value);
+                </xsl:if>
             }
   </xsl:template>
 

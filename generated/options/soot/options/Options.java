@@ -114,6 +114,7 @@ public class Options extends OptionsBase {
                     phase_help = new LinkedList();
 
                 phase_help.add( value );
+                
             }
   
             else if( false 
@@ -208,6 +209,7 @@ public class Options extends OptionsBase {
                     process_dir = new LinkedList();
 
                 process_dir.add( value );
+                
             }
   
             else if( false 
@@ -623,6 +625,7 @@ public class Options extends OptionsBase {
                     dump_body = new LinkedList();
 
                 dump_body.add( value );
+                
             }
   
             else if( false
@@ -638,6 +641,7 @@ public class Options extends OptionsBase {
                     dump_cfg = new LinkedList();
 
                 dump_cfg.add( value );
+                
             }
   
             else if( false 
@@ -649,6 +653,24 @@ public class Options extends OptionsBase {
             || option.equals( "gzip" )
             )
                 gzip = true;
+  
+            else if( false
+            || option.equals( "plugin" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( plugin == null )
+                    plugin = new LinkedList();
+
+                plugin.add( value );
+                
+                loadPluginConfiguration(value);
+                
+            }
   
             else if( false
             || option.equals( "p" )
@@ -795,6 +817,7 @@ public class Options extends OptionsBase {
                     include = new LinkedList();
 
                 include.add( value );
+                
             }
   
             else if( false
@@ -811,6 +834,7 @@ public class Options extends OptionsBase {
                     exclude = new LinkedList();
 
                 exclude.add( value );
+                
             }
   
             else if( false 
@@ -831,6 +855,7 @@ public class Options extends OptionsBase {
                     dynamic_class = new LinkedList();
 
                 dynamic_class.add( value );
+                
             }
   
             else if( false
@@ -846,6 +871,7 @@ public class Options extends OptionsBase {
                     dynamic_dir = new LinkedList();
 
                 dynamic_dir.add( value );
+                
             }
   
             else if( false
@@ -861,6 +887,7 @@ public class Options extends OptionsBase {
                     dynamic_package = new LinkedList();
 
                 dynamic_package.add( value );
+                
             }
   
             else if( false 
@@ -1141,6 +1168,14 @@ public class Options extends OptionsBase {
     private boolean gzip = false;
     public void set_gzip( boolean setting ) { gzip = setting; }
   
+    public List plugin() { 
+        if( plugin == null )
+            return java.util.Collections.EMPTY_LIST;
+        else
+            return plugin;
+    }
+    public void set_plugin( List setting ) { plugin = setting; }
+    private List plugin = null;
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
     public void set_via_grimp( boolean setting ) { via_grimp = setting; }
@@ -1293,6 +1328,7 @@ public class Options extends OptionsBase {
 +padOpt(" -gzip", "GZip IR output files" )
 +"\nProcessing Options:\n"
       
++padOpt(" -plugin FILE", "Load all plugins found in FILE" )
 +padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )
 +padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
 +padOpt(" -W -whole-optimize", "Perform whole program optimizations" )
