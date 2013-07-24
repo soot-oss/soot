@@ -47,8 +47,9 @@ public class Options extends OptionsBase {
 
 <xsl:apply-templates mode="constants" select="/options/section"/>
 
+    @SuppressWarnings("unused")
     public boolean parse( String[] argv ) {
-        LinkedList phaseOptions = new LinkedList();
+        LinkedList&lt;String&gt; phaseOptions = new LinkedList&lt;String&gt;();
 
         for( int i = argv.length; i > 0; i-- ) {
             pushOptions( argv[i-1] );
@@ -70,17 +71,16 @@ public class Options extends OptionsBase {
             }
         }
 
-        Iterator it = phaseOptions.iterator();
+        Iterator&lt;String&gt; it = phaseOptions.iterator();
         while( it.hasNext() ) {
-            String phaseName = (String) it.next();
-            String phaseOption = (String) it.next();
+            String phaseName = it.next();
             if( !setPhaseOption( phaseName, "enabled:true" ) ) return false;
         }
 
         it = phaseOptions.iterator();
         while( it.hasNext() ) {
-            String phaseName = (String) it.next();
-            String phaseOption = (String) it.next();
+            String phaseName = it.next();
+            String phaseOption = it.next();
             if( !setPhaseOption( phaseName, phaseOption ) ) return false;
         }
 
@@ -168,7 +168,7 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
                 if( <xsl:copy-of select="$name"/> == null )
-                    <xsl:copy-of select="$name"/> = new LinkedList();
+                    <xsl:copy-of select="$name"/> = new LinkedList&lt;String&gt;();
 
                 <xsl:copy-of select="$name"/>.add( value );
                 <xsl:if test="'plugin' = $name">
@@ -271,14 +271,14 @@ public class Options extends OptionsBase {
 
 <!--* PATH_OPTION *******************************************************-->
   <xsl:template mode="vars" match="listopt">
-    public List <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { 
+    public List&lt;String&gt; <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { 
         if( <xsl:value-of select="translate(alias[last()],'-. ','___')"/> == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>;
     }
-    public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( List setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
-    private List <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = null;<xsl:text/>
+    public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( List&lt;String&gt; setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
+    private List&lt;String&gt; <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = null;<xsl:text/>
   </xsl:template>
 
 <!--* PHASE_OPTION *******************************************************-->
