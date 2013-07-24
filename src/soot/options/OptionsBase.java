@@ -21,6 +21,7 @@ package soot.options;
 import java.util.*;
 
 import soot.*;
+import soot.plugins.internal.PluginLoader;
 
 /** Soot command-line options parser base class.
  * @author Ondrej Lhotak
@@ -93,8 +94,14 @@ abstract class OptionsBase {
         return PhaseOptions.v().processPhaseOptions( phase, option );
     }
 
-    protected void loadPluginConfiguration(final String file) {
-    	
+    /**
+     * Handles the value of a plugin parameter. 
+     * 
+     * @param file the plugin parameter value.
+     * @return {@code true} on success.
+     */
+    protected boolean loadPluginConfiguration(final String file) {
+    	return PluginLoader.load(file);
     }
 }
   
