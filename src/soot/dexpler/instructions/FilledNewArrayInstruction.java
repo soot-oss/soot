@@ -56,11 +56,11 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
         Instruction35c filledNewArrayInstr = (Instruction35c)instruction;
 
-        int[] regs = {filledNewArrayInstr.getRegisterD(),
+        int[] regs = {filledNewArrayInstr.getRegisterC(),
+        			  filledNewArrayInstr.getRegisterD(),
                       filledNewArrayInstr.getRegisterE(),
                       filledNewArrayInstr.getRegisterF(),
                       filledNewArrayInstr.getRegisterG(),
-                      filledNewArrayInstr.getRegisterC()
                      };
 
 //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
