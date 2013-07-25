@@ -71,7 +71,8 @@ public class Options extends OptionsBase {
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
 
-	public boolean parse( String[] argv ) {
+    @SuppressWarnings("unused")
+    public boolean parse( String[] argv ) {
         LinkedList<String> phaseOptions = new LinkedList<String>();
 
         for( int i = argv.length; i > 0; i-- ) {
@@ -989,6 +990,7 @@ public class Options extends OptionsBase {
         Iterator<String> it = phaseOptions.iterator();
         while( it.hasNext() ) {
             String phaseName = it.next();
+            String phaseOption = it.next();
             if( !setPhaseOption( phaseName, "enabled:true" ) ) return false;
         }
 

@@ -74,6 +74,7 @@ public class Options extends OptionsBase {
         Iterator&lt;String&gt; it = phaseOptions.iterator();
         while( it.hasNext() ) {
             String phaseName = it.next();
+            String phaseOption = it.next();
             if( !setPhaseOption( phaseName, "enabled:true" ) ) return false;
         }
 
