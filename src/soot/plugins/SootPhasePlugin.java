@@ -1,7 +1,5 @@
 package soot.plugins;
 
-import java.util.List;
-
 import soot.Transformer;
 import soot.plugins.model.PhasePluginDescription;
 
@@ -14,11 +12,25 @@ import soot.plugins.model.PhasePluginDescription;
  * @author Bernhard J. Berger
  */
 public interface SootPhasePlugin {
+	/**
+	 * Default option for enabling a plugin.
+	 */
+	public final String ENABLED_BY_DEFAULT = "enabled:true";
 	
 	/**
-	 * @return a list of phase options similar to the specification {@code soot_options.xml}.
+	 * @return a list of phase options.
 	 */
-	//public abstract List<E> getOptions();
+	public abstract String [] getDeclaredOptions();
+
+	/**
+	 * Returns a list of default values for initializing the parameters. Each entry in
+	 * the list is of kind "<parameter-name>:<default-value>". Please note, that you
+	 * have to add the {@code ENABLED_BY_DEFAULT} option if you want the plugin to be
+	 * enabled.
+	 * 
+	 * @return a list of default values.
+	 */
+	public abstract String [] getDefaultOptions();
 
 	/**
 	 * Creates a new transformer instance (either SceneTransformer or BodyTransformer). The
@@ -28,7 +40,7 @@ public interface SootPhasePlugin {
 	 */
 	public abstract Transformer getTransformer();
 	
-	/**
+	/**‚s
 	 * 
 	 * @param pluginDescription
 	 */

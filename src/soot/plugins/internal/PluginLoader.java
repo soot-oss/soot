@@ -98,7 +98,10 @@ public class PluginLoader {
 			
 			final String packName = getPackName(pluginDescription.getPhaseName());
 			
-			PackManager.v().getPack(packName).add(new Transform(pluginDescription.getPhaseName(), phasePlugin.getTransformer()));
+			Transform transform = new Transform(pluginDescription.getPhaseName(), phasePlugin.getTransformer());
+			transform.setDeclaredOptions(concat(appendEnabled(phasePlugin.getDeclaredOptions())));
+			transform.setDefaultOptions(concat(phasePlugin.getDefaultOptions()));
+			PackManager.v().getPack(packName).add(transform);
 			
 		} catch (final ClassNotFoundException e) {
 			throw new RuntimeException("Failed to load plugin class for " + pluginDescription + ".", e);
@@ -107,6 +110,45 @@ public class PluginLoader {
 		} catch (final IllegalAccessException e) {
 			throw new RuntimeException("Not allowed to access plugin class for " + pluginDescription + ".", e);
 		}		
+	}
+
+	/**
+	 * Each phase has to support the enabled option. We will add it if necessary.
+	 * @param declaredOptions Options declared by the plugin.
+	 * @return option list definitly containing enabled.
+	 */
+	private static String[] appendEnabled(final String [] options) {
+		for(final String option : options) {
+			if(option.equals("enabled")) {
+				return options;
+			}
+		}
+		
+		String [] result = new String[options.length + 1];
+		result[0] = "enabled";
+		System.arraycopy(options, 0, result, 1, options.length);
+
+		return result;
+	}
+
+	/**
+	 * Creates a space separated list from {@code declaredOptions}.
+	 * @param options the list to transform.
+	 * @return a string containing all options separated by a space.
+	 */
+	private static String concat(final String[] options) {
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		
+		for(final String option : options) {
+			if(!first) {
+				sb.append(" ");
+			}
+			first = false;
+			sb.append(option);
+		}
+
+		return sb.toString();
 	}
 
 	/**
