@@ -14,6 +14,7 @@ import soot.toolkits.graph.DirectedGraph;
 public class JimpleBasedBiDiICFG extends JimpleBasedInterproceduralCFG implements BiDiInterproceduralCFG<Unit,SootMethod> {
 
 	public List<Unit> getPredsOf(Unit u) {
+		assert u != null;
 		Body body = unitToOwner.get(u);
 		DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
 		return unitGraph.getPredsOf(u);
