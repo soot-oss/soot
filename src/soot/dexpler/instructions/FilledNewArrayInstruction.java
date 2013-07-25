@@ -55,14 +55,12 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
             throw new IllegalArgumentException("Expected Instruction35c but got: "+instruction.getClass());
 
         Instruction35c filledNewArrayInstr = (Instruction35c)instruction;
-
         int[] regs = {filledNewArrayInstr.getRegisterC(),
         			  filledNewArrayInstr.getRegisterD(),
                       filledNewArrayInstr.getRegisterE(),
                       filledNewArrayInstr.getRegisterF(),
                       filledNewArrayInstr.getRegisterG(),
                      };
-
 //        NopStmt nopStmtBeginning = Jimple.v().newNopStmt();
 //        body.add(nopStmtBeginning);
 
