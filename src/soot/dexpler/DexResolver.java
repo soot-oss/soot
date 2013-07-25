@@ -58,7 +58,7 @@ public class DexResolver {
     	}
 
         Dependencies deps = wrapper.makeSootClass(sc, className);
-        addSourceFileTag(sc, file.getAbsolutePath());
+        addSourceFileTag(sc, file.getName());
 
         return deps;
     }
