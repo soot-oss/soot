@@ -105,7 +105,7 @@ public class BinopLitInstruction extends TaggedInstruction {
           setTag (new IntOpTag());
         case RSUB_INT_LIT8:
           setTag (new IntOpTag());
-            return Jimple.v().newSubExpr(source1, source2);
+            return Jimple.v().newSubExpr(source2, source1);
 
         case MUL_INT_LIT16:
           setTag (new IntOpTag());
