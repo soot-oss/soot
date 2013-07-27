@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Spark. */
 public class SparkOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public SparkOptions( Map options ) {
+    public SparkOptions( Map<String, String> options ) {
         this.options = options;
     }
     

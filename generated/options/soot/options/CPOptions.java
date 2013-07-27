@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Copy Propagator. */
 public class CPOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public CPOptions( Map options ) {
+    public CPOptions( Map<String, String> options ) {
         this.options = options;
     }
     

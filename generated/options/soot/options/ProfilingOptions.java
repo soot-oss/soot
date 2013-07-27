@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Profiling Generator. */
 public class ProfilingOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public ProfilingOptions( Map options ) {
+    public ProfilingOptions( Map<String, String> options ) {
         this.options = options;
     }
     

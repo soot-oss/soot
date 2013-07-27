@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Static Method Binder. */
 public class SMBOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public SMBOptions( Map options ) {
+    public SMBOptions( Map<String, String> options ) {
         this.options = options;
     }
     

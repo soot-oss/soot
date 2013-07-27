@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Call Graph Grapher. */
 public class CGGOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public CGGOptions( Map options ) {
+    public CGGOptions( Map<String, String> options ) {
         this.options = options;
     }
     

@@ -792,6 +792,19 @@ with GZip. It does not apply to class files output by Soot.
 	</section>
 	<section>
 		<name>Processing Options</name>
+	    <listopt>
+			<name>Plugin Configuration</name>
+			<alias>plugin</alias>
+			<set_arg_label>file</set_arg_label>
+			<short_desc>Load all plugins found in <use_arg_label/></short_desc>
+			<long_desc>
+<p>
+Loads the plugin configuration <use_arg_label/> and registers
+all plugins. Make sure that the option is specified before you
+try to pass options to the loaded plugins.</p>
+</long_desc>
+		</listopt>
+		
 		<phaseopt>
 			<name>Phase Options</name>
 			<alias>p</alias>

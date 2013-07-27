@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for May Happen in Parallel Analyses. */
 public class MhpTransformer
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public MhpTransformer( Map options ) {
+    public MhpTransformer( Map<String, String> options ) {
         this.options = options;
     }
     

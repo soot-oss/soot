@@ -350,14 +350,14 @@ public final class OnFlyCallGraphBuilder
 				body.getUnits().insertBefore(assignStmt, insertionPoint);
 				
 				//exc.<init>(message)
-				SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.singletonList(RefType.v("java.lang.String"))).makeRef();
+				SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
 				SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message));
 				InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
 				body.getUnits().insertAfter(initStmt, assignStmt);
 				
 				if(options.guards().equals("print")) {
 					//exc.printStackTrace();
-					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal, Scene.v().getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.emptyList()).makeRef());
+					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal, Scene.v().getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
 					InvokeStmt printStackTraceStmt = Jimple.v().newInvokeStmt(printStackTraceExpr);
 					body.getUnits().insertAfter(printStackTraceStmt, initStmt);
 				} else if(options.guards().equals("throw")) {
