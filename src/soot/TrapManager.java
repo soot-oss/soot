@@ -40,8 +40,8 @@ public class TrapManager
          *  - and, unit lies between t.beginUnit and t.endUnit */
 
         Hierarchy h = Scene.v().getActiveHierarchy();
-        Chain units = b.getUnits();
-        Iterator trapsIt = b.getTraps().iterator();
+        Chain<Unit> units = b.getUnits();
+        Iterator<Trap> trapsIt = b.getTraps().iterator();
 
         while (trapsIt.hasNext())
         {
@@ -50,7 +50,7 @@ public class TrapManager
             /* Ah ha, we might win. */
             if (h.isClassSubclassOfIncluding(e, t.getException()))
             {
-                Iterator it = units.iterator(t.getBeginUnit(),
+                Iterator<Unit> it = units.iterator(t.getBeginUnit(),
                                              units.getPredOf(t.getEndUnit()));
                 while (it.hasNext())
                     if (u.equals(it.next()))
@@ -65,15 +65,15 @@ public class TrapManager
     public static List<Trap> getTrapsAt(Unit unit, Body b)
     {
         List<Trap> trapsList = new ArrayList<Trap>();
-        Chain units = b.getUnits();
+        Chain<Unit> units = b.getUnits();
 
-        Iterator trapsIt = b.getTraps().iterator();
+        Iterator<Trap> trapsIt = b.getTraps().iterator();
 
         while (trapsIt.hasNext())
         {
-            Trap t = (Trap)trapsIt.next();
+            Trap t = trapsIt.next();
 
-            Iterator it = units.iterator(t.getBeginUnit(),
+            Iterator<Unit> it = units.iterator(t.getBeginUnit(),
                                          units.getPredOf(t.getEndUnit()));
             while (it.hasNext())
                 if (unit.equals(it.next()))
@@ -84,18 +84,18 @@ public class TrapManager
     }
 
     /** Returns a set of units which lie inside the range of any trap. */
-    public static Set getTrappedUnitsOf(Body b)
+    public static Set<Unit> getTrappedUnitsOf(Body b)
     {
-        Set trapsSet = new HashSet();
-        Chain units = b.getUnits();
+        Set<Unit> trapsSet = new HashSet<Unit>();
+        Chain<Unit> units = b.getUnits();
 
-        Iterator trapsIt = b.getTraps().iterator();
+        Iterator<Trap> trapsIt = b.getTraps().iterator();
 
         while (trapsIt.hasNext())
         {
-                Trap t = (Trap)trapsIt.next();
+                Trap t = trapsIt.next();
 
-            Iterator it = units.iterator(t.getBeginUnit(),
+            Iterator<Unit> it = units.iterator(t.getBeginUnit(),
                                          units.getPredOf(t.getEndUnit()));
             while (it.hasNext())
                 trapsSet.add(it.next());
@@ -107,15 +107,16 @@ public class TrapManager
      * Note that rangeStart is inclusive, rangeEnd is exclusive. */
     public static void splitTrapsAgainst(Body b, Unit rangeStart, Unit rangeEnd) 
     {
-        Chain traps = b.getTraps(), units = b.getUnits();
-        Iterator trapsIt = traps.snapshotIterator();
+        Chain<Trap> traps = b.getTraps();
+        Chain<Unit> units = b.getUnits();
+        Iterator<Trap> trapsIt = traps.snapshotIterator();
         
         while (trapsIt.hasNext())
         {
-            Trap t = (Trap)trapsIt.next();
+            Trap t = trapsIt.next();
             
-            Iterator unitIt = units.iterator(t.getBeginUnit(),
-                                             t.getEndUnit());
+            Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(),
+            		                               t.getEndUnit());
 
             boolean insideRange = false;
 
@@ -158,11 +159,11 @@ public class TrapManager
     /** Given a body and a unit handling an exception,
      * returns the list of exception types possibly caught 
      * by the handler. */
-    public static List getExceptionTypesOf(Unit u, Body body)
+    public static List<RefType> getExceptionTypesOf(Unit u, Body body)
     {
-         List possibleTypes = new ArrayList();
+         List<RefType> possibleTypes = new ArrayList<RefType>();
         
-         Iterator trapIt = body.getTraps().iterator();
+         Iterator<Trap> trapIt = body.getTraps().iterator();
         
          while(trapIt.hasNext())
          {

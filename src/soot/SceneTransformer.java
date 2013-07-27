@@ -31,7 +31,7 @@ import java.util.*;
 public abstract class SceneTransformer extends Transformer
 {
     /** Performs the transformation on the Scene, under the given phaseName. */
-    public final void transform(String phaseName, Map options)
+    public final void transform(String phaseName, Map<String, String> options)
     {
         if (!PhaseOptions.getBoolean(options, "enabled"))
             return;
@@ -40,7 +40,7 @@ public abstract class SceneTransformer extends Transformer
     }
     public final void transform(String phaseName)
     {
-        HashMap dummyOptions = new HashMap();
+        HashMap<String, String> dummyOptions = new HashMap<String, String>();
         dummyOptions.put( "enabled", "true" );
         transform(phaseName, dummyOptions);
     }
@@ -51,6 +51,6 @@ public abstract class SceneTransformer extends Transformer
     }
     
     /** Performs the transformation on the Scene, under the given phaseName and with the given Options. */
-    protected abstract void internalTransform(String phaseName, Map options);
+    protected abstract void internalTransform(String phaseName, Map<String, String> options);
 
 }
