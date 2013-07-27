@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Available Expressions Tagger. */
 public class AETOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public AETOptions( Map options ) {
+    public AETOptions( Map<String, String> options ) {
         this.options = options;
     }
     

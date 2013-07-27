@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Purity Analysis [AM]. */
 public class PurityOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public PurityOptions( Map options ) {
+    public PurityOptions( Map<String, String> options ) {
         this.options = options;
     }
     

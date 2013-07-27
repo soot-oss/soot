@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Field Read/Write Tagger. */
 public class FRWOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public FRWOptions( Map options ) {
+    public FRWOptions( Map<String, String> options ) {
         this.options = options;
     }
     

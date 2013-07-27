@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Array Bound Checker. */
 public class ABCOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public ABCOptions( Map options ) {
+    public ABCOptions( Map<String, String> options ) {
         this.options = options;
     }
     

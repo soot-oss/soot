@@ -396,9 +396,9 @@ import java.util.*;
 /** Option parser for <xsl:value-of select="name|name"/>. */
 public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <xsl:copy-of select="extends"/></xsl:if>
 {
-    private Map options;
+    private Map&lt;String, String&gt; options;
 
-    public <xsl:copy-of select="$filename"/>( Map options ) {
+    public <xsl:copy-of select="$filename"/>( Map&lt;String, String&gt; options ) {
         this.options = options;
     }
     <xsl:for-each select="boolopt|section/boolopt"><xsl:text/>
