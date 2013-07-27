@@ -24,12 +24,12 @@ package soot.util;
  * @author Ondrej Lhotak
  */
 
-public class SingletonList extends java.util.AbstractList {
-    private Object o;
-    public SingletonList( Object o ) { this.o = o; }
+public class SingletonList<E> extends java.util.AbstractList<E> {
+    private E o;
+    public SingletonList( E o ) { this.o = o; }
     public int size() { return 1; }
     public boolean contains( Object other ) { return other.equals(o); }
-    public Object get( int index ) {
+    public E get( int index ) {
         if( index != 0 ) {
             throw new IndexOutOfBoundsException( "Singleton list; index = "+index );
         }
