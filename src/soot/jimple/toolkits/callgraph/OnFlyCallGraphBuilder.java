@@ -664,11 +664,13 @@ public final class OnFlyCallGraphBuilder
                 }
             } else {
                 SootClass sootcls = Scene.v().getSootClass( cls );
-                if( !sootcls.isApplicationClass() ) {
-                    sootcls.setLibraryClass();
-                }
-                for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
-                    addEdge( src, srcUnit, clinit, Kind.CLINIT );
+                if (!sootcls.isPhantomClass()) {
+	                if( !sootcls.isApplicationClass() ) {
+	                    sootcls.setLibraryClass();
+	                }
+	                for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
+	                    addEdge( src, srcUnit, clinit, Kind.CLINIT );
+	                }
                 }
 
             }
