@@ -90,7 +90,7 @@ public class JimpleBody extends StmtBody
 		for(Local l: localChain) {
 			Type t = l.getType();
 			if(!t.isAllowedInFinalCode()) {
-				throw new RuntimeException("local type not allowed in final code:"+t);
+				throw new RuntimeException("(" + this.getMethod()+ ") local type not allowed in final code: " + t +" local: "+l +"body: \n"+ this);
 			}
 		}
 	}

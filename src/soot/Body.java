@@ -362,7 +362,7 @@ public abstract class Body extends AbstractHost implements Serializable
                             final Unit uu = uuIt.next();
                             System.err.println(""+uu);
                         }
-                        throw new RuntimeException("no defs for value: "+v+"!"+" in "+getMethod());
+                        throw new RuntimeException("("+ getMethod() +") no defs for value: " + v + "!\n" + this);
                     }
                 }
             }
