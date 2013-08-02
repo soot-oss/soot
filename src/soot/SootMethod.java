@@ -188,6 +188,7 @@ public class SootMethod
     }
 
     /** Returns true when this <code>SootMethod</code> object is phantom. */
+    @Override
     public boolean isPhantom() {
         return isPhantom;
     }
@@ -201,6 +202,7 @@ public class SootMethod
     }
 
     /** Sets the phantom flag on this method. */
+    @Override
     public void setPhantom(boolean value) {
         if (value) {
             if (!Scene.v().allowsPhantomRefs())
