@@ -1334,13 +1334,13 @@ public class Scene  //extends AbstractHost
 		return false;
 	}
 
-	ArrayList<String> pkgList;
+	List<String> pkgList;
 
-    public void setPkgList(ArrayList<String> list){
+    public void setPkgList(List<String> list){
         pkgList = list;
     }
 
-    public ArrayList<String> getPkgList(){
+    public List<String> getPkgList(){
         return pkgList;
     }
 
