@@ -34,11 +34,14 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
 import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
+import soot.jimple.Constant;
 import soot.jimple.Jimple;
 
 public class ConstClassInstruction extends DexlibAbstractInstruction {
@@ -61,17 +64,17 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
           type = type.replaceAll("^L", "").replaceAll(";$", "");
 
         int dest = ((OneRegisterInstruction) instruction).getRegisterA();
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), ClassConstant.v(type));
+        Constant cst = ClassConstant.v(type);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
 
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          //dalvikTyper.captureAssign((JAssignStmt)assign, op); //TODO: classtype could be null!
-          dalvikTyper.setObjectType(assign.getLeftOpBox());
+          //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); //TODO: classtype could be null!
+          DalvikTyper.v().setType(assign.getLeftOpBox(), cst.getType(), false);
         }
     }
 

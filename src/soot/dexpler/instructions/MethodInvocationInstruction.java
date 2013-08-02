@@ -49,12 +49,12 @@ import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
     // stores the dangling InvokeExpr
@@ -86,22 +86,23 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             unit = invoke;
         }
 
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
+			
           if (invocation instanceof InstanceInvokeExpr) {
             Type t = invocation.getMethodRef().declaringClass().getType();
-            dalvikTyper.setType(((InstanceInvokeExpr) invocation).getBaseBox(), t);
-            //dalvikTyper.setObjectType(assign.getLeftOpBox());
+            DalvikTyper.v().setType(((InstanceInvokeExpr) invocation).getBaseBox(), t, true);
+            //DalvikTyper.v().setObjectType(assign.getLeftOpBox());
           }
           int i = 0;
-          for (Object pt: invocation.getMethodRef().parameterTypes()) {
-            dalvikTyper.setType(invocation.getArgBox(i++), (Type)pt);
+          for (Type pt: (List<Type>)invocation.getMethodRef().parameterTypes()) {
+            DalvikTyper.v().setType(invocation.getArgBox(i++), pt, true);
           }
           int op = (int)instruction.getOpcode().value;
           if (assign != null) {
-            dalvikTyper.captureAssign((JAssignStmt)assign, op);
+              DalvikTyper.v().setType(assign.getLeftOpBox(), invocation.getType(), false);
           }
+          
         }
     }
 

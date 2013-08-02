@@ -29,9 +29,12 @@ import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.Body;
 import soot.Local;
+import soot.RefType;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 
@@ -51,6 +54,11 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         setUnit(stmtToRetype);
         tagWithLineNumber(stmtToRetype);
         body.add(stmtToRetype);
+        
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ stmtToRetype);
+            DalvikTyper.v().setType(stmtToRetype.getLeftOpBox(), RefType.v("java.lang.Throwable"), false);
+        }
     }
 
     public void setRealType(DexBody body, Type t) {
@@ -75,7 +83,5 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         return register == dest;
     }
     
-    public void getConstraint(IDalvikTyper dalvikTyper) {
-      dalvikTyper.setObjectType(stmtToRetype.getLeftOpBox());
-    }
+
 }

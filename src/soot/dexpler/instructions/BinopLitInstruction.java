@@ -24,20 +24,20 @@
 
 package soot.dexpler.instructions;
 
+import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.HatLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
-import org.jf.dexlib2.iface.instruction.WideLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22b;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22s;
-import org.jf.dexlib2.Opcode;
 
 import soot.Local;
 import soot.Value;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.IntOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.IntConstant;
@@ -74,13 +74,9 @@ public class BinopLitInstruction extends TaggedInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.getOpcode().value;
-          if (!(op >= 0xd0 && op <= 0xe2)) {
-            throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0xd0 and 0xe2.");
-          }
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+            int op = (int)instruction.getOpcode().value;
           if (op >= 0xd8) {
             op -= 0xd8;
           } else {
@@ -88,7 +84,7 @@ public class BinopLitInstruction extends TaggedInstruction {
           }
           BinopExpr bexpr = (BinopExpr)expr;
           //body.dvkTyper.setType((op == 1) ? bexpr.getOp2Box() : bexpr.getOp1Box(), op1BinType[op]);
-          dalvikTyper.setType(((JAssignStmt)assign).leftBox, op1BinType[op]);
+          DalvikTyper.v().setType(((JAssignStmt)assign).leftBox, op1BinType[op], false);
         }
     }
 

@@ -25,15 +25,19 @@ import soot.options.Options;
 public class Debug {
   public static boolean DEXPLER_DEBUG;
   
-  public static void printDbg (Object...objects) {
+  public static void printDbg (String s, Object...objects) {
     DEXPLER_DEBUG = Options.v().verbose();
     if (DEXPLER_DEBUG) {
-      String s = "";
       for (Object o: objects) {
         s += o.toString();
       }
       System.out.println (s);
     }
       
+  }
+  
+  public static void printDbg (boolean c, String s, Object...objects) {
+      if (c)
+          printDbg(s, objects);
   }
 }

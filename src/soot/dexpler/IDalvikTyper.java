@@ -20,19 +20,20 @@
 
 package soot.dexpler;
 
+import soot.Body;
 import soot.Type;
 import soot.ValueBox;
-import soot.jimple.Stmt;
-import soot.jimple.internal.JAssignStmt;
 
 public interface IDalvikTyper {
   
-  public static boolean ENABLE_DVKTYPER = false; //false;
+  public static boolean ENABLE_DVKTYPER = false;
+  public static boolean DEBUG = false;
   
-  public abstract void setType(ValueBox v, Type type);
-  public abstract void setObjectType(ValueBox v);
+  public abstract void setType(ValueBox v, Type type, boolean isUse);
+  //public abstract void setObjectType(ValueBox v);
   public abstract void addConstraint(ValueBox box1, ValueBox box2);
-  abstract void assignType();
+  //public abstract void addStrongConstraint(ValueBox vb, Type t);
+  abstract void assignType(Body b);
   //public static IDalvikTyper getDvkTyper(); 
-  public Stmt captureAssign(JAssignStmt stmt, int current);
+  //public Stmt captureAssign(JAssignStmt stmt, int current);
 }

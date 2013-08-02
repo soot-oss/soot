@@ -35,11 +35,13 @@ import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.LongOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
@@ -108,15 +110,13 @@ public class CmpInstruction extends TaggedInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-    
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           getTag().getName();
           BinopExpr bexpr = (BinopExpr)cmpExpr;
-          dalvikTyper.setType(bexpr.getOp1Box(), type);
-          dalvikTyper.setType(bexpr.getOp2Box(), type);
-          dalvikTyper.setType(((JAssignStmt)assign).leftBox, IntType.v());
+          DalvikTyper.v().setType(bexpr.getOp1Box(), type, true);
+          DalvikTyper.v().setType(bexpr.getOp2Box(), type, true);
+          DalvikTyper.v().setType(((JAssignStmt)assign).leftBox, IntType.v(), false);
         }
     }
 

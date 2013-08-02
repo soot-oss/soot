@@ -37,9 +37,11 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.RefType;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
@@ -63,12 +65,11 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
 
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          //dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
-          dalvikTyper.setObjectType(assign.getLeftOpBox());
+          //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
+          DalvikTyper.v().setType(assign.getLeftOpBox(), type, false);
         }
     }
 

@@ -32,15 +32,16 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
-import soot.jimple.internal.JAssignStmt;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
@@ -69,7 +70,7 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
         Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
-
+System.out.println("array element type: (filled narr)"+ arrayType);
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         // new local generated intentional, will be moved to real register by MoveResult
         arrayLocal = body.getStoreResultLocal();
@@ -81,20 +82,20 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
           AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(regs[i]));
           tagWithLineNumber(assign);
           body.add(assign);
-      }
+        }
 //      NopStmt nopStmtEnd = Jimple.v().newNopStmt();
 //      body.add(nopStmtEnd);
 //      defineBlock(nopStmtBeginning, nopStmtEnd);
-      setUnit (assign);
+        setUnit (assign);
 
 //      body.setDanglingInstruction(this);
 
-		}
-
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
+          DalvikTyper.v().setType(assign.getLeftOpBox(), arrayExpr.getType(), false);
+          //DalvikTyper.v().setType(array, arrayType, isUse)
+          //DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
         }
 
 

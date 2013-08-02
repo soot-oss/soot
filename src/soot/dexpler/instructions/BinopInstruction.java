@@ -31,12 +31,14 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.Local;
 import soot.Value;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.LongOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
@@ -70,18 +72,14 @@ public class BinopInstruction extends TaggedInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          if (!(op >= 0x90 && op <= 0xaf)) {
-            throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0x90 and 0xaf.");
-          }
           BinopExpr bexpr = (BinopExpr)expr;
           JAssignStmt jassign = (JAssignStmt)assign;
-          dalvikTyper.setType(bexpr.getOp1Box(), op1BinType[op-0x90]);
-          dalvikTyper.setType(bexpr.getOp2Box(), op2BinType[op-0x90]);
-          dalvikTyper.setType(jassign.leftBox, resBinType[op-0x90]);
+          DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0x90], true);
+          DalvikTyper.v().setType(bexpr.getOp2Box(), op2BinType[op-0x90], true);
+          DalvikTyper.v().setType(jassign.leftBox, resBinType[op-0x90], false);
         }
     }
 
