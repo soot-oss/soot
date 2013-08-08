@@ -693,28 +693,23 @@ public abstract class Body extends AbstractHost implements Serializable
 
     @SuppressWarnings("unchecked")
 	public void checkInit() {
-	Chain<Unit> units=getUnits();
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
 	    (this, PedanticThrowAnalysis.v(), false);
 
-        InitAnalysis analysis=new InitAnalysis(g);
-	Iterator<Unit> it=units.iterator();
-	while(it.hasNext()) {
-	    Unit s=(it.next());
-	    FlowSet init=(FlowSet) analysis.getFlowBefore(s);
-	    List<ValueBox> uses=s.getUseBoxes();
-	    Iterator<ValueBox> usesIt=uses.iterator();
-	    while(usesIt.hasNext()) {
-		Value v=((usesIt.next())).getValue();
-		if(v instanceof Local) {
-		    Local l=(Local) v;
-		    if(!init.contains(l))
-			throw new RuntimeException("Warning: Local variable "+l
-					   +" not definitely defined at "+s
-					   +" in "+method);
+		InitAnalysis analysis=new InitAnalysis(g);
+		for (Unit s : getUnits()) {
+			FlowSet init=(FlowSet) analysis.getFlowBefore(s);
+		    for (ValueBox vBox : s.getUseBoxes()) {
+				Value v=vBox.getValue();
+				if(v instanceof Local) {
+				    Local l=(Local) v;
+				    if(!init.contains(l))
+						throw new RuntimeException("Warning: Local variable "+l
+								   +" not definitely defined at "+s
+								   +" in "+method);
+				}
+		    }
 		}
-	    }
-	}
     }
     
     /**
