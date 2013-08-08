@@ -24,14 +24,16 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib2.iface.reference.StringReference;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction31c;
+import org.jf.dexlib2.iface.reference.StringReference;
 
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
@@ -61,10 +63,9 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          dalvikTyper.setObjectType(assign.getLeftOpBox());
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          DalvikTyper.v().setType(assign.getLeftOpBox(), sc.getType(), false);
         }
     }
 

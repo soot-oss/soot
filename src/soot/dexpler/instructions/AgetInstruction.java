@@ -24,19 +24,21 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
+import soot.IntType;
 import soot.Local;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.ObjectOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class AgetInstruction extends DexlibAbstractInstruction {
 
@@ -57,8 +59,9 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         Local index = body.getRegisterLocal(aGetInstr.getRegisterC());
 
         ArrayRef arrayRef = Jimple.v().newArrayRef(arrayBase, index);
-
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), arrayRef);
+        Local l = body.getRegisterLocal(dest);
+        
+        assign = Jimple.v().newAssignStmt(l, arrayRef);
         if (aGetInstr.getOpcode().value == Opcode.AGET_OBJECT.value)
           assign.addTag(new ObjectOpTag());
 
@@ -66,11 +69,10 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
+          DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
         }
     }
 

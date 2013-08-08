@@ -43,7 +43,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
     boolean isDeclared = false;
     SootClass declaringClass;
-    boolean isPhantom = false;
+    protected boolean isPhantom = false;
 
     /** Constructs a Soot field with the given name, type and modifiers. */
     public SootField(String name, Type type, int modifiers)
@@ -93,7 +93,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
         buffer.append(getType() + " " + Scene.v().quotedNameOf(getName()));
         return buffer.toString().intern();
     }
-    
+
     public SootClass getDeclaringClass() 
     {
         if(!isDeclared)
@@ -102,11 +102,13 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
         return declaringClass;
     }
 
+    @Override
     public boolean isPhantom()
     {
         return isPhantom;
     }
     
+    @Override
     public void setPhantom(boolean value)
     {
         if( value ) {

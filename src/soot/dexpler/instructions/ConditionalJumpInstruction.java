@@ -67,7 +67,7 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction impleme
         }
     }
     
-    // dalvikTyper here?
+    // DalvikTyper.v() here?
 
     public void deferredJimplify(DexBody body) {
         IfStmt s = ifStatement(body);
@@ -98,6 +98,7 @@ public abstract class ConditionalJumpInstruction extends JumpInstruction impleme
      */
     protected ConditionExpr getComparisonExpr(Immediate one, Immediate other) {
       Opcode opcode = instruction.getOpcode();
+
         switch(opcode) {
         case IF_EQ:
         case IF_EQZ:

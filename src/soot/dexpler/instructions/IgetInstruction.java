@@ -24,17 +24,18 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
 
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class IgetInstruction extends FieldInstruction {
 
@@ -56,11 +57,10 @@ public class IgetInstruction extends FieldInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          DalvikTyper.v().setType(assign.getLeftOpBox(), r.getType(), false);
         }
     }
 

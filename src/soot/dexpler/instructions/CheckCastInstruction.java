@@ -34,13 +34,15 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.Local;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
+
 
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 
@@ -68,13 +70,13 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
+        
 
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+            DalvikTyper.v().setType(assign.getLeftOpBox(), checkCastType, false);
 		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: type could be null!
-        }
+
     }
 
     @Override

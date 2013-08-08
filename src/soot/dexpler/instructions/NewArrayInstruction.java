@@ -42,10 +42,10 @@ import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
-import soot.jimple.internal.JAssignStmt;
 
 public class NewArrayInstruction extends DexlibAbstractInstruction {
 
@@ -69,7 +69,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
         Debug.printDbg("new array element type: ", arrayType);
-
+        
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
         Local l = body.getRegisterLocal(dest);
@@ -79,14 +79,11 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
 
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
-          NewArrayExpr newArrayExpr = (NewArrayExpr)assign.getRightOp();
-          dalvikTyper.setType(newArrayExpr.getSizeBox(), IntType.v());
-          dalvikTyper.setObjectType(assign.getLeftOpBox());
+          DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
+          DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);
         }
     }
 

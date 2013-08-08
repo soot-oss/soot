@@ -28,8 +28,11 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.Local;
+import soot.RefType;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.Jimple;
 
@@ -49,10 +52,9 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(enterMonitorStmt);
         body.add(enterMonitorStmt);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          dalvikTyper.setObjectType(enterMonitorStmt.getOpBox());
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ enterMonitorStmt);
+			DalvikTyper.v().setType(enterMonitorStmt.getOpBox(), RefType.v("java.lang.Object"), true);
         }
     }
 }

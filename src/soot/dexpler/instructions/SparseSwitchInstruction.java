@@ -35,8 +35,10 @@ import soot.Immediate;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
@@ -67,6 +69,12 @@ public class SparseSwitchInstruction extends SwitchInstruction {
         }
         switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
         setUnit(switchStmt);
+        
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ switchStmt);
+            DalvikTyper.v().setType(switchStmt.getKeyBox(), IntType.v(), true);
+        }
+        
         return switchStmt;
     }
 
@@ -104,8 +112,5 @@ public class SparseSwitchInstruction extends SwitchInstruction {
 //        setData (data);
     }
 
-    public void getConstraint(IDalvikTyper dalvikTyper) {
-      dalvikTyper.setType(switchStmt.getKeyBox(), IntType.v());
-    }
 
 }

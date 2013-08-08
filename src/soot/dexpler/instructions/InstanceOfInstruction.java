@@ -34,13 +34,13 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class InstanceOfInstruction extends DexlibAbstractInstruction {
 
@@ -63,11 +63,10 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
 
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          //DalvikTyper.v().?
         }
     }
 

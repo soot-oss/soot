@@ -31,13 +31,14 @@ import org.jf.dexlib2.iface.reference.FieldReference;
 
 import soot.Local;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.StaticFieldRef;
-import soot.jimple.internal.JAssignStmt;
 
 public class SputInstruction extends FieldInstruction {
 
@@ -57,11 +58,10 @@ public class SputInstruction extends FieldInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
 
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          DalvikTyper.v().setType(assign.getRightOpBox(), instanceField.getType(), true);
         }
     }
 

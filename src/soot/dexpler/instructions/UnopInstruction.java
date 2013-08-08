@@ -31,8 +31,10 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
 
 import soot.Local;
 import soot.Value;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
@@ -65,15 +67,13 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
-          //dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          //DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;
-          Value expr = jass.getRightOp();
-          dalvikTyper.setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b]);
-          dalvikTyper.setType(jass.leftBox, resUnType[op - 0x7b]);
+          DalvikTyper.v().setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b], true);
+          DalvikTyper.v().setType(jass.leftBox, resUnType[op - 0x7b], false);
         }
     }
 

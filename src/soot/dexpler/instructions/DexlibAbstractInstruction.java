@@ -24,7 +24,6 @@
 
 package soot.dexpler.instructions;
 
-
 import java.util.Collections;
 import java.util.Set;
 
@@ -37,7 +36,6 @@ import soot.LongType;
 import soot.Type;
 import soot.Unit;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
@@ -355,6 +353,6 @@ public abstract class DexlibAbstractInstruction {
           DoubleType.v()
         };
 
-      public abstract void getConstraint(IDalvikTyper dalvikTyper);
+      //public abstract void getConstraint(IDalvikTyper DalvikTyper.v());
 
 }

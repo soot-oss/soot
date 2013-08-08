@@ -100,7 +100,8 @@ public class DexIfTransformer extends DexTransformer {
         final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
         final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
 
-        for (IfStmt ifs: getNullIfCandidates(body)) {
+        Set<IfStmt> ifSet = getNullIfCandidates(body);        
+        for (IfStmt ifs: ifSet) {
           List<Local> twoIfLocals = new ArrayList<Local>();
           ConditionExpr ifCondition = (ConditionExpr)ifs.getCondition();
           Local lOp1 = (Local)ifCondition.getOp1();

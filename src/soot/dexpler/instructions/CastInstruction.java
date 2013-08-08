@@ -36,16 +36,17 @@ import soot.IntType;
 import soot.LongType;
 import soot.ShortType;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.LongOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class CastInstruction extends TaggedInstruction {
 
@@ -67,12 +68,11 @@ public class CastInstruction extends TaggedInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint cast: "+ assign +" castexpr type: "+ cast.getType()+" cast type: "+ cast.getCastType());
           int op = (int)instruction.getOpcode().value;
-          dalvikTyper.setType(((JAssignStmt)assign).leftBox, opUnType[op - 0x7b]);
-          //dalvikTyper.captureAssign((JAssignStmt)assign, op);
+          DalvikTyper.v().setType(assign.getLeftOpBox(), cast.getType(), false);
+          //DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
         }
     }
 

@@ -24,21 +24,23 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.ArrayType;
+import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.UnknownType;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.ObjectOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class AputInstruction extends FieldInstruction {
 
@@ -68,11 +70,10 @@ public class AputInstruction extends FieldInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
+          DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
         }
     }
 

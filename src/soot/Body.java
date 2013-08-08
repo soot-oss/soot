@@ -52,6 +52,7 @@ import soot.tagkit.AbstractHost;
 import soot.tagkit.CodeAttribute;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
@@ -311,8 +312,36 @@ public abstract class Body extends AbstractHost implements Serializable
 
     /** Verifies that each use in this Body has a def. */
     public void validateUses()
-    {
-        UnitGraph g = new ExceptionalUnitGraph(this);
+    {      
+        // Conservative validation of uses: add edges to exception handlers 
+        // even if they are not reachable.
+        //
+        // class C {
+        //   int a;
+        //   public void m() {
+        //     try {
+        //      a = 2;
+        //     } catch (Exception e) {
+        //      System.out.println("a: "+ a);
+        //     }
+        //   }
+        // }
+        //
+        // In a graph generated from the Jimple representation there would 
+        // be no edge from "a = 2;" to "catch..." because "a = 2" can only 
+        // generate an Error, a subclass of Throwable and not of Exception. 
+        // Use of 'a' in "System.out.println" would thus trigger a 'no defs 
+        // for value' RuntimeException. 
+        // To avoid this  we create an ExceptionalUnitGraph that considers all 
+        // exception handlers (even unreachable ones as the one in the code 
+        // snippet above) by using a PedanticThrowAnalysis and setting the 
+        // parameter 'omitExceptingUnitEdges' to false.
+        // 
+        // Note that unreachable traps can be removed by setting jb.uce's 
+        // "remove-unreachable-traps" option to true.
+        ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
+        UnitGraph g = new ExceptionalUnitGraph(this, throwAnalysis, false);
+        
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
         Iterator<Unit> unitsIt = getUnits().iterator();
@@ -333,7 +362,7 @@ public abstract class Body extends AbstractHost implements Serializable
                             final Unit uu = uuIt.next();
                             System.err.println(""+uu);
                         }
-                        throw new RuntimeException("no defs for value: "+v+"!"+" in "+getMethod());
+                        throw new RuntimeException("("+ getMethod() +") no defs for value: " + v + "!\n" + this);
                     }
                 }
             }

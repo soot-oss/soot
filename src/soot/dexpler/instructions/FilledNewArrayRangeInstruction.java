@@ -32,9 +32,11 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
@@ -60,7 +62,7 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
-
+System.out.println("array element type (narr range): "+ arrayType);
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         arrayLocal = body.getStoreResultLocal();
         AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
@@ -80,6 +82,13 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         setUnit (assignStmt);
 
 //        body.setDanglingInstruction(this);
+        
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+            Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assignStmt);
+          int op = (int)instruction.getOpcode().value;
+          DalvikTyper.v().setType(assignStmt.getLeftOpBox(), arrayExpr.getType(), false);
+          //DalvikTyper.v().addConstraint(assignStmt.getLeftOpBox(), assignStmt.getRightOpBox());
+        }
 
     }
 
@@ -93,9 +102,5 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         return register >= startRegister && register <= endRegister && isFloatLike(arrayType);
     }
 
-    @Override
-    public void getConstraint(IDalvikTyper dalvikTyper) {
-    }
 
-    // dalvikTyper here?
 }

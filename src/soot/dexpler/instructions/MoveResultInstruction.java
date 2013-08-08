@@ -27,8 +27,10 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
@@ -64,12 +66,11 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
             assign.addTag(tag);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           int op = (int)instruction.getOpcode().value;
           JAssignStmt jassign = (JAssignStmt)assign;
-          dalvikTyper.captureAssign(jassign, op);
+          DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
         }
     }
 

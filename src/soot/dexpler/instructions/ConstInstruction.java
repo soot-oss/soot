@@ -30,8 +30,13 @@ import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.WideLiteralInstruction;
 
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
+import soot.dexpler.typing.UntypedConstant;
+import soot.dexpler.typing.UntypedIntOrFloatConstant;
+import soot.dexpler.typing.UntypedLongOrDoubleConstant;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
@@ -39,7 +44,6 @@ import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
-import soot.jimple.internal.JAssignStmt;
 
 public class ConstInstruction extends DexlibAbstractInstruction {
 
@@ -52,16 +56,20 @@ public class ConstInstruction extends DexlibAbstractInstruction {
     public void jimplify (DexBody body) {
         int dest = ((OneRegisterInstruction) instruction).getRegisterA();
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), getConstant(dest, body));
+        Constant cst = getConstant(dest, body);
+        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.getOpcode().value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+            Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+            int op = (int)instruction.getOpcode().value;
+            if (cst instanceof UntypedConstant) {
+                DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
+            } else {
+                DalvikTyper.v().setType(assign.getLeftOpBox(), cst.getType(), false);
+            }
         }
     }
 
@@ -82,6 +90,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
         } else {
             throw new RuntimeException("literal error: expected narrow or wide literal.");
         }
+        
 
         boolean isFloatingPoint = false; // this is done later in DexBody by calling DexNumtransformer
         Opcode opcode = instruction.getOpcode();
@@ -89,23 +98,49 @@ public class ConstInstruction extends DexlibAbstractInstruction {
         case CONST:
         case CONST_4:
         case CONST_16:
-            if (isFloatingPoint)
-                return FloatConstant.v(Float.intBitsToFloat((int) literal));
-            return IntConstant.v((int) literal);
+            if (IDalvikTyper.ENABLE_DVKTYPER) {
+                return UntypedIntOrFloatConstant.v((int)literal);
+            } else {
+                if (isFloatingPoint)
+                    return FloatConstant.v(Float.intBitsToFloat((int) literal));
+                return IntConstant.v((int) literal);
+            }
 
         case CONST_HIGH16:
-            return IntConstant.v((int) literal);
+            if (IDalvikTyper.ENABLE_DVKTYPER) {
+                //
+                //return UntypedIntOrFloatConstant.v((int)literal<<16).toFloatConstant();
+                // seems that dexlib correctly puts the 16bits into the topmost bits.
+                //
+                return UntypedIntOrFloatConstant.v((int)literal);//.toFloatConstant();
+            } else {
+                return IntConstant.v((int) literal);
+            }
 
         case CONST_WIDE_HIGH16:
-            return LongConstant.v(literal);
+            if (IDalvikTyper.ENABLE_DVKTYPER) {
+                //return UntypedLongOrDoubleConstant.v((long)literal<<48).toDoubleConstant();
+                // seems that dexlib correctly puts the 16bits into the topmost bits.
+                //
+                return UntypedLongOrDoubleConstant.v((long)literal);//.toDoubleConstant();
+            } else {
+                if (isFloatingPoint)
+                    return DoubleConstant.v(Double.longBitsToDouble(literal));
+                else
+                    return LongConstant.v(literal);
+            }
 
         case CONST_WIDE:
         case CONST_WIDE_16:
         case CONST_WIDE_32:
-            if (isFloatingPoint)
-                return DoubleConstant.v(Double.longBitsToDouble(literal));
-            else
-                return LongConstant.v(literal);
+            if (IDalvikTyper.ENABLE_DVKTYPER) {
+                return UntypedLongOrDoubleConstant.v(literal);
+            } else {
+                if (isFloatingPoint)
+                    return DoubleConstant.v(Double.longBitsToDouble(literal));
+                else
+                    return LongConstant.v(literal);
+            }
         default:
             throw new IllegalArgumentException("Expected a const or a const-wide instruction, got neither.");
         }
