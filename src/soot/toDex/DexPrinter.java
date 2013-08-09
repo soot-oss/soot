@@ -272,6 +272,8 @@ public class DexPrinter {
 			registerCount = inWords;
 		}
 		List<EncodedCatchHandler> encodedCatchHandlers = new ArrayList<CodeItem.EncodedCatchHandler>();
+		if (m.getSignature().equals("<com.android.insecurebank.PostLogin: void dotransfer()>"))
+			System.out.println("x");
 		List<TryItem> tries = toTries(activeBody.getTraps(), encodedCatchHandlers, stmtV, belongingDexFile);
 		return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords, null, instructions, tries, encodedCatchHandlers);
 	}
@@ -284,30 +286,112 @@ public class DexPrinter {
 		return stmtV.getFinalInsns();
 	}
 	
+	private static class CodeRange {
+		int startAddress;
+		int endAddress;
+		
+		public CodeRange(int startAddress, int endAddress) {
+			this.startAddress = startAddress;
+			this.endAddress = endAddress;
+		}
+		
+		/**
+		 * Checks whether the given code range r is fully enclosed by this code
+		 * range.
+		 * @param r The other code range
+		 * @return True if the given code range r is fully enclosed by this code
+		 * range, otherwise false.
+		 */
+		public boolean containsRange(CodeRange r) {
+			return (r.startAddress >= this.startAddress && r.endAddress <= this.endAddress);
+		}
+		
+		@Override
+		public String toString() {
+			return this.startAddress + "-" + this.endAddress;
+		}
+		
+		@Override
+		public boolean equals(Object other) {
+			if (other == this)
+				return true;
+			if (other == null && !(other instanceof CodeRange))
+				return false;
+			CodeRange cr = (CodeRange) other;
+			return (this.startAddress == cr.startAddress && this.endAddress == cr.endAddress);
+		}
+		
+		@Override
+		public int hashCode() {
+			return 17 * startAddress + 13 * endAddress;
+		}
+	}
+	
 	private static List<TryItem> toTries(Collection<Trap> traps, List<EncodedCatchHandler> encodedCatchHandlers, StmtVisitor stmtV, DexFile belongingDexFile) {
-		// assume that the mapping startCodeAddress -> TryItem is enough for a "code range", ignore different end Units / try lengths
-		Map<Integer, TryItem> codeRangesToTryItem = new HashMap<Integer, TryItem>();
+		// Original code: assume that the mapping startCodeAddress -> TryItem is enough for
+		// 		a "code range", ignore different end Units / try lengths
+		// That's definitely not enough since we can have two handlers H1, H2 with
+		//		H1:240-322, H2:242-322. There is no valid ordering for such overlapping traps
+		//		in dex. Current solution: If there is already a trap T' for a subrange of the
+		//		current trap T, merge T and T' on the fully range of T. This is not a 100%
+		//		correct since we extend traps over the requested range, but it's better than
+		//		the previous code that produced APKs which failed Dalvik's bytecode verification.
+		//		(Steven Arzt, 09.08.2013)
+		// TODO: There are cases in which we need to split traps, e.g. in cases like
+		//		( (t1) ... (t2) )<big catch all around it> where the all three handlers do
+		//		something different.
+		Map<CodeRange, TryItem> codeRangesToTryItem = new HashMap<CodeRange, TryItem>();
 		for (Trap t : traps) {
 			EncodedTypeAddrPair newHandlerInfo = createNewHandlerInfo(t, stmtV, belongingDexFile);
-			EncodedTypeAddrPair[] handlersInfo;
+			EncodedTypeAddrPair[] handlersInfo = null;
+			
 			// see if there is old handler info at this code range
 			Stmt beginStmt = (Stmt) t.getBeginUnit();
 			Stmt endStmt = (Stmt) t.getEndUnit();
 			int startCodeAddress = stmtV.getOffset(beginStmt);
 			int tryLength = stmtV.getOffset(endStmt) - startCodeAddress; // FIXME this is not that simple - a jimple stmt belongs to 1 to N dex insns, so the length could be bigger
-			if (codeRangesToTryItem.containsKey(startCodeAddress)) {
-				// copy the old handlers to a bigger array (the old one cannot be modified...)
-				TryItem oldTryItem = codeRangesToTryItem.get(startCodeAddress);
-				handlersInfo = addNewHandlerInfo(newHandlerInfo, oldTryItem.encodedCatchHandler.handlers);
-			} else {
-				// just use the newly found handler info
-				handlersInfo = new EncodedTypeAddrPair[]{newHandlerInfo};
+			
+			CodeRange range = new CodeRange(startCodeAddress, startCodeAddress + tryLength);
+			
+			boolean found = false;
+			for (CodeRange r : codeRangesToTryItem.keySet()) {
+				// Check whether this range is contained in some other range. We then extend our
+				// trap over the bigger range containing this range
+				if (r.containsRange(range)) {
+					range.startAddress = r.startAddress;
+					range.endAddress = r.endAddress;
+					
+					// copy the old handlers to a bigger array (the old one cannot be modified...)
+					TryItem oldTryItem = codeRangesToTryItem.get(r);
+					handlersInfo = addNewHandlerInfo(newHandlerInfo, oldTryItem.encodedCatchHandler.handlers);
+					found = true;
+					break;
+				}
+				// Check whether the other range is contained in this range. In this case,
+				// a smaller range is already in the list. We merge the two over the larger
+				// range.
+				else if (range.containsRange(r)) {
+					// just use the newly found handler info
+					TryItem oldTryItem = codeRangesToTryItem.get(r);
+					handlersInfo = addNewHandlerInfo(newHandlerInfo, oldTryItem.encodedCatchHandler.handlers);
+					
+					// remove the old range, the new one will be added anyway and contain
+					// the merged handlers
+					codeRangesToTryItem.remove(r);
+					
+					found = true;
+					break;
+				}
 			}
+
+			if (!found)
+				handlersInfo = new EncodedTypeAddrPair[]{newHandlerInfo};
+
 			int catchAllHandlerAddress = -1; // due to Soot, we cannot distinguish a "finally" exception handler from the others
 			EncodedCatchHandler handler = new EncodedCatchHandler(handlersInfo , catchAllHandlerAddress);
 			encodedCatchHandlers.add(handler);
 			TryItem newTryItem = new TryItem(startCodeAddress, tryLength, handler);
-			codeRangesToTryItem.put(startCodeAddress, newTryItem);
+			codeRangesToTryItem.put(range, newTryItem);
 		}
 		return toSortedTries(codeRangesToTryItem.values());
 	}
@@ -331,14 +415,28 @@ public class DexPrinter {
 	
 	private static List<TryItem> toSortedTries(Collection<TryItem> unsortedTries) {
 		List<TryItem> tries = new ArrayList<TryItem>(unsortedTries);
-		// sort the tries in order from low to high address
+		
+		// sort the tries in order from high to low address
 		Collections.sort(tries, new Comparator<TryItem>() {
+			@Override
 			public int compare(TryItem a, TryItem b) {
-				int addressA = a.getStartCodeAddress();
-				int addressB = b.getStartCodeAddress();
-				return addressA - addressB; // negative if a < b, positive if a > b
+				int addressA = a.getStartCodeAddress() + a.getTryLength();
+				int addressB = b.getStartCodeAddress() + b.getTryLength();
+				return addressA - addressB;
 			}
 		});
+		
+		// Validate the sorted tries. This is a direct translation of
+		// "swapTriesAndCatches" from DexSwapVerify.c
+		int lastEnd = 0;
+		for (int tryIdx = 0; tryIdx < tries.size(); tryIdx++) {
+//		for (int tryIdx = tries.size() - 1; tryIdx >= 0; tryIdx--) {
+			TryItem ti = tries.get(tryIdx);
+			if (ti.getStartCodeAddress() < lastEnd)
+				throw new RuntimeException("Out-of-order try block");
+			lastEnd = ti.getStartCodeAddress() + ti.getTryLength();
+		}
+		
 		return tries;
 	}
 
