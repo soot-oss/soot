@@ -272,8 +272,6 @@ public class DexPrinter {
 			registerCount = inWords;
 		}
 		List<EncodedCatchHandler> encodedCatchHandlers = new ArrayList<CodeItem.EncodedCatchHandler>();
-		if (m.getSignature().equals("<com.android.insecurebank.PostLogin: void dotransfer()>"))
-			System.out.println("x");
 		List<TryItem> tries = toTries(activeBody.getTraps(), encodedCatchHandlers, stmtV, belongingDexFile);
 		return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords, null, instructions, tries, encodedCatchHandlers);
 	}
@@ -416,7 +414,7 @@ public class DexPrinter {
 	private static List<TryItem> toSortedTries(Collection<TryItem> unsortedTries) {
 		List<TryItem> tries = new ArrayList<TryItem>(unsortedTries);
 		
-		// sort the tries in order from high to low address
+		// sort the tries in order from low to high address
 		Collections.sort(tries, new Comparator<TryItem>() {
 			@Override
 			public int compare(TryItem a, TryItem b) {
