@@ -66,18 +66,27 @@ public class RegisterAllocator {
 		// Register allocation is fixed! 0 for this, 1...n for parameters. We do not expect
 		// the IdentityStmts in the body in any fixed order, so we directly calculate
 		// the correct register number.
-		int paramRegNum = -1;
-		if (!sm.isStatic() && sm.getActiveBody().getThisLocal() == l)
+		int paramRegNum = 0;
+		boolean found = false;
+		if (!sm.isStatic() && sm.getActiveBody().getThisLocal() == l) {
 			paramRegNum = 0;
+			found = true;
+		}
 		else
-			for (int i = 0; i < sm.getParameterCount(); i++)
+			for (int i = 0; i < sm.getParameterCount(); i++) {
 				if (sm.getActiveBody().getParameterLocal(i) == l) {
-					paramRegNum = i;
+					// For a non-static method, p0 is <this>.
 					if (!sm.isStatic())
 						paramRegNum++;
+					found = true;
 					break;
 				}
-		if (paramRegNum < 0)
+
+				// Long and Double values consume two registers
+				Type paramType = sm.getParameterType(i);
+				paramRegNum += SootToDexUtils.getDexWords(paramType);
+			}
+		if (!found)
 			throw new RuntimeException("Parameter local not found");
 		
 		localToLastRegNum.put(l.getName(), paramRegNum);
