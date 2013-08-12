@@ -153,6 +153,7 @@ class SootMethodRefImpl implements SootMethodRef {
         //error just in case the code *is* actually reached at runtime
         if(Options.v().allow_phantom_refs()) {
         	SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic()?Modifier.STATIC:0);
+        	m.setModifiers(Modifier.PUBLIC);	//  we don't know who will be calling us
         	JimpleBody body = Jimple.v().newBody(m);
 			m.setActiveBody(body);
 			
