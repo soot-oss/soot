@@ -323,28 +323,34 @@ public class StmtVisitor implements StmtSwitch {
 		return regAlloc.getRegCount();
 	}
 
+	@Override
 	public void defaultCase(Object o) {
 		// not-int and not-long aren't implemented because soot converts "~x" to "x ^ (-1)"
 		// fill-array-data isn't implemented since soot converts "new int[]{x, y}" to individual "array put" expressions for x and y
 		throw new Error("unknown Object (" + o.getClass() + ") as Stmt: " + o);
 	}
 	
+	@Override
 	public void caseBreakpointStmt(BreakpointStmt stmt) {
 		return; // there are no breakpoints in dex bytecode
 	}
 	
+	@Override
 	public void caseNopStmt(NopStmt stmt) {
 		addInsn(new Insn10x(Opcode.NOP));
 	}
 
+	@Override
 	public void caseRetStmt(RetStmt stmt) {
 		throw new Error("ret statements are deprecated!");
 	}
 	
+	@Override
 	public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
 		addInsn(buildMonitorInsn(stmt, Opcode.MONITOR_ENTER));
 	}
 	
+	@Override
 	public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
 		addInsn(buildMonitorInsn(stmt, Opcode.MONITOR_EXIT));
 	}
@@ -355,12 +361,14 @@ public class StmtVisitor implements StmtSwitch {
 		return new Insn11x(opc, lockReg);
 	}
 	
+	@Override
 	public void caseThrowStmt(ThrowStmt stmt) {
 		Value exception = stmt.getOp();
 		Register exceptionReg = regAlloc.asImmediate(exception, constantV);
 		addInsn(new Insn11x(Opcode.THROW, exceptionReg));
 	}
 	
+	@Override
 	public void caseAssignStmt(AssignStmt stmt) {
 		Value lhs = stmt.getLeftOp();
 		if (lhs instanceof ConcreteRef) {
@@ -550,14 +558,17 @@ public class StmtVisitor implements StmtSwitch {
 		return new Insn11x(opc, destinationReg);
 	}
 	
+	@Override
 	public void caseInvokeStmt(InvokeStmt stmt) {
 		stmt.getInvokeExpr().apply(exprV);
 	}
 	
+	@Override
 	public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
 		addInsn(new Insn10x(Opcode.RETURN_VOID));
 	}
 	
+	@Override
 	public void caseReturnStmt(ReturnStmt stmt) {
 		Value returnValue = stmt.getOp();
 		Register returnReg = regAlloc.asImmediate(returnValue, constantV);
@@ -573,6 +584,7 @@ public class StmtVisitor implements StmtSwitch {
 		addInsn(new Insn11x(opc, returnReg));
 	}
 
+	@Override
 	public void caseIdentityStmt(IdentityStmt stmt) {
 		Value lhs = stmt.getLeftOp();
 		Value rhs = stmt.getRightOp();
@@ -592,6 +604,7 @@ public class StmtVisitor implements StmtSwitch {
 		}
 	}
 	
+	@Override
 	public void caseGotoStmt(GotoStmt stmt) {
 		Stmt target = (Stmt) stmt.getTarget();
 		addInsn(buildGotoInsn(target));
@@ -603,6 +616,7 @@ public class StmtVisitor implements StmtSwitch {
 		return insn;
 	}
 	
+	@Override
 	public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
 		// create payload that references the switch's targets
 		@SuppressWarnings("unchecked")
@@ -621,6 +635,7 @@ public class StmtVisitor implements StmtSwitch {
 		addInsn(buildSwitchInsn(Opcode.SPARSE_SWITCH, key, defaultTarget, payload));
 	}
 
+	@Override
 	public void caseTableSwitchStmt(TableSwitchStmt stmt) {
 		// create payload that references the switch's targets
 		int firstKey = stmt.getLowIndex();
@@ -644,6 +659,7 @@ public class StmtVisitor implements StmtSwitch {
 		return buildGotoInsn(defaultTarget);
 	}
 	
+	@Override
 	public void caseIfStmt(IfStmt stmt) {
 		Stmt target = stmt.getTarget();
 		exprV.setTargetForOffset(target);
