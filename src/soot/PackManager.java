@@ -488,6 +488,11 @@ public class PackManager {
     }
 
     private ZipOutputStream jarFile = null;
+    
+    public ZipOutputStream getJarFile() {
+		return jarFile;
+	}
+    
     public void writeOutput() {
         setupJAR();
         if(Options.v().verbose())
