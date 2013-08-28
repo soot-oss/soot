@@ -257,7 +257,7 @@ public class DexPrinter {
 		if (m.isAbstract() || m.isNative()) {
 			return null;
 		}
-		Body activeBody = m.getActiveBody();
+		Body activeBody = m.retrieveActiveBody();
 		
 		// Switch statements may not be empty in dex, so we have to fix this first
 		EmptySwitchEliminator.v().transform(activeBody);
