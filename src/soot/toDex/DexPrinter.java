@@ -48,6 +48,7 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
 
 /**
  * Main entry point for the "dex" output format.<br>
@@ -194,6 +195,7 @@ public class DexPrinter {
 			if (m.isPhantom()) {
 				continue;
 			}
+			
 			MethodIdItem methodIdItem = toMethodIdItem(m.makeRef(), belongingDexFile);
 			int accessFlags = SootToDexUtils.getDexAccessFlags(m);
 			CodeItem codeItem = toCodeItem(m, belongingDexFile);
@@ -249,6 +251,10 @@ public class DexPrinter {
 			return null;
 		}
 		Body activeBody = m.getActiveBody();
+		
+		// Switch statements may not be empty in dex, so we have to fix this first
+		EmptySwitchEliminator.v().transform(activeBody);
+
 		// word count of incoming parameters
 		int inWords = SootToDexUtils.getDexWords(m.getParameterTypes());
 		if (!m.isStatic()) {

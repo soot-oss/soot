@@ -145,4 +145,5 @@
   <class>soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator</class>
   <class>soot.sootify.TemplatePrinter</class>
   <class>soot.dexpler.DexResolver</class>
+  <class>soot.jimple.toolkits.scalar.EmptySwitchEliminator</class>
 </singletons>

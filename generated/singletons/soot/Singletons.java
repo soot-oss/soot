@@ -899,4 +899,10 @@ public class Singletons {
         return instance_soot_dexpler_DexResolver;
     }
 
+    private soot.jimple.toolkits.scalar.EmptySwitchEliminator instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
+    public soot.jimple.toolkits.scalar.EmptySwitchEliminator soot_jimple_toolkits_scalar_EmptySwitchEliminator() {
+        if( instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator == null ) instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator = new soot.jimple.toolkits.scalar.EmptySwitchEliminator( g );
+        return instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
+    }
+
 }
