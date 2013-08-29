@@ -261,6 +261,12 @@ public class DexPrinter {
 		
 		// Switch statements may not be empty in dex, so we have to fix this first
 		EmptySwitchEliminator.v().transform(activeBody);
+		
+		// Dalvik requires synchronized methods to have explicit monitor calls,
+		// so we insert them here. See http://milk.com/kodebase/dalvik-docs-mirror/docs/debugger.html
+		// We cannot place this upon the developer since it is only required
+		// for Dalvik, but not for other targets.
+		SynchronizedMethodTransformer.v().transform(activeBody);
 
 		// word count of incoming parameters
 		int inWords = SootToDexUtils.getDexWords(m.getParameterTypes());

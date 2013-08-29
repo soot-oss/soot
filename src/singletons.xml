@@ -146,4 +146,5 @@
   <class>soot.sootify.TemplatePrinter</class>
   <class>soot.dexpler.DexResolver</class>
   <class>soot.jimple.toolkits.scalar.EmptySwitchEliminator</class>
+  <class>soot.toDex.SynchronizedMethodTransformer</class>
 </singletons>

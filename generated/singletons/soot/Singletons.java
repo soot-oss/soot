@@ -905,4 +905,10 @@ public class Singletons {
         return instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
     }
 
+    private soot.toDex.SynchronizedMethodTransformer instance_soot_toDex_SynchronizedMethodTransformer;
+    public soot.toDex.SynchronizedMethodTransformer soot_toDex_SynchronizedMethodTransformer() {
+        if( instance_soot_toDex_SynchronizedMethodTransformer == null ) instance_soot_toDex_SynchronizedMethodTransformer = new soot.toDex.SynchronizedMethodTransformer( g );
+        return instance_soot_toDex_SynchronizedMethodTransformer;
+    }
+
 }
