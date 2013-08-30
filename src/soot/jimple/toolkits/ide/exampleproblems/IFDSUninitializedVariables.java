@@ -33,12 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import soot.Local;
 import soot.NullType;
 import soot.Scene;
 import soot.SootMethod;
-import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -49,7 +47,6 @@ import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
-import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 
 public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProblem<Local,InterproceduralCFG<Unit, SootMethod>> {
@@ -129,6 +126,10 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
 
 					@Override
 					public Set<Local> computeTargets(final Local source) {
+						// Do not map parameters for <clinit> edges
+						if (destinationMethod.getName().equals("<clinit>"))
+							return Collections.emptySet();
+
 						for (Local localArgument : localArguments) {
 							if (source.equivTo(localArgument)) {
 								return Collections.<Local>singleton(destinationMethod.getActiveBody().getParameterLocal(args.indexOf(localArgument)));
