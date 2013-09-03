@@ -37,6 +37,7 @@ import java.util.*;
 import soot.*;
 
 /** Provides a test-driver for the Jimple parser. */
+@Deprecated
 public class Parse 
 {
     private static final String EXT = ".jimple";

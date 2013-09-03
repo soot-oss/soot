@@ -176,9 +176,9 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     } else if(elementType instanceof CharType || elementType instanceof ShortType) {
       value = IntConstant.v(element.shortValue());
     } else if(elementType instanceof DoubleType) {
-      value = DoubleConstant.v(element.doubleValue());
+      value = DoubleConstant.v(Double.longBitsToDouble(element.longValue()));
     } else if(elementType instanceof FloatType) {
-      value = FloatConstant.v(element.floatValue());
+      value = FloatConstant.v(Float.intBitsToFloat(element.intValue()));
     } else if(elementType instanceof IntType) {
       value = IntConstant.v(element.intValue());
     } else if(elementType instanceof LongType) {

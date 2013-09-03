@@ -39,6 +39,7 @@ import org.jf.dexlib.Util.Pair;
 import soot.Body;
 import soot.CompilationDeathException;
 import soot.G;
+import soot.PackManager;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -48,6 +49,8 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
+import soot.options.Options;
 
 /**
  * Main entry point for the "dex" output format.<br>
@@ -74,25 +77,30 @@ public class DexPrinter {
 	}
 	
 	private void printApk(String outputDir, File originalApk) throws IOException {
-		// copying every old zip entry except classes.dex
-		String outputFileName = outputDir + File.separatorChar + originalApk.getName();
-		File outputFile = new File(outputFileName);
-		if(outputFile.exists()) {
-			throw new CompilationDeathException("Output file "+outputFile+" exists. Not overwriting.");
+		ZipOutputStream outputApk;
+		if(Options.v().output_jar()) {
+			outputApk = PackManager.v().getJarFile();
+			G.v().out.println("Writing APK to: " + Options.v().output_dir());
 		} else {
-			ZipOutputStream outputApk = new ZipOutputStream(new FileOutputStream(outputFile));
+			String outputFileName = outputDir + File.separatorChar + originalApk.getName();
+		
+			File outputFile = new File(outputFileName);
+			if(outputFile.exists()) {
+				throw new CompilationDeathException("Output file "+outputFile+" exists. Not overwriting.");
+			} 
+			outputApk = new ZipOutputStream(new FileOutputStream(outputFile));
 			G.v().out.println("Writing APK to: " + outputFileName);
-			G.v().out.println("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
-			ZipFile original = new ZipFile(originalApk);
-			copyAllButClassesDexAndSigFiles(original, outputApk);
-			original.close();
-	
-			// put our classes.dex into the zip archive
-			outputApk.putNextEntry(new ZipEntry(CLASSES_DEX));
-			writeTo(outputApk);
-			outputApk.closeEntry();
-			outputApk.close();
 		}
+		G.v().out.println("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
+		ZipFile original = new ZipFile(originalApk);
+		copyAllButClassesDexAndSigFiles(original, outputApk);
+		original.close();
+		
+		// put our classes.dex into the zip archive
+		outputApk.putNextEntry(new ZipEntry(CLASSES_DEX));
+		writeTo(outputApk);
+		outputApk.closeEntry();
+		outputApk.close();
 	}
 
 	private void copyAllButClassesDexAndSigFiles(ZipFile source, ZipOutputStream destination) throws IOException {
@@ -194,6 +202,7 @@ public class DexPrinter {
 			if (m.isPhantom()) {
 				continue;
 			}
+			
 			MethodIdItem methodIdItem = toMethodIdItem(m.makeRef(), belongingDexFile);
 			int accessFlags = SootToDexUtils.getDexAccessFlags(m);
 			CodeItem codeItem = toCodeItem(m, belongingDexFile);
@@ -248,7 +257,17 @@ public class DexPrinter {
 		if (m.isAbstract() || m.isNative()) {
 			return null;
 		}
-		Body activeBody = m.getActiveBody();
+		Body activeBody = m.retrieveActiveBody();
+		
+		// Switch statements may not be empty in dex, so we have to fix this first
+		EmptySwitchEliminator.v().transform(activeBody);
+		
+		// Dalvik requires synchronized methods to have explicit monitor calls,
+		// so we insert them here. See http://milk.com/kodebase/dalvik-docs-mirror/docs/debugger.html
+		// We cannot place this upon the developer since it is only required
+		// for Dalvik, but not for other targets.
+		SynchronizedMethodTransformer.v().transform(activeBody);
+
 		// word count of incoming parameters
 		int inWords = SootToDexUtils.getDexWords(m.getParameterTypes());
 		if (!m.isStatic()) {

@@ -25,12 +25,12 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public final class SmallNumberedMap {
+public final class SmallNumberedMap<T> {
     public SmallNumberedMap( ArrayNumberer universe ) {
         this.universe = universe;
     }
     /** Associates a value with a key. */
-    public boolean put( Numberable key, Object value ) {
+    public boolean put( Numberable key, T value ) {
         int pos = findPosition( key );
         if( array[pos] == key ) {
             if( values[pos] == value ) return false;
@@ -47,8 +47,8 @@ public final class SmallNumberedMap {
         return true;
     }
     /** Returns the value associated with a given key. */
-    public Object get( Numberable key ) {
-        return values[ findPosition(key) ];
+    public T get( Numberable key ) {
+        return (T)values[ findPosition(key) ];
     }
     /** Returns the number of non-null values in this map. */
     public int nonNullSize() {
@@ -60,19 +60,19 @@ public final class SmallNumberedMap {
     }
 
     /** Returns an iterator over the keys with non-null values. */
-    public Iterator keyIterator() {
+    public Iterator<Numberable> keyIterator() {
         return new KeyIterator( this );
     }
 
     /** Returns an iterator over the non-null values. */
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         return new ValueIterator( this );
     }
 
-    abstract class SmallNumberedMapIterator implements Iterator {
-        SmallNumberedMap map;
+    abstract class SmallNumberedMapIterator<C> implements Iterator<C> {
+        SmallNumberedMap<C> map;
         int cur = 0;
-        SmallNumberedMapIterator( SmallNumberedMap map ) {
+        SmallNumberedMapIterator( SmallNumberedMap<C> map ) {
             this.map = map;
             seekNext();
         }
@@ -86,15 +86,15 @@ public final class SmallNumberedMap {
             }
         }
         public final boolean hasNext() { return cur != -1; }
-        public abstract Object next();
+        public abstract C next();
         public void remove() {
             throw new RuntimeException( "Not implemented." );
         }
     }
 
-    class KeyIterator extends SmallNumberedMapIterator {
+    class KeyIterator extends SmallNumberedMapIterator<Numberable> {
         KeyIterator( SmallNumberedMap map ) { super(map); }
-        public final Object next() {
+        public final Numberable next() {
             Numberable ret = array[cur];
             cur++;
             seekNext();
@@ -102,13 +102,13 @@ public final class SmallNumberedMap {
         }
     }
 
-    class ValueIterator extends SmallNumberedMapIterator {
+    class ValueIterator extends SmallNumberedMapIterator<T> {
         ValueIterator( SmallNumberedMap map ) { super(map); }
-        public final Object next() {
+        public final T next() {
             Object ret = values[cur];
             cur++;
             seekNext();
-            return ret;
+            return (T)ret;
         }
     }
 

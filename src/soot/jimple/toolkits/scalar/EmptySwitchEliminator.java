@@ -25,43 +25,40 @@
 
 
 package soot.jimple.toolkits.scalar;
-import soot.options.*;
+import java.util.Iterator;
+import java.util.Map;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Singletons;
+import soot.Unit;
+import soot.jimple.Jimple;
+import soot.jimple.LookupSwitchStmt;
 
-public class NopEliminator extends BodyTransformer
+/**
+ * Removes empty switch statements which always take the default action from a
+ * method body, i.e. blocks of the form switch(x) { default: ... }. Such blocks
+ * are replaced by the code of the default block.
+ * @author Steven Arzt
+ *
+ */
+public class EmptySwitchEliminator extends BodyTransformer
 {
-    public NopEliminator( Singletons.Global g ) {}
-    public static NopEliminator v() { return G.v().soot_jimple_toolkits_scalar_NopEliminator(); }
+    public EmptySwitchEliminator( Singletons.Global g ) {}
+    public static EmptySwitchEliminator v() { return G.v().soot_jimple_toolkits_scalar_EmptySwitchEliminator(); }
 
-    /** Removes {@link NopStmt}s from the passed body (which must be
-	a {@link JimpleBody}).  Complexity is linear 
-        with respect to the statements.
-    */
-    
     protected void internalTransform(Body b, String phaseName, Map options)
     {
-        JimpleBody body = (JimpleBody)b;
-        
-        if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
-                "] Removing nops...");
-                
-        Chain<Unit> units = body.getUnits();
-        
-        // Just do one trivial pass.
-        {
-            Iterator<Unit> stmtIt = units.snapshotIterator();
-            
-            while(stmtIt.hasNext()) 
-            {
-                Unit u = stmtIt.next();
-                if(u instanceof NopStmt)
-                    units.remove(u);
-            }
+    	Iterator<Unit> it = b.getUnits().snapshotIterator();
+        while (it.hasNext()) {
+        	Unit u = it.next();
+        	if (u instanceof LookupSwitchStmt) {
+        		LookupSwitchStmt sw = (LookupSwitchStmt) u;
+        		if (sw.getTargetCount() == 0 && sw.getDefaultTarget() != null)
+        			b.getUnits().swapWith(sw, Jimple.v().newGotoStmt(sw.getDefaultTarget()));
+        	}
         }
+        
     }
 }

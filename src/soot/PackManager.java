@@ -488,6 +488,11 @@ public class PackManager {
     }
 
     private ZipOutputStream jarFile = null;
+    
+    public ZipOutputStream getJarFile() {
+		return jarFile;
+	}
+    
     public void writeOutput() {
         setupJAR();
         if(Options.v().verbose())
@@ -574,7 +579,7 @@ public class PackManager {
         }
     }
 
-    private void runBodyPacks( Iterator classes ) {
+    private void runBodyPacks( Iterator<SootClass> classes ) {
         while( classes.hasNext() ) {
             SootClass cl = (SootClass) classes.next();
             runBodyPacks( cl );
@@ -586,7 +591,7 @@ public class PackManager {
        agg.internalTransform("", null);
     }
 
-    private void writeOutput( Iterator classes ) {
+    private void writeOutput( Iterator<SootClass> classes ) {
         while( classes.hasNext() ) {
             SootClass cl = (SootClass) classes.next();
             writeClass( cl );
@@ -601,14 +606,14 @@ public class PackManager {
         }
 	}
 
-    private void releaseBodies( Iterator classes ) {
+    private void releaseBodies( Iterator<SootClass> classes ) {
         while( classes.hasNext() ) {
             SootClass cl = (SootClass) classes.next();
             releaseBodies( cl );
         }
     }
 
-    private Iterator reachableClasses() {
+    private Iterator<SootClass> reachableClasses() {
         return Scene.v().getApplicationClasses().snapshotIterator();
     }
 
@@ -616,7 +621,7 @@ public class PackManager {
     private void postProcessDAVA() {
         G.v().out.println();
 
-        Chain appClasses = Scene.v().getApplicationClasses();
+        Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
 
         Map options = PhaseOptions.v().getPhaseOptions("db.transformations");
         boolean transformations = PhaseOptions.getBoolean(options, "enabled");
@@ -657,7 +662,7 @@ public class PackManager {
             	 * Added hook into going through each decompiled method again
             	 * Need it for all the implemented AST analyses
             	 */
-            	Iterator methodIt = s.methodIterator();
+            	Iterator<SootMethod> methodIt = s.methodIterator();
             	while (methodIt.hasNext()) {
 
             		SootMethod m = (SootMethod) methodIt.next();
@@ -707,7 +712,7 @@ public class PackManager {
     }
 
     private void outputDava(){
-        Chain appClasses = Scene.v().getApplicationClasses();
+        Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
 
 
          /*
@@ -715,7 +720,7 @@ public class PackManager {
           */
     	String pathForBuild=null;
     	ArrayList<String> decompiledClasses = new ArrayList<String>();
-        Iterator classIt = appClasses.iterator();
+        Iterator<SootClass> classIt = appClasses.iterator();
         while (classIt.hasNext()) {
             SootClass s = (SootClass) classIt.next();
 
@@ -855,7 +860,7 @@ public class PackManager {
         //resolving a method reference to a non-existing method, then this
         //method is created as a phantom method when phantom-refs are enabled
         LinkedList<SootMethod> methodsCopy = new LinkedList<SootMethod>(c.getMethods());
-        Iterator methodIt = methodsCopy.iterator();
+        Iterator<SootMethod> methodIt = methodsCopy.iterator();
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
 
@@ -1052,7 +1057,7 @@ public class PackManager {
         }
     }
 
-    private void postProcessXML( Iterator classes ) {
+    private void postProcessXML( Iterator<SootClass> classes ) {
         if (!Options.v().xml_attributes()) return;
         if (Options.v().output_format() != Options.output_format_jimple) return;
         while( classes.hasNext() ) {
@@ -1082,7 +1087,7 @@ public class PackManager {
     }
 
     private void releaseBodies( SootClass cl ) {
-        Iterator methodIt = cl.methodIterator();
+        Iterator<SootMethod> methodIt = cl.methodIterator();
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
 
@@ -1092,13 +1097,13 @@ public class PackManager {
     }
 
     private void retrieveAllBodies() {
-        Iterator clIt = reachableClasses();
+        Iterator<SootClass> clIt = reachableClasses();
         while( clIt.hasNext() ) {
             SootClass cl = (SootClass) clIt.next();
             //note: the following is a snapshot iterator;
             //this is necessary because it can happen that phantom methods
             //are added during resolution
-            Iterator methodIt = cl.getMethods().iterator();
+            Iterator<SootMethod> methodIt = cl.getMethods().iterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
                 if(DEBUG && cl.isApplicationClass()){

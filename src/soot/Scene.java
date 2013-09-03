@@ -29,6 +29,7 @@ package soot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -115,22 +116,22 @@ public class Scene  //extends AbstractHost
 	}
     public static Scene  v() { return G.v().soot_Scene (); }
     
-    private Chain<SootClass> classes = new HashChain<SootClass>();
-    private Chain<SootClass> applicationClasses = new HashChain<SootClass>();
-    private Chain<SootClass> libraryClasses = new HashChain<SootClass>();
-    private Chain<SootClass> phantomClasses = new HashChain<SootClass>();
+    Chain<SootClass> classes = new HashChain<SootClass>();
+    Chain<SootClass> applicationClasses = new HashChain<SootClass>();
+    Chain<SootClass> libraryClasses = new HashChain<SootClass>();
+    Chain<SootClass> phantomClasses = new HashChain<SootClass>();
     
     private final Map<String,Type> nameToClass = new HashMap<String,Type>();
 
-    private ArrayNumberer kindNumberer = new ArrayNumberer();
-    private ArrayNumberer typeNumberer = new ArrayNumberer();
-    private ArrayNumberer methodNumberer = new ArrayNumberer();
-    private Numberer unitNumberer = new MapNumberer();
-    private Numberer contextNumberer = null;
-    private ArrayNumberer fieldNumberer = new ArrayNumberer();
-    private ArrayNumberer classNumberer = new ArrayNumberer();
-    private StringNumberer subSigNumberer = new StringNumberer();
-    private ArrayNumberer localNumberer = new ArrayNumberer();
+    ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
+    ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
+    ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
+    Numberer unitNumberer = new MapNumberer();
+    Numberer contextNumberer = null;
+    ArrayNumberer fieldNumberer = new ArrayNumberer<SootField>();
+    ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
+    StringNumberer subSigNumberer = new StringNumberer();
+    ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
     private Hierarchy activeHierarchy;
     private FastHierarchy activeFastHierarchy;
@@ -603,9 +604,11 @@ public class Scene  //extends AbstractHost
             Main.v().resolveTimer.start();
         */
         
+        setPhantomRefs(true);
         //SootResolver resolver = new SootResolver();
         SootResolver resolver = SootResolver.v();
         SootClass toReturn = resolver.resolveClass(className, desiredLevel);
+        setPhantomRefs(false);
 
         return toReturn;
         
@@ -947,14 +950,14 @@ public class Scene  //extends AbstractHost
         return getPhantomRefs();
     }
     public Numberer kindNumberer() { return kindNumberer; }
-    public ArrayNumberer getTypeNumberer() { return typeNumberer; }
-    public ArrayNumberer getMethodNumberer() { return methodNumberer; }
+    public ArrayNumberer<Type> getTypeNumberer() { return typeNumberer; }
+    public ArrayNumberer<SootMethod> getMethodNumberer() { return methodNumberer; }
     public Numberer getContextNumberer() { return contextNumberer; }
     public Numberer getUnitNumberer() { return unitNumberer; }
     public ArrayNumberer getFieldNumberer() { return fieldNumberer; }
-    public ArrayNumberer getClassNumberer() { return classNumberer; }
+    public ArrayNumberer<SootClass> getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
-    public ArrayNumberer getLocalNumberer() { return localNumberer; }
+    public ArrayNumberer<Local> getLocalNumberer() { return localNumberer; }
 
     public void setContextNumberer( Numberer n ) {
         if( contextNumberer != null )
@@ -1165,7 +1168,7 @@ public class Scene  //extends AbstractHost
     	
     	Set<String> classNames = new HashSet<String>();
     	if(log!=null && log.length()>0) {
-			BufferedReader reader;
+			BufferedReader reader = null;
 			String line="";
 			try {
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(log)));
@@ -1189,6 +1192,14 @@ public class Scene  //extends AbstractHost
 				}
 			} catch (Exception e) {
 				throw new RuntimeException("Line: '"+line+"'", e);
+			}
+			finally {
+				if (reader != null)
+					try {
+						reader.close();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 			}
     	}
     	
@@ -1334,13 +1345,13 @@ public class Scene  //extends AbstractHost
 		return false;
 	}
 
-	List<String> pkgList;
+	ArrayList<String> pkgList;
 
-    public void setPkgList(List<String> list){
+    public void setPkgList(ArrayList<String> list){
         pkgList = list;
     }
 
-    public List<String> getPkgList(){
+    public ArrayList<String> getPkgList(){
         return pkgList;
     }
 

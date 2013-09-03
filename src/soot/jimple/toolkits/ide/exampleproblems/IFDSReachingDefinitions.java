@@ -32,13 +32,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import soot.EquivalentValue;
 import soot.Local;
 import soot.NullType;
 import soot.Scene;
 import soot.SootMethod;
-import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.DefinitionStmt;
