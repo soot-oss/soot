@@ -118,7 +118,7 @@ public final class OnFlyCallGraphBuilder
 	                    }
 	                }
 	                VirtualCallSite site = new VirtualCallSite( s, source, null, null, Kind.CLINIT );
-	                List<VirtualCallSite> sites = (List<VirtualCallSite>) stringConstToSites.get(constant);
+	                List<VirtualCallSite> sites = stringConstToSites.get(constant);
 	                if (sites == null) {
 	                    stringConstToSites.put(constant, sites = new ArrayList<VirtualCallSite>());
 	                    stringConstants.add(constant);
@@ -378,7 +378,7 @@ public final class OnFlyCallGraphBuilder
     private final LargeNumberedMap methodToReceivers = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap methodToReceivers() { return methodToReceivers; }
 
-    private final SmallNumberedMap stringConstToSites = new SmallNumberedMap( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
+    private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
     private final LargeNumberedMap methodToStringConstants = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap methodToStringConstants() { return methodToStringConstants; }
 
@@ -472,7 +472,7 @@ public final class OnFlyCallGraphBuilder
         return stringConstToSites.get(stringConst) != null;
     }
     public void addStringConstant( Local l, Context srcContext, String constant ) {
-        for( Iterator siteIt = ((Collection) stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
+        for( Iterator siteIt = (stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
             final VirtualCallSite site = (VirtualCallSite) siteIt.next();
             if( constant == null ) {
                 if( options.verbose() ) {
