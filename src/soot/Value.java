@@ -39,7 +39,7 @@ public interface Value extends Switchable, EquivTo, Serializable
 {
     /** Returns a List of boxes corresponding to Values 
      * which are used by (ie contained within) this Value. */
-    public List getUseBoxes();
+    public List<ValueBox> getUseBoxes();
 
     /** Returns the Soot type of this Value. */
     public Type getType();
