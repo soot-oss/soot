@@ -66,6 +66,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	public static class EdgeFilter extends Filter {		
 		protected EdgeFilter() {
 			super(new EdgePredicate() {
+				@Override
 				public boolean want(Edge e) {				
 					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isClinit();
 				}
@@ -82,6 +83,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<Body,DirectedGraph<Unit>> bodyToUnitGraph =
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Body,DirectedGraph<Unit>>() {
+				@Override
 				public DirectedGraph<Unit> load(Body body) throws Exception {
 					return makeGraph(body);
 				}
@@ -90,6 +92,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<Unit,Set<SootMethod>> unitToCallees =
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Set<SootMethod>>() {
+				@Override
 				public Set<SootMethod> load(Unit u) throws Exception {
 					Set<SootMethod> res = new LinkedHashSet<SootMethod>();
 					//only retain callers that are explicit call sites or Thread.start()
@@ -109,6 +112,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<SootMethod,Set<Unit>> methodToCallers =
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
+				@Override
 				public Set<Unit> load(SootMethod m) throws Exception {
 					Set<Unit> res = new LinkedHashSet<Unit>();					
 					//only retain callers that are explicit call sites or Thread.start()
@@ -124,6 +128,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<SootMethod,Set<Unit>> methodToCallsFromWithin =
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
+				@Override
 				public Set<Unit> load(SootMethod m) throws Exception {
 					Set<Unit> res = new LinkedHashSet<Unit>();
 					for(Unit u: m.getActiveBody().getUnits()) {
