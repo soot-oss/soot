@@ -179,20 +179,24 @@ public class ExprVisitor implements ExprSwitch {
 	}
 	
 	private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
+	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = new ArrayList<Register>();
 		for (Value arg : ie.getArgs()) {
 			Register currentReg = regAlloc.asImmediate(arg, constantV);
 			argumentRegs.add(currentReg);
 		}
+		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
 	private List<Register> getInstanceInvokeArgumentRegs(InstanceInvokeExpr iie) {
+	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = getInvokeArgumentRegs(iie);
 		// always add reference to callee as first parameter (instance != static)
 		Value callee = iie.getBase();
 		Register calleeRegister = regAlloc.asLocal(callee);
 		argumentRegs.add(0, calleeRegister);
+		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
@@ -629,11 +633,13 @@ public class ExprVisitor implements ExprSwitch {
 		TypeIdItem arrayTypeItem = DexPrinter.toTypeIdItem(arrayType, stmtV.getBelongingFile());
 		// get the dimension size registers
 		List<Register> dimensionSizeRegs = new ArrayList<Register>();
+		regAlloc.setMultipleConstantsPossible(true); // in case there are multiple integer constants
 		for (int i = 0; i < dimensions; i++) {
 			Value currentDimensionSize = nmae.getSize(i);
 			Register currentReg = regAlloc.asImmediate(currentDimensionSize, constantV);
 			dimensionSizeRegs.add(currentReg);
 		}
+		regAlloc.setMultipleConstantsPossible(false); // in case there are multiple integer constants
 		// create filled-new-array instruction, depending on the dimension sizes
 		if (dimensions <= 5) {
 			Register[] paddedRegs = pad35cRegs(dimensionSizeRegs);

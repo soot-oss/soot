@@ -1,13 +1,25 @@
 package soot.toDex;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import soot.Local;
+import soot.NullType;
+import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
+import soot.jimple.ClassConstant;
 import soot.jimple.Constant;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.StringConstant;
 import soot.jimple.internal.JimpleLocal;
 
 /**
@@ -27,16 +39,122 @@ public class RegisterAllocator {
 	public RegisterAllocator() {
 		localToLastRegNum = new HashMap<String, Integer>();
 	}
-
+	
+	//
+	// Keep the same register for immediate constants. 
+	// Tested on application uk.co.nickfines.RealCalc.apk, sha256:
+	// 5386d024d135d270ecba3ac5c11b23609b8510184c440647a60690d6b2c957ab
+	//
+	// Results on 992 methods:
+	// - on average 4.89 less registers
+	// - bigger differences in methods initializing a lot of data:
+	//  from 603 to 16
+	//  from 482 to  6
+	//  from 376 to 14
+	//  from 142 to 74
+	//
+	// Having the smallest number of registers is important.
+	// If there are too many register, the VM can reject the method.
+	// In fact that is what happens with RealCalc and the method with
+	// 603 registers (Android 2.2 on emulator); the VM stops and prints 
+	// the following message:
+	// "W/dalvikvm(  804): VFY: arbitrarily rejecting large method 
+	// (regs=603 count=4980)"
+	//
+	// The following constants are considered here:
+	//
+	// soot.Constant
+	// |- ClassConstant, 
+	// |- NullConstant, 
+	// |- NumericConstant, 
+	//    |- FloatConstant
+	//    ...
+	// |- StringConstant
+	//
+	// In some cases there can be multiple constants of the same type:
+	// - method invocation with multiple parameters
+	// - array reference in assignment (ex: a[1] = 2)
+	// - multi-dimension array initialization (ex: a = new int[1][2][3])
+	//
+	List<Register> classConstantReg = new ArrayList<Register>();
+	List<Register> nullConstantReg = new ArrayList<Register>();
+	List<Register> floatConstantReg = new ArrayList<Register>();
+	List<Register> intConstantReg = new ArrayList<Register>();
+	List<Register> longConstantReg = new ArrayList<Register>();
+	List<Register> doubleConstantReg = new ArrayList<Register>();
+	List<Register> stringConstantReg = new ArrayList<Register>();
+	AtomicInteger classI = new AtomicInteger(0);
+	AtomicInteger nullI = new AtomicInteger(0);
+	AtomicInteger floatI = new AtomicInteger(0);
+	AtomicInteger intI = new AtomicInteger(0);
+	AtomicInteger longI = new AtomicInteger(0);
+	AtomicInteger doubleI = new AtomicInteger(0);
+	AtomicInteger stringI = new AtomicInteger(0);
+	
 	private Register asConstant(Value v, ConstantVisitor constantV) {
 		Constant c = (Constant) v;
-		Register constantRegister = new Register(c.getType(), nextRegNum);
-		nextRegNum += SootToDexUtils.getDexWords(c.getType());
+		
+		Register constantRegister = null;
+		
+		List<Register> rArray = null;
+		AtomicInteger iI = null;
+		if (c instanceof ClassConstant) {
+		    rArray = classConstantReg;
+		    iI = classI;
+		} else if (c instanceof NullConstant) {
+            rArray = nullConstantReg;
+            iI = nullI;
+        } else if (c instanceof FloatConstant) {
+            rArray = floatConstantReg;
+            iI = floatI;
+        } else if (c instanceof IntConstant) {
+            rArray = intConstantReg;
+            iI = intI;
+        } else if (c instanceof LongConstant) {
+            rArray = longConstantReg;
+            iI = longI;
+        } else if (c instanceof DoubleConstant) {
+            rArray = doubleConstantReg;
+            iI = doubleI;
+        } else if (c instanceof StringConstant) {
+            rArray = stringConstantReg;
+            iI = stringI;
+        } else {
+            throw new RuntimeException("Error. Unknown constant type: '"+ c.getType() +"'");
+        }
+		
+		if (rArray.size() == 0 || iI.intValue() >= rArray.size()) {
+		    rArray.add(new Register(c.getType(), nextRegNum));
+		    nextRegNum += SootToDexUtils.getDexWords(c.getType());
+		}
+		
+		if (isMultipleConstantsPossible()) {
+		    constantRegister = rArray.get(iI.intValue()).clone();  
+		    iI.set(iI.intValue() + 1);
+		} else {
+		    constantRegister = rArray.get(0).clone();  
+		}
+
 		// "load" constant into the register...
 		constantV.setDestination(constantRegister);
 		c.apply(constantV);
 		// ...but return an independent register object
 		return constantRegister.clone();
+	}
+	
+	private boolean multipleConstantsPossible = false;
+	public void setMultipleConstantsPossible(boolean b) {
+	    multipleConstantsPossible = b;
+	    classI = new AtomicInteger(0);
+	    nullI = new AtomicInteger(0);
+	    floatI = new AtomicInteger(0);
+	    intI = new AtomicInteger(0);
+	    longI = new AtomicInteger(0);
+	    doubleI = new AtomicInteger(0);
+	    stringI = new AtomicInteger(0);
+	}
+	public boolean isMultipleConstantsPossible() {
+	    return multipleConstantsPossible;
 	}
 
 	public Register asLocal(Value v) {
