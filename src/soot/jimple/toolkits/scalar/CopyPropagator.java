@@ -125,7 +125,7 @@ public class CopyPropagator extends BodyTransformer
                         // and equal. For starters, we only support costants in
                         // the case of multiple definitions.
                         boolean propagateDef = defsOfUse.size() == 1;
-                        if (!propagateDef) {
+                        if (!propagateDef && defsOfUse.size() > 0) {
                         	boolean agrees = true;
                         	Constant constVal = null;
                         	for (Unit defUnit : defsOfUse) {
