@@ -25,68 +25,83 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public class HashMultiMap implements MultiMap {
-    Map<Object,Set> m = new HashMap<Object,Set>(0);
+public class HashMultiMap<K,V> implements MultiMap<K,V> {
+    Map<K,Set<V>> m = new HashMap<K,Set<V>>(0);
 
     public HashMultiMap() {}
-    public HashMultiMap( MultiMap m ) {
-	putAll( m );
+    public HashMultiMap( MultiMap<K,V> m ) {
+        putAll( m );
     }
-    public void putAll( MultiMap m ) {
-	Iterator it = m.keySet().iterator();
-	while( it.hasNext() ) {
-	    Object o = it.next();
-	    putAll( o, m.get( o ) );
-	}
+
+    @Override
+    public void putAll( MultiMap<K,V> m ) {
+        for (K key : m.keySet())
+            putAll(key, m.get(key));
     }
+
+    @Override
     public boolean isEmpty() {
-	return numKeys() == 0;
+        return numKeys() == 0;
     }
+
+    @Override
     public int numKeys() {
-	return m.size();
+        return m.size();
     }
+
+    @Override
     public boolean containsKey( Object key ) {
-	return m.containsKey( key );
+        return m.containsKey( key );
     }
-    public boolean containsValue( Object value ) {
-	Iterator<Set> it = m.values().iterator();
-	while( it.hasNext() ) {
-	    Set s = it.next();
-	    if( s.contains( value ) ) return true;
-	}
-	return false;
+
+    @Override
+    public boolean containsValue( V value ) {
+        for (Set<V> s: m.values())
+            if (s.contains(value)) return true;
+        return false;
     }
+
     protected Set newSet() {
-	return new HashSet(4);
+        return new HashSet(4);
     }
-    private Set findSet( Object key ) {
-	Set s = m.get( key );
-	if( s == null ) {
-	    s = newSet();
-	    m.put( key, s );
-	}
-	return s;
+    private Set findSet( K key ) {
+        Set s = m.get( key );
+        if( s == null ) {
+            s = newSet();
+            m.put( key, s );
+        }
+        return s;
     }
-    public boolean put( Object key, Object value ) {
-	return findSet( key ).add( value );
+
+    @Override
+    public boolean put( K key, V value ) {
+        return findSet( key ).add( value );
     }
-    public boolean putAll( Object key, Set values ) {
-	if (values.isEmpty()) return false;
-	return findSet( key ).addAll( values );
+
+    @Override
+    public boolean putAll( K key, Set<V> values ) {
+        if (values.isEmpty()) return false;
+        return findSet( key ).addAll( values );
     }
-    public boolean remove( Object key, Object value ) {
-	Set s = m.get( key );
-	if( s == null ) return false;
-	boolean ret = s.remove( value );
-	if( s.isEmpty() ) {
-	    m.remove( key );
-	}
-	return ret;
+
+    @Override
+    public boolean remove( K key, V value ) {
+        Set s = m.get( key );
+        if( s == null ) return false;
+        boolean ret = s.remove( value );
+        if( s.isEmpty() ) {
+            m.remove( key );
+        }
+        return ret;
     }
-    public boolean remove( Object key ) {
-	return null != m.remove( key );
+
+    @Override
+    public boolean remove( K key ) {
+        return null != m.remove( key );
     }
-    public boolean removeAll( Object key, Set values ) {
+
+    @Override
+    public boolean removeAll( K key, Set<V> values ) {
         Set s = m.get( key );
         if( s == null ) return false;
         boolean ret = s.removeAll( values );
@@ -95,36 +110,43 @@ public class HashMultiMap implements MultiMap {
         }
         return ret;
     }
-    public Set get( Object o ) {
-	Set ret = m.get( o );
-	if( ret == null ) return Collections.EMPTY_SET;
-	return Collections.unmodifiableSet(ret);
+
+    @Override
+    public Set get( K o ) {
+        Set ret = m.get( o );
+        if( ret == null ) return Collections.EMPTY_SET;
+        return Collections.unmodifiableSet(ret);
     }
-    public Set keySet() {
-	return m.keySet();
+
+    @Override
+    public Set<K> keySet() {
+        return m.keySet();
     }
-    public Set values() {
-	Set ret = new HashSet(0);
-	Iterator<Set> it = m.values().iterator();
-	while( it.hasNext() ) {
-	    Set s = it.next();
-	    ret.addAll( s );
-	}
-	return ret;
+
+    @Override
+    public Set<V> values() {
+        Set ret = new HashSet(0);
+        for (Set<V> s : m.values())
+            ret.addAll(s);
+        return ret;
     }
+
+    @Override
     public boolean equals( Object o ) {
-	if( ! (o instanceof MultiMap) ) return false;
-	MultiMap mm = (MultiMap) o;
-	if( !keySet().equals( mm.keySet() ) ) return false;
-	Iterator it = m.entrySet().iterator();
-	while( it.hasNext() ) {
-	    Map.Entry e = (Map.Entry) it.next();
-	    Set s = (Set) e.getValue();
-	    if( !s.equals( mm.get( e.getKey() ) ) ) return false;
-	}
-	return true;
+        if( ! (o instanceof MultiMap) ) return false;
+        MultiMap mm = (MultiMap) o;
+        if( !keySet().equals( mm.keySet() ) ) return false;
+        Iterator it = m.entrySet().iterator();
+        while( it.hasNext() ) {
+            Map.Entry e = (Map.Entry) it.next();
+            Set s = (Set) e.getValue();
+            if( !s.equals( mm.get( e.getKey() ) ) ) return false;
+        }
+        return true;
     }
+
+    @Override
     public int hashCode() {
-	return m.hashCode();
+        return m.hashCode();
     }
 }
