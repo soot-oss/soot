@@ -104,7 +104,8 @@ public class JimpleBody extends StmtBody
 					|| (u instanceof RetStmt)
 					|| (u instanceof ThrowStmt))
 				return;
-		throw new RuntimeException("Body does not contain a return statement");
+		throw new RuntimeException("Body of method " + this.getMethod().getSignature()
+				+ " does not contain a return statement");
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class JimpleBody extends StmtBody
     {
         int i = 0;
 
-        Iterator parIt = getMethod().getParameterTypes().iterator();
+        Iterator<Type> parIt = getMethod().getParameterTypes().iterator();
         while (parIt.hasNext())
         {
             Type t = (Type)parIt.next();
@@ -180,7 +181,7 @@ public class JimpleBody extends StmtBody
     /** Returns the first non-identity stmt in this body. */
     public Stmt getFirstNonIdentityStmt()
     {
-        Iterator it = getUnits().iterator();
+        Iterator<Unit> it = getUnits().iterator();
         Object o = null;
         while (it.hasNext())
             if (!((o = it.next()) instanceof IdentityStmt))
