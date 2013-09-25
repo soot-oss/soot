@@ -17,6 +17,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.jf.dexlib.AnnotationDirectoryItem;
+import org.jf.dexlib.AnnotationDirectoryItem.FieldAnnotation;
+import org.jf.dexlib.AnnotationDirectoryItem.MethodAnnotation;
 import org.jf.dexlib.ClassDataItem;
 import org.jf.dexlib.ClassDataItem.EncodedField;
 import org.jf.dexlib.ClassDataItem.EncodedMethod;
@@ -25,6 +28,7 @@ import org.jf.dexlib.CodeItem;
 import org.jf.dexlib.CodeItem.EncodedCatchHandler;
 import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
+import org.jf.dexlib.AnnotationItem;
 import org.jf.dexlib.DexFile;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.MethodIdItem;
@@ -68,12 +72,15 @@ public class DexPrinter {
 	
 	private static final String CLASSES_DEX = "classes.dex";
 	
-	private DexFile dexFile;
+	private static DexFile dexFile;
 	
 	private File originalApk;
 	
+	private static DexAnnotation dexAnnotation;
+	
 	public DexPrinter() {
 		dexFile = new DexFile();
+		//dexAnnotation = new DexAnnotation(dexFile);
 	}
 	
 	private void printApk(String outputDir, File originalApk) throws IOException {
@@ -144,7 +151,9 @@ public class DexPrinter {
 	}
 
 	private void writeTo(OutputStream outputStream) throws IOException {
+	    
 		dexFile.place();
+		
 		byte[] outArray = new byte[dexFile.getFileSize()];
 		ByteArrayAnnotatedOutput outBytes = new ByteArrayAnnotatedOutput(outArray);
 		dexFile.writeTo(outBytes);
@@ -152,9 +161,36 @@ public class DexPrinter {
 		DexFile.calcChecksum(outArray);
 		outputStream.write(outArray);
 		outputStream.flush();
+		
+//		TODO: requires baksmali-1.4.2-dev.jar
+//		if (Debug.TODEX_DEBUG) {
+//    		List<MethodIdItem> methods = dexFile.MethodIdsSection.getItems();
+//    		for (MethodIdItem m : methods) {
+//    		    Debug.printDbg("method id: "+ m.getIndex() +" "+ m.getMethodString());
+//    		}
+//    		
+//    		List<FieldIdItem> fields = dexFile.FieldIdsSection.getItems();
+//    		for (FieldIdItem f : fields) {
+//    		    Debug.printDbg("field id: "+ f.getIndex() +" "+ f.getFieldString());
+//    		}
+//    		
+//    		List<AnnotationDirectoryItem> dirs = dexFile.AnnotationDirectoriesSection.getItems();
+//    		for (AnnotationDirectoryItem dir : dirs) {	 
+//    		    Debug.printDbg("    ---dir "+ dir);
+//                List<FieldAnnotation> fas = dir.getFieldAnnotations();
+//                for (FieldAnnotation fa : fas) {
+//                    Debug.printDbg("field annotation: "+ fa.field.getIndex());
+//                }
+//                List<MethodAnnotation> mas = dir.getMethodAnnotations();
+//                for (MethodAnnotation ma : mas) {
+//                    Debug.printDbg("method annotation: "+ ma.method.getIndex() +" "+ ma.method.getMethodString());
+//                }
+//    		}
+//		}
 	}
 
 	private void addAsClassDefItem(SootClass c) {
+	    dexAnnotation = new DexAnnotation(dexFile, c);
 		TypeIdItem classType = toTypeIdItem(c.getType(), dexFile);
 		int accessFlags = c.getModifiers();
 		TypeIdItem superType = c.hasSuperclass() ? toTypeIdItem(c.getSuperclass().getType(), dexFile) : null;
@@ -164,14 +200,18 @@ public class DexPrinter {
 		}
 		TypeListItem implementedInterfaces = toTypeListItem(interfaceTypes, dexFile);
 		ClassDataItem classData = toClassDataItem(c, dexFile);
+		AnnotationDirectoryItem di= dexAnnotation.finish();
 		// staticFieldInitializers is not used since the <clinit> method should be enough
-		ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType, implementedInterfaces, null, null, classData, null);
+		ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType, implementedInterfaces, null, di, classData, null);
+		dexAnnotation = null;
 	}
 	
 	private static ClassDataItem toClassDataItem(SootClass c, DexFile belongingDexFile) {
 		Pair<List<EncodedField>, List<EncodedField>> fields = toFields(c.getFields(), belongingDexFile);
 		Pair<List<EncodedMethod>, List<EncodedMethod>> methods = toMethods(c.getMethods(), belongingDexFile);
-		return ClassDataItem.internClassDataItem(belongingDexFile, fields.first, fields.second, methods.first, methods.second);
+		ClassDataItem citem = ClassDataItem.internClassDataItem(belongingDexFile, fields.first, fields.second, methods.first, methods.second);
+		dexAnnotation.handleClass(c, citem);
+		return citem;
 	}
 	
 	private static Pair<List<EncodedField>, List<EncodedField>> toFields(Collection<SootField> sootFields, DexFile belongingDexFile) {
@@ -202,8 +242,8 @@ public class DexPrinter {
 			if (m.isPhantom()) {
 				continue;
 			}
-			
 			MethodIdItem methodIdItem = toMethodIdItem(m.makeRef(), belongingDexFile);
+			dexAnnotation.handleMethod(m, methodIdItem);
 			int accessFlags = SootToDexUtils.getDexAccessFlags(m);
 			CodeItem codeItem = toCodeItem(m, belongingDexFile);
 			EncodedMethod eM = new EncodedMethod(methodIdItem, accessFlags, codeItem);
@@ -228,7 +268,9 @@ public class DexPrinter {
 		TypeIdItem declaringClassType = toTypeIdItem(f.getDeclaringClass().getType(), belongingDexFile);
 		TypeIdItem fieldType = toTypeIdItem(f.getType(), belongingDexFile);
 		StringIdItem fieldName = StringIdItem.internStringIdItem(belongingDexFile, f.getName());
-		return FieldIdItem.internFieldIdItem(belongingDexFile, declaringClassType, fieldType, fieldName);
+		FieldIdItem fid = FieldIdItem.internFieldIdItem(belongingDexFile, declaringClassType, fieldType, fieldName);
+		dexAnnotation.handleField(f, fid);
+		return fid;
 	}
 	
 	protected static MethodIdItem toMethodIdItem(SootMethodRef m, DexFile belongingDexFile) {
@@ -236,7 +278,8 @@ public class DexPrinter {
 		TypeIdItem declaringClassType = toTypeIdItem(m.declaringClass().getType(), belongingDexFile);
 		ProtoIdItem methodType = toProtoIdItem(m, belongingDexFile);
 		StringIdItem methodName = StringIdItem.internStringIdItem(belongingDexFile, m.name());
-		return MethodIdItem.internMethodIdItem(belongingDexFile, declaringClassType, methodType, methodName);
+		MethodIdItem mid = MethodIdItem.internMethodIdItem(belongingDexFile, declaringClassType, methodType, methodName);
+		return mid;
 	}
 	
 	private static ProtoIdItem toProtoIdItem(SootMethodRef m, DexFile belongingDexFile) {

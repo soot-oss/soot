@@ -35,7 +35,7 @@ public class JavaClassProvider implements ClassProvider
 		private static final long serialVersionUID = 1L;
 
 		public JarException(String className) {
-			super("Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar");
+			super("Class "+className+" was found in an archive, but Soot doesn't support reading source files out of an archive");
 		}
 		
 	}

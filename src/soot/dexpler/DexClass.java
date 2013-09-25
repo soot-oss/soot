@@ -26,10 +26,16 @@ package soot.dexpler;
 
 import java.util.Set;
 
+
+
 import org.jf.dexlib2.iface.Annotation;
+import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
+import org.jf.dexlib2.iface.MethodParameter;
+import org.jf.dexlib2.iface.value.EncodedValue;
 
 import soot.SootClass;
 import soot.SootField;
@@ -38,6 +44,7 @@ import soot.SootResolver;
 import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.tagkit.Host;
 
 /**
  * DexClass is a container for all relevant information of that class
@@ -59,6 +66,7 @@ public class DexClass {
     protected Set<Type> types;
 
     protected int accessFlags;
+    
 
     /**
      * The constructor consumes a class definition item of dexlib and retrieves all subsequent methods, types and fields.
@@ -67,10 +75,8 @@ public class DexClass {
     private DexClass(ClassDef classDef) {}
 
 
-    public static Dependencies makeSootClass(SootClass sc, ClassDef defItem) {
-        //String type = defItem.getType();
-        //String name = defItem.getType();
-        //Set<Type> types = new HashSet<Type>();
+    public static Dependencies makeSootClass(SootClass sc, ClassDef defItem, DexFile dexFile) {
+
         String superClass = defItem.getSuperclass();
         Dependencies deps = new Dependencies();
 
@@ -100,20 +106,22 @@ public class DexClass {
             return deps;
         }
 
-        //this.annotations = defItem.getAnnotations();
-
+        DexAnnotation da = new DexAnnotation(dexFile);
+        
         // get the fields of the class
         for (Field sf : defItem.getStaticFields()) {
             if (sc.declaresField(sf.getName(), DexType.toSoot(sf.getType())))
                 continue;
             SootField sootField = DexField.makeSootField(sf);
             sc.addField(sootField);
+            da.handleFieldAnnotation(sootField, sf);
         }
         for (Field f: defItem.getInstanceFields()) {
             if (sc.declaresField(f.getName(), DexType.toSoot(f.getType())))
                 continue;
             SootField sootField = DexField.makeSootField(f);
             sc.addField(sootField);
+            da.handleFieldAnnotation(sootField, f);
         }
 
         // get the methods of the class
@@ -122,13 +130,17 @@ public class DexClass {
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);
+            da.handleMethodAnnotation(sm, method);        
         }
         for (Method method : defItem.getVirtualMethods()) {
             SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);
+            da.handleMethodAnnotation(sm, method);
         }
+        
+        da.handleClassAnnotation(sc, defItem);
 
         return deps;
     }

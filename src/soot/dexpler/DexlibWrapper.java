@@ -149,7 +149,7 @@ public class DexlibWrapper {
       for (ClassDef defItem : this.dexFile.getClasses()) {
           String forClassName = Util.dottedClassName(defItem.getType());
           if (className.equals(forClassName)) {
-              return DexClass.makeSootClass(sc, defItem);
+              return DexClass.makeSootClass(sc, defItem, dexFile);
           }
       }
       throw new RuntimeException("Error: class not found in classes.dex: "+ className);

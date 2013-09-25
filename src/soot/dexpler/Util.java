@@ -103,6 +103,7 @@ public class Util {
     }
     
     public static Type getType(String type) {
+        System.out.println("get type from '"+ type +"'");
       int idx = 0;
       int arraySize = 0;
       Type returnType = null;
