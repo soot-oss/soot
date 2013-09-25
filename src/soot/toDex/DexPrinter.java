@@ -290,6 +290,10 @@ public class DexPrinter {
 			 */
 			registerCount = inWords;
 		}
+
+		// Split the tries since Dalvik does not supported nested try/catch blocks
+		TrapSplitter.v().transform(activeBody);
+
 		List<EncodedCatchHandler> encodedCatchHandlers = new ArrayList<CodeItem.EncodedCatchHandler>();
 		List<TryItem> tries = toTries(activeBody.getTraps(), encodedCatchHandlers, stmtV, belongingDexFile);
 		return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords, null, instructions, tries, encodedCatchHandlers);
@@ -354,9 +358,10 @@ public class DexPrinter {
 		//		correct since we extend traps over the requested range, but it's better than
 		//		the previous code that produced APKs which failed Dalvik's bytecode verification.
 		//		(Steven Arzt, 09.08.2013)
-		// TODO: There are cases in which we need to split traps, e.g. in cases like
+		// There are cases in which we need to split traps, e.g. in cases like
 		//		( (t1) ... (t2) )<big catch all around it> where the all three handlers do
-		//		something different.
+		//		something different. That's why we run the TrapSplitter before we get here.
+		//		(Steven Arzt, 25.09.2013)
 		Map<CodeRange, TryItem> codeRangesToTryItem = new HashMap<CodeRange, TryItem>();
 		for (Trap t : traps) {
 			EncodedTypeAddrPair newHandlerInfo = createNewHandlerInfo(t, stmtV, belongingDexFile);
@@ -432,7 +437,7 @@ public class DexPrinter {
 	
 	private static List<TryItem> toSortedTries(Collection<TryItem> unsortedTries) {
 		List<TryItem> tries = new ArrayList<TryItem>(unsortedTries);
-		
+				
 		// sort the tries in order from low to high address
 		Collections.sort(tries, new Comparator<TryItem>() {
 			@Override
