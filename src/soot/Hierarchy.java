@@ -303,19 +303,19 @@ public class Hierarchy
     }
 
     /** Returns a list of superinterfaces of c, excluding itself. */
-    public List getSuperinterfacesOf(SootClass c)
+    public List<SootClass> getSuperinterfacesOf(SootClass c)
     {
         throw new RuntimeException("Not implemented yet!");
     }
 
     /** Returns a list of direct superclasses of c, excluding c. */
-    public List getDirectSuperclassesOf(SootClass c)
+    public List<SootClass> getDirectSuperclassesOf(SootClass c)
     {
         throw new RuntimeException("Not implemented yet!");
     }
 
     /** Returns a list of direct subclasses of c, excluding c. */
-    public List getDirectSubclassesOf(SootClass c)
+    public List<SootClass> getDirectSubclassesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (c.isInterface())
@@ -344,13 +344,13 @@ public class Hierarchy
     }
 
     /** Returns a list of direct superinterfaces of c. */
-    public List getDirectSuperinterfacesOf(SootClass c)
+    public List<SootClass> getDirectSuperinterfacesOf(SootClass c)
     {
         throw new RuntimeException("Not implemented yet!");
     }
 
     /** Returns a list of direct subinterfaces of c. */
-    public List getDirectSubinterfacesOf(SootClass c)
+    public List<SootClass> getDirectSubinterfacesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
@@ -524,7 +524,7 @@ public class Hierarchy
     }
 
     /** Given a set of definite receiver types, returns a list of possible targets. */
-    public List resolveConcreteDispatch(List classes, SootMethod m)
+    public List<SootClass> resolveConcreteDispatch(List classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         checkState();
@@ -549,7 +549,7 @@ public class Hierarchy
     // what can get called for c & all its subclasses
     /** Given an abstract dispatch to an object of type c and a method m, gives
      * a list of possible receiver methods. */
-    public List resolveAbstractDispatch(SootClass c, SootMethod m)
+    public List<SootClass> resolveAbstractDispatch(SootClass c, SootMethod m)
     {
         c.checkLevel(SootClass.HIERARCHY);
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
@@ -582,7 +582,7 @@ public class Hierarchy
 
     // what can get called if you have a set of possible receiver types
     /** Returns a list of possible targets for the given method and set of receiver types. */
-    public List resolveAbstractDispatch(List classes, SootMethod m)
+    public List<SootClass> resolveAbstractDispatch(List classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         ArraySet s = new ArraySet();

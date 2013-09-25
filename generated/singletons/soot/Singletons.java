@@ -911,4 +911,10 @@ public class Singletons {
         return instance_soot_toDex_SynchronizedMethodTransformer;
     }
 
+    private soot.toDex.TrapSplitter instance_soot_toDex_TrapSplitter;
+    public soot.toDex.TrapSplitter soot_toDex_TrapSplitter() {
+        if( instance_soot_toDex_TrapSplitter == null ) instance_soot_toDex_TrapSplitter = new soot.toDex.TrapSplitter( g );
+        return instance_soot_toDex_TrapSplitter;
+    }
+
 }

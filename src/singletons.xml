@@ -147,4 +147,5 @@
   <class>soot.dexpler.DexResolver</class>
   <class>soot.jimple.toolkits.scalar.EmptySwitchEliminator</class>
   <class>soot.toDex.SynchronizedMethodTransformer</class>
+  <class>soot.toDex.TrapSplitter</class>
 </singletons>

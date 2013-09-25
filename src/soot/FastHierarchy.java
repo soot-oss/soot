@@ -23,6 +23,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
+
 /** Represents the class hierarchy.  It is closely linked to a Scene,
  * and must be recreated if the Scene changes. 
  *
@@ -48,22 +49,22 @@ public class FastHierarchy
      * and key is in value.getInterfaces(). This is one of the three maps 
      * that hold the inverse of the relationships given by the getSuperclass 
      * and getInterfaces methods of SootClass. */
-    protected MultiMap interfaceToSubinterfaces = new HashMultiMap();
+    protected MultiMap<SootClass,SootClass> interfaceToSubinterfaces = new HashMultiMap<SootClass,SootClass>();
 
     /** This map holds all key,value pairs such that value is a class 
      * (NOT an interface) and key is in value.getInterfaces(). This is one of 
      * the three maps that hold the inverse of the relationships given by the 
      * getSuperclass and getInterfaces methods of SootClass. */
-    protected MultiMap interfaceToImplementers = new HashMultiMap();
+    protected MultiMap<SootClass,SootClass> interfaceToImplementers = new HashMultiMap<SootClass,SootClass>();
 
     /** This map is a transitive closure of interfaceToSubinterfaces,
      * and each set contains its superinterface itself. */
-    protected MultiMap interfaceToAllSubinterfaces = new HashMultiMap();
+    protected MultiMap<SootClass,SootClass> interfaceToAllSubinterfaces = new HashMultiMap<SootClass,SootClass>();
 
     /** This map gives, for an interface, all concrete classes that
      * implement that interface and all its subinterfaces, but
      * NOT their subclasses. */
-    protected MultiMap interfaceToAllImplementers = new HashMultiMap();
+    protected MultiMap <SootClass,SootClass>interfaceToAllImplementers = new HashMultiMap<SootClass,SootClass>();
 
     /** For each class (NOT interface), this map contains a Interval, which is
      * a pair of numbers giving a preorder and postorder ordering of classes
@@ -152,8 +153,7 @@ public class FastHierarchy
     public Set<SootClass> getAllImplementersOfInterface( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
         if( !interfaceToAllImplementers.containsKey( parent ) ) {
-            for( Iterator subinterfaceIt = getAllSubinterfaces( parent ).iterator(); subinterfaceIt.hasNext(); ) {
-                final SootClass subinterface = (SootClass) subinterfaceIt.next();
+            for(SootClass subinterface : getAllSubinterfaces( parent )) {
                 if( subinterface == parent ) continue;
                 interfaceToAllImplementers.putAll(parent,
                     getAllImplementersOfInterface( subinterface ) );
@@ -167,14 +167,15 @@ public class FastHierarchy
     /**
      * For an interface parent (MUST be an interface), returns set of all subinterfaces.
      * @param parent the parent interface.
+     * @return an set, possibly empty
      * */
-    protected Set<SootClass> getAllSubinterfaces( SootClass parent ) {
+    public Set<SootClass> getAllSubinterfaces( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
+        if (!parent.isInterface()) return Collections.<SootClass>emptySet();
         if( !interfaceToAllSubinterfaces.containsKey( parent ) ) {
             interfaceToAllSubinterfaces.put( parent, parent );
-            for( Iterator it = interfaceToSubinterfaces.get( parent ).iterator(); it.hasNext(); ) {
-                interfaceToAllSubinterfaces.putAll(parent, 
-                    getAllSubinterfaces( (SootClass) it.next() ) );
+            for(SootClass si : interfaceToSubinterfaces.get( parent )) {
+                interfaceToAllSubinterfaces.putAll(parent, getAllSubinterfaces( si ) );
             }
         }
         return interfaceToAllSubinterfaces.get( parent );
@@ -270,7 +271,7 @@ public class FastHierarchy
         }
         if( childInterval == null ) { // child is interface
             if( parentInterval != null ) { // parent is not interface
-                return parent.equals( RefType.v("java.lang.Object").getSootClass() );
+                return parent.equals( Scene.v().getObjectType().getSootClass());
             } else {
                 return getAllSubinterfaces( parent ).contains( child );
             }
