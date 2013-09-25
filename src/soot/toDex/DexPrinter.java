@@ -447,7 +447,6 @@ public class DexPrinter {
 		// "swapTriesAndCatches" from DexSwapVerify.c
 		int lastEnd = 0;
 		for (int tryIdx = 0; tryIdx < tries.size(); tryIdx++) {
-//		for (int tryIdx = tries.size() - 1; tryIdx >= 0; tryIdx--) {
 			TryItem ti = tries.get(tryIdx);
 			if (ti.getStartCodeAddress() < lastEnd)
 				throw new RuntimeException("Out-of-order try block");
