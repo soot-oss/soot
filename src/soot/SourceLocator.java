@@ -181,7 +181,6 @@ public class SourceLocator
 			List inputExtensions = new ArrayList(2);
 			inputExtensions.add(".class");
 			inputExtensions.add(".jimple");
-			inputExtensions.add(".java");
 
 			try {
 				ZipFile archive = new ZipFile(aPath);
