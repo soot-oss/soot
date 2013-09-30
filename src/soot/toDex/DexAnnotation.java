@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 import org.jf.dexlib.AnnotationDirectoryItem;
 import org.jf.dexlib.AnnotationDirectoryItem.FieldAnnotation;
 import org.jf.dexlib.AnnotationDirectoryItem.MethodAnnotation;
@@ -44,9 +43,6 @@ import org.jf.dexlib.EncodedValue.TypeEncodedValue;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
-import soot.SootMethodRef;
-import soot.Type;
-import soot.dexpler.DexType;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
@@ -337,18 +333,27 @@ public class DexAnnotation {
     private EncodedValue getAnnotationElement(AnnotationElem elem){
         EncodedValue v = null;
         Debug.printDbg("annotation kind: ", elem.getKind());
-        switch (elem.getKind()){
+        switch (elem.getKind()) {
         case 'Z': {
-            AnnotationIntElem e = (AnnotationIntElem)elem;
-            BooleanEncodedValue a = null;
-            if (e.getValue() == 0) {
-                a = BooleanEncodedValue.FalseValue;
-            } else if (e.getValue() == 1) {
-                a = BooleanEncodedValue.TrueValue;
-            } else {
-                throw new RuntimeException("error: boolean value from int with value != 0 or 1.");
-            }
-            v = a;
+        	if (elem instanceof AnnotationIntElem) {
+	            AnnotationIntElem e = (AnnotationIntElem)elem;
+	            if (e.getValue() == 0) {
+	                v = BooleanEncodedValue.FalseValue;
+	            } else if (e.getValue() == 1) {
+	                v = BooleanEncodedValue.TrueValue;
+	            } else {
+	                throw new RuntimeException("error: boolean value from int with value != 0 or 1.");
+	            }
+        	}
+        	else if (elem instanceof AnnotationBooleanElem) {
+        		AnnotationBooleanElem e = (AnnotationBooleanElem) elem;
+        		if (e.getValue())
+        			v = BooleanEncodedValue.TrueValue;
+        		else
+        			v = BooleanEncodedValue.FalseValue;
+        	}
+        	else
+        		throw new RuntimeException("Annotation type incompatible with target type boolean");
             break;
         }
         case 'S': {
