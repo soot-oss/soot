@@ -258,6 +258,15 @@ public class DexNumTransformer extends DexTransformer {
                                   doBreak = true;
                                   return;
                                  }
+
+                                if (left instanceof FieldRef && r instanceof Local) {
+                                    FieldRef fr = (FieldRef) left;
+                                    if (isFloatingPointLike(fr.getType())) {
+                                        usedAsFloatingPoint = true;
+                                    }
+                                    doBreak = true;
+                                    return;
+                                }
                                   
                             }
 

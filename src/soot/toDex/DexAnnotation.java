@@ -122,8 +122,9 @@ public class DexAnnotation {
             VisibilityAnnotationTag vat = (VisibilityAnnotationTag)t;
             List<AnnotationTag> atList = vat.getAnnotations();
             for (AnnotationTag at: atList) {
-                Debug.printDbg("annotation tag: ", at.getName());
-                String type = soot2DalvikType(at.getType());
+                Debug.printDbg("annotation tag name: ", at.getName(), " class: ", at.getClass());
+                //String type = soot2DalvikType(at.getType());
+                String type = at.getType();
                 Debug.printDbg("tag type: ", type);
                 
                 for (AnnotationElem ae : at.getElems()) {
@@ -180,7 +181,8 @@ public class DexAnnotation {
                     Debug.printDbg("new field annotation: ", value ," ", ae.getName() ," type: ", value.getClass());
                 }
             
-                String type = soot2DalvikType(at.getType());
+                //String type = soot2DalvikType(at.getType());
+                String type = at.getType();
                 Debug.printDbg("field annotation type: ", type);
                 TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
                 StringIdItem[] names = namesList.toArray(new StringIdItem[namesList.size()]);
@@ -260,7 +262,8 @@ public class DexAnnotation {
                 Debug.printDbg("new method annotation: ", value ," ", ae.getName());
             }
 
-            String type = soot2DalvikType(at.getType());
+            //String type = soot2DalvikType(at.getType());
+            String type = at.getType();
             TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
             StringIdItem[] names = namesList.toArray(new StringIdItem[namesList.size()]);
             EncodedValue[] values = encodedValueList.toArray(new EncodedValue[encodedValueList.size()]);
@@ -302,7 +305,8 @@ public class DexAnnotation {
                           Debug.printDbg("new annotation: ", value ," ", ae.getName());
                       }  
                   
-                      String type = soot2DalvikType(at.getType());
+                      //String type = soot2DalvikType(at.getType());
+                      String type = at.getType();
                       TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
                       StringIdItem[] names = namesList.toArray(new StringIdItem[namesList.size()]);
                       EncodedValue[] values = encodedValueList.toArray(new EncodedValue[encodedValueList.size()]);
@@ -430,7 +434,8 @@ public class DexAnnotation {
                 EncodedValue val = getAnnotationElement(e.getValueAt(i));
                 valueList.add(val);
             }
-            ArrayEncodedValue a = new ArrayEncodedValue(valueList.toArray(new EncodedValue[valueList.size()]));
+            ArrayEncodedValue a = new ArrayEncodedValue(valueList.toArray(
+                    new EncodedValue[valueList.size()]));
             v = a;
             break;
         }
@@ -444,7 +449,8 @@ public class DexAnnotation {
                 valueList.add(val);
                 nameList.add(StringIdItem.internStringIdItem(dexFile, ae.getName()));
             }
-            String type = soot2DalvikType(e.getValue().getType());
+            //String type = soot2DalvikType(e.getValue().getType());
+            String type = e.getValue().getType();
             TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
             StringIdItem[] names = nameList.toArray(new StringIdItem[nameList.size()]);
             EncodedValue[] values = valueList.toArray(new EncodedValue[valueList.size()]);

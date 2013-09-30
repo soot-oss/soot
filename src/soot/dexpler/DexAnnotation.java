@@ -179,7 +179,8 @@ public class DexAnnotation {
 
         for (Annotation a: annotations) {
             
-            AnnotationTag aTag = new AnnotationTag(DexType.toSoot(a.getType()).toString());
+            //AnnotationTag aTag = new AnnotationTag(DexType.toSoot(a.getType()).toString());
+            AnnotationTag aTag = new AnnotationTag(a.getType());
             
             Debug.printDbg("\nAnnotationTag -> ", a);
             
@@ -316,7 +317,8 @@ public class DexAnnotation {
             case 0x1d: // ANNOTATION
             {
                 AnnotationEncodedValue v = (AnnotationEncodedValue)ev;
-                AnnotationTag t = new AnnotationTag(DexType.toSoot(v.getType()).toString());
+                //AnnotationTag t = new AnnotationTag(DexType.toSoot(v.getType()).toString());
+                AnnotationTag t = new AnnotationTag(v.getType());
                 for (AnnotationElement newElem : v.getElements()) {
                     List<EncodedValue> l = new ArrayList<EncodedValue>();
                     l.add(newElem.getValue());

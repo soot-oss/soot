@@ -629,7 +629,7 @@ public class ExprVisitor implements ExprSwitch {
 		}
 		short dimensions = (short) nmae.getSizeCount();
 		// get array base type
-		ArrayType arrayType = ArrayType.v(nmae.getBaseType(), dimensions);
+		ArrayType arrayType = ArrayType.v(nmae.getBaseType().baseType, dimensions);
 		TypeIdItem arrayTypeItem = DexPrinter.toTypeIdItem(arrayType, stmtV.getBelongingFile());
 		// get the dimension size registers
 		List<Register> dimensionSizeRegs = new ArrayList<Register>();
