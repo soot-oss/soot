@@ -164,6 +164,13 @@ public class ExprVisitor implements ExprSwitch {
 				return true;
 			}
 		}
+		
+		// If we're dealing with phantom classes, we might not actually
+		// arrive at java.lang.Object. In this case, we should not fail
+		// the check
+		if (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object"))
+			return true;
+		
 		return false; // we arrived at java.lang.Object and did not find a declaration
 	}
 
