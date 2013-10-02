@@ -31,7 +31,7 @@ public class SideEffectAnalysis {
     Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<SootMethod, MethodRWSet>();
     int rwsetcount = 0;
     TransitiveTargets tt;
-
+    
     public void findNTRWSets( SootMethod method ) {
 	if( methodToNTReadSet.containsKey( method )
 	    && methodToNTWriteSet.containsKey( method ) ) return;
@@ -65,7 +65,16 @@ public class SideEffectAnalysis {
 	return methodToNTWriteSet.get( method );
     }
 
-    public SideEffectAnalysis( PointsToAnalysis pa, CallGraph cg ) {
+    private SideEffectAnalysis() {
+		if( G.v().Union_factory == null ) {
+		    G.v().Union_factory = new UnionFactory() {
+			public Union newUnion() { return FullObjectSet.v(); }
+		    };
+		}
+	}
+
+	public SideEffectAnalysis( PointsToAnalysis pa, CallGraph cg ) {
+	    this();
 	this.pa = pa;
 	this.cg = cg;
         this.tt = new TransitiveTargets( cg );
@@ -77,6 +86,7 @@ public class SideEffectAnalysis {
     // For example, using the NonClinitEdgesPred, you can create a 
     // SideEffectAnalysis that will ignore static initializers
     // - R. Halpert 2006-12-02
+    this();
 	this.pa = pa;
 	this.cg = cg;
         this.tt = new TransitiveTargets( cg, filter );
