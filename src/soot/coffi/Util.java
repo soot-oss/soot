@@ -33,6 +33,8 @@ package soot.coffi;
 import soot.jimple.*;
 import java.util.*;
 import java.io.*;
+
+import soot.options.Options;
 import soot.tagkit.*;
 import soot.*;
 
@@ -88,8 +90,9 @@ public class Util
                 {
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
-                    else {                        
-                        G.v().out.println("Warning: " + className + " is a phantom class!");
+                    else {
+                        if (!Options.v().mute_some_output())
+                          G.v().out.println("Warning: " + className + " is a phantom class!");
                         bclass.setPhantom(true);                                                                
                         return;
                     } 
