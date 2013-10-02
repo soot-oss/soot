@@ -28,8 +28,8 @@ public abstract class RWSet {
 
     /** Returns an iterator over any globals read/written. */
     public abstract int size();
-    public abstract Set getGlobals();
-    public abstract Set getFields();
+    public abstract Set<?> getGlobals();
+    public abstract Set<?> getFields();
     public abstract PointsToSet getBaseForField( Object f );
     public abstract boolean hasNonEmptyIntersection( RWSet other );
     /** Adds the RWSet other into this set. */
