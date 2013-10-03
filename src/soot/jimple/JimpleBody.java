@@ -33,6 +33,7 @@ import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.VoidType;
 import soot.util.Chain;
 
 /** Implementation of the Body class for the Jimple IR. */
@@ -104,6 +105,22 @@ public class JimpleBody extends StmtBody
 					|| (u instanceof RetStmt)
 					|| (u instanceof ThrowStmt))
 				return;
+
+
+        // A method with return type 'void' can have an infinite loop 
+		// and no return statement:
+		//
+        //  public class Infinite {
+        //  public static void main(String[] args) {
+        //  int i = 0; while (true) {i += 1;}      } }
+        //
+        // Only check that the execution cannot fall off the code.
+        if (method.getReturnType() instanceof VoidType) {
+            Unit last = this.getUnits().getLast();
+            if (last instanceof GotoStmt || last instanceof ThrowStmt)
+                return;
+        }
+
 		throw new RuntimeException("Body of method " + this.getMethod().getSignature()
 				+ " does not contain a return statement");
 	}
