@@ -21,7 +21,7 @@ public class Util {
         Unit u1 = s;
         while (u1 instanceof IdentityStmt) {
             u2 = u1;
-            u2 = b.getUnits().getSuccOf(u1);
+            u1 = b.getUnits().getSuccOf(u1);
         }
         return u2;
     }
