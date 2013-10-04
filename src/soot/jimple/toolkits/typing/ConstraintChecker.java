@@ -28,6 +28,7 @@ package soot.jimple.toolkits.typing;
 
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 import java.io.*;
 
@@ -1046,7 +1047,8 @@ class ConstraintChecker extends AbstractStmtSwitch
     Local newlocal = Jimple.v().newLocal("tmp", type);
     stmtBody.getLocals().add(newlocal);
     
-    stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal, Jimple.v().newCastExpr(oldlocal, type)), stmt);
+    Unit u = Util.findFirstNonIdentityUnit(stmtBody, stmt);
+    stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal, Jimple.v().newCastExpr(oldlocal, type)), u);
     return newlocal;
   }
 }
