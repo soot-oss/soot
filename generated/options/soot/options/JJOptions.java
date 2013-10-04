@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Java To Jimple Body Creation. */
 public class JJOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public JJOptions( Map options ) {
+    public JJOptions( Map<String, String> options ) {
         this.options = options;
     }
     

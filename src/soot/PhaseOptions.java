@@ -43,16 +43,16 @@ public class PhaseOptions {
     public PhaseOptions( Singletons.Global g ) { }
     public static PhaseOptions v() { return G.v().soot_PhaseOptions(); }
 
-    private final Map<HasPhaseOptions, Map> phaseToOptionMap = new HashMap<HasPhaseOptions, Map>();
+    private final Map<HasPhaseOptions, Map<String, String>> phaseToOptionMap = new HashMap<HasPhaseOptions, Map<String, String>>();
 
-    public Map getPhaseOptions(String phaseName) {
+    public Map<String, String> getPhaseOptions(String phaseName) {
         return getPhaseOptions(getPM().getPhase(phaseName));
     }
 
-    public Map getPhaseOptions(HasPhaseOptions phase) {
-        Map ret = phaseToOptionMap.get(phase);
-        if( ret == null ) ret = new HashMap();
-        else ret = new HashMap( ret );
+    public Map<String, String> getPhaseOptions(HasPhaseOptions phase) {
+        Map<String, String> ret = phaseToOptionMap.get(phase);
+        if( ret == null ) ret = new HashMap<String, String>();
+        else ret = new HashMap<String, String>( ret );
         StringTokenizer st = new StringTokenizer( phase.getDefaultOptions() );
         while( st.hasMoreTokens() ) {
             String opt = st.nextToken();
@@ -75,7 +75,7 @@ public class PhaseOptions {
 
     /** This method returns true iff key "name" is in options 
         and maps to "true". */
-    public static boolean getBoolean(Map options, String name)
+    public static boolean getBoolean(Map<String, String> options, String name)
     {
         return options.containsKey(name) &&
             options.get(name).equals("true");
@@ -85,7 +85,7 @@ public class PhaseOptions {
 
     /** This method returns the value of "name" in options 
         or "" if "name" is not found. */
-    public static String getString(Map options, String name)
+    public static String getString(Map<String, String> options, String name)
     {
         return options.containsKey(name) ?
             (String)options.get(name) : "";
@@ -95,20 +95,20 @@ public class PhaseOptions {
 
     /** This method returns the float value of "name" in options 
         or 1.0 if "name" is not found. */
-    public static float getFloat(Map options, String name)
+    public static float getFloat(Map<String, String> options, String name)
     {
         return options.containsKey(name) ?
-            new Float((String)options.get(name)).floatValue() : 1.0f;
+            new Float(options.get(name)).floatValue() : 1.0f;
     }
 
 
 
     /** This method returns the integer value of "name" in options 
         or 0 if "name" is not found. */
-    public static int getInt(Map options, String name)
+    public static int getInt(Map<String, String> options, String name)
     {
         return options.containsKey(name) ?
-            new Integer((String)options.get(name)).intValue() : 0;
+            new Integer(options.get(name)).intValue() : 0;
     }
 
 
@@ -148,7 +148,7 @@ public class PhaseOptions {
         for (Pack p : getPM().allPacks()) {
             if( !(p instanceof RadioScenePack) ) continue;
             if( p.get(phaseName) == null ) continue;
-            for( Iterator tIt = p.iterator(); tIt.hasNext(); ) {
+            for( Iterator<Transform> tIt = p.iterator(); tIt.hasNext(); ) {
                 final Transform t = (Transform) tIt.next();
                 setPhaseOption( t.getPhaseName(), "enabled:false" );
             }

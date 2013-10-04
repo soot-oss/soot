@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Null Pointer Checker. */
 public class NPCOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public NPCOptions( Map options ) {
+    public NPCOptions( Map<String, String> options ) {
         this.options = options;
     }
     

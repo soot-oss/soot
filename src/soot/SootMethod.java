@@ -55,7 +55,7 @@ public class SootMethod
 
     /** A list of parameter types taken by this <code>SootMethod</code> object, 
       * in declaration order. */
-    private List parameterTypes;
+    private List<Type> parameterTypes;
 
     /** The return type of this object. */
     private Type returnType;
@@ -105,14 +105,14 @@ public class SootMethod
     }
 
     /** Constructs a SootMethod with the given name, parameter types and return type. */
-    public SootMethod(String name, List parameterTypes, Type returnType) {
+    public SootMethod(String name, List<Type> parameterTypes, Type returnType) {
         this(name, parameterTypes, returnType, 0, Collections.<SootClass>emptyList());
     }
 
     /** Constructs a SootMethod with the given name, parameter types, return type and modifiers. */
     public SootMethod(
         String name,
-        List parameterTypes,
+        List<Type> parameterTypes,
         Type returnType,
         int modifiers) {
         this(name, parameterTypes, returnType, modifiers, Collections.<SootClass>emptyList());
@@ -122,12 +122,12 @@ public class SootMethod
       * and list of thrown exceptions. */
     public SootMethod(
         String name,
-        List parameterTypes,
+        List<Type> parameterTypes,
         Type returnType,
         int modifiers,
         List<SootClass> thrownExceptions) {
         this.name = name;
-        this.parameterTypes = new ArrayList();
+        this.parameterTypes = new ArrayList<Type>();
         this.parameterTypes.addAll(parameterTypes);
         this.parameterTypes = Collections.unmodifiableList(this.parameterTypes);
 
@@ -274,11 +274,11 @@ public class SootMethod
     /**
      * Changes the set of parameter types of this method.
      */
-    public void setParameterTypes( List l ) {
+    public void setParameterTypes( List<Type> l ) {
         boolean wasDeclared = isDeclared;
         SootClass oldDeclaringClass = declaringClass;
         if( wasDeclared ) oldDeclaringClass.removeMethod(this);
-        List al = new ArrayList();
+        List<Type> al = new ArrayList<Type>();
         al.addAll(l);
         this.parameterTypes = Collections.unmodifiableList(al);
         subsignature =
@@ -395,7 +395,7 @@ public class SootMethod
         return exceptions != null && exceptions.contains(e);
     }
 
-    public void setExceptions(List exceptions) {
+    public void setExceptions(List<SootClass> exceptions) {
     	if (exceptions != null && !exceptions.isEmpty()) {
 	        this.exceptions = new ArrayList<SootClass>();
 	        this.exceptions.addAll(exceptions);
@@ -520,8 +520,8 @@ public class SootMethod
      * it appears in bytecode. */
     public String getBytecodeParms() {
         StringBuffer buffer = new StringBuffer();
-        for( Iterator typeIt = getParameterTypes().iterator(); typeIt.hasNext(); ) {
-            final Type type = (Type) typeIt.next();
+        for( Iterator<Type> typeIt = getParameterTypes().iterator(); typeIt.hasNext(); ) {
+            final Type type = typeIt.next();
             buffer.append(AbstractJasminClass.jasminDescriptorOf(type));
         }
         return buffer.toString().intern();
@@ -550,7 +550,7 @@ public class SootMethod
     public String getSignature() {
         return getSignature(getDeclaringClass(), getName(), getParameterTypes(), getReturnType());
     }
-    public static String getSignature(SootClass cl, String name, List params, Type returnType) {
+    public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(
             "<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
@@ -567,7 +567,7 @@ public class SootMethod
      */
     public String getSubSignature() {
         String name = getName();
-        List params = getParameterTypes();
+        List<Type> params = getParameterTypes();
         Type returnType = getReturnType();
 
         return getSubSignatureImpl(name, params, returnType);
@@ -575,21 +575,21 @@ public class SootMethod
 
     public static String getSubSignature(
         String name,
-        List params,
+        List<Type> params,
         Type returnType) {
         return getSubSignatureImpl(name, params, returnType);
     }
 
     private static String getSubSignatureImpl(
         String name,
-        List params,
+        List<Type> params,
         Type returnType) {
         StringBuffer buffer = new StringBuffer();
         Type t = returnType;
 
         buffer.append(t.toString() + " " + Scene.v().quotedNameOf(name) + "(");
 
-        Iterator typeIt = params.iterator();
+        Iterator<Type> typeIt = params.iterator();
 
         if (typeIt.hasNext()) {
             t = (Type) typeIt.next();
@@ -673,7 +673,7 @@ public class SootMethod
         buffer.append("(");
 
         // parameters
-        Iterator typeIt = this.getParameterTypes().iterator();
+        Iterator<Type> typeIt = this.getParameterTypes().iterator();
         int count = 0;
         while (typeIt.hasNext()) {
             Type t = (Type) typeIt.next();
@@ -781,7 +781,7 @@ public class SootMethod
         buffer.append("(");
 
         // parameters
-        Iterator typeIt = this.getParameterTypes().iterator();
+        Iterator<Type> typeIt = this.getParameterTypes().iterator();
         //int count = 0;
         while (typeIt.hasNext()) {
             Type t = (Type) typeIt.next();

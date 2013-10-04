@@ -2306,6 +2306,15 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsignore_resolution_errors_widget().getAlias(), new Boolean(boolRes));
 		}
+		
+		stringRes = getProcessing_Optionsplugin_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
+		}
 		 
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
 
@@ -6835,6 +6844,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Processing_Optionsignore_resolution_errors_widget;
 	}	
 	
+
+	private ListOptionWidget Processing_Optionsplugin_widget;
+	
+	private void setProcessing_Optionsplugin_widget(ListOptionWidget widget) {
+		Processing_Optionsplugin_widget = widget;
+	}
+	
+	public ListOptionWidget getProcessing_Optionsplugin_widget() {
+		return Processing_Optionsplugin_widget;
+	}	
+	
+	
 	
 	private MultiOptionWidget Processing_Optionsthrow_analysis_widget;
 	
@@ -10857,6 +10878,21 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getProcessing_Optionsthrow_analysis_widget().setDef(defaultString);
 		}
 		
+		
+
+		defKey = ""+" "+""+" "+"plugin";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getArrayDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration FILE and registers all plugins. \nMake sure that the option is specified before you try to pass \noptions to the loaded plugins.", defaultString)));
 		
 
 		

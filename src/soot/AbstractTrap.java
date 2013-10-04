@@ -46,7 +46,7 @@ public class AbstractTrap implements Trap, Serializable
     protected UnitBox handlerUnitBox;
 
     /** The list of unitBoxes referred to in this Trap (begin, end and handler. */
-    protected List unitBoxes;
+    protected List<UnitBox> unitBoxes;
 
     private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
     {
@@ -68,7 +68,7 @@ public class AbstractTrap implements Trap, Serializable
         this.exception = exception; this.beginUnitBox = beginUnitBox;
         this.endUnitBox = endUnitBox; this.handlerUnitBox = handlerUnitBox;
 
-        unitBoxes = new ArrayList();
+        unitBoxes = new ArrayList<UnitBox>();
         unitBoxes.add(beginUnitBox);
         unitBoxes.add(endUnitBox);
         unitBoxes.add(handlerUnitBox);
@@ -105,16 +105,16 @@ public class AbstractTrap implements Trap, Serializable
         return endUnitBox;
     }
 
-    public List getUnitBoxes()
+    public List<UnitBox> getUnitBoxes()
     {
         return unitBoxes;
     }
 
     public void clearUnitBoxes()
     {
-        Iterator boxesIt = getUnitBoxes().iterator();
+        Iterator<UnitBox> boxesIt = getUnitBoxes().iterator();
         while(boxesIt.hasNext()){
-            UnitBox box = (UnitBox) boxesIt.next();
+            UnitBox box = boxesIt.next();
             box.setUnit(null);
         }
     }

@@ -402,7 +402,7 @@ public class SootClass extends AbstractHost implements Numberable
         return ret;
     }
 
-    public SootMethod getMethod( String name, List parameterTypes,
+    public SootMethod getMethod( String name, List<Type> parameterTypes,
             Type returnType )
     {
         checkLevel(SIGNATURES);
@@ -429,7 +429,7 @@ public class SootClass extends AbstractHost implements Numberable
         given name and parameter.
     */
 
-    public SootMethod getMethod(String name, List parameterTypes) 
+    public SootMethod getMethod(String name, List<Type> parameterTypes) 
     {
         checkLevel(SIGNATURES);
         boolean found = false;
@@ -498,7 +498,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name and parameter types?
     */
 
-    public boolean declaresMethod(String name, List parameterTypes)
+    public boolean declaresMethod(String name, List<Type> parameterTypes)
     {
         checkLevel(SIGNATURES);
         Iterator<SootMethod> methodIt = methodIterator();
@@ -519,7 +519,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name, parameter types, and return type?
     */
 
-    public boolean declaresMethod(String name, List parameterTypes, Type returnType)
+    public boolean declaresMethod(String name, List<Type> parameterTypes, Type returnType)
     {
         checkLevel(SIGNATURES);
         Iterator<SootMethod> methodIt = methodIterator();
@@ -545,11 +545,11 @@ public class SootClass extends AbstractHost implements Numberable
     public boolean declaresMethodByName(String name)
     {
         checkLevel(SIGNATURES);
-        Iterator methodIt = methodIterator();
+        Iterator<SootMethod> methodIt = methodIterator();
 
         while(methodIt.hasNext())
         {
-            SootMethod method = (SootMethod) methodIt.next();
+            SootMethod method = methodIt.next();
 
             if(method.getName().equals(name))
                 return true;

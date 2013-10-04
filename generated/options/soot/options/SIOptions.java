@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Static Inliner. */
 public class SIOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public SIOptions( Map options ) {
+    public SIOptions( Map<String, String> options ) {
         this.options = options;
     }
     
