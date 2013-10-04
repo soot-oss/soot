@@ -14,7 +14,7 @@ import soot.jimple.Jimple;
  * hierarchies of traps. If we have a trap (1-3) with handler A and a trap
  * (2) with handler B, we transform them into three new traps: (1) and (3)
  * with A, (2) with A+B.
- *  
+ *
  * @author Steven Arzt
  */
 public class TrapSplitter extends BodyTransformer {
@@ -26,20 +26,20 @@ public class TrapSplitter extends BodyTransformer {
 		private Trap t1;
 		private Trap t2;
 		private Unit t2Start;
-		
+
 		public TrapOverlap(Trap t1, Trap t2, Unit t2Start) {
 			this.t1 = t1;
 			this.t2 = t2;
 			this.t2Start = t2Start;
 		}
 	}
-	
+
 	@Override
 	protected void internalTransform(Body b, String phaseName, Map options) {
 		// If we have less then two traps, there's nothing to do here
 		if (b.getTraps().size() < 2)
 			return;
-		
+
 		// Look for overlapping traps
 		TrapOverlap to;
 		while ((to = getNextOverlap(b)) != null) {
@@ -70,6 +70,11 @@ public class TrapSplitter extends BodyTransformer {
 					to.t1.setBeginUnit(firstEndUnit);
 				}
 			}
+
+			// remove old overlapping traps
+			b.getTraps().remove(to.t1);
+			b.getTraps().remove(to.t2);
+
 		}
 	}
 
