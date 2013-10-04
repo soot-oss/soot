@@ -671,18 +671,18 @@ public class DexBody  {
         UnusedLocalEliminator.v().transform(jBody);
         //LocalPacker.v().transform(jBody);
         NopEliminator.v().transform(jBody);
-        
+
         for (Unit u: jBody.getUnits()) {
-          if (u instanceof AssignStmt) {
-            AssignStmt ass = (AssignStmt)u;
-            if (ass.getRightOp() instanceof CastExpr) {
-              CastExpr c = (CastExpr)ass.getRightOp();
-              if (c.getType() instanceof NullType) {
-                Debug.printDbg("replacing cast to null_type by nullConstant assignment in ", u);
-                ass.setRightOp(NullConstant.v());
-              }
+            if (u instanceof AssignStmt) {
+                AssignStmt ass = (AssignStmt)u;
+                if (ass.getRightOp() instanceof CastExpr) {
+                    CastExpr c = (CastExpr)ass.getRightOp();
+                    if (c.getType() instanceof NullType) {
+                        Debug.printDbg("replacing cast to null_type by nullConstant assignment in ", u);
+                        ass.setRightOp(NullConstant.v());
+                    }
+                }
             }
-          }
         }
 
         Debug.printDbg("\nafter jb pack");
@@ -690,10 +690,26 @@ public class DexBody  {
 
         // fields init
 
-          if (m.getName().equals("<init>") || m.getName().equals("<clinit>")) {
-             Util.addConstantTags(jBody);
-          }
-          
+        if (m.getName().equals("<init>") || m.getName().equals("<clinit>")) {
+            Util.addConstantTags(jBody);
+        }
+
+        // Leplace local type null_type by java.lang.Object.
+        //
+        // The typing engine cannot find correct type for such code:
+        //
+        // null_type $n0;
+        // $n0 = null;
+        // $r4 = virtualinvoke $n0.<java.lang.ref.WeakReference: java.lang.Object get()>();
+        //
+        for(Local l: jBody.getLocals()) {
+            Type t = l.getType();
+            if (t instanceof NullType) {
+                Debug.printDbg("replacing null_type by java.lang.Object for local ", l);
+                l.setType(RefType.v("java.lang.Object"));
+            }
+        }
+
         return jBody;
     }
 

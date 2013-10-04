@@ -23,6 +23,7 @@ package soot.jimple.toolkits.typing.fast;
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
+import soot.jimple.toolkits.typing.Util;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
@@ -189,8 +190,9 @@ public class TypeResolver
 					vold = Jimple.v().newLocal("tmp", t);
 					this.tg.set(vold, t);
 					this.jb.getLocals().add(vold);
+					Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
 					this.jb.getUnits().insertBefore(
-						Jimple.v().newAssignStmt(vold, op), stmt);
+						Jimple.v().newAssignStmt(vold, op), u);
 				}
 				else
 					vold = (Local)op;
@@ -198,9 +200,10 @@ public class TypeResolver
 				Local vnew = Jimple.v().newLocal("tmp", useType);
 				this.tg.set(vnew, useType);
 				this.jb.getLocals().add(vnew);
+				Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
 				this.jb.getUnits().insertBefore(
 					Jimple.v().newAssignStmt(vnew,
-					Jimple.v().newCastExpr(vold, useType)), stmt);
+					Jimple.v().newCastExpr(vold, useType)), u);
 				return vnew;
 			}
 		}
@@ -528,7 +531,8 @@ public class TypeResolver
 									DefinitionStmt assignStmt
 										= Jimple.v().newAssignStmt(
 										assign.getLeftOp(), newlocal);
-									units.insertAfter(assignStmt, assign);
+									Unit u = Util.findLastIdentityUnit(jb, assign);
+									units.insertAfter(assignStmt, u);
 									assign.setLeftOp(newlocal);
 									
 									this.addLocal(newlocal);

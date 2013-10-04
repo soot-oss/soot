@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Busy Code Motion. */
 public class BCMOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public BCMOptions( Map options ) {
+    public BCMOptions( Map<String, String> options ) {
         this.options = options;
     }
     

@@ -19,8 +19,6 @@
 
 package soot;
 import soot.javaToJimple.IInitialResolver;
-import soot.javaToJimple.InitialResolver;
-import soot.javaToJimple.Util;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.*;
 import java.io.*;

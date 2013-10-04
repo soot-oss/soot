@@ -115,7 +115,7 @@ public class G extends Singletons
      */
     public boolean SootMethodAddedByDava;
     public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<SootClass>();
-    public ArrayList SootMethodsAdded = new ArrayList();
+    public ArrayList<SootMethod> SootMethodsAdded = new ArrayList<SootMethod>();
     
     //ASTMetrics Data
     public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();

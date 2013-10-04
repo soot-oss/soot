@@ -40,8 +40,8 @@ public class BodyPack extends Pack
 
     protected void internalApply(Body b)
     {
-        for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
-            final Transform t = (Transform) tIt.next();
+        for( Iterator<Transform> tIt = this.iterator(); tIt.hasNext(); ) {
+            final Transform t = tIt.next();
             if (Options.v().interactive_mode()){
                 //G.v().out.println("sending transform: "+t.getPhaseName()+" for body: "+b+" for body pack: "+this.getPhaseName());
                 InteractionHandler.v().handleNewAnalysis(t, b);

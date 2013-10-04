@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Lock Allocator. */
 public class LockAllocator
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public LockAllocator( Map options ) {
+    public LockAllocator( Map<String, String> options ) {
         this.options = options;
     }
     

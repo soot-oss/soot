@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Shimple Control. */
 public class ShimpleOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public ShimpleOptions( Map options ) {
+    public ShimpleOptions( Map<String, String> options ) {
         this.options = options;
     }
     

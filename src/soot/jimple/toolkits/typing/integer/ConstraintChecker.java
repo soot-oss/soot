@@ -39,6 +39,7 @@ import soot.NullType;
 import soot.ShortType;
 import soot.SootMethodRef;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
@@ -102,6 +103,7 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+import soot.jimple.toolkits.typing.Util;
 
 class ConstraintChecker extends AbstractStmtSwitch
 {
@@ -1261,7 +1263,11 @@ class ConstraintChecker extends AbstractStmtSwitch
     Local newlocal = Jimple.v().newLocal("tmp", type);
     stmtBody.getLocals().add(newlocal);
 
-    stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal, Jimple.v().newCastExpr(oldlocal, type)), stmt);
+    Unit u = Util.findFirstNonIdentityUnit(this.stmtBody, stmt);
+    stmtBody.getUnits().insertBefore(
+            Jimple.v().newAssignStmt(
+                    newlocal, 
+                    Jimple.v().newCastExpr(oldlocal, type)), u);
     return newlocal;
   }
 
@@ -1270,7 +1276,8 @@ class ConstraintChecker extends AbstractStmtSwitch
     Local newlocal = Jimple.v().newLocal("tmp", righttype);
     stmtBody.getLocals().add(newlocal);
 
-    stmtBody.getUnits().insertAfter(Jimple.v().newAssignStmt(leftlocal, Jimple.v().newCastExpr(newlocal, lefttype)), stmt);
+    Unit u = Util.findLastIdentityUnit(this.stmtBody, stmt);
+    stmtBody.getUnits().insertAfter(Jimple.v().newAssignStmt(leftlocal, Jimple.v().newCastExpr(newlocal, lefttype)), u);
     return newlocal;
   }
 
@@ -1281,8 +1288,9 @@ class ConstraintChecker extends AbstractStmtSwitch
     stmtBody.getLocals().add(newlocal1);
     stmtBody.getLocals().add(newlocal2);
 
-    stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal1, oldvalue), stmt);
-    stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal2, Jimple.v().newCastExpr(newlocal1, type)), stmt);
+    Unit u = Util.findFirstNonIdentityUnit(this.stmtBody, stmt);
+    stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal1, oldvalue), u);
+    stmtBody.getUnits().insertBefore(Jimple.v().newAssignStmt(newlocal2, Jimple.v().newCastExpr(newlocal1, type)), u);
     return newlocal2;
   }
 }

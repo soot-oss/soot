@@ -80,18 +80,22 @@ public class JimpleBody extends StmtBody
     private void validateTypes() {
 		if(method!=null) {
 			if(!method.getReturnType().isAllowedInFinalCode()) {
-				throw new RuntimeException("return type not allowed in final code:"+method.getReturnType());
+				throw new RuntimeException("return type not allowed in final code:"+method.getReturnType()
+				        +"\n method: "+ method
+				        +"\n body: \n" + this);
 			}
 			for(Type t: method.getParameterTypes()) {
 				if(!t.isAllowedInFinalCode()) {
-					throw new RuntimeException("parameter type not allowed in final code:"+t);
+					throw new RuntimeException("parameter type not allowed in final code:"+t
+					        +"\n method: "+ method
+					        +"\n body: \n" + this);
 				}
 			}
 		}
 		for(Local l: localChain) {
 			Type t = l.getType();
 			if(!t.isAllowedInFinalCode()) {
-				throw new RuntimeException("(" + this.getMethod()+ ") local type not allowed in final code: " + t +" local: "+l +"body: \n"+ this);
+				throw new RuntimeException("(" + this.getMethod()+ ") local type not allowed in final code: " + t +" local: "+l +" body: \n"+ this);
 			}
 		}
 	}
@@ -152,11 +156,15 @@ public class JimpleBody extends StmtBody
 						throw new RuntimeException("@this-assignment in a static method!");
 					}					
 					if(!firstStatement) {
-						throw new RuntimeException("@this-assignment statement should precede all other statements");
+						throw new RuntimeException("@this-assignment statement should precede all other statements"
+						        +"\n method: "+ method
+						        +"\n body: \n" + this);
 					}
 				} else if(identityStmt.getRightOp() instanceof ParameterRef) {
 					if(foundNonThisOrParamIdentityStatement) {
-						throw new RuntimeException("@param-assignment statements should precede all non-identity statements");
+						throw new RuntimeException("@param-assignment statements should precede all non-identity statements"
+						        +"\n method: "+ method
+						        +"\n body: \n" + this);
 					}
 				} else {
 					//@caughtexception statement					

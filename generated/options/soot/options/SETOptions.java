@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Side Effect tagger. */
 public class SETOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public SETOptions( Map options ) {
+    public SETOptions( Map<String, String> options ) {
         this.options = options;
     }
     
