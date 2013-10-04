@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Lazy Code Motion. */
 public class LCMOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public LCMOptions( Map options ) {
+    public LCMOptions( Map<String, String> options ) {
         this.options = options;
     }
     

@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Paddle. */
 public class PaddleOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public PaddleOptions( Map options ) {
+    public PaddleOptions( Map<String, String> options ) {
         this.options = options;
     }
     

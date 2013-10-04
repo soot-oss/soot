@@ -548,7 +548,7 @@ public class PackManager {
     private void preProcessDAVA() {
         if (Options.v().output_format() == Options.output_format_dava) {
 
-            Map options = PhaseOptions.v().getPhaseOptions("db");
+            Map<String, String> options = PhaseOptions.v().getPhaseOptions("db");
             boolean isSourceJavac = PhaseOptions.getBoolean(options, "source-is-javac");
         	if(!isSourceJavac){
         		/*
@@ -581,8 +581,7 @@ public class PackManager {
 
     private void runBodyPacks( Iterator<SootClass> classes ) {
         while( classes.hasNext() ) {
-            SootClass cl = (SootClass) classes.next();
-            runBodyPacks( cl );
+            runBodyPacks( classes.next() );
         }
     }
 
@@ -593,8 +592,7 @@ public class PackManager {
 
     private void writeOutput( Iterator<SootClass> classes ) {
         while( classes.hasNext() ) {
-            SootClass cl = (SootClass) classes.next();
-            writeClass( cl );
+            writeClass( classes.next() );
         }
     }
 
@@ -608,8 +606,7 @@ public class PackManager {
 
     private void releaseBodies( Iterator<SootClass> classes ) {
         while( classes.hasNext() ) {
-            SootClass cl = (SootClass) classes.next();
-            releaseBodies( cl );
+            releaseBodies( classes.next() );
         }
     }
 
@@ -623,14 +620,14 @@ public class PackManager {
 
         Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
 
-        Map options = PhaseOptions.v().getPhaseOptions("db.transformations");
+        Map<String, String> options = PhaseOptions.v().getPhaseOptions("db.transformations");
         boolean transformations = PhaseOptions.getBoolean(options, "enabled");
         /*
          * apply analyses etc
          */
-        Iterator classIt = appClasses.iterator();
+        Iterator<SootClass> classIt = appClasses.iterator();
         while (classIt.hasNext()) {
-            SootClass s = (SootClass) classIt.next();
+            SootClass s = classIt.next();
             String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
 
             /*
@@ -665,7 +662,7 @@ public class PackManager {
             	Iterator<SootMethod> methodIt = s.methodIterator();
             	while (methodIt.hasNext()) {
 
-            		SootMethod m = (SootMethod) methodIt.next();
+            		SootMethod m = methodIt.next();
             		//System.out.println("SootMethod:"+m.getName().toString());
 
             		/*
@@ -943,12 +940,12 @@ public class PackManager {
             //could use G to add new method...................
             if(G.v().SootMethodAddedByDava){
             	//System.out.println("PACKMANAGER SAYS:----------------Have to add the new method(s)");
-            	ArrayList sootMethodsAdded = G.v().SootMethodsAdded;
-            	Iterator it = sootMethodsAdded.iterator();
+            	ArrayList<SootMethod> sootMethodsAdded = G.v().SootMethodsAdded;
+            	Iterator<SootMethod> it = sootMethodsAdded.iterator();
             	while(it.hasNext()){
             		c.addMethod((SootMethod)it.next());
             	}
-            	G.v().SootMethodsAdded = new ArrayList();
+            	G.v().SootMethodsAdded = new ArrayList<SootMethod>();
             	G.v().SootMethodAddedByDava=false;
             }
 
@@ -1089,7 +1086,7 @@ public class PackManager {
     private void releaseBodies( SootClass cl ) {
         Iterator<SootMethod> methodIt = cl.methodIterator();
         while (methodIt.hasNext()) {
-            SootMethod m = (SootMethod) methodIt.next();
+            SootMethod m = methodIt.next();
 
             if (m.hasActiveBody())
                 m.releaseActiveBody();

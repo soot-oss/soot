@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Class Hierarchy Analysis. */
 public class CHAOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public CHAOptions( Map options ) {
+    public CHAOptions( Map<String, String> options ) {
         this.options = options;
     }
     

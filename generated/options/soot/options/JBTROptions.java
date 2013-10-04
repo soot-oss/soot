@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Type Assigner. */
 public class JBTROptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public JBTROptions( Map options ) {
+    public JBTROptions( Map<String, String> options ) {
         this.options = options;
     }
     
