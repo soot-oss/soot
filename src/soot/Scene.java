@@ -405,7 +405,7 @@ public class Scene  //extends AbstractHost
 					classPathEntries.addAll(Options.v().process_dir());
 					Set<String> targetApks = new HashSet<String>();
 					for (String entry : classPathEntries) {
-						if(entry.endsWith(".apk"))
+						if(entry.toLowerCase().endsWith(".apk"))	// on Windows, file names are case-insensitive
 							targetApks.add(entry);
 					}					
 					if (targetApks.size() == 0)
