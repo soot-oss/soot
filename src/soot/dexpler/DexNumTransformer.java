@@ -274,6 +274,8 @@ public class DexNumTransformer extends DexTransformer {
                                 usedAsFloatingPoint = stmt.getOp() == l && isFloatingPointLike(body.getMethod().getReturnType());
                                 Debug.printDbg (" [return stmt] ", stmt ," usedAsObject: ", usedAsFloatingPoint ,", return type: ", body.getMethod().getReturnType());
                                 Debug.printDbg (" class: ", body.getMethod().getReturnType().getClass());
+                                doBreak = true;
+                                return;
                             }
                         });
                     
