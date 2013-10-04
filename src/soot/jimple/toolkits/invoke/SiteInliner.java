@@ -236,10 +236,8 @@ public class SiteInliner
                         throw new RuntimeException("local has no clone!");
                 }
 
-                Iterator unitBoxes = patchee.getUnitBoxes().iterator();
-                while (unitBoxes.hasNext())
+                for (UnitBox box : patchee.getUnitBoxes())
                 {
-                    UnitBox box = (UnitBox)unitBoxes.next();
                     Unit uPrime = (oldUnitsToNew.get(box.getUnit()));
                     if (uPrime != null)
                         box.setUnit(uPrime);

@@ -108,9 +108,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * @param newTarget
    */
   private static void redirectBranch(Unit node, Unit oldTarget, Unit newTarget) {
-    Iterator targetIt = node.getUnitBoxes().iterator();
-    while (targetIt.hasNext()) {
-      UnitBox targetBox = (UnitBox)targetIt.next();
+    for (UnitBox targetBox : node.getUnitBoxes()) {
       Unit target = targetBox.getUnit();
       if (target == oldTarget)
         targetBox.setUnit(newTarget);
