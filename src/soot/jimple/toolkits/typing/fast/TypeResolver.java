@@ -301,42 +301,46 @@ public class TypeResolver
 	
 	private Typing typePromotion(Typing tg)
 	{
-		AugEvalFunction ef = new AugEvalFunction(this.jb);
-		AugHierarchy h = new AugHierarchy();
-		UseChecker uc = new UseChecker(this.jb);
-		TypePromotionUseVisitor uv = new TypePromotionUseVisitor(jb, tg);
-		do
-		{
-			Collection<Typing> sigma
-				= this.applyAssignmentConstraints(tg, ef, h);
-			if ( sigma.isEmpty() )
-				return null;
-			tg = sigma.iterator().next();			
-			uv.typingChanged = false;
-			uc.check(tg, uv);
-			if ( uv.fail )
-				return null;
-		} while ( uv.typingChanged );
-		
-		for ( Local v : this.jb.getLocals() )
-		{
-			Type t = tg.get(v);
-			if ( t instanceof Integer1Type )
+		boolean conversionDone;
+		do {
+			AugEvalFunction ef = new AugEvalFunction(this.jb);
+			AugHierarchy h = new AugHierarchy();
+			UseChecker uc = new UseChecker(this.jb);
+			TypePromotionUseVisitor uv = new TypePromotionUseVisitor(jb, tg);
+			do
 			{
-				tg.set(v, BooleanType.v());
-				return this.typePromotion(tg);
-			}
-			else if ( t instanceof Integer127Type )
+				Collection<Typing> sigma
+					= this.applyAssignmentConstraints(tg, ef, h);
+				if ( sigma.isEmpty() )
+					return null;
+				tg = sigma.iterator().next();			
+				uv.typingChanged = false;
+				uc.check(tg, uv);
+				if ( uv.fail )
+					return null;
+			} while ( uv.typingChanged );
+
+			conversionDone = false;
+			for ( Local v : this.jb.getLocals() )
 			{
-				tg.set(v, ByteType.v());
-				return this.typePromotion(tg);
+				Type t = tg.get(v);
+				if ( t instanceof Integer1Type )
+				{
+					tg.set(v, BooleanType.v());
+					conversionDone = true;
+				}
+				else if ( t instanceof Integer127Type )
+				{
+					tg.set(v, ByteType.v());
+					conversionDone = true;
+				}
+				else if ( t instanceof Integer32767Type )
+				{
+					tg.set(v, ShortType.v());
+					conversionDone = true;
+				}
 			}
-			else if ( t instanceof Integer32767Type )
-			{
-				tg.set(v, ShortType.v());
-				return this.typePromotion(tg);
-			}
-		}
+		} while (conversionDone);
 		
 		return tg;
 	}
