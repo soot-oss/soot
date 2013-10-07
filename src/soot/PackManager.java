@@ -488,11 +488,11 @@ public class PackManager {
     }
 
     private ZipOutputStream jarFile = null;
-    
+
     public ZipOutputStream getJarFile() {
 		return jarFile;
 	}
-    
+
     public void writeOutput() {
         setupJAR();
         if(Options.v().verbose())
@@ -978,7 +978,6 @@ public class PackManager {
         String fileName = SourceLocator.v().getFileNameFor(c, format);
         if( Options.v().gzip() ) fileName = fileName+".gz";
 
-        OutputStream fileOutputStream = null;
         try {
             if( jarFile != null ) {
                 ZipEntry entry = new ZipEntry(fileName);
@@ -987,7 +986,6 @@ public class PackManager {
             } else {
                 new File(fileName).getParentFile().mkdirs();
                 streamOut = new FileOutputStream(fileName);
-                fileOutputStream = streamOut;
             }
             if( Options.v().gzip() ) {
                 streamOut = new GZIPOutputStream(streamOut);
@@ -1047,8 +1045,6 @@ public class PackManager {
         try {
             writerOut.flush();
             streamOut.close();
-            //close file output stream because there's a limited number of file handles on the OS
-            if(fileOutputStream!=null) fileOutputStream.close();
         } catch (IOException e) {
             throw new CompilationDeathException("Cannot close output file " + fileName);
         }
