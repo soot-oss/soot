@@ -980,7 +980,12 @@ public class Options extends OptionsBase {
             || option.equals( "subtract-gc" )
             )
                 subtract_gc = true;
-  
+
+            else if( false
+              || option.equals( "mute-some-output" )
+              )
+              mute_some_output = true;
+
             else {
                 G.v().out.println( "Invalid option -"+option );
                 return false;
@@ -1261,7 +1266,11 @@ public class Options extends OptionsBase {
     public boolean subtract_gc() { return subtract_gc; }
     private boolean subtract_gc = false;
     public void set_subtract_gc( boolean setting ) { subtract_gc = setting; }
-  
+
+    public boolean mute_some_output() { return mute_some_output; }
+    private boolean mute_some_output = false;
+    public void set_mute_some_output( boolean setting ) { mute_some_output = setting; }
+
 
     public String getUsage() {
         return ""
@@ -1366,7 +1375,8 @@ public class Options extends OptionsBase {
 +"\nMiscellaneous Options:\n"
       
 +padOpt(" -time", "Report time required for transformations" )
-+padOpt(" -subtract-gc", "Subtract gc from time" );
++padOpt(" -subtract-gc", "Subtract gc from time" )
++padOpt(" -mute-some-output", "Mutes from stdout the \'Warning! <class_name> is a phantom class!' warnings and 'Transforming/Decompiling <soot_class>...' messages." );
     }
 
 
