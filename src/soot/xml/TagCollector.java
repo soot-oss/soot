@@ -54,16 +54,12 @@ public class TagCollector {
 		collectClassTags(sc);
 
         // tag fields
-        Iterator fit = sc.getFields().iterator();
-		while (fit.hasNext()){
-            SootField sf = (SootField)fit.next();
+		for (SootField sf : sc.getFields()) {
             collectFieldTags(sf);
         }
         
         // tag methods
-        Iterator it = sc.getMethods().iterator();
-		while (it.hasNext()) {
-			SootMethod sm = (SootMethod)it.next();
+		for (SootMethod sm : sc.getMethods()) {
 			collectMethodTags(sm);
 		
             if (!includeBodies || !sm.hasActiveBody()) continue;
@@ -73,9 +69,7 @@ public class TagCollector {
     }
 
     public void collectKeyTags(SootClass sc){
-        Iterator it = sc.getTags().iterator();
-        while (it.hasNext()){
-            Object next = it.next();
+        for (Tag next : sc.getTags()) {
             if (next instanceof KeyTag){
                 KeyTag kt = (KeyTag)next;
                 Key k = new Key(kt.red(), kt.green(), kt.blue(), kt.key());
@@ -105,10 +99,8 @@ public class TagCollector {
 
     private void collectHostTags(Host h, Predicate<Tag> include){
 		if (!h.getTags().isEmpty()){
-			Iterator tags = h.getTags().iterator();
             Attribute a = new Attribute();
-		    while (tags.hasNext()){
-			    Tag t = (Tag)tags.next();
+		    for (Tag t : h.getTags()) {
 			    if (include.test(t))
 					a.addTag(t);
 			}
@@ -138,14 +130,10 @@ public class TagCollector {
     }
     
     public void collectBodyTags(Body b){
-		Iterator itUnits = b.getUnits().iterator();
-		while (itUnits.hasNext()) {
-			Unit u = (Unit)itUnits.next();
-			Iterator itTags = u.getTags().iterator();
+		for (Unit u : b.getUnits()) {
             Attribute ua = new Attribute();
             JimpleLineNumberTag jlnt = null;
-	    	while (itTags.hasNext()) {
-	   		    Tag t = (Tag)itTags.next();
+	    	for (Tag t : u.getTags()) {
                 ua.addTag(t);
                 if (t instanceof JimpleLineNumberTag){
                     jlnt = (JimpleLineNumberTag)t;
@@ -153,15 +141,11 @@ public class TagCollector {
                 //System.out.println("adding unit tag: "+t);
             }
             addAttribute(ua);
-			Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
-			while (valBoxIt.hasNext()){
-				ValueBox vb = (ValueBox)valBoxIt.next();
+			for (ValueBox vb : u.getUseAndDefBoxes()) {
                 //PosColorAttribute attr = new PosColorAttribute();
 				if (!vb.getTags().isEmpty()){
-			    	Iterator tagsIt = vb.getTags().iterator(); 
                     Attribute va = new Attribute();
-			    	while (tagsIt.hasNext()) {
-						Tag t = (Tag)tagsIt.next();
+			    	for (Tag t : vb.getTags()) {
                         //System.out.println("adding vb tag: "+t);
 					    va.addTag(t);
                         //System.out.println("vb: "+vb.getValue()+" tag: "+t);

@@ -67,9 +67,9 @@ public class AttributesUnitPrinter {
 
 	private boolean hasTag(Host h) {
         if (h instanceof Unit) {
-            Iterator usesAndDefsIt = ((Unit)h).getUseAndDefBoxes().iterator();
+            Iterator<ValueBox> usesAndDefsIt = ((Unit)h).getUseAndDefBoxes().iterator();
             while (usesAndDefsIt.hasNext()){
-                if (hasTag((ValueBox)usesAndDefsIt.next())) return true;
+                if (hasTag(usesAndDefsIt.next())) return true;
             }
         }
 		if (h.getTags().isEmpty()) return false;
