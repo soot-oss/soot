@@ -26,16 +26,11 @@ package soot.dexpler;
 
 import java.util.Set;
 
-
-
 import org.jf.dexlib2.iface.Annotation;
-import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MethodParameter;
-import org.jf.dexlib2.iface.value.EncodedValue;
 
 import soot.SootClass;
 import soot.SootField;
@@ -44,7 +39,6 @@ import soot.SootResolver;
 import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
-import soot.tagkit.Host;
 
 /**
  * DexClass is a container for all relevant information of that class

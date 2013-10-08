@@ -21,14 +21,11 @@
 package soot.dexpler;
 
 import soot.G;
-import soot.RefType;
 import soot.Singletons;
-import soot.UnknownType;
 import soot.Value;
 import soot.baf.EnterMonitorInst;
 import soot.baf.ReturnInst;
 import soot.baf.ReturnVoidInst;
-import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
 import soot.jimple.EnterMonitorStmt;

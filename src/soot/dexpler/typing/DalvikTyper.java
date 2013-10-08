@@ -50,7 +50,6 @@ import soot.jimple.CastExpr;
 import soot.jimple.Constant;
 import soot.jimple.IfStmt;
 import soot.jimple.NullConstant;
-import soot.util.Chain;
 
 public class DalvikTyper implements IDalvikTyper {
 
@@ -118,7 +117,6 @@ public class DalvikTyper implements IDalvikTyper {
 	    
 	    
 	    Debug.printDbg(IDalvikTyper.DEBUG, "list of constraints:");
-	    Chain<Local> locals = b.getLocals();
 	    List<ValueBox> vbList = b.getUseAndDefBoxes();
 	    
 	    // clear constraints after local splitting and dead code eliminator

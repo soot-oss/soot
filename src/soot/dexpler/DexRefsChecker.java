@@ -60,8 +60,6 @@ public class DexRefsChecker extends DexTransformer {
 
         for (Unit u: getRefCandidates(body)) {
           Stmt s = (Stmt)u;
-          boolean isDeclared = false;
-          boolean isPhantom = false;
           boolean hasField = false;
           FieldRef fr = null;
           SootField sf = null;
@@ -70,8 +68,6 @@ public class DexRefsChecker extends DexTransformer {
             sf = fr.getField();
             if (sf != null) {             
               hasField = true;
-              isDeclared = sf.isDeclared();
-              isPhantom = sf.isPhantom();
             }
           } else {
             throw new RuntimeException("Unit '"+ u +"' does not contain array ref nor field ref.");
