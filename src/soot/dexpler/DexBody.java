@@ -126,7 +126,6 @@ public class DexBody  {
 
     // detect array/instructions overlapping obfuscation
     private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
-    private String dexFile = null;
 
     PseudoInstruction isAddressInData (int a) {
       for (PseudoInstruction pi: pseudoInstructionData) {
@@ -143,7 +142,6 @@ public class DexBody  {
      * @param method the method that is associated with this body
      */
     public DexBody(String dexFile, Method method, RefType declaringClassType) {
-        this.dexFile = dexFile;
         MethodImplementation code = method.getImplementation();
         if (code == null)
             throw new RuntimeException("error: no code for method "+ method.getName());
@@ -218,8 +216,8 @@ public class DexBody  {
             types.addAll(i.introducedTypes());
 
         if(tries!=null) {
-	        for (TryBlock tryItem : tries) {
-	            List<ExceptionHandler> hList = tryItem.getExceptionHandlers();
+	        for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
+	            List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
 		        for (ExceptionHandler handler: hList) {
 		            String exType = handler.getExceptionType();
 		            if (exType == null) // for handler which capture all Exceptions
