@@ -1345,13 +1345,13 @@ public class Scene  //extends AbstractHost
 		return false;
 	}
 
-	ArrayList<String> pkgList;
+	List<String> pkgList;
 
-    public void setPkgList(ArrayList<String> list){
+    public void setPkgList(List<String> list){
         pkgList = list;
     }
 
-    public ArrayList<String> getPkgList(){
+    public List<String> getPkgList(){
         return pkgList;
     }
 
@@ -1386,7 +1386,7 @@ public class Scene  //extends AbstractHost
     }
     /** Returns the list of SootClasses that have been resolved at least to 
      * the level specified. */
-    public List/*SootClass*/<SootClass> getClasses(int desiredLevel) {
+    public List<SootClass> getClasses(int desiredLevel) {
         List<SootClass> ret = new ArrayList<SootClass>();
         for( Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
             final SootClass cl = (SootClass) clIt.next();
