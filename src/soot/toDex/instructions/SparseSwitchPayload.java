@@ -5,7 +5,7 @@ import java.util.List;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction;
 
-import soot.jimple.Stmt;
+import soot.Unit;
 
 /**
  * The payload for a sparse-switch instruction.
@@ -16,7 +16,7 @@ public class SparseSwitchPayload extends SwitchPayload {
 
 	private int[] keys;
 	
-	public SparseSwitchPayload(int[] keys, List<Stmt> targets) {
+	public SparseSwitchPayload(int[] keys, List<Unit> targets) {
 		super(targets);
 		this.keys = keys;
 	}

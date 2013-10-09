@@ -5,7 +5,7 @@ import java.util.List;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Format.PackedSwitchDataPseudoInstruction;
 
-import soot.jimple.Stmt;
+import soot.Unit;
 
 /**
  * The payload for a packed-switch instruction.
@@ -16,7 +16,7 @@ public class PackedSwitchPayload extends SwitchPayload {
 	
 	private int firstKey;
 	
-	public PackedSwitchPayload(int firstKey, List<Stmt> targets) {
+	public PackedSwitchPayload(int firstKey, List<Unit> targets) {
 		super(targets);
 		this.firstKey = firstKey;
 	}

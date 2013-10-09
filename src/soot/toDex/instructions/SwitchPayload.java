@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.jf.dexlib.Code.Opcode;
 
-import soot.jimple.Stmt;
+import soot.Unit;
 import soot.toDex.SootToDexUtils;
 
 /**
@@ -17,11 +17,11 @@ public abstract class SwitchPayload extends InsnWithOffset {
 	
 	protected Insn31t switchInsn;
 	
-	protected List<Stmt> targets;
+	protected List<Unit> targets;
 	
 	protected int[] targetAddresses;
 	
-	public SwitchPayload(List<Stmt> targets) {
+	public SwitchPayload(List<Unit> targets) {
 		super(Opcode.NOP);
 		this.targets = targets;
 		targetAddresses = new int[targets.size()];

@@ -77,7 +77,7 @@ import soot.toolkits.graph.Block;
 
 public abstract class AbstractJasminClass
 {
-    protected Map unitToLabel;
+    protected Map<Unit, String> unitToLabel;
     protected Map<Local, Integer> localToSlot;
     protected Map<Unit, Integer> subroutineToReturnAddressSlot;
 

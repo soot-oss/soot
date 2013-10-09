@@ -97,7 +97,7 @@ public class JasminClass extends AbstractJasminClass
         if(Options.v().time())
             Timers.v().buildJasminTimer.start();
         
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
 
         ExceptionalUnitGraph stmtGraph = null;
         LocalDefs ld = null;
@@ -126,16 +126,14 @@ public class JasminClass extends AbstractJasminClass
 
         // Determine the unitToLabel map
         {
-            Iterator boxIt = body.getUnitBoxes(true).iterator();
-
-            unitToLabel = new HashMap(units.size() * 2 + 1, 0.7f);
+            unitToLabel = new HashMap<Unit, String>(units.size() * 2 + 1, 0.7f);
             labelCount = 0;
 
-            while(boxIt.hasNext())
+            for (UnitBox ubox : body.getUnitBoxes(true))
             {
                 // Assign a label for each statement reference
                 {
-                    StmtBox box = (StmtBox) boxIt.next();
+                    StmtBox box = (StmtBox) ubox;
 
                     if(!unitToLabel.containsKey(box.getUnit()))
                         unitToLabel.put(box.getUnit(), "label" + labelCount++);
@@ -145,12 +143,8 @@ public class JasminClass extends AbstractJasminClass
 
         // Emit the exceptions
         {
-            Iterator trapIt = body.getTraps().iterator();
-
-            while(trapIt.hasNext())
+            for (Trap trap : body.getTraps())
             {
-                Trap trap = (Trap) trapIt.next();
-
                 if(trap.getBeginUnit() != trap.getEndUnit())
                     emit(".catch " + slashify(trap.getException().getName()) + " from " +
                         unitToLabel.get(trap.getBeginUnit()) + " to " + unitToLabel.get(trap.getEndUnit()) +
@@ -172,7 +166,7 @@ public class JasminClass extends AbstractJasminClass
             
             // Determine slots for 'this' and parameters
             {
-                List paramTypes = method.getParameterTypes();
+                List<Type> paramTypes = method.getParameterTypes();
 
                 if(!method.isStatic())
                 {
@@ -189,11 +183,9 @@ public class JasminClass extends AbstractJasminClass
 
             // Handle identity statements
             {
-                Iterator stmtIt = units.iterator();
-
-                while(stmtIt.hasNext())
+                for (Unit u : units)
                 {
-                    Stmt s = (Stmt) stmtIt.next();
+                    Stmt s = (Stmt) u;
 
                     if(s instanceof IdentityStmt && ((IdentityStmt) s).getLeftOp() instanceof Local)
                     {
@@ -235,12 +227,8 @@ public class JasminClass extends AbstractJasminClass
 
             // Assign the rest of the locals
             {
-                Iterator localIt = body.getLocals().iterator();
-
-                while(localIt.hasNext())
+                for (Local local : body.getLocals())
                 {
-                    Local local = (Local) localIt.next();
-
                     if(!assignedLocals.contains(local))
                     {
                         GroupIntPair pair = new GroupIntPair(localToGroup.get(local), 
@@ -280,7 +268,7 @@ public class JasminClass extends AbstractJasminClass
 
         // Emit code in one pass
         {
-            Iterator codeIt = units.iterator();
+            Iterator<Unit> codeIt = units.iterator();
 
             isEmittingMethodCode = true;
             maxStackHeight = 0; 
@@ -334,7 +322,7 @@ public class JasminClass extends AbstractJasminClass
                       break;
                     AssignStmt nextStmt = (AssignStmt)ns;
 
-                    List l = stmtGraph.getSuccsOf(nextStmt);
+                    List<Unit> l = stmtGraph.getSuccsOf(nextStmt);
                     if (l.size() != 1)
                       break;
 
@@ -362,14 +350,10 @@ public class JasminClass extends AbstractJasminClass
 
                     // make sure that nextNextStmt uses the local exactly once
                     {
-                        Iterator boxIt = nextNextStmt.getUseBoxes().iterator();
-                        
                         boolean foundExactlyOnce = false;
                         
-                        while(boxIt.hasNext())
+                        for (ValueBox box : nextNextStmt.getUseBoxes())
                         {
-                            ValueBox box = (ValueBox) boxIt.next();
-                            
                             if(box.getValue() == lvalue)
                             {
                                 if(!foundExactlyOnce)
@@ -391,14 +375,10 @@ public class JasminClass extends AbstractJasminClass
                     // this takes care of the extremely pathological case where
                     // the thing being incremented is also on the lhs of nns (!)
                     {
-                        Iterator boxIt = nextNextStmt.getDefBoxes().iterator();
-                        
                         boolean found = false;
                         
-                        while(boxIt.hasNext())
+                        for (ValueBox box : nextNextStmt.getDefBoxes())
                         {
-                            ValueBox box = (ValueBox) boxIt.next();
-                            
                             if(box.getValue().equivTo(rvalue))
                             {
                                 found = true;
