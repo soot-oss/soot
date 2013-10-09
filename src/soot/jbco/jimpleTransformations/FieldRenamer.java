@@ -51,7 +51,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 		{'_'}
 	  };
   
-  public static Vector  namesToNotRename = new Vector();
+  public static Vector<String>  namesToNotRename = new Vector<String>();
   public static Hashtable<String, String> oldToNewFieldNames = new Hashtable<String, String>();
   public static Hashtable<SootClass, SootField> opaquePreds1ByClass = new Hashtable<SootClass, SootField>();
   public static Hashtable<SootClass, SootField> opaquePreds2ByClass = new Hashtable<SootClass, SootField>();
@@ -79,10 +79,8 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     soot.jbco.util.BodyBuilder.retrieveAllBodies();
     soot.jbco.util.BodyBuilder.retrieveAllNames();
     
-    Iterator it = scene.getApplicationClasses().iterator();
-    while (it.hasNext())
+    for (SootClass c : scene.getApplicationClasses())
     {
-      SootClass c = (SootClass)it.next();
       String cName = c.getName();
       if (cName.indexOf(".") >= 0)
         cName = cName.substring(cName.lastIndexOf(".") + 1, cName.length());
@@ -91,9 +89,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
       if (rename_fields) {
         if (output) out.println("\tClassName: "+cName);
 	    // rename all the fields in the class
-	    Iterator fIt = c.getFields().iterator();
-	    while (fIt.hasNext()) {
-          SootField f = (SootField)fIt.next();
+	    for (SootField f : c.getFields()) {
           int weight = soot.jbco.Main.getWeight(phaseName, f.getName());
           if (weight > 0)
             renameField(cName,f);
@@ -136,26 +132,20 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     if (output) 
       out.println("\r\tUpdating field references in bytecode");
     
-    it = scene.getApplicationClasses().iterator();
-    while (it.hasNext())
+    for (SootClass c : scene.getApplicationClasses())
     {
-      SootClass c = (SootClass)it.next();
-      Iterator mIt = c.getMethods().iterator();
-      while (mIt.hasNext())
+      for (SootMethod m : c.getMethods())
       {
-        SootMethod m = (SootMethod)mIt.next();
         if (!m.isConcrete()) continue;
         
         if (!m.hasActiveBody())
           m.retrieveActiveBody();
         
-        Iterator uIt = m.getActiveBody().getUnits().iterator();
-        while (uIt.hasNext())
+        for (Unit u : m.getActiveBody().getUnits())
         {
-          Iterator udbIt = ((Unit)uIt.next()).getUseAndDefBoxes().iterator();
-          while (udbIt.hasNext())
+          for (ValueBox vb : u.getUseAndDefBoxes())
           {
-            Value v = ((ValueBox)udbIt.next()).getValue();
+            Value v = vb.getValue();
             if (v instanceof FieldRef)
             {
               FieldRef fr = (FieldRef)v;
@@ -199,7 +189,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     Body b = null;
     boolean newInit = false;
     if (!c.declaresMethodByName("<clinit>")) {
-      SootMethod m = new SootMethod("<clinit>", new ArrayList(),VoidType.v());
+      SootMethod m = new SootMethod("<clinit>", Collections.<Type>emptyList(), VoidType.v());
       c.addMethod(m);
       b = Jimple.v().newBody(m);
       m.setActiveBody(b);
@@ -209,7 +199,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
       b = m.getActiveBody();
   	}
     
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     if (f.getType() instanceof IntegerType) {
 	  units.addFirst(
 	      Jimple.v().newAssignStmt(

@@ -43,7 +43,7 @@ public class Renamer {
 	Chain fields; // a list of fields in scope
 
 	ASTMethodNode methodNode;
-	List forLoopNames;
+	List<String> forLoopNames;
 
 	HashMap<Local, Boolean> changedOrNot;//keeps track of which local was changed previously
 	
@@ -58,7 +58,7 @@ public class Renamer {
 			changedOrNot.put(localIt.next(),new Boolean(false));
 		
 		
-		forLoopNames = new ArrayList();
+		forLoopNames = new ArrayList<String>();
 		forLoopNames.add("i");
 		forLoopNames.add("j");
 		forLoopNames.add("k");

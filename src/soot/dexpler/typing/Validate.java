@@ -19,7 +19,6 @@ import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
 import soot.dexpler.Debug;
-import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -38,7 +37,6 @@ import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 

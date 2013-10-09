@@ -79,7 +79,6 @@ public abstract class DexTransformer extends BodyTransformer {
         }
         defs.add(u);
         //
-        @SuppressWarnings("unchecked")
 		List<UnitValueBoxPair> usesOf = (List<UnitValueBoxPair>) localUses.getUsesOf(u);
 		for (UnitValueBoxPair pair : usesOf) {
           Unit unit = pair.getUnit();

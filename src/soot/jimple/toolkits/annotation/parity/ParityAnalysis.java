@@ -260,10 +260,8 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 
         // get all use and def boxes of s 
         // if use or def is int or long constant add their parity
-        Iterator it = s.getUseAndDefBoxes().iterator();
-        while (it.hasNext()){
-            Object next = it.next();
-            Value val = ((ValueBox)next).getValue();
+        for (ValueBox next : s.getUseAndDefBoxes()) {
+            Value val = next.getValue();
             //System.out.println("val: "+val.getClass());
             if (val instanceof ArithmeticConstant){
                 out.put(val, getParity(out, val));

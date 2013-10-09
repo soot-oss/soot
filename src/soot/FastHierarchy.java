@@ -85,11 +85,9 @@ public class FastHierarchy
     protected int dfsVisit( int start, SootClass c ) {
         Interval r = new Interval();
         r.lower = start++;
-        Collection col = classToSubclasses.get(c);
+        List<SootClass> col = classToSubclasses.get(c);
         if( col != null ) {
-            Iterator it = col.iterator();
-            while( it.hasNext() ) {
-                SootClass sc = (SootClass) it.next();
+            for (SootClass sc : col) {
                 // For some awful reason, Soot thinks interface are subclasses
                 // of java.lang.Object
                 if( sc.isInterface() ) continue;
@@ -213,7 +211,7 @@ public class FastHierarchy
             } else {
                 SootClass base = ((AnySubType)child).getBase().getSootClass();
                 SootClass parentClass = ((RefType) parent).getSootClass();
-                LinkedList worklist = new LinkedList();
+                LinkedList<SootClass> worklist = new LinkedList<SootClass>();
                 if( base.isInterface() ) worklist.addAll(getAllImplementersOfInterface(base));
                 else worklist.add(base);
                 Set<SootClass> workset = new HashSet<SootClass>();
@@ -276,8 +274,8 @@ public class FastHierarchy
                 return getAllSubinterfaces( parent ).contains( child );
             }
         } else {
-            Set impl = getAllImplementersOfInterface( parent );
-            for( Iterator it = impl.iterator(); it.hasNext(); ) {
+            Set<SootClass> impl = getAllImplementersOfInterface( parent );
+            for( Iterator<SootClass> it = impl.iterator(); it.hasNext(); ) {
                 parentInterval = classToInterval.get( it.next() );
                 if( parentInterval != null && parentInterval.isSubrange( childInterval ) ) {
                     return true;
@@ -418,7 +416,7 @@ public class FastHierarchy
         String methodSig = m.getSubSignature();
         HashSet<SootClass> resolved = new HashSet<SootClass>();
         HashSet<SootMethod> ret = new HashSet<SootMethod>();
-        LinkedList worklist = new LinkedList();
+        LinkedList<SootClass> worklist = new LinkedList<SootClass>();
         worklist.add( abstractType );
         while( !worklist.isEmpty() ) {
             SootClass concreteType = (SootClass) worklist.removeFirst();
@@ -504,8 +502,8 @@ public class FastHierarchy
    */
     public Collection<SootClass> getSubclassesOf( SootClass c ) {
         c.checkLevel(SootClass.HIERARCHY);
-        Collection ret = classToSubclasses.get(c);
-        if( ret == null ) return Collections.EMPTY_LIST;
+        List<SootClass> ret = classToSubclasses.get(c);
+        if( ret == null ) return Collections.emptyList();
         return ret;
     }
 }

@@ -70,11 +70,6 @@ public class TrapSplitter extends BodyTransformer {
 					to.t1.setBeginUnit(firstEndUnit);
 				}
 			}
-
-			// remove old overlapping traps
-			b.getTraps().remove(to.t1);
-			b.getTraps().remove(to.t2);
-
 		}
 	}
 

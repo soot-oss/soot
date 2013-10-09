@@ -390,7 +390,11 @@ public class SourceLocator
 
     public String getOutputDir() {
         String ret = Options.v().output_dir();
-        if( ret.length() == 0 ) ret = "sootOutput";
+        if( ret.length() == 0 ) {
+        	ret = "sootOutput";
+	        if (Options.v().output_jar())
+	        	ret += File.separatorChar + "out.jar";
+        }
         File dir = new File(ret);
 
         if (!dir.exists()) {
