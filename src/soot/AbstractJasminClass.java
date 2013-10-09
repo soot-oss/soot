@@ -444,6 +444,9 @@ public abstract class AbstractJasminClass
                 if (Options.v().android_jars() != "" && Character.isDigit(srcName.charAt(0))) 
                     srcName = "n_"+ srcName;
                 
+                // Jasmin does not support blanks, so get rid of them
+                srcName = srcName.replace(" ", "-");
+                
              	emit(".source "+srcName);
             }
             if(Modifier.isInterface(modifiers))
