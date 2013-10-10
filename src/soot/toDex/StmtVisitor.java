@@ -17,6 +17,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -621,14 +622,12 @@ public class StmtVisitor implements StmtSwitch {
 	@Override
 	public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
 		// create payload that references the switch's targets
-		@SuppressWarnings("unchecked")
 		List<IntConstant> keyValues = stmt.getLookupValues();
 		int[] keys = new int[keyValues.size()];
 		for (int i = 0; i < keys.length; i++) {
 			keys[i] = keyValues.get(i).value;
 		}
-		@SuppressWarnings("unchecked")
-		List<Stmt> targets = stmt.getTargets();
+		List<Unit> targets = stmt.getTargets();
 		SparseSwitchPayload payload = new SparseSwitchPayload(keys, targets);
 		switchPayloads.add(payload);
 		// create sparse-switch instruction that references the payload
@@ -642,7 +641,7 @@ public class StmtVisitor implements StmtSwitch {
 		// create payload that references the switch's targets
 		int firstKey = stmt.getLowIndex();
 		@SuppressWarnings("unchecked")
-		List<Stmt> targets = stmt.getTargets();
+		List<Unit> targets = stmt.getTargets();
 		PackedSwitchPayload payload = new PackedSwitchPayload(firstKey, targets);
 		switchPayloads.add(payload);
 		// create packed-switch instruction that references the payload
