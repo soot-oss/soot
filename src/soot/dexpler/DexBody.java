@@ -686,12 +686,6 @@ public class DexBody  {
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg("",(Body)jBody);
 
-        // fields init
-
-        if (m.getName().equals("<init>") || m.getName().equals("<clinit>")) {
-            Util.addConstantTags(jBody);
-        }
-
         // Leplace local type null_type by java.lang.Object.
         //
         // The typing engine cannot find correct type for such code:
