@@ -228,13 +228,12 @@ public class UseChecker extends AbstractStmtSwitch
 				at = (ArrayType)this.tg.get(base);
 			else
 				at = this.tg.get(base).makeArrayType();
-			tlhs = ((ArrayType)at).getElementType();
+			tlhs = at.getElementType();
 
 			this.handleArrayRef(aref, stmt);
 
 			aref.setBase((Local) this.uv.visit(aref.getBase(), at, stmt));
 			stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
-			stmt.setLeftOp(this.uv.visit(lhs, tlhs, stmt));
 		}
 		else if ( lhs instanceof FieldRef )
 		{
@@ -260,13 +259,13 @@ public class UseChecker extends AbstractStmtSwitch
 				at = (ArrayType)this.tg.get(base);
 			else
 				at = this.tg.get(base).makeArrayType();
-			Type trhs = ((ArrayType)at).getElementType();
 
 			this.handleArrayRef(aref, stmt);
 
 			aref.setBase((Local) this.uv.visit(aref.getBase(), at, stmt));
-			stmt.setRightOp(this.uv.visit(rhs, trhs, stmt));
-			stmt.setLeftOp(this.uv.visit(lhs, trhs, stmt));
+			// Cast the right side to the type of the left side to match the
+			// assignment.
+			stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
 		}
 		else if ( rhs instanceof InstanceFieldRef )
 		{
