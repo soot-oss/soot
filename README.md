@@ -11,7 +11,7 @@ See http://www.sable.mcgill.ca/soot/ for details.
 
 # How do I get started with Soot?
 
-We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](www.sable.mcgill.ca/soot/tutorial/index.html) on Soot.
+We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot.
 
 # About Soot's source code
 
