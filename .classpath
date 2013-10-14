@@ -10,7 +10,9 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/heros"/>
 	<classpathentry kind="lib" path="libs/polyglot.jar"/>
 	<classpathentry kind="lib" path="libs/AXMLPrinter2.jar"/>
-	<classpathentry kind="lib" path="libs/baksmali-1.3.2.jar"/>
 	<classpathentry kind="lib" path="libs/baksmali-2.0b5.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-simple-1.7.5.jar"/>
+	<classpathentry kind="lib" path="libs/baksmali-1.3.2.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

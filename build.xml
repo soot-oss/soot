@@ -35,6 +35,8 @@
            		<pathelement location="${axmlprinter2.jar}"/>
            		<pathelement location="${baksmali.jar}"/>
            		<pathelement location="${baksmali2.jar}"/>
+           		<pathelement location="${slf4j-api.jar}"/>
+           		<pathelement location="${slf4j-simple.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>

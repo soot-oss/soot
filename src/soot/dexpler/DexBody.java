@@ -499,8 +499,10 @@ public class DexBody  {
 
         Debug.printDbg("body before any transformation : \n", jBody);
 
+        // Remove dead code and the corresponding locals before assigning types
 		UnreachableCodeEliminator.v().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
+		UnusedLocalEliminator.v().transform(jBody);
 
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
@@ -632,7 +634,8 @@ public class DexBody  {
 
         }
 
-        
+        // We pack locals that are not used in overlapping regions. This may
+        // again lead to unused locals which we have to remove.
         LocalPacker.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);

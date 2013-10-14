@@ -764,10 +764,8 @@ public abstract class AbstractJasminClass
 
     public void print(PrintWriter out)
     {
-        Iterator<String> it = code.iterator();
-
-        while(it.hasNext())
-            out.println(it.next());
+        for (String s : code)
+            out.println(s);
     }
 
 }
