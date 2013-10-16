@@ -46,6 +46,7 @@ import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.dexpler.Util;
 import soot.options.Options;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
@@ -509,9 +510,10 @@ public class DexAnnotation {
         }
         case 'e': {
             AnnotationEnumElem e = (AnnotationEnumElem)elem;
-            String classT = soot2DalvikType(e.getConstantName());
-            String fieldT = soot2DalvikType(e.getTypeName().split(":")[0]);
-            String fieldNameString = e.getTypeName().split(":")[1];
+            
+            String classT = soot2DalvikType(e.getTypeName());
+            String fieldT = soot2DalvikType(e.getTypeName());
+            String fieldNameString = e.getName();
             TypeIdItem classType = TypeIdItem.internTypeIdItem(dexFile, classT);
             TypeIdItem fieldType = TypeIdItem.internTypeIdItem(dexFile, fieldT);
             StringIdItem fieldName = StringIdItem.internStringIdItem(dexFile, fieldNameString);
@@ -709,22 +711,20 @@ public class DexAnnotation {
     
     private AnnotationItem makeEnclosingMethod(EnclosingMethodTag tag) {
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
-                dexFile, "Ldalvik/annotation/EnclosingMethod;"); 
-        String method = tag.getEnclosingMethodSig();
-        String[] split1 = method.split(": "); // 'T: R M(P1,P2)'
-        String[] split2 = split1[1].split(" "); // 'R M(P1,P2)'
-        String[] split3 = split2[1].split("\\("); // 'M(P1,P2)'
-        String classTypeS = split1[0];
-        String returnTypeS = split2[0];
-        String methodNameS = split3[0];
+                dexFile, "Ldalvik/annotation/EnclosingMethod;");
+        String enclosingClass = tag.getEnclosingClass();
+        String enclosingMethod = tag.getEnclosingMethod();
+        String methodSig = tag.getEnclosingMethodSig();
+        String[] split1 = methodSig.split("\\)");
+        String parametersS = split1[0].replaceAll("\\(", "");
+        String returnTypeS = split1[1];
         
         TypeIdItem returnType = TypeIdItem.internTypeIdItem(dexFile, returnTypeS);
-        TypeIdItem classType = TypeIdItem.internTypeIdItem(dexFile, classTypeS);
+        TypeIdItem classType = TypeIdItem.internTypeIdItem(dexFile, enclosingClass);
         List<TypeIdItem> typeList = new ArrayList<TypeIdItem>();
-        String parametersS = split3[1].replaceAll("\\)","");
         Debug.printDbg("parameters:", parametersS);
         if (!parametersS.equals("")) {
-            for (String p : parametersS.split(",")) {
+            for (String p : Util.splitParameters(parametersS)) {
                 if (p.equals(""))
                     continue;
                 Debug.printDbg("parametr: ", p);
@@ -734,7 +734,7 @@ public class DexAnnotation {
         }
         TypeListItem parameters = TypeListItem.internTypeListItem(dexFile, typeList);
         ProtoIdItem methodPrototype = ProtoIdItem.internProtoIdItem(dexFile, returnType, parameters);
-        StringIdItem methodName = StringIdItem.internStringIdItem(dexFile, methodNameS);
+        StringIdItem methodName = StringIdItem.internStringIdItem(dexFile, enclosingMethod);
         MethodIdItem methodId = MethodIdItem.internMethodIdItem(dexFile, 
                 classType, methodPrototype, methodName);
         MethodEncodedValue a = new MethodEncodedValue(methodId);                      

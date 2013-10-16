@@ -275,4 +275,42 @@ public class Util {
       }   
 
     }
+    
+    public static List<String> splitParameters(String parameters) {
+        List<String> pList = new ArrayList<String>();
+        
+        int idx = 0;
+        int arraySize = 0;
+        
+        String curr = "";
+        while( idx < parameters.length()) {
+          char c = parameters.charAt(idx);
+          curr += c;
+          switch( c ) {
+            case '[':
+                char c2 = parameters.charAt(++idx);
+                if (c2 == 'L') {
+                    while(c2 != ';') {
+                        curr += c2;
+                        c2 = parameters.charAt(++idx);
+                    }
+                } else {
+                    curr += c2;
+                }
+                pList.add(curr);
+                curr = "";
+                break;
+            case ';':
+                pList.add(curr);
+                curr = "";            
+           default:
+               pList.add(curr);
+               break;
+            
+          }
+          idx++;
+        }
+
+        return pList;
+    }
 }

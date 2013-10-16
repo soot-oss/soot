@@ -444,7 +444,8 @@ public class DexAnnotation {
                 elem = new AnnotationEnumElem(
                         DexType.toSootAT(fr.getType()).toString(),
                         fr.getName(), 
-                        'e', ae.getName());
+                        'e', 
+                        ae.getName());
                 break;
             }
             case 0x1c: // ARRAY
