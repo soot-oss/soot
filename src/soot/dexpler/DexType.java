@@ -163,6 +163,45 @@ public class DexType {
 
         return type;
     }
+    
+    /**
+     * Seems that representation of Annotation type in Soot is not 
+     * consistent with the normal type representation.
+     * Normal type representation would be a.b.c.ClassName
+     * Java bytecode representation is La/b/c/ClassName;
+     * Soot Annotation type representation (and Jasmin's) is
+     * a/b/c/ClassName.
+     * 
+     * This method transforms the Java bytecode representation
+     * into the Soot annotation type representation.
+     * 
+     * @param type
+     * @param pos
+     * @return
+     */
+    public static String toSootICAT(String type) {
+        String r = "";
+        String[] split1 = type.split(";");
+        for (String s : split1) {
+            if (s.startsWith("L"))
+                s = s.replaceFirst("L", "");
+            if (s.startsWith("<L"))
+                s = s.replaceFirst("<L", "<");
+            r += s;
+        }
+        return r;
+    }
+    
+    /**
+     * Types read from annotations should be converted to Soot type.
+     * However, to maintain compatibility with Soot code most type
+     * will not be converted.
+     * @param type
+     * @return
+     */
+    public static String toSootAT(String type) {
+        return type;
+    }
 
     @Override
     public String toString() {

@@ -40,6 +40,7 @@ import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
+import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
@@ -48,7 +49,12 @@ import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
+import soot.tagkit.DeprecatedTag;
+import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
+import soot.tagkit.InnerClassAttribute;
+import soot.tagkit.InnerClassTag;
+import soot.tagkit.SignatureTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
@@ -74,18 +80,20 @@ public class DexAnnotation {
      * @param h
      * @param classDef
      */
+//    .annotation "Ldalvik/annotation/AnnotationDefault;"
+//    .annotation "Ldalvik/annotation/EnclosingClass;"
+//    .annotation "Ldalvik/annotation/EnclosingMethod;"
+//    .annotation "Ldalvik/annotation/InnerClass;"
+//    .annotation "Ldalvik/annotation/MemberClasses;"
+//    .annotation "Ldalvik/annotation/Signature;"
+//    .annotation "Ldalvik/annotation/Throws;"
+
     void handleClassAnnotation(Host h, ClassDef classDef) {
         Set<? extends Annotation> aSet = classDef.getAnnotations();
         if (aSet == null || aSet.isEmpty())
             return;
-        MyAnnotations ma = handleAnnotation(aSet);
-        for (int i = 0; i < ma.getAnnotations().size(); i++) {
-            AnnotationTag at = ma.getAnnotations().get(i);
-            int visibility = ma.getVisibilityList().get(i);
-            VisibilityAnnotationTag vat = new VisibilityAnnotationTag(visibility);
-            vat.addAnnotation(at);
-            h.addTag(vat);
-        }
+        for (Tag t : handleAnnotation(aSet, classDef.getType()))
+            h.addTag(t);
 
     }
 
@@ -98,14 +106,8 @@ public class DexAnnotation {
         Set<? extends Annotation> aSet = f.getAnnotations();
         if (aSet == null || aSet.isEmpty())
             return;
-        MyAnnotations ma = handleAnnotation(aSet);
-        for (int i = 0; i < ma.getAnnotations().size(); i++) {
-            AnnotationTag at = ma.getAnnotations().get(i);
-            int visibility = ma.getVisibilityList().get(i);
-            VisibilityAnnotationTag vat = new VisibilityAnnotationTag(visibility);
-            vat.addAnnotation(at);
-            h.addTag(vat);
-        }
+        for (Tag t : handleAnnotation(aSet, null))
+            h.addTag(t);
     }
 
     /**
@@ -117,14 +119,8 @@ public class DexAnnotation {
 
         Set<? extends Annotation> aSet = method.getAnnotations();
         if (!(aSet == null || aSet.isEmpty())) {
-            MyAnnotations ma = handleAnnotation(aSet);
-            for (int i = 0; i < ma.getAnnotations().size(); i++) {
-                AnnotationTag at = ma.getAnnotations().get(i);
-                int visibility = ma.getVisibilityList().get(i);
-                VisibilityAnnotationTag vat = new VisibilityAnnotationTag(visibility);
-                vat.addAnnotation(at);
-                h.addTag(vat);
-            }
+            for (Tag t : handleAnnotation(aSet, null))
+                h.addTag(t);
         }
         
         // Is there any parameter annotation?
@@ -136,18 +132,22 @@ public class DexAnnotation {
                 break;
             }
         if (doParam) {
+            VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(parameters.size(), 0);
             for (MethodParameter p : parameters) {
-                VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(parameters.size(), 0);
-                MyAnnotations ma = handleAnnotation(p.getAnnotations());
-                for (int i = 0; i < ma.getAnnotations().size(); i++) {
-                    AnnotationTag at = ma.getAnnotations().get(i);
-                    int visibility = ma.getVisibilityList().get(i);
-                    VisibilityAnnotationTag vat = new VisibilityAnnotationTag(visibility);
-                    vat.addAnnotation(at);
+                
+                List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
+                for (Tag t : tags) {
+                    if (! (t instanceof VisibilityAnnotationTag))
+                        continue;
+                    VisibilityAnnotationTag vat = (VisibilityAnnotationTag)t;
+//                    int visibility = AnnotationConstants.RUNTIME_VISIBLE;
+//                    VisibilityAnnotationTag vat = new VisibilityAnnotationTag(visibility);
+//                    vat.addAnnotation(at);
                     tag.addVisibilityAnnotation(vat);
                 }
-                h.addTag(tag);
+                
             }
+            h.addTag(tag);
             
         }
 
@@ -171,36 +171,174 @@ public class DexAnnotation {
      * @param annotations
      * @return
      */
-    MyAnnotations handleAnnotation(Set<? extends org.jf.dexlib2.iface.Annotation> annotations) {
-        MyAnnotations my_annotations = new MyAnnotations();
+    List<Tag> handleAnnotation(Set<? extends org.jf.dexlib2.iface.Annotation> annotations, String classType) {
+        List<Tag> tags = new ArrayList<Tag>();
 
+        ArrayList<Tag> innerClassList = new ArrayList<Tag>();
+        VisibilityAnnotationTag vat = new VisibilityAnnotationTag(0);
+        
         if (annotations.size() == 0)
-            return my_annotations;
+            return tags;
 
         for (Annotation a: annotations) {
-            
+            Tag t = null;
             //AnnotationTag aTag = new AnnotationTag(DexType.toSoot(a.getType()).toString());
-            AnnotationTag aTag = new AnnotationTag(a.getType());
-            
-            Debug.printDbg("\nAnnotationTag -> ", a);
-            
-            for (AnnotationElement ae: a.getElements()) {
-                
-                Debug.printDbg("element: ", ae.getName() ," ", ae.getValue() ," type: ", ae.getClass());
-                Debug.printDbg("value type: ", ae.getValue().getValueType() ," class: ", ae.getValue().getClass());
+            Type atype = DexType.toSoot(a.getType());
+            String atypes = atype.toString();
+            int eSize = a.getElements().size();
+            Debug.printDbg("annotation type: ", atypes ," elements: ", eSize);
 
-                List<EncodedValue> evList = new ArrayList<EncodedValue>();
-                evList.add(ae.getValue());
-                List<AnnotationElem> eList = handleAnnotationElement(ae, evList);
-                for (AnnotationElem e : eList)
-                    aTag.addElem(e);
+            if (atypes.equals("dalvik.annotation.AnnotationDefault")) {
+                if (eSize != 1)
+                    throw new RuntimeException("error: expected 1 element for annotation Default. Got "+ eSize +" instead.");
+                // get element
+                AnnotationElem e = getElements(a.getElements()).get(0);
+                AnnotationTag adt = new AnnotationTag(a.getType());
+                adt.addElem(e);
+                VisibilityAnnotationTag tag = new VisibilityAnnotationTag(getVisibility(2));
+                tag.addAnnotation(adt);
+                t = tag;
+                
+            } else if (atypes.equals("dalvik.annotation.EnclosingClass")) {
+                if (eSize != 1)
+                    throw new RuntimeException("error: expected 1 element for annotation EnclosingClass. Got "+ eSize +" instead.");
+                // EnclosingClass comes in pair with InnerClass.
+                // Those are generated from a single InnerClassTag,
+                // that is re-constructed only for the InnerClass Dalvik
+                // annotation.
+                continue;
+                
+            } else if (atypes.equals("dalvik.annotation.EnclosingMethod")) {
+                if (eSize != 1)
+                    throw new RuntimeException("error: expected 1 element for annotation EnclosingMethod. Got "+ eSize +" instead.");
+                AnnotationStringElem e = (AnnotationStringElem) getElements(a.getElements()).get(0);
+                String[] split1 = e.getValue().split("\\ \\|");
+                String classString = split1[0];
+                String methodString = split1[1];
+                String parameters = split1[2];
+                String returnType = split1[3];
+                String methodSigString = "("+ parameters +")"+ returnType;
+                t = new EnclosingMethodTag(
+                        classString, 
+                        methodString, 
+                        methodSigString);       
+                
+            } else if (atypes.equals("dalvik.annotation.InnerClass")) {
+                if (eSize != 2)
+                    throw new RuntimeException("error: expected 2 elements for annotation InnerClass. Got "+ eSize +" instead.");
+                List<AnnotationElem> elements = getElements(a.getElements());
+                AnnotationIntElem i = null;
+                AnnotationStringElem s = null;
+                for (AnnotationElem e: elements) {
+                    Debug.printDbg("class: ", e.getClass());
+                }
+                if (elements.get(0) instanceof AnnotationIntElem) {
+                    i = (AnnotationIntElem) elements.get(0);
+                    s = (AnnotationStringElem) elements.get(1);
+                } else {
+                    i = (AnnotationIntElem) elements.get(1);
+                    s = (AnnotationStringElem) elements.get(0);
+                }
+                String name = s.getValue();
+                String outerClass = null;
+                if (name == null)
+                    outerClass = null;
+                else
+                    outerClass = classType.replaceFirst("\\$"+ name, "");
+                String innerClass = classType;
+                int accessFlags = i.getValue();
+                Tag innerTag = new InnerClassTag(
+                        DexType.toSootICAT(innerClass), 
+                        DexType.toSootICAT(outerClass),
+                        name, 
+                        accessFlags);
+                innerClassList.add(innerTag);
+                continue;
+                
+            } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
+                
+                AnnotationArrayElem e = (AnnotationArrayElem) getElements(a.getElements()).get(0); 
+                String sig = "";
+                Debug.printDbg("memberclasses size: ", e.getValues().size());
+                for (AnnotationElem ae : e.getValues()) {
+                    Debug.printDbg("annotation ", ae);
+                }
+                for (AnnotationElem ae : e.getValues()) {
+                    AnnotationClassElem c = (AnnotationClassElem) ae;
+                    sig += c.getDesc() +" -- "+ c.getName() +" ;; ";
+                    Debug.printDbg("s: ", c.getDesc());
+                    Debug.printDbg("signature: ", sig);
+                    String innerClass = c.getDesc();
+                    String outerClass = innerClass.replaceFirst("\\$[^\\$]*", "");
+                    String name = classType.replaceFirst("\\.*\\$", "");
+                    int accessFlags = 0; // seems like this information is lost during the .class -- dx --> .dex process.
+                    Tag innerTag = new InnerClassTag(
+                            DexType.toSootICAT(innerClass), 
+                            DexType.toSootICAT(outerClass), 
+                            name, 
+                            accessFlags);
+                    innerClassList.add(innerTag);
+                }               
+                continue;
+                
+            } else if (atypes.equals("dalvik.annotation.Signature")) {
+                if (eSize != 1)
+                    throw new RuntimeException("error: expected 1 element for annotation Signature. Got "+ eSize +" instead.");
+                AnnotationArrayElem e = (AnnotationArrayElem) getElements(a.getElements()).get(0); 
+                String sig = "";
+                for (AnnotationElem ae : e.getValues()) {
+                    AnnotationStringElem s = (AnnotationStringElem) ae;
+                    sig += s.getValue();
+                }                   
+                t = new SignatureTag(sig);
+                
+            } else if (atypes.equals("dalvik.annotation.Throws")) {
+                // this is handled in soot.dexpler.DexMethod
+                continue; 
+                
+            } else if (atypes.equals("java.lang.Deprecated")) {
+                if (eSize != 0)
+                    throw new RuntimeException("error: expected 1 element for annotation Deprecated. Got "+ eSize +" instead.");
+                t = new DeprecatedTag(); 
+                
+            } else {
+                Debug.printDbg("read visibiility tag: ");
+                AnnotationTag at = new AnnotationTag(a.getType());
+                for (AnnotationElem e: getElements(a.getElements()))
+                    at.addElem(e);              
+                vat.addAnnotation(at);
+                continue;
             }
-    
-            my_annotations.add(aTag, getVisibility(a.getVisibility()));
+
+            tags.add(t);
         }
         
-        return my_annotations;
+        if (innerClassList.size() > 0) {
+            InnerClassAttribute ica = new InnerClassAttribute(innerClassList);
+            tags.add(ica);
+        }
+        
+        if (vat.getAnnotations() != null && vat.getAnnotations().size() > 0 )
+            tags.add(vat);
+        
+        return tags;
 
+    }
+    
+    private ArrayList<AnnotationElem> getElements(Set<? extends AnnotationElement> set) {
+        ArrayList<AnnotationElem> aelemList = new ArrayList<AnnotationElem>();
+        for (AnnotationElement ae: set) {
+            
+            //Debug.printDbg("element: ", ae.getName() ," ", ae.getValue() ," type: ", ae.getClass());
+            //Debug.printDbg("value type: ", ae.getValue().getValueType() ," class: ", ae.getValue().getClass());
+
+            List<EncodedValue> evList = new ArrayList<EncodedValue>();
+            evList.add(ae.getValue());
+            Debug.printDbg("   element type: ", ae.getValue().getClass());
+            List<AnnotationElem> eList = handleAnnotationElement(ae, evList);
+            aelemList.addAll(eList);
+        }
+        return aelemList;
     }
 
     private ArrayList<AnnotationElem> handleAnnotationElement(AnnotationElement ae, List<EncodedValue> evList) {
@@ -263,7 +401,10 @@ public class DexAnnotation {
             case 0x18: // TYPE
             {
                 TypeEncodedValue v = (TypeEncodedValue)ev;
-                elem = new AnnotationClassElem(DexType.toSoot(v.getValue()).toString(), 'c', ae.getName());
+                elem = new AnnotationClassElem(
+                        DexType.toSootAT(v.getValue()), 
+                        'c', 
+                        ae.getName());
                 break;
             }
             case 0x19: // FIELD (Dalvik specific?)
@@ -271,8 +412,8 @@ public class DexAnnotation {
                 FieldEncodedValue v = (FieldEncodedValue)ev;
                 FieldReference fr = v.getValue();
                 String fieldSig = "";
-                fieldSig += DexType.toSoot(fr.getDefiningClass()) +": ";
-                fieldSig += DexType.toSoot(fr.getType()) +" ";
+                fieldSig += DexType.toSootAT(fr.getDefiningClass()) +": ";
+                fieldSig += DexType.toSootAT(fr.getType()) +" ";
                 fieldSig += fr.getName();
                 Debug.printDbg("FIELD: ", fieldSig);
                 elem = new AnnotationStringElem(fieldSig, 'f', ae.getName());
@@ -282,19 +423,17 @@ public class DexAnnotation {
             {
                 MethodEncodedValue v = (MethodEncodedValue)ev;
                 MethodReference mr = v.getValue();
-                String mSig = "";
-                mSig += DexType.toSoot(mr.getDefiningClass()) +": ";
-                mSig += DexType.toSoot(mr.getReturnType()) +" ";
-                mSig += mr.getName() +"(";
+
+                String className = DexType.toSootICAT(mr.getDefiningClass());
+                String returnType = DexType.toSootAT(mr.getReturnType());
+                String methodName = mr.getName();
+                String parameters = "";
                 int i = 0;
                 int params = mr.getParameterTypes().size();
                 for (CharSequence p : mr.getParameterTypes()) {
-                    mSig += DexType.toSoot(p.toString());
-                    if (++i < params)
-                        mSig += ",";
+                    parameters += DexType.toSootAT(p.toString());
                 }
-                mSig +=")";
-                Debug.printDbg("METHOD: ", mSig);
+                String mSig = className +" |"+ methodName +" |"+ parameters +" |"+ returnType;
                 elem = new AnnotationStringElem(mSig, 'M', ae.getName());
                 break;
             }
@@ -302,8 +441,9 @@ public class DexAnnotation {
             {
                 EnumEncodedValue v = (EnumEncodedValue)ev;
                 FieldReference fr = v.getValue();
-                elem = new AnnotationEnumElem(DexType.toSoot(fr.getType()).toString() +":"+ fr.getName(), 
-                        DexType.toSoot(fr.getDefiningClass()).toString(), 
+                elem = new AnnotationEnumElem(
+                        DexType.toSootAT(fr.getType()).toString(),
+                        fr.getName(), 
                         'e', ae.getName());
                 break;
             }
@@ -317,8 +457,7 @@ public class DexAnnotation {
             case 0x1d: // ANNOTATION
             {
                 AnnotationEncodedValue v = (AnnotationEncodedValue)ev;
-                //AnnotationTag t = new AnnotationTag(DexType.toSoot(v.getType()).toString());
-                AnnotationTag t = new AnnotationTag(v.getType());
+                AnnotationTag t = new AnnotationTag(DexType.toSootAT(v.getType()).toString());
                 for (AnnotationElement newElem : v.getElements()) {
                     List<EncodedValue> l = new ArrayList<EncodedValue>();
                     l.add(newElem.getValue());

@@ -74,6 +74,10 @@ public class DexMethod {
         // the following snippet retrieves all exceptions that this method throws by analyzing its annotations
         List<SootClass> thrownExceptions = new ArrayList<SootClass>();
         for (Annotation a : method.getAnnotations()) {
+            Type atype = DexType.toSoot(a.getType());
+            String atypes = atype.toString();
+            if (!(atypes.equals("dalvik.annotation.Throws")))
+                continue;
             for (AnnotationElement ae : a.getElements()) {
                 EncodedValue ev = ae.getValue();
                 if(ev instanceof ArrayEncodedValue) {
