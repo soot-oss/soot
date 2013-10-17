@@ -980,24 +980,32 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
+	 * Programmers can call this function any time to use the up-to-date call graph.
+	 * Geom-pts does not update soot call graph by default.
+	 */
+	public void updateSootData()
+	{
+		// We first update the Soot call graph
+		for (CgEdge p : obsoletedEdges) {
+			Scene.v().getCallGraph().removeEdge(p.sootEdge);
+		}
+
+		// We remove the unreachable functions from Soot internal structures
+		Scene.v().releaseReachableMethods();
+		// The we rebuild it from the updated Soot call graph
+		Scene.v().getReachableMethods();
+	}
+	
+	/**
 	 * For many applications, they only need the context insensitive points-to result.
 	 * We provide a way to transfer our result back to SPARK.
 	 * After the transformation, we discard the context sensitive points-to information.
 	 * Therefore, the context sensitive queries are not served since then.
 	 */
 	public void transformToCIResult()
-	{
-		// We first update the Soot call graph
-		for ( CgEdge p : obsoletedEdges ) {
-			Scene.v().getCallGraph().removeEdge(p.sootEdge);
-		}
+	{	
+		updateSootData();
 		
-		// We remove the unreachable functions from Soot internal structures
-		Scene.v().releaseReachableMethods();
-		// The we rebuild it from the updated Soot call graph
-		Scene.v().getReachableMethods();
-		
-		// Finally, we transform the points-to facts back to context insensitive form
 		for ( IVarAbstraction pn : pointers ) {
 			if ( !pn.willUpdate ) continue;
 			
@@ -1077,7 +1085,7 @@ public class GeomPointsTo extends PAG
 		ps.printf("[Geom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
 		ps.printf("[Geom] Memory used : %.1f MB\n", (double) (mem) / 1024 / 1024 );
 		
-		// Prepare for use in various of clients
+		// Finish points-to analysis and prepare for use in various of clients
 		postProcess();
 		
 		// We perform a set of tests to assess the quality of the points-to results for user pointers
@@ -1160,12 +1168,13 @@ public class GeomPointsTo extends PAG
 	
 	public int getIDFromSootMethod( SootMethod sm )
 	{
-		return func2int.get(sm);
+		Integer ans = func2int.get(sm);
+		return ans == null ? -1 : ans.intValue();
 	}
 	
 	public SootMethod getSootMethodFromID( int fid )
 	{
-		return int2func.get(fid);
+		return int2func.get(fid); 
 	}
 	
 	public boolean isReachableMethod( int fid )

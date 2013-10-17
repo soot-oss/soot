@@ -22,12 +22,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import soot.PointsToSet;
 import soot.Scene;
 import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
 import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
 import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * Translate the numbered context to callsite context.
@@ -39,12 +43,17 @@ public class Obj_1cfa_extractor extends PtSensVisitor
 	public Set<CallsiteContextVar> outList = new HashSet<CallsiteContextVar>();
 	private CallsiteContextVar cobj = new CallsiteContextVar();
 	
-	private ZArrayNumberer<CallsiteContextVar> all_objs = ContextTranslator.objs_1cfa_map;
+	private ZArrayNumberer<CallsiteContextVar> all_objs;
 	private GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
 	
 	@Override
 	public void prepare()
 	{
+		if ( !ContextTranslator.is_1cfa_built() ) {
+			ContextTranslator.build_1cfa_map(ptsProvider);
+		}
+		
+		all_objs = ContextTranslator.objs_1cfa_map;
 		outList.clear();
 	}
 	
@@ -80,5 +89,48 @@ public class Obj_1cfa_extractor extends PtSensVisitor
 	public void finish() 
 	{
 		// nothing to do
+	}
+
+	@Override
+	public boolean hasIntersection(PtSensVisitor other) 
+	{
+		if ( !(other instanceof Obj_1cfa_extractor) )
+			return false;
+		
+		Obj_1cfa_extractor o = (Obj_1cfa_extractor)other;
+		
+		// Simple nested loop over the sets
+		for ( CallsiteContextVar ccv : o.outList ) {
+			if ( outList.contains(ccv) )
+				return true;
+		}
+		
+		return false;
+	}
+
+	@Override
+	public PointsToSet toSparkCompatiableResult(VarNode vn) 
+	{
+		PointsToSetInternal ptset = vn.makeP2Set();
+		
+		for ( CallsiteContextVar ccv : outList ) {
+			ptset.add( ccv.var );
+		}
+		
+		return ptset;
+	}
+
+	@Override
+	public void debugPrint() 
+	{
+		for ( CallsiteContextVar ccv : outList ) {
+			Node obj = ccv.var;
+			CgEdge ctxt = ccv.context;
+			Edge sootEdge = ctxt.sootEdge;
+			
+			System.out.printf("\t<%s, %s>\n", 
+					(sootEdge != null ? sootEdge.toString() : ctxt.toString()), 
+					obj.toString());
+		}
 	}
 }

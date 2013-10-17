@@ -52,4 +52,20 @@ public class CgEdge {
 		sootEdge = se;
 		next = ne;
 	}
+	
+	/**
+	 * Copy itself.
+	 * @return
+	 */
+	public CgEdge duplicate()
+	{
+		if ( is_obsoleted ) 
+			return null;
+		
+		CgEdge new_edge = new CgEdge(s, t, sootEdge, null);
+		new_edge.map_offset = map_offset;
+		new_edge.scc_edge = scc_edge;
+		new_edge.base_var = base_var;
+		return new_edge;
+	}
 }
