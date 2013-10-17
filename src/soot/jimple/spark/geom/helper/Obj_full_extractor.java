@@ -21,8 +21,12 @@ package soot.jimple.spark.geom.helper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import soot.PointsToSet;
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.PointsToSetInternal;
 
 /**
  * Extracts the contexts of object o that are related to pointer p if p points to o.
@@ -94,5 +98,55 @@ public class Obj_full_extractor extends PtSensVisitor
 		List<IntervalContextVar> temp = icvList;
 		icvList = backupList;
 		backupList = temp;
+	}
+
+	@Override
+	public boolean hasIntersection(PtSensVisitor other) 
+	{
+		if ( !(other instanceof Obj_full_extractor) )
+			return false;
+		
+		Obj_full_extractor o = (Obj_full_extractor)other;
+		
+		for ( IntervalContextVar icv1 : o.icvList ) {
+			Node obj1 = icv1.var;
+			long L1 = icv1.L;
+			long R1 = icv1.R;
+			
+			for ( IntervalContextVar icv2 : icvList ) {
+				Node obj2 = icv2.var;
+				if ( obj1 != obj2 ) continue;
+				
+				long L2 = icv2.L;
+				long R2 = icv2.R;
+				if ( L2 >= L1 && L2 < R1 ) return true;
+				if ( L1 >= L2 && L2 < R2 ) return true;
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public PointsToSet toSparkCompatiableResult(VarNode vn) 
+	{
+		PointsToSetInternal ptset = vn.makeP2Set();
+		
+		for ( IntervalContextVar icv : icvList ) {
+			ptset.add(icv.var);
+		}
+		
+		return ptset;
+	}
+
+	@Override
+	public void debugPrint() 
+	{
+		for ( IntervalContextVar icv : icvList ) {
+			Node obj = icv.var;
+			long L = icv.L;
+			long R = icv.R;
+			System.out.printf("\t<%s, %d, %d>\n", obj.toString(), L, R);
+		}
 	}
 }
