@@ -18,7 +18,9 @@
  */
 package soot.jimple.spark.geom.helper;
 
+import soot.PointsToSet;
 import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.VarNode;
 
 public abstract class PtSensVisitor {
 
@@ -32,6 +34,27 @@ public abstract class PtSensVisitor {
 	 * @param sm_int : the integer ID of the SootMethod
 	 */
 	public abstract boolean visit( Node var, long L, long R, int sm_int );
+	
+	/**
+	 * Calculate the intersection with other container. 
+	 * Can be used to answer alias query.
+	 * @param other
+	 * @return
+	 */
+	public abstract boolean hasIntersection(PtSensVisitor other);
+	
+	/**
+	 * Transform the result to SPARK style context insensitive points-to set.
+	 * The transformed result is stored in the points-to set of the querying pointer.
+	 * @param vn: the querying pointer
+	 * @return
+	 */
+	public abstract PointsToSet toSparkCompatiableResult(VarNode vn);
+	
+	/**
+	 * Print the objects.
+	 */
+	public abstract void debugPrint();
 	
 	/**
 	 * Called before each round of collection.
