@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,21 +24,23 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.ArrayType;
+import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.UnknownType;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.ObjectOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class AputInstruction extends FieldInstruction {
 
@@ -61,18 +63,17 @@ public class AputInstruction extends FieldInstruction {
 
         Local sourceValue = body.getRegisterLocal(source);
         assign = getAssignStmt(body, sourceValue, arrayRef);
-        if (aPutInstr.opcode.value == Opcode.APUT_OBJECT.value)
+        if (aPutInstr.getOpcode().value == Opcode.APUT_OBJECT.value)
           assign.addTag(new ObjectOpTag());
         
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
+          DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
         }
     }
 

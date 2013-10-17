@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ *
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,15 +26,13 @@ package soot.dexpler;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.jf.dexlib.ClassDefItem;
-import org.jf.dexlib.DexFile;
-import org.jf.dexlib.StringIdItem;
-import org.jf.dexlib.TypeIdItem;
+import org.jf.dexlib2.DexFileFactory;
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.iface.DexFile;
 
 import soot.ArrayType;
 import soot.PrimType;
@@ -43,6 +41,7 @@ import soot.SootClass;
 import soot.SootResolver;
 import soot.Type;
 import soot.VoidType;
+import soot.javaToJimple.IInitialResolver.Dependencies;
 
 
 /**
@@ -52,7 +51,7 @@ import soot.VoidType;
  *
  */
 public class DexlibWrapper {
-	
+
 	static {
 		Set<String> systemAnnotationNamesModifiable = new HashSet<String>();
 		// names as defined in the ".dex - Dalvik Executable Format" document
@@ -68,11 +67,13 @@ public class DexlibWrapper {
 
     private DexFile dexFile;
 
-    private Map<String, ClassDefItem> dexClasses;
+    //private Map<String, ClassDef> dexClasses;
 
-    private Map<String, DexClass> classesByName;
-    
+    //private Map<String, DexClass> classesByName;
+
     private final static Set<String> systemAnnotationNames;
+
+	private final File inputDexFile;
 
     /**
      * Construct a DexlibWrapper from a dex file and stores its classes referenced by their name.
@@ -82,82 +83,77 @@ public class DexlibWrapper {
      */
 
     public DexlibWrapper(File inputDexFile) {
+        this.inputDexFile = inputDexFile;
+    }
 
-        this.dexClasses = new HashMap<String, ClassDefItem>();
-        this.classesByName = new HashMap<String, DexClass>();
+    public void initialize() {
 
         try {
-            this.dexFile = new DexFile(inputDexFile);
+            int api = 1; // TODO:
+            this.dexFile = DexFileFactory.loadDexFile(inputDexFile, api);
         } catch (Exception e) {
             throw new RuntimeException(e.toString());
         }
 
-        for (ClassDefItem defItem : this.dexFile.ClassDefsSection.getItems()) {
-            this.dexClasses.put(Util.dottedClassName(defItem.getClassType().getTypeDescriptor()), defItem);
+        if (dexFile instanceof DexBackedDexFile) {
+
+            DexBackedDexFile dbdf = (DexBackedDexFile)dexFile;
+            int i = 0;
+            try {
+                while (true) {
+
+                    String t = dbdf.getType(i++);
+
+                    Type st = DexType.toSoot(t);
+                    if (st instanceof ArrayType) {
+                        st = ((ArrayType) st).baseType;
+                    }
+                    Debug.printDbg("Type: ", t ," soot type:", st);
+                    String sootTypeName = st.toString();
+                    if (!Scene.v().containsClass(sootTypeName)) {
+                        if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
+                            // dex files contain references to the Type IDs of void / primitive types - we obviously do not want them to be resolved
+                            /*
+                             * dex files contain references to the Type IDs of the system annotations.
+                             * They are only visible to the Dalvik VM (for reflection, see vm/reflect/Annotations.cpp), and not to
+                             * the user - so we do not want them to be resolved.
+                             */
+                            continue;
+                        }
+                        SootResolver.v().makeClassRef(sootTypeName);
+
+                    }
+                    SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
+                }
+            } catch (Exception e) {
+                // hack: we stop when an exception is thrown at us
+                // indicating that the type index reached its max value
+                //
+                //System.out.println("Exception: "+ e);
+                //e.printStackTrace();
+            }
+
+        } else {
+            System.out.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
+            System.out.println("type: "+ dexFile.getClass());
         }
-
-		for (TypeIdItem t: this.dexFile.TypeIdsSection.getItems()) {
-			DexType dt = new DexType (t);
-			Type st = dt.toSoot();
-			if (st instanceof ArrayType) {
-				st = ((ArrayType) st).baseType;
-			}
-			//Debug.printDbg("Type: "+ t +" soot type:"+ st);
-			String sootTypeName = st.toString();
-			if (!Scene.v().containsClass(sootTypeName)) {
-				if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
-					// dex files contain references to the Type IDs of void / primitive types - we obviously do not want them to be resolved
-					/* 
-					 * dex files contain references to the Type IDs of the system annotations.
-					 * They are only visible to the Dalvik VM (for reflection, see vm/reflect/Annotations.cpp), and not to
-					 * the user - so we do not want them to be resolved.
-					 */
-					continue;
-				}
-				SootResolver.v().makeClassRef(sootTypeName);
-				SootResolver.v().resolveClass(sootTypeName, SootClass.HIERARCHY);
-			}
-		}
-		for (StringIdItem i: this.dexFile.StringIdsSection.getItems()) {
-			Debug.printDbg("String: "+ i);
-		}
-
     }
 
-	/**
-     * Returns and processes the dex class by its fully classified name.
-     * All subsequent elements of that class are retrieved.
-     *
-     * @param className the class name, can be either in dotted (package.Class)
-     *                  or in byte code (Lpackage/Class;) format
-     * @return the dex class with this name
-     */
-    public DexClass getClass(String className) {
+
+
+    public Dependencies makeSootClass(SootClass sc, String className) {
         if (Util.isByteCodeClassName(className)) {
             className = Util.dottedClassName(className);
         }
-        DexClass dexClass = this.classesByName.get(className);
 
-        if (dexClass != null)
-            return dexClass;
+      for (ClassDef defItem : this.dexFile.getClasses()) {
+          String forClassName = Util.dottedClassName(defItem.getType());
+          if (className.equals(forClassName)) {
+              return DexClass.makeSootClass(sc, defItem, dexFile);
+          }
+      }
+      throw new RuntimeException("Error: class not found in classes.dex: "+ className);
 
-        // try to get class from dex file
-        ClassDefItem defItem = dexClasses.get(className);
-
-        if (defItem != null) {
-            DexClass newDexClass = new DexClass(defItem);
-            this.classesByName.put(className, newDexClass);
-            return newDexClass;
-        }
-        return null;
-    }
-
-    /**
-     * Get a map that contains the class name and the class definition item of dexlib
-     * @return Map<String, ClassDefItem>
-     */
-    public Map<String, ClassDefItem> getDexClasses() {
-        return dexClasses;
     }
 
 }

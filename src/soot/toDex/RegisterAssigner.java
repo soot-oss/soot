@@ -1,6 +1,5 @@
 package soot.toDex;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -26,14 +25,29 @@ public class RegisterAssigner {
 	
 	private RegisterAllocator regAlloc;
 	
-	private List<Insn> insns;
-	
-	public RegisterAssigner(RegisterAllocator regAlloc, List<Insn> insns) {
+	public RegisterAssigner(RegisterAllocator regAlloc) {
 		this.regAlloc = regAlloc;
-		this.insns = insns;
+	}
+
+	public List<Insn> finishRegs(List<Insn> insns) {
+		renumParamRegsToHigh(insns);
+		reserveRegisters(insns);
+		ListIterator<Insn> insnIter = insns.listIterator();
+		while (insnIter.hasNext()) {
+			Insn oldInsn = insnIter.next();
+			if (oldInsn.hasIncompatibleRegs()) {
+				Insn fittingInsn = findFittingInsn(oldInsn);
+				if (fittingInsn != null) {
+					insnIter.set(fittingInsn);
+				} else {
+					fixIncompatRegs(oldInsn, insnIter);
+				}
+			}
+		}
+		return insns;
 	}
 	
-	private void renumParamRegsToHigh() {
+	private void renumParamRegsToHigh(List<Insn> insns) {
 		int regCount = regAlloc.getRegCount();
 		int paramRegCount = regAlloc.getParamRegCount();
 		if (paramRegCount == 0 || paramRegCount == regCount) {
@@ -41,65 +55,29 @@ public class RegisterAssigner {
 		}
 		for (Insn insn : insns) {
 			for (Register r : insn.getRegs()) {
-				int oldNum = r.getNumber();
-				if (oldNum >= paramRegCount) {
-					// not a parameter -> "move" down
-					int newNormalRegNum = oldNum - paramRegCount;
-					r.setNumber(newNormalRegNum);
-				} else {
-					// parameter -> "move" up
-					int newParamRegNum = oldNum + regCount - paramRegCount;
-					r.setNumber(newParamRegNum);
-				}
+				renumParamRegToHigh(r, regCount, paramRegCount);
 			}
 		}
 	}
 
-	public List<Insn> finishRegs() {
-		renumParamRegsToHigh();
-		reserveRegisters();
-		ListIterator<Insn> insnIter = insns.listIterator();
-		while (insnIter.hasNext()) {
-			Insn oldInsn = insnIter.next();
-			if (oldInsn instanceof AddressInsn) {
-				continue; // no regs/fitting needed
-			}
-			// are there incompatible regs?
-			BitSet curIncompatRegs = oldInsn.getIncompatibleRegs();
-			if (curIncompatRegs.cardinality() > 0) {
-				// first try to find a fitting insn
-				Insn fittingInsn = findFittingInsn(oldInsn);
-				if (fittingInsn != null) {
-					insnIter.set(fittingInsn);
-				} else {
-					List<Register> curRegs = oldInsn.getRegs();
-					// do we have an incompatible result reg?
-					boolean hasResultReg = oldInsn.getOpcode().setsRegister();
-					boolean isResultRegIncompat = curIncompatRegs.get(0);
-					Register resultReg = curRegs.get(0).clone();
-					// if we have and the result reg is not also used as a source (like in /2addr), pretend it is compatible
-					if (hasResultReg && isResultRegIncompat && !oldInsn.getOpcode().name.endsWith("/2addr")) {
-						curIncompatRegs.clear(0);
-					}
-					// handle normal incompatible regs, if any
-					if (curIncompatRegs.cardinality() > 0) {
-						addMovesForIncompatRegs(insnIter, curRegs, curIncompatRegs);
-					}
-					// handle incompatible result reg
-					if (hasResultReg && isResultRegIncompat) {
-						addMoveForIncompatResultReg(insnIter, resultReg, curRegs.get(0));
-					}
-				}
-			}
+	private void renumParamRegToHigh(Register r, int regCount, int paramRegCount) {
+		int oldNum = r.getNumber();
+		if (oldNum >= paramRegCount) {
+			// not a parameter -> "move" down
+			int newNormalRegNum = oldNum - paramRegCount;
+			r.setNumber(newNormalRegNum);
+		} else {
+			// parameter -> "move" up
+			int newParamRegNum = oldNum + regCount - paramRegCount;
+			r.setNumber(newParamRegNum);
 		}
-		return insns;
 	}
 
-	private void reserveRegisters() {
+	private void reserveRegisters(List<Insn> insns) {
 		// reserve registers as long as new ones are needed
 		int reservedRegs = 0;
 		while (true) {
-			int regsNeeded = getRegsNeeded(reservedRegs);
+			int regsNeeded = getRegsNeeded(reservedRegs, insns);
 			int regsToReserve = regsNeeded - reservedRegs;
 			if (regsToReserve <= 0) {
 				break;
@@ -112,56 +90,8 @@ public class RegisterAssigner {
 			reservedRegs += regsToReserve;
 		}
 	}
-
-	private void shiftRegs(Insn insn, int shiftAmount) {
-		for (Register r : insn.getRegs()) {
-			r.setNumber(r.getNumber() + shiftAmount);
-		}
-	}
 	
-	private void addMoveForIncompatResultReg(ListIterator<Insn> insns, Register destReg, Register origResultReg) {
-		if (destReg.getNumber() == 0) {
-			// destination reg is already where we want it: avoid "move r0, r0"
-			return;
-		}
-		origResultReg.setNumber(0);
-		Register sourceReg = new Register(destReg.getType(), 0);
-		Insn extraMove = StmtVisitor.buildMoveInsn(destReg, sourceReg);
-		insns.add(extraMove);
-	}
-
-	private void addMovesForIncompatRegs(ListIterator<Insn> insns, List<Register> curRegs, BitSet incompatRegs) {
-		insns.previous(); // extra MOVEs are added _before_ the current insn
-		int nextNewDestination = 0;
-		for (int regIdx = 0; regIdx < curRegs.size(); regIdx++) {
-			if (incompatRegs.get(regIdx)) {
-				// reg is incompatible -> add extra MOVE
-				Register incompatReg = curRegs.get(regIdx);
-				if (incompatReg.isEmptyReg()) {
-					/*
-					 * second half of a wide reg: do not add a move,
-					 * since the empty reg is only considered incompatible to reserve the subsequent reg number
-					 */
-					continue;
-				}
-				Register source = incompatReg.clone();
-				Register destination = new Register(source.getType(), nextNewDestination);
-				nextNewDestination++;
-				if (destination.isWide()) {
-					nextNewDestination++;
-				}
-				if (source.getNumber() != destination.getNumber()) {
-					Insn extraMove = StmtVisitor.buildMoveInsn(destination, source);
-					insns.add(extraMove); // advances the cursor, so no next() needed
-					// finally patch the original, incompatible reg
-					incompatReg.setNumber(destination.getNumber());
-				}
-			}
-		}
-		insns.next(); // get past current insn again
-	}
-	
-	private int getRegsNeeded(int regsAlreadyReserved) {
+	private int getRegsNeeded(int regsAlreadyReserved, List<Insn> insns) {
 		int regsNeeded = regsAlreadyReserved; // we only need regs that weren't reserved yet
 		for (int i = 0; i < insns.size(); i++) {
 			Insn insn = insns.get(i);
@@ -176,7 +106,7 @@ public class RegisterAssigner {
 				continue;
 			}
 			// no fitting instruction -> save if we need more registers
-			int newRegsNeeded = calcRegsNeeded(insn);
+			int newRegsNeeded = insn.getMinimumRegsNeeded();
 			if (newRegsNeeded > regsNeeded) {
 				regsNeeded = newRegsNeeded;
 			}
@@ -184,39 +114,72 @@ public class RegisterAssigner {
 		return regsNeeded;
 	}
 
-	private int calcRegsNeeded(Insn insn) {
-		/*
-		 * get fitting insn with regs starting at 0, that is an "ideal" one without register constraints.
-		 * we use such an ideal insn because registers in insns that have no fitting alternative will only be
-		 * replaced after register reservation, while adding MOVEs from high registers to those low ones starting at 0.
-		 */
-		List<Register> lowRegs = getLowVersion(insn.getRegs());
-		Insn lowInsn = insn.shallowCloneWithRegs(lowRegs); // we only need a shallow clone for finding a fitting insn, the clone won't be written to
-		Insn idealInsn = findFittingInsn(lowInsn);
-		if (idealInsn == null) {
-			// no better insn fits -> use our low insn anyhow
-			idealInsn = lowInsn;
+	private void shiftRegs(Insn insn, int shiftAmount) {
+		for (Register r : insn.getRegs()) {
+			r.setNumber(r.getNumber() + shiftAmount);
 		}
-		/*
-		 * get the regs count needed for the fitting ideal insn, given the current regs.
-		 * this corresponds with the number of additional MOVEs needed later on.
-		 */
-		BitSet stillIncompatRegs = idealInsn.getIncompatibleRegs(insn.getRegs());
-		return insn.getMinimumRegsNeeded(stillIncompatRegs);
 	}
 	
-	private List<Register> getLowVersion(List<Register> regs) {
-		List<Register> lowVersion = new ArrayList<Register>();
-		int nextRegNum = 0;
-		for (Register r : regs) {
-			Register lowReg = r.isEmptyReg() ? r : new Register(r.getType(), nextRegNum);
-			lowVersion.add(lowReg);
-			nextRegNum++;
-			if (r.isWide()) {
-				nextRegNum++;
+	private void fixIncompatRegs(Insn insn, ListIterator<Insn> allInsns) {
+		List<Register> regs = insn.getRegs();
+		BitSet incompatRegs = insn.getIncompatibleRegs();
+		Register resultReg = regs.get(0);
+		// do we have an incompatible result reg?
+		boolean hasResultReg = insn.getOpcode().setsRegister();
+		boolean isResultRegIncompat = incompatRegs.get(0);
+		// is there an incompat result reg which is not also used as a source (like in /2addr)?
+		if (hasResultReg && isResultRegIncompat && !insn.getOpcode().name.endsWith("/2addr")) {
+			// yes, so pretend result reg is compatible, since it will get a special move
+			incompatRegs.clear(0);
+		}
+		// handle normal incompatible regs, if any: add moves
+		if (incompatRegs.cardinality() > 0) {
+			addMovesForIncompatRegs(allInsns, regs, incompatRegs);
+		}
+		// handle incompatible result reg
+		if (hasResultReg && isResultRegIncompat) {
+			Register resultRegClone = resultReg.clone();
+			addMoveForIncompatResultReg(allInsns, resultRegClone, resultReg);
+		}
+	}
+	
+	private void addMoveForIncompatResultReg(ListIterator<Insn> insns, Register destReg, Register origResultReg) {
+		if (destReg.getNumber() == 0) {
+			// destination reg is already where we want it: avoid "move r0, r0"
+			return;
+		}
+		origResultReg.setNumber(0); // fix reg in original insn
+		Register sourceReg = new Register(destReg.getType(), 0);
+		Insn extraMove = StmtVisitor.buildMoveInsn(destReg, sourceReg);
+		insns.add(extraMove);
+	}
+
+	private void addMovesForIncompatRegs(ListIterator<Insn> insns, List<Register> regs, BitSet incompatRegs) {
+		insns.previous(); // extra MOVEs are added _before_ the current insn
+		int nextNewDestination = 0;
+		for (int regIdx = 0; regIdx < regs.size(); regIdx++) {
+			if (incompatRegs.get(regIdx)) {
+				// reg is incompatible -> add extra MOVE
+				Register incompatReg = regs.get(regIdx);
+				if (incompatReg.isEmptyReg()) {
+					/*
+					 * second half of a wide reg: do not add a move,
+					 * since the empty reg is only considered incompatible to reserve the subsequent reg number
+					 */
+					continue;
+				}
+				Register source = incompatReg.clone();
+				Register destination = new Register(source.getType(), nextNewDestination);
+				nextNewDestination += SootToDexUtils.getDexWords(source.getType());
+				if (source.getNumber() != destination.getNumber()) {
+					Insn extraMove = StmtVisitor.buildMoveInsn(destination, source);
+					insns.add(extraMove); // advances the cursor, so no next() needed
+					// finally patch the original, incompatible reg
+					incompatReg.setNumber(destination.getNumber());
+				}
 			}
 		}
-		return lowVersion;
+		insns.next(); // get past current insn again
 	}
 
 	private Insn findFittingInsn(Insn insn) {

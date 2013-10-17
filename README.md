@@ -9,6 +9,10 @@ Soot is a Java optimization framework. It provides four intermediate representat
 
 See http://www.sable.mcgill.ca/soot/ for details.
 
+# How do I get started with Soot?
+
+We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot.
+
 # About Soot's source code
 
 Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.

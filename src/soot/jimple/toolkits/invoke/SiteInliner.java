@@ -25,11 +25,44 @@
 
 package soot.jimple.toolkits.invoke;
 
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.toolkits.scalar.*;
-import java.util.*;
-import soot.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import soot.Body;
+import soot.Hierarchy;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Trap;
+import soot.TrapManager;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.AssignStmt;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.NullConstant;
+import soot.jimple.ParameterRef;
+import soot.jimple.ReturnStmt;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
+import soot.jimple.toolkits.scalar.LocalNameStandardizer;
+import soot.util.Chain;
 
 /** Provides methods to inline a given invoke site. */
 public class SiteInliner
@@ -84,14 +117,14 @@ public class SiteInliner
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
         JimpleBody containerB = (JimpleBody)container.getActiveBody();
-        Chain containerUnits = containerB.getUnits();
+        Chain<Unit> containerUnits = containerB.getUnits();
 
         if (!(inlinee.getDeclaringClass().isApplicationClass() ||
               inlinee.getDeclaringClass().isLibraryClass()))
             return null;
 
         Body inlineeB = inlinee.getActiveBody();
-        Chain inlineeUnits = inlineeB.getUnits();
+        Chain<Unit> inlineeUnits = inlineeB.getUnits();
 
         InvokeExpr ie = toInline.getInvokeExpr();
 
@@ -183,11 +216,11 @@ public class SiteInliner
         Stmt exitPoint = (Stmt)containerUnits.getSuccOf(toInline);
 
         // First, clone all of the inlinee's units & locals.
-        HashMap oldLocalsToNew = new HashMap();
+        HashMap<Local, Local> oldLocalsToNew = new HashMap<Local, Local>();
         HashMap<Stmt, Stmt> oldUnitsToNew = new HashMap<Stmt, Stmt>();
         {
             Stmt cursor = toInline;
-            for( Iterator currIt = inlineeUnits.iterator(); currIt.hasNext(); ) {
+            for( Iterator<Unit> currIt = inlineeUnits.iterator(); currIt.hasNext(); ) {
                 final Stmt curr = (Stmt) currIt.next();
                 Stmt currPrime = (Stmt)curr.clone();
                 if (currPrime == null)
@@ -200,9 +233,9 @@ public class SiteInliner
                 oldUnitsToNew.put(curr, currPrime);
             }
 
-            for( Iterator lIt = inlineeB.getLocals().iterator(); lIt.hasNext(); ) {
+            for( Iterator<Local> lIt = inlineeB.getLocals().iterator(); lIt.hasNext(); ) {
 
-                final Local l = (Local) lIt.next();
+                final Local l = lIt.next();
                 Local lPrime = (Local)l.clone();
                 if (lPrime == null)
                     throw new RuntimeException("getting null from local clone!");
@@ -214,7 +247,7 @@ public class SiteInliner
 
         // Backpatch the newly-inserted units using newly-constructed maps.
         {
-            Iterator it = containerUnits.iterator
+            Iterator<Unit> it = containerUnits.iterator
                 (containerUnits.getSuccOf(toInline), 
                  containerUnits.getPredOf(exitPoint));
 
@@ -222,24 +255,20 @@ public class SiteInliner
             {
                 Stmt patchee = (Stmt)it.next();
 
-                Iterator duBoxes = patchee.getUseAndDefBoxes().iterator();
-                while (duBoxes.hasNext())
+                for (ValueBox box : patchee.getUseAndDefBoxes())
                 {
-                    ValueBox box = (ValueBox)duBoxes.next();
                     if (!(box.getValue() instanceof Local))
                         continue;
 
-                    Local lPrime = (Local)(oldLocalsToNew.get(box.getValue()));
+                    Local lPrime = oldLocalsToNew.get(box.getValue());
                     if (lPrime != null)
                         box.setValue(lPrime);
                     else
                         throw new RuntimeException("local has no clone!");
                 }
 
-                Iterator unitBoxes = patchee.getUnitBoxes().iterator();
-                while (unitBoxes.hasNext())
+                for (UnitBox box : patchee.getUnitBoxes())
                 {
-                    UnitBox box = (UnitBox)unitBoxes.next();
                     Unit uPrime = (oldUnitsToNew.get(box.getUnit()));
                     if (uPrime != null)
                         box.setUnit(uPrime);
@@ -251,12 +280,9 @@ public class SiteInliner
 
         // Copy & backpatch the traps; preserve their same order.
         {
-            Iterator trapsIt = inlineeB.getTraps().iterator();
             Trap prevTrap = null;
-
-            while (trapsIt.hasNext())
+            for (Trap t : inlineeB.getTraps())
             {
-                Trap t = (Trap)trapsIt.next();
                 Stmt newBegin = oldUnitsToNew.get(t.getBeginUnit()),
                     newEnd = oldUnitsToNew.get(t.getEndUnit()),
                     newHandler = oldUnitsToNew.get(t.getHandlerUnit());
@@ -276,20 +302,19 @@ public class SiteInliner
 
         // Handle identity stmt's and returns.
         {
-            Iterator it = containerUnits.iterator
+            Iterator<Unit> it = containerUnits.iterator
                 (containerUnits.getSuccOf(toInline), 
                  containerUnits.getPredOf(exitPoint));
-            ArrayList cuCopy = new ArrayList();
+            ArrayList<Unit> cuCopy = new ArrayList<Unit>();
 
             while (it.hasNext())
             {
                 cuCopy.add(it.next());
             }
 
-            it = cuCopy.iterator();
-            while (it.hasNext())
+            for (Unit u : cuCopy)
             {
-                Stmt s = (Stmt)it.next();
+                Stmt s = (Stmt)u;
 
                 if (s instanceof IdentityStmt)
                 {
@@ -334,8 +359,8 @@ public class SiteInliner
             }
         }
 
-        List newStmts = new ArrayList();
-        for(Iterator i = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
+        List<Unit> newStmts = new ArrayList<Unit>();
+        for(Iterator<Unit> i = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
         	newStmts.add(i.next());
         }
         

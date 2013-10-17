@@ -435,7 +435,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
      * @param throwAnalysis the source of information about the exceptions
      *                     which each {@link Unit} may throw.
      *
-     * @param unitToExceptionDests2 A <code>Map</code> from {@link Unit}s to 
+     * @param unitToExceptionDests A <code>Map</code> from {@link Unit}s to
      *                    {@link Collection}s of {@link
      *                    ExceptionalUnitGraph.ExceptionDest
      *                    ExceptionDest}s which represent the handlers
@@ -481,8 +481,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
 					boolean omitExceptingUnitEdges) {
 	Set<Unit> trapsThatAreHeads = new ArraySet<Unit>();
 	Unit entryPoint = (Unit) unitChain.getFirst();
-
-	for (Iterator<Entry<Unit, Collection<ExceptionDest>>> it = unitToExceptionDests.entrySet().iterator();
+    for (Iterator<Entry<Unit, Collection<ExceptionDest>>> it = unitToExceptionDests.entrySet().iterator();
 	     it.hasNext(); ) {
 		Entry<Unit, Collection<ExceptionDest>> entry = it.next();
 	    Unit thrower = (Unit) entry.getKey();
@@ -758,6 +757,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     private void buildHeadsAndTails(Set<Unit> additionalHeads) {
 	List<Unit> headList = new ArrayList<Unit>(additionalHeads.size() + 1);
 	headList.addAll(additionalHeads);
+
+        if (unitChain.isEmpty()) throw new IllegalStateException("No body for method " + body.getMethod().getSignature());
+
 	Unit entryPoint = (Unit) unitChain.getFirst();
 	if (! headList.contains(entryPoint)) {
 	    headList.add(entryPoint);

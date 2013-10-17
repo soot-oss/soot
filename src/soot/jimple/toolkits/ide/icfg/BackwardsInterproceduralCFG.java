@@ -27,7 +27,7 @@ import soot.toolkits.graph.InverseGraph;
  * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs.
  * This should be used for backward analyses.
  */
-public class BackwardsInterproceduralCFG extends JimpleBasedInterproceduralCFG {
+public class BackwardsInterproceduralCFG extends JimpleBasedBiDiICFG {
 
 	@Override
 	protected DirectedGraph<Unit> makeGraph(Body body) {

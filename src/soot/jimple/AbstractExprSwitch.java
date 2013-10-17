@@ -153,6 +153,10 @@ public abstract class AbstractExprSwitch implements ExprSwitch
         defaultCase(v);
     }
 
+    public void caseDynamicInvokeExpr(DynamicInvokeExpr v) {
+    	defaultCase(v);
+    }
+
     public void caseCastExpr(CastExpr v)
     {
         defaultCase(v);

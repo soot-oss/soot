@@ -35,6 +35,7 @@ import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.LeExpr;
 import soot.jimple.LengthExpr;
+import soot.jimple.LongConstant;
 import soot.jimple.LtExpr;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
@@ -105,15 +106,18 @@ public class ExprVisitor implements ExprSwitch {
 		this.targetForOffset = targetForOffset;
 	}
 
+	@Override
 	public void defaultCase(Object o) {
 		// rsub-int and rsub-int/lit8 aren't generated, since we cannot detect there usage in jimple
 		throw new Error("unknown Object (" + o.getClass() + ") as Expression: " + o);
 	}
 
+	@Override
 	public void caseDynamicInvokeExpr(DynamicInvokeExpr v) {
 		throw new Error("DynamicInvokeExpr not supported: " + v);
 	}
 	
+	@Override
 	public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
 		MethodIdItem method = DexPrinter.toMethodIdItem(sie.getMethodRef(), stmtV.getBelongingFile());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
@@ -160,9 +164,17 @@ public class ExprVisitor implements ExprSwitch {
 				return true;
 			}
 		}
+		
+		// If we're dealing with phantom classes, we might not actually
+		// arrive at java.lang.Object. In this case, we should not fail
+		// the check
+		if (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object"))
+			return true;
+		
 		return false; // we arrived at java.lang.Object and did not find a declaration
 	}
 
+	@Override
 	public void caseVirtualInvokeExpr(VirtualInvokeExpr vie) {
 		/*
 		 * for final methods we build an invoke-virtual opcode, too, although the dex spec says that a virtual method is not final.
@@ -174,20 +186,24 @@ public class ExprVisitor implements ExprSwitch {
 	}
 	
 	private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
+	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = new ArrayList<Register>();
 		for (Value arg : ie.getArgs()) {
 			Register currentReg = regAlloc.asImmediate(arg, constantV);
 			argumentRegs.add(currentReg);
 		}
+		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
 	private List<Register> getInstanceInvokeArgumentRegs(InstanceInvokeExpr iie) {
+	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = getInvokeArgumentRegs(iie);
 		// always add reference to callee as first parameter (instance != static)
 		Value callee = iie.getBase();
 		Register calleeRegister = regAlloc.asLocal(callee);
 		argumentRegs.add(0, calleeRegister);
+		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
@@ -214,12 +230,14 @@ public class ExprVisitor implements ExprSwitch {
 		return paddedArray;
 	}
 
+	@Override
 	public void caseInterfaceInvokeExpr(InterfaceInvokeExpr iie) {
 		MethodIdItem method = DexPrinter.toMethodIdItem(iie.getMethodRef(), stmtV.getBelongingFile());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(iie);
 		stmtV.addInsn(buildInvokeInsn("invoke-interface", method, arguments));
 	}
 
+	@Override
 	public void caseStaticInvokeExpr(StaticInvokeExpr sie) {
 		MethodIdItem method = DexPrinter.toMethodIdItem(sie.getMethodRef(), stmtV.getBelongingFile());
 		List<Register> arguments = getInvokeArgumentRegs(sie);
@@ -286,46 +304,68 @@ public class ExprVisitor implements ExprSwitch {
 		return new Insn22b(opc, destinationReg, firstOpReg, secondOpLiteral);
 	}
 
+	@Override
 	public void caseAddExpr(AddExpr ae) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("add", ae.getOp1(), ae.getOp2()));
 	}
 	
+	@Override
 	public void caseSubExpr(SubExpr se) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("sub", se.getOp1(), se.getOp2()));
 	}
 	
+	@Override
 	public void caseMulExpr(MulExpr me) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("mul", me.getOp1(), me.getOp2()));
 	}
 	
+	@Override
 	public void caseDivExpr(DivExpr de) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("div", de.getOp1(), de.getOp2()));
 	}
 	
+	@Override
 	public void caseRemExpr(RemExpr re) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("rem", re.getOp1(), re.getOp2()));
 	}
 	
+	@Override
 	public void caseAndExpr(AndExpr ae) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("and", ae.getOp1(), ae.getOp2()));
 	}
 	
+	@Override
 	public void caseOrExpr(OrExpr oe) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("or", oe.getOp1(), oe.getOp2()));
 	}
 	
+	@Override
 	public void caseXorExpr(XorExpr xe) {
-		stmtV.addInsn(buildCalculatingBinaryInsn("xor", xe.getOp1(), xe.getOp2()));
+		Value firstOperand = xe.getOp1();
+		Value secondOperand = xe.getOp2();
+		// see for unary ones-complement shortcut, may be a result of Dexpler's conversion
+		if (secondOperand.equals(IntConstant.v(-1))) {
+			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+			stmtV.addInsn(new Insn12x(Opcode.NOT_INT, destinationReg, sourceReg));
+		} else if (secondOperand.equals(LongConstant.v(-1))) {
+			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+			stmtV.addInsn(new Insn12x(Opcode.NOT_LONG, destinationReg, sourceReg));
+		} else {
+			stmtV.addInsn(buildCalculatingBinaryInsn("xor", firstOperand, secondOperand));
+		}
 	}
 	
+	@Override
 	public void caseShlExpr(ShlExpr sle) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("shl", sle.getOp1(), sle.getOp2()));
 	}
 	
+	@Override
 	public void caseShrExpr(ShrExpr sre) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("shr", sre.getOp1(), sre.getOp2()));
 	}
 
+	@Override
 	public void caseUshrExpr(UshrExpr usre) {
 		stmtV.addInsn(buildCalculatingBinaryInsn("ushr", usre.getOp1(), usre.getOp2()));
 	}
@@ -363,38 +403,47 @@ public class ExprVisitor implements ExprSwitch {
 		return potentialNullConstant;
 	}
 
+	@Override
 	public void caseEqExpr(EqExpr ee) {
 		stmtV.addInsn(buildComparingBinaryInsn("eq", ee.getOp1(), ee.getOp2()));
 	}
 
+	@Override
 	public void caseGeExpr(GeExpr ge) {
 		stmtV.addInsn(buildComparingBinaryInsn("ge", ge.getOp1(), ge.getOp2()));
 	}
 
+	@Override
 	public void caseGtExpr(GtExpr ge) {
 		stmtV.addInsn(buildComparingBinaryInsn("gt", ge.getOp1(), ge.getOp2()));
 	}
 
+	@Override
 	public void caseLeExpr(LeExpr le) {
 		stmtV.addInsn(buildComparingBinaryInsn("le", le.getOp1(), le.getOp2()));
 	}
 
+	@Override
 	public void caseLtExpr(LtExpr le) {
 		stmtV.addInsn(buildComparingBinaryInsn("lt", le.getOp1(), le.getOp2()));
 	}
 	
+	@Override
 	public void caseNeExpr(NeExpr ne) {
 		stmtV.addInsn(buildComparingBinaryInsn("ne", ne.getOp1(), ne.getOp2()));
 	}
 	
+	@Override
 	public void caseCmpExpr(CmpExpr v) {
 		stmtV.addInsn(buildCmpInsn("cmp-long", v.getOp1(), v.getOp2()));
 	}
 	
+	@Override
 	public void caseCmpgExpr(CmpgExpr v) {
 		stmtV.addInsn(buildCmpInsn("cmpg", v.getOp1(), v.getOp2()));
 	}
 	
+	@Override
 	public void caseCmplExpr(CmplExpr v) {
 		stmtV.addInsn(buildCmpInsn("cmpl", v.getOp1(), v.getOp2()));
 	}
@@ -417,12 +466,14 @@ public class ExprVisitor implements ExprSwitch {
 		return new Insn23x(opc, destinationReg, firstReg, secondReg);
 	}
 	
+	@Override
 	public void caseLengthExpr(LengthExpr le) {
 		Value array = le.getOp();
 		Register arrayReg = regAlloc.asLocal(array);
 		stmtV.addInsn(new Insn12x(Opcode.ARRAY_LENGTH, destinationReg, arrayReg));
 	}
 	
+	@Override
 	public void caseNegExpr(NegExpr ne) {
 		Value source = ne.getOp();
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
@@ -442,6 +493,7 @@ public class ExprVisitor implements ExprSwitch {
 		stmtV.addInsn(new Insn12x(opc, destinationReg, sourceReg));
 	}
 	
+	@Override
 	public void caseInstanceOfExpr(InstanceOfExpr ioe) {
 		Value referenceToCheck = ioe.getOp();
 		Register referenceToCheckReg = regAlloc.asLocal(referenceToCheck);
@@ -449,6 +501,7 @@ public class ExprVisitor implements ExprSwitch {
 		stmtV.addInsn(new Insn22c(Opcode.INSTANCE_OF, destinationReg, referenceToCheckReg, checkType));
 	}
 	
+	@Override
 	public void caseCastExpr(CastExpr ce) {
 		Type castType = ce.getCastType();
 		Value source = ce.getOp();
@@ -566,6 +619,7 @@ public class ExprVisitor implements ExprSwitch {
 		return opc;
 	}
 
+	@Override
 	public void caseNewArrayExpr(NewArrayExpr nae) {
 		Value size = nae.getSize();
 		Register sizeReg = regAlloc.asImmediate(size, constantV);
@@ -574,6 +628,7 @@ public class ExprVisitor implements ExprSwitch {
 		stmtV.addInsn(new Insn22c(Opcode.NEW_ARRAY, destinationReg, sizeReg, arrayTypeItem));
 	}
 	
+	@Override
 	public void caseNewMultiArrayExpr(NewMultiArrayExpr nmae) {
 		// get array dimensions
 		if (nmae.getSizeCount() > 255) {
@@ -581,15 +636,17 @@ public class ExprVisitor implements ExprSwitch {
 		}
 		short dimensions = (short) nmae.getSizeCount();
 		// get array base type
-		ArrayType arrayType = ArrayType.v(nmae.getBaseType(), dimensions);
+		ArrayType arrayType = ArrayType.v(nmae.getBaseType().baseType, dimensions);
 		TypeIdItem arrayTypeItem = DexPrinter.toTypeIdItem(arrayType, stmtV.getBelongingFile());
 		// get the dimension size registers
 		List<Register> dimensionSizeRegs = new ArrayList<Register>();
+		regAlloc.setMultipleConstantsPossible(true); // in case there are multiple integer constants
 		for (int i = 0; i < dimensions; i++) {
 			Value currentDimensionSize = nmae.getSize(i);
 			Register currentReg = regAlloc.asImmediate(currentDimensionSize, constantV);
 			dimensionSizeRegs.add(currentReg);
 		}
+		regAlloc.setMultipleConstantsPossible(false); // in case there are multiple integer constants
 		// create filled-new-array instruction, depending on the dimension sizes
 		if (dimensions <= 5) {
 			Register[] paddedRegs = pad35cRegs(dimensionSizeRegs);
@@ -601,6 +658,7 @@ public class ExprVisitor implements ExprSwitch {
 		stmtV.addInsn(new Insn11x(Opcode.MOVE_RESULT_OBJECT, destinationReg));
 	}
 
+	@Override
 	public void caseNewExpr(NewExpr ne) {
 		TypeIdItem baseType = DexPrinter.toTypeIdItem(ne.getBaseType(), stmtV.getBelongingFile());
 		stmtV.addInsn(new Insn21c(Opcode.NEW_INSTANCE, destinationReg, baseType));

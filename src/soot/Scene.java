@@ -29,6 +29,7 @@ package soot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -122,15 +123,15 @@ public class Scene  //extends AbstractHost
     
     private final Map<String,Type> nameToClass = new HashMap<String,Type>();
 
-    ArrayNumberer kindNumberer = new ArrayNumberer();
-    ArrayNumberer typeNumberer = new ArrayNumberer();
-    ArrayNumberer methodNumberer = new ArrayNumberer();
+    ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
+    ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
+    ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
     Numberer unitNumberer = new MapNumberer();
     Numberer contextNumberer = null;
-    ArrayNumberer fieldNumberer = new ArrayNumberer();
-    ArrayNumberer classNumberer = new ArrayNumberer();
+    ArrayNumberer fieldNumberer = new ArrayNumberer<SootField>();
+    ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
     StringNumberer subSigNumberer = new StringNumberer();
-    ArrayNumberer localNumberer = new ArrayNumberer();
+    ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
     private Hierarchy activeHierarchy;
     private FastHierarchy activeFastHierarchy;
@@ -404,7 +405,7 @@ public class Scene  //extends AbstractHost
 					classPathEntries.addAll(Options.v().process_dir());
 					Set<String> targetApks = new HashSet<String>();
 					for (String entry : classPathEntries) {
-						if(entry.endsWith(".apk"))
+						if(entry.toLowerCase().endsWith(".apk"))	// on Windows, file names are case-insensitive
 							targetApks.add(entry);
 					}					
 					if (targetApks.size() == 0)
@@ -662,8 +663,8 @@ public class Scene  //extends AbstractHost
 		} else if (allowsPhantomRefs() ||
 				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
-			c.setPhantom(true);
 			addClass(c);
+            c.setPhantom(true);
 			return c;
 		} else {
 			throw new RuntimeException(System.getProperty("line.separator")
@@ -949,14 +950,14 @@ public class Scene  //extends AbstractHost
         return getPhantomRefs();
     }
     public Numberer kindNumberer() { return kindNumberer; }
-    public ArrayNumberer getTypeNumberer() { return typeNumberer; }
-    public ArrayNumberer getMethodNumberer() { return methodNumberer; }
+    public ArrayNumberer<Type> getTypeNumberer() { return typeNumberer; }
+    public ArrayNumberer<SootMethod> getMethodNumberer() { return methodNumberer; }
     public Numberer getContextNumberer() { return contextNumberer; }
     public Numberer getUnitNumberer() { return unitNumberer; }
     public ArrayNumberer getFieldNumberer() { return fieldNumberer; }
-    public ArrayNumberer getClassNumberer() { return classNumberer; }
+    public ArrayNumberer<SootClass> getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
-    public ArrayNumberer getLocalNumberer() { return localNumberer; }
+    public ArrayNumberer<Local> getLocalNumberer() { return localNumberer; }
 
     public void setContextNumberer( Numberer n ) {
         if( contextNumberer != null )
@@ -994,7 +995,7 @@ public class Scene  //extends AbstractHost
      * Sets the {@link ThrowAnalysis} to be used by default when
      * constructing CFGs which include exceptional control flow.
      *
-     * @param the default {@link ThrowAnalysis}.
+     * @param ta the default {@link ThrowAnalysis}.
      */
     public void setDefaultThrowAnalysis(ThrowAnalysis ta) 
     {
@@ -1167,7 +1168,7 @@ public class Scene  //extends AbstractHost
     	
     	Set<String> classNames = new HashSet<String>();
     	if(log!=null && log.length()>0) {
-			BufferedReader reader;
+			BufferedReader reader = null;
 			String line="";
 			try {
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(log)));
@@ -1191,6 +1192,14 @@ public class Scene  //extends AbstractHost
 				}
 			} catch (Exception e) {
 				throw new RuntimeException("Line: '"+line+"'", e);
+			}
+			finally {
+				if (reader != null)
+					try {
+						reader.close();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 			}
     	}
     	
@@ -1336,13 +1345,13 @@ public class Scene  //extends AbstractHost
 		return false;
 	}
 
-	ArrayList<String> pkgList;
+	List<String> pkgList;
 
-    public void setPkgList(ArrayList<String> list){
+    public void setPkgList(List<String> list){
         pkgList = list;
     }
 
-    public ArrayList<String> getPkgList(){
+    public List<String> getPkgList(){
         return pkgList;
     }
 
@@ -1377,7 +1386,7 @@ public class Scene  //extends AbstractHost
     }
     /** Returns the list of SootClasses that have been resolved at least to 
      * the level specified. */
-    public List/*SootClass*/<SootClass> getClasses(int desiredLevel) {
+    public List<SootClass> getClasses(int desiredLevel) {
         List<SootClass> ret = new ArrayList<SootClass>();
         for( Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
             final SootClass cl = (SootClass) clIt.next();

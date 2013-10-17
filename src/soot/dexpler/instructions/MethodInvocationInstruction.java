@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ *
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -32,14 +32,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jf.dexlib.MethodIdItem;
-import org.jf.dexlib.ProtoIdItem;
-import org.jf.dexlib.TypeIdItem;
-import org.jf.dexlib.TypeListItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.Format.Instruction35c;
-import org.jf.dexlib.Code.Format.Instruction3rc;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
+import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
+import org.jf.dexlib2.iface.reference.MethodReference;
 
 import soot.Local;
 import soot.RefType;
@@ -52,12 +49,12 @@ import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
     // stores the dangling InvokeExpr
@@ -88,36 +85,37 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             body.add(invoke);
             unit = invoke;
         }
-        
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
+
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
+			
           if (invocation instanceof InstanceInvokeExpr) {
             Type t = invocation.getMethodRef().declaringClass().getType();
-            dalvikTyper.setType(((InstanceInvokeExpr) invocation).getBaseBox(), t);
-            //dalvikTyper.setObjectType(assign.getLeftOpBox());
+            DalvikTyper.v().setType(((InstanceInvokeExpr) invocation).getBaseBox(), t, true);
+            //DalvikTyper.v().setObjectType(assign.getLeftOpBox());
           }
           int i = 0;
-          for (Object pt: invocation.getMethodRef().parameterTypes()) {
-            dalvikTyper.setType(invocation.getArgBox(i++), (Type)pt);
+          for (Type pt: (List<Type>)invocation.getMethodRef().parameterTypes()) {
+            DalvikTyper.v().setType(invocation.getArgBox(i++), pt, true);
           }
-          int op = (int)instruction.opcode.value;
+          int op = (int)instruction.getOpcode().value;
           if (assign != null) {
-            dalvikTyper.captureAssign((JAssignStmt)assign, op);
+              DalvikTyper.v().setType(assign.getLeftOpBox(), invocation.getType(), false);
           }
+          
         }
     }
 
-    public Set<DexType> introducedTypes() {
-        Set<DexType> types = new HashSet<DexType>();
-        MethodIdItem method = (MethodIdItem) (((InstructionWithReference) instruction).getReferencedItem());
-        types.add(new DexType(method.getContainingClass()));
-        ProtoIdItem prototype = method.getPrototype();
-        types.add(new DexType(prototype.getReturnType()));
-        List<TypeIdItem> paramTypes = TypeListItem.getTypes(prototype.getParameters());
+    public Set<Type> introducedTypes() {
+        Set<Type> types = new HashSet<Type>();
+        MethodReference method = (MethodReference) (((ReferenceInstruction) instruction).getReference());
+
+        types.add(DexType.toSoot(method.getDefiningClass()));
+        types.add(DexType.toSoot(method.getReturnType()));
+        List<? extends CharSequence> paramTypes = method.getParameterTypes();
         if (paramTypes != null)
-            for (TypeIdItem type : paramTypes)
-                types.add(new DexType(type));
+            for (CharSequence type : paramTypes)
+                types.add(DexType.toSoot(type.toString()));
 
         return types;
     }
@@ -135,8 +133,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      * @param isStatic if this method is static
      */
     protected boolean isUsedAsFloatingPoint(DexBody body, int register, boolean isStatic) {
-        MethodIdItem item = (MethodIdItem) ((InstructionWithReference) instruction).getReferencedItem();
-        List<TypeIdItem> paramTypes = TypeListItem.getTypes(item.getPrototype().getParameters());
+        MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
+        List<? extends CharSequence> paramTypes = item.getParameterTypes();
         List<Integer> regs = getUsedRegistersNums();
         if (paramTypes == null)
             return false;
@@ -147,9 +145,9 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
                 continue;
             }
 
-            if (regs.get(i) == register && isFloatLike(DexType.toSoot(paramTypes.get(j))))
+            if (regs.get(i) == register && isFloatLike(DexType.toSoot(paramTypes.get(j).toString())))
                 return true;
-            if (DexType.isWide(paramTypes.get(j)))
+            if (DexType.isWide(paramTypes.get(j).toString()))
                 i++;
         }
         return false;
@@ -162,8 +160,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      * @param isStatic if this method is static
      */
     protected boolean isUsedAsObject(DexBody body, int register, boolean isStatic) {
-        MethodIdItem item = (MethodIdItem) ((InstructionWithReference) instruction).getReferencedItem();
-        List<TypeIdItem> paramTypes = TypeListItem.getTypes(item.getPrototype().getParameters());
+        MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
+        List<? extends CharSequence> paramTypes = item.getParameterTypes();
         List<Integer> regs = getUsedRegistersNums();
         if (paramTypes == null)
             return false;
@@ -179,9 +177,9 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
                 continue;
             }
 
-            if (regs.get(i) == register && (DexType.toSoot(paramTypes.get(j)) instanceof RefType))
+            if (regs.get(i) == register && (DexType.toSoot(paramTypes.get(j).toString()) instanceof RefType))
                 return true;
-            if (DexType.isWide(paramTypes.get(j)))
+            if (DexType.isWide(paramTypes.get(j).toString()))
                 i++;
         }
         return false;
@@ -209,35 +207,34 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      * @param isStatic for a static method ref
      */
     private SootMethodRef getSootMethodRef(boolean isStatic) {
-        MethodIdItem mItem = (MethodIdItem) ((InstructionWithReference) instruction).getReferencedItem();
-        String tItem = mItem.getContainingClass().getTypeDescriptor();
- 
+        MethodReference mItem = (MethodReference) ((ReferenceInstruction) instruction).getReference();
+        String tItem = mItem.getDefiningClass();
+
         String className = tItem;
-        Debug.printDbg("tItem: "+ tItem +" class name: "+ className);
+        Debug.printDbg("tItem: ", tItem ," class name: ", className);
           if (className.startsWith("[")) {
             className = "java.lang.Object";
           } else {
             className = dottedClassName (tItem);
           }
-        
+
         SootClass sc = SootResolver.v().makeClassRef(className);
-        String methodName = mItem.getMethodName().getStringValue();
+        String methodName = mItem.getName();
 
-        ProtoIdItem prototype = mItem.getPrototype();
-        Type returnType = DexType.toSoot(prototype.getReturnType());
+        Type returnType = DexType.toSoot(mItem.getReturnType());
         List<Type> parameterTypes = new ArrayList<Type>();
-        List<TypeIdItem> paramTypes = TypeListItem.getTypes(prototype.getParameters());
+        List<? extends CharSequence> paramTypes = mItem.getParameterTypes();
         if (paramTypes != null)
-            for (TypeIdItem type : paramTypes)
-                parameterTypes.add(DexType.toSoot(type));
+            for (CharSequence type : paramTypes)
+                parameterTypes.add(DexType.toSoot(type.toString()));
 
-        Debug.printDbg("sc: "+ sc);
-        Debug.printDbg("methodName: "+ methodName);
+        Debug.printDbg("sc: ", sc);
+        Debug.printDbg("methodName: ", methodName);
         Debug.printDbg("parameterTypes: ");
         for (Type t: parameterTypes)
-          Debug.printDbg(" t: "+ t);
-        Debug.printDbg("returnType: "+ returnType);
-        Debug.printDbg("isStatic: "+ isStatic);
+          Debug.printDbg(" t: ", t);
+        Debug.printDbg("returnType: ", returnType);
+        Debug.printDbg("isStatic: ", isStatic);
         return Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType, isStatic);
     }
 
@@ -252,22 +249,22 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      * @return the converted parameters
      */
     protected List<Local> buildParameters(DexBody body, boolean isStatic) {
-        MethodIdItem item = (MethodIdItem) ((InstructionWithReference) instruction).getReferencedItem();
-        List<TypeIdItem> paramTypes = TypeListItem.getTypes(item.getPrototype().getParameters());
+        MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
+        List<? extends CharSequence> paramTypes = item.getParameterTypes();
 
         List<Local> parameters = new ArrayList<Local>();
         List<Integer> regs = getUsedRegistersNums();
 
-        Debug.printDbg(" [methodIdItem]: "+ item);
+        Debug.printDbg(" [methodIdItem]: ", item);
         Debug.printDbg(" params types:");
-        if (paramTypes != null) {       
-          for (TypeIdItem t: paramTypes) {
-            Debug.printDbg(" t: "+ t);
+        if (paramTypes != null) {
+          for (CharSequence t: paramTypes) {
+            Debug.printDbg(" t: ", t);
           }
         }
-        Debug.printDbg(" used registers ("+ regs.size() +"): ");
+        Debug.printDbg(" used registers (", regs.size() ,"): ");
         for (int i: regs) {
-          Debug.printDbg( " r: "+ i);
+          Debug.printDbg( " r: ", i);
         }
         // i: index for register
         // j: index for parameter type
@@ -282,7 +279,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             // If current parameter is wide ignore the next register.
             // No need to increment j as there is one parameter type
             // for those two registers.
-            if (paramTypes != null && DexType.isWide(paramTypes.get(j))) {
+            if (paramTypes != null && DexType.isWide(paramTypes.get(j).toString())) {
                 i++;
             }
 
@@ -311,14 +308,14 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      */
     private static List<Integer> getUsedRegistersNums(Instruction35c instruction) {
         int[] regs = {
+            instruction.getRegisterC(),
             instruction.getRegisterD(),
             instruction.getRegisterE(),
             instruction.getRegisterF(),
             instruction.getRegisterG(),
-            instruction.getRegisterA()
         };
         List<Integer> l = new ArrayList<Integer>();
-        for (int i = 0; i < instruction.getRegCount(); i++)
+        for (int i = 0; i < instruction.getRegisterCount(); i++)
             l.add(regs[i]);
         return l;
     }
@@ -332,7 +329,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     private static List<Integer> getUsedRegistersNums(Instruction3rc instruction) {
         List<Integer> regs = new ArrayList<Integer>();
         int start = instruction.getStartRegister();
-        for (int i = start; i < start + instruction.getRegCount(); i++)
+        for (int i = start; i < start + instruction.getRegisterCount(); i++)
             regs.add(i);
 
         return regs;

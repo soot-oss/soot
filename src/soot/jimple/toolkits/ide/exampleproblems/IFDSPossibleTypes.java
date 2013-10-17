@@ -18,6 +18,7 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
 import heros.InterproceduralCFG;
@@ -28,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
 
 import soot.Local;
 import soot.PointsToAnalysis;
@@ -150,10 +151,12 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
 				}				
 				return new FlowFunction<Pair<Value,Type>>() {
 					public Set<Pair<Value,Type>> computeTargets(Pair<Value,Type> source) {
-						Value value = source.getO1();
-						int argIndex = callArgs.indexOf(value);
-						if(argIndex>-1) {
-							return Collections.singleton(new Pair<Value,Type>(paramLocals.get(argIndex), source.getO2()));
+						if (!dest.getName().equals("<clinit>")) {
+							Value value = source.getO1();
+							int argIndex = callArgs.indexOf(value);
+							if(argIndex>-1) {
+								return Collections.singleton(new Pair<Value,Type>(paramLocals.get(argIndex), source.getO2()));
+							}
 						}
 						return Collections.emptySet();
 					}
@@ -193,8 +196,8 @@ public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<V
 		};
 	}
 
-	public Set<Unit> initialSeeds() {
-		return Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst());
+	public Map<Unit, Set<Pair<Value,Type>>> initialSeeds() {
+		return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
 	}
 
 	public Pair<Value,Type> createZeroValue() {

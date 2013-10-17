@@ -1,5 +1,5 @@
 // 
-// (c) 2012 University of Luxembourg – Interdisciplinary Centre for 
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -20,9 +20,15 @@
 
 package soot.dexpler;
 
+import soot.G;
+import soot.Singletons;
+import soot.Value;
+import soot.baf.EnterMonitorInst;
 import soot.baf.ReturnInst;
 import soot.baf.ReturnVoidInst;
+import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
+import soot.jimple.EnterMonitorStmt;
 import soot.jimple.StringConstant;
 import soot.toolkits.exceptions.ThrowableSet;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
@@ -165,29 +171,77 @@ op   fe +sput-object-volatile       21c  n field-ref     optimized|continue|thro
  * - [ais][get|put]        already handled in UnitThrowAnalysis
  * - div/rem               already handled in UnitThrowAnalysis
  * 
+ * For a reference manual, look at https://code.google.com/p/android-source-browsing
+ * 
+ * 
  */
 
 public class DalvikThrowAnalysis extends UnitThrowAnalysis {
  
-	@Override
+    /**
+     * Constructs a <code>DalvikThrowAnalysis</code> for inclusion in 
+     * Soot's global variable manager, {@link G}.
+     *
+     * @param g guarantees that the constructor may only be called 
+     * from {@link Singletons}.
+     */
+    public DalvikThrowAnalysis(Singletons.Global g) {}
+
+    /**
+     * Returns the single instance of <code>DalvikThrowAnalysis</code>.
+     *
+     * @return Soot's <code>UnitThrowAnalysis</code>.
+     */
+    public static DalvikThrowAnalysis v() { return G.v().soot_dexpler_DalvikThrowAnalysis(); }
+
+    @Override
 	protected ThrowableSet defaultResult() {
 		return mgr.EMPTY;
 	}
+
+    @Override
+    protected ThrowableSet mightThrow(Value v) {
+    	return super.mightThrow(v);
+    }
 	
 	
 	@Override
 	protected UnitSwitch unitSwitch() {
 		return new UnitThrowAnalysis.UnitSwitch() {	
 		  
-      // Dalvik does not throw an exception for this instructions
+			// Dalvik does not throw an exception for this instruction
 			@Override
 			public void caseReturnInst(ReturnInst i) { 
 			}
 			
-      // Dalvik does not throw an exception for this instructions
+			// Dalvik does not throw an exception for this instruction
 			@Override
 			public void caseReturnVoidInst(ReturnVoidInst i) {
-			}			
+			}
+			
+			@Override
+			public void caseEnterMonitorInst(EnterMonitorInst i) {
+			    result = result.add(mgr.NULL_POINTER_EXCEPTION);
+			    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
+			}
+
+			@Override
+			public void caseEnterMonitorStmt(EnterMonitorStmt s) {
+			    result = result.add(mgr.NULL_POINTER_EXCEPTION);
+			    result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
+			    result = result.add(mightThrow(s.getOp()));
+			}
+		
+			@Override
+			public void caseAssignStmt(AssignStmt s) {
+				// Dalvik only throws ArrayIndexOutOfBounds and
+				// NullPointerException which are both handled through the
+				// ArrayRef expressions. There is no ArrayStoreException in
+				// Dalvik.
+			    result = result.add(mightThrow(s.getLeftOp()));
+			    result = result.add(mightThrow(s.getRightOp()));
+			}
+
 		};
 	}
 	

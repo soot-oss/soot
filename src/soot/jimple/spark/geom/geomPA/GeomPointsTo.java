@@ -1447,8 +1447,19 @@ public class GeomPointsTo extends PAG
 			public final void visit(Node n) {
 				Node nDotF = ((AllocNode) n).dot(f);
 				if (nDotF != null) {
-					PointsToSetInternal temp = nDotF.getP2Set();
-					ret.addAll(temp, null);
+					//nDotF.getP2Set() has been discarded in solve()
+					IVarAbstraction pn = consG.get(nDotF);
+					if (pn == null) return;
+					if (hasTransformed || nDotF.getP2Set() != EmptyPointsToSet.v()) {
+						ret.addAll(nDotF.getP2Set(), null);
+						return;
+					}
+					pn = pn.getRepresentative();
+					//PointsToSetInternal ptSet = nDotF.makeP2Set();
+					for ( AllocNode obj : pn.get_all_points_to_objects() ) {
+						ret.add( obj );
+						//ptSet.add(obj);
+					}
 				}
 			}
 		});

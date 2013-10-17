@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,14 +24,17 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction12x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
 
 import soot.Local;
 import soot.Value;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
@@ -64,15 +67,13 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          //dalvikTyper.captureAssign((JAssignStmt)assign, op);
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          int op = (int)instruction.getOpcode().value;
+          //DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;
-          Value expr = jass.getRightOp();
-          dalvikTyper.setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b]);
-          dalvikTyper.setType(jass.leftBox, resUnType[op - 0x7b]);
+          DalvikTyper.v().setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b], true);
+          DalvikTyper.v().setType(jass.leftBox, resUnType[op - 0x7b], false);
         }
     }
 
@@ -80,8 +81,8 @@ public class UnopInstruction extends DexlibAbstractInstruction {
      * Return the appropriate Jimple Expression according to the OpCode
      */
     private Value getExpression(Local source) {
-
-        switch(instruction.opcode) {
+        Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case NEG_INT:
         case NEG_LONG:
         case NEG_FLOAT:
@@ -92,7 +93,7 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         case NOT_INT:
             return getNotIntExpr(source);
         default:
-            throw new RuntimeException("Invalid Opcode: " + instruction.opcode);
+            throw new RuntimeException("Invalid Opcode: " + opcode);
         }
 
     }
@@ -125,7 +126,8 @@ public class UnopInstruction extends DexlibAbstractInstruction {
     @Override
     boolean isUsedAsFloatingPoint(DexBody body, int register) {
         int source = ((TwoRegisterInstruction) instruction).getRegisterB();
-        switch(instruction.opcode) {
+        Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case NEG_FLOAT:
         case NEG_DOUBLE:
             return source == register;

@@ -126,7 +126,6 @@ public class LocalGenerator{
 		
     	localNames = null;
 		return createLocal(name, type);
-		
 	}
 
 	private int tempInt = -1;

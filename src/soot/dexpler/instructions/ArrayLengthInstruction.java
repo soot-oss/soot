@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,17 +24,19 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction12x;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
 
+import soot.IntType;
 import soot.Local;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.LengthExpr;
-import soot.jimple.internal.JAssignStmt;
 
 public class ArrayLengthInstruction extends DexlibAbstractInstruction {
 
@@ -61,11 +63,9 @@ public class ArrayLengthInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          DalvikTyper.v().setType(assign.getLeftOpBox(), IntType.v(), false);      
         }
     }
 

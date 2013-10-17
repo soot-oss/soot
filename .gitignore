@@ -1,3 +1,9 @@
 /ant.settings
 /lib
 /classes
+/.classpath
+/sootOutput
+# IntelliJ IDEA project dir
+.idea
+# Directory with .jars required to build Soot with IntelliJ IDEA
+/libs_intellij

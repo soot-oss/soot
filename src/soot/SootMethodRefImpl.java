@@ -41,12 +41,12 @@ class SootMethodRefImpl implements SootMethodRef {
     public SootMethodRefImpl( 
             SootClass declaringClass,
             String name,
-            List parameterTypes,
+            List<Type> parameterTypes,
             Type returnType,
             boolean isStatic) {
         this.declaringClass = declaringClass;
         this.name = name;
-        List l = new ArrayList();
+        List<Type> l = new ArrayList<Type>();
         l.addAll(parameterTypes);
         this.parameterTypes = Collections.unmodifiableList(l);
         this.returnType = returnType;
@@ -59,7 +59,7 @@ class SootMethodRefImpl implements SootMethodRef {
 
     private final SootClass declaringClass;
     private final String name;
-    private final List parameterTypes;
+    private final List<Type> parameterTypes;
     private final Type returnType;
     private final boolean isStatic;
 
@@ -67,7 +67,7 @@ class SootMethodRefImpl implements SootMethodRef {
 
     public SootClass declaringClass() { return declaringClass; }
     public String name() { return name; }
-    public List parameterTypes() { return parameterTypes; }
+    public List<Type> parameterTypes() { return parameterTypes; }
     public Type returnType() { return returnType; }
     public boolean isStatic() { return isStatic; }
 
@@ -153,6 +153,10 @@ class SootMethodRefImpl implements SootMethodRef {
         //error just in case the code *is* actually reached at runtime
         if(Options.v().allow_phantom_refs()) {
         	SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic()?Modifier.STATIC:0);
+        	int modifiers = Modifier.PUBLIC; //  we don't know who will be calling us
+            if (isStatic())
+            	modifiers |= Modifier.STATIC;
+            m.setModifiers(modifiers);
         	JimpleBody body = Jimple.v().newBody(m);
 			m.setActiveBody(body);
 			
@@ -165,7 +169,7 @@ class SootMethodRefImpl implements SootMethodRef {
 			body.getUnits().add(assignStmt);
 			
 			//exc.<init>(message)
-			SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.singletonList(RefType.v("java.lang.String"))).makeRef();
+			SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
 			SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v("Unresolved compilation error: Method "+getSignature()+" does not exist!"));
 			InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
 			body.getUnits().insertAfter(initStmt, assignStmt);

@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ *
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,50 +24,50 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.FieldIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
 
 import soot.Local;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.StaticFieldRef;
-import soot.jimple.internal.JAssignStmt;
 
 public class SputInstruction extends FieldInstruction {
 
     AssignStmt assign = null;
-  
+
     public SputInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
 
     public void jimplify (DexBody body) {
-        int source = ((SingleRegisterInstruction)instruction).getRegisterA();
-        FieldIdItem f = (FieldIdItem)((InstructionWithReference)instruction).getReferencedItem();
+        int source = ((OneRegisterInstruction)instruction).getRegisterA();
+        FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
         StaticFieldRef instanceField = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
         Local sourceValue = body.getRegisterLocal(source);
         assign = getAssignStmt(body, sourceValue, instanceField);
         setUnit(assign);
         tagWithLineNumber(assign);
         body.add(assign);
-        
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          int op = (int)instruction.getOpcode().value;
+          DalvikTyper.v().setType(assign.getRightOpBox(), instanceField.getType(), true);
         }
     }
 
     @Override
     protected Type getTargetType(DexBody body) {
-        FieldIdItem f = (FieldIdItem)((InstructionWithReference) instruction).getReferencedItem();
-        return DexType.toSoot(f.getFieldType());
+        FieldReference f = (FieldReference)((ReferenceInstruction) instruction).getReference();
+        return DexType.toSoot(f.getType());
     }
 }

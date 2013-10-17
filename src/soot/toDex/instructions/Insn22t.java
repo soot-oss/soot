@@ -1,7 +1,6 @@
 package soot.toDex.instructions;
 
 import java.util.BitSet;
-import java.util.List;
 
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Opcode;
@@ -39,12 +38,12 @@ public class Insn22t extends InsnWithOffset implements TwoRegInsn {
 	}
 	
 	@Override
-	public BitSet getIncompatibleRegs(List<Register> curRegs) {
+	public BitSet getIncompatibleRegs() {
 		BitSet incompatRegs = new BitSet(2);
-		if (!curRegs.get(REG_A_IDX).fitsByte()) {
+		if (!getRegA().fitsByte()) {
 			incompatRegs.set(REG_A_IDX);
 		}
-		if (!curRegs.get(REG_B_IDX).fitsByte()) {
+		if (!getRegB().fitsByte()) {
 			incompatRegs.set(REG_B_IDX);
 		}
 		return incompatRegs;
@@ -54,15 +53,5 @@ public class Insn22t extends InsnWithOffset implements TwoRegInsn {
 	public boolean offsetFit() {
 		int offC = getRelativeOffset();
 		return SootToDexUtils.fitsSigned16(offC);
-	}
-
-	public Insn22t shallowCloneWithRegs(List<Register> newRegs) {
-		Register newRegA = newRegs.get(REG_A_IDX);
-		Register newRegB = newRegs.get(REG_B_IDX);
-		Insn22t shallowClone = new Insn22t(getOpcode(), newRegA, newRegB);
-		shallowClone.setInsnOffset(getInsnOffset());
-		shallowClone.offset = offset;
-		shallowClone.offsetAddress = offsetAddress;
-		return shallowClone;
 	}
 }

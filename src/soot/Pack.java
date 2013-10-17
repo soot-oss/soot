@@ -39,9 +39,9 @@ public abstract class Pack implements HasPhaseOptions
     public Pack( String name ) {
         this.name = name;
     }
-    Chain opts = new HashChain();
+    Chain<Transform> opts = new HashChain<Transform>();
     
-    public Iterator iterator() { return opts.iterator(); }
+    public Iterator<Transform> iterator() { return opts.iterator(); }
 
     public void add(Transform t) { 
     	if(!t.getPhaseName().startsWith(getPhaseName()+".")) {
@@ -59,7 +59,7 @@ public abstract class Pack implements HasPhaseOptions
     public void insertAfter(Transform t, String phaseName) 
     {
         PhaseOptions.v().getPM().notifyAddPack();
-        Iterator it = opts.iterator();
+        Iterator<Transform> it = opts.iterator();
         while (it.hasNext())
         {
             Transform tr = (Transform)it.next();
@@ -75,7 +75,7 @@ public abstract class Pack implements HasPhaseOptions
     public void insertBefore(Transform t, String phaseName)
     {
         PhaseOptions.v().getPM().notifyAddPack();
-        Iterator it = opts.iterator();
+        Iterator<Transform> it = opts.iterator();
         while (it.hasNext())
         {
             Transform tr = (Transform)it.next();
@@ -89,7 +89,7 @@ public abstract class Pack implements HasPhaseOptions
     }
 
     public Transform get( String phaseName ) {
-        for( Iterator trIt = opts.iterator(); trIt.hasNext(); ) {
+        for( Iterator<Transform> trIt = opts.iterator(); trIt.hasNext(); ) {
             final Transform tr = (Transform) trIt.next();
             if( tr.getPhaseName().equals(phaseName) ) {
                 return tr;
@@ -107,7 +107,7 @@ public abstract class Pack implements HasPhaseOptions
     }
 
     public final void apply() {
-        Map options = PhaseOptions.v().getPhaseOptions( this );
+        Map<String, String> options = PhaseOptions.v().getPhaseOptions( this );
         if( !PhaseOptions.getBoolean( options, "enabled" ) ) return;
 	if (DEBUG)
 	    PhaseDumper.v().dumpBefore(getPhaseName());
@@ -117,7 +117,7 @@ public abstract class Pack implements HasPhaseOptions
     }
 
     public final void apply(Body b) {
-        Map options = PhaseOptions.v().getPhaseOptions( this );
+        Map<String, String> options = PhaseOptions.v().getPhaseOptions( this );
         if( !PhaseOptions.getBoolean( options, "enabled" ) ) return;
 	if (DEBUG)
 	    PhaseDumper.v().dumpBefore(b, getPhaseName());

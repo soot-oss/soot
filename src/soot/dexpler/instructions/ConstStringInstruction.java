@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,14 +24,16 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.StringIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction21c;
-import org.jf.dexlib.Code.Format.Instruction31c;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
+import org.jf.dexlib2.iface.instruction.formats.Instruction31c;
+import org.jf.dexlib2.iface.reference.StringReference;
 
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
@@ -45,14 +47,14 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
     }
 
     public void jimplify (DexBody body) {
-        int dest = ((SingleRegisterInstruction) instruction).getRegisterA();
+        int dest = ((OneRegisterInstruction) instruction).getRegisterA();
         String s;
         if (instruction instanceof Instruction21c) {
             Instruction21c i = (Instruction21c)instruction;
-            s = ((StringIdItem)(i.getReferencedItem())).getStringValue();
+            s = ((StringReference)(i.getReference())).getString();
         } else if (instruction instanceof Instruction31c) {
             Instruction31c i = (Instruction31c)instruction;
-            s = ((StringIdItem)(i.getReferencedItem())).getStringValue();
+            s = ((StringReference)(i.getReference())).getString();
         } else
             throw new IllegalArgumentException("Expected Instruction21c or Instruction31c but got neither.");
         StringConstant sc = StringConstant.v(s);
@@ -61,16 +63,15 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          dalvikTyper.setObjectType(assign.getLeftOpBox());
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          DalvikTyper.v().setType(assign.getLeftOpBox(), sc.getType(), false);
         }
     }
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }

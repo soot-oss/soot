@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,11 +24,13 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
@@ -49,7 +51,7 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 //        if (local != null && expr != null)
 //            throw new RuntimeException("Both local and expr are set to move.");
 
-        int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
+        int dest = ((OneRegisterInstruction)instruction).getRegisterA();
 
 //        if (local != null)
 //            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), local);
@@ -64,12 +66,11 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
             assign.addTag(tag);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          int op = (int)instruction.getOpcode().value;
           JAssignStmt jassign = (JAssignStmt)assign;
-          dalvikTyper.captureAssign(jassign, op);
+          DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
         }
     }
 
@@ -85,7 +86,7 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }

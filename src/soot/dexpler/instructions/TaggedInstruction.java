@@ -1,5 +1,5 @@
 // 
-// (c) 2012 University of Luxembourg – Interdisciplinary Centre for 
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -19,7 +19,8 @@
 //
 
 package soot.dexpler.instructions;
-import org.jf.dexlib.Code.Instruction;
+
+import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.tagkit.Tag;
 

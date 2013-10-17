@@ -34,6 +34,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 	this.mpag = mpag;
         setCurrentMethod( mpag.getMethod() );
     }
+
     /** Sets the method for which a graph is currently being built. */
     private void setCurrentMethod( SootMethod m ) {
 	method = m;
@@ -59,6 +60,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         v.apply( this );
         return getNode();
     }
+    
     /** Adds the edges required for this statement to the graph. */
     final public void handleStmt( Stmt s ) {
 	if( s.containsInvokeExpr() ) {
@@ -69,6 +71,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
                 Value l = as.getLeftOp();
                 Value r = as.getRightOp();
 		if( !( l.getType() instanceof RefLikeType ) ) return;
+		assert r.getType() instanceof RefLikeType : "Type mismatch in assignment "
+			+ as + " in method " + method.getSignature();
 		l.apply( MethodNodeFactory.this );
 		Node dest = getNode();
 		r.apply( MethodNodeFactory.this );
@@ -132,6 +136,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     final public Node getNode() {
 	return (Node) getResult();
     }
+
     final public Node caseThis() {
 	VarNode ret = pag.makeLocalVarNode(
 		    new Pair( method, PointsToAnalysis.THIS_NODE ),
@@ -175,6 +180,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     // OK, these ones are public, but they really shouldn't be; it's just
     // that Java requires them to be, because they override those other
     // public methods.
+    @Override
     final public void caseArrayRef( ArrayRef ar ) {
     	caseLocal( (Local) ar.getBase() );
 	setResult( caseArray( (VarNode) getNode() ) );
@@ -187,9 +193,13 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 	mpag.addInternalEdge( opNode, castNode );
 	setResult( castNode );
     }
+    
+    @Override
     final public void caseCaughtExceptionRef( CaughtExceptionRef cer ) {
 	setResult( pag.nodeFactory().caseThrow() );
     }
+    
+    @Override
     final public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
 	if( pag.getOpts().field_based() || pag.getOpts().vta() ) {
 	    setResult( pag.makeGlobalVarNode( 
@@ -203,12 +213,17 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
                         method ) );
 	}
     }
+
+    @Override
     final public void caseLocal( Local l ) {
 	setResult( pag.makeLocalVarNode( l,  l.getType(), method ) );
     }
+    
+    @Override
     final public void caseNewArrayExpr( NewArrayExpr nae ) {
         setResult( pag.makeAllocNode( nae, nae.getType(), method ) );
     }
+    
     private boolean isStringBuffer(Type t) {
         if(!(t instanceof RefType)) return false;
         RefType rt = (RefType) t;
@@ -217,6 +232,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         if(s.equals("java.lang.StringBuilder")) return true;
         return false;
     }
+    
+    @Override
     final public void caseNewExpr( NewExpr ne ) {
         if( pag.getOpts().merge_stringbuffer() 
         && isStringBuffer(ne.getType())) {
@@ -225,6 +242,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
             setResult( pag.makeAllocNode( ne, ne.getType(), method ) );
         }
     }
+    
+    @Override
     final public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
         ArrayType type = (ArrayType) nmae.getType();
         AllocNode prevAn = pag.makeAllocNode(
@@ -245,14 +264,20 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
             prevVn = vn;
         }
     }
+    
+    @Override
     final public void caseParameterRef( ParameterRef pr ) {
 	setResult( caseParm( pr.getIndex() ) );
     }
+
+    @Override
     final public void caseStaticFieldRef( StaticFieldRef sfr ) {
 	setResult( pag.makeGlobalVarNode( 
 		    sfr.getField(), 
 		    sfr.getField().getType() ) );
     }
+    
+    @Override
     final public void caseStringConstant( StringConstant sc ) {
         AllocNode stringConstant;
         if( pag.getOpts().string_constants()
@@ -270,12 +295,18 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         pag.addEdge( stringConstant, stringConstantLocal );
         setResult( stringConstantLocal );
     }
+    
+    @Override
     final public void caseThisRef( ThisRef tr ) {
 	setResult( caseThis() );
     }
+
+    @Override
     final public void caseNullConstant( NullConstant nr ) {
 	setResult( null );
     }
+    
+    @Override
     final public void caseClassConstant( ClassConstant cc ) {
         AllocNode classConstant = pag.makeClassConstantNode(cc);
         VarNode classConstantLocal = pag.makeGlobalVarNode(
@@ -284,9 +315,12 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         pag.addEdge(classConstant, classConstantLocal);
         setResult(classConstantLocal);
     }
+    
+    @Override
     final public void defaultCase( Object v ) {
-	throw new RuntimeException( "failed to handle "+v );
+    	throw new RuntimeException( "failed to handle "+v );
     }
+    
     protected PAG pag;
     protected MethodPAG mpag;
     protected SootMethod method;

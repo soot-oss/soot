@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,17 +24,18 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.FieldIdItem;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.InstructionWithReference;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
 
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class IgetInstruction extends FieldInstruction {
 
@@ -48,7 +49,7 @@ public class IgetInstruction extends FieldInstruction {
         TwoRegisterInstruction i = (TwoRegisterInstruction)instruction;
         int dest = i.getRegisterA();
         int object = i.getRegisterB();
-        FieldIdItem f = (FieldIdItem)((InstructionWithReference)instruction).getReferencedItem();
+        FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
         InstanceFieldRef r = Jimple.v().newInstanceFieldRef(body.getRegisterLocal(object),
                                                             getSootFieldRef(f));
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
@@ -56,11 +57,10 @@ public class IgetInstruction extends FieldInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          dalvikTyper.captureAssign((JAssignStmt)assign, op);
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          int op = (int)instruction.getOpcode().value;
+          DalvikTyper.v().setType(assign.getLeftOpBox(), r.getType(), false);
         }
     }
 

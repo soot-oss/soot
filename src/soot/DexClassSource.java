@@ -49,6 +49,6 @@ public class DexClassSource extends ClassSource {
     public Dependencies resolve(SootClass sc) {
         if(Options.v().verbose())
             G.v().out.println("resolving " + className + " from file " + path.getPath());
-        return DexResolver.resolveFromFile(path, className, sc);
+        return DexResolver.v().resolveFromFile(path, className, sc);
     }
 }

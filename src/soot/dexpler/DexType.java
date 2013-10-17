@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ *
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,8 +24,8 @@
 
 package soot.dexpler;
 
-
-import org.jf.dexlib.TypeIdItem;
+import org.jf.dexlib2.iface.reference.TypeReference;
+import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
 
 import soot.BooleanType;
 import soot.ByteType;
@@ -49,11 +49,20 @@ public class DexType {
 
     protected String name;
 
-    protected TypeIdItem type;
+    protected TypeReference type;
 
-    public DexType(TypeIdItem type) {
+    public DexType(TypeReference type) {
+        if (type == null)
+            throw new RuntimeException("error: type ref is null!");
         this.type = type;
-        this.name = type.getConciseIdentity();
+        this.name = type.getType();
+    }
+
+    public DexType(String type) {
+      if (type == null)
+          throw new RuntimeException("error: type is null!");
+      this.type = new ImmutableTypeReference(type);
+      this.name = type;
     }
 
     public String getName() {
@@ -64,7 +73,7 @@ public class DexType {
         return name.equals(field.getName());
     }
 
-    public TypeIdItem getType() {
+    public TypeReference getType() {
         return type;
     }
 
@@ -74,28 +83,36 @@ public class DexType {
      * @return the Soot Type
      */
     public Type toSoot() {
-        return toSoot(type.getTypeDescriptor(), 0);
+        return toSoot(type.getType(), 0);
     }
 
     /**
-     * Return the appropriate Soot Type for the given TypeIdItem.
+     * Return the appropriate Soot Type for the given TypeReference.
      *
-     * @param type the TypeIdItem to convert
+     * @param type the TypeReference to convert
      * @return the Soot Type
      */
-    public static Type toSoot(TypeIdItem type) {
-        return toSoot(type.getTypeDescriptor(), 0);
+    public static Type toSoot(TypeReference type) {
+      return toSoot(type.getType(), 0);
+    }
+
+    public static Type toSoot(String type) {
+      return toSoot(type, 0);
     }
 
     /**
      * Return if the given TypeIdItem is wide (i.e. occupies 2 registers).
      *
-     * @param type the TypeIdItem to analyze
+     * @param typeReference.getType() the TypeIdItem to analyze
      * @return if type is wide
      */
-    public static boolean isWide(TypeIdItem type) {
-        String t = type.getTypeDescriptor();
-        return t.startsWith("J") || t.startsWith("D");
+    public static boolean isWide(TypeReference typeReference) {
+        String t = typeReference.getType();
+        return isWide(t);
+    }
+
+    public static boolean isWide(String type) {
+      return type.startsWith("J") || type.startsWith("D");
     }
 
     /**
@@ -147,6 +164,45 @@ public class DexType {
         return type;
     }
     
+    /**
+     * Seems that representation of Annotation type in Soot is not 
+     * consistent with the normal type representation.
+     * Normal type representation would be a.b.c.ClassName
+     * Java bytecode representation is La/b/c/ClassName;
+     * Soot Annotation type representation (and Jasmin's) is
+     * a/b/c/ClassName.
+     * 
+     * This method transforms the Java bytecode representation
+     * into the Soot annotation type representation.
+     * 
+     * @param type
+     * @param pos
+     * @return
+     */
+    public static String toSootICAT(String type) {
+        String r = "";
+        String[] split1 = type.split(";");
+        for (String s : split1) {
+            if (s.startsWith("L"))
+                s = s.replaceFirst("L", "");
+            if (s.startsWith("<L"))
+                s = s.replaceFirst("<L", "<");
+            r += s;
+        }
+        return r;
+    }
+    
+    /**
+     * Types read from annotations should be converted to Soot type.
+     * However, to maintain compatibility with Soot code most type
+     * will not be converted.
+     * @param type
+     * @return
+     */
+    public static String toSootAT(String type) {
+        return type;
+    }
+
     @Override
     public String toString() {
     	return name;

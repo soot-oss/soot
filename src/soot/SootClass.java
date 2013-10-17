@@ -60,7 +60,7 @@ public class SootClass extends AbstractHost implements Numberable
     protected String name, shortName, fixedShortName, packageName, fixedPackageName;
     protected int modifiers;
     protected Chain<SootField> fields = new HashChain<SootField>();
-    protected SmallNumberedMap subSigToMethods = new SmallNumberedMap( Scene.v().getSubSigNumberer() );
+    protected SmallNumberedMap<SootMethod> subSigToMethods = new SmallNumberedMap( Scene.v().getSubSigNumberer() );
     // methodList is just for keeping the methods in a consistent order. It
     // needs to be kept consistent with subSigToMethods.
     protected List<SootMethod> methodList = new ArrayList<SootMethod>();
@@ -402,7 +402,7 @@ public class SootClass extends AbstractHost implements Numberable
         return ret;
     }
 
-    public SootMethod getMethod( String name, List parameterTypes,
+    public SootMethod getMethod( String name, List<Type> parameterTypes,
             Type returnType )
     {
         checkLevel(SIGNATURES);
@@ -429,7 +429,7 @@ public class SootClass extends AbstractHost implements Numberable
         given name and parameter.
     */
 
-    public SootMethod getMethod(String name, List parameterTypes) 
+    public SootMethod getMethod(String name, List<Type> parameterTypes) 
     {
         checkLevel(SIGNATURES);
         boolean found = false;
@@ -481,7 +481,7 @@ public class SootClass extends AbstractHost implements Numberable
             if(method.getName().equals(name))
             {
                 if(found)
-                    throw new RuntimeException("ambiguous method");
+                    throw new RuntimeException("ambiguous method: " + name + " in class " + this);
                 else {                    
                     found = true;
                     foundMethod = method;
@@ -498,7 +498,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name and parameter types?
     */
 
-    public boolean declaresMethod(String name, List parameterTypes)
+    public boolean declaresMethod(String name, List<Type> parameterTypes)
     {
         checkLevel(SIGNATURES);
         Iterator<SootMethod> methodIt = methodIterator();
@@ -519,7 +519,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name, parameter types, and return type?
     */
 
-    public boolean declaresMethod(String name, List parameterTypes, Type returnType)
+    public boolean declaresMethod(String name, List<Type> parameterTypes, Type returnType)
     {
         checkLevel(SIGNATURES);
         Iterator<SootMethod> methodIt = methodIterator();
@@ -545,11 +545,11 @@ public class SootClass extends AbstractHost implements Numberable
     public boolean declaresMethodByName(String name)
     {
         checkLevel(SIGNATURES);
-        Iterator methodIt = methodIterator();
+        Iterator<SootMethod> methodIt = methodIterator();
 
         while(methodIt.hasNext())
         {
-            SootMethod method = (SootMethod) methodIt.next();
+            SootMethod method = methodIt.next();
 
             if(method.getName().equals(name))
                 return true;
@@ -586,8 +586,8 @@ public class SootClass extends AbstractHost implements Numberable
         }
         subSigToMethods.put(m.getNumberedSubSignature(),m);
         methodList.add(m);
-        m.isDeclared = true;
-        m.declaringClass = this;
+        m.setDeclared(true);
+        m.setDeclaringClass(this);
         
     }
 
@@ -607,7 +607,7 @@ public class SootClass extends AbstractHost implements Numberable
         }
         subSigToMethods.put(m.getNumberedSubSignature(),null);
         methodList.remove(m);
-        m.isDeclared = false;
+        m.setDeclared(false);
     }
 
     /**

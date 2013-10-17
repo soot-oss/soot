@@ -18,6 +18,7 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
 import heros.InterproceduralCFG;
@@ -28,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
 
 import soot.EquivalentValue;
 import soot.Local;
@@ -102,13 +103,14 @@ public class IFDSReachingDefinitions extends DefaultJimpleIFDSTabulationProblem<
 
 					@Override
 					public Set<Pair<Value, Set<DefinitionStmt>>> computeTargets(Pair<Value, Set<DefinitionStmt>> source) {
-						if(localArguments.contains(source.getO1())) {
-							int paramIndex = args.indexOf(source.getO1());
-							Pair<Value, Set<DefinitionStmt>> pair = new Pair<Value, Set<DefinitionStmt>>(
-									new EquivalentValue(Jimple.v().newParameterRef(destinationMethod.getParameterType(paramIndex), paramIndex)),
-									source.getO2());
-							return Collections.singleton(pair);
-						}
+						if (!destinationMethod.getName().equals("<clinit>"))
+							if(localArguments.contains(source.getO1())) {
+								int paramIndex = args.indexOf(source.getO1());
+								Pair<Value, Set<DefinitionStmt>> pair = new Pair<Value, Set<DefinitionStmt>>(
+										new EquivalentValue(Jimple.v().newParameterRef(destinationMethod.getParameterType(paramIndex), paramIndex)),
+										source.getO2());
+								return Collections.singleton(pair);
+							}
 
 						return Collections.emptySet();
 					}
@@ -163,10 +165,10 @@ public class IFDSReachingDefinitions extends DefaultJimpleIFDSTabulationProblem<
 		};
 	}
 
-	@Override
-	public Set<Unit> initialSeeds() {
-		return Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst());
+	public Map<Unit, Set<Pair<Value, Set<DefinitionStmt>>>> initialSeeds() {
+		return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
 	}
+
 
 	public Pair<Value, Set<DefinitionStmt>> createZeroValue() {
 		return new Pair<Value, Set<DefinitionStmt>>(new JimpleLocal("<<zero>>", NullType.v()), Collections.<DefinitionStmt> emptySet());

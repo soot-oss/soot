@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,13 +24,17 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.SingleRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
+import soot.Body;
 import soot.Local;
+import soot.RefType;
 import soot.Type;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 
@@ -44,12 +48,17 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
     }
 
     public void jimplify (DexBody body) {
-        int dest = ((SingleRegisterInstruction)instruction).getRegisterA();
+        int dest = ((OneRegisterInstruction)instruction).getRegisterA();
         Local l = body.getRegisterLocal(dest);
         stmtToRetype = Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef());
         setUnit(stmtToRetype);
         tagWithLineNumber(stmtToRetype);
         body.add(stmtToRetype);
+        
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ stmtToRetype);
+            DalvikTyper.v().setType(stmtToRetype.getLeftOpBox(), RefType.v("java.lang.Throwable"), false);
+        }
     }
 
     public void setRealType(DexBody body, Type t) {
@@ -57,22 +66,22 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         body.addRetype(this);
     }
 
-    public void retype() {
+    public void retype(Body body) {
         if (realType == null)
             throw new RuntimeException("Real type of this instruction has not been set or was already retyped: " + this);
-        Local l = (Local)(stmtToRetype.getLeftOp());
-        l.setType(realType);
-        realType = null;
+        if (body.getUnits().contains(stmtToRetype)) {
+	        Local l = (Local)(stmtToRetype.getLeftOp());
+	        l.setType(realType);
+	        realType = null;
+        }
     }
 
     @Override
     boolean overridesRegister(int register) {
-        SingleRegisterInstruction i = (SingleRegisterInstruction) instruction;
+        OneRegisterInstruction i = (OneRegisterInstruction) instruction;
         int dest = i.getRegisterA();
         return register == dest;
     }
     
-    public void getConstraint(IDalvikTyper dalvikTyper) {
-      dalvikTyper.setObjectType(stmtToRetype.getLeftOpBox());
-    }
+
 }

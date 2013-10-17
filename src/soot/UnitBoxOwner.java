@@ -32,7 +32,7 @@ import java.util.*;
  **/
 public interface UnitBoxOwner
 {
-    public List getUnitBoxes();
+    public List<UnitBox> getUnitBoxes();
     public void clearUnitBoxes();
 }
     

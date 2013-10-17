@@ -1,10 +1,10 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
- * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ *
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
- * 
+ *
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,14 +24,21 @@
 
 package soot.dexpler;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib.AnnotationDirectoryItem;
-import org.jf.dexlib.ClassDataItem;
-import org.jf.dexlib.ClassDefItem;
-import org.jf.dexlib.TypeIdItem;
+import org.jf.dexlib2.iface.Annotation;
+import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.iface.DexFile;
+import org.jf.dexlib2.iface.Field;
+import org.jf.dexlib2.iface.Method;
+
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.SootResolver;
+import soot.Type;
+import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
 
 /**
  * DexClass is a container for all relevant information of that class
@@ -42,134 +49,94 @@ import org.jf.dexlib.TypeIdItem;
 public class DexClass {
 
     protected String name;
-    protected TypeIdItem type;
+    protected String type;
 
     protected String superClassName;
     protected String[] interfaceNames;
 
-    protected AnnotationDirectoryItem annotations;
-    protected Set<DexField> fields;
-    protected Set<DexMethod> methods;
-    protected Set<DexType> types;
+    protected Set<? extends Annotation> annotations;
+    protected Set<SootField> fields;
+    protected Set<SootMethod> soot_methods;
+    protected Set<Type> types;
 
     protected int accessFlags;
+    
 
     /**
      * The constructor consumes a class definition item of dexlib and retrieves all subsequent methods, types and fields.
      * @param classDef
      */
-    public DexClass(ClassDefItem classDef) {
-    	type = classDef.getClassType();
-        this.name = classDef.getClassType().getTypeDescriptor();
-        this.types = new HashSet<DexType>();
-        TypeIdItem superClass = classDef.getSuperclass();
-		this.superClassName = superClass.getTypeDescriptor();
-		this.types.add(new DexType(superClass));
-        this.accessFlags = classDef.getAccessFlags();
+    private DexClass(ClassDef classDef) {}
+
+
+    public static Dependencies makeSootClass(SootClass sc, ClassDef defItem, DexFile dexFile) {
+
+        String superClass = defItem.getSuperclass();
+        Dependencies deps = new Dependencies();
+
+        // super class for hierarchy level
+        String superClassName = Util.dottedClassName(superClass);
+        SootClass sootSuperClass = SootResolver.v().makeClassRef(superClassName);
+        sc.setSuperclass(sootSuperClass);
+        deps.typesToHierarchy.add(sootSuperClass.getType());
+
+        // access flags
+        int accessFlags = defItem.getAccessFlags();
+        sc.setModifiers(accessFlags);
 
         // Retrieve interface names
-        if (classDef.getInterfaces() == null)
-            this.interfaceNames = new String[0];
-        else {
-            this.interfaceNames = new String[classDef.getInterfaces().getTypes().size()];
-            int i = 0;
-            for (TypeIdItem interfaceName : classDef.getInterfaces().getTypes()) {
-                this.interfaceNames[i++] = interfaceName.getTypeDescriptor();
-                this.types.add(new DexType(interfaceName));
+        if (defItem.getInterfaces() != null) {
+            for (String interfaceName : defItem.getInterfaces()) {
+                String interfaceClassName = Util.dottedClassName(interfaceName);
+                if (sc.implementsInterface(interfaceClassName))
+                    continue;
+                SootClass interfaceClass = SootResolver.v().makeClassRef(interfaceClassName);
+                sc.addInterface(interfaceClass);
+                deps.typesToHierarchy.add(interfaceClass.getType());
             }
         }
 
-        // retrieve methods, fields and annotations
-        ClassDataItem classData = classDef.getClassData();
-        if (classData == null) {
-            this.methods = Collections.emptySet();
-            this.fields = Collections.emptySet();
-        } else {
-            int numMethods = classData.getDirectMethods().length + classData.getVirtualMethods().length;
-            int numFields = classData.getInstanceFields().length + classData.getStaticFields().length;
-
-            this.methods = new HashSet<DexMethod>(numMethods);
-            this.fields = new HashSet<DexField>(numFields);
-            this.annotations = classDef.getAnnotations();
-
-            // get the fields of the class
-            ClassDataItem.EncodedField[] fields = Util.concat(classData.getInstanceFields(), classData.getStaticFields());
-            for (ClassDataItem.EncodedField field : fields) {
-                DexField dexField = new DexField(field, this);
-                this.fields.add(dexField);
-            }
-            ClassDataItem.EncodedMethod[] methods = Util.concat(classData.getDirectMethods(), classData.getVirtualMethods());
-            // get the methods of the class
-            for (ClassDataItem.EncodedMethod method : methods) {
-                DexMethod dexMethod;
-//                try {
-                  dexMethod = new DexMethod(classDef.getDexFile(), method, this);
-                  this.methods.add(dexMethod);
-//                } catch (Exception e) {
-//                  e.printStackTrace();
-//                  G.v().out.println("Warning: method '"+ this.name +"."+ method.method.getMethodString() +"generated an Exception!");
-//                }
-            }
+        if (Options.v().oaat() && sc.resolvingLevel() <= SootClass.HIERARCHY) {
+            return deps;
         }
-    }
-    /**
-     *
-     * @return modifiers of the class
-     */
-    public int getModifiers() {
-        return this.accessFlags;
-    }
 
-    /**
-     *
-     * @return the name of the class
-     */
-    public String getName() {
-        return this.name;
-    }
+        DexAnnotation da = new DexAnnotation(dexFile);
+        
+        // get the fields of the class
+        for (Field sf : defItem.getStaticFields()) {
+            if (sc.declaresField(sf.getName(), DexType.toSoot(sf.getType())))
+                continue;
+            SootField sootField = DexField.makeSootField(sf);
+            sc.addField(sootField);
+            da.handleFieldAnnotation(sootField, sf);
+        }
+        for (Field f: defItem.getInstanceFields()) {
+            if (sc.declaresField(f.getName(), DexType.toSoot(f.getType())))
+                continue;
+            SootField sootField = DexField.makeSootField(f);
+            sc.addField(sootField);
+            da.handleFieldAnnotation(sootField, f);
+        }
 
-    public TypeIdItem getType() {
-        return type;
-    }
+        // get the methods of the class
+        for (Method method : defItem.getDirectMethods()) {
+            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
+            if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
+                continue;
+            sc.addMethod(sm);
+            da.handleMethodAnnotation(sm, method);        
+        }
+        for (Method method : defItem.getVirtualMethods()) {
+            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
+            if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
+                continue;
+            sc.addMethod(sm);
+            da.handleMethodAnnotation(sm, method);
+        }
+        
+        da.handleClassAnnotation(sc, defItem);
 
-    /**
-     *
-     * @return the name of the super class
-     */
-    public String getSuperclass() {
-        return superClassName;
-    }
-
-    /**
-     *
-     * @return an array of all implemented interfaces
-     */
-    public String[] getInterfaces() {
-        return this.interfaceNames;
-    }
-
-    /**
-     *
-     * @return all methods that are declared in this class
-     */
-    public Set<DexMethod> getDeclaredMethods() {
-        return this.methods;
-    }
-    /**
-     *
-     * @return all fields that are declared in this class
-     */
-    public Set<DexField> getDeclaredFields() {
-        return this.fields;
-    }
-
-    /**
-     * Return all types that are referenced in this class.
-     *
-     * This includes Types of local variables as well.
-     */
-    public Set<DexType> getAllTypes() {
-        return this.types;
+        return deps;
     }
 
 

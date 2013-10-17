@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,12 +24,14 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.Instruction22t;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction22t;
 
 import soot.Local;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.BinopExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
@@ -50,12 +52,14 @@ public class IfTestInstruction extends ConditionalJumpInstruction {
         BinopExpr condition = getComparisonExpr(one, other);
         jif = (JIfStmt)Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
         // setUnit() is called in ConditionalJumpInstruction
-        return jif;
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-		  BinopExpr condition = (BinopExpr)jif.getCondition();
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          dalvikTyper.addConstraint(condition.getOp1Box(), condition.getOp2Box());
+
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
+		    Debug.printDbg(IDalvikTyper.DEBUG, "constraint if: "+ jif +" condition: "+ condition);
+		    DalvikTyper.v().addConstraint(condition.getOp1Box(), condition.getOp2Box());
         }
+        
+        
+        return jif;
+        
     }
 }

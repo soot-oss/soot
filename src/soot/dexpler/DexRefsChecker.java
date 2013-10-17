@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -60,8 +60,6 @@ public class DexRefsChecker extends DexTransformer {
 
         for (Unit u: getRefCandidates(body)) {
           Stmt s = (Stmt)u;
-          boolean isDeclared = false;
-          boolean isPhantom = false;
           boolean hasField = false;
           FieldRef fr = null;
           SootField sf = null;
@@ -70,15 +68,13 @@ public class DexRefsChecker extends DexTransformer {
             sf = fr.getField();
             if (sf != null) {             
               hasField = true;
-              isDeclared = sf.isDeclared();
-              isPhantom = sf.isPhantom();
             }
           } else {
             throw new RuntimeException("Unit '"+ u +"' does not contain array ref nor field ref.");
           }
           
           if (!hasField) {
-            Debug.printDbg("field "+ fr +" '"+ fr +"' has not been found!");
+            Debug.printDbg("field ", fr ," '", fr ,"' has not been found!");
             System.out.println("Warning: add missing field '"+ fr +"' to class!");
             SootClass sc = null;
             String frStr = fr.toString();
@@ -90,7 +86,7 @@ public class DexRefsChecker extends DexTransformer {
             String fname = fr.toString().split(">")[0].split(" ")[2];
             int modifiers = soot.Modifier.PUBLIC;
             Type ftype = fr.getType();
-            Debug.printDbg("missing field: to class '"+ sc +"' field name '"+ fname +"' field modifiers '"+ modifiers +"' field type '"+ ftype +"'");
+            Debug.printDbg("missing field: to class '", sc ,"' field name '", fname ,"' field modifiers '", modifiers ,"' field type '", ftype ,"'");
             sc.addField(new SootField(fname, ftype, modifiers));
           } else {
             //System.out.println("field "+ sf.getName() +" '"+ sf +"' phantom: "+ isPhantom +" declared: "+ isDeclared);

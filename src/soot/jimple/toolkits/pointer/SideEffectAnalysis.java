@@ -31,14 +31,14 @@ public class SideEffectAnalysis {
     Map<SootMethod, MethodRWSet> methodToNTWriteSet = new HashMap<SootMethod, MethodRWSet>();
     int rwsetcount = 0;
     TransitiveTargets tt;
-
+    
     public void findNTRWSets( SootMethod method ) {
 	if( methodToNTReadSet.containsKey( method )
 	    && methodToNTWriteSet.containsKey( method ) ) return;
 	
 	MethodRWSet read = null;
 	MethodRWSet write = null;
-	for( Iterator sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+	for( Iterator<Unit> sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
 	    final Stmt s = (Stmt) sIt.next();
             RWSet ntr = ntReadSet( method, s );
             if( ntr != null ) {
@@ -53,7 +53,6 @@ public class SideEffectAnalysis {
 	}
 	methodToNTReadSet.put( method, read );
 	methodToNTWriteSet.put( method, write );
-	SootClass c = method.getDeclaringClass();
     }
 
     public RWSet nonTransitiveReadSet( SootMethod method ) {
@@ -66,7 +65,16 @@ public class SideEffectAnalysis {
 	return methodToNTWriteSet.get( method );
     }
 
-    public SideEffectAnalysis( PointsToAnalysis pa, CallGraph cg ) {
+    private SideEffectAnalysis() {
+		if( G.v().Union_factory == null ) {
+		    G.v().Union_factory = new UnionFactory() {
+			public Union newUnion() { return FullObjectSet.v(); }
+		    };
+		}
+	}
+
+	public SideEffectAnalysis( PointsToAnalysis pa, CallGraph cg ) {
+	    this();
 	this.pa = pa;
 	this.cg = cg;
         this.tt = new TransitiveTargets( cg );
@@ -78,6 +86,7 @@ public class SideEffectAnalysis {
     // For example, using the NonClinitEdgesPred, you can create a 
     // SideEffectAnalysis that will ignore static initializers
     // - R. Halpert 2006-12-02
+    this();
 	this.pa = pa;
 	this.cg = cg;
         this.tt = new TransitiveTargets( cg, filter );

@@ -1,5 +1,5 @@
 // 
-// (c) 2012 University of Luxembourg – Interdisciplinary Centre for 
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel

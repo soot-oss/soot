@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,11 +24,14 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.Instruction11x;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction11x;
 
+import soot.RefType;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
 
@@ -46,10 +49,10 @@ public class ThrowInstruction extends DexlibAbstractInstruction {
         setUnit(throwStmt);
         tagWithLineNumber(throwStmt);
         body.add(throwStmt);
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          dalvikTyper.setObjectType(throwStmt.getOpBox());
+		
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ throwStmt);
+          DalvikTyper.v().setType(throwStmt.getOpBox(), RefType.v("java.lang.Throwable"), true);
         }
     }
 }

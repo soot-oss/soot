@@ -18,6 +18,7 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
 import heros.InterproceduralCFG;
@@ -29,8 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
 
 import soot.Local;
 import soot.NullType;
@@ -125,6 +126,10 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
 
 					@Override
 					public Set<Local> computeTargets(final Local source) {
+						// Do not map parameters for <clinit> edges
+						if (destinationMethod.getName().equals("<clinit>"))
+							return Collections.emptySet();
+
 						for (Local localArgument : localArguments) {
 							if (source.equivTo(localArgument)) {
 								return Collections.<Local>singleton(destinationMethod.getActiveBody().getParameterLocal(args.indexOf(localArgument)));
@@ -199,9 +204,9 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
 			}
 		};
 	}
-	@Override
-	public Set<Unit> initialSeeds() {
-		return Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst());
+
+	public Map<Unit, Set<Local>> initialSeeds() {
+		return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()), zeroValue());
 	}
 
 	@Override

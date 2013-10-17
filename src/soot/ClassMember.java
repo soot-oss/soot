@@ -38,6 +38,9 @@ public interface ClassMember
     /** Returns true when this object is from a phantom class. */
     public boolean isPhantom();
 
+    /** Sets the phantom flag */
+    public void setPhantom(boolean value);
+
     /** Convenience method returning true if this class member is protected. */
     public boolean isProtected();
 
@@ -55,6 +58,8 @@ public interface ClassMember
 
     /** Returns modifiers of this class member. */
     public int getModifiers();
+
+
 }
 
 

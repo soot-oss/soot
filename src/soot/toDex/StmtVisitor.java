@@ -17,6 +17,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -178,7 +179,7 @@ public class StmtVisitor implements StmtSwitch {
 		int nextOffset = 0;
 		for (Insn i : insns) {
 			i.setInsnOffset(nextOffset);
-			nextOffset += i.getSize(nextOffset);
+			nextOffset += i.getSize();
 		}
 		// ..to use them as new targets
 		setTargets();
@@ -206,8 +207,8 @@ public class StmtVisitor implements StmtSwitch {
 
 	private void finishRegs() {
 		// fit registers into insn formats, potentially replacing insns
-		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc, insns);
-		insns = regAssigner.finishRegs();
+		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc);
+		insns = regAssigner.finishRegs(insns);
 	}
 	
 	private void finishTargets() {
@@ -233,17 +234,7 @@ public class StmtVisitor implements StmtSwitch {
 				continue;
 			}
 			if (curInsn.getOpcode().name.startsWith("goto")) {
-				InsnWithOffset patchedGoto;
-				int curInsnOffset = curInsn.getInsnOffset();
-				if (SootToDexUtils.fitsSigned16(curInsnOffset)) {
-					patchedGoto = new Insn20t(Opcode.GOTO_16);
-				} else if (SootToDexUtils.fitsSigned32(curInsnOffset)) {
-					patchedGoto = new Insn30t(Opcode.GOTO_32);
-				} else {
-					throw new Error("a goto target does not fit into 32 bit - this means that the method has too many instructions");
-				}
-				patchedGoto.setInsnOffset(curInsnOffset);
-				patchedGoto.setOffset(curInsn.getOffset());
+				InsnWithOffset patchedGoto = patchGoto(curInsn);
 				insns.set(i, patchedGoto);
 				hadToPatch = true;
 			} else if (curInsn.getOpcode().name.startsWith("if-")) {
@@ -256,6 +247,21 @@ public class StmtVisitor implements StmtSwitch {
 			}
 		}
 		return hadToPatch;
+	}
+
+	private InsnWithOffset patchGoto(InsnWithOffset gotoInsn) {
+		InsnWithOffset patchedGoto;
+		int curInsnOffset = gotoInsn.getInsnOffset();
+		if (SootToDexUtils.fitsSigned16(curInsnOffset)) {
+			patchedGoto = new Insn20t(Opcode.GOTO_16);
+		} else if (SootToDexUtils.fitsSigned32(curInsnOffset)) {
+			patchedGoto = new Insn30t(Opcode.GOTO_32);
+		} else {
+			throw new Error("a goto target does not fit into 32 bit - this means that the method has too many instructions");
+		}
+		patchedGoto.setInsnOffset(curInsnOffset);
+		patchedGoto.setOffset(gotoInsn.getOffset());
+		return patchedGoto;
 	}
 
 	/*
@@ -279,17 +285,7 @@ public class StmtVisitor implements StmtSwitch {
 	 * where the if insn has a "near" target and the "goto bar" a "far" target.
 	 */
 	private void reverseIfAndAddGoto(InsnWithOffset oldIfInsn, int insnIndex) {
-		// create reversed if insn
-		Opcode oldOpc = oldIfInsn.getOpcode();
-		Opcode reversedOpc = oppositeIfs.get(oldOpc);
-		InsnWithOffset reversedIf;
-		if (oldOpc.name.endsWith("z")) {
-			Insn21t oldIfz = (Insn21t) oldIfInsn;
-			reversedIf = new Insn21t(reversedOpc, oldIfz.getRegA());
-		} else {
-			Insn22t oldIf = (Insn22t) oldIfInsn;
-			reversedIf = new Insn22t(reversedOpc, oldIf.getRegA(), oldIf.getRegB());
-		}
+		InsnWithOffset reversedIf = reverseIf(oldIfInsn);
 		// set the new near target and replace if insn
 		AddressInsn newIfTarget = getNextTarget(insnIndex + 1);
 		reversedIf.setOffset(newIfTarget.getOriginalSource());
@@ -298,6 +294,17 @@ public class StmtVisitor implements StmtSwitch {
 		Insn10t newGoto = new Insn10t(Opcode.GOTO);
 		newGoto.setOffset(oldIfInsn.getOffset());
 		insns.add(insnIndex + 1, newGoto);
+	}
+
+	private InsnWithOffset reverseIf(InsnWithOffset ifInsn) {
+		Opcode oldOpc = ifInsn.getOpcode();
+		Opcode reversedOpc = oppositeIfs.get(oldOpc);
+		if (oldOpc.name.endsWith("z")) {
+			Insn21t oldIfz = (Insn21t) ifInsn;
+			return new Insn21t(reversedOpc, oldIfz.getRegA());
+		}
+		Insn22t oldIf = (Insn22t) ifInsn;
+		return new Insn22t(reversedOpc, oldIf.getRegA(), oldIf.getRegB());
 	}
 
 	private AddressInsn getNextTarget(int startIndex) {
@@ -317,50 +324,60 @@ public class StmtVisitor implements StmtSwitch {
 		return regAlloc.getRegCount();
 	}
 
+	@Override
 	public void defaultCase(Object o) {
 		// not-int and not-long aren't implemented because soot converts "~x" to "x ^ (-1)"
 		// fill-array-data isn't implemented since soot converts "new int[]{x, y}" to individual "array put" expressions for x and y
 		throw new Error("unknown Object (" + o.getClass() + ") as Stmt: " + o);
 	}
 	
+	@Override
 	public void caseBreakpointStmt(BreakpointStmt stmt) {
 		return; // there are no breakpoints in dex bytecode
 	}
 	
+	@Override
 	public void caseNopStmt(NopStmt stmt) {
 		addInsn(new Insn10x(Opcode.NOP));
 	}
 
+	@Override
 	public void caseRetStmt(RetStmt stmt) {
 		throw new Error("ret statements are deprecated!");
 	}
 	
+	@Override
 	public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
 		addInsn(buildMonitorInsn(stmt, Opcode.MONITOR_ENTER));
 	}
 	
+	@Override
 	public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
 		addInsn(buildMonitorInsn(stmt, Opcode.MONITOR_EXIT));
 	}
 	
 	private Insn buildMonitorInsn(MonitorStmt stmt, Opcode opc) {
 		Value lockValue = stmt.getOp();
-		Register lockReg = regAlloc.asLocal(lockValue);
+		Register lockReg = regAlloc.asImmediate(lockValue, constantV);
 		return new Insn11x(opc, lockReg);
 	}
 	
+	@Override
 	public void caseThrowStmt(ThrowStmt stmt) {
 		Value exception = stmt.getOp();
 		Register exceptionReg = regAlloc.asImmediate(exception, constantV);
 		addInsn(new Insn11x(Opcode.THROW, exceptionReg));
 	}
 	
+	@Override
 	public void caseAssignStmt(AssignStmt stmt) {
 		Value lhs = stmt.getLeftOp();
 		if (lhs instanceof ConcreteRef) {
+		    regAlloc.setMultipleConstantsPossible(true); // for array refs (ex: a[2] = 3)
 			// special cases that lead to *put* opcodes
 			Value source = stmt.getRightOp();
 			addInsn(buildPutInsn((ConcreteRef) lhs, source));
+			regAlloc.setMultipleConstantsPossible(false); // for array refs
 			return;
 		}
 		// other cases, where lhs is a local
@@ -544,14 +561,17 @@ public class StmtVisitor implements StmtSwitch {
 		return new Insn11x(opc, destinationReg);
 	}
 	
+	@Override
 	public void caseInvokeStmt(InvokeStmt stmt) {
 		stmt.getInvokeExpr().apply(exprV);
 	}
 	
+	@Override
 	public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
 		addInsn(new Insn10x(Opcode.RETURN_VOID));
 	}
 	
+	@Override
 	public void caseReturnStmt(ReturnStmt stmt) {
 		Value returnValue = stmt.getOp();
 		Register returnReg = regAlloc.asImmediate(returnValue, constantV);
@@ -567,6 +587,7 @@ public class StmtVisitor implements StmtSwitch {
 		addInsn(new Insn11x(opc, returnReg));
 	}
 
+	@Override
 	public void caseIdentityStmt(IdentityStmt stmt) {
 		Value lhs = stmt.getLeftOp();
 		Value rhs = stmt.getRightOp();
@@ -580,12 +601,13 @@ public class StmtVisitor implements StmtSwitch {
 			 * at least use the local for further reference in the statements
 			 */
 			Local localForThis = (Local) lhs;
-			regAlloc.asParameter(localForThis);
+			regAlloc.asParameter(belongingMethod, localForThis);
 		} else {
 			throw new Error("unknown Value as right-hand side of IdentityStmt: " + rhs);
 		}
 	}
 	
+	@Override
 	public void caseGotoStmt(GotoStmt stmt) {
 		Stmt target = (Stmt) stmt.getTarget();
 		addInsn(buildGotoInsn(target));
@@ -597,16 +619,15 @@ public class StmtVisitor implements StmtSwitch {
 		return insn;
 	}
 	
+	@Override
 	public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
 		// create payload that references the switch's targets
-		@SuppressWarnings("unchecked")
 		List<IntConstant> keyValues = stmt.getLookupValues();
 		int[] keys = new int[keyValues.size()];
 		for (int i = 0; i < keys.length; i++) {
 			keys[i] = keyValues.get(i).value;
 		}
-		@SuppressWarnings("unchecked")
-		List<Stmt> targets = stmt.getTargets();
+		List<Unit> targets = stmt.getTargets();
 		SparseSwitchPayload payload = new SparseSwitchPayload(keys, targets);
 		switchPayloads.add(payload);
 		// create sparse-switch instruction that references the payload
@@ -615,11 +636,12 @@ public class StmtVisitor implements StmtSwitch {
 		addInsn(buildSwitchInsn(Opcode.SPARSE_SWITCH, key, defaultTarget, payload));
 	}
 
+	@Override
 	public void caseTableSwitchStmt(TableSwitchStmt stmt) {
 		// create payload that references the switch's targets
 		int firstKey = stmt.getLowIndex();
 		@SuppressWarnings("unchecked")
-		List<Stmt> targets = stmt.getTargets();
+		List<Unit> targets = stmt.getTargets();
 		PackedSwitchPayload payload = new PackedSwitchPayload(firstKey, targets);
 		switchPayloads.add(payload);
 		// create packed-switch instruction that references the payload
@@ -638,6 +660,7 @@ public class StmtVisitor implements StmtSwitch {
 		return buildGotoInsn(defaultTarget);
 	}
 	
+	@Override
 	public void caseIfStmt(IfStmt stmt) {
 		Stmt target = stmt.getTarget();
 		exprV.setTargetForOffset(target);

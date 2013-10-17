@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,18 +24,21 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.ThreeRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.ThreeRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.Local;
 import soot.Value;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.LongOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
@@ -69,23 +72,20 @@ public class BinopInstruction extends TaggedInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          if (!(op >= 0x90 && op <= 0xaf)) {
-            throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0x90 and 0xaf.");
-          }
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+          int op = (int)instruction.getOpcode().value;
           BinopExpr bexpr = (BinopExpr)expr;
           JAssignStmt jassign = (JAssignStmt)assign;
-          dalvikTyper.setType(bexpr.getOp1Box(), op1BinType[op-0x90]);
-          dalvikTyper.setType(bexpr.getOp2Box(), op2BinType[op-0x90]);
-          dalvikTyper.setType(jassign.leftBox, resBinType[op-0x90]);
+          DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0x90], true);
+          DalvikTyper.v().setType(bexpr.getOp2Box(), op2BinType[op-0x90], true);
+          DalvikTyper.v().setType(jassign.leftBox, resBinType[op-0x90], false);
         }
     }
 
     private Value getExpression(Local source1, Local source2) {
-        switch(instruction.opcode) {
+        Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case ADD_LONG:
           setTag (new LongOpTag());
           return Jimple.v().newAddExpr(source1, source2);
@@ -194,7 +194,7 @@ public class BinopInstruction extends TaggedInstruction {
             return Jimple.v().newUshrExpr(source1, source2);
 
         default :
-            throw new RuntimeException("Invalid Opcode: " + instruction.opcode);
+            throw new RuntimeException("Invalid Opcode: " + opcode);
         }
     }
 

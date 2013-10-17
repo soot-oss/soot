@@ -118,7 +118,7 @@ public final class OnFlyCallGraphBuilder
 	                    }
 	                }
 	                VirtualCallSite site = new VirtualCallSite( s, source, null, null, Kind.CLINIT );
-	                List<VirtualCallSite> sites = (List<VirtualCallSite>) stringConstToSites.get(constant);
+	                List<VirtualCallSite> sites = stringConstToSites.get(constant);
 	                if (sites == null) {
 	                    stringConstToSites.put(constant, sites = new ArrayList<VirtualCallSite>());
 	                    stringConstants.add(constant);
@@ -350,14 +350,14 @@ public final class OnFlyCallGraphBuilder
 				body.getUnits().insertBefore(assignStmt, insertionPoint);
 				
 				//exc.<init>(message)
-				SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.singletonList(RefType.v("java.lang.String"))).makeRef();
+				SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
 				SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message));
 				InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
 				body.getUnits().insertAfter(initStmt, assignStmt);
 				
 				if(options.guards().equals("print")) {
 					//exc.printStackTrace();
-					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal, Scene.v().getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.emptyList()).makeRef());
+					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal, Scene.v().getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
 					InvokeStmt printStackTraceStmt = Jimple.v().newInvokeStmt(printStackTraceExpr);
 					body.getUnits().insertAfter(printStackTraceStmt, initStmt);
 				} else if(options.guards().equals("throw")) {
@@ -378,7 +378,7 @@ public final class OnFlyCallGraphBuilder
     private final LargeNumberedMap methodToReceivers = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap methodToReceivers() { return methodToReceivers; }
 
-    private final SmallNumberedMap stringConstToSites = new SmallNumberedMap( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
+    private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
     private final LargeNumberedMap methodToStringConstants = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap methodToStringConstants() { return methodToStringConstants; }
 
@@ -472,7 +472,7 @@ public final class OnFlyCallGraphBuilder
         return stringConstToSites.get(stringConst) != null;
     }
     public void addStringConstant( Local l, Context srcContext, String constant ) {
-        for( Iterator siteIt = ((Collection) stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
+        for( Iterator siteIt = (stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
             final VirtualCallSite site = (VirtualCallSite) siteIt.next();
             if( constant == null ) {
                 if( options.verbose() ) {
@@ -664,11 +664,13 @@ public final class OnFlyCallGraphBuilder
                 }
             } else {
                 SootClass sootcls = Scene.v().getSootClass( cls );
-                if( !sootcls.isApplicationClass() ) {
-                    sootcls.setLibraryClass();
-                }
-                for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
-                    addEdge( src, srcUnit, clinit, Kind.CLINIT );
+                if (!sootcls.isPhantomClass()) {
+	                if( !sootcls.isApplicationClass() ) {
+	                    sootcls.setLibraryClass();
+	                }
+	                for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
+	                    addEdge( src, srcUnit, clinit, Kind.CLINIT );
+	                }
                 }
 
             }

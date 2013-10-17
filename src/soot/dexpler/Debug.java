@@ -1,5 +1,5 @@
 // 
-// (c) 2012 University of Luxembourg – Interdisciplinary Centre for 
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -25,9 +25,19 @@ import soot.options.Options;
 public class Debug {
   public static boolean DEXPLER_DEBUG;
   
-  public static void printDbg (String s) {
+  public static void printDbg (String s, Object...objects) {
     DEXPLER_DEBUG = Options.v().verbose();
-    if (DEXPLER_DEBUG)
+    if (DEXPLER_DEBUG) {
+      for (Object o: objects) {
+        s += o.toString();
+      }
       System.out.println (s);
+    }
+      
+  }
+  
+  public static void printDbg (boolean c, String s, Object...objects) {
+      if (c)
+          printDbg(s, objects);
   }
 }

@@ -25,14 +25,12 @@
  */
 
 
-
-
-
-
 package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
+import soot.tagkit.SourceFileTag;
+
 import java.util.*;
 
 public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr 
@@ -42,7 +40,10 @@ public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr
         super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);
         
         if(methodRef.declaringClass().isInterface()) {
-        	throw new RuntimeException("Trying to create virtual invoke expression for interface type. Use JInterfaceInvokeExpr instead!");
+            SootClass sc = methodRef.declaringClass();
+            String path = sc.hasTag("SourceFileTag")? ((SourceFileTag)sc.getTag("SourceFileTag")).getAbsolutePath() : "uknown";
+            throw new RuntimeException("Trying to create virtual invoke expression for interface type ("+
+                    methodRef.declaringClass().getName()+" in file "+path+"). Use JInterfaceInvokeExpr instead!");
         }
 
         for(int i = 0; i < args.size(); i++)

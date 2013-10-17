@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
+import soot.Hierarchy;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -121,27 +121,37 @@ public class FullSensitiveNode extends IVarAbstraction
 		 * We have a pointer p in type A.
 		 * pts(p) = { o1, o2 }, where o1 is in type A and o2 is in type B.
 		 * Therefore, the call p.foo() will be resolved to call both A::foo and B::foo.
-		 * Then, in the points-to analysis, we have to assignments: p -> A::foo.THIS, p -> B::foo.THIS
+		 * Then, in the points-to analysis, we have two assignments: p -> A::foo.THIS, p -> B::foo.THIS
 		 * At this time, obviously, although with the type filter, A::foo.THIS will receive the object o2, which is definitely a fake.
 		 * Thus, we need a new filter to guarantee that A::foo.THIS only points to o1.
 		 * We call this filter "this pointer filter".
 		 */
-		if ( me instanceof LocalVarNode &&
-				((LocalVarNode)me).isThisPtr() ) {
-			SootMethod func = ((LocalVarNode)me).getMethod();
+		Node wrappedNode = getWrappedNode();
+		if ( wrappedNode instanceof LocalVarNode &&
+				((LocalVarNode)wrappedNode).isThisPtr() ) {
+			SootMethod func = ((LocalVarNode)wrappedNode).getMethod();
 			if ( !func.isConstructor() ) {
 				// We don't process the specialinvoke call edge
 				SootClass defClass = func.getDeclaringClass();
+				Hierarchy typeHierarchy = Scene.v().getActiveHierarchy();
 				
 				for ( Iterator<AllocNode> it = new_pts.keySet().iterator(); it.hasNext(); ) {
 					AllocNode obj = it.next();
 					if ( obj.getType() instanceof RefType ) {
 						SootClass sc = ((RefType)obj.getType()).getSootClass();
-						if ( defClass != sc && 
-								Scene.v().getActiveHierarchy().resolveConcreteDispatch(sc, func) != func ) {
-							it.remove();
-							// Also preclude it from propagation again
-							pt_objs.put(obj, (GeometricManager)deadManager);
+						if ( defClass != sc ) {
+							try {
+								SootMethod rt_func = typeHierarchy.resolveConcreteDispatch(sc, func);
+								if ( rt_func != func ) {
+									it.remove();
+									// Also preclude it from propagation again
+									pt_objs.put(obj, (GeometricManager)deadManager);
+								}
+							}
+							catch ( RuntimeException e ) {
+								// If the input program has a wrong type cast, resolveConcreteDispatch fails and it goes here
+								// We simply ignore this error
+							}
 						}
 					}
 				}

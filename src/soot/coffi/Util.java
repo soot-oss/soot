@@ -42,26 +42,41 @@ public class Util
     public Util( Singletons.Global g ) {}
     public static Util v() { return G.v().soot_coffi_Util(); }
 
+    private cp_info[] activeConstantPool = null;
+    private LocalVariableTable_attribute activeVariableTable;
+    private LocalVariableTypeTable_attribute activeVariableTypeTable;
+    /* maps from variable names to local variable slot indexes to soot Locals*/
+    private Map<String, Map<Integer, Local>> nameToIndexToLocal;
+    private boolean useFaithfulNaming = false;
 
-    Map classNameToAbbreviation;
-    Set markedClasses;
-    LinkedList classesToResolve;
-
-    int activeOriginalIndex = -1;
-    cp_info[] activeConstantPool = null;
-    LocalVariableTable_attribute activeVariableTable;
-    LocalVariableTypeTable_attribute activeVariableTypeTable;
-    boolean useFaithfulNaming = false;
-    boolean isLocalStore = false;  // global variable used 
-    boolean isWideLocalStore = false;
+    /**
+      Set the informations relative to the current method body.
+      This method must be called before using getLocalForIndex(...)
+      and getLocalForStackOp(...) each time a different current method body
+      is considered.
+    */
+    public void bodySetup(LocalVariableTable_attribute la, 
+                      LocalVariableTypeTable_attribute lt,
+                      cp_info[] ca)
+    {
+      activeVariableTable = la;
+      activeVariableTypeTable = lt;
+      activeConstantPool = ca;
+      nameToIndexToLocal = null;
+    }
+    
     public void setFaithfulNaming(boolean v)
     {
         useFaithfulNaming = v;
-    }    
+    }   
 
-    public void resolveFromClassFile(SootClass aClass, InputStream is, List references)
+    public boolean isUsingFaithfulNaming() {
+      return useFaithfulNaming;
+    }
+
+    public void resolveFromClassFile(SootClass aClass, InputStream is, String filePath, List references)
     {
-        SootClass bclass = aClass;                
+        SootClass bclass = aClass;
         String className = bclass.getName();
         ClassFile coffiClass = new ClassFile(className);
         
@@ -358,7 +373,7 @@ public class Util
             if( sourceFile.indexOf(' ') >= 0 ) {
                 G.v().out.println( "Warning: Class "+className+" has invalid SourceFile attribute (will be ignored)." );
             } else {
-                bclass.addTag(new SourceFileTag( sourceFile ) );
+                bclass.addTag(new SourceFileTag( sourceFile , filePath) );
             }
 	
 	    }
@@ -714,11 +729,6 @@ swtch:
             return easyNames[justifiedIndex];
     }
 
-    void setClassNameToAbbreviation(Map map)
-    {
-        classNameToAbbreviation = map;
-    }
-
     Local getLocalForStackOp(JimpleBody listBody, TypeStack typeStack,
         int index)
     {
@@ -780,7 +790,7 @@ swtch:
         return className;
     }
 
-    public Local getLocal(Body b, String name) 
+    private Local getLocal(Body b, String name) 
         throws soot.jimple.NoSuchLocalException
     {
         Iterator localIt = b.getLocals().iterator();
@@ -797,7 +807,7 @@ swtch:
     }
 
 
-    public boolean declaresLocal(Body b, String localName)
+    private boolean declaresLocal(Body b, String localName)
     {
         Iterator localIt = b.getLocals().iterator();
 
@@ -812,62 +822,155 @@ swtch:
         return false;
     }
 
-     Local
-        getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
+    Local getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
     {
-        if(declaresLocal(listBody, name))
-        {
-            return getLocal(listBody, name);
+      Local l;
+      if(declaresLocal(listBody, name))
+      {
+        l = getLocal(listBody, name);
+        if(!l.getType().equals(type)) {
+          throw new RuntimeException("The body already declares this local name with a different type.");
         }
-        else {
-            Local l = Jimple.v().newLocal(name, type);
-            listBody.getLocals().add(l);
-
-            return l;
-        }
+      }
+      else {
+        l = Jimple.v().newLocal(name, type);
+        listBody.getLocals().add(l);
+      }
+      return l;
+    }
+    
+    /**
+      Get a Local for the parameter at the given local variable index.
+      @listBody the method body.
+      @index the parameter's local variable index.
+      @return the Local for the given local variable index.
+     */
+    Local getLocalForParameter(JimpleBody listBody, int index) {
+      return getLocalForIndex(listBody, index, 0, 0, false);
     }
 
-    Local getLocalForIndex(JimpleBody listBody, int index)
+    /**
+      Get a Local for the local variable at the given index in the context of
+      the given instruction.
+      @listBody the method body.
+      @index the local variable index.
+      @context the instruction context.
+      @return the Local for the given local variable index.
+     */
+    Local getLocalForIndex(JimpleBody listBody, int index, Instruction context) {
+      return getLocalForIndex(listBody, index, context.originalIndex, 
+        context.nextOffset(context.originalIndex), ByteCode.isLocalStore(context.code));
+    }
+
+    private Local getLocalForIndex(JimpleBody listBody, int index, int bcIndex, int nextBcIndex, boolean isLocalStore)
     {
-        String name = null;
-        String debug_type = null;
-        boolean assignedName = false;
-        if(useFaithfulNaming && activeVariableTable != null)
+      String name = null; 
+      Local local;
+      
+      if(useFaithfulNaming && activeVariableTable != null)
+      { 
+        /*
+          [use-original-names]
+          
+          Use original variables names. Generally speeking, the current 
+          way of handling original variables names is sound if the local
+          variable table is consistant with the source code. 
+          
+                      consistant(table) ==> sound(local for index)
+                      
+          In the table, variables are tuples ((s,l),i,N) where (s,l) 
+          encodes the half-open bytecode index interval [s,s+l[, i is the 
+          local variable index and N is the original variable name. 
+          ((s,l),i,N) means "from bytecode index s included to bytecode index
+          s+l excluded, the variable at index i is named N is the source 
+          code".
+          
+          However the content of the table is for informational and debugging 
+          purpose only, the compiler can insert whatever inconsistancies it 
+          may want, meaning we cannot trust the table.
+          
+          The most common inconsistancy we found so far is where variables
+          with different indexes and overlapping bytecode ranges are given the
+          same name in the table. Although it won't happen with user-defined 
+          variables since Java doesn't allow the same variable name to be 
+          declared in nested scopes. 
+          But this situation can arise for compiler-generated
+          local variables if they are assigned the same name (`i$` is common 
+          in OpenJDK). Notable example are local variables generated to 
+          implement the Java for-each statement (for(Foo foo : bar){}). If 
+          the source code contains nested for-each statements, then it becomes
+          ugly because all the generated iterators or counters (for-each on
+          arrays) are assigned the same name in the table.
+          
+          This inconsistancy is now handled correctly by the following code.
+          The idea is based on the observation that the Local allocation works
+          well if we simply allocate a different Local object for each 
+          local variable index (it is the default allocation policy, when the
+          original names are not kept).
+          Therefore, local variables with the same name and same index should
+          have the same Local object. And local variables with the same name
+          but different index should have a different Local object.
+          We maintain the map
+            nameToIndexToLocal :: Name -> (Index -> Local Object)
+          from variable names to maps from variable indexes to Local objects.
+          So we allocate a new Local object for each pair of a variable name 
+          and a variable index.
+          
+          Unfortunately, this is still unsound if the table gives several
+          names for the same variable of the source code. Or if it reports
+          wrong bytecode ranges, or if it doesn't report the name of a 
+          variable everywhere it is used in the bytecode...
+          
+          In order to obtain sound Local allocation when taking original
+          names into account... we should not allocate Local according to these
+          names. Instead we must keep the default allocation policy (one Local
+          object for each local variable index), and then annotate each 
+          statement with "most probable name(s)" for each use or def Local.
+          
+        */
+        if(bcIndex != -1)
         {
-            if(activeOriginalIndex != -1)
-            {
-                //indicies in the local variable table start at 1 while code starts at zero
-                activeOriginalIndex++;
-                if(isWideLocalStore)
-                    activeOriginalIndex++;
+          int lookupBcIndex = bcIndex;
+          /* 
+            For local store bytecode, the local actually takes its new value 
+            after the bytecode is executed, so we must look at the next 
+            bytecode index. This is the behavior observed at least with 
+            OpenJDK javac.
+          */
+          if(isLocalStore) lookupBcIndex = nextBcIndex;
 
-                name = activeVariableTable.getLocalVariableName(activeConstantPool, index, activeOriginalIndex);
-                if (activeVariableTypeTable != null){
-               debug_type = activeVariableTypeTable.getLocalVariableType(activeConstantPool, index, activeOriginalIndex);
-               if (debug_type != null){
-               }
-                }
-                if(name != null) 
-                    assignedName = true;
-            }
-        }  
-        
-        if(!assignedName)
-            name = "l" + index;
-
-        if(declaresLocal(listBody, name))
-            return getLocal(listBody, name);
-        else {
-            Local l = Jimple.v().newLocal(name,
-                UnknownType.v());
-
-            listBody.getLocals().add(l);
-            /*if (debug_type != null){
-                l.addTag(new DebugTypeTag(debug_type));
-            } */   
-
-            return l;
+          name = activeVariableTable.getLocalVariableName(activeConstantPool, index, lookupBcIndex);
+          
+          /*// for debug purpose
+          String desc = activeVariableTable.getLocalVariableDescriptor(activeConstantPool, index, activeOriginalIndex);
+          if (activeVariableTypeTable != null){
+            String debug_type = activeVariableTypeTable.getLocalVariableType(activeConstantPool, index, activeOriginalIndex);
+          }*/
         }
+      }
+
+      if(name == null) {
+        name = "l" + index; // generate a default name for the local
+      }
+
+      if(nameToIndexToLocal == null) nameToIndexToLocal = new HashMap<String, Map<Integer, Local>>();
+      
+      Map<Integer,Local> indexToLocal;
+      
+      if(!nameToIndexToLocal.containsKey(name)) {
+        indexToLocal = new HashMap<Integer, Local>();
+        nameToIndexToLocal.put(name, indexToLocal);
+      }else indexToLocal = nameToIndexToLocal.get(name);
+
+      if(indexToLocal.containsKey(index)) {
+        local = indexToLocal.get(index);
+      }else{
+        local = Jimple.v().newLocal(name, UnknownType.v());
+        listBody.getLocals().add(local);
+        indexToLocal.put(index, local);
+      }
+      
+      return local;
     }
 
     /*

@@ -146,16 +146,16 @@ public final class ThrowableSet {
 	 */
 	final ThrowableSet INITIALIZATION_ERRORS;
 
-	final RefType RUNTIME_EXCEPTION;
-	final RefType ARITHMETIC_EXCEPTION;
-	final RefType ARRAY_STORE_EXCEPTION;
-	final RefType CLASS_CAST_EXCEPTION;
-	final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
-	final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
-	final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
-	final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
-	final RefType NULL_POINTER_EXCEPTION;
-	final RefType INSTANTIATION_ERROR;
+	public final RefType RUNTIME_EXCEPTION;
+	public final RefType ARITHMETIC_EXCEPTION;
+	public final RefType ARRAY_STORE_EXCEPTION;
+	public final RefType CLASS_CAST_EXCEPTION;
+	public final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
+	public final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
+	public final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
+	public final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
+	public final RefType NULL_POINTER_EXCEPTION;
+	public final RefType INSTANTIATION_ERROR;
 
 	// counts for instrumenting:
 	private int registeredSets = 0;

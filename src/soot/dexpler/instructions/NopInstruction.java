@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,10 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.NopStmt;
 
@@ -44,7 +43,6 @@ public class NopInstruction extends DexlibAbstractInstruction {
         body.add(nop);
     }
     
-    public void getConstraint(IDalvikTyper dalvikTyper) {
-    }
+
 }
 

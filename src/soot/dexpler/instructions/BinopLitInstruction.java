@@ -1,7 +1,7 @@
 /* Soot - a Java Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  * 
- * (c) 2012 University of Luxembourg – Interdisciplinary Centre for
+ * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
  * Security Reliability and Trust (SnT) - All rights reserved
  * Alexandre Bartel
  * 
@@ -24,17 +24,20 @@
 
 package soot.dexpler.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.LiteralInstruction;
-import org.jf.dexlib.Code.TwoRegisterInstruction;
-import org.jf.dexlib.Code.Format.Instruction22b;
-import org.jf.dexlib.Code.Format.Instruction22s;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
+import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.jf.dexlib2.iface.instruction.formats.Instruction22b;
+import org.jf.dexlib2.iface.instruction.formats.Instruction22s;
 
 import soot.Local;
 import soot.Value;
+import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.IntOpTag;
+import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.IntConstant;
@@ -54,13 +57,13 @@ public class BinopLitInstruction extends TaggedInstruction {
         if(!(instruction instanceof Instruction22s) && !(instruction instanceof Instruction22b))
             throw new IllegalArgumentException("Expected Instruction22s or Instruction22b but got: "+instruction.getClass());
 
-        LiteralInstruction binOpLitInstr = (LiteralInstruction) this.instruction;
+        NarrowLiteralInstruction binOpLitInstr = (NarrowLiteralInstruction) this.instruction;
         int dest = ((TwoRegisterInstruction) instruction).getRegisterA();
         int source = ((TwoRegisterInstruction) instruction).getRegisterB();
 
         Local source1 = body.getRegisterLocal(source);
 
-        IntConstant constant = IntConstant.v((int)binOpLitInstr.getLiteral());
+        IntConstant constant = IntConstant.v((int)binOpLitInstr.getNarrowLiteral());
 
         expr = getExpression(source1, constant);
 
@@ -71,13 +74,9 @@ public class BinopLitInstruction extends TaggedInstruction {
         tagWithLineNumber(assign);
         body.add(assign);
         
-		}
-		public void getConstraint(IDalvikTyper dalvikTyper) {
-				if (IDalvikTyper.ENABLE_DVKTYPER) {
-          int op = (int)instruction.opcode.value;
-          if (!(op >= 0xd0 && op <= 0xe2)) {
-            throw new RuntimeException ("wrong value of op: 0x"+ Integer.toHexString(op) +". should be between 0xd0 and 0xe2.");
-          }
+        if (IDalvikTyper.ENABLE_DVKTYPER) {
+			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+            int op = (int)instruction.getOpcode().value;
           if (op >= 0xd8) {
             op -= 0xd8;
           } else {
@@ -85,12 +84,13 @@ public class BinopLitInstruction extends TaggedInstruction {
           }
           BinopExpr bexpr = (BinopExpr)expr;
           //body.dvkTyper.setType((op == 1) ? bexpr.getOp2Box() : bexpr.getOp1Box(), op1BinType[op]);
-          dalvikTyper.setType(((JAssignStmt)assign).leftBox, op1BinType[op]);
+          DalvikTyper.v().setType(((JAssignStmt)assign).leftBox, op1BinType[op], false);
         }
     }
 
     private Value getExpression(Local source1, Value source2) {
-        switch(instruction.opcode) {
+      Opcode opcode = instruction.getOpcode();
+        switch(opcode) {
         case ADD_INT_LIT16:
           setTag (new IntOpTag());
         case ADD_INT_LIT8:
@@ -101,7 +101,7 @@ public class BinopLitInstruction extends TaggedInstruction {
           setTag (new IntOpTag());
         case RSUB_INT_LIT8:
           setTag (new IntOpTag());
-            return Jimple.v().newSubExpr(source1, source2);
+            return Jimple.v().newSubExpr(source2, source1);
 
         case MUL_INT_LIT16:
           setTag (new IntOpTag());
@@ -152,7 +152,7 @@ public class BinopLitInstruction extends TaggedInstruction {
             return Jimple.v().newUshrExpr(source1, source2);
 
         default :
-            throw new RuntimeException("Invalid Opcode: " + instruction.opcode);
+            throw new RuntimeException("Invalid Opcode: " + opcode);
         }
     }
 
