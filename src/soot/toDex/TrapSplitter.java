@@ -43,6 +43,16 @@ public class TrapSplitter extends BodyTransformer {
 		// Look for overlapping traps
 		TrapOverlap to;
 		while ((to = getNextOverlap(b)) != null) {
+			// If one of the two traps is empty, we remove it
+			if (to.t1.getBeginUnit() == to.t1.getEndUnit()) {
+				b.getTraps().remove(to.t1);
+				continue;
+			}
+			if (to.t2.getBeginUnit() == to.t2.getEndUnit()) {
+				b.getTraps().remove(to.t2);
+				continue;
+			}
+			
 			// t1start..t2start -> t1'start...t1'end,t2start...
 			if (to.t1.getBeginUnit() != to.t2Start) {
 				// We need to split off t1.start - predOf(t2.splitUnit). If both traps
@@ -50,7 +60,7 @@ public class TrapSplitter extends BodyTransformer {
 				// that.
 				Trap newTrap = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(),
 						to.t2Start, to.t1.getHandlerUnit());
-				b.getTraps().add(newTrap);
+				safeAddTrap(b, newTrap);
 				to.t1.setBeginUnit(to.t2Start);
 			}
 			// (t1start, t2start) ... t1end ... t2end
@@ -61,18 +71,27 @@ public class TrapSplitter extends BodyTransformer {
 
 				if (firstEndUnit == to.t1.getEndUnit()) {
 					Trap newTrap = Jimple.v().newTrap(to.t2.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t2.getHandlerUnit());
-					b.getTraps().add(newTrap);
+					safeAddTrap(b, newTrap);
 					to.t2.setBeginUnit(firstEndUnit);
 				}
 				else if (firstEndUnit == to.t2.getEndUnit()) {
 					Trap newTrap2 = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
-					b.getTraps().add(newTrap2);
+					safeAddTrap(b, newTrap2);
 					to.t1.setBeginUnit(firstEndUnit);
 				}
 			}
 		}
 	}
 
+	/**
+	 * Adds a new trap to the given body only if the given trap is not empty
+	 * @param b The body to which to add the trap
+	 * @param newTrap The trap to add
+	 */
+	private void safeAddTrap(Body b, Trap newTrap) {
+		if (newTrap.getBeginUnit() != newTrap.getEndUnit())
+		b.getTraps().add(newTrap);		
+	}
 	/**
 	 * Gets two arbitrary overlapping traps in the given method body
 	 * @param b The body in which to look for overlapping traps
