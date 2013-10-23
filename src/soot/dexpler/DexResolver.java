@@ -58,7 +58,7 @@ public class DexResolver {
     	}
 
         Dependencies deps = wrapper.makeSootClass(sc, className);
-        addSourceFileTag(sc, file.getName());
+        addSourceFileTag(sc, "dalvik_source_" + file.getName());
 
         return deps;
     }
