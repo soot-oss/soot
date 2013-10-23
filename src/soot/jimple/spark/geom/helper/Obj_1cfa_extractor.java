@@ -19,21 +19,13 @@
 package soot.jimple.spark.geom.helper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import soot.PointsToSet;
 import soot.Scene;
 import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
-import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.ZArrayNumberer;
 import soot.jimple.spark.pag.Node;
-import soot.jimple.spark.pag.VarNode;
-import soot.jimple.spark.sets.PointsToSetInternal;
-import soot.jimple.toolkits.callgraph.Edge;
 
 /**
  * Translate the numbered context to 1-CFA callsite context.

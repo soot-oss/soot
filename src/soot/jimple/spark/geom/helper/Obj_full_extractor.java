@@ -19,16 +19,9 @@
 package soot.jimple.spark.geom.helper;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import soot.PointsToSet;
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
-import soot.jimple.spark.pag.VarNode;
-import soot.jimple.spark.sets.PointsToSetInternal;
 
 /**
  * Extracts the full context sensitive points-to result.

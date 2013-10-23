@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import soot.PointsToSet;
-import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
 import soot.jimple.spark.geom.dataRep.ContextVar;
-import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.PointsToSetInternal;
@@ -114,7 +112,11 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 		return false;
 	}
 	
-	
+	/**
+	 * Obtain the list of context sensitive objects pointed to by var.
+	 * @param var
+	 * @return
+	 */
 	public List<VarType> getCSList(Node var)
 	{
 		return tableView.get(var);
