@@ -68,4 +68,13 @@ public class CgEdge {
 		new_edge.base_var = base_var;
 		return new_edge;
 	}
+	
+	@Override
+	public String toString()
+	{
+		if ( sootEdge != null )
+			return sootEdge.toString();
+		
+		return "(" + s + "->" + t + ", " + map_offset + ")";
+	}
 }

@@ -20,6 +20,8 @@ package soot.jimple.spark.geom.geomPA;
 
 import java.io.PrintStream;
 import java.util.Set;
+
+import soot.Scene;
 import soot.Type;
 import soot.jimple.spark.geom.helper.PtSensVisitor;
 import soot.jimple.spark.pag.AllocNode;
@@ -33,14 +35,20 @@ import soot.util.Numberable;
  * @author xiao
  *
  */
-public abstract class IVarAbstraction implements Numberable {
-	
+public abstract class IVarAbstraction implements Numberable 
+{	
+	protected static GeomPointsTo ptsProvider = null;
 	// A shape manager that has only one all map to all member, representing the context insensitive points-to info
-	protected static IFigureManager stubManager;
+	protected static IFigureManager stubManager = null;
 	// This is used to indicate the corresponding object should be removed
-	protected static IFigureManager deadManager;
-	// A temporary rectangle for public use 
-	protected static RectangleNode pres;
+	protected static IFigureManager deadManager = null;
+	// A temporary rectangle holds the candidate figure 
+	protected static RectangleNode pres = null;
+	
+	static {
+		// Initialize the static fields
+		ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
+	}
 	
 	// Corresponding SPARK node
 	public Node me;
@@ -57,6 +65,7 @@ public abstract class IVarAbstraction implements Numberable {
 	public int top_value = 1, lrf_value = 0;
 	// union-find tree link
 	protected IVarAbstraction parent;
+	
 	
 	public IVarAbstraction()
 	{
@@ -119,6 +128,7 @@ public abstract class IVarAbstraction implements Numberable {
 		return super.toString();
 	}
 	
+	
 	// Initiation
 	public abstract boolean add_points_to_3( AllocNode obj, long I1, long I2, long L );
 	public abstract boolean add_points_to_4( AllocNode obj, long I1, long I2, long L1, long L2 );
@@ -127,47 +137,67 @@ public abstract class IVarAbstraction implements Numberable {
 	public abstract void put_complex_constraint(PlainConstraint cons);
 	public abstract void reconstruct();
 	
-	// Points-to analysis core components
+	
+	// Points-to facts propagation
 	public abstract void do_before_propagation();
 	public abstract void do_after_propagation();
 	public abstract void propagate(GeomPointsTo ptAnalyzer, IWorklist worklist);
 	
-	// Points-to post-processing
+	
+	// Manipulate points-to results
 	public abstract void drop_duplicates();
 	public abstract void remove_points_to( AllocNode obj );
 	public abstract void deleteAll();
 	public abstract void keepPointsToOnly();
 	public abstract void injectPts();
-	public abstract boolean isDeadObject( AllocNode obj );
 	
-	// Querying points-to information
+	
+	// Obtaining points-to information statistics
 	public abstract int num_of_diff_objs();
 	public abstract int num_of_diff_edges();
 	public abstract int count_pts_intervals( AllocNode obj );
 	public abstract int count_new_pts_intervals();
 	public abstract int count_flow_intervals( IVarAbstraction qv );
+	
+	
+	// Testing procedures
 	/**
-	 * Check if qv and this pointer form an alias pair context sensitively.
+	 * Perform context sensitive alias checking with qv.
 	 * @param qv
 	 * @return
 	 */
 	public abstract boolean heap_sensitive_intersection( IVarAbstraction qv );
-	public abstract boolean pointer_sensitive_points_to( long context, AllocNode obj );
-	public abstract boolean pointer_interval_points_to( long l, long r, AllocNode obj);
 	/**
-	 * Determine if any of the points-to object has a type in the given set.
-	 * @param types
+	 * Test if the pointer in the context range [l, R) points to object obj.
+	 * @param l
+	 * @param r
+	 * @param obj
 	 * @return
 	 */
-	public abstract boolean test_points_to_has_types( Set<Type> types );
+	public abstract boolean pointer_interval_points_to( long l, long r, AllocNode obj);
+	/**
+	 * Test if the particular object has been obsoleted.
+	 * It's mainly for points-to developer use.
+	 * @param obj
+	 * @return
+	 */
+	public abstract boolean isDeadObject( AllocNode obj );
 	
-	// Querying large bulk of data
+	
+	// Querying
+	/**
+	 * Obtain context insensitive points-to result (by removing contexts).
+	 * @return
+	 */
 	public abstract Set<AllocNode> get_all_points_to_objects();
 	/**
-	 * Given the pointers falling in the context range [l, r), we compute the set of 1-CFA objects pointed to by those pointers.
-	 * This function is designed in visitor pattern. The user can define what to do with the generated variables.
+	 * Given the pointers falling in the context range [l, r), we compute the set of context sensitive objects pointed to by those pointers.
+	 * This function is designed in visitor pattern.
+	 * @see Obj_1cfa_extractor
+	 * @see Obj_full_extractor
 	 */
 	public abstract void get_all_context_sensitive_objects( long l, long r, PtSensVisitor visitor);
+	
 	
 	// Debugging facilities
 	public abstract void print_context_sensitive_points_to( PrintStream outPrintStream );

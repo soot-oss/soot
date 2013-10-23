@@ -311,7 +311,7 @@ public class PointsToDumper
 				
 				// We collect the end points of these intervals
 				// They are collected on the per object basis
-				for ( IntervalContextVar icv : objs_full.icvList ) {
+				for ( IntervalContextVar icv : objs_full.outList ) {
 					IVarAbstraction pobj = ptsProvider.findInternalNode(icv.var);
 					TreeSet<Long> tree = endPointsTree.get(pobj.id);
 					if ( tree == null ) {
@@ -380,7 +380,7 @@ public class PointsToDumper
 				
 				// binary search and build new slabs
 				outList.clear();
-				for ( IntervalContextVar icv : objs_full.icvList ) {
+				for ( IntervalContextVar icv : objs_full.outList ) {
 					IVarAbstraction pobj = ptsProvider.findInternalNode(icv.var);
 					long[] list = endPointsList.get(pobj.id);
 					int i = Arrays.binarySearch(list, icv.L);

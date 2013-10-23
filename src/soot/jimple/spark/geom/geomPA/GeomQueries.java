@@ -21,13 +21,11 @@ package soot.jimple.spark.geom.geomPA;
 import soot.Local;
 import soot.SootMethod;
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
-import soot.jimple.spark.geom.helper.Obj_1cfa_extractor;
 import soot.jimple.spark.geom.helper.Obj_full_extractor;
 import soot.jimple.spark.geom.helper.PtSensVisitor;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
-import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.Edge;
 
@@ -60,8 +58,6 @@ public class GeomQueries
 	}
 		
 	// DFS traversal recordings
-	protected int visited[];
-	protected int kQueryLabel; 
 	protected ctxtSearchPacket packet;
 	
 	/**
@@ -94,6 +90,7 @@ public class GeomQueries
 				if ( p.scc_edge == false ) {
 					CgEdge q = p.duplicate();
 					if ( q != null ) {
+						// And, a non-SCC edge is attached to the SCC representative node
 						q.next = call_graph[rep];
 						call_graph[rep] = q; 
 					}
@@ -103,14 +100,11 @@ public class GeomQueries
 		}
 		
 		// Prepare for DFS traversal
-		visited = new int[n_func];
-		for ( int i = 0; i < n_func; ++i ) visited[i] = 0;
-		kQueryLabel = 0;
 		packet = new ctxtSearchPacket();
 	}
 	
 	
-	protected boolean dfsCalcMapping(int s, long lEnd, PtSensVisitor visitor)
+	protected void dfsCalcMapping(int s, long lEnd, PtSensVisitor visitor)
 	{
 		int target = packet.targetMethod;
 		
@@ -124,7 +118,7 @@ public class GeomQueries
 			IVarAbstraction pn = packet.pn;
 			long rEnd = lEnd + packet.ctxtLength;
 			pn.get_all_context_sensitive_objects(lEnd, rEnd, visitor);
-			return true;
+			return;
 		}
 	
 		/*
@@ -151,26 +145,25 @@ public class GeomQueries
 				pn.get_all_context_sensitive_objects(lEnd, rEnd, visitor);
 			}
 			
-			return true;
+			return;
 		}
-		
-		// Label this node as visited
-		visited[s] = kQueryLabel;
 		
 		// We only traverse the SCC representatives
 		s = rep_cg[s];
-		boolean found = false;
 		CgEdge p = call_graph[s];
 		
-		while ( p != null && found == false) {
-			int t = p.t;
+		while ( p != null ) {
 			// All edges go to another SCC
-			if ( visited[t] < kQueryLabel )
-				found |= dfsCalcMapping(t, lEnd + p.map_offset - 1, visitor);
+			int t = p.t;
+			
+			// Transfer to the target block with the same in-block offset
+			long block_size = max_context_size_block[s];
+			int j = (int) ((lEnd-1) / block_size);
+			long newL = p.map_offset + lEnd - (j * block_size + 1);
+			
+			dfsCalcMapping(t, newL, visitor);
 			p = p.next;
 		}
-		
-		return found;
 	}
 	
 	protected boolean searchCallString(CgEdge ctxt, int targetMethod, IVarAbstraction pn, PtSensVisitor visitor)
@@ -184,29 +177,13 @@ public class GeomQueries
 		// We start iteration from callee, because the querying edge might be in an SCC
 		// We do not walk the SCC edges during context path searching
 		int fStart = ctxt.t;
-		long lEnd;
-		
-		if ( ctxt.scc_edge == true ) {
-			// This edge is in an SCC
-			// We simply let the mapping be one to one correspondence for all contexts
-			lEnd = 1;
-		}
-		else {
-			lEnd = ctxt.map_offset;
-		}
+		long lEnd = ctxt.map_offset;
 		
 		// The context length for specified context edge
 		packet.ctxtLength = geomPts.max_context_size_block[ctxt.s];
 		
-		// Prepare for DFS traversal
-		if ( kQueryLabel == Integer.MAX_VALUE ) {
-			// Only after every Max_Value queries, we refresh the visited vector
-			for ( int i = 0; i < n_func; ++i ) visited[i] = 0;
-			kQueryLabel = 0;
-		}
-		
-		kQueryLabel++;
-		return dfsCalcMapping(fStart, lEnd, visitor);
+		dfsCalcMapping(fStart, lEnd, visitor);
+		return true;
 	}
 	
 	/**
@@ -258,7 +235,7 @@ public class GeomQueries
 		if ( contexsByAnyCallEdge(sootEdge, l, pts_l) == false )
 			return false;
 		
-		for ( IntervalContextVar icv : pts_l.icvList ) {
+		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
 			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
 			IVarAbstraction objField = geomPts.findInternalNode(obj_f);
@@ -309,16 +286,9 @@ public class GeomQueries
 			// Following searching procedure works for both methods in SCC and out of SCC
 			// with blocking scheme or without blocking scheme
 			
-			// We first search for the block that contains current offset L
-			int n_blocks = block_num[caller];
+			// We obtain the block that contains current offset L
 			long block_size = max_context_size_block[caller];
-			int j;
-			for (j = 1; j < n_blocks; ++j) {
-				if (j * block_size + 1 > L)
-					break;
-			}
-
-			j--;
+			int j = (int) ((L-1) / block_size);
 
 			// Transfer to the target block with the same in-block offset
 			L = ctxt.map_offset + L - (j * block_size + 1);
@@ -347,7 +317,7 @@ public class GeomQueries
 		if ( contextsByCallChain(callEdgeChain, l, pts_l) == false )
 			return false;
 		
-		for ( IntervalContextVar icv : pts_l.icvList ) {
+		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
 			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
 			IVarAbstraction objField = geomPts.findInternalNode(obj_f);
