@@ -24,6 +24,12 @@ public class IntervalContextVar extends ContextVar
 	}
 	
 	@Override
+	public String toString()
+	{
+		return "<" + var.toString() + ", " + L + ", " + R + ">";
+	}
+	
+	@Override
 	public boolean equals( Object o )
 	{
 		IntervalContextVar other = (IntervalContextVar)o;
@@ -46,5 +52,45 @@ public class IntervalContextVar extends ContextVar
 			return R < o.R ? -1 : 1;
 		
 		return L < o.L ? -1 : 1;
+	}
+
+	@Override
+	public boolean contains(ContextVar cv) 
+	{
+		IntervalContextVar icv = (IntervalContextVar)cv;
+		if ( L <= icv.L && R >= icv.R ) return true;
+		return false;
+	}
+
+	@Override
+	public boolean merge(ContextVar cv) 
+	{
+		IntervalContextVar icv = (IntervalContextVar)cv;
+		
+		if ( icv.L < L ) {
+			if ( L <= icv.R ) {
+				L = icv.L;
+				if ( R < icv.R ) R = icv.R;
+				return true;
+			}
+		}
+		else {
+			if ( icv.L <= R ) {
+				if ( R < icv.R ) R = icv.R;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public boolean intersect(ContextVar cv) 
+	{
+		IntervalContextVar icv = (IntervalContextVar)cv;
+		
+		if ( L <= icv.L && icv.L < R ) return true;
+		if ( icv.L <= L && L < icv.R ) return true;
+		return false;
 	}
 }

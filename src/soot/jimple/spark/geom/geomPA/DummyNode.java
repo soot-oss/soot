@@ -149,19 +149,7 @@ public class DummyNode extends IVarAbstraction
 	}
 
 	@Override
-	public boolean pointer_sensitive_points_to(long context, AllocNode obj) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean pointer_interval_points_to(long l, long r, AllocNode obj) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean test_points_to_has_types(Set<Type> types) {
 		// TODO Auto-generated method stub
 		return false;
 	}

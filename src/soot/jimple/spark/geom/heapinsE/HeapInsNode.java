@@ -433,38 +433,6 @@ public class HeapInsNode extends IVarAbstraction
 
 		return false;
 	}
-	
-	@Override
-	public boolean pointer_sensitive_points_to(long context, AllocNode obj) 
-	{
-		SegmentNode[] int_entry = find_points_to(obj);
-		if ( int_entry[0] != null )
-			return true;
-		
-		for ( int i = 1; i < HeapInsIntervalManager.Divisions; ++i ) {
-			SegmentNode p = int_entry[i];
-			while ( p != null ) {
-				if ( p.I1 <= context && (p.I1 + p.L) > context )
-					return true;
-				p = p.next;
-			}
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public boolean test_points_to_has_types(Set<Type> types) 
-	{
-		for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
-			AllocNode an = it.next();
-			if (types.contains( an.getType() ) ) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 
 	@Override
 	public Set<AllocNode> get_all_points_to_objects() 
@@ -472,10 +440,6 @@ public class HeapInsNode extends IVarAbstraction
 		// If this pointer is not a representative pointer
 		if ( parent != this )
 			return getRepresentative().get_all_points_to_objects();
-		
-		// If this pointer is not updated in the points-to analysis (willUpdate = false)
-		if ( pt_objs == null )
-			injectPts();
 		
 		return pt_objs.keySet();
 	}
@@ -554,13 +518,15 @@ public class HeapInsNode extends IVarAbstraction
 	@Override
 	public void get_all_context_sensitive_objects(long l, long r, PtSensVisitor visitor) 
 	{
-		GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
+		if ( parent != this ) {
+			getRepresentative().get_all_context_sensitive_objects(l, r, visitor);
+			return;
+		}
 		
 		for ( Map.Entry<AllocNode, HeapInsIntervalManager> entry : pt_objs.entrySet() ) {
 			AllocNode obj = entry.getKey();
 			HeapInsIntervalManager im = entry.getValue();
 			SegmentNode[] int_entry = im.getFigures();
-			boolean flag = true;
 			
 			// We first get the 1-CFA contexts for the object
 			SootMethod sm = obj.getMethod();
@@ -614,13 +580,10 @@ public class HeapInsNode extends IVarAbstraction
 					
 					// Now we test which context versions should this interval [objL, objR) maps to
 					if ( objL != -1 && objR != -1 )
-						flag = visitor.visit(obj, objL, objR, sm_int);
+						visitor.visit(obj, objL, objR, sm_int);
 					
-					if ( flag == false ) break;
 					p = p.next; 
 				}
-				
-				if ( flag == false ) break;
 			}
 		}
 	}
@@ -628,7 +591,6 @@ public class HeapInsNode extends IVarAbstraction
 	@Override
 	public void injectPts() 
 	{
-		final GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
 		pt_objs = new HashMap<AllocNode, HeapInsIntervalManager>();
 		
 		me.getP2Set().forall( new P2SetVisitor() {

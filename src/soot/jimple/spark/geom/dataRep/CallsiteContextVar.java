@@ -46,6 +46,12 @@ public class CallsiteContextVar extends ContextVar
 	}
 	
 	@Override
+	public String toString()
+	{
+		return "<" + context.toString() + ", " + var.toString() + ">";
+	}
+	
+	@Override
 	public boolean equals( Object o )
 	{
 		CallsiteContextVar other = (CallsiteContextVar)o;
@@ -61,6 +67,27 @@ public class CallsiteContextVar extends ContextVar
 		int ans = var.hashCode() + ch;
 		if ( ans < 0 ) ans = var.hashCode();
 		return ans;
+	}
+
+	@Override
+	public boolean contains(ContextVar cv) 
+	{
+		CallsiteContextVar ccv = (CallsiteContextVar)cv;
+		if ( context == ccv.context ) return true;
+		return false;
+	}
+
+	@Override
+	public boolean merge(ContextVar cv) 
+	{
+		// The behavior of merging callsite context sensitive variables is undefined.
+		return false;
+	}
+
+	@Override
+	public boolean intersect(ContextVar cv) 
+	{
+		return contains(cv);
 	}
 }
 

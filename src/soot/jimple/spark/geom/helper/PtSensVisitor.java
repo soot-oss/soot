@@ -18,22 +18,75 @@
  */
 package soot.jimple.spark.geom.helper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import soot.PointsToSet;
+import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
+import soot.jimple.spark.geom.dataRep.ContextVar;
+import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.PointsToSetInternal;
 
-public abstract class PtSensVisitor {
-
+/**
+ * A container for storing context sensitive querying result of geomPTA.
+ * Similar to the class PointsToSetInternal for SPARK.
+ * 
+ * This class maintains two views for the results:
+ * 1. Table view: every object has a separate list of its context sensitive versions;
+ * 2. List view: all context sensitive objects are put in a single list.
+ * 
+ * 
+ * @author xiao
+ */
+public abstract class PtSensVisitor<VarType extends ContextVar>
+{
+	// Indicates if this visitor is prepared
+	protected boolean readyToUse = false;
+	
+	// The list view
+	public List<VarType> outList = new ArrayList<VarType>();
+	
+	// The table view (cannot be accessed directly outside)
+	protected Map<Node, List<VarType>> tableView = new HashMap<Node, List<VarType>>();
+	
 	/**
-	 * The user should implement how to deal with the variable with the contexts [L, R).
-	 * The return value indicates that the method sm_int has no call edges, which is used to terminate the context enumeration.
-	 * 
-	 * @param var
-	 * @param L
-	 * @param R
-	 * @param sm_int : the integer ID of the SootMethod
+	 * Called before each round of collection.
 	 */
-	public abstract boolean visit( Node var, long L, long R, int sm_int );
+	public void prepare()
+	{
+		tableView.clear();
+		readyToUse = false;
+	}
+	
+	/**
+	 * Called after each round of collection.
+	 */
+	public void finish() 
+	{
+		// We flatten the list
+		readyToUse = true;
+		outList.clear();
+				
+		if ( tableView.size() == 0 ) return;
+		
+		for ( Map.Entry<Node, List<VarType>> entry : tableView.entrySet() ) {
+			List<VarType> resList = entry.getValue();
+			outList.addAll(resList);
+		}
+	}
+	
+	/**
+	 * The visitor contains valid information only when this function returns true.
+	 * @return
+	 */
+	public boolean getUsageState() 
+	{ 
+		return readyToUse; 
+	}
 	
 	/**
 	 * Calculate the intersection with other container. 
@@ -41,7 +94,31 @@ public abstract class PtSensVisitor {
 	 * @param other
 	 * @return
 	 */
-	public abstract boolean hasIntersection(PtSensVisitor other);
+	public boolean hasIntersection(PtSensVisitor<VarType> other) 
+	{
+		if ( !readyToUse ) finish();
+		if ( other.getUsageState() == false ) other.finish();
+		
+		// Using table view for comparison, that's faster
+		for ( Map.Entry<Node, List<VarType>> entry : tableView.entrySet() ) {
+			Node var = entry.getKey();
+			List<VarType> list1 = entry.getValue();
+			List<VarType> list2 = other.getCSList(var);
+			
+			for ( VarType cv1 : list1 ) {
+				for ( VarType cv2 : list2 )
+					if ( cv1.intersect(cv2) ) return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	public List<VarType> getCSList(Node var)
+	{
+		return tableView.get(var);
+	}
 	
 	/**
 	 * Transform the result to SPARK style context insensitive points-to set.
@@ -49,20 +126,41 @@ public abstract class PtSensVisitor {
 	 * @param vn: the querying pointer
 	 * @return
 	 */
-	public abstract PointsToSet toSparkCompatiableResult(VarNode vn);
+	public PointsToSet toSparkCompatiableResult(VarNode vn)
+	{
+		if ( !readyToUse) finish();
+		
+		PointsToSetInternal ptset = vn.makeP2Set();
+		
+		for ( VarType cv : outList ) {
+			ptset.add(cv.var);
+		}
+		
+		return ptset;
+	}
 	
 	/**
 	 * Print the objects.
 	 */
-	public abstract void debugPrint();
+	public void debugPrint() 
+	{
+		if ( !readyToUse ) finish();
+		
+		for ( VarType cv : outList ) {
+			System.out.printf("\t%s\n", cv.toString());
+		}
+	}
+	
 	
 	/**
-	 * Called before each round of collection.
+	 * We use visitor pattern to collect contexts.
+	 * Derived classes decide how to deal with the variable with the contexts [L, R).
+	 * Returning false means this interval [L, R) is covered by other intervals.
+	 * 
+	 * @param var
+	 * @param L
+	 * @param R
+	 * @param sm_int : the integer ID of the SootMethod
 	 */
-	public abstract void prepare();
-	
-	/**
-	 * Called after each round of collection.
-	 */
-	public abstract void finish();
+	public abstract boolean visit( Node var, long L, long R, int sm_int );
 }

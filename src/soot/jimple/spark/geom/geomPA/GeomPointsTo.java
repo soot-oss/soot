@@ -921,7 +921,7 @@ public class GeomPointsTo extends PAG
 			}
 		}
 		
-		// Clean the unreachable pointers and objects
+		// Clean the unreachable pointers
  		for ( Iterator<IVarAbstraction> it = allocations.iterator(); it.hasNext(); ) {
  			IVarAbstraction po = it.next();
 			AllocNode obj = (AllocNode)po.getWrappedNode();
@@ -931,8 +931,14 @@ public class GeomPointsTo extends PAG
 				it.remove();
 		}
 		
+ 		// Clean the unreachable objects
 		for ( Iterator<IVarAbstraction> it = pointers.iterator(); it.hasNext(); ) {
 			IVarAbstraction pn = it.next();
+			if ( pn.willUpdate == false ) {
+				// We directly remove this pointer from geomPTA
+				it.remove();
+				continue;
+			}
 			
 			// Is this pointer obsoleted?
 			Node node = pn.getWrappedNode();
@@ -967,16 +973,22 @@ public class GeomPointsTo extends PAG
 			pn.drop_duplicates();
 		}
 		
-		// Finally, we reassign the ids to the pointers and objects
+		// We reassign the ids to the pointers and objects
 		pointers.reassign();
 		allocations.reassign();
 		
-		// Release the useless resource
+		// Prepare for querying
+		IVarAbstraction.ptsProvider = this;
+	}
+	
+	/**
+	 * Stuff that is useless for querying is released.
+	 */
+	public void releaseUselessResources()
+	{
 		offlineProcessor.destroy();
 		IFigureManager.cleanCache();
-		for ( IVarAbstraction pn : pointers )
-			if ( pn == pn.getRepresentative() )
-				pn.keepPointsToOnly();
+		System.gc(); System.gc(); System.gc(); System.gc(); System.gc();
 	}
 	
 	/**
@@ -1007,8 +1019,6 @@ public class GeomPointsTo extends PAG
 		updateSootData();
 		
 		for ( IVarAbstraction pn : pointers ) {
-			if ( !pn.willUpdate ) continue;
-			
 			Node node = pn.getWrappedNode();
 			IVarAbstraction pRep = pn.getRepresentative();
 			node.discardP2Set();
@@ -1085,7 +1095,7 @@ public class GeomPointsTo extends PAG
 		ps.printf("[Geom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
 		ps.printf("[Geom] Memory used : %.1f MB\n", (double) (mem) / 1024 / 1024 );
 		
-		// Finish points-to analysis and prepare for use in various of clients
+		// Finish points-to analysis and prepare for querying
 		postProcess();
 		
 		// We perform a set of tests to assess the quality of the points-to results for user pointers
@@ -1103,16 +1113,11 @@ public class GeomPointsTo extends PAG
 		}
 		
 		if ( !opts.geom_trans() ) {
-			// We inject the SPARK points-to result into our unprocessed pointers
-			// Now we have full points-to information
+			// We remove the SPARK points-to information for pointers that have geomPTA results
+			// At querying time, the SPARK points-to container will be used as query cache
 			for ( IVarAbstraction pn : pointers ) {
-				if ( !pn.willUpdate )
-					pn.injectPts();
-				else {
-					pn = pn.getRepresentative();
-					if ( pn.get_all_points_to_objects().isEmpty() )
-						pn.injectPts();
-				}
+				// Keep only representative result
+				if ( pn == pn.getRepresentative() ) pn.keepPointsToOnly();
 				Node vn = pn.getWrappedNode();
 				vn.discardP2Set();
 			}
@@ -1123,8 +1128,8 @@ public class GeomPointsTo extends PAG
 			hasTransformed = true;
 		}
 		
-		System.gc(); System.gc(); System.gc(); System.gc(); System.gc();
 		hasExecuted = true;
+		releaseUselessResources();
 	}
 	
 	/**
@@ -1412,7 +1417,7 @@ public class GeomPointsTo extends PAG
 	public boolean isValidGeometricNode( Node sparkNode )
 	{
 		IVarAbstraction pNode = consG.get(sparkNode);
-		return pNode.getNumber() != -1;
+		return pNode != null && pNode.getNumber() != -1;
 	}
 	
 	/**
@@ -1449,11 +1454,13 @@ public class GeomPointsTo extends PAG
 				if (nDotF != null) {
 					//nDotF.getP2Set() has been discarded in solve()
 					IVarAbstraction pn = consG.get(nDotF);
-					if (pn == null) return;
-					if (hasTransformed || nDotF.getP2Set() != EmptyPointsToSet.v()) {
+					if (pn == null
+							|| hasTransformed 
+							|| nDotF.getP2Set() != EmptyPointsToSet.v()) {
 						ret.addAll(nDotF.getP2Set(), null);
 						return;
 					}
+					
 					pn = pn.getRepresentative();
 					//PointsToSetInternal ptSet = nDotF.makeP2Set();
 					for ( AllocNode obj : pn.get_all_points_to_objects() ) {
@@ -1473,15 +1480,17 @@ public class GeomPointsTo extends PAG
 		if ( !hasExecuted ) return super.reachingObjects(l);
 		
 		LocalVarNode vn = findLocalVarNode(l);
-		IVarAbstraction pn = consG.get(vn);			// We directly access the map consG
+		IVarAbstraction pn = consG.get(vn);
 		
-		if ( vn == null ||
-				pn == null ) return EmptyPointsToSet.v();
+		// In case this pointer has no geomPTA result
+		if ( pn == null ) 
+			return vn.getP2Set();
 		
+		// Return the cached result
 		if ( hasTransformed ||
 				vn.getP2Set() != EmptyPointsToSet.v() ) return vn.getP2Set();
 		
-		// We transform and cache the result for the next query
+		// Obtain and cache the result
 		pn = pn.getRepresentative();
 		PointsToSetInternal ptSet = vn.makeP2Set();
 		for ( AllocNode obj : pn.get_all_points_to_objects() ) {
@@ -1493,8 +1502,7 @@ public class GeomPointsTo extends PAG
 
 	/*
 	 * Currently, we only accept one call unit context (1CFA).
-	 * (non-Javadoc)
-	 * @see soot.jimple.spark.pag.PAG#reachingObjects(soot.Context, soot.Local)
+	 * For querying K-CFA (K >1), please see GeomQueries.contextsByCallChain
 	 */
 	@Override
 	public PointsToSet reachingObjects(Context c, Local l) 
@@ -1506,28 +1514,30 @@ public class GeomPointsTo extends PAG
 			return G.v().soot_jimple_toolkits_pointer_FullObjectSet();
 		
 		LocalVarNode vn = findLocalVarNode(l);
+		if ( vn == null ) return EmptyPointsToSet.v();
 		
-		// We first lookup the cache
-		ContextVarNode cvn = vn.context(c);
-		if ( cvn != null ) return cvn.getP2Set();
-		cvn = makeContextVarNode(vn, c);			// The points-to vector is set to empty at start
-		
-		// Otherwise we create a new points-to vector
+		// Lookup the context sensitive points-to information for this pointer
 		IVarAbstraction pn = consG.get(vn);
+		if ( pn == null ) return vn.getP2Set();
 		pn = pn.getRepresentative();
-		if ( pn == null ) {
-			// The enclosing method of this pointer is obsoleted
-			return EmptyPointsToSet.v();
+		
+		// Lookup the cache
+		ContextVarNode cvn = vn.context(c);
+		if ( cvn != null ) {
+			PointsToSet ans = cvn.getP2Set();
+			if ( ans != EmptyPointsToSet.v() ) return ans;
 		}
 		
+		// Create a new context sensitive variable
+		// The points-to vector is set to empty at start
+		cvn = makeContextVarNode(vn, c);			
+		
+		// Obtain the context sensitive points-to result
 		SootMethod callee = vn.getMethod();
 		Edge e = Scene.v().getCallGraph().findEdge((Unit)c, callee);
-		if ( e == null ) {
-			// This edge may be obsoleted
-			return EmptyPointsToSet.v();
-		}
-		
+		if ( e == null ) return vn.getP2Set();
 		CgEdge myEdge = edgeMapping.get(e);
+		
 		long low = myEdge.map_offset;
 		long high = low + max_context_size_block[myEdge.s];
 		PointsToSetInternal ptset = cvn.makeP2Set();
@@ -1549,11 +1559,12 @@ public class GeomPointsTo extends PAG
             throw new RuntimeException( "The parameter f must be a *static* field." );
 		
         VarNode vn = findGlobalVarNode( f );
+        if ( vn == null ) return EmptyPointsToSet.v();
+        
         IVarAbstraction pn = consG.get(f);
+        if( pn == null ) return vn.getP2Set();
         
-        if( vn == null || pn == null )
-            return EmptyPointsToSet.v();
-        
+        // Lookup the cache
         if ( hasTransformed ||
         	vn.getP2Set() != EmptyPointsToSet.v() ) return vn.getP2Set();	
         	
