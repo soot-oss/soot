@@ -59,6 +59,7 @@ public class GeomQueries
 		
 	// DFS traversal recordings
 	protected ctxtSearchPacket packet;
+	protected int reachable[], cur_label;
 	
 	/**
 	 * We copy and make a condensed version of call graph.
@@ -101,10 +102,12 @@ public class GeomQueries
 		
 		// Prepare for DFS traversal
 		packet = new ctxtSearchPacket();
+		reachable = new int[n_func];
+		cur_label = Integer.MAX_VALUE - 2;
 	}
 	
 	
-	protected void dfsCalcMapping(int s, long lEnd, PtSensVisitor visitor)
+	protected boolean dfsCalcMapping(int s, long lEnd, PtSensVisitor visitor)
 	{
 		int target = packet.targetMethod;
 		
@@ -118,7 +121,7 @@ public class GeomQueries
 			IVarAbstraction pn = packet.pn;
 			long rEnd = lEnd + packet.ctxtLength;
 			pn.get_all_context_sensitive_objects(lEnd, rEnd, visitor);
-			return;
+			return true;
 		}
 	
 		/*
@@ -145,25 +148,32 @@ public class GeomQueries
 				pn.get_all_context_sensitive_objects(lEnd, rEnd, visitor);
 			}
 			
-			return;
+			return true;
 		}
+		
+		s = rep_cg[s];
+		if ( reachable[s] == (cur_label + 1) ) return false;
+		reachable[s] = cur_label + 1;
 		
 		// We only traverse the SCC representatives
-		s = rep_cg[s];
 		CgEdge p = call_graph[s];
-		
-		while ( p != null ) {
-			// All edges go to another SCC
+		while ( p != null ) {		
 			int t = p.t;
+			if ( t != s ) {
+				// All edges go to another SCC
+				// Transfer to the target block with the same in-block offset
+				long block_size = max_context_size_block[s];
+				int j = (int) ((lEnd-1) / block_size);
+				long newL = p.map_offset + lEnd - (j * block_size + 1);
+				
+				if ( dfsCalcMapping(t, newL, visitor) )
+					reachable[s] = cur_label + 2;
+			}
 			
-			// Transfer to the target block with the same in-block offset
-			long block_size = max_context_size_block[s];
-			int j = (int) ((lEnd-1) / block_size);
-			long newL = p.map_offset + lEnd - (j * block_size + 1);
-			
-			dfsCalcMapping(t, newL, visitor);
 			p = p.next;
 		}
+		
+		return reachable[s] == (cur_label + 2);
 	}
 	
 	protected boolean searchCallString(CgEdge ctxt, int targetMethod, IVarAbstraction pn, PtSensVisitor visitor)
@@ -180,9 +190,20 @@ public class GeomQueries
 		long lEnd = ctxt.map_offset;
 		
 		// The context length for specified context edge
-		packet.ctxtLength = geomPts.max_context_size_block[ctxt.s];
+		packet.ctxtLength = max_context_size_block[ctxt.s];
+		
+		// Prepare for DFS
+		if ( cur_label >= (Integer.MAX_VALUE - 2) ) {
+			// Reach the upper limit
+			cur_label = 0;
+			for ( int i = 0; i < n_func; ++i ) {
+				reachable[i] = 0;
+			}
+		}
 		
 		dfsCalcMapping(fStart, lEnd, visitor);
+		
+		cur_label += 2;
 		return true;
 	}
 	
