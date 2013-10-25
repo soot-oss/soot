@@ -18,8 +18,12 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import soot.Local;
 import soot.SootMethod;
+import soot.coffi.constant_element_value;
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.geom.helper.Obj_full_extractor;
 import soot.jimple.spark.geom.helper.PtSensVisitor;
@@ -43,7 +47,7 @@ public class GeomQueries
 	// Call graph information
 	protected int n_func;
 	protected CgEdge call_graph[];
-	protected int vis_cg[], rep_cg[];
+	protected int vis_cg[], rep_cg[], top_rank[];
 	protected int block_num[];
 	protected long max_context_size_block[];
 	
@@ -59,7 +63,7 @@ public class GeomQueries
 		
 	// DFS traversal recordings
 	protected ctxtSearchPacket packet;
-	protected int reachable[], cur_label;
+	protected int reachable[], cur_label, failed_label, success_label;
 	
 	/**
 	 * We copy and make a condensed version of call graph.
@@ -81,6 +85,9 @@ public class GeomQueries
 		}
 		
 		// We duplicate a call graph without SCC edges
+		int in_degree[] = new int[n_func];
+		for ( int i = 0; i < n_func; ++i ) in_degree[i] = 0;
+		
 		CgEdge[] raw_call_graph = geomPts.call_graph;
 		for (int i = 0; i < n_func; ++i) {
 			if ( vis_cg[i] == 0 ) continue;
@@ -93,12 +100,35 @@ public class GeomQueries
 					if ( q != null ) {
 						// And, a non-SCC edge is attached to the SCC representative node
 						q.next = call_graph[rep];
-						call_graph[rep] = q; 
+						call_graph[rep] = q;
+						in_degree[ rep_cg[q.t] ]++;
 					}
 				}
 				p = p.next;
 			}
 		}
+		
+		// We toposort the call graph to layout the nodes hierarchically
+		top_rank = new int[n_func];
+		top_rank[Constants.SUPER_MAIN] = 0;
+		Queue<Integer> topQ = new LinkedList<Integer>();
+		topQ.add(Constants.SUPER_MAIN);
+		
+		while ( !topQ.isEmpty() ) {
+			int s = topQ.poll();
+			CgEdge p = call_graph[s];
+			
+			while ( p != null ) {
+				int t = rep_cg[p.t];
+				int w = top_rank[s] + 1;
+				if ( top_rank[t] < w ) top_rank[t] = w;
+				if ( --in_degree[t] == 0 ) topQ.add(t);
+				p = p.next;
+			}
+		}
+		
+		in_degree = null;
+		topQ = null;
 		
 		// Prepare for DFS traversal
 		packet = new ctxtSearchPacket();
@@ -110,6 +140,8 @@ public class GeomQueries
 	protected boolean dfsCalcMapping(int s, long lEnd, PtSensVisitor visitor)
 	{
 		int target = packet.targetMethod;
+		int rep_s = rep_cg[s];
+		int rep_target = rep_cg[target];
 		
 		/*
 		 * There are two cases for terminating DFS traversal:
@@ -130,7 +162,7 @@ public class GeomQueries
 		 *  We first assume all blocks of target method are reachable, for soundness.
 		 *  When blocking scheme is enabled, we should re-map the contexts to every block respectively.
 		 */
-		if ( rep_cg[s] == rep_cg[target] ) {
+		if ( rep_s == rep_target ) {
 			IVarAbstraction pn = packet.pn;
 			
 			// Perhaps the blocking scheme is enabled
@@ -140,40 +172,51 @@ public class GeomQueries
 			// Compute the offset to the nearest context block for s
 			// We use (lEnd - 1) because the context numbers start from 1 
 			long offset = (lEnd-1) % block_size;				
+			long sum = 0;
+			long rEnd = 0;
 			
 			// We iterate all blocks of target method
 			for ( int i = 0; i < n_blocks; ++i ) {
-				lEnd = offset + 1 + (i * block_size); 
-				long rEnd = lEnd + packet.ctxtLength;
+				lEnd = 1 + offset + sum; 
+				rEnd = lEnd + packet.ctxtLength;
 				pn.get_all_context_sensitive_objects(lEnd, rEnd, visitor);
+				sum += block_size;
 			}
 			
 			return true;
 		}
 		
-		s = rep_cg[s];
-		if ( reachable[s] == (cur_label + 1) ) return false;
-		reachable[s] = cur_label + 1;
+		s = rep_s;
+		reachable[s] = failed_label;
 		
 		// We only traverse the SCC representatives
 		CgEdge p = call_graph[s];
 		while ( p != null ) {		
 			int t = p.t;
 			if ( t != s ) {
+				int rep_t = rep_cg[t];
+				
 				// All edges go to another SCC
 				// Transfer to the target block with the same in-block offset
 				long block_size = max_context_size_block[s];
-				int j = (int) ((lEnd-1) / block_size);
-				long newL = p.map_offset + lEnd - (j * block_size + 1);
+				long in_block_offset = (lEnd-1) % block_size;
+				long newL = p.map_offset + in_block_offset;
 				
-				if ( dfsCalcMapping(t, newL, visitor) )
-					reachable[s] = cur_label + 2;
+				if ( reachable[rep_t] != failed_label ) {
+					if ( reachable[rep_t] == success_label ||
+							top_rank[rep_t] <= top_rank[rep_target] ) {
+						
+						// Pass the pruning conditions
+						if ( dfsCalcMapping(t, newL, visitor) )
+							reachable[s] = success_label;
+					}
+				}
 			}
 			
 			p = p.next;
 		}
 		
-		return reachable[s] == (cur_label + 2);
+		return reachable[s] == success_label;
 	}
 	
 	protected boolean searchCallString(CgEdge ctxt, int targetMethod, IVarAbstraction pn, PtSensVisitor visitor)
@@ -200,6 +243,9 @@ public class GeomQueries
 				reachable[i] = 0;
 			}
 		}
+		
+		failed_label = cur_label + 1;
+		success_label = cur_label + 2;
 		
 		dfsCalcMapping(fStart, lEnd, visitor);
 		

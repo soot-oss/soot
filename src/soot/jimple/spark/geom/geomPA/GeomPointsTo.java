@@ -571,8 +571,6 @@ public class GeomPointsTo extends PAG
 				// If this is an edge linking two functions in the same SCC
 				if (rep_cg[i] == rep_cg[p.t]) {
 					p.scc_edge = true;
-					// 0-CFA modeling for the SCC, the default mode
-					p.map_offset = 1;
 				} else {
 					p.scc_edge = false;
 					++indeg_cg[rep_cg[p.t]];
@@ -642,15 +640,10 @@ public class GeomPointsTo extends PAG
 								// We compensate the difference
 								max_context_size_block[j] = start + max_context_size_block[i];
 						}
+						
 						p.map_offset = start + 1;
-//						Edge e = p.sootEdge;
-//						if ( e == null )
-//							ps
-//								.println("~~~~~~~~~~~~Max Block For " + j + " is full!!!");
-//						else
-//							ps
-//								.println("~~~~~~~~~~~~Max Block For " + e.getTgt().method() + " is full!!!");
 					} else {
+						// Accumulate the contexts
 						p.map_offset = max_context_size_block[j] + 1;
 						max_context_size_block[j] += max_context_size_block[i];
 					}
@@ -659,6 +652,10 @@ public class GeomPointsTo extends PAG
 					if (--indeg_cg[j] == 0)
 						queue_cg.addLast(j);
 				}
+				else {
+					// 0-CFA modeling for the SCC, the default mode
+					p.map_offset = 1;
+				}
 
 				p = p.next;
 			}
@@ -666,18 +663,12 @@ public class GeomPointsTo extends PAG
 			if ( max_context_size_block[i] > max_contexts )
 				max_contexts = max_context_size_block[i];
 		}
-
-		// Sanity check
-//		for ( i = 0; i < n_func; ++i ) {
-//			if ( rep_cg[i] != i ) continue;
-//			assert indeg_cg[i] == 0 && max_context_size_block[i] != 0;
-//		}
 			
 		// Now we restore the call graph
 		for (i = n_func - 1; i > -1; --i) {
 			if ( vis_cg[i] == 0 ) continue;
 			if ( rep_cg[i] != i ) {
-				// We recharge the information into the none SCC representative nodes
+				// All nodes in the same SCC have the same number of contexts
 				max_context_size_block[i] = max_context_size_block[rep_cg[i]];
 				
 				// Put all the call edges back
@@ -695,15 +686,6 @@ public class GeomPointsTo extends PAG
 			context_size[i] = max_context_size_block[i];
 			block_num[i] = 1;
 		}
-
-		// Sanity check
-//		for ( i = 0; i < n_func; ++i ) {
-//			p = call_graph[i];
-//			while ( p != null ) {
-//				assert p.s == i;
-//				p = p.next;
-//			}
-//		}
 		
 		// Now we apply the blocking scheme if necessary
 		// The implementation is slightly different from our paper (the non-SCC edges are not moved, they still use their current context mappings)
