@@ -824,4 +824,23 @@ public class SootMethod
     public SootMethodRef makeRef() {
         return Scene.v().makeMethodRef( declaringClass, name, parameterTypes, returnType, isStatic() );
     }
+    
+    @Override
+    public int getJavaSourceStartLineNumber() {
+    	super.getJavaSourceStartLineNumber();
+    	//search statements for first line number
+    	if(line==-1 && hasActiveBody()) {
+    		PatchingChain<Unit> unit = getActiveBody().getUnits();
+    		for (Unit u : unit) {
+    			int l = u.getJavaSourceStartLineNumber();
+    			if(l>-1) {
+    				//store l-1, as method header is usually one line before 1st statement
+    				line = l-1;
+    				break;
+    			}
+			}
+    	} 
+    	return line;
+    }
+   
 }

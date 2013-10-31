@@ -39,6 +39,9 @@ import java.util.List;
  */
 public  class AbstractHost implements Host 
 {
+	
+	protected int line, col;	
+
     // avoid creating an empty list for each element, when it is not used
     // use lazy instantiation (in addTag) instead
     private final static List<Tag> emptyList = Collections.emptyList();
@@ -109,6 +112,35 @@ public  class AbstractHost implements Host
             final Tag t = tIt.next();
             addTag( t );
         }
+    }
+    public int getJavaSourceStartLineNumber() {
+    	if(line==0) {
+    		//get line from source
+	    	SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
+	    	if(tag!=null) {
+	    		line = tag.startLn();
+	    	} else {
+	    		//get line from bytecode
+	    		LineNumberTag tag2 = (LineNumberTag) getTag("LineNumberTag");
+		    	if(tag2!=null) {
+		    		line = tag2.getLineNumber();
+		    	}
+		    	else line = -1;
+	    	}
+    	}
+    	return line;    		
+    }
+    
+    public int getJavaSourceStartColumnNumber() {
+    	if(col==0) {
+    		//get line from source
+	    	SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
+	    	if(tag!=null) {
+	    		col = tag.startPos();
+	    	} 
+		    else col = -1;
+    	}
+    	return col;    		
     }
 }
 

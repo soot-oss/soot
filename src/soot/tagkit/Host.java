@@ -61,6 +61,18 @@ public interface Host
 
     /** Adds all the tags from h to this host. */
     public void addAllTagsOf( Host h );
+    
+    /**
+     * Returns the Java source line number if available.
+     * Returns -1 if not.
+     */
+    public int getJavaSourceStartLineNumber();
+    
+    /**
+     * Returns the Java source line column if available.
+     * Returns -1 if not.
+     */
+    public int getJavaSourceStartColumnNumber();    
 }
 
 
