@@ -18,7 +18,6 @@
  */
 package soot.jimple.spark.geom.dataRep;
 
-import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
 
@@ -43,6 +42,12 @@ public class CallsiteContextVar extends ContextVar
 	{
 		context = c;
 		var = v;
+	}
+	
+	public CallsiteContextVar( CallsiteContextVar o )
+	{
+		context = o.context;
+		var = o.var;
 	}
 	
 	@Override

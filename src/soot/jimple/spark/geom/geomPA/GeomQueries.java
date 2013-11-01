@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
+ * Copyright (C) 2013 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,15 +18,19 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import soot.Local;
 import soot.SootMethod;
 import soot.coffi.constant_element_value;
+import soot.jimple.spark.geom.dataMgr.ContextsCollector;
+import soot.jimple.spark.geom.dataMgr.Obj_full_extractor;
+import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
+import soot.jimple.spark.geom.dataRep.CgEdge;
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
-import soot.jimple.spark.geom.helper.Obj_full_extractor;
-import soot.jimple.spark.geom.helper.PtSensVisitor;
+import soot.jimple.spark.geom.dataRep.SimpleInterval;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
@@ -51,19 +55,12 @@ public class GeomQueries
 	protected int block_num[];
 	protected long max_context_size_block[];
 	
-	// Constant information in context path searching
-	protected class ctxtSearchPacket {
-		// Querying pointer
-		public IVarAbstraction pn;
-		// The method that encloses the querying pointer
-		public int targetMethod;
-		// Context length of querying pointer
-		public long ctxtLength;
-	}
-		
-	// DFS traversal recordings
-	protected ctxtSearchPacket packet;
-	protected int reachable[], cur_label, failed_label, success_label;
+	// Querying artifacts
+	private static int defaultBudgetSize = 6;
+	private static int targetBudgetSize = 20;
+	protected Queue<Integer> topQ;
+	protected int in_degree[];
+	protected ContextsCollector[] contextsForMethods;
 	
 	/**
 	 * We copy and make a condensed version of call graph.
@@ -80,13 +77,11 @@ public class GeomQueries
 		
 		// Initialize an empty call graph
 		call_graph = new CgEdge[n_func];
-		for ( int i = 0; i < n_func; ++i ) {
-			call_graph[i] = null;
-		}
+		Arrays.fill(call_graph, null);
 		
 		// We duplicate a call graph without SCC edges
-		int in_degree[] = new int[n_func];
-		for ( int i = 0; i < n_func; ++i ) in_degree[i] = 0;
+		in_degree = new int[n_func];
+		Arrays.fill(in_degree, 0);
 		
 		CgEdge[] raw_call_graph = geomPts.call_graph;
 		for (int i = 0; i < n_func; ++i) {
@@ -108,148 +103,183 @@ public class GeomQueries
 			}
 		}
 		
-		// We toposort the call graph to layout the nodes hierarchically
+		// We layout the nodes hierarchically and give each of them a label
 		top_rank = new int[n_func];
-		top_rank[Constants.SUPER_MAIN] = 0;
-		Queue<Integer> topQ = new LinkedList<Integer>();
-		topQ.add(Constants.SUPER_MAIN);
+		Arrays.fill(top_rank, 0);
 		
+		topQ = new LinkedList<Integer>();
+		topQ.add(Constants.SUPER_MAIN);
+
 		while ( !topQ.isEmpty() ) {
 			int s = topQ.poll();
 			CgEdge p = call_graph[s];
 			
 			while ( p != null ) {
-				int t = rep_cg[p.t];
+				int t = p.t;
+				int rep_t = rep_cg[t];
 				int w = top_rank[s] + 1;
-				if ( top_rank[t] < w ) top_rank[t] = w;
-				if ( --in_degree[t] == 0 ) topQ.add(t);
+				if ( top_rank[rep_t] < w ) top_rank[rep_t] = w;
+				if ( --in_degree[rep_t] == 0 ) topQ.add(rep_t);
 				p = p.next;
 			}
 		}
 		
-		in_degree = null;
-		topQ = null;
-		
-		// Prepare for DFS traversal
-		packet = new ctxtSearchPacket();
-		reachable = new int[n_func];
-		cur_label = Integer.MAX_VALUE - 2;
+		// Prepare for querying artifacts
+		contextsForMethods = new ContextsCollector[n_func];
+		for ( int i = 0; i < n_func; ++i ) {
+			ContextsCollector cc = new ContextsCollector();
+			cc.setBudget(defaultBudgetSize);
+			contextsForMethods[i] = cc;
+		}
 	}
 	
-	
-	protected boolean dfsCalcMapping(int s, long lEnd, PtSensVisitor visitor)
+	/**
+	 * Retrieve the subgraph from s->target.
+	 * @param s
+	 * @param target
+	 * @return
+	 */
+	protected boolean dfsScanSubgraph(int s, int target)
 	{
-		int target = packet.targetMethod;
 		int rep_s = rep_cg[s];
 		int rep_target = rep_cg[target];
 		
-		/*
-		 * There are two cases for terminating DFS traversal:
-		 * 1. We exactly reach the target method;
-		 * 2. We reach a method that lies in the same SCC with the target method.
-		 */
-		// Case 1
-		if ( s == target ) {
-			IVarAbstraction pn = packet.pn;
-			long rEnd = lEnd + packet.ctxtLength;
-			pn.get_all_context_sensitive_objects(lEnd, rEnd, visitor);
-			return true;
-		}
-	
-		/*
-		 *  Case 2.
-		 *  It's very complicated, because the target method is in an SCC.
-		 *  We first assume all blocks of target method are reachable, for soundness.
-		 *  When blocking scheme is enabled, we should re-map the contexts to every block respectively.
-		 */
-		if ( rep_s == rep_target ) {
-			IVarAbstraction pn = packet.pn;
-			
-			// Perhaps the blocking scheme is enabled
-			int n_blocks = block_num[target];
-			long block_size = max_context_size_block[s];
-			
-			// Compute the offset to the nearest context block for s
-			// We use (lEnd - 1) because the context numbers start from 1 
-			long offset = (lEnd-1) % block_size;				
-			long sum = 0;
-			long rEnd = 0;
-			
-			// We iterate all blocks of target method
-			for ( int i = 0; i < n_blocks; ++i ) {
-				lEnd = 1 + offset + sum; 
-				rEnd = lEnd + packet.ctxtLength;
-				pn.get_all_context_sensitive_objects(lEnd, rEnd, visitor);
-				sum += block_size;
-			}
-			
-			return true;
-		}
+		if ( rep_s == rep_target ) return true;
 		
 		s = rep_s;
-		reachable[s] = failed_label;
+		boolean reachable = false;
 		
 		// We only traverse the SCC representatives
 		CgEdge p = call_graph[s];
 		while ( p != null ) {		
 			int t = p.t;
-			if ( t != s ) {
-				int rep_t = rep_cg[t];
-				
-				// All edges go to another SCC
-				// Transfer to the target block with the same in-block offset
-				long block_size = max_context_size_block[s];
-				long in_block_offset = (lEnd-1) % block_size;
-				long newL = p.map_offset + in_block_offset;
-				
-				if ( reachable[rep_t] != failed_label ) {
-					if ( reachable[rep_t] == success_label ||
-							top_rank[rep_t] <= top_rank[rep_target] ) {
-						
-						// Pass the pruning conditions
-						if ( dfsCalcMapping(t, newL, visitor) )
-							reachable[s] = success_label;
-					}
-				}
+			int rep_t = rep_cg[t];
+			if ( in_degree[rep_t] != 0 ||
+					( top_rank[rep_t] <= top_rank[rep_target] && dfsScanSubgraph(t, target) == true ) ) {
+				in_degree[rep_t]++;
+				reachable = true;
 			}
 			
 			p = p.next;
 		}
 		
-		return reachable[s] == success_label;
+		return reachable;
 	}
 	
-	protected boolean searchCallString(CgEdge ctxt, int targetMethod, IVarAbstraction pn, PtSensVisitor visitor)
+	protected void transferInSCC(int s, int t, long L, long R, ContextsCollector tContexts)
 	{
-		// Querying pointer
-		packet.pn = pn;
+		if ( s == t ) {
+			tContexts.insert(L, R);
+			return;
+		}
 		
-		// Enclosing method of querying pointer
-		packet.targetMethod = targetMethod;
+		/*
+		 *  We assume all blocks of target method are reachable for soundness and for simplicity.
+		 */
+		int n_blocks = block_num[t];
+		long block_size = max_context_size_block[s];
 		
-		// We start iteration from callee, because the querying edge might be in an SCC
-		// We do not walk the SCC edges during context path searching
-		int fStart = ctxt.t;
-		long lEnd = ctxt.map_offset;
+		// Compute the offset to the nearest context block for s
+		// We use (lEnd - 1) because the context numbers start from 1 
+		long offset = (L-1) % block_size;
+		long ctxtLength = R - L;
+		long sum = 0;
+		long lEnd, rEnd;
 		
-		// The context length for specified context edge
-		packet.ctxtLength = max_context_size_block[ctxt.s];
+		// We iterate all blocks of target method
+		for ( int i = 0; i < n_blocks; ++i ) {
+			lEnd = 1 + offset + sum; 
+			rEnd = lEnd + ctxtLength;
+			tContexts.insert(lEnd, rEnd);
+			sum += block_size;
+		}
+	}
+	
+	protected boolean propagateIntervals(CgEdge ctxt, int target, IVarAbstraction pn, PtSensVisitor visitor)
+	{
+		// We start traversal from the callee, because the caller->callee mapping is straightforward
+		int start = ctxt.t;
+		if ( !dfsScanSubgraph(start, target) ) return false;
 		
-		// Prepare for DFS
-		if ( cur_label >= (Integer.MAX_VALUE - 2) ) {
-			// Reach the upper limit
-			cur_label = 0;
-			for ( int i = 0; i < n_func; ++i ) {
-				reachable[i] = 0;
+		// Now we prepare for iteration
+		int rep_start = rep_cg[start];
+		int rep_target = rep_cg[target];
+		long L = ctxt.map_offset;
+		long R = L + max_context_size_block[ctxt.s];
+		ContextsCollector targetContexts = contextsForMethods[target];
+		targetContexts.setBudget(targetBudgetSize);
+		
+		
+		if ( rep_start == rep_target ) {
+			// Fast path for special case
+			transferInSCC(start, target, L, R, targetContexts);
+		}
+		else {
+			transferInSCC(start, rep_start, L, R, contextsForMethods[rep_start]);
+			
+			// Start topsort
+			topQ.clear();
+			topQ.add(rep_start);
+			
+			while ( !topQ.isEmpty() ) {
+				int s = topQ.poll();
+				int rep_s = rep_cg[s];
+				ContextsCollector sContexts = contextsForMethods[rep_s];
+				
+				// Loop over the edges
+				CgEdge p = call_graph[s];
+				while ( p != null ) {		
+					int t = p.t;
+					
+					if ( t != s ) {
+						// Discard the self-loop edges
+						int rep_t = rep_cg[t];
+						if ( in_degree[rep_t] != 0 ) {
+							// This node has a path to target
+							ContextsCollector reptContexts = contextsForMethods[rep_t];
+							long block_size = max_context_size_block[rep_s];
+							
+							for ( SimpleInterval si : sContexts.bars ) {
+								// Compute the offset to the nearest context block for s
+								// We use (lEnd - 1) because the context numbers start from 1		
+								long in_block_offset = (si.L-1) % block_size;
+								long newL = p.map_offset + in_block_offset;
+								long newR = si.R - si.L + newL;
+								
+								if ( rep_t == rep_target ) {
+									// t and target are in the same SCC
+									// We directly transfer this context interval to target
+									transferInSCC(t, target, newL, newR, targetContexts);
+								}
+								else {
+									// We transfer this interval to its SCC representative
+									// It might be t == rep_t
+									transferInSCC(t, rep_t, newL, newR, reptContexts);
+								}
+							}
+							
+							if ( --in_degree[rep_t] == 0 &&
+									rep_t != rep_target ) {
+								topQ.add(rep_t);
+							}
+						}
+					}
+					
+					p = p.next;
+				}
+				
+				sContexts.clear();
 			}
 		}
 		
-		failed_label = cur_label + 1;
-		success_label = cur_label + 2;
+		// Finally, we calculate the points-to results
+		for ( SimpleInterval si : targetContexts.bars ) {
+			pn.get_all_context_sensitive_objects(si.L, si.R, visitor);
+		}
 		
-		dfsCalcMapping(fStart, lEnd, visitor);
-		
-		cur_label += 2;
+		// Reset
+		targetContexts.clear();
+		targetContexts.setBudget(defaultBudgetSize);
 		return true;
 	}
 	
@@ -266,6 +296,10 @@ public class GeomQueries
 	 */
 	public boolean contexsByAnyCallEdge( Edge sootEdge, Local l, PtSensVisitor visitor )
 	{
+		// Obtain the internal representation of specified context
+		CgEdge ctxt = geomPts.getInternalEdgeFromSootEdge(sootEdge);
+		if ( ctxt == null ) return false;
+				
 		// Obtain the internal representation for querying pointer
 		LocalVarNode vn = geomPts.findLocalVarNode(l);
 		IVarAbstraction pn = geomPts.findInternalNode(vn);
@@ -275,16 +309,12 @@ public class GeomQueries
 			return false;
 		}
 		
-		// Obtain the internal representation of specified context
-		CgEdge ctxt = geomPts.getInternalEdgeFromSootEdge(sootEdge);
-		if ( ctxt == null ) return false;
-		
 		// Obtain the internal representation of the method that encloses the querying pointer
 		SootMethod sm = vn.getMethod();
-		int smID = geomPts.getIDFromSootMethod(sm);
-		if ( smID == -1 ) return false;
+		int targetID = geomPts.getIDFromSootMethod(sm);
+		if ( targetID == -1 ) return false;
 		
-		return searchCallString(ctxt, smID, pn, visitor);
+		return propagateIntervals(ctxt, targetID, pn, visitor);
 	}
 	
 	/**
@@ -305,6 +335,7 @@ public class GeomQueries
 		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
 			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
+			if ( obj_f == null ) continue;
 			IVarAbstraction objField = geomPts.findInternalNode(obj_f);
 			if ( objField == null ) continue;
 			
@@ -328,6 +359,11 @@ public class GeomQueries
 	 */
 	public boolean contextsByCallChain(Edge[] callEdgeChain, Local l, PtSensVisitor visitor)
 	{
+		// Prepare for initial contexts
+		SootMethod firstMethod = callEdgeChain[0].src();
+		int firstMethodID = geomPts.getIDFromSootMethod(firstMethod);
+		if ( firstMethodID == -1 ) return false;
+				
 		// Obtain the internal representation for querying pointer
 		LocalVarNode vn = geomPts.findLocalVarNode(l);
 		IVarAbstraction pn = geomPts.findInternalNode(vn);
@@ -336,11 +372,6 @@ public class GeomQueries
 			// This pointer is no longer reachable
 			return false;
 		}
-
-		// Prepare for initial contexts
-		SootMethod firstMethod = callEdgeChain[0].src();
-		int firstMethodID = geomPts.getIDFromSootMethod(firstMethod);
-		if ( firstMethodID == -1 ) return false;
 		
 		// Iterate the call edges and compute the contexts mapping iteratively
 		long L = 1;
@@ -355,10 +386,9 @@ public class GeomQueries
 			
 			// We obtain the block that contains current offset L
 			long block_size = max_context_size_block[caller];
-			int j = (int) ((L-1) / block_size);
-
+			long in_block_offset = (L-1) % block_size;
 			// Transfer to the target block with the same in-block offset
-			L = ctxt.map_offset + L - (j * block_size + 1);
+			L = ctxt.map_offset + in_block_offset;
 		}
 		
 		
@@ -387,6 +417,7 @@ public class GeomQueries
 		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
 			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
+			if ( obj_f == null ) continue;
 			IVarAbstraction objField = geomPts.findInternalNode(obj_f);
 			if ( objField == null ) return false;
 			

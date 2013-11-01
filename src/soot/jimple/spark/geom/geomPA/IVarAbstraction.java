@@ -23,7 +23,9 @@ import java.util.Set;
 
 import soot.Scene;
 import soot.Type;
-import soot.jimple.spark.geom.helper.PtSensVisitor;
+import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
+import soot.jimple.spark.geom.dataRep.RectangleNode;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;

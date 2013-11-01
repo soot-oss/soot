@@ -16,9 +16,9 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.dataRep;
 
-import soot.jimple.spark.geom.geomPA.RectangleNode;
+import soot.jimple.spark.geom.dataRep.RectangleNode;
 
 /**
  * The segment figure for encoding the one-to-one relation.

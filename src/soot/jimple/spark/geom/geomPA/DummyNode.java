@@ -21,7 +21,8 @@ package soot.jimple.spark.geom.geomPA;
 import java.io.PrintStream;
 import java.util.Set;
 import soot.Type;
-import soot.jimple.spark.geom.helper.PtSensVisitor;
+import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 

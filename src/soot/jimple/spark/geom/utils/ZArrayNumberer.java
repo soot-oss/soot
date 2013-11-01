@@ -16,7 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.utils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,7 +33,8 @@ import soot.util.Numberable;
  * 
  * @author xiao
  */
-public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E> , Iterable<E>
+public class ZArrayNumberer<E extends Numberable> 
+		implements IterableNumberer<E> , Iterable<E>
 {
     Numberable[] numberToObj = null;
     Map<E, E> objContainer = null;

@@ -19,14 +19,15 @@
 package soot.jimple.spark.geom.ptinsE;
 
 import java.util.Iterator;
+
+import soot.jimple.spark.geom.dataRep.CgEdge;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.geomE.GeometricManager;
-import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.DummyNode;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
-import soot.jimple.spark.geom.geomPA.PlainConstraint;
 import soot.jimple.spark.geom.heapinsE.HeapInsNode;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;

@@ -18,10 +18,10 @@
  */
 package soot.jimple.spark.geom.ptinsE;
 
+import soot.jimple.spark.geom.dataRep.RectangleNode;
+import soot.jimple.spark.geom.dataRep.SegmentNode;
 import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
-import soot.jimple.spark.geom.geomPA.RectangleNode;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
 
 /**
  * The figure manager for the PtIns descriptors.

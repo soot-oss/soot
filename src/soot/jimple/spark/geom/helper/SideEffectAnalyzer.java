@@ -16,7 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.helper;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,8 +33,14 @@ import soot.jimple.AssignStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
+import soot.jimple.spark.geom.dataMgr.Obj_1cfa_extractor;
 import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
-import soot.jimple.spark.geom.helper.Obj_1cfa_extractor;
+import soot.jimple.spark.geom.dataRep.CgEdge;
+import soot.jimple.spark.geom.geomPA.Constants;
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
+import soot.jimple.spark.geom.geomPA.IVarAbstraction;
+import soot.jimple.spark.geom.utils.Histogram;
+import soot.jimple.spark.geom.utils.ZArrayNumberer;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.ArrayElement;
@@ -154,21 +160,25 @@ public class SideEffectAnalyzer
 		ptsProvider = pts;
 	}
 	
-	public void compute()
+	/**
+	 * Generate the side-effect matrix.
+	 * 
+	 * @param procJavaLib,  true -> processing Java library functions
+	 */
+	public void compute(boolean procJavaLib)
 	{
 		Obj_1cfa_extractor objs_1cfa = new Obj_1cfa_extractor();
 		
 		/*
-		 * Our algorithm works in two passes.
-		 * In the first pass, we visit all the functions and collect the side effects for their assignment statements.
-		 * In the second pass, we traverse the functions bottom-up and collect their transitive side effects.
+		 * We only collect the side effects for each function individually.
+		 * The side effects for callsites are not processed.
 		 * 
 		 * Prerequisite:
 		 * ContextTranslator.build_1cfa_map().
 		 */
 		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
-//			if ( sm.isJavaLibraryMethod() )
-//				continue;
+			if ( !procJavaLib && sm.isJavaLibraryMethod() )
+				continue;
 			int sm_int = ptsProvider.getIDFromSootMethod(sm);
 			if ( !ptsProvider.isReachableMethod(sm_int) )
 				continue;
@@ -269,26 +279,9 @@ public class SideEffectAnalyzer
 							modOrRef.addBit(cVar);
 						}
 					}
-//					if ( flag == false ) {
-//						if ( vn.getP2Set().isEmpty() )
-//							System.err.println( "soga" );
-//						System.err.println( "Call edges:" );
-//						for (CgEdge cxtEdge : edges) {
-//							long l = cxtEdge.map_offset;
-//							long r = l
-//									+ ptsProvider.max_context_size_block[cxtEdge.s];
-//							System.err.printf( "Edge: l = %d, r = %d\n", l, r );
-//						}
-//						EvalHelper.debug_context_sensitive_objects(pn, ptsProvider);
-//						System.exit(-1);
-//					}
 				}
 			}
 		}
-		
-		/*
-		 * pass 2: we topsort the functions (functions in the same SCC are put together) 
-		 */
 	}
 	
 	public void evaluateSideEffectMatrix()

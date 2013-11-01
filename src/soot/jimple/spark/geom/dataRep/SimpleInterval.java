@@ -21,88 +21,86 @@ package soot.jimple.spark.geom.dataRep;
 import soot.jimple.spark.pag.Node;
 
 /**
- * A particular class to encode contexts in interval manner.
+ * The basic representation for an interval on the integer domain.
+ * A simple interval is a half-open structure [L, R).
  * 
  * @author xiao
  *
  */
-public class IntervalContextVar extends ContextVar 
-			implements Comparable<IntervalContextVar> {
-
-	// The interval is [L, R), which stands for a set of consecutive contexts
-	public long L = 0, R = 0;
+public class SimpleInterval 
+	implements Comparable<SimpleInterval>
+{
+	public long L, R;
 	
-	public IntervalContextVar() {}
-	
-	public IntervalContextVar( long l, long r, Node v )
+	public SimpleInterval() 
 	{
-		assert l < r;
-		L = l;
-		R = r;
-		var = v;
+		L = 0;
+		R = 1;
 	}
 	
-	public IntervalContextVar( IntervalContextVar o )
+	public SimpleInterval( long l, long r )
+	{
+		L = l;
+		R = r;
+	}
+	
+	public SimpleInterval( SimpleInterval o )
 	{
 		L = o.L;
 		R = o.R;
-		var = o.var;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "<" + var.toString() + ", " + L + ", " + R + ">";
+		return "[" + L + ", " + R + ")";
 	}
 	
 	@Override
 	public boolean equals( Object o )
 	{
-		IntervalContextVar other = (IntervalContextVar)o;
-		return ( other.L == L ) && (other.R == R) && (other.var == var);
+		SimpleInterval other = (SimpleInterval)o;
+		return ( other.L == L ) && (other.R == R);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int ch = (int) ((L+R) % Integer.MAX_VALUE);
-		int ans = var.hashCode() + ch;
-		if ( ans < 0 ) ans = var.hashCode();
+		int ans = (int) ((L+R) % Integer.MAX_VALUE);
+		if ( ans < 0 ) ans = -ans;
 		return ans;
 	}
 
 	@Override
-	public int compareTo(IntervalContextVar o) 
+	public int compareTo(SimpleInterval o) 
 	{
 		if ( L == o.L )
 			return R < o.R ? -1 : 1;
 		
 		return L < o.L ? -1 : 1;
 	}
-
-	@Override
-	public boolean contains(ContextVar cv) 
+	
+	public boolean contains(SimpleInterval o) 
 	{
-		IntervalContextVar icv = (IntervalContextVar)cv;
-		if ( L <= icv.L && R >= icv.R ) return true;
+		SimpleInterval osi = (SimpleInterval)o;
+		if ( L <= osi.L && R >= osi.R ) return true;
 		return false;
 	}
 
-	@Override
-	public boolean merge(ContextVar cv) 
+	public boolean merge(SimpleInterval o) 
 	{
-		IntervalContextVar icv = (IntervalContextVar)cv;
+		SimpleInterval osi = (SimpleInterval)o;
 		
-		if ( icv.L < L ) {
-			if ( L <= icv.R ) {
-				L = icv.L;
-				if ( R < icv.R ) R = icv.R;
+		if ( osi.L < L ) {
+			if ( L <= osi.R ) {
+				L = osi.L;
+				if ( R < osi.R ) R = osi.R;
 				return true;
 			}
 		}
 		else {
-			if ( icv.L <= R ) {
-				if ( R < icv.R ) R = icv.R;
+			if ( osi.L <= R ) {
+				if ( R < osi.R ) R = osi.R;
 				return true;
 			}
 		}
@@ -110,13 +108,12 @@ public class IntervalContextVar extends ContextVar
 		return false;
 	}
 
-	@Override
-	public boolean intersect(ContextVar cv) 
+	public boolean intersect(SimpleInterval o) 
 	{
-		IntervalContextVar icv = (IntervalContextVar)cv;
+		SimpleInterval osi = (SimpleInterval)o;
 		
-		if ( L <= icv.L && icv.L < R ) return true;
-		if ( icv.L <= L && L < icv.R ) return true;
+		if ( L <= osi.L && osi.L < R ) return true;
+		if ( osi.L <= L && L < osi.R ) return true;
 		return false;
 	}
 }
