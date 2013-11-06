@@ -104,9 +104,6 @@ public abstract class VarNode extends ValNode implements Comparable {
     VarNode( PAG pag, Object variable, Type t ) {
 	super( pag, t );
 	if( !(t instanceof RefLikeType) || t instanceof AnySubType ) {
-		if ( t instanceof PrimType ) 
-			t = ((PrimType) t).boxedType();
-		else
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );
 	}
 	this.variable = variable;
