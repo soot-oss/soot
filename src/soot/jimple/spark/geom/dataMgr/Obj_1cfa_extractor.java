@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.print.attribute.standard.Finishings;
+
 import soot.Scene;
 import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
 import soot.jimple.spark.geom.dataRep.CgEdge;
@@ -52,6 +54,13 @@ public class Obj_1cfa_extractor
 		
 		all_objs = ContextTranslator.objs_1cfa_map;
 		added_objs = new HashSet<CallsiteContextVar>();
+	}
+	
+	@Override
+	public void finish()
+	{
+		added_objs.clear();
+		super.finish();
 	}
 	
 	@Override
