@@ -70,7 +70,7 @@ public class CallsiteContextVar extends ContextVar
 		if ( context != null ) ch = context.hashCode();
 		
 		int ans = var.hashCode() + ch;
-		if ( ans < 0 ) ans = var.hashCode();
+		if ( ans < 0 ) ans = -ans;
 		return ans;
 	}
 

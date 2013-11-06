@@ -17,7 +17,6 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Type;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.dataRep.RectangleNode;

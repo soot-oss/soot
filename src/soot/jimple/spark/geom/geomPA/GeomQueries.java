@@ -24,7 +24,6 @@ import java.util.Queue;
 
 import soot.Local;
 import soot.SootMethod;
-import soot.coffi.constant_element_value;
 import soot.jimple.spark.geom.dataMgr.ContextsCollector;
 import soot.jimple.spark.geom.dataMgr.Obj_full_extractor;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;

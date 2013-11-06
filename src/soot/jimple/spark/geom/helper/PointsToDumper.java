@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2012 Richard Xiao
+ * Copyright (C) 2012, 2013 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,7 +42,7 @@ import soot.jimple.spark.pag.Node;
 
 /**
  * Output the points-to matrix in various formats.
- * This is used to facilitate the experiments based on points-to analysis result outside SOOT.
+ * This is used to facilitate the experiments based on points-to analysis result outside Soot.
  * 
  * @author xiao
  *
@@ -54,8 +54,8 @@ public class PointsToDumper
 	public PointsToDumper()
 	{
 		ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
-		// We map our full sensitive result to the 1CFA result
-		ContextTranslator.build_1cfa_map( ptsProvider );
+		if ( !ContextTranslator.is_1cfa_built() )
+			ContextTranslator.build_1cfa_map( ptsProvider );
 	}
 	
 	/**
@@ -113,12 +113,12 @@ public class PointsToDumper
 				if ( v instanceof LocalVarNode ) {
 					// We map the local pointer to its 1-cfa versions
 					CgEdge p = cvar.context;
-					
 					long l = p.map_offset;
 					long r = l + ptsProvider.max_context_size_block[p.s];
 					list.clear();
 					
-					for ( AllocNode obj : pn.get_all_points_to_objects() ) {
+					Set<AllocNode> objSet = pn.get_all_points_to_objects();
+					for ( AllocNode obj : objSet ) {
 						if ( pn.pointer_interval_points_to(l, r, obj) )
 							list.add(obj);
 					}
@@ -154,7 +154,7 @@ public class PointsToDumper
 	/**
 	 * Dump the pointer insensitive but object 1-CFA context sensitive points-to result.
 	 */
-	public void dump_pointer_insensitive_object_1cfa_mapped_result( )
+	public void dump_pointer_insensitive_object_1cfa_mapped_result()
 	{
 		int var_num, obj_num;
 		Obj_1cfa_extractor objs_1cfa = new Obj_1cfa_extractor();
@@ -171,12 +171,15 @@ public class PointsToDumper
 			// The points-to matrix
 			for (IVarAbstraction pn : ptsProvider.pointers ) {
 				pn = pn.getRepresentative();
+				
 				objs_1cfa.prepare();
 				pn.get_all_context_sensitive_objects(1, Constants.MAX_CONTEXTS, objs_1cfa);
+				objs_1cfa.finish();
 				
 				// output
-				file.print( objs_1cfa.outList.size() );
-				for ( CallsiteContextVar cobj : objs_1cfa.outList ) {
+				List<CallsiteContextVar> outList = objs_1cfa.outList;
+				file.print( outList.size() );
+				for ( CallsiteContextVar cobj : outList ) {
 					file.print( " " + cobj.getNumber() );
 				}
 				
@@ -184,31 +187,31 @@ public class PointsToDumper
 			}
 			
 			// The context objects-to-callsites mapping table
-			obj_num = ptsProvider.getNumberOfObjects();
-			file.println( obj_num );
-			int i = 1, j = 0;
-			
-			while ( true ) {
-				// We first identify all the objects that are mapped to the same callsite
-				CallsiteContextVar first_obj = ContextTranslator.objs_1cfa_map.get(j);
-				while ( i < obj_num ) {
-					CallsiteContextVar cobj = ContextTranslator.objs_1cfa_map.get(i);
-					if ( cobj.var != first_obj.var )
-						break;
-					++i;
-				}
-				
-				// output
-				file.print( (i-j) );
-				while ( j < i ) {
-					file.print(" " + j);
-					++j;
-				}
-				file.println();
-				
-				if ( i == obj_num )
-					break;
-			}
+//			obj_num = ptsProvider.getNumberOfObjects();
+//			file.println( obj_num );
+//			int i = 1, j = 0;
+//			
+//			while ( true ) {
+//				// We first identify all the objects that are mapped to the same callsite
+//				CallsiteContextVar first_obj = ContextTranslator.objs_1cfa_map.get(j);
+//				while ( i < obj_num ) {
+//					CallsiteContextVar cobj = ContextTranslator.objs_1cfa_map.get(i);
+//					if ( cobj.var != first_obj.var )
+//						break;
+//					++i;
+//				}
+//				
+//				// output
+//				file.print( (i-j) );
+//				while ( j < i ) {
+//					file.print(" " + j);
+//					++j;
+//				}
+//				file.println();
+//				
+//				if ( i == obj_num )
+//					break;
+//			}
 			
 			file.close();
         } catch( IOException e ) {
@@ -241,7 +244,6 @@ public class PointsToDumper
 				Node v = cvar.var;
 				IVarAbstraction pn = ptsProvider.findInternalNode( v );
 				pn = pn.getRepresentative();
-				objs_1cfa.prepare();
 				
 				if ( cvar.context != null ) {
 					CgEdge p = cvar.context;
@@ -252,12 +254,15 @@ public class PointsToDumper
 					l = 1;
 					r = Constants.MAX_CONTEXTS;
 				}
-					
+				
+				objs_1cfa.prepare();
 				pn.get_all_context_sensitive_objects(l, r, objs_1cfa);
+				objs_1cfa.finish();
 				
 				// output
-				file.print( objs_1cfa.outList.size() );
-				for ( CallsiteContextVar cobj : objs_1cfa.outList ) {
+				List<CallsiteContextVar> outList = objs_1cfa.outList;
+				file.print( outList.size() );
+				for ( CallsiteContextVar cobj : outList ) {
 					file.print( " " + cobj.getNumber() );
 				}
 				
@@ -275,7 +280,7 @@ public class PointsToDumper
 	
 	/**
 	 * The pointers are mapped to 1cfa manner but the objects are kept full sensitive.
-	 * We map the result to matrix form so it looks like so complicated....
+	 * We map the result to matrix form so it looks like so complicated.
 	 */
 	public void dump_pointer_1cfa_object_full_result()
 	{
@@ -294,7 +299,6 @@ public class PointsToDumper
 				Node v = cvar.var;
 				IVarAbstraction pn = ptsProvider.findInternalNode( v );
 				pn = pn.getRepresentative();
-				objs_full.prepare();
 				
 				// For the context of this pointer, we calculate its interval context range
 				if ( cvar.context != null ) {
@@ -308,6 +312,7 @@ public class PointsToDumper
 				}
 				
 				// Then obtain a list of interval context described objects
+				objs_full.prepare();
 				pn.get_all_context_sensitive_objects(l, r, objs_full);
 				objs_full.finish();
 				
@@ -365,7 +370,6 @@ public class PointsToDumper
 				Node v = cvar.var;
 				IVarAbstraction pn = ptsProvider.findInternalNode( v );
 				pn = pn.getRepresentative();
-				objs_full.prepare();
 				
 				if ( cvar.context != null ) {
 					CgEdge p = cvar.context;
@@ -377,6 +381,7 @@ public class PointsToDumper
 					r = Constants.MAX_CONTEXTS;
 				}
 				
+				objs_full.prepare();
 				pn.get_all_context_sensitive_objects(l, r, objs_full);
 				objs_full.finish();
 				

@@ -19,7 +19,10 @@
 package soot.jimple.spark.geom.dataMgr;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import soot.Scene;
 import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
 import soot.jimple.spark.geom.dataRep.CgEdge;
@@ -38,17 +41,17 @@ public class Obj_1cfa_extractor
 {
 	private ZArrayNumberer<CallsiteContextVar> all_objs;
 	private CallsiteContextVar cobj = new CallsiteContextVar();
-	private GeomPointsTo ptsProvider = null;
+	private Set<CallsiteContextVar> added_objs = null;
+	
 	
 	public Obj_1cfa_extractor()
 	{
-		ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
-		
 		if ( !ContextTranslator.is_1cfa_built() ) {
 			ContextTranslator.build_1cfa_map(ptsProvider);
 		}
 		
 		all_objs = ContextTranslator.objs_1cfa_map;
+		added_objs = new HashSet<CallsiteContextVar>();
 	}
 	
 	@Override
@@ -62,7 +65,7 @@ public class Obj_1cfa_extractor
 	
 		cobj.var = var;
 		List<CgEdge> edges = ptsProvider.getCallEdgesInto(sm_int);
-		CallsiteContextVar new_ccv = null;
+		boolean added = false;
 		
 		if ( edges != null ) {
 			for ( CgEdge e : edges ) {
@@ -73,18 +76,30 @@ public class Obj_1cfa_extractor
 				// We compute if [rangeL, rangeR) intersects with [L, R) 
 				if ( L < rangeR && rangeL < R ) {
 					cobj.context = e;
-					new_ccv = all_objs.searchFor(cobj);
-					
+					added = added || addToResultSet(resList);
 				}
 			}
 		}
 		else {
 			cobj.context = null;
-			new_ccv = all_objs.searchFor(cobj);
+			added = added || addToResultSet(resList);
 		}
 		
-		if ( resList.contains(new_ccv) ) return false;
-		resList.add( new_ccv );
-		return true;
+		return added;
+	}
+	
+	private boolean addToResultSet(List<CallsiteContextVar> resList)
+	{
+		CallsiteContextVar new_ccv = all_objs.searchFor(cobj);
+		
+		if ( new_ccv != null ) {
+			if ( !added_objs.contains(new_ccv) ) {
+				resList.add(new_ccv);
+				added_objs.add(new_ccv);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
