@@ -7,4 +7,3 @@
 .idea
 # Directory with .jars required to build Soot with IntelliJ IDEA
 /libs_intellij
-src/soot/jimple/spark/pag/VarNode.java
