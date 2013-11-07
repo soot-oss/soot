@@ -149,7 +149,7 @@ public abstract class Parser
 	}
 	
 	/**
-	 * This class wrapps a Scanner and provides a token "accumulator" for a parsing simulation.
+	 * This class wraps a Scanner and provides a token "accumulator" for a parsing simulation.
 	 * <p>If a source that is being parsed does not have syntax errors this wrapper only adds 
 	 * one indirection while it delivers the next token. However when parser needs to recover
 	 * from a syntax error this wrapper accumulates tokens shifted by a forward parsing simulation
@@ -286,7 +286,7 @@ public abstract class Parser
 	/**
 	 * Simulator is a stripped (of action code) version of a parser that will try to parse ahead
 	 * token stream after a syntax error. The simulation is considered successful if 3 tokens were
-	 * shifted successfully. If during simulation this parser enconters an error it drops the first
+	 * shifted successfully. If during simulation this parser encounters an error it drops the first
 	 * token it tried to use and restarts the simulated parsing.
 	 * <p>
 	 * Note: Without a special "error" rule present in a grammar, which a parser will try to shift
@@ -553,11 +553,11 @@ public abstract class Parser
 	}
 
     /**
-     * Implements parsing error recovery. Tries several simple approches first, like deleting "bad" token
+     * Implements parsing error recovery. Tries several simple approaches first, like deleting "bad" token
      * or replacing the latter with one of the expected in his state (if possible). If simple methods did
      * not work tries to do error phrase recovery.
      * 
-     * It is expected that normally descendand parsers do not need to alter this method. In same cases though
+     * It is expected that normally descendant parsers do not need to alter this method. In same cases though
      * they may want to override it if they need a different error recovery strategy. 
      * 
      * @param token a lookahead terminal symbol that messed parsing 

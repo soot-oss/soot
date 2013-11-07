@@ -37,7 +37,7 @@ import java.util.*;
  * More precise: The delayability-analysis says us already until which point we
  * can delay a computation from the earliest computation-point. We just have to
  * search for points, where there's a computation, or, where we can't delay the
- * computation to one of the succesors.
+ * computation to one of the successors.
  */
 public class LatestComputation {
   private Map<Unit, FlowSet> unitToLatest;

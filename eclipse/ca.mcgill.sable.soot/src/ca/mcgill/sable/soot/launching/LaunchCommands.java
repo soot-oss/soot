@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 /**
  * A bunch of Soot commands (used in the plugin). It is possible to break
- * these by changing soot_options.xml but atleast only have to change
+ * these by changing soot_options.xml but at least only have to change
  * here.
  */
 public class LaunchCommands {
