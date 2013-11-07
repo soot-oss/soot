@@ -36,7 +36,7 @@ import java.util.*;
  * Possible weakness of SideEffectTester: consider a Box.  We don't 
  * have a name for "what-is-inside-the-box" and so we can't 
  * ask questions about it.  But perhaps we need only ask questions
- * about the box itself; the sideeffect tester can deal with
+ * about the box itself; the side effect tester can deal with
  * that internally. */
 
 //  ArrayRef, 

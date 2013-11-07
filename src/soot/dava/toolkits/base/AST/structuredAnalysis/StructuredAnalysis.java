@@ -142,7 +142,7 @@ public abstract class StructuredAnalysis{
     /**
      * To have maximum flexibility in analyzing conditions the analysis API
      * breaks down the aggregated conditions to simple unary or binary conditions
-     * user defined code can then deal with each condition separatly.
+     * user defined code can then deal with each condition separately.
      * To be able to deal with entire aggregated conditions the user should
      * wite their own implementation of the method processCondition
      */

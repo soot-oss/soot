@@ -33,7 +33,7 @@ import java.util.*;
 /** 
  * Performs a Delayability-analysis on the given graph.
  * This analysis is the third analysis in the PRE (lazy code motion) and has
- * little (no?) sense if used alone. Basicly it tries to push the computations
+ * little (no?) sense if used alone. Basically it tries to push the computations
  * we would insert in the Busy Code Motion as far down as possible, to decrease
  * life-time ranges (clearly this is not true, if the computation "uses" two
  * variables and produces only one temporary).
@@ -53,7 +53,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
   }
 
   /**
-   * automaticly performs the Delayability-analysis on the graph
+   * Automatically performs the Delayability-analysis on the graph
    * <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things
    * again...
@@ -69,7 +69,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
   }
 
   /**
-   * automaticly performs the Delayability-analysis on the graph
+   * Automatically performs the Delayability-analysis on the graph
    * <code>dg</code> and the Earliest-computation <code>earliest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things
    * again...<br>

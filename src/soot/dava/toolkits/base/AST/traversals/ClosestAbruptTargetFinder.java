@@ -100,7 +100,7 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter{
 
     /**
      * Following methods remove the last node from the end of the nodeStack arrayList
-     * Since the previous node now becomes the closest target to an implict break or continue
+     * Since the previous node now becomes the closest target to an implicit break or continue
      */
 
     public void outASTWhileNode(ASTWhileNode node){
