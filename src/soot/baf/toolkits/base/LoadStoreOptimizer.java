@@ -368,7 +368,7 @@ class Instance {
     
        
     /** 
-     *  Checks if the units occuring between [from, to] consume 
+     *  Checks if the units occurring between [from, to] consume 
      *. stack items not produced by these interval units. (ie if the
      *  stack height ever goes negative between from and to, assuming the 
      *  stack height is set to 0 upon executing the instruction following 'from'.
@@ -902,8 +902,8 @@ class Instance {
 
     /** 
      *   Performs 2 simple inter-block optimizations in order to keep 
-     *   some variables  on the stack between blocks. Both are intented to catch
-     *   'if' like constructs where the control flow branches temporarely into two paths 
+     *   some variables  on the stack between blocks. Both are intended to catch
+     *   'if' like constructs where the control flow branches temporarily into two paths 
      *    that join up at a latter point. 
      *
      */
@@ -1004,7 +1004,7 @@ class Instance {
     
 
     /**
-     *  Given 2 blocks, assertains whether all the succesors of the first block are the predecessors 
+     *  Given 2 blocks, assertions whether all the successors of the first block are the predecessors 
      *  of the second block.
      */    
     private boolean allSuccesorsOfAreThePredecessorsOf(Block aFirstBlock, Block aSecondBlock)

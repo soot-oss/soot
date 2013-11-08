@@ -281,30 +281,33 @@ public class Util {
         
         int idx = 0;
         int arraySize = 0;
+        boolean object = false;
         
         String curr = "";
         while( idx < parameters.length()) {
           char c = parameters.charAt(idx);
           curr += c;
           switch( c ) {
+              // array
             case '[':
-                char c2 = parameters.charAt(++idx);
-                if (c2 == 'L') {
-                    while(c2 != ';') {
-                        curr += c2;
-                        c2 = parameters.charAt(++idx);
-                    }
-                } else {
-                    curr += c2;
-                }
+                break;
+              // end of object
+            case ';':
+                object = false;
                 pList.add(curr);
                 curr = "";
                 break;
-            case ';':
-                pList.add(curr);
-                curr = "";            
+              // start of object
+            case 'L':
+                object = true;
+                break;
            default:
-               pList.add(curr);
+               if (object) {
+                // caracter part of object
+               } else { // primitive
+                   pList.add(curr);
+                   curr = "";
+               }
                break;
             
           }

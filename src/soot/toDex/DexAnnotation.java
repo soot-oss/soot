@@ -46,6 +46,7 @@ import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.dexpler.DexType;
 import soot.dexpler.Util;
 import soot.options.Options;
 import soot.tagkit.AnnotationAnnotationElem;
@@ -712,7 +713,7 @@ public class DexAnnotation {
     private AnnotationItem makeEnclosingMethod(EnclosingMethodTag tag) {
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
                 dexFile, "Ldalvik/annotation/EnclosingMethod;");
-        String enclosingClass = tag.getEnclosingClass();
+        String enclosingClass = DexType.toDalvikICAT(tag.getEnclosingClass());
         String enclosingMethod = tag.getEnclosingMethod();
         String methodSig = tag.getEnclosingMethodSig();
         String[] split1 = methodSig.split("\\)");

@@ -17,7 +17,7 @@ public class Symbol implements Cloneable
 	static private final int COLUMN_FIELD_MASK = (1 << COLUMN_FIELD_BITS) - 1; 
 	
 	/**
-	 * Packes symbol "coordinates" into a single number.
+	 * Packs symbol "coordinates" into a single number.
 	 */
 	static public int makePosition(int line, int column)
 	{

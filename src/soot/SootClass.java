@@ -684,7 +684,7 @@ public class SootClass extends AbstractHost implements Numberable
     }
 
     /**
-        Removes the given class from the list of interfaces which are direclty implemented by this class.
+        Removes the given class from the list of interfaces which are directly implemented by this class.
     */
 
     public void removeInterface(SootClass interfaceClass) 
