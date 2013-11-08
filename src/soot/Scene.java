@@ -249,12 +249,35 @@ public class Scene  //extends AbstractHost
         return sootClassPath;
     }
 
+    /**
+     * Returns the max Android API version number available
+     * in directory 'dir'
+     * @param dir
+     * @return
+     */
+    private int getMaxAPIAvailable(String dir) {
+        File d = new File(dir);
+        File[] files = d.listFiles();
+        int maxApi = -1;
+        for (File f: files) {
+            String name = f.getName();
+            if (f.isDirectory() && name.startsWith("android-")) {
+                int v = Integer.decode(name.split("android-")[1]);
+                if (v > maxApi)
+                    maxApi = v;
+            }
+        }
+        return maxApi;
+    }
+
 	public String getAndroidJarPath(String jars, String apk) {
 		File jarsF = new File(jars);
 		File apkF = new File(apk);
 
 		int APIVersion = -1;
 		String jarPath = "";
+
+		int maxAPI = getMaxAPIAvailable(jars);
 
 		if (!jarsF.exists())
 			throw new RuntimeException("file '" + jars + "' does not exist!");
@@ -331,7 +354,14 @@ public class Scene  //extends AbstractHost
 			}
 			
 			if (sdkTargetVersion != -1) {
-				APIVersion = sdkTargetVersion;
+			    if (sdkTargetVersion > maxAPI
+			            && minSdkVersion != -1
+			            && minSdkVersion <= maxAPI) {
+			        G.v().out.println("warning: Android API version '"+ sdkTargetVersion +"' not available, using minApkVersion '"+ minSdkVersion +"' instead");
+			        APIVersion = minSdkVersion;
+			    } else {
+			        APIVersion = sdkTargetVersion;
+			    }
 			} else if (minSdkVersion != -1) {
 				APIVersion = minSdkVersion;
 			} else {
@@ -345,6 +375,11 @@ public class Scene  //extends AbstractHost
 
 		// get path to appropriate android.jar
 		jarPath = jars + File.separator + "android-" + APIVersion + File.separator + "android.jar";
+
+		// check that jar exists
+		File f = new File(jarPath);
+		if (!f.isFile())
+		    throw new RuntimeException("error: target android.jar ("+ jarPath +") does not exist.");
 
 		return jarPath;
 
