@@ -289,6 +289,19 @@
         
     </target>
 	
+	<target name="doc" depends="compile,settings">
+		<javadoc
+			sourcepath="src"
+			destdir="javadoc"
+			author="true"
+			version="true"
+			use="true"
+			windowtitle="Soot Documentation">
+		</javadoc>
+		
+		<jar basedir="javadoc" destfile="${release.loc}/sootjavadoc-${soot.version}.jar" />
+	</target>
+	
 	<target name="fulljar" depends="classesjar">
     	<mkdir dir="META-INF"/>
 
@@ -296,16 +309,17 @@
            <attribute name="Main-Class" value="soot.Main"/>
            <attribute name="Implementation-Version" value="${soot.version}"/> 
         </manifest>
-
+		
         <jar destfile="${release.loc}/soot-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
+        	
             <zipfileset src="${release.loc}/sootclasses-${soot.version}.jar"/>
             <zipfileset src="${jasmin.jar}"/>
             <zipfileset src="${heros.jar}"/>
             <zipfileset src="${polyglot.jar}"/>
             <zipfileset src="${javacup.jar}"/>
-            <zipfileset src="${xmlprinter.jar}"/>      
-            <zipfileset src="${baksmali.jar}"/>      
-            <zipfileset src="${baksmali2.jar}"/>      
+            <zipfileset src="${xmlprinter.jar}"/>
+            <zipfileset src="${baksmali.jar}"/>
+            <zipfileset src="${baksmali2.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>
