@@ -853,7 +853,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       }
       
       if(sourcePart != null && srcPrec == SRC_PREC_JAVA) {
-        CompilationUnit unit = sourcePart.getCompilationUnit();
+        CompilationUnit unit = getCachedOrLoadCompilationUnit(new File(sourcePart.pathName).getCanonicalPath());
         int index = name.lastIndexOf('.');
         if(index == -1)
           return unit;
@@ -882,7 +882,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
         }
       }
       else if(sourcePart != null && (classPart == null || classPart.age <= sourcePart.age)) {
-        CompilationUnit unit = sourcePart.getCompilationUnit();
+        CompilationUnit unit = getCachedOrLoadCompilationUnit(new File(sourcePart.pathName).getCanonicalPath());
         int index = name.lastIndexOf('.');
         if(index == -1)
           return unit;
