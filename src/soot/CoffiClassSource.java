@@ -68,8 +68,11 @@ public class CoffiClassSource extends ClassSource
             sc.addTag(tag);
         }
         
-        String name = zipFileName == null ? new File(fileName).getName() : new File(zipFileName).getName();
-        tag.setSourceFile(name); 
+        // Sets sourceFile only when it hasn't been set before
+        if (tag.getSourceFile() == null) {
+            String name = zipFileName == null ? new File(fileName).getName() : new File(zipFileName).getName();
+            tag.setSourceFile(name); 
+        }
     }
 }
 
